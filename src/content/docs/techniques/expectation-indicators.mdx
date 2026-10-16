@@ -1,0 +1,56 @@
+---
+title: "総数の期待値を、各組が成立する確率に分ける"
+description: "転倒数などの期待値を、組ごとの確率の和にして数えます。"
+techniqueId: "expectation-indicators"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+独立な一様整数 $X_i\in[1,a_i]$ を選ぶとき、$X_i>X_j$ を満たす組の個数など、成立した条件の総数の期待値を求めたいとき。
+
+## 考え方
+
+組 $(i,j)$ が成立したら 1、しなければ 0 となる $I_{ij}$ を使います。$E[\sum I_{ij}]=\sum P(X_i>X_j)$ です。指示変数同士が独立である必要はありません。
+
+$a=a_i,b=a_j$ とすると、成立する組の数は $a\le b$ なら $a(a-1)/2$、$a>b$ なら $b(b-1)/2+(a-b)b$。これを $ab$ で割ります。
+
+## 適用条件
+
+数えたい量が条件ごとの 0/1 の和で書けること。ここで組の確率を $ab$ で割れるのは、$X_i,X_j$ が独立な一様分布だからです。最大値の期待値などは直接この総数の式にはなりません。
+
+## なぜ正しいか
+
+各試行で転倒数は成立する組の指示変数の和です。期待値の線形性で順序を入れ替え、各組の確率を正確に数えれば答えが得られます。
+
+## 計算量
+
+全ての組合せを列挙する改善前は $O((\prod_i a_i)N^2)$。改善後は時間 $O(N^2)$、追加空間 $O(1)$。整数の積は long double に変換してから計算します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double expected_inversions(const vector<long long>& a) {
+    long double answer=0;
+    for (int i=0; i<(int)a.size(); ++i)
+        for (int j=i+1; j<(int)a.size(); ++j) {
+            long double x=a[i], y=a[j];
+            assert(x>=1 && y>=1);
+            long double pairs = x<=y ? x*(x-1)/2 : y*(y-1)/2+(x-y)*y;
+            answer += pairs/(x*y);
+        }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[必ず小さくなる状態の期待値を一手目で分ける](/flowchartcp/techniques/expectation-first-step/)
+
+## 参考資料
+
+- [CSES：Inversion Probability の問題文](https://cses.fi/problemset/task/1728)
+
+<TechniqueReferences techniqueId="expectation-indicators" />

@@ -1,0 +1,171 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "所有者が行き先を決める有向グラフで、目標を繰り返し訪れる勝者と固定戦略を、到達集合の反復除去で求める技巧を追加。",
+  "counts": {
+    "specificTechniques": 427,
+    "foundationArticles": 78,
+    "allArticles": 505,
+    "exampleMappings": 526,
+    "originalUrls": 488,
+    "graphs": 472,
+    "nodes": 3703,
+    "questions": 1687,
+    "answerEdges": 5502,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 522,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+    "articleSha256": "2e3a83f5a8407145a6a7b4a1ca04d2b076484771c3dcdfa6c1f27ec4e82ac277",
+    "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+    "record": "research/technique-verifications/buchi-owned-graph-repeated-target-attractor-elimination.json",
+    "originalSourceRangeAndApiContainmentVerified": true,
+    "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2017-train-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 5828.943809
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "record": "research/probes/ioi2017-train-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 10,
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 18183.152184,
+      "scope": "Train flow, prior specific-expansion, layout, domain/viewer clients, legacy/continuation, IOI2017 fixed corpus and ledger. All prior525walks/471graphs/everyoldfield/nineaudits including Wiring resolution preserved.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "previousFollowingChangeRecord": "research/verification-2026-10-15-ioi2017-wiring.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 505,
+      "mappings": 526,
+      "diagrams": 472,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 505,
+      "recentArticlesChecked": 35,
+      "japaneseEnglishFullWidthQueries": 143,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 472,
+      "completeAnswerLabels": 5502,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized expanded game-rules and new owned-repeated-target-conditions; no node/label/arrow overlap. First condition explanation is visually ellipsized by the common diagram text cap; full text retained in SVG title and HTML. Separate wheel-zoom viewer retained."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1458,
+      "linksAssets": 29533,
+      "diagrams": 472,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "Queue attractors use own-existence/opponent-all-successors ranks. Residual graphs remain total; every original B-edge of a residual vertex remains residual. Removing B-attractors of target-free traps gives decreasing deletion epochs, then decreasing rank to a target-free trap. At the final residual, A-ranks force repeated target visits. Both positional strategies remain valid against adaptive opponents.",
+    "Fixed first-visit edges yield an eventual simple cycle. A target on that cycle gives every charging gap at most N, matching the original N-edge battery rule; a target-free final cycle stops. This directly proves source-rule equivalence rather than assuming game determinacy. At mostN O(N+M) passes, validation sorting absorbed into O(NM) using N<=M<=N². O(N+M)space, iterative.",
+    "Full original N1..5000, M N..20000, binaryowners/charging>=1, outdegree>=1, loopsallowed, orderedduplicatesforbidden are included. Original by-value who_wins adapter derived from generic plus official Notice; actual distributed header not acquired. Generic empty-target extension is separated. Legal moves are returned everywhere and promised as winning strategies only for owner==winner.",
+    "Visible final C++ hash e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1 reproduced by author/root/peer normal+ASan/UBSan:12032358checks/454155API/checksum5543748192885197194. Exhaustive2145graphs include all totalN1..3 and selected functional/onebranchN4, not allN4. Literal firstvisit1781207starts/7419964searchnodes;fixedpolicies3916282starts;8maxfamilies including2500deletions.",
+    "Distinct finite-battery synchronous safety fixed point on(v,energy0..N):6023018checks/23600inputs/checksum617204148435879420,70926games,232866adaptivepolicystarts. Covers22100allsmall owner/target assignments includingempty plus1500random;63capacityN/N-1 controls. 163allocationfailures fully unwind; measured max-family construction vectorpayload754600core/1114600adapter bytes only. Extra ASan/UBSan passed with leak detection disabled after an LSan ptrace shutdown failure; no LSan success claim.",
+    "Initial IOI2017 sixrecords/status4research/API0/coverage0 and Wiring resolution preserved. Train receives resolution only, no duplicatepositive. Current research4/6,covered2/6. Canonical feature root win,repeated-target,yes3 and six no/unknown exits; all old525walks/471graphs/nineaudits retained. Missing article/ref/source/walk/steps/draft or failed realpreflight removes coverage."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 526,
+    "reviewedProblems": 486,
+    "corpusStatementsReviewed": 71,
+    "corpusSolutionsReviewed": 63,
+    "allSolutionsReviewed": 494
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "2/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 17,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual originaldistribution C++ header ZIP not retrieved; signature derived from statement and officialNotice without claiming header execution.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures; no install/server/browser retried.",
+    "External example-link liveness not checked. No push/upload/publication."
+  ],
+  "inProgress": [
+    "IOI2017 Books full-range API root review passed, separate review underway.",
+    "IOI2017 Simurgh full-range API separate and root reviews underway.",
+    "IOI2016 fixed-six selection and1431raw baseline frozen before matching; unregistered research continues."
+  ]
+}

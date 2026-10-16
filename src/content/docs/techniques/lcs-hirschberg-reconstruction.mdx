@@ -1,0 +1,148 @@
+---
+title: "最長共通部分列を省メモリで復元するなら、前後の長さから分割位置を探す"
+description: "DP表を保存せず、片方を半分に分け、前向き・後ろ向きのDPが最も長くつながる位置から列を復元します。"
+techniqueId: lcs-hirschberg-reconstruction
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+二つの文字列や配列から、最長共通部分列（LCS）を一つ出力する場面です。長さだけならDPを一行にできますが、全ての状態の親を保存すると $O(NM)$ のメモリが必要です。$O(NM)$ 時間は使えても、復元用の表を置けないときにHirschberg法を使います。
+
+## 考え方
+
+二つの列を $A,B$ とし、$A$ を中央で $A_L,A_R$ に分けます。$B$ の切れ目 $j$ ごとに、次の二つを求めます。
+
+- $F[j]$：$A_L$ と $B[0,j)$ のLCS長。
+- $G[j]$：$A_R$ と $B[j,M)$ のLCS長。
+
+$F$ は左から、$G$ は両方の列を右から読むDPで計算できます。いずれも行を使い回せるため、必要なのは $O(M)$ の配列です。
+
+$$k\in\mathop{\mathrm{argmax}}_{0\le j\le M}\{F[j]+G[j]\}$$
+
+を選び、$(A_L,B[0,k))$ と $(A_R,B[k,M))$ に同じ処理を行います。左側の答えに右側の答えをつなげると、全体のLCSが得られます。片方の長さが1になったら、その要素が相手にあるかを調べるだけです。
+
+切れ目だけを決めるたびにDPの配列を捨てます。部分問題に必要なのは、元の列の四つの添字です。部分列のコピーや各状態の親は持ちません。
+
+## 適用条件
+
+二つの列の順序を保ち、一致する要素を選ぶ通常のLCSに適用できます。要素の比較は $O(1)$ とします。文字列に限らず、整数列にも同じ実装を使えます。
+
+最長の列が一つ得られればよい場合を扱います。同じ長さの候補から単に左の切れ目を選んでも、辞書順最小のLCSになる保証はありません。最長の列の個数や辞書順の指定がある場合は、その条件を別に扱う必要があります。
+
+前後のDPを足す考え方は編集操作列の復元にも使えますが、状態をまたぐ費用があるモデルでは、接続する状態と費用の数え方を確認します。
+
+## なぜ正しいか
+
+任意の切れ目 $j$ で、左と右の共通部分列を連結すると、$A,B$ の両方の部分列になります。したがって $F[j]+G[j]$ は全体のLCS長を超えません。
+
+逆に、全体の最長共通部分列を一つ固定し、$A_L$ から取った要素と $A_R$ から取った要素に分けます。対応する $B$ の位置もこの順序に並ぶので、二つを分ける切れ目 $j$ が存在します。それぞれの長さは $F[j],G[j]$ 以下です。よって最大の $F[j]+G[j]$ は、全体のLCS長と一致します。
+
+選んだ二つの部分問題も同じ性質を持ちます。長さ1の正しい答えから左、右の順に連結すれば、最適な列を復元できます。
+
+## 計算量
+
+時間は $O(NM)$、入力と返す列を除く追加空間は $O(\min(N,M))$ です。短い列を常に $B$ 側にします。返す列の長さも高々 $\min(N,M)$ です。空の入力は定数時間で処理します。
+
+一つの分割では、その長方形の面積に比例するDPを行います。同じ深さの部分問題で $B$ の範囲は重ならず、$A$ の長さは分割ごとに半分になるため、全体の面積の和も $O(NM)$ に収まります。
+
+素直な再帰実装には $O(\log\max(N,M))$ の呼び出し履歴も残ります。以下の実装は未処理の部分問題を明示的なスタックに入れ、空の範囲を入れません。保持中の $B$ の範囲は互いに重ならず、全て1要素以上あるため、スタックも $O(\min(N,M))$ です。DP配列を破棄してから子の処理へ進むので、分割の深さの分だけ配列が残ることもありません。
+
+## 実装
+
+`lcs_hirschberg(a, b)` は、二つの `string` または同じ型の `vector<T>` を受け取り、同じコンテナ型でLCSを返します。入力は参照のまま読み、分割位置を半開区間の添字で表します。
+
+右側を先にスタックへ積むことで、左側の答えから順に `answer` へ追加します。切れ目が端に寄っても、空の子は積みません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template<class Sequence>
+Sequence lcs_hirschberg(const Sequence& a, const Sequence& b) {
+    const Sequence* A = &a;
+    const Sequence* B = &b;
+    if (A->size() < B->size()) swap(A, B);
+
+    Sequence answer;
+    if (B->empty()) return answer;
+    answer.reserve(B->size());
+    using Task = array<size_t, 4>;
+    vector<Task> pending{{0, A->size(), 0, B->size()}};
+
+    while (!pending.empty()) {
+        auto [al, ar, bl, br] = pending.back();
+        pending.pop_back();
+        size_t n = ar - al, m = br - bl;
+        if (n == 1) {
+            for (size_t j = bl; j < br; ++j) {
+                if ((*A)[al] == (*B)[j]) {
+                    answer.push_back((*A)[al]);
+                    break;
+                }
+            }
+            continue;
+        }
+        if (m == 1) {
+            for (size_t i = al; i < ar; ++i) {
+                if ((*A)[i] == (*B)[bl]) {
+                    answer.push_back((*B)[bl]);
+                    break;
+                }
+            }
+            continue;
+        }
+
+        size_t am = al + n / 2, cut = 0;
+        {
+            vector<size_t> forward(m + 1), backward(m + 1);
+            for (size_t i = al; i < am; ++i) {
+                size_t diagonal = 0;
+                for (size_t j = 1; j <= m; ++j) {
+                    size_t old = forward[j];
+                    forward[j] = ((*A)[i] == (*B)[bl + j - 1])
+                        ? diagonal + 1 : max(forward[j], forward[j - 1]);
+                    diagonal = old;
+                }
+            }
+            for (size_t i = ar; i > am;) {
+                --i;
+                size_t diagonal = 0;
+                for (size_t j = m; j > 0;) {
+                    --j;
+                    size_t old = backward[j];
+                    backward[j] = ((*A)[i] == (*B)[bl + j])
+                        ? diagonal + 1 : max(backward[j], backward[j + 1]);
+                    diagonal = old;
+                }
+            }
+            size_t best = 0;
+            for (size_t j = 0; j <= m; ++j) {
+                if (forward[j] + backward[j] > best) {
+                    best = forward[j] + backward[j];
+                    cut = j;
+                }
+            }
+        } // DP配列をここで破棄する。
+
+        size_t bm = bl + cut;
+        if (bm < br) pending.push_back({am, ar, bm, br});
+        if (bl < bm) pending.push_back({al, am, bl, bm});
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [直前の層しか使わないDPは配列を使い回す](/flowchartcp/techniques/dp-dimension-rolling/)
+- [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [D. S. Hirschberg：A Linear Space Algorithm for Computing Maximal Common Subsequences（1975、著者公開版）](https://ics.uci.edu/~dhirschb/pubs/p341-hirschberg.pdf) — 前後のDPから切れ目を決める方法と、その正当性・計算量。
+- [AtCoder：F - LCS](https://atcoder.jp/contests/dp/tasks/dp_f) — 二つの文字列の最長共通部分列を一つ出力する問題。
+- [CSES：Longest Common Subsequence](https://cses.fi/problemset/task/3403/) — 二つの整数列の最長共通部分列を一つ出力する問題。
+
+<TechniqueReferences techniqueId="lcs-hirschberg-reconstruction" />

@@ -1,0 +1,361 @@
+{
+  "techniqueId": "two-threshold-component-merge-trees-rectangle-intersection",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-werewolf-article.mdx",
+    "checker": "/tmp/flowchartcp-werewolf-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/two-threshold-component-merge-trees-rectangle-intersection.mdx",
+    "checker": "scripts/check_threshold_component_intersection_cpp.py"
+  },
+  "metadata": {
+    "id": "two-threshold-component-merge-trees-rectangle-intersection",
+    "title": "通れる頂点に二種類の制限がある移動を、到達集合の共通部分で判定する",
+    "summary": "前半は番号の下限、後半は上限を守る移動を、それぞれの到達集合へ分ける。多数の質問の集合を二つの木に保存し、共通する頂点の有無を調べる。",
+    "aliases": [
+      "IOI2018 Werewolf two threshold merge trees",
+      "two component intersection Euler points rectangle Fenwick",
+      "下限 上限 到達成分 併合木 葉区間 長方形 交差"
+    ],
+    "family": "閾値付き連結成分の交差",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "union-find",
+      "subtree-euler-interval",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "two-threshold-component-merge-trees-rectangle-intersection",
+    "source": "IOI",
+    "problemId": "ioi2018_werewolf",
+    "title": "Werewolf",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+    "evidence": "固定の無向グラフで、始点からは番号L以上、終点へは番号R以下の頂点だけを通り、同じ頂点で一度だけ切り替える多数の質問を扱う。前半の制限成分と後半の制限成分が交わることが必要十分。下限降順・上限昇順の有効化で二つの併合木を作り、各質問時点の成分を葉区間へ保存する。同じ元頂点の二つの葉位置を座標点にすると、共通頂点数は両区間の積長方形内の点数になり、オフライン走査とFenwick木で求められる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-09-03",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にJP委員会配布の原典3頁と公式Review2頁をwebで再読。通常PDF抽出で消える数式は推測せず、主催者配布CUB原典のRestricciones全文検索表示からN2..200000、N−1<=M<=400000、Q1..200000、単純連結無向、L<=S/E<=R/S!=E/L<=Rと各番号範囲を再確認した。画像目視とは主張しない。日本委員会公式日別一覧で競技日1の2018-09-03、難度の公式値不明はnullと確認。公式Reviewと、IOI支援の後年のTomasz Idziaszek著者解答は別のprovenanceとして扱う。成分交差の必要十分性、各閾値のinclusiveな全辺処理、DSUとは別の不変な併合木、葉だけのEuler区間、二木の葉順序を同一視しない点対応、半開長方形と点追加前イベント、union-by-sizeの計算量を独立証明。可視MDXの単一完全C++20を抽出し-O2 -Wall -Wextra -Werrorで両公開APIを検証した。N2..6の全27475連結単純グラフ×全8527158原典有効queryを、元の2形態への移動と人間->狼の一方向切替を直接行うBFSと比較。N1/S=E拡張を加え全27476グラフ/10048867小queryについて、二つの制限付きBFS集合の直接共通個数とも一致。300乱択グラフ×400query、原典3query、辺順/向き/質問順を入れ替えた不変性、N1/empty batch、同閾値・L=R・0/N−1を確認。最大N200000で単調鎖/0中心星/N−1中心星/400000辺/乱択番号鎖の5構成を各Q200000で両API実行し、閉形式または独立した経路上RMQ+二分探索oracleで1000000queryを比較。後者oracle自体も30本の小乱択経路の全queryで直接BFSと一致。全処理反復で長鎖2N−1木でも再帰なし。invalid62API呼出し、不正N/M/Q/端点/閾値/自己辺/逆向き重複/非連結を検証。M上限超過は他の条件を満たす単純連結400001辺で独立に確認。空batchでも無効グラフを拒否し、別グラフと元グラフを50回交互に呼び状態分離を検証。33949663 checks、checksum16549868984224916885。通常4.21126秒/39764KiB。ASan/UBSanも同一33,949,663検査・checksumで45.7495秒/957508KiB、検出なし。LeakSanitizerのみptrace環境のため無効。初回audit/sharedは未変更。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2018_werewolf",
+    "title": "Werewolf",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+    "techniqueIds": [
+      "two-threshold-component-merge-trees-rectangle-intersection"
+    ],
+    "features": [
+      "固定の単純連結無向グラフで、始点からは番号L以上、終点へは番号R以下だけを通り、頂点で一度切り替える。始点/終点で切り替えてもよい。",
+      "全質問を先に読め、質問ごとに始点・終点・二つのしきい値が変わる。各質問について条件を守って目的地まで移動できるかを求める。",
+      "原典N2..200000、N−1<=M<=400000、Q1..200000、L<=S/E<=R/S!=E/L<=R。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-03",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "notes": "固定の無向グラフで、始点からは番号L以上、終点へは番号R以下の頂点だけを通り、同じ頂点で一度だけ切り替える多数の質問を扱う。前半の制限成分と後半の制限成分が交わることが必要十分。下限降順・上限昇順の有効化で二つの併合木を作り、各質問時点の成分を葉区間へ保存する。同じ元頂点の二つの葉位置を座標点にすると、共通頂点数は両区間の積長方形内の点数になり、オフライン走査とFenwick木で求められる。",
+    "discoveredBy": "ioi-2018",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+    "statementPages": 3,
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+    "editorialPages": 2,
+    "officialEditorialProvenance": "主催Tasks/日本委員会が当該課題のReviewとして配布するPDF。",
+    "editorialRetrieved": true,
+    "editorialTextReview": true,
+    "editorialFullFormulaTranscriptionVerified": false,
+    "editorialLimitation": "通常web PDF抽出では数式が抜ける箇所がある。画像の目視や全式の文字通りの転記確認とは主張せず、具体API/補題/走査は独立証明とoracleで確認。",
+    "authorSupplement": {
+      "url": "https://www.algonotes.com/en/solutions-ioi2018/",
+      "author": "Tomasz Idziaszek",
+      "provenance": "後年の著者による公開解答。本文はIOI International Committeeの部分支援を明記するが、2018当日の公式Reviewそのものとは区別する。",
+      "usedAsOracle": false
+    },
+    "numericBoundsVerified": true,
+    "numericEvidenceUrl": "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf",
+    "numericAcquisition": "主催者公式翻訳PDFのRestricciones全文web検索表示。画像目視とは主張しない。",
+    "sourceBounds": {
+      "N": "2..200000",
+      "M": "N−1..400000",
+      "Q": "1..200000",
+      "graph": "simple connected undirected",
+      "queries": "0<=L<=S<N,0<=E<=R<N,S!=E,L<=R",
+      "transition": "exactly once at a vertex, including S or E; both phases include that vertex",
+      "route": "arbitrary length"
+    },
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "date": "2018-09-03",
+    "day": 1,
+    "exactDateVerified": true,
+    "difficulty": null,
+    "apiContainsEntireSourceRange": true,
+    "unconfirmedIndependentLemmas": []
+  },
+  "api": {
+    "queryType": "ThresholdIntersectionQuery{int start,goal,lower,upper}",
+    "count": "std::vector<int> threshold_component_intersection_counts(int n,const std::vector<std::pair<int,int>>& edges,const std::vector<ThresholdIntersectionQuery>& queries)",
+    "feasibility": "std::vector<int> threshold_switch_reachability(same arguments)",
+    "sourceAdapter": "元APIのX/Y各組をedge、S/E/L/R各組をqueryへまとめ、0/1 APIの返却列を使う。",
+    "bounds": "1<=N<=200000,M<=400000,Q<=200000。単純連結無向グラフ、0<=L<=S<N,0<=E<=R<N,L<=R。",
+    "extensions": [
+      "N=1,M=0",
+      "Q=0 (graph still validated)",
+      "S=E (zero-edge phase; switch once at common endpoint)"
+    ],
+    "returns": "count APIは二成分共通頂点数0..N、feasibility APIは同順の0/1。共通頂点は切替候補として全てdistinct。",
+    "validation": "invalid_argument for unsupported N/M/Q, invalid edge or query endpoint, L/R bounds or endpoint admissibility, self-loops, duplicate unoriented edges, disconnected graph。",
+    "allocationErrors": "標準割当例外を伝播。入力はconst参照で変更せず、全状態local。",
+    "reinitialization": "stateless batch functions; each call constructs fresh DSU/trees/events. Repeated or interleaved graphs preserve no previous state.",
+    "queryTiming": "全queryを先読みするbatch API。オンラインに後続queryを追加する機能はない。",
+    "integerSafety": [
+      "N<=200000; merge node count2N−1<=399999",
+      "adjacency size2M<=800000; CSR offset/degree fits int",
+      "bucket/event count2Q<=400000",
+      "Fenwick prefix and final intersection count0..N",
+      "signed event partial answer in[−N,N]",
+      "DSU component sizes sum<=N",
+      "no N²/M² integer products; graph simplicity checked by neighbour stamps in linear time"
+    ],
+    "stackSafety": "DSU find/graph BFS/leaf DFS/Fenwick loops are iterative; no recursive function."
+  },
+  "proof": {
+    "status": "independently-complete",
+    "intersection": "A legal one-switch route implies its switch is in A(S,L) intersect B(E,R). Conversely concatenate a human path to any common vertex with a reversed wolf path to E, switching there. Undirected edges allow the reverse; zero-edge phases and repeated overall route vertices are allowed.",
+    "inclusiveThresholds": "Descending active set is[v,N−1], ascending[0,v]. Process all incident already-active edges before every query bucket at v. Endpoint active status follows source constraints.",
+    "mergeInvariant": "Each successful DSU union makes a new immutable parent with the two disjoint previous component trees as children; leaves are exactly original vertices of that component. DSU union-by-size parents remain separate from merge-history parent nodes.",
+    "leafIntervals": "Left-first DFS visits all leaves of each subtree contiguously. Creation order children<parent computes subtree bounds bottom-up after iterative leaf enumeration. Connected graph gives exactly2N−1 nodes per tree.",
+    "twoCoordinates": "v in both components iff (lowPosition[v],highPosition[v]) lies in product of their respective leaf intervals. Two leaf orders must not be identified.",
+    "sweep": "At bucket x process events before adding point x; structure contains p<x. count rectangle=F(right,yl,yr)−F(left,yl,yr), using half-open Fenwick y-prefixes. Handles x0/N and y0/N.",
+    "simplicityValidation": "Build CSR from validated endpoints, stamp each neighbour w with current v to catch repeated unoriented edges deterministically in O(N+M); iterative BFS tests connectedness.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "time": "O((N+M)alpha(N)+(N+Q)log(N+1))",
+    "space": "O(N+M+Q), including input/output; O(N+Q) except CSR adjacency",
+    "validation": "O(N+M+Q), deterministic, no hash assumptions",
+    "thresholdProcessing": "O(N+M+Q) union-find operations per direction; union by size with path halving",
+    "mergeTreeNodes": "exactly2N−1 per direction on connected input; max399999",
+    "events": "2Q <=400000; coordinate buckets0..N",
+    "sorting": "none; both thresholds and x coordinates are dense integer ranks",
+    "queryFindCost": "Q alpha(N) absorbed in(N+Q)log(N+1)",
+    "recursion": "none",
+    "maximumNativeMemoryScope": "Recorded peak RSS is for the entire checker, including independent BFS/RMQ oracles and test inputs, not a tight library allocation bound."
+  },
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "parentGraphId": "graphs-network-connection",
+    "parentNodeId": "shortest",
+    "newAnswerId": "two-threshold-switch",
+    "newAnswerLabel": "二種類の頂点制限の間で一度だけ切り替える",
+    "guardGraphId": "two-threshold-switch-conditions",
+    "canonicalChoices": [
+      "network-connection",
+      "two-threshold-switch",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "undirected-connected",
+        "question": "頂点番号を持つ固定の単純連結無向グラフですか？"
+      },
+      {
+        "id": "single-threshold-switch",
+        "question": "前半は番号L以上、後半はR以下を通り、同じ頂点で一度切り替えますか？"
+      },
+      {
+        "id": "bounds",
+        "question": "全質問を先読みでき、N20万・M40万・Q20万以内で原典の閾値条件を満たしますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "two-threshold-component-merge-trees-rectangle-intersection"
+    ],
+    "preserveExisting": "既存のconnectivity経路/旧walkは全て維持し、parentへ新しい特徴選択肢を追加する。共有flowはrootが統合する。"
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-werewolf-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-werewolf-checker.py --sanitize",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "checks": 33949663,
+    "allConnectedSimpleGraphsN1to6": 27476,
+    "allConnectedSimpleGraphsN2to6": 27475,
+    "allSourceValidSmallQueries": 8527158,
+    "allSmallQueriesIncludingSingletonAndSameEndpoints": 10048867,
+    "oracle": "Enumerate every simple graph on N1..6 and keep exactly connected ones. For EVERY valid source query, direct BFS in2N original form states moves only within that form and has only human(v)->wolf(v) arcs. Independently two restricted ordinary BFS sets directly count common vertices. Both APIs compared; neither oracle builds merge trees/Euler points/Fenwick.",
+    "randomGraphs": 300,
+    "randomQueries": 120000,
+    "publishedExampleQueries": 3,
+    "rawRandomAndExampleQueries": 120003,
+    "randomProperties": [
+      "edge order and each orientation are permuted",
+      "reverse edge order/orientation changes possible leaf orders but preserves counts",
+      "reverse all queries and compare corresponding reversed result",
+      "repeated threshold buckets and all endpoint boundary equalities"
+    ],
+    "maximumCases": 5,
+    "maximumQueries": 1000000,
+    "maximumBounds": {
+      "N": 200000,
+      "M": 400000,
+      "QPerInstance": 200000
+    },
+    "maximumCaseDescriptions": [
+      "increasing-label path, both histories can have depthN−1, expected count R−L+1",
+      "star center0: if L=0 count R+1, else 1[S<=R]",
+      "star centerN−1: if R=N−1 count N−L, else 1[E>=L]",
+      "path plus all distance2 edges and3 extra distance3 edges gives exactly400000 edges; expected R−L+1",
+      "shuffled-label path: independent sparse min/max RMQ+binary search computes two intervals in physical path order, intersection count by their overlap"
+    ],
+    "pathOracleCrosscheck": "The independent static path-RMQ oracle is additionally checked on30 shuffled small paths N2..36 and every valid query by literal restricted BFS.",
+    "invalidApiCalls": 62,
+    "invalidCases": [
+      "N INT_MIN/-1/0/200001/INT_MAX",
+      "simple connected400001-edge graph with all other conditions valid",
+      "200001 valid singleton queries",
+      "self-loop, negative/too-large endpoints, same/reversed duplicate edge",
+      "disconnected graph even for empty query batch",
+      "negative/out-of-range L/R/S/E, L>R,S<L,E>R",
+      "same endpoint query accepted only when both endpoint ranges valid"
+    ],
+    "stateReuse": "50 rounds alternate a2-vertex graph and the6-vertex example after prior invalid calls; all results unchanged.",
+    "checksum": "16549868984224916885",
+    "normalSeconds": 4.21126,
+    "normalPeakRSSKiB": 39764,
+    "asanUbsan": {
+      "passed": true,
+      "seconds": 45.7495,
+      "peakRSSKiB": 957508,
+      "leakSanitizer": false,
+      "note": "Only LeakSanitizer disabled for ptrace environment.",
+      "checks": 33949663,
+      "checksum": "16549868984224916885"
+    },
+    "sharedFilesModified": false,
+    "initialAuditSnapshotModified": false,
+    "unconfirmedLemmas": [],
+    "fullReusableCppValidated": true
+  },
+  "editorNotes": [
+    "自然な日本語8節・単一の常時表示完全C++20 fence。技巧・コードを常時表示し、問題個別解説ページは作らない。",
+    "本文はモデル/主要補題/API/厳密計算量を説明し、調査経緯・検査件数・実測はsidecarへ分離。",
+    "初回IOI2018 audit/snapshot/sharedファイルを変更せず、登録後resolutionはrootで追加する。",
+    "公式Reviewと後年の著者補足を区別し、検証種別はindependent-analysis。"
+  ],
+  "artifactSha256": {
+    "article": "beff4eb0a3e3b6dfbbc480a5a1258e536650634bb40b77f81f66980624f84d03",
+    "checker": "d54ec6d47c47ee1caca68d7913ec5f758c17471edb6f905b325ea331460bc3ce",
+    "publishedArticle": "03051bd61595d602255fcfc64e1f34c822f247ba0e20350a9eaf6d8da8d8df7d"
+  },
+  "cppSha256": "dd1013768b7f8549b0afb09680850b0c46bc92993533156a2c05d520955b3974",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/two-threshold-component-merge-trees-rectangle-intersection.mdx",
+    "checker": "scripts/check_threshold_component_intersection_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "network-connection",
+      "two-threshold-switch",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "dd1013768b7f8549b0afb09680850b0c46bc92993533156a2c05d520955b3974",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "normal": {
+      "checks": 33949663,
+      "smallGraphs": 27476,
+      "sourceGraphs": 27475,
+      "sourceQueries": 8527158,
+      "allSmallQueries": 10048867,
+      "randomGraphs": 300,
+      "randomQueries": 120003,
+      "maximumCases": 5,
+      "maximumQueries": 1000000,
+      "invalidCases": 62,
+      "checksum": "16549868984224916885",
+      "seconds": 4.4625,
+      "peakRSSKiB": 39836,
+      "cppSha256": "dd1013768b7f8549b0afb09680850b0c46bc92993533156a2c05d520955b3974",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 33949663,
+      "smallGraphs": 27476,
+      "sourceGraphs": 27475,
+      "sourceQueries": 8527158,
+      "allSmallQueries": 10048867,
+      "randomGraphs": 300,
+      "randomQueries": 120003,
+      "maximumCases": 5,
+      "maximumQueries": 1000000,
+      "invalidCases": 62,
+      "checksum": "16549868984224916885",
+      "seconds": 45.6935,
+      "peakRSSKiB": 1069944,
+      "cppSha256": "dd1013768b7f8549b0afb09680850b0c46bc92993533156a2c05d520955b3974",
+      "sanitized": true
+    },
+    "notes": "主催原典と公式Review、配布翻訳の検索本文を区別して原典全域を確認。全掲載APIと補題を独立精読し、通常/ASan+UBSanで全件数・checksum・コードSHAを再現。新しい実装・証明レビューは研究記録とresolutionに保持し、初回の既確認研究へ重複するreviewを付加しない。"
+  }
+}

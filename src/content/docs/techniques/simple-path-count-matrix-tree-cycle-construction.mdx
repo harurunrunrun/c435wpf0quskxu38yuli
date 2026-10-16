@@ -1,0 +1,146 @@
+---
+title: "全頂点対の単純路本数から、木と環でグラフを構築する"
+description: "全対の本数が3以下という条件から二閉路を排除し、0の連結成分、1の木、2の代表環の整合を検査する。"
+techniqueId: simple-path-count-matrix-tree-cycle-construction
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+全ての二頂点間の**正確な単純路の本数**を行列で指定され、その行列を満たす無向単純グラフを構築したい。頂点集合は行列の行・列に対応する $N$ 個で、要求値は0・1・2・3。単純路は同じ頂点を繰り返さない頂点列であり、自分自身へは一頂点だけからなる路を一つと数える。
+
+要求0は別の連結成分、要求1は木の中の一意な路、要求2は一つの環の両方向と考えられる。ただし、見つかった1の組を結ぶだけでは、要求0や別の1との整合は保証されない。全組の関係を検査し、実現可能な場合だけ構築する。
+
+## 考え方
+
+最初に、**全対が3本以下なら、一つの連結成分に異なる二閉路は置けない**ことを使う。二閉路があれば、後述の証明によりどこかの対に4本以上の単純路が生じる。従って成分は木か、唯一の環に木が付いた形になる。この形の本数は1か2だけなので、行列に3が一つでもあれば不可能である。
+
+残る0・1・2の行列を、二段階に分ける。
+
+- 本数が正の関係で、連結成分を分ける。異なる成分の間は全て0でなければならない。
+- 同じ成分の中を、本数1の関係でさらに分ける。その同値類の内部は全て1、異なる同値類の間は全て2でなければならない。
+
+各同値類は任意の木で結べる。掲載実装では一つの代表と他の全頂点を結ぶ星型の木にする。同じ連結成分の代表が一つなら、これだけで完成する。代表が三つ以上なら、全代表を一つの環に並べて結ぶ。
+
+代表がちょうど二つの成分は不可能である。無向単純グラフの環は三頂点以上で、環の異なる頂点間には必ず二本の路があるので、一つの1同値類へ二つの環頂点を入れることもできない。
+
+実装では、未分類の最初の頂点の行を見て、その頂点と正の関係にある頂点、または1の関係にある頂点を一組と仮定する。得た二種類の分類から
+
+$$
+\widehat p_{uv}=\begin{cases}
+0 & \text{連結成分が異なる},\\
+1 & \text{同じ1同値類},\\
+2 & \text{同じ成分の異なる1同値類}
+\end{cases}
+$$
+
+を作り、入力の全要素と比較する。これにより、推移性を満たさない入力や、一部の対だけが異なる要求も検出できる。
+
+## 適用条件
+
+頂点集合が固定された、自己ループと多重辺のない無向グラフを構築する。数えるのは最短路に限らない全単純路で、値3は正確に3本を要求する。全ての対の要求が3以下であることが、構造を木と一つの環に限定するために必要となる。
+
+掲載APIは正の $N$ が `int` に収まる正方行列を受け取り、各要素0〜3、対称、対角成分1を要求する。$N$ の表現範囲、形、値、対称性、対角が不正なら `std::invalid_argument`。入力と出力の二枚の行列を保存できる領域が必要であり、領域不足時の標準ライブラリ例外は呼び出し側へ伝わる。形式が正しくても実現できない行列には `std::nullopt` を返す。実現できる場合は、頂点番号を変えず、対角0・対称な0/1隣接行列を返す。孤立頂点と非連結グラフも扱う。
+
+## なぜ正しいか
+
+まず二閉路を排除する補題を独立に証明する。同じ連結成分内の異なる二つの単純閉路を $C_1,C_2$ とする。
+
+共有頂点が高々一つなら、二閉路を結ぶ最短の接続路を選ぶ。共有する場合は長さ0の接続路とする。接続点を除く $C_1$ の頂点 $a$ と、$C_2$ の頂点 $b$ を取る。$a$ から接続点までの環の二方向、接続路、反対側の環の二方向を組み合わせると、$2\cdot2=4$ 本の異なる単純路が得られる。最短の接続路の内部は両閉路から離れているので、どの組合せでも頂点を繰り返さない。
+
+共有頂点が二つ以上なら、$C_2$ を共有頂点ごとの区間に分ける。異なる閉路なので、$C_1$ にない辺を含む区間が一つ以上ある。その区間の両端 $u,v$ だけが $C_1$ 上にあり、$C_2$ が単純閉路であることから $u\ne v$。区間が一辺だけの弦でもよい。$C_1$ の二方向とこの区間は、内部で交わらない三本の $u$–$v$ 路を作る。この形をthetaと呼ぶ。
+
+三本の路を $P,Q,R$ とする。単純グラフなので、長さ1の路は高々一本であり、少なくとも二本には内点がある。その二本を $P,Q$ とし、内点 $a\in P$、$b\in Q$ を選ぶ。$a$ から $b$ への路は、$u$ だけを通るもの、$v$ だけを通るもの、$u\to R\to v$ を通るもの、$v\to R\to u$ を通るものの四本ある。三つの路の内部が互いに素なので、全て単純で異なる。従ってどちらの場合も、どこかの対に4本以上が生じる。
+
+全対の要求が3以下なら、一成分は木か唯一の環を持つ形でなければならない。唯一の環からその辺を除くと、各木はちょうど一つの環頂点に付く。二つ以上の環頂点を結ぶ木があれば、それと環の一部でもう一つの閉路ができてしまう。同じ木の中では単純路は一つ、異なる木の間では環の二方向から二つである。木だけの成分でも路は一つなので、3本の対は実現できない。
+
+この構造では、正の要求が連結成分の同値関係を、要求1が同じ木に属する同値関係を表す。従って合法な行列なら、行を使った分類でその同値類が正しく得られ、全組比較にも通る。環の頂点は全て別の1同値類に入るため、環を持つ成分の代表数は三つ以上であり、二つの場合の拒否も必要である。
+
+逆に検査を通った行列について、各1同値類を星型の木にし、代表を一つの環で結べば、異なる連結成分間に路はなく、同値類内には一つ、同じ成分の異なる同値類間には二つの単純路ができる。木の外へ出て同じ代表へ戻る道はその代表を繰り返すため、類内の単純路を増やさない。全組の本数は検査した $\widehat p$ に一致する。構築は新しい頂点・自己ループ・多重辺を使わず、入力を満たす。
+
+## 計算量
+
+無向単純グラフの候補を全列挙すると $2^{N(N-1)/2}$ 通りあり、それぞれの単純路計数も必要になる。掲載実装は行列の検査・二種類の分類・全組比較・隣接行列の初期化を、それぞれ $O(N^2)$ 時間で行う。二種類の分類も各代表から全頂点を見るだけなので、全体の時間は **$O(N^2)$** である。
+
+返す隣接行列に $O(N^2)$ 空間、その他の補助配列に $O(N)$ 空間を使う。入力行列自体の保存領域は別にある。4バイトの `int` なら、$N=1000$ の行列の要素は一枚4000000バイト、$N=2000$ なら一枚16000000バイトである。これらは領域量の例であり、アルゴリズムに固定の1000頂点上限はない。
+
+実際に張る辺は、木の成分で頂点数−1本、環のある成分で頂点数と同数なので、合計 $N$ 本以下。隣接行列を返すAPIに合わせて、全体の時間・空間は二乗としている。
+
+## 実装
+
+`construct_simple_path_count_graph(required)` は成功時に隣接行列、実現不可能なら `std::nullopt` を返す。入力の行列は変更しない。入力が指定形式に従っているかの検査を済ませてから、値3や分類の矛盾を不可能と判定する。
+
+```cpp
+#include <optional>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+using SimpleAdjacency = std::vector<std::vector<int>>;
+
+// Required counts include the one-vertex path: required[v][v] must equal 1.
+// nullopt means that a well-formed matrix has no realization.
+std::optional<SimpleAdjacency> construct_simple_path_count_graph(
+    const std::vector<std::vector<int>>& required) {
+    if (required.empty() || !std::in_range<int>(required.size()))
+        throw std::invalid_argument("positive matrix order must fit in int");
+    const int n = int(required.size());
+    for (const auto& row : required)
+        if (row.size() != required.size()) throw std::invalid_argument("matrix must be square");
+    bool has_three = false;
+    for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v) {
+        int count = required[u][v];
+        if (count < 0 || count > 3 || count != required[v][u] || (u == v && count != 1))
+            throw std::invalid_argument("count range, symmetry, or diagonal");
+        has_three |= count == 3;
+    }
+    if (has_three) return std::nullopt;
+
+    // Try the row of the first unassigned vertex as each equivalence class.
+    // The full comparison below checks both transitivity and all cross-class values.
+    auto partition = [&](bool unique_path) {
+        std::vector<int> label(n, -1);
+        for (int root = 0; root < n; ++root) if (label[root] == -1)
+            for (int v = 0; v < n; ++v)
+                if (label[v] == -1 && (unique_path ? required[root][v] == 1
+                                                  : required[root][v] > 0))
+                    label[v] = root;
+        return label;
+    };
+    const auto component = partition(false), tree_class = partition(true);
+    for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v) {
+        int expected = component[u] != component[v] ? 0
+                     : tree_class[u] == tree_class[v] ? 1 : 2;
+        if (required[u][v] != expected) return std::nullopt;
+    }
+    std::vector<std::vector<int>> representatives(n);
+    for (int v = 0; v < n; ++v) if (tree_class[v] == v)
+        representatives[component[v]].push_back(v);
+    for (const auto& group : representatives)
+        if (group.size() == 2) return std::nullopt; // A simple graph has no 2-cycle.
+
+    SimpleAdjacency graph(n, std::vector<int>(n, 0));
+    auto edge = [&](int u, int v) { graph[u][v] = graph[v][u] = 1; };
+    for (int v = 0; v < n; ++v) if (tree_class[v] != v) edge(v, tree_class[v]);
+    for (const auto& group : representatives) if (group.size() >= 3)
+        for (int index = 0; index < int(group.size()); ++index)
+            edge(group[index], group[(index + 1) % group.size()]);
+    return graph;
+}
+```
+
+## 関連する手法
+
+- [Union-Find](/flowchartcp/techniques/union-find/) — 正の関係と要求1の関係をそれぞれ併合して分類する実装も可能。ただし、併合後の全組の整合検査は必要となる。
+- [グラフへの帰着](/flowchartcp/techniques/graph-reduction/) — 入力の数値を全て独立に満たそうとせず、連結成分と、その中の同値類へ変える。
+- [不変条件](/flowchartcp/techniques/invariant/) — 構築中に同値類内の一意な路と、代表間の二方向だけを保つ。
+
+## 参考資料
+
+- [IOI 2020 主催者 — 課題一覧](https://ioi2020.sg/ioi-2020-tasks/index.html) — Supertreesの原典と公式解説へのリンク。
+- [Connecting Supertrees — 公式原典](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf) — 全頂点対の単純路本数を指定した構築という適用例。
+- [Connecting Supertrees — 公式解説](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf) — 要求1の組を木にし、代表を環で結ぶ方針を参照。二閉路から4本の路を得る補題、行列の整合条件、掲載実装は本文で独立に示した。
+- [日本情報オリンピック委員会 — IOI 2020課題一覧](https://www2.ioi-jp.org/ioi/2020/tasks/index.html) — 競技日1が2020年9月16日で、Supertreesがこの日の課題であると確認できる。
+
+<TechniqueReferences techniqueId="simple-path-count-matrix-tree-cycle-construction" />

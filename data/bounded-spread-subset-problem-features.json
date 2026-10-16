@@ -1,0 +1,45 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2016_molecules",
+    "title": "Detecting Molecules",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+    "techniqueIds": [
+      "bounded-spread-subset-sum-sorted-window-witness"
+    ],
+    "features": [
+      "各正の重さを一回まで選び、個数自由の部分集合の合計を[l,u]に入れる。",
+      "許容幅u−lは最大重さと最小重さの差以上。元の添字を一つ返し、無ければ空配列。",
+      "原典N1〜200000、重さ/l/uは1〜2^31−1、l<=u。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "notes": "正の重さから個数自由の部分集合を一つ選び、合計を閉区間へ収めて元の添字を返す。許容幅が最大重さと最小重さの差以上なので、任意部分集合解からソート後の連続窓解の存在を示し、和の二端点走査で復元できる。",
+    "discoveredBy": "ioi-2016",
+    "publicationDate": "2016-08-14",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "entryGraphId": "ranges",
+    "choices": [
+      "selected-elements",
+      "bounded-spread-subset",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "bounded-spread-subset-sum-sorted-window-witness"
+    ],
+    "verificationKind": "independent-analysis",
+    "originalNumericBoundsVerified": true
+  }
+]

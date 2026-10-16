@@ -1,0 +1,78 @@
+---
+title: "右下へ進む経路のXORは、中央の斜線で分け、合流マスを一回だけ数える"
+description: "両端から半分の経路を列挙し、同じ合流位置でXORの頻度を照合します。"
+techniqueId: grid-xor-antidiagonal
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+盤面は小さくても、全ての単調経路は中央二項係数ほどあります。移動回数が必ず同じで、XORのように部分結果を合成できるときは、経路の中央で分けます。
+
+## 考え方
+
+0始まりの $n\times n$ 盤面では、どの経路も $r+c=n-1$ の斜線へちょうど一度来ます。始点から合流マスまでのXORを $x$、終点から合流マスまでを $y$ とすると、合流マス $v$ が二回入っています。
+
+$$\text{全経路のXOR}=x\oplus y\oplus A_v.$$
+
+目標 $K$ に対して $y=K\oplus x\oplus A_v$ を探します。合流マスごとに後半の値をソートし、等しい値の個数を二分探索します。位置を混ぜて集計すると、つながらない前後の経路まで数えてしまいます。
+
+## 適用条件
+
+移動は右・下だけで、盤面は正方形です。記事の実装は $1\le n\le 20$、値と目標は非負の64ビット整数。返り値は経路数であり、$n\le 20$ の総経路数は64ビットに収まります。障害物や長方形へ広げる場合は、探索と合流線を変更します。
+
+## なぜ正しいか
+
+単調経路の各歩で行番号と列番号の和が一つ増えるため、斜線との交点は一意です。任意の前半と後半を同じ交点でつなげば一つの合法な全経路になります。XORの重複した合流値をもう一度XORすれば一回分に戻り、照合式が必要十分です。頻度を掛けることで、値が同じでも経路が異なる場合を数えられます。
+
+## 計算量
+
+全経路列挙は $\binom{2n-2}{n-1}$ 個を扱います。改善後は、半経路の数 $O(2^{n-1})$ に対し時間 $O(n2^n)$、追加空間 $O(2^n)$。二分探索の対数を含む上界です。盤面の保存には別に $O(n^2)$ が必要です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long count_grid_xor_paths(const vector<vector<unsigned long long>>& a,
+                               unsigned long long target) {
+    int n = int(a.size());
+    if (n < 1 || n > 20) throw invalid_argument("size");
+    for (const auto& row : a) if (int(row.size()) != n) throw invalid_argument("square");
+    vector<vector<unsigned long long>> left(n), right(n);
+    auto dfs = [&](auto&& self, int r, int c, unsigned long long x, bool reverse) -> void {
+        x ^= a[r][c];
+        if (r + c == n - 1) { (reverse ? right[r] : left[r]).push_back(x); return; }
+        if (!reverse) {
+            if (r + 1 < n) self(self, r + 1, c, x, reverse);
+            if (c + 1 < n) self(self, r, c + 1, x, reverse);
+        } else {
+            if (r > 0) self(self, r - 1, c, x, reverse);
+            if (c > 0) self(self, r, c - 1, x, reverse);
+        }
+    };
+    dfs(dfs, 0, 0, 0, false);
+    dfs(dfs, n - 1, n - 1, 0, true);
+    long long answer = 0;
+    for (int r = 0; r < n; ++r) {
+        sort(right[r].begin(), right[r].end());
+        for (auto x : left[r]) {
+            auto need = target ^ x ^ a[r][n - 1 - r];
+            auto [begin, end] = equal_range(right[r].begin(), right[r].end(), need);
+            answer += end - begin;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [半分全列挙](/flowchartcp/techniques/meet-in-the-middle/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/abc271/tasks/abc271_f)
+
+<TechniqueReferences techniqueId="grid-xor-antidiagonal" />

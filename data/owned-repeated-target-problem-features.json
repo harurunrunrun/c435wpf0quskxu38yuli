@@ -1,0 +1,33 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2017_train",
+    "title": "Toy Train",
+    "url": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+    "techniqueIds": [
+      "buchi-owned-graph-repeated-target-attractor-elimination"
+    ],
+    "features": [
+      "有向グラフの各頂点の所有者が、初めて訪れたときに出辺を永久固定する。手番が交互になるとは限らない。",
+      "充電頂点を無限回訪れる側と、以後充電できなくする側の勝敗を、全開始点で求める。",
+      "全頂点に一本以上の出辺があり、頂点数は1〜5000、辺数は頂点数以上2万以下。充電頂点が一つ以上あり、自己ループを許し、同じ向きの重複辺はない。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2017-07-30",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "notes": "各頂点を所有する二人が初回訪問で出辺を永久固定し、周期に充電頂点を含むかで全開始点の勝敗を求める。目標へのA到達集合の外側と、そこへのB到達集合を反復除去する。残存側と各削除回の固定辺戦略を構成し、毎回選び直す反復目標ゲームと原典の永久固定規則を同じ勝敗へ帰着する。",
+    "discoveredBy": "ioi-2017",
+    "publicationDate": "2017-07-30",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

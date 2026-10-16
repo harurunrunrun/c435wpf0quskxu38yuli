@@ -1,0 +1,147 @@
+---
+title: "合計を範囲に収める部分集合を、重さの幅を使って一つ見つける"
+description: "許容範囲の幅が重さの最大差以上なら、ソート後の連続区間から元の添字を復元する。"
+techniqueId: bounded-spread-subset-sum-sorted-window-witness
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+正の重さから要素を一回ずつ選び、合計を閉区間 $[l,u]$ に収めたい。個数は自由で、一つの選び方を元の添字で返せばよい。
+
+一般の部分和では、合計値を状態にするDPが必要になることがある。しかし、
+
+$$u-l\ge \max_i w_i-\min_i w_i$$
+
+が保証されるなら、重さをソートして連続区間を探すだけでよい。合計の上限が約21億でも、上限の大きさに比例する配列を作らずに済む。
+
+## 考え方
+
+重さと元の添字を組にし、重さの昇順に並べる。部分集合の選択順には意味がないため、並べ替えても答えは失われない。
+
+ある解が $k$ 個からなると仮定する。最小の $k$ 個の和はその解の和以下、最大の $k$ 個の和はその解の和以上になる。長さ $k$ の連続区間を左から右へずらすと、この二つの和をつなげられる。
+
+一回の移動で捨てる重さと加える重さの差は、全体の最大差以下である。したがって和が $l$ をまたいでも、幅 $u-l$ を飛び越すことはない。元の任意部分集合解があれば、ソート後の連続区間にも解が存在する。
+
+$k$ を列挙する必要はない。右端を一つ進めて和へ足し、和が $u$ を超える間だけ左端を進める。和が $l$ 以上になったら、その区間に残る元の添字を返す。
+
+## 適用条件
+
+重さは正で、$1\le l\le u$、許容幅は重さの最大差以上とする。要素数や選択回数を固定する条件、選び方の個数、全ての到達和の列挙は扱わない。重複する重さも、元の添字が異なれば別の要素である。
+
+幅条件を外すと、連続区間だけでは不十分になる。重さ $[2,3,7]$、範囲 $[9,9]$ では $2+7$ が解だが、ソート後の連続区間には解がない。また、負の重さがあると、和が上限を超えた開始位置を将来も捨ててよいとは限らない。
+
+掲載APIは原典の全範囲を含む、$N\le200000$、重さと両端が $1$ 以上 $2^{31}-1$ 以下を扱う。空の入力も受け付け、解なしを返す。$l\ge1$ なので空部分集合は有効な解にならない。範囲外の値や幅条件の不足は、解なしとは区別して例外にする。
+
+## なぜ正しいか
+
+ソート後を $a_0\le\cdots\le a_{N-1}$ とする。任意の解の要素数を $k$ とすると、最小の $k$ 個の和は $u$ 以下、最大の $k$ 個の和は $l$ 以上である。
+
+長さ $k$ の窓の和を $S_j=\sum_{i=j}^{j+k-1}a_i$ と置くと、
+
+$$0\le S_{j+1}-S_j=a_{j+k}-a_j\le u-l.$$
+
+$S_0\ge l$ なら $S_0\le u$ と合わせて既に解である。そうでなければ、最後の窓までに初めて $l$ 以上になる窓がある。直前の和は $l$ 未満で、増分は $u-l$ 以下だから、その窓も $u$ 以下に収まる。これで連続区間解の存在が示せた。同じ重さだけで幅が0の場合も、この不等式に含まれる。
+
+次に二端点の走査を考える。現在の右端までの和が $u$ を超える開始位置は、正の要素を後から加えても上限超過のままである。したがって、その開始位置を捨てても将来の解を失わない。左端の調整後に残る和が $l$ 未満なら、それより短い同じ右端の区間も $l$ 未満である。和が範囲に入る区間があれば、いずれの右端でも取り逃さない。
+
+返す各添字は、ソート時に保存した異なる元の位置である。その重さの合計は見つけた窓の和と一致するため、元の入力に対する証拠になる。全ての右端を処理して見つからなければ連続区間解はなく、最初の補題から任意部分集合解もない。
+
+## 計算量
+
+検査と並べ替えが $O(N\log N)$、二端点の走査と復元が $O(N)$ 時間で、全体は $O(N\log N)$。左右の端点はそれぞれ高々 $N$ 回しか進まない。空の入力は定数時間で終わる。
+
+重さと添字の配列、返す添字列に $O(N)$ 空間、ソートの呼び出し履歴に $O(\log N)$ 空間を使う。入力の和の一般的な上界は $200000(2^{31}-1)=429496729400000$。掲載走査では、加算直前の和が $u$ 以下なので、加算直後も $2(2^{31}-1)$ 以下である。それでも32ビット符号付き整数を超え得るため、和は64ビットで計算する。
+
+## 実装
+
+`subset_window::find_subset_in_range(l, u, weights)` は元の0始まり添字列を返す。解がなければ `std::nullopt`。入力を変更せず、同じ重さの順序だけは元の添字で決める。要素型は64ビット以下の符号付き整数を使える。入力の値・個数・幅条件が契約外なら `std::invalid_argument`、領域確保に失敗した場合はその例外をそのまま返す。呼び出し間で状態を共有しない。
+
+末尾の `solve` と `find_subset` は、同じ本体を使い、解なしを空配列へ変える入口である。配列を `std::vector<int>` に対応させる原典の実装上の注意に従っている。使用する配布版に合わせ、必要な関数名を提出する。
+
+```cpp
+#include <algorithm>
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <optional>
+#include <span>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace subset_window {
+inline constexpr std::size_t max_count = 200000;
+inline constexpr std::int64_t max_value = 2147483647;
+
+template<std::signed_integral Weight>
+    requires (sizeof(Weight) <= sizeof(std::int64_t))
+std::optional<std::vector<int>> find_subset_in_range(
+    std::int64_t lower, std::int64_t upper,
+    std::span<const Weight> weights) {
+    if (weights.size() > max_count || lower < 1 || lower > upper
+        || upper > max_value)
+        throw std::invalid_argument("invalid size or range");
+    if (weights.empty()) return std::nullopt;
+
+    std::int64_t smallest = max_value, largest = 0;
+    for (Weight value : weights) {
+        const std::int64_t x = value;
+        if (x < 1 || x > max_value)
+            throw std::invalid_argument("invalid positive weight");
+        smallest = std::min(smallest, x);
+        largest = std::max(largest, x);
+    }
+    if (upper - lower < largest - smallest)
+        throw std::invalid_argument("range is narrower than weight spread");
+
+    std::vector<std::pair<std::int64_t, int>> sorted;
+    sorted.reserve(weights.size());
+    for (std::size_t i = 0; i < weights.size(); ++i)
+        sorted.emplace_back(weights[i], static_cast<int>(i));
+    std::sort(sorted.begin(), sorted.end());
+
+    std::int64_t sum = 0;
+    std::size_t left = 0;
+    for (std::size_t right = 0; right < sorted.size(); ++right) {
+        sum += sorted[right].first;
+        while (left <= right && sum > upper)
+            sum -= sorted[left++].first;
+        if (sum >= lower) {
+            std::vector<int> answer;
+            answer.reserve(right - left + 1);
+            for (std::size_t i = left; i <= right; ++i)
+                answer.push_back(sorted[i].second);
+            return answer;
+        }
+    }
+    return std::nullopt;
+}
+} // namespace subset_window
+
+std::vector<int> solve(int l, int u, std::vector<int> w) {
+    auto answer = subset_window::find_subset_in_range(
+        l, u, std::span<const int>(w));
+    return answer ? std::move(*answer) : std::vector<int>{};
+}
+
+std::vector<int> find_subset(int l, int u, std::vector<int> w) {
+    auto answer = subset_window::find_subset_in_range(
+        l, u, std::span<const int>(w));
+    return answer ? std::move(*answer) : std::vector<int>{};
+}
+```
+
+## 関連する手法
+
+[尺取り法](/flowchartcp/techniques/two-pointers/) は、連続区間へ移せた後の探索に使う。[ナップサックDP](/flowchartcp/techniques/knapsack/) や [部分和のビット列](/flowchartcp/techniques/knapsack-bitset-shift/) は、和の値域が小さい場合に別の条件でも使える。この技巧では、幅の保証が連続区間への変換を可能にする。
+
+## 参考資料
+
+- [日本委員会配布の英語原典：Detecting Molecules](https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf) — 正の重さ、幅の保証、元添字を返す契約、全数値範囲。
+- [公式アーカイブ配布の原典](https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf) — `find_subset` を入口とする配布版。
+- [公式解説：Detecting Molecules、第1〜2頁](https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf) — ソート後の連続区間を探す二番目の貪欲法。
+- [競技日1の実装上の注意](https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf) — C++の配列型、時間1秒・メモリ2GB、標準入出力を使わない関数形式。
+- [日本委員会の公式課題一覧](https://www2.ioi-jp.org/ioi/2016/tasks/index.html) — 競技日1は2016年8月14日。
+
+<TechniqueReferences techniqueId="bounded-spread-subset-sum-sorted-window-witness" />

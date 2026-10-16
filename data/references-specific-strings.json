@@ -1,0 +1,170 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "432D",
+    "url": "https://codeforces.com/problemset/problem/432/D",
+    "editorialUrl": "https://codeforces.com/blog/entry/12310",
+    "evidence": "公式解説は prefix function の一致先を親にした木で出現回数を集約し、全体の接尾辞にもなる接頭辞を列挙している。",
+    "verification": "editorial",
+    "difficulty": "2000",
+    "techniqueId": "prefix-border-occurrences",
+    "title": "Prefixes and Suffixes"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1733",
+    "url": "https://cses.fi/problemset/task/1733/",
+    "editorialUrl": "https://cses.fi/problemset/task/1733/",
+    "evidence": "原典は最後の反復が途中で切れることを許す周期を全て列挙する。長さ N-p の接頭辞と接尾辞の一致へ変換し、全ての p を直接検査するモデルと比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "period-from-border",
+    "title": "Finding Periods"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1753",
+    "url": "https://cses.fi/problemset/task/1753/",
+    "editorialUrl": "https://cses.fi/problemset/task/1753/",
+    "evidence": "一つのパターンの全出現位置を数える原典を確認。パターン・専用区切り・本文を連結した Z 配列を使い、直接比較による全開始位置の判定と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "z-concatenate-boundary",
+    "title": "String Matching"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2105",
+    "url": "https://cses.fi/problemset/task/2105/",
+    "editorialUrl": "https://cses.fi/problemset/task/2105/",
+    "evidence": "異なる非空部分文字列の個数という原典の条件を確認。辞書順の各接尾辞で前の接尾辞との LCP 分を除く式を導出し、全部分文字列の集合と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "lcp-distinct-substrings",
+    "title": "Distinct Substrings"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2106",
+    "url": "https://cses.fi/problemset/task/2106/",
+    "editorialUrl": "https://cses.fi/problemset/task/2106/",
+    "evidence": "2 箇所以上に現れる最長部分文字列という原典を確認。重なった出現も許される。隣接接尾辞の LCP 最大値を使う K=2 の場合を全探索と比較し、K 回への一般化も検証した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "lcp-repeated-substring",
+    "title": "Repeating Substring"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "835D",
+    "url": "https://codeforces.com/problemset/problem/835/D",
+    "editorialUrl": "https://codeforces.com/problemset/problem/835/D",
+    "evidence": "全区間の回文次数を数える原典を確認。次数の土台となる静的な回文判定を、区間の中心と Manacher 半径の比較に置き換えられる。全区間の文字比較と照合した。次数の計算は別途必要。",
+    "verification": "independent-analysis",
+    "difficulty": "1900",
+    "techniqueId": "palindrome-radius-range",
+    "title": "Palindromic characteristics"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "835D",
+    "url": "https://codeforces.com/problemset/problem/835/D",
+    "editorialUrl": "https://codeforces.com/problemset/problem/835/D",
+    "evidence": "原典の k=1 は非空回文の出現位置ごとの総数で、同内容でも出現が異なれば別に数える。各中心の半径の和でこの部分を数えられることを、全区間の列挙と比較した。k>1 の次数計算は別途必要。",
+    "verification": "independent-analysis",
+    "difficulty": "1900",
+    "techniqueId": "palindrome-center-contribution",
+    "title": "Palindromic characteristics"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1112",
+    "url": "https://cses.fi/problemset/task/1112/",
+    "editorialUrl": "https://cses.fi/problemset/task/1112/",
+    "evidence": "指定語を部分文字列として含む長さ N の A-Z 列を数える原典を確認。全体から禁止語を避ける列を引く方針で、末尾とパターンの最長接頭辞一致を状態とする計数を小さいアルファベットの全列挙と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "automaton-forbidden-dp",
+    "title": "Required Substring"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2103",
+    "url": "https://cses.fi/problemset/task/2103/",
+    "editorialUrl": "https://cses.fi/problemset/task/2103/",
+    "evidence": "本文と総長の大きい多数のパターンについて各出現回数を求める原典を確認。各文字で全ての末尾一致を列挙せず、訪問回数を failure link の逆順で集約する実装を独立に導出し、各パターンの直接照合と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "aho-failure-aggregation",
+    "title": "Counting Patterns"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "wildcard_pattern_matching",
+    "url": "https://judge.yosupo.jp/problem/wildcard_pattern_matching",
+    "editorialUrl": "https://judge.yosupo.jp/problem/wildcard_pattern_matching",
+    "evidence": "原典は両文字列に 1 文字と一致する * を許し、全ての開始位置で一致を判定する。ABC307 の公式解説にある xy(x-y)^2 の展開を適用し、2 法で零を判定する実装を直接照合と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "wildcard-convolution",
+    "title": "Wildcard Pattern Matching"
+  },
+  {
+    "techniqueId": "wildcard-convolution",
+    "source": "AtCoder",
+    "problemId": "abc307_h",
+    "title": "Marquee",
+    "url": "https://atcoder.jp/contests/abc307/tasks/abc307_h",
+    "editorialUrl": "https://atcoder.jp/contests/abc307/editorial/6666",
+    "evidence": "公式解説で一致時だけ 0 になる多項式を展開し、ずらしたパターンの一致を三つの畳み込みで求めている。本文にワイルドカードがない制約では、より小さい非負の式も使える。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "source": "CSES",
+    "problemId": "1110",
+    "url": "https://cses.fi/problemset/task/1110/",
+    "editorialUrl": "https://cses.fi/problemset/task/1110/",
+    "evidence": "辞書順最小の巡回シフトを求める原典を確認。二つの候補の最初の不一致から負ける開始位置の範囲をまとめて除く実装を、全回転の直接比較と照合した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "rotation-minimum",
+    "title": "Minimal Rotation"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc138_e",
+    "url": "https://atcoder.jp/contests/abc138/tasks/abc138_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc138/tasks/abc138_e",
+    "evidence": "原典は s の繰り返し列の最短接頭辞に t を部分列として含む条件。各文字を最早位置に合わせ、末尾を超えたら次の反復へ移る方法を、短い反復列を直接読むモデルと比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "techniqueId": "substring-subsequence-next",
+    "title": "Strings of Impurity"
+  },
+  {
+    "techniqueId": "palindrome-recursive-degree",
+    "source": "Codeforces",
+    "problemId": "835D",
+    "title": "Palindromic characteristics",
+    "url": "https://codeforces.com/problemset/problem/835/D",
+    "editorialUrl": "https://codeforces.com/problemset/problem/835/D",
+    "evidence": "原典は左右の非空な floor(L/2) 文字が同じ k-1 次回文であるという再帰条件を持つ。通常回文なら左半分の次数に1を足す式へ変形し、次数を通常回文の判定にも使う長さ順DPを再帰的な定義の全区間計数と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": "1900"
+  },
+  {
+    "techniqueId": "word-boundary-comma-closure",
+    "source": "ICPC",
+    "problemId": "wf2018_b",
+    "title": "Comma Sprinkler",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+    "evidence": "同じ語の前・後の読点を全文の同じ側へ反復して追加し、文頭・文末は除く。語ごとに前後の二状態を分け、同じ文の隣接二語の前語後状態と後語前状態を無向辺で結ぶ。既存読点の両端から到達する状態を求めれば、規則の反復が作る最小不動点と一致する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-04-19",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "原典3〜4頁の全規則・全文法・長さ2..1000000を2026-10-15に再読。英小文字の非空語、語から開始、語間は空白一つ/読点と空白/句点と空白、末尾語は句点で終了し後続なし。原典の全範囲を掲載APIが含み、語・句点・空白を保持し読点追加だけを行う。非公式sketch2頁の前後二頂点を参照し、一語前後の区別、辺の双方向伝播、既存読点からの到達性と合法規則の対応、最小不動点と適用順独立を独立に証明した。sketchは公式ドメイン掲載だが自身がunofficial analysisと明記するため公式解説とは扱わない。実MDX単一可視C++20を抽出し、全134117小文章の規則反復と全閉包配置列挙、全文字列87381件の独立宣言文法、5000乱択、原典最大100万文字の長語/50万語/出力1499997字/9万辺伝播/20万種類40万状態を検証。通常/ASan+UBSanとも1051695 checks、checksum10870040000863900980。競技日2018-04-19はICPC公式ニュースで確認、難度null。"
+  }
+]

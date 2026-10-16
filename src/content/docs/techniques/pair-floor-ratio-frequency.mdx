@@ -1,0 +1,119 @@
+---
+title: "全ての二数の商の床を足すなら、分母ごとに商が同じ値域をまとめる"
+description: "正整数の頻度と累積個数から、同じ商になる区間を数え、同値の添字対を別に加える。"
+techniqueId: pair-floor-ratio-frequency
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+正整数の列 $A$ から異なる二つの添字を選び、
+
+$$
+\sum_{i<j}\left\lfloor\frac{\max(A_i,A_j)}{\min(A_i,A_j)}\right\rfloor
+$$
+
+を求めたい。要素数は大きいが、値の最大値 $V$ までなら個数の配列を持てる場合に使う。
+
+同じ値が何度も現れるため、分母にする**値ごとに一度だけ**計算する。各要素ごとに同じ倍数を走査し直さないことが、計算量を落とす要点になる。
+
+## 考え方
+
+値 $x$ の出現数を $f_x$、値 $y$ 以下の出現数を $P(y)$ とする。
+
+異なる値 $x<y$ については、小さい方の $x$ を分母と決める。商が $q$ になる $y$ の範囲は
+
+$$
+qx\le y\le(q+1)x-1
+$$
+
+なので、その範囲の個数を累積個数の差から求め、$f_xq$ を掛けて加える。端点が $V$ を超えた部分は切り詰める。
+
+$q=1$ の範囲は $x$ 自身も含む。異なる値の組だけをここで数えるため、$f_x$ を引く。同じ値同士の組は別に $\binom{f_x}{2}$ 個あり、商は全て1である。
+
+例えば値 $x=3$ を分母にすると、4・5の個数には1、6・7・8の個数には2、9・10・11の個数には3を掛ける。値3同士は、添字が異なる組を一度だけ数える。
+
+## 適用条件
+
+- 全ての値が正で、分母に0を使わない。
+- 全ての添字対が対象で、添字の距離・順序による追加条件がない。
+- 同じ値の異なる添字は、別の要素として組を作る。
+- 値域 $1..V$ の頻度と累積個数を保存でき、$V\log V$ 程度の走査が許される。
+
+負数では商の区間と大小の対応が変わる。値が $10^{18}$ まで散らばる入力では、要素数が小さくてもこの配列や倍数走査をそのまま使えない。座標圧縮して添字を小さくしても、元の値の倍数関係までは保存されない。
+
+## なぜ正しいか
+
+値の異なる任意の添字対を取ると、その小さい値 $x$ と商 $q=\lfloor y/x\rfloor$ は一意に決まる。対応する区間は $[qx,(q+1)x-1]$ であり、区間同士は重ならず、$x$ より大きい全ての値を覆う。
+
+その区間にある要素の個数と $f_x$ の積は、分母の値が $x$ で、商が $q$ になる全ての添字対の個数である。従って $q$ を掛けた寄与を一度ずつ加えられる。
+
+値が等しい対は区間集計から除き、$f_x$ 個から異なる二つを選ぶ $\binom{f_x}{2}$ 個を加える。異なる値の対とも重ならないため、全ての対を過不足なく数える。
+
+## 計算量
+
+全ての対を直接調べると $O(N^2)$ 時間。頻度と累積個数の前計算は $O(N+V)$ 時間である。
+
+値 $x$ の走査回数は $\lfloor V/x\rfloor$。出現しない値を省略し、出現する値を一度だけ走査すると、全体は
+
+$$
+O\left(N+V+\sum_{x:f_x>0}\left\lfloor V/x\right\rfloor\right)
+\subseteq O(N+V\log(V+1))
+$$
+
+時間、$O(V)$ 追加空間になる。重複が多くても、同じ $x$ の区間を要素数だけ繰り返さない。
+
+## 実装
+
+`sum_floor_pair_ratios(values)` は各添字対の寄与の和を返す。要素数は200000以下、各値は $1..1000000$。空列と1要素の列は0になる。要素数超過は `length_error`、範囲外の値は `invalid_argument` とする。
+
+答えは $\binom{N}{2}V$ 以下なので、この入力範囲では符号付き64ビット整数に収まる。区間端点の加算も最大 $2V$ 以下である。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long sum_floor_pair_ratios(const vector<int>& values) {
+    if (values.size() > 200000)
+        throw length_error("too many values");
+    int maximum = 0;
+    for (int value : values) {
+        if (value < 1 || value > 1000000)
+            throw invalid_argument("require 1 <= value <= 10^6");
+        maximum = max(maximum, value);
+    }
+    vector<long long> frequency(maximum + 1), prefix(maximum + 1);
+    for (int value : values) ++frequency[value];
+    for (int value = 1; value <= maximum; ++value)
+        prefix[value] = prefix[value - 1] + frequency[value];
+
+    long long answer = 0;
+    for (int denominator = 1; denominator <= maximum; ++denominator) {
+        long long copies = frequency[denominator];
+        if (copies == 0) continue;
+        answer += copies * (copies - 1) / 2;
+        int quotient = 1;
+        for (int low = denominator; low <= maximum;
+             low += denominator, ++quotient) {
+            int high = min(maximum, low + denominator - 1);
+            long long count = prefix[high] - prefix[low - 1];
+            if (quotient == 1) count -= copies;
+            answer += copies * quotient * count;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [商が同じ区間をまとめる](/flowchartcp/techniques/quotient-blocks/)：分子を固定して分母を動かす場合。固定する側が異なる。
+- [約数ごとの集計を倍数側から配る](/flowchartcp/techniques/divisor-multiple-reversal/)：値域全体の走査を、倍数に沿う回数の和として評価する。
+- [各要素の寄与に分ける](/flowchartcp/techniques/contribution/)：添字対を、その小さい値の担当へ分けて数える。
+
+## 参考資料
+
+- [AtCoder ABC356 E：Max/Min](https://atcoder.jp/contests/abc356/tasks/abc356_e) — 全ての二数について、大きい値を小さい値で割った商の床を足す原典。
+- [AtCoder ABC356 E公式解説](https://atcoder.jp/contests/abc356/editorial/10116) — 商ごとの値域と累積個数で寄与をまとめる考え方。
+
+<TechniqueReferences techniqueId="pair-floor-ratio-frequency" />

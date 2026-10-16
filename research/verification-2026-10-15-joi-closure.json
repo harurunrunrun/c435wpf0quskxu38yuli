@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "JOI2020春合宿の初回監査からBuilding4・Chameleon・Capital City・Dango2の具体技巧を解消",
+  "counts": {
+    "specificTechniques": 384,
+    "foundationArticles": 78,
+    "allArticles": 462,
+    "exampleMappings": 483,
+    "originalUrls": 445,
+    "graphs": 427,
+    "nodes": 3430,
+    "questions": 1550,
+    "answerEdges": 5045,
+    "verifiedWalks": 479,
+    "pendingWalks": 4
+  },
+  "verified": [
+    "実MDXから4実装を抽出して厳格C++20コンパイル・独立oracle照合。既存の未変更C++群は重複実行しない。",
+    "二択列は597871全三値入力対・全使用数の全選択列、12000乱択、100万位置とsigned64境界で比較。",
+    "色数質問は138984全例・1344乱択・公式変換112例。独立レビューが別に2022モデル、集合質問1639692件、三頂点44892件を直接評価。保証19000質問、最大観測17734。",
+    "木の色併合は331956全小木/色割当、6000乱択、公式3例、不正13例、20万頂点8構造。別担当が3追加小例と証明/CSR/Tarjanをレビュー。",
+    "格子三マスは20932盤面、61877候補部分集合、464028変更/復元、全コピー独立探索と最良解差分保存を照合。作成担当がASan/UBSan、独立担当が構造とAPIをレビュー。",
+    "全分岐・配置・旧履歴・台帳・監査の31テスト群PASS。専任担当の4技巧13条件・原典・共有・履歴保存の6テストもPASS。",
+    "新規登録前の479歩行は手順・到達ノード変更0。Building4の初回unconfirmedを残し、subsequentSolutionReviewsで後続独立証明を記録。",
+    "npm run build:local は462記事・483対応・427図で成功。新4記事の日英/全角検索20件・数式・使用例・出典・カタログを照合。",
+    "427 SVGの同一性と図専用ページ、5045回答ラベル、404旧URLの再生を照合。代表の木の色併合SVGを画像化して目視確認。",
+    "npm run verify:local は1325 HTML/SVGの27291内部リンク/資産を確認。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 30,
+    "fixedCorpusSolutionsReviewed": 26,
+    "publishedExamplesSolutionsReviewed": 443,
+    "allDistinctSolutionsReviewed": 457,
+    "joiCurrentSolutionsReviewed": "9/12",
+    "joiCovered": "4/12",
+    "remainingKnownGaps": 19
+  },
+  "testHarnessFix": "Chameleon checkerは構造化JSONを返すため、NodeラッパーのPASS文字列期待をstatus=passed・比較件数・19000上界の確認へ修正。未変更の他3比較は既にPASSし、修正後は該当サブテストだけ再実行してPASS。",
+  "limitations": [
+    "世界全体の問題母数は未確定で網羅未完了。",
+    "JOIのHamburg/Stray/Treatmentは主要補題未確認。元の初回監査の記録は保持。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザの検証は未完了。環境上の失敗後、再試行していない。",
+    "外部リンクの全件生存確認は実施していない。内部資産検査とは区別する。",
+    "push・アップロード・公開は実施していない。"
+  ],
+  "inProgress": [
+    "directed-reciprocal-closure-dsu-small-to-large",
+    "interval-stabbing-endpoint-contraction-dsu",
+    "paired-height-survivors-weighted-dyck-dp"
+  ]
+}

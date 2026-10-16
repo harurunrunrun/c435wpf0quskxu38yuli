@@ -1,0 +1,170 @@
+---
+title: "必ず組ませる頂点を、流量の下限にして満たす"
+description: "任意の頂点を未使用にできる対応でも、指定された頂点だけは確実に一組へ入れる。"
+techniqueId: mandatory-matching-lower-bounds
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+左右から一つずつ選ぶ対応があり、各対象は一度まで使える。一部の対象は必ず使うが、残りは使わなくてもよい。最大の組数が必須頂点数以上でも、必要な頂点を使った保証にはならない。
+
+## 考え方
+
+左頂点への入口 $s\to a$ と右頂点からの出口 $b\to t$ を上限1にする。必須頂点についてだけ下限も1にする。候補の組 $a\to b$ は下限0、上限1。組数を指定しないので $t\to s$ に上限 $\min(L,R)$ の戻り辺を足し、循環にする。
+
+辺 $u\to v$ の下限 $\ell$ を先に流したことにし、残る容量を $r-\ell$ にする。始端の balance から下限を引き、終端の balance に足す。正の頂点には補助始点から、負の頂点からは補助終点へ、その絶対値の容量を張る。補助始点から出る容量をすべて流せればよい。元の流量は下限と残りで流した量の和で復元する。
+
+## 適用条件
+
+候補は二部グラフで、各頂点の使用は高々1。格子の隣接組なら、市松模様の異なる色を結ぶ。組禁止のマスは候補から外す。
+
+循環関数は非負整数の上下限を扱う。頂点番号・配列の長さは正しく与え、全容量と全下限の総和を $10^{15}$ 以下にする。循環の存在判定と、下限を満たす最大 $s$-$t$ 流の値の計算は別の処理である。ここでは最大値を返さない。
+
+## なぜ正しいか
+
+整数循環では候補辺の流量は0か1。入口・出口の上限で端点は重複せず、下限1の必須頂点は使われる。逆に合法な対応は、選んだ組へ1、組数だけ戻り辺へ流すと循環になる。
+
+下限を引いた後、頂点 $v$ の不足する正味流出量は balance の値になる。補助辺を全部流した保存則が、この不足をちょうど打ち消す。よって補助流量の充足と元の循環の存在は同値。
+
+## 計算量
+
+候補の組の部分集合を試す方法は指数時間。変換後を $V$ 頂点、$E$ 辺とすると、掲載する非再帰のDinic法は一般容量で $O(V^2E)$ 時間、$O(V+E)$ 空間。この上界は下限の補助辺も含む。通常の二部マッチングとは容量構成が異なる。
+
+## 実装
+
+mandatory_matching は対応を一つ返し、不可能なら nullopt。組数を最大にする仕様ではない。feasible_circulation は各入力辺の流量を返す。分岐探索に明示的な配列を使い、再帰の深さに依存しない。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+#include <optional>
+struct BoundedEdge { int from,to; long long lower,upper; };
+std::optional<std::vector<long long>> feasible_circulation(
+    int n,const std::vector<BoundedEdge>& edges) {
+    int ss=n,tt=n+1; FlowNetwork g(n+2);
+    std::vector<long long> balance(n); std::vector<int> ids;
+    for(auto e:edges) {
+        if(e.lower<0 || e.upper<e.lower) return std::nullopt;
+        ids.push_back(g.add(e.from,e.to,e.upper-e.lower));
+        balance[e.from]-=e.lower; balance[e.to]+=e.lower;
+    }
+    long long required=0;
+    for(int v=0;v<n;++v) {
+        if(balance[v]>0) { g.add(ss,v,balance[v]); required+=balance[v]; }
+        if(balance[v]<0) g.add(v,tt,-balance[v]);
+    }
+    if(g.flow(ss,tt,required)!=required) return std::nullopt;
+    std::vector<long long> result;
+    for(int i=0;i<int(edges.size());++i)
+        result.push_back(edges[i].lower+g.used(ids[i]));
+    return result;
+}
+std::optional<std::vector<std::pair<int,int>>> mandatory_matching(
+    int left,int right,const std::vector<std::pair<int,int>>& candidates,
+    const std::vector<bool>& required_left,const std::vector<bool>& required_right) {
+    int s=left+right,t=s+1; std::vector<BoundedEdge> e;
+    for(int v=0;v<left;++v) e.push_back({s,v,required_left[v]?1:0,1});
+    for(int v=0;v<right;++v) e.push_back({left+v,t,required_right[v]?1:0,1});
+    int first=e.size();
+    for(auto [a,b]:candidates) e.push_back({a,left+b,0,1});
+    e.push_back({t,s,0,std::min(left,right)});
+    auto f=feasible_circulation(t+1,e);
+    if(!f) return std::nullopt;
+    std::vector<std::pair<int,int>> answer;
+    for(int i=0;i<int(candidates.size());++i)
+        if((*f)[first+i]) answer.push_back(candidates[i]);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[二部マッチング](/flowchartcp/techniques/matching/) ・ [流量下限付きフロー](/flowchartcp/techniques/lower-bound-flow/)
+
+## 参考資料
+
+- [AtCoder：Tatami（原典）](https://atcoder.jp/contests/abc285/tasks/abc285_g)
+- [公式解説](https://atcoder.jp/contests/abc285/editorial/5500)
+
+<TechniqueReferences techniqueId="mandatory-matching-lower-bounds" />

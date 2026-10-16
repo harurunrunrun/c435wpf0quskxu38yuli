@@ -1,0 +1,122 @@
+---
+title: "行ごとに拾える個数が限られる格子DPは、下へ進むと個数を戻す"
+description: "現在の行で拾った個数だけを状態に持ち、行を移るときに前の行の個数をまとめて捨てる。"
+techniqueId: grid-row-pick-reset
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+格子の左上から右下まで、右か下へ一マスずつ進む。通ったマスの品物は拾っても拾わなくてもよいが、同じ行では高々 $Q$ 個しか拾えない。拾った価値の合計を最大にしたい。
+
+過去に拾った品物を全て覚える必要はない。行を出るとその行には戻らないので、将来の選択に影響する個数は、現在の行で使った分だけである。$Q$ が小さければ、この個数を加えても状態数を抑えられる。
+
+## 考え方
+
+$dp[i][j][k]$ を、マス $(i,j)$ の品物を拾うかどうかまで決め、現在の行でちょうど $k$ 個拾ったときの最大価値とする。到達できない状態は負の無限大にする。
+
+まず、現在のマスの品物を処理する前の状態 $b[k]$ を作る。
+
+- 左から来ると、同じ行で拾った個数 $k$ を引き継ぐ。
+- 上から来ると、前の行の個数はもう必要ない。上のマスの全状態の最大値を取り、現在の行の個数 $0$ に入れる。
+- 始点では、まだ何も拾っていない状態 $b[0]=0$ を加える。
+
+マスの価値を $v$ とすると、拾わない遷移と拾う遷移は
+
+$$
+dp[i][j][k]=\max\bigl(b[k],\ b[k-1]+v\bigr)
+$$
+
+となる。第2項は $1\le k\le Q$ で、$b[k-1]$ に到達できる場合だけ使う。
+
+拾う前の配列 $b$ と、拾った後の配列を分けるのが安全である。拾った後の小さい $k$ から同じ配列を更新すると、現在のマスを何度も拾う遷移が混ざってしまう。
+
+行を上から、列を左から処理すれば、上のマスの状態は列ごとの配列、左のマスの状態は一つの配列で持てる。上から来る候補を取り出してから、その列を現在の状態で上書きする。
+
+## 適用条件
+
+行の制限が「その行で拾った個数が高々 $Q$ 個」であり、行を出た後の制約にその個数が影響しないことが必要である。移動は右と下だけで、品物の選択は各マスで一度だけ行う。
+
+全行を通して高々 $Q$ 個なら、下へ進んでも個数を戻してはいけない。列ごとの個数制限も同時にある場合は、行の個数だけでは足りない。上へ戻れる場合も、過去の行の使用数を捨てられない。
+
+各行で「ちょうど $Q$ 個」必要なら、行を出る候補を $k=Q$ に限定するなどの変更が要る。行ごとに上限が異なる場合は、その行の上限までの状態を使えばよいが、掲載実装は全行に同じ上限を適用する。
+
+## なぜ正しいか
+
+右か下へ進む経路では、各行で訪れるマスは一つの連続区間になり、一度その行を出ると戻らない。従って同じマス・同じ現在行の使用個数に到達した二つの経路は、以後に選べる移動と品物が等しい。価値の大きい方だけを残してよい。
+
+現在のマスへの最後の移動は、左からか上からのいずれかである。左からなら使用個数が変わらず、上からなら新しい行でまだ何も拾っていない。この二つと始点の初期状態で、到着直後の全ての状態を尽くす。
+
+到着後は、現在の品物を拾わないか、一度拾うかの二通りしかない。拾う前の配列からだけ遷移させ、個数が上限を超えない候補を残すので、合法な選択を漏らさず、同じ品物を重ねて選ぶこともない。走査順にこの性質が保たれ、終点の全使用個数の最大値が答えになる。
+
+## 計算量
+
+各行で拾う位置の組を直接列挙する方法では、$Q=3$ でも一行につき最大 $\Theta(W^3)$ 組ある。個数を状態に加えると、一マスあたり $O(Q+1)$ 時間で処理でき、全体は $O(HW(Q+1))$ 時間になる。
+
+補助空間は $O(W(Q+1))$。掲載実装は $0\le Q\le3$ に合わせて各列に4状態を確保する。入力盤面の $O(HW)$ 空間は含めない。幅0の盤面では、全行の形を検査する $O(H)$ 時間が必要になる。
+
+## 実装
+
+高さと幅はそれぞれ $3000$ 以下、各マスの価値は $0$ 以上 $10^9$ 以下、`quota` は $0$ 以上 $3$ 以下とする。値0は品物なしとしてよい。価値0の品物を任意に拾えると解釈しても、最大価値は変わらない。
+
+空の盤面や、全行が空で幅0の盤面は $0$ を返す。非矩形、価値の範囲外、寸法の上限超過、不正な上限個数は全て `invalid_argument` とする。最大でも一行につき3個、3000行で $9\times10^{12}$ なので、答えは `long long` に収まる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long maximum_grid_value_row_quota(
+    const vector<vector<long long>>& values, int quota = 3) {
+    if (quota < 0 || quota > 3)
+        throw invalid_argument("quota must be between 0 and 3");
+    if (values.size() > 3000)
+        throw invalid_argument("height exceeds 3000");
+    if (values.empty()) return 0;
+    const size_t width = values.front().size();
+    if (width > 3000) throw invalid_argument("width exceeds 3000");
+    for (const auto& row : values) {
+        if (row.size() != width)
+            throw invalid_argument("nonrectangular grid");
+        for (long long value : row)
+            if (value < 0 || value > 1000000000LL)
+                throw invalid_argument("value outside supported range");
+    }
+    if (width == 0) return 0;
+
+    constexpr long long NEG = numeric_limits<long long>::lowest() / 4;
+    array<long long, 4> empty;
+    empty.fill(NEG);
+    vector<array<long long, 4>> above(width, empty);
+    array<long long, 4> left = empty;
+    for (size_t i = 0; i < values.size(); ++i) {
+        left = empty;
+        for (size_t j = 0; j < width; ++j) {
+            array<long long, 4> before = left;
+            const long long from_above = *max_element(
+                above[j].begin(), above[j].begin() + quota + 1);
+            before[0] = max(before[0], from_above);
+            if (i == 0 && j == 0) before[0] = 0;
+
+            auto after = before;
+            for (int used = 0; used < quota; ++used)
+                if (before[used] != NEG)
+                    after[used + 1] = max(after[used + 1],
+                        before[used] + values[i][j]);
+            above[j] = after;
+            left = after;
+        }
+    }
+    return *max_element(left.begin(), left.begin() + quota + 1);
+}
+```
+
+## 関連する手法
+
+[将来の選択を区別できる状態を設計する](/flowchartcp/techniques/state-design/) ・ [DPの前後の層だけを持つ](/flowchartcp/techniques/dp-dimension-rolling/) ・ [壁まで何マスでも進める格子の経路数は、方向別の累積和を壁で切る](/flowchartcp/techniques/grid-ray-direction-prefix/)
+
+## 参考資料
+
+- [AtCoder ABC175 E：Picking Goods](https://atcoder.jp/contests/abc175/tasks/abc175_e)
+- [ABC175 E 公式解説：行の個数を状態に加え、下へ進むと戻す](https://atcoder.jp/contests/abc175/editorial/75)
+
+<TechniqueReferences techniqueId="grid-row-pick-reset" />

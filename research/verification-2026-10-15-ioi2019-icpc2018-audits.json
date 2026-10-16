@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "技巧照合前に固定したIOI2019全6題とICPC2018 World Finals全11題の初回監査",
+  "articleCounts": {
+    "specific": 397,
+    "foundation": 78,
+    "total": 475,
+    "mappings": 496,
+    "originalUrls": 458,
+    "graphs": 442
+  },
+  "corpora": [
+    {
+      "id": "ioi-2019",
+      "initialResearchComplete": false,
+      "solutionReviewed": 3,
+      "recordCount": 6,
+      "flowSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181",
+      "techniqueSha256": "d37e0dd7a9ba814ecc61f4c5ac2bc1165dfe3f61deaf689e3a7c92d0210e1d40",
+      "auditSha256": "d3db36598d06438fcdd60d5a94cff99798f61d7fe15e05bdb00b289b81dca8fd"
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "initialResearchComplete": false,
+      "solutionReviewed": 9,
+      "recordCount": 11,
+      "flowSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181",
+      "techniqueSha256": "7b86efb4381ef4b36d502aa773d0c6cf372fde9927f18d9cb54001548d81706f",
+      "auditSha256": "a2ce39ca2c19e6cc48150465d100f551f9ffecff7cde1a7c3b404d8966e35007"
+    }
+  ],
+  "verification": [
+    "IOI2019は公式全6題を先に固定し、競技日2019-08-06/08を原典一覧で確認。原典6・公式Review取得6、主要解法確認3、具体技巧不足3と主要細部未確認3、covered0を区別。原典の数値上限は初回すべて未確認と保持。",
+    "ICPC2018は公式冊子A〜Kの全11題を先に固定。競技日2018-04-19を公式ニュースとbrochureで確認。公開sketchのunofficial disclaimerを維持し、原典11・主要解法9、具体技巧不足9と主要証明未確認2、covered0を記録。",
+    "初回監査完了をfirstPassAuditComplete、全解法主要補題確認完了をfixedCorpusResearchCompleteとして分離し、両新規群とも後者をfalseとした。",
+    "開始時472記事439図の分岐・技巧metadataをraw bytes hash付きgzipに保存。元594/1047ファイルのSHA台帳も保持。MDX全472本の作業時点コピーは一時領域で照合し、恒久snapshotは分岐とmetadataに限定する。",
+    "製品の歩行処理を使わず、保存した分岐JSONから全17経路、回答ラベル、最初の不足ノード・選択肢を再生。元の一般記事へ到達することと、具体技巧が完成していることを別に検証。",
+    "ICPC2018Cは到達した一般記事mincost/resultと、分岐を足す提案位置cost/questionを分離し、混在した初回候補を修正して全11停止位置を照合。",
+    "IOI2019研究probeを実行し、Split全27474小連結グラフ/81610指定サイズ、Vision全42140二画素/K、Shoes全5340整合列を独立oracleと比較。C++再利用記事・最大規模検証の完成とは扱わない。",
+    "ICPC2018研究probeを実行し、Dの補正総和189条件/urn5004状態、Iの失効条件29784照会、A1500有理数意思決定例、H446巡回matching、K5345次数ベクトルを照合。",
+    "新2監査と台帳/coverageの4テスト群PASS。既存38回帰群は同じ分岐・記事・実装で先に全PASS。",
+    "最終npm run build:local とnpm run validate成功。新5記事の日英/全角検索21件も照合。最終研究HTMLの25出典の把握数・解法和集合・公開対応数が台帳と一致。",
+    "最終npm run verify:localで1368 HTML/SVGの28023内部リンク/資産を検証。"
+  ],
+  "counts": {
+    "fixedCorpusStatementsReviewed": 53,
+    "fixedCorpusSolutionsReviewed": 41,
+    "publishedExamplesSolutionsReviewed": 456,
+    "allDistinctSolutionsReviewed": 472,
+    "knownUnresolvedGaps": 29
+  },
+  "limitations": [
+    "世界全体の問題母数は未確定で網羅未完了。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは既知の環境上の失敗後に再試行しておらず未検証。",
+    "外部URL全件の生存確認は未実施。",
+    "push・アップロード・公開はしていない。"
+  ],
+  "nextArtifactsNotRegistered": [
+    "/tmp/flowchartcp-biscuits-article.mdx",
+    "/tmp/flowchartcp-mixture-article.mdx"
+  ],
+  "inProgress": [
+    "Biscuitsの公式配布HUN翻訳による数値確認を最終sidecarへ反映し、原典全域がAPIに含まれることを確定してから記事/分岐へ登録。",
+    "Mixtureの最終sidecarと独立レビュー。",
+    "IOI2019 Shoesの記事・実装・元の隣接交換全探索比較。"
+  ]
+}

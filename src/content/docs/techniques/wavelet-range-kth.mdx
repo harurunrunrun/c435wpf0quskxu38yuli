@@ -1,0 +1,76 @@
+---
+title: "値の桁で安定に二分し、区間の順位を写し替える"
+description: "各桁で0の個数を記録し、元の区間を次の並びの区間へ移す。"
+techniqueId: wavelet-range-kth
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+更新のない配列で、区間内の順位を多数尋ねる。節点を多く確保する木より、各段を配列で持ちたい。
+
+## 考え方
+
+圧縮した値を上位ビットから見る。現在の並びを「ビット0の要素、その後にビット1の要素」へ安定に分け、各位置までの0の個数 $z[t]$ と全体の0個数 $M$ を保存する。
+
+区間 $[l,r)$ の0個数は $z[r]-z[l]$。順位が0側へ入るなら区間を $[z[l],z[r])$ へ、1側なら順位から0個数を引き、区間を $[M+l-z[l],M+r-z[r])$ へ移す。選んだビットを答えに書き、次の段へ進む。
+
+## 適用条件
+
+安定した二分が必要。同じ側へ属する要素の相対順序を変えると、区間の像が連続区間でなくなる。値圧縮により負数も扱い、ビット数は異なる値数から決める。すべて同じ値なら段数0のままでよい。配列への更新は以下の構造では扱わない。
+
+## なぜ正しいか
+
+元の連続区間のうち0側の要素は、安定な二分後も0側の連続した部分を占める。その両端は前にある0個数で決まる。1側も前にある1個数から同様に決まる。上位ビットの異なる値では0側が必ず小さいため、側の選択と順位の減算は正しい。各段で同じ条件を保ち、最終的に値の全ビットを得る。
+
+## 計算量
+
+異なる値数 $V$、段数 $L=\lceil\log_2 V\rceil$。圧縮込みの構築は $O(N\log N+NL)$ 時間、順位質問は $O(L+1)$ 時間、空間は $O(NL+N+V)$。この実装の累積個数は整数配列であり、ビット列圧縮による省メモリは行っていない。
+
+## 実装
+
+`WaveletKth(a).kth(l,r,k)` は半開区間の0始まりの順位。0側の累積個数だけから両側の新しい区間を求める。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+struct WaveletKth {
+    int n,bits=0;std::vector<long long> values;
+    std::vector<std::vector<int>> zero_prefix;std::vector<int> middle;
+    explicit WaveletKth(const std::vector<long long>& input):n(int(input.size())),values(input) {
+        std::sort(values.begin(),values.end());values.erase(std::unique(values.begin(),values.end()),values.end());
+        while((1ULL<<bits)<values.size()) ++bits;
+        std::vector<int> a(n);for(int i=0;i<n;++i) a[i]=int(std::lower_bound(values.begin(),values.end(),input[i])-values.begin());
+        for(int bit=bits-1;bit>=0;--bit) {
+            std::vector<int> prefix(n+1),next;next.reserve(n);
+            for(int i=0;i<n;++i) prefix[i+1]=prefix[i]+!((a[i]>>bit)&1);
+            for(int x:a) if(!((x>>bit)&1)) next.push_back(x);
+            middle.push_back(int(next.size()));for(int x:a) if((x>>bit)&1) next.push_back(x);
+            zero_prefix.push_back(std::move(prefix));a=std::move(next);
+        }
+    }
+    long long kth(int l,int r,int k) const {
+        assert(0<=l&&l<r&&r<=n&&0<=k&&k<r-l);int value=0;
+        for(int level=0;level<bits;++level) {
+            const auto& prefix=zero_prefix[level];int zeros=prefix[r]-prefix[l];
+            if(k<zeros) {l=prefix[l];r=prefix[r];}
+            else {k-=zeros;value|=1<<(bits-1-level);l=middle[level]+l-prefix[l];r=middle[level]+r-prefix[r];}
+        }
+        return values[value];
+    }
+};
+```
+
+## 関連する手法
+
+[二つの接頭辞の頻度差から、区間のk番目へ降りる](/flowchartcp/techniques/persistent-prefix-kth/) ・ [更新付きの区間順位を、答えの値でまとめて二分する](/flowchartcp/techniques/offline-kth-divide-values/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [SPOJ：K-th Number の原典](https://www.spoj.com/problems/MKTHNUM/)
+- [SPOJ 公式サーバーの問題本文](https://new3.spoj.com/problems/MKTHNUM/)
+
+- [Library Checker：Range Kth Smallest（原典の条件）](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/data_structure/range_kth_smallest/task.md)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="wavelet-range-kth" />

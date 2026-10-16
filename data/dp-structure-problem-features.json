@@ -1,0 +1,175 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc216_f",
+    "title": "F - Max Sum Counting",
+    "url": "https://atcoder.jp/contests/abc216/tasks/abc216_f",
+    "techniqueIds": [
+      "subset-sum-max-threshold"
+    ],
+    "features": [
+      "添字を区別する非空部分集合",
+      "各要素に二値 A,B があり、ΣB≤maxA を満たす個数",
+      "B は非負、maxA≤5000。等しい A があってもよい"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc216/editorial/3125",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。",
+    "publicationDate": "2021-08-29"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc232_f",
+    "title": "F - Simple Operations on Sequence",
+    "url": "https://atcoder.jp/contests/abc232/tasks/abc232_f",
+    "techniqueIds": [
+      "assignment-adjacent-swap-mask"
+    ],
+    "features": [
+      "列の値を±1する一回の費用 X",
+      "隣接二要素を交換する一回の費用 Y",
+      "同じ長さの目的列へ一致させる。N≤18、重複した値も許す"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc232/editorial/3153",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。",
+    "publicationDate": "2021-12-19"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2413",
+    "title": "Counting Towers",
+    "url": "https://cses.fi/problemset/task/2413",
+    "techniqueIds": [
+      "two-column-rectangle-tiles"
+    ],
+    "features": [
+      "幅2、高さ n の盤面を長方形で隙間なく覆う",
+      "整数幅・整数高さの全ての長方形を無制限に使う",
+      "鏡映や回転して違う配置は別に数える。n≤10^6"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2413",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。公開日を原典で確認できないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc263_f",
+    "title": "F - Tournament",
+    "url": "https://atcoder.jp/contests/abc263/tasks/abc263_f",
+    "techniqueIds": [
+      "tournament-opponent-maximum"
+    ],
+    "features": [
+      "2^H 人の固定された完全二分トーナメント",
+      "全試合の勝敗を自由に決められる",
+      "各人の報酬は自分の最終勝利回数だけに依存。H≤16、非単調報酬も許す"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc263/editorial/4562",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。",
+    "publicationDate": "2022-08-06"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "486D",
+    "title": "D - Valid Sets",
+    "url": "https://codeforces.com/problemset/problem/486/D",
+    "techniqueIds": [
+      "connected-set-minimum-root"
+    ],
+    "features": [
+      "木の非空な連結頂点集合を数える",
+      "選択した最大値−最小値≤d",
+      "同じ最小値の頂点が複数ある。N≤2000"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/14678",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc301_e",
+    "title": "E - Pac-Takahashi",
+    "url": "https://atcoder.jp/contests/abc301/tasks/abc301_e",
+    "techniqueIds": [
+      "grid-waypoint-subset"
+    ],
+    "features": [
+      "静的な迷路で上下左右へ移動し、再訪できる",
+      "各収集点の得点は一度だけ。点数≤18",
+      "移動回数以下で終点に到達して収集数を最大化"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc301/tasks/abc301_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。",
+    "publicationDate": "2023-05-13"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc344_f",
+    "title": "F - Earn to Advance",
+    "url": "https://atcoder.jp/contests/abc344/tasks/abc344_f",
+    "techniqueIds": [
+      "grid-earning-rate-dominance"
+    ],
+    "features": [
+      "右または下へ一回の行動で進む",
+      "滞在一回で現在マスの正の収入を得る",
+      "移動には支払いが必要で残金を負にできない。N≤80"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc344/editorial/9496",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。",
+    "publicationDate": "2024-03-09"
+  },
+  {
+    "source": "USACO",
+    "problemId": "839",
+    "title": "Talent Show (Gold)",
+    "url": "https://usaco.org/index.php?cpid=839&page=viewproblem2",
+    "techniqueIds": [
+      "ratio-knapsack-weight-cap"
+    ],
+    "features": [
+      "異なる対象を0/1で選び、総重量が W 以上",
+      "才能合計/重量合計を最大化し、1000倍の床を求める",
+      "重量は正で総重量は大きい。N≤250、W≤1000"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_talent_gold_open18.html",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認。掲載した C++20 実装を全探索・素朴解法・境界ケースと比較して確認した。原典の大会日または大会年が基準日より前である。"
+  }
+]

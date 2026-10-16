@@ -1,0 +1,32 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2018_k",
+    "title": "Wireless is the New Fiber",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+    "techniqueIds": [
+      "tree-degree-preservation-budget-construction"
+    ],
+    "features": [
+      "連結な無向多重グラフの次数を参照し、同じラベルの頂点に任意の新しい単純木を作る。",
+      "元と次数が異なる頂点数を最小にする。元の辺の一部を選ぶ問題ではなく、新しい頂点対も結べる。",
+      "原典N2..10000/M1..100000、平行辺可・自己ループ禁止。次数の保存価値は全頂点で同じ。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "同じラベルの頂点で任意の新しい木を作り、元の連結多重グラフと次数が異なる頂点数を最小にする。木の正の次数和2N−2から保存費用d_i−1と予算N−2へ帰着し、安い費用から保存する。残りを最初の未選択頂点に置いても保存数が変わらないことを示し、正の新次数列をPrüfer列で実現する。新辺は元辺の部分集合に限らない。",
+    "discoveredBy": "icpc-2018-world-finals",
+    "publicationDate": "2018-04-19",
+    "publicationYear": 2018,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

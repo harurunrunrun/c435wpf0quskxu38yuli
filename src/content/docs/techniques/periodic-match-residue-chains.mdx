@@ -1,0 +1,85 @@
+---
+title: "無限に繰り返す本文で同じ語を連続させるなら、開始位置の余りをつなぐ"
+description: "一周の一致位置だけを調べ、語の長さだけ進む辺の最長鎖と閉路を判定する。"
+techniqueId: periodic-match-residue-chains
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+一周の一致位置だけを調べ、語の長さだけ進む辺の最長鎖と閉路を判定する。
+
+## 使う場面
+
+短い本文を何度でも繰り返せるとき、同じ語を隙間なく何個連続させられるか求めたい。回数が有限とは限らず、本文をその回数だけ実際に生成できない。
+
+## 考え方
+
+本文一周の長さを $N$、繰り返す語の長さを $M$ とする。位置 $i$ と $i+N$ から見える文字列は同じなので、一つの語が一致するかは開始位置の $N$ による余りだけで決まる。
+
+余り $i$ で語が一致するなら、次の語の開始位置は $(i+M)\bmod N$。一致する位置からだけ、その位置へ有向辺を張る。一つの辺を進むことが語を一つ置くことに対応する。
+
+一致の判定には本文を長さ $N+M-1$ まで生成すればよい。語・区切り・この本文を連結したZ配列で、余り $0,\ldots,N-1$ の一致をまとめて調べる。
+
+有向グラフに閉路があれば無限に連続できる。閉路がなければ、入次数0の頂点から順に辺数の最長距離を計算する。
+
+## 適用条件
+
+同じ非空の本文を必要なだけ繰り返せ、同じ非空の語を連続部分文字列として隙間なく並べる。開始位置は自由。異なる語を選べる場合や、語の間に任意の空白を許す場合は、辺や状態を追加する必要がある。
+
+実装は本文・語とも長さ $500000$ 以下。文字はバイト単位で扱い、区切り256は入力と衝突しない。有限の答えは高々 $N-1$、一致が一つもない場合は0。
+
+## なぜ正しいか
+
+辺を $k$ 個たどれることは、その開始位置から語の $k$ 個の連結が本文と一致することと同値。一辺の一致が、その一個の語に必要な全 $M$ 文字の一致を保証するからである。
+
+閉路は任意回数巡れるので、語の連続数に上限がない。逆に有限個の頂点で $N$ 個以上の辺を進む道は必ず頂点を再訪して閉路を含む。従って閉路がない場合は有限で、全開始位置からの最長の辺数を求めればよい。位相順での最大距離更新は全ての道を計算する。
+
+## 計算量
+
+各余りで語を直接比較するだけで $O(NM)$ 時間かかる。さらに開始位置ごとに連続一致を調べ直すと $O(N^2)$ 時間を要する。Z配列による照合と、一度の位相順走査を合わせて $O(N+M)$ 時間・空間。
+
+## 実装
+
+`maximum_periodic_word_repetitions` は有限の最大回数、無限なら $-1$ を返す。再帰を使わず、大きな一周も処理する。
+
+```cpp
+#include <atcoder/string>
+#include <algorithm>
+#include <queue>
+#include <stdexcept>
+#include <string>
+#include <vector>
+int maximum_periodic_word_repetitions(const std::string& base,const std::string& word) {
+    if(base.empty() || word.empty() || base.size()>500000 || word.size()>500000)
+        throw std::invalid_argument("nonempty strings of bounded length");
+    int n=base.size(),m=word.size();
+    std::vector<int> joined;joined.reserve(n+2*m);
+    for(unsigned char c:word) joined.push_back(c);
+    joined.push_back(256);
+    for(int i=0;i<n+m-1;++i) joined.push_back(static_cast<unsigned char>(base[i%n]));
+    auto z=atcoder::z_algorithm(joined);
+    std::vector<int> next(n,-1),indegree(n),distance(n);
+    for(int i=0;i<n;++i) if(z[m+1+i]>=m) {
+        next[i]=(i+m)%n;++indegree[next[i]];
+    }
+    std::queue<int> ready;for(int i=0;i<n;++i) if(indegree[i]==0) ready.push(i);
+    int visited=0,answer=0;
+    while(!ready.empty()) {
+        int u=ready.front();ready.pop();++visited;
+        int v=next[u];if(v<0) continue;
+        distance[v]=std::max(distance[v],distance[u]+1);answer=std::max(answer,distance[v]);
+        if(--indegree[v]==0) ready.push(v);
+    }
+    return visited==n?answer:-1;
+}
+```
+
+## 関連する手法
+
+[周期を前後一致から求める](/flowchartcp/techniques/period-from-border/) ・ [トポロジカルソート](/flowchartcp/techniques/topological-sort/)
+
+## 参考資料
+
+- [AtCoder：Strings of Eternity](https://atcoder.jp/contests/abc135/tasks/abc135_f)
+- [公式解説](https://img.atcoder.jp/abc135/editorial.pdf)
+
+<TechniqueReferences techniqueId="periodic-match-residue-chains" />

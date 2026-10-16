@@ -1,0 +1,116 @@
+---
+title: "DFS順で隣り合う指定頂点のLCAを加えて補助木を作る"
+description: "DFS順の隣接対だけを見て、必要な分岐を残した小さい木に圧縮する。"
+techniqueId: virtual-tree-adjacent-lca
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+DFS順の隣接対だけを見て、必要な分岐を残した小さい木に圧縮する。
+
+## 使う場面
+
+大きい木のうち、指定された $K$ 頂点だけが重要な問い合わせを何度も処理する。毎回全 $N$ 頂点を使うDPや、指定頂点の全組のLCA計算を省きたい。
+
+## 考え方
+
+指定頂点をDFSの行きがけ順にソートする。隣り合う二頂点のLCAを追加し、もう一度ソートして重複を除く。これだけで、指定頂点同士の関係に必要な分岐点がすべてそろう。
+
+祖先を保持するスタックで、各頂点を最も近い残った祖先につなぐ。圧縮した辺には、元の木での経路長を保存する。
+
+## 適用条件
+
+省いた経路の内部を、長さや和などの情報にまとめられる必要がある。内部の頂点ごとに選択があるなら、その効果も辺に保存するか、別に計算する。
+
+深さ順の隣接対ではなくDFS順を使う。指定頂点だけを結ぶと、必要なLCAが欠けて分岐関係を失う。
+
+## なぜ正しいか
+
+DFS順では、ある子部分木に属する頂点は連続して現れる。指定頂点が異なる子部分木へ移る境目の隣接対のLCAが、その分岐点を拾う。追加するLCAは高々 $K-1$ 個で、指定頂点の全組のLCAを含む必要な集合が得られる。祖先スタックは各頂点を直近の残った祖先へつなぐ。
+
+## 計算量
+
+指定頂点の全組を調べると $O(K^2\log N)$。隣接対だけなら、前計算 $O(N\log N)$ の後に $O(K\log K+K\log N)$ 時間、補助木の空間 $O(K)$。指定集合が空でなければ、頂点数は高々 $2K-1$。
+
+## 実装
+
+`make_virtual_tree` は元の頂点番号の列と、その列での親番号、親への圧縮辺の長さを返す。空の指定集合にも対応する。`RootedTree` は問い合わせ間で共有する。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <cassert>
+struct RootedTree {
+    int n,log=1;
+    std::vector<int> parent,depth,tin,tout,order;
+    std::vector<long long> distance;
+    std::vector<std::vector<int>> up;
+    explicit RootedTree(const std::vector<std::vector<std::pair<int,long long>>>& g,int root=0)
+        :n(g.size()),parent(n,-1),depth(n),tin(n),tout(n),distance(n) {
+        assert(n>0 && 0<=root && root<n);
+        while((1LL<<log)<=n) ++log;
+        parent[root]=root;
+        std::vector<std::pair<int,int>> stack{{root,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;
+            int& i=stack.back().second;
+            if(i==0) { tin[v]=order.size();order.push_back(v); }
+            if(i==int(g[v].size())) { tout[v]=order.size();stack.pop_back();continue; }
+            auto [u,w]=g[v][i++];
+            if(u==parent[v]) continue;
+            parent[u]=v;depth[u]=depth[v]+1;distance[u]=distance[v]+w;
+            stack.push_back({u,0});
+        }
+        assert(int(order.size())==n);
+        up.assign(log,std::vector<int>(n));up[0]=parent;
+        for(int b=1;b<log;++b)
+            for(int v=0;v<n;++v) up[b][v]=up[b-1][up[b-1][v]];
+    }
+    bool ancestor(int a,int b) const { return tin[a]<=tin[b] && tin[b]<tout[a]; }
+    int lca(int a,int b) const {
+        if(ancestor(a,b)) return a;
+        if(ancestor(b,a)) return b;
+        for(int k=log-1;k>=0;--k) if(!ancestor(up[k][a],b)) a=up[k][a];
+        return parent[a];
+    }
+    long long path_sum(int a,int b) const {
+        int c=lca(a,b);
+        return distance[a]+distance[b]-2*distance[c];
+    }
+};
+struct VirtualTree {
+    std::vector<int> vertices,parent;
+    std::vector<long long> edge_length;
+};
+VirtualTree make_virtual_tree(const RootedTree& t,std::vector<int> selected) {
+    auto cmp=[&](int a,int b){return t.tin[a]<t.tin[b];};
+    std::sort(selected.begin(),selected.end(),cmp);
+    selected.erase(std::unique(selected.begin(),selected.end()),selected.end());
+    if(selected.empty()) return {};
+    int k=selected.size();
+    for(int i=1;i<k;++i) selected.push_back(t.lca(selected[i-1],selected[i]));
+    std::sort(selected.begin(),selected.end(),cmp);
+    selected.erase(std::unique(selected.begin(),selected.end()),selected.end());
+    VirtualTree result{selected,std::vector<int>(selected.size(),-1),std::vector<long long>(selected.size())};
+    std::vector<int> stack;
+    for(int i=0;i<int(selected.size());++i) {
+        while(!stack.empty() && !t.ancestor(selected[stack.back()],selected[i])) stack.pop_back();
+        if(!stack.empty()) {
+            int p=stack.back();result.parent[i]=p;
+            result.edge_length[i]=t.distance[selected[i]]-t.distance[selected[p]];
+        }
+        stack.push_back(i);
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[補助木](/flowchartcp/techniques/virtual-tree/) ・ [ダブリング](/flowchartcp/techniques/doubling/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC340 G](https://atcoder.jp/contests/abc340/editorial/9249)
+
+<TechniqueReferences techniqueId="virtual-tree-adjacent-lca" />

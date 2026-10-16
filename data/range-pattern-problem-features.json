@@ -1,0 +1,303 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc194_e",
+    "title": "Mex Min",
+    "url": "https://atcoder.jp/contests/abc194/tasks/abc194_e",
+    "techniqueIds": [
+      "fixed-window-min-mex-gaps"
+    ],
+    "features": [
+      "固定配列の全長M区間を考える",
+      "各区間のmexの最小値を求める",
+      "1≤M≤N≤1500000、0≤Ai<N"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc194/tasks/abc194_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は全固定長区間のmexの最小値だけを求める。値が出ない出現間隔がM以上なら、その値を含まない窓が存在するため、各窓のmexを個別に計算せず最小候補を判定できる。",
+    "publicationDate": "2021-03-06"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "475D",
+    "title": "CGCDSSQ",
+    "url": "https://codeforces.com/problemset/problem/475/D",
+    "techniqueIds": [
+      "subarray-fold-value-runs"
+    ],
+    "features": [
+      "正の整数配列の全連続区間",
+      "指定したGCDになる区間数を何度も質問する",
+      "N≤100000、Ai≤10^9、Q≤300000"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/475/D",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は指定したGCDを持つ全区間の個数を問う。同じ右端で左端を延ばすとGCDは真の約数へしか変わらないので、同じGCDの区間数を短い列へまとめて全体の頻度に足せる。"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "898",
+    "title": "Bitwise ORs of Subarrays",
+    "url": "https://leetcode.com/problems/bitwise-ors-of-subarrays/description/",
+    "techniqueIds": [
+      "subarray-fold-value-runs"
+    ],
+    "features": [
+      "非負整数配列の全非空連続区間",
+      "ビットORの異なる結果の数を求める",
+      "N≤50000、Ai≤10^9"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/bitwise-ors-of-subarrays/description/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は全非空区間のORの異なる結果を求める。固定右端で左へ延ばすとビットが立つだけなので、結果が同じ区間を短い列へまとめ、全右端で得たキーの種類数を数えられる。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "828",
+    "title": "Count Unique Characters of All Substrings of a Given String",
+    "url": "https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/description/",
+    "techniqueIds": [
+      "singleton-subarray-contribution"
+    ],
+    "features": [
+      "英大文字列の全ての位置区間",
+      "その区間にちょうど一回現れる文字数を合計する",
+      "同内容の部分文字列も位置ごとに数える、N≤100000"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/description/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は全位置区間について、ちょうど一度現れる文字数の合計を問う。各出現の前後にある同文字の位置が、その出現だけを含む左端・右端の範囲を決めるため、端点数の積を寄与として足せる。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "1000F",
+    "title": "One Occurrence",
+    "url": "https://codeforces.com/problemset/problem/1000/F",
+    "techniqueIds": [
+      "offline-range-singleton-witness"
+    ],
+    "features": [
+      "固定整数配列の多数の区間質問",
+      "区間内に一度だけ現れる値を任意に一つ出す",
+      "なければ0、原典Ai≥1、N,Q≤500000"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/1000/F",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は各静的区間に一度だけ現れる値を任意に一つ求める。右端までの最新出現だけを残し、その直前出現が左端より前かを区間最小値で調べると、単出現の候補位置を取り出せる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc322_f",
+    "title": "Vacation Query",
+    "url": "https://atcoder.jp/contests/abc322/tasks/abc322_f",
+    "techniqueIds": [
+      "flip-longest-binary-run"
+    ],
+    "features": [
+      "0/1文字列をオンラインで区間反転する",
+      "指定区間の最長の連続1を求める",
+      "N≤500000、Q≤100000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc322/tasks/abc322_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は区間の0と1を全て入れ替え、別の指定区間の1の最長連続を質問する。0/1両方の接頭・接尾・最大長を保存すると、反転を要約の交換に、結合を境界連続の比較にできる。",
+    "publicationDate": "2023-09-30"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "3165",
+    "title": "Maximum Sum of Subsequence With Non-adjacent Elements",
+    "url": "https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/",
+    "techniqueIds": [
+      "point-update-nonadjacent-max-sum"
+    ],
+    "features": [
+      "点の値を更新する",
+      "隣り合う要素を選べない部分列の最大和、空列可",
+      "各更新後の最大和を合計して法10^9+7で返す",
+      "N,Q≤50000、各値絶対値≤100000"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は点変更後の非隣接部分列の最大和を毎回計算し、その答えを合計する。直前位置を選んだかの二状態の遷移を区間で合成すれば、更新のたびのDP全走査を省ける。答えの和だけに最後の剰余を適用する。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "438D",
+    "title": "The Child and Sequence",
+    "url": "https://codeforces.com/problemset/problem/438/D",
+    "techniqueIds": [
+      "range-modulo-halving"
+    ],
+    "features": [
+      "非負整数配列の区間和",
+      "区間の各値を正の法の余りへ変更",
+      "一点代入もあり、初期値・代入値・法≤10^9",
+      "原典N,Q≤100000"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/438/D",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は区間剰余・一点代入・区間和を組み合わせる。最大値が法未満なら更新不要で、変化した非負値は半分未満になるため、葉まで降りる更新の総回数を一点代入による補充込みで抑えられる。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "522D",
+    "title": "Closest Equals",
+    "url": "https://codeforces.com/problemset/problem/522/D",
+    "techniqueIds": [
+      "offline-range-equal-gap"
+    ],
+    "features": [
+      "固定配列の多数の区間質問",
+      "区間内の同値な二位置の添字距離を最小化する",
+      "同値対がなければ-1、N,Q≤500000、負値を含む"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/522/D",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は区間内で値が等しい二位置の最短距離を問う。最短対は出現列で連続する二位置から選べるため、右端までに閉じた各対の距離を左位置へ記録し、区間最小値で答えられる。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2072",
+    "title": "Cut and Paste",
+    "url": "https://cses.fi/problemset/task/2072/",
+    "techniqueIds": [
+      "sequence-cut-reverse-split-merge"
+    ],
+    "features": [
+      "現在の文字列の連続区間を指定する",
+      "指定区間を切り出して末尾へ移す操作を繰り返す",
+      "N,M≤200000、最終列だけを出力する"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2072/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "区間を取り除いた後の列の末尾が挿入先となる。要素数による分割と連結を使い、区間内を走査せずに処理できる。原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2073",
+    "title": "Substring Reversals",
+    "url": "https://cses.fi/problemset/task/2073/",
+    "techniqueIds": [
+      "sequence-cut-reverse-split-merge"
+    ],
+    "features": [
+      "現在の文字列の連続区間を指定する",
+      "区間の文字の並びを逆順にする操作を繰り返す",
+      "N,M≤200000、最終列だけを出力する"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2073/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "文字の値の変更ではなく、現在位置で指定した連続部分の順序を反転する。分割後の部分木で反転を予約し、連結して戻せる。原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "dynamic_sequence_range_affine_range_sum",
+    "title": "Dynamic Sequence Range Affine Range Sum",
+    "url": "https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum",
+    "techniqueIds": [
+      "dynamic-sequence-affine-sum"
+    ],
+    "features": [
+      "現在の位置に1要素を挿入し、または1要素を削除する",
+      "区間の並びを逆順にし、同じ一次変換を区間の各値へ適用する",
+      "区間和を法998244353で求める、N,Q≤500000"
+    ],
+    "evidenceUrl": "https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/dynamic_sequence_range_affine_range_sum/task.md",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の5種類の操作を確認した。公式解答はAVL木の分割・連結へ、要素数・和・一次変換・反転を載せている。記事は優先度による平衡化を使う独立実装。原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "920F",
+    "title": "SUM and REPLACE",
+    "url": "https://codeforces.com/problemset/problem/920/F",
+    "techniqueIds": [
+      "range-stabilizing-successor"
+    ],
+    "features": [
+      "正整数の区間を約数個数へ更新する",
+      "途中の区間和を求める",
+      "点代入はなく、1と2は以後変わらない",
+      "初期値は1000000以下"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/920/F",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の操作と出力時点を確認し、不変条件から独立に導出。掲載C++20を素朴な全要素更新と比較し、固定点・空区間・置換の連鎖・64ビット境界も確認した。"
+  },
+  {
+    "source": "SPOJ",
+    "problemId": "GSS4",
+    "title": "Can you answer these queries IV",
+    "url": "https://www.spoj.com/problems/GSS4/",
+    "techniqueIds": [
+      "range-stabilizing-successor"
+    ],
+    "features": [
+      "正整数の区間を切り捨て平方根へ更新する",
+      "途中の区間和を求める",
+      "点代入はなく、1は以後変わらない",
+      "初期の総和は10^18未満"
+    ],
+    "evidenceUrl": "https://www.spoj.com/problems/GSS4/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の操作と出力時点を確認し、不変条件から独立に導出。掲載C++20を素朴な全要素更新と比較し、固定点・空区間・置換の連鎖・64ビット境界も確認した。 通常URLは403だったが、公式 /SPOJ/problems/GSS4/ の検索本文で原典を確認。原典の掲載日2008-05-21も確認。",
+    "publicationDate": "2008-05-21"
+  }
+]

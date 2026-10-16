@@ -1,0 +1,89 @@
+---
+title: "集合を重ならない二つに分ける和を、要素数別に畳み込む"
+description: "部分集合和だけでは消せない重なりを、集合の要素数が足し合う条件で除きます。"
+techniqueId: subset-convolution-ranked
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+全ての集合 $S$ に対し、
+
+$$h(S)=\sum_{T\subseteq S} f(T)g(S\setminus T)$$
+
+を求めます。選んだ要素を二つの担当へ分け、それぞれの値を掛ける遷移です。全ての $S,T$ を列挙すると、各要素が「外・左・右」の三通りになり $3^d$ 通りを読みます。
+
+## 考え方
+
+集合の要素数を追加の添字にします。$f_r(S)$ は $|S|=r$ のときだけ $f(S)$ を持ちます。各 $r$ に部分集合和の変換を掛け、
+
+$$H_k(S)=\sum_{r=0}^k F_r(S)G_{k-r}(S)$$
+
+を計算し、部分集合和の逆変換で「和集合がちょうど $S$」の積へ戻します。最後に $k=|S|$ の層だけを取り出します。
+
+単なる部分集合和の変換だと $A,B$ の重なりも残ります。要素数の層が、その重なりを取り除きます。
+
+## 適用条件
+
+全 $2^d$ 個の集合を配列にでき、要素数の層も含めたメモリを確保できる場合に使います。部分集合和の逆変換には減算が必要なので、単なる最小値の遷移には同じ式を使えません。
+
+実装は法 998244353、同じ長さの非空な 2 の冪の配列を受け取ります。空集合にも値を持てます。要素数 0 なら長さ 1 の列です。大きな $d$ では、時間より先に $O(d2^d)$ のメモリを確認してください。
+
+## なぜ正しいか
+
+変換後の $F_r(S)G_{k-r}(S)$ は、$A,B\subseteq S$、$|A|+|B|=k$ を満たす全ての積を含みます。逆変換は、$A\cup B$ が厳密に $S$ であるものだけを残します。
+
+そのうち $k=|S|$ なら、
+
+$$|A|+|B|=|A\cup B|+|A\cap B|=|S|$$
+
+から $A\cap B=\varnothing$ が従います。したがって、残るのは $T$ と $S\setminus T$ の分割だけです。
+
+## 計算量
+
+全ての部分集合の分割を列挙する時間 $O(3^d)$ を、時間 $O(d^2\,2^d)$ へ減らします。変換と逆変換、要素数ごとの積の和はいずれもこの範囲です。空間は $O(d2^d)$ です。$d$ が小さいうちは $3^d$ の方が簡単で速い場合もあります。
+
+## 実装
+
+`subset_convolution(a,b)` は、各ビット集合について重ならない二分割の積和を返します。要素数ごとの積和は $d$ の層まででよく、$2d$ まで保存する必要はありません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> subset_convolution(vector<int> a,vector<int> b) {
+    constexpr int P=998244353;
+    int length=a.size();
+    assert(length>0 && length==int(b.size()) && (length&(length-1))==0);
+    int bits=countr_zero(unsigned(length));
+    vector<vector<int>> f(bits+1,vector<int>(length)),g=f,h=f;
+    for(int s=0;s<length;++s) {
+        int rank=popcount(unsigned(s));
+        f[rank][s]=(a[s]%P+P)%P;g[rank][s]=(b[s]%P+P)%P;
+    }
+    auto transform=[&](vector<vector<int>>& values,bool inverse) {
+        for(int bit=0;bit<bits;++bit) for(int s=0;s<length;++s) if(s>>bit&1)
+            for(int rank=0;rank<=bits;++rank) {
+                int& x=values[rank][s];int y=values[rank][s^(1<<bit)];
+                x=inverse?(x-y+P)%P:(x+y)%P;
+            }
+    };
+    transform(f,false);transform(g,false);
+    for(int s=0;s<length;++s) for(int rank=0;rank<=bits;++rank)
+        for(int left=0;left<=rank;++left)
+            h[rank][s]=(h[rank][s]+1LL*f[left][s]*g[rank-left][s])%P;
+    transform(h,true);
+    vector<int> result(length);
+    for(int s=0;s<length;++s) result[s]=h[popcount(unsigned(s))][s];
+    return result;
+}
+```
+
+## 関連する手法
+
+[部分集合ゼータ変換](/flowchartcp/techniques/subset-transform/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/set_power_series/subset_convolution/task.md)
+
+<TechniqueReferences techniqueId="subset-convolution-ranked" />

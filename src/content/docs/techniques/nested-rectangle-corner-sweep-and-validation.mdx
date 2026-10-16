@@ -1,0 +1,176 @@
+---
+title: "左右の角だけから長方形を対応させ、境界の交差を別に確かめる"
+description: "右下の角を左から処理し、対応できる最も下の左上角を選びます。全て対応しても、辺の交差検査を省きません。"
+techniqueId: nested-rectangle-corner-sweep-and-validation
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+左上の角の集合と右下の角の集合から、長方形を一対一で復元します。二つの長方形は離れているか、一方が他方の内側に収まる必要があります。境界の接触も許しません。
+
+角を全て対応させるだけでは、正しい長方形の集まりを作れたとは限りません。「対応を決める処理」と「できた図形を検査する処理」を分けます。境界の検査は、既知の長方形群の包含・非交差判定にも使えます。
+
+## 考え方
+
+座標を行・列の順に持ち、列が小さい方から角を処理します。同じ列では行が小さい方を先にします。未対応の左上角を、行の昇順の集合で管理します。
+
+左上角なら追加します。同じ行の未対応角が既にあれば解なしです。右下角 $(r,c)$ なら、行が $r$ 以下の未対応角で最も行が大きいものを取り出します。なければ解なしです。これで対応の候補が決まります。
+
+次に長方形の辺を取り出し、境界が交わらないことを検査します。
+
+1. 同じ行の水平辺を列の区間として並べ、異なる長方形の区間が重ならないことを調べます。垂直辺も、同じ列ごとに同様に調べます。
+2. 列を走査し、その列を含む水平辺の本数を行ごとに持ちます。垂直辺の行区間に含まれる本数を Fenwick tree で求め、自分自身の水平辺を除いて0本であることを確かめます。
+
+列が同じイベントは「水平辺を追加 → 垂直辺を検査 → 水平辺を削除」の順にします。これで端点への接触も検出できます。
+
+## 適用条件
+
+長方形は座標軸に平行で、角の種類が左上・右下と分かっているものとします。境界を含む二図形が接触・交差する配置を禁止し、内部の包含は許します。重なった面積だけを調べる場合とは判定が変わります。
+
+掲載実装は各集合の大きさが等しく $0\le N\le100000$、行・列が $1..10^9$ の整数です。全ての角の位置は、二集合を合わせて相異なる必要があります。これらに違反する引数には `invalid_argument` を投げます。条件を満たす入力でも、有効な対応がなければ `nullopt` を返します。
+
+行が等しい左右の角による水平線分、列が等しい上下の角による垂直線分も扱います。長方形の幅や高さが0の場合、同じ辺を二回登録しないようにします。左上と右下が同じ一点になる入力は、角の位置の相異なる条件に違反します。
+
+## なぜ正しいか
+
+右下角を処理する時点で、その相手の左上角は既に現れています。相手を $A$ とし、未対応の別の左上角 $B$ が $A$ より下、かつ今の右下角以下の行にあると仮定します。$B$ の相手は、今の角より後に現れる右下角です。
+
+この二長方形の行・列の射影は両方とも重なります。一方、$B$ の方が上端が下なので、$B$ の長方形は $A$ を内側に含めません。$B$ の右端は今の列以降なので、$A$ も $B$ を境界に触れず含めません。従って正しい対応は存在しません。同じ行の未対応角が二つある場合にも、同じ上端と重なる列の範囲を持つため境界が重なります。よって、正しい対応があるなら右下角の相手は必ず集合内の最も下の候補で、走査の選択が強制されます。
+
+ただし、強制された角の対応が全て成功しても、別の辺同士の交差が残ることがあります。そのため、第二段階の検査が必要です。
+
+軸に平行な二辺の交差は、同一直線上での区間の重なりか、水平辺と垂直辺の交差です。前者は区間の整列で全て検出します。後者は、水平辺が有効な列の間だけ行に加算し、垂直辺の両端を含む範囲を集計するので全て検出します。現在の長方形自身の水平辺は必ず有効で、その本数は高さ0なら1本、それ以外なら2本と分かっています。これだけを引けば、他の長方形との交差を判定できます。
+
+二つの閉長方形が重なり、互いに包含されないなら、その境界は交わります。片方が線分の場合にも、外側へ出るなら相手の境界を通り、同一直線上の重なりは区間検査が捕らえます。従って境界が全て非交差なら、全ての組は離れているか、境界に触れない包含関係です。対応の強制性とこの検査を合わせることで、解なしの判定も正しくなります。
+
+## 計算量
+
+角の対応、平行な辺の整列、垂直辺と水平辺の交差検査を合わせて時間 $O(N\log(N+1))$、補助空間 $O(N)$ です。全長方形の組を比較する $O(N^2)$ の検査を避けられます。座標の大きさに比例する配列は作らず、水平辺の行だけを座標圧縮します。
+
+## 実装
+
+`recover_nested_rectangles(top_left,bottom_right)` は、各左上角に対応する右下角の0始まりの番号を返します。座標の組は `(row,column)` です。空の二集合には空の対応を返します。入力は変更しません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace nested_corners_detail {
+struct Rectangle {long long top,left,bottom,right;};
+struct Segment {long long fixed,low,high;};
+bool parallel_edges_disjoint(vector<Segment> segments) {
+    sort(segments.begin(),segments.end(),[](const auto& a,const auto& b) {
+        return tie(a.fixed,a.low,a.high)<tie(b.fixed,b.low,b.high);
+    });
+    long long fixed=-1,last=-1;
+    for(const auto& edge:segments) {
+        if(edge.fixed==fixed && edge.low<=last) return false;
+        if(edge.fixed!=fixed) {fixed=edge.fixed;last=edge.high;}
+        else last=max(last,edge.high);
+    }
+    return true;
+}
+struct Fenwick {
+    vector<int> tree;
+    explicit Fenwick(int n):tree(n+1) {}
+    void add(int i,int value) {for(++i;i<int(tree.size());i+=i&-i) tree[i]+=value;}
+    int prefix(int length) const {int total=0;for(;length;length-=length&-length) total+=tree[length];return total;}
+};
+bool boundaries_disjoint(const vector<Rectangle>& rectangles) {
+    vector<Segment> horizontal,vertical;
+    vector<long long> rows;
+    struct Event {long long column,low,high;int type,self;};
+    vector<Event> events;
+    for(const auto& r:rectangles) {
+        array<long long,2> endpoints{r.top,r.bottom};
+        int own_horizontal=r.top==r.bottom?1:2;
+        for(int i=0;i<own_horizontal;++i) {
+            long long row=endpoints[i];
+            horizontal.push_back({row,r.left,r.right});
+            rows.push_back(row);
+            events.push_back({r.left,row,row,0,0});
+            events.push_back({r.right,row,row,2,0});
+        }
+        vertical.push_back({r.left,r.top,r.bottom});
+        events.push_back({r.left,r.top,r.bottom,1,own_horizontal});
+        if(r.left!=r.right) {
+            vertical.push_back({r.right,r.top,r.bottom});
+            events.push_back({r.right,r.top,r.bottom,1,own_horizontal});
+        }
+    }
+    if(!parallel_edges_disjoint(horizontal) || !parallel_edges_disjoint(vertical)) return false;
+    sort(rows.begin(),rows.end());rows.erase(unique(rows.begin(),rows.end()),rows.end());
+    sort(events.begin(),events.end(),[](const auto& a,const auto& b) {
+        return tie(a.column,a.type,a.low,a.high)<tie(b.column,b.type,b.low,b.high);
+    });
+    Fenwick active{int(rows.size())};
+    for(const auto& event:events) {
+        int low=lower_bound(rows.begin(),rows.end(),event.low)-rows.begin();
+        if(event.type!=1) active.add(low,event.type==0?1:-1);
+        else {
+            int high=upper_bound(rows.begin(),rows.end(),event.high)-rows.begin();
+            int intersections=active.prefix(high)-active.prefix(low);
+            if(intersections!=event.self) return false;
+        }
+    }
+    return true;
+}
+}
+
+optional<vector<int>> recover_nested_rectangles(
+    const vector<pair<long long,long long>>& top_left,
+    const vector<pair<long long,long long>>& bottom_right) {
+    if(top_left.size()!=bottom_right.size() || top_left.size()>100000)
+        throw invalid_argument("unsupported corner counts");
+    int n=int(top_left.size());
+    set<pair<long long,long long>> positions;
+    for(const auto* corners:{&top_left,&bottom_right}) for(auto point:*corners) {
+        if(point.first<1 || point.first>1000000000 || point.second<1 || point.second>1000000000)
+            throw invalid_argument("corner coordinate out of range");
+        if(!positions.insert(point).second) throw invalid_argument("duplicate corner");
+    }
+    struct Event {long long column,row;int kind,id;};
+    vector<Event> events;
+    for(int i=0;i<n;++i) {
+        events.push_back({top_left[i].second,top_left[i].first,0,i});
+        events.push_back({bottom_right[i].second,bottom_right[i].first,1,i});
+    }
+    sort(events.begin(),events.end(),[](const auto& a,const auto& b) {
+        return tie(a.column,a.row,a.kind)<tie(b.column,b.row,b.kind);
+    });
+    map<long long,int> unmatched;
+    vector<int> partner(n,-1);
+    for(const auto& event:events) {
+        if(event.kind==0) {
+            if(!unmatched.emplace(event.row,event.id).second) return nullopt;
+        } else {
+            auto candidate=unmatched.upper_bound(event.row);
+            if(candidate==unmatched.begin()) return nullopt;
+            --candidate;
+            partner[candidate->second]=event.id;
+            unmatched.erase(candidate);
+        }
+    }
+    if(!unmatched.empty()) return nullopt;
+    vector<nested_corners_detail::Rectangle> rectangles;
+    rectangles.reserve(n);
+    for(int i=0;i<n;++i) {
+        auto [r1,c1]=top_left[i];auto [r2,c2]=bottom_right[partner[i]];
+        rectangles.push_back({r1,c1,r2,c2});
+    }
+    if(!nested_corners_detail::boundaries_disjoint(rectangles)) return nullopt;
+    return partner;
+}
+```
+
+## 関連する手法
+
+[走査線](/flowchartcp/techniques/sweep-interval-endpoints/) ・ [Fenwick tree](/flowchartcp/techniques/fenwick-tree/) ・ [長方形の和集合](/flowchartcp/techniques/rectangle-union-sweep/)
+
+## 参考資料
+
+- [ICPC 2017 World Finals: Visual Python++の原典](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=23)
+- [公式サイト掲載の公開解法スケッチ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=11)。文書自身が非公式の分析と明記しています。角の対応付けはこの方針に沿い、境界検査は水平・垂直辺の交差へ分けて独立に構成・証明しました。
+
+<TechniqueReferences techniqueId="nested-rectangle-corner-sweep-and-validation" />

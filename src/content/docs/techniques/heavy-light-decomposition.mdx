@@ -1,0 +1,89 @@
+---
+title: "HL分解"
+description: "木のパスを少数の配列区間に分け、区間用のデータ構造で処理します。"
+techniqueId: heavy-light-decomposition
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+木のパスを少数の配列区間に分け、区間用のデータ構造で処理します。
+
+別名：Heavy-Light Decomposition / HLD / Heavy-Light分解
+
+## 使う場面
+
+固定された木で、2頂点間のパスの和や最大値、パス全体への更新を繰り返す場合に使います。毎回パスを直接たどると最悪 $O(N)$ です。パスを $O(\log N)$ 個の連続区間に分けられれば、セグメント木などを利用できます。
+
+## 考え方
+
+各頂点で部分木サイズが最大の子を選び、その子へ向かう辺を重い辺とします。重い辺でつながる頂点を一つの鎖として、配列上に連続して並べます。
+
+2頂点が異なる鎖にある間は、鎖の先頭が深い方から、その鎖内の区間を取り出して親へ上がります。同じ鎖に入ったら、残りの区間を取り出します。重い子を先に訪問する順序で並べると、部分木も一つの連続区間になります。
+
+## 適用条件
+
+木の形が更新で変わらないことが前提です。辺に値がある場合は、辺の深い方の頂点に値を置き、パスの最後の区間からLCAの位置を除きます。
+
+和や最大値では区間の順序を気にせず結合できます。文字列の連結や行列積などでは向きによって答えが変わるため、パス上の順序と、逆向きの集計も管理してください。以下の `path` は、順序を必要としない集計や更新の区間を列挙します。
+
+## なぜ正しいか
+
+軽い辺を子から親へ上がると、部分木のサイズは少なくとも2倍になります。したがって、根までに通る軽い辺は $O(\log N)$ 本です。2頂点間のパスでも同じく対数個の鎖に分かれます。
+
+鎖を取り出すたびにパスの端から重複なく切り取るため、列挙された区間は目的のパスをちょうど覆います。
+
+## 計算量
+
+前処理は $O(N)$、空間は $O(N)$ です。1つのパスが $O(\log N)$ 個の区間に分かれ、それぞれをセグメント木で $O(\log N)$ で処理するため、パスの1操作は $O(\log^2 N)$ になります。
+
+## 実装
+
+入力は連結な無向木です。`path` に渡す `visit(l, r)` は、配列の半開区間 $[l,r)$ を処理します。前処理は再帰を使わずに行うため、一直線に長い木でも呼び出しスタックを深くしません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct HLD {
+    int n; vector<int> p,depth,size,heavy,head,pos;
+    HLD(const vector<vector<int>>& g,int root=0):n(g.size()),p(n,-1),
+        depth(n),size(n,1),heavy(n,-1),head(n),pos(n) {
+        assert(n>0); vector<int> order{root}; p[root]=root;
+        for(int i=0;i<int(order.size());++i) {
+            int v=order[i];
+            for(int u:g[v]) if(u!=p[v]) { p[u]=v; depth[u]=depth[v]+1; order.push_back(u); }
+        }
+        for(int i=n-1;i>0;--i) {
+            int v=order[i],a=p[v]; size[a]+=size[v];
+            if(heavy[a]<0 || size[v]>size[heavy[a]]) heavy[a]=v;
+        }
+        vector<pair<int,int>> st{{root,root}}; int timer=0;
+        while(!st.empty()) {
+            auto [v,h]=st.back(); st.pop_back();
+            for(;v!=-1;v=heavy[v]) {
+                head[v]=h; pos[v]=timer++;
+                for(int u:g[v]) if(p[u]==v && u!=heavy[v]) st.push_back({u,u});
+            }
+        }
+    }
+    template<class Visit>
+    void path(int u,int v,Visit visit,bool edge=false) const {
+        while(head[u]!=head[v]) {
+            if(depth[head[u]]<depth[head[v]]) swap(u,v);
+            visit(pos[head[u]],pos[u]+1); u=p[head[u]];
+        }
+        if(depth[u]>depth[v]) swap(u,v);
+        if(pos[u]+int(edge)<pos[v]+1) visit(pos[u]+int(edge),pos[v]+1);
+    }
+};
+```
+
+## 関連する手法
+
+[セグメント木](/flowchartcp/techniques/segment-tree/) ・ [木DP](/flowchartcp/techniques/tree-dp/)
+
+辺の追加・削除で木の形が変わる場合は、[辺をつなぎ替えながらパスを集計する方法](/flowchartcp/techniques/dynamic-forest-path-aggregate/)を使えます。
+
+## 参考資料
+
+- [cp-algorithms: Heavy-light decomposition](https://cp-algorithms.com/graph/hld.html)
+
+<TechniqueReferences techniqueId="heavy-light-decomposition" />

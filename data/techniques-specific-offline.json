@@ -1,0 +1,315 @@
+[
+  {
+    "id": "mo-frequency-quadratic",
+    "title": "区間の頻度二乗和を、要素の出し入れの差分で求める",
+    "summary": "出現回数の二乗を毎回集計せず、質問の順序を変えて端点を少しずつ動かす。",
+    "aliases": [
+      "Mo Algorithm",
+      "Powerful Array",
+      "頻度二乗和",
+      "区間頻度"
+    ],
+    "family": "区間・オフライン",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/86/D"
+    ]
+  },
+  {
+    "id": "mo-with-updates",
+    "title": "区間の質問を、端点と更新時刻の三方向へ並べ替える",
+    "summary": "更新前の値も保存し、区間の移動と代入の巻き戻しで頻度の欠番を求める。",
+    "aliases": [
+      "Mo with Modifications",
+      "Time Dimension",
+      "更新付きMo",
+      "頻度MEX"
+    ],
+    "family": "区間・オフライン",
+    "level": "上級",
+    "prerequisites": [
+      "mo-frequency-quadratic"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/940/F"
+    ]
+  },
+  {
+    "id": "parallel-binary-search-time",
+    "title": "初めて条件を満たす時刻を、全対象の二分探索で共有する",
+    "summary": "二分探索の中点を時刻別にまとめ、更新列を一度走査して全対象を判定する。",
+    "aliases": [
+      "Parallel Binary Search",
+      "Meteors",
+      "並列二分探索",
+      "初達時刻"
+    ],
+    "family": "区間・オフライン",
+    "level": "上級",
+    "prerequisites": [
+      "fenwick-tree",
+      "binary-search"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.oi.edu.pl/media/attachment/20120215/oi18.pdf"
+    ]
+  },
+  {
+    "id": "cdq-dominance",
+    "title": "三つの大小条件を、分割・走査・累積個数へ分ける",
+    "summary": "一座標で順序を固定し、二座標目の走査中に三座標目の累積個数を数える。",
+    "aliases": [
+      "CDQ Divide and Conquer",
+      "3D Dominance",
+      "三次元偏序",
+      "支配点数"
+    ],
+    "family": "区間・オフライン",
+    "level": "上級",
+    "prerequisites": [
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.luogu.com.cn/problem/P3810"
+    ]
+  },
+  {
+    "id": "offline-kth-divide-values",
+    "title": "更新付きの区間順位を、答えの値でまとめて二分する",
+    "summary": "値以下の個数を時系列で判定し、質問と更新を左右へ振り分ける。",
+    "aliases": [
+      "Overall Binary Search",
+      "Offline Dynamic Kth",
+      "整体二分",
+      "値域分割"
+    ],
+    "family": "区間・オフライン",
+    "level": "上級",
+    "prerequisites": [
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.luogu.com.cn/problem/P2617",
+      "https://www.spoj.com/problems/MKTHNUM/",
+      "https://new3.spoj.com/problems/MKTHNUM/"
+    ]
+  },
+  {
+    "id": "persistent-prefix-kth",
+    "title": "二つの接頭辞の頻度差から、区間のk番目へ降りる",
+    "summary": "前から一要素ずつ加えた木を共有し、二つの版の差だけで区間の順位を求める。",
+    "aliases": [
+      "Persistent Segment Tree",
+      "Chairman Tree",
+      "永続セグメント木",
+      "接頭辞順位"
+    ],
+    "family": "区間・順序統計",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression",
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/data_structure/range_kth_smallest/task.md",
+      "https://www.spoj.com/problems/MKTHNUM/",
+      "https://new3.spoj.com/problems/MKTHNUM/"
+    ]
+  },
+  {
+    "id": "wavelet-range-kth",
+    "title": "値の桁で安定に二分し、区間の順位を写し替える",
+    "summary": "各桁で0の個数を記録し、元の区間を次の並びの区間へ移す。",
+    "aliases": [
+      "Wavelet Matrix",
+      "Wavelet Tree",
+      "ウェーブレット行列",
+      "静的区間順位"
+    ],
+    "family": "区間・順序統計",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/data_structure/range_kth_smallest/task.md",
+      "https://www.spoj.com/problems/MKTHNUM/",
+      "https://new3.spoj.com/problems/MKTHNUM/"
+    ]
+  },
+  {
+    "id": "fenwick-prefix-lower-bound",
+    "title": "累積個数が目標へ届く位置を、木の内部で探す",
+    "summary": "外側の二分探索を省き、Fenwick木の大きな区間から順に飛ぶ。",
+    "aliases": [
+      "Fenwick Lower Bound",
+      "BIT Binary Lifting",
+      "Order Statistics",
+      "累積和逆引き"
+    ],
+    "family": "区間・順序統計",
+    "level": "上級",
+    "prerequisites": [
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2163",
+      "https://www.spoj.com/problems/ORDERSET/",
+      "https://www.spoj.com/SPOJ/problems/ORDERSET/en/"
+    ]
+  },
+  {
+    "id": "xor-basis-kth",
+    "title": "部分集合XORの異なる値を、基底の係数順に並べる",
+    "summary": "各基底行の最上位の1を他の行から消し、順位のビットを係数として使う。",
+    "aliases": [
+      "XOR Basis Kth",
+      "Reduced Linear Basis",
+      "線形基底",
+      "XOR順位"
+    ],
+    "family": "整数・線形代数",
+    "level": "上級",
+    "prerequisites": [
+      "xor-basis"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc283/tasks/abc283_g"
+    ]
+  },
+  {
+    "id": "linear-basis-rollback",
+    "title": "追加した数のXOR基底を、行の記録で巻き戻す",
+    "summary": "既存の基底行を変更せず、新しく埋めた一行だけを記録して探索前へ戻す。",
+    "aliases": [
+      "Rollback Linear Basis",
+      "Dynamic XOR",
+      "巻き戻し線形基底",
+      "閉路XOR"
+    ],
+    "family": "整数・線形代数",
+    "level": "上級",
+    "prerequisites": [
+      "xor-basis",
+      "connectivity-time-intervals"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/938/G"
+    ]
+  },
+  {
+    "id": "sqrt-heavy-light-sets",
+    "title": "重なる集合への加算を、大きい集合だけ遅らせる",
+    "summary": "集合サイズ総和を基準に分け、重なり個数で一括加算の寄与を計算する。",
+    "aliases": [
+      "Heavy Light Sets",
+      "Subset Sums",
+      "集合平方分割",
+      "重なり個数"
+    ],
+    "family": "集合・更新",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/348/C"
+    ]
+  },
+  {
+    "id": "range-add-count-less",
+    "title": "区間加算と閾値個数を、並べた小区間で両立させる",
+    "summary": "完全に覆う小区間は加算値だけを持ち、端の小区間だけを並べ直す。",
+    "aliases": [
+      "Sqrt Decomposition",
+      "Range Add Count",
+      "Sorted Buckets",
+      "加算と個数"
+    ],
+    "family": "区間・更新",
+    "level": "上級",
+    "prerequisites": [
+      "binary-search"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.luogu.com.cn/problem/P2801"
+    ]
+  }
+]

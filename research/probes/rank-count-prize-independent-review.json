@@ -1,0 +1,2331 @@
+{
+  "task": "Independent review of IOI2017 Prize reusable full-range technique",
+  "reviewer": "/root/usaco_mincost_flow_tests",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "techniqueId": "rank-count-oracle-equal-level-interval-pruning",
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-article.mdx",
+      "sha256": "228644c6fc0a7324999d8f492c65cc1cf4866b380d66a9bc05893480522a1e43"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-checker.py",
+      "sha256": "544ac6fc394f2830d2dae002ff0fd91463ada469544f0cb2edec2c212f2b4ec3"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-sidecar.json",
+      "sha256": "e3d58d9887d2459a6b8762372e54155fa241b87137b0e42fbf0dd9b8efc9046b"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-independent-normal.json",
+      "sha256": "6974ef0bf7f90fe0794dedb856045c4b248ad9a1a8b7bee26769773954b9c038"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-independent-asan.json",
+      "sha256": "b4cb454b3a0bb3913e0c9b40b499b903f713c4791a3fc402acb10a4bde2b6f5f"
+    },
+    "independent-extra.py": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-independent-extra.py",
+      "sha256": "5beedcd40738ac55cf4e932f11a266528fdc5535ee342e518befca316ec077c6"
+    },
+    "independent-extra-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-independent-extra-normal.json",
+      "sha256": "c23c83ed945ef5b025105985e85b241b7495107bf328792e7d31816363e29d03"
+    },
+    "independent-extra-asan.json": {
+      "path": "/tmp/flowchartcp-ioi2017-prize-independent-extra-asan.json",
+      "sha256": "7ffd673f7cfde6698a2194d99666963f1cdf21b23488f6e21f5da41b4c5e4944"
+    }
+  },
+  "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+  "sourceReview": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+      "pages": 4,
+      "method": "Full web PDF text; mathematical extraction gaps independently filled from indexed primary SWE/MAC distribution. No local PDF/image inspection claimed.",
+      "verified": [
+        "0-based positions; ask returns exact counts of strictly better boxes to left/right",
+        "one type-1 object and strictly squared growth for consecutive ranks",
+        "int find_best(int n), int[] ask(int i), one source callback invocation",
+        "adaptive grader: after every reply at least one entire legal sequence fits the complete prior transcript; fixed sequences are only a special case"
+      ]
+    },
+    "numeric": {
+      "urls": [
+        "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf",
+        "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf"
+      ],
+      "successfulQueries": [
+        "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf \"Constraints\" \"v\"",
+        "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf \"10000\" \"adaptive\"",
+        "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf \"5000\" \"10000\""
+      ],
+      "verified": {
+        "N": [
+          3,
+          200000
+        ],
+        "c1": 1,
+        "growth": "c[t+1]>c[t]^2",
+        "hardQueries": 10000,
+        "fullScoreQueries": 5000,
+        "twoKind20PointSubtaskQueries": 10000,
+        "unrestricted80PointScores": [
+          "q>10000:0/WA",
+          "6000<q<=10000:70",
+          "5000<q<=6000:80-(q-5000)/100",
+          "q<=5000:80"
+        ]
+      },
+      "directFetchCacheMissButPrimaryIndexedTextSucceeded": true
+    },
+    "officialEditorial": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+      "pages": 2,
+      "provenanceIndex": "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "verifiedScope": "Equal answer sums identify levels and equal-level left-count differences count better objects between endpoints. Official efficient 4759-query assertion is present, but its exact omitted implementation/proof remains unreconstructed. This review verifies the separate complete deterministic 4779 procedure.",
+      "fullOfficial4759Verified": false,
+      "independentSelected4779Verified": true,
+      "authorBylineNotInferred": true
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "pages": 1,
+      "mapping": "generic int[] is C++ std::vector<int>",
+      "timeSeconds": 1,
+      "memoryMB": 1024,
+      "actualDistributedHeaderBytesRead": false,
+      "syntheticHeaderIsNotOfficial": true
+    },
+    "contestDate": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "sourceDate": "2017-08-01",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "difficulty": null
+    }
+  },
+  "mathematicalReview": [
+    {
+      "obligation": "Integer rank multiplicities and global thresholds",
+      "conclusion": "At most five kinds follows from the minimum chain 1,2,5,26,677,458330. Every nonlast multiplicity c satisfies c+c^2+1<=200000, hence c<=446. Its preceding bounds are21 and4; S<=472 and noncheapest reply sum<=26. Fewer kinds have no larger bounds. These are universal over every legal transcript completion, not sample maxima."
+    },
+    {
+      "obligation": "Certain-cheapest prefix",
+      "conclusion": "A reply sum>26 proves a cheapest position in every completion, fixing S. Earlier prefix positions then all have sum<S. Otherwise 473 distinct known positions include a cheapest in every completion because S<=472; their fixed maximum reply sum equals S<=26 in every surviving completion. Shorter complete prefixes must encounter the unique best."
+    },
+    {
+      "obligation": "19-visit fast path",
+      "conclusion": "Reply sum1 means there is exactly one strictly better object, necessarily the unique type1. A subsequent sum1 correctly halves the remaining candidate interval via its 0/1 counts; a greater sum aborts that path and discards no candidates in the general restart. Total logical visits at most 1+bit_width(N-1)<=19."
+    },
+    {
+      "obligation": "Count-preserving midpoint scan",
+      "conclusion": "A frame stores exact rare counts a/b outside [l,r], so k=S-a-b. After q consecutive rare midpoint positions, a cheapest reply(L,R) gives children kL=L-a-q and kR=R-b and outside pairs (a,R+q)/(L,b). Reaching the end gives only the left child (a,b+q); consuming all k leaves no rare unqueried position. Scanned positions are excluded from both children, and the best cannot disappear from all active frames without being queried."
+    },
+    {
+      "obligation": "D_H(k) full induction and prefix absorption",
+      "conclusion": "For k>=2^(H-1), D_H(k)=2^H-1 dominates unique position visits. Otherwise combine min(u,x)+min(u,y)<=min(2u,x+y) over child levels to get q+1+D_(H-1)(x)+D_(H-1)(y)<=q+D_H(k-q)<=D_H(k). All-k-consumed and right-end-without-common cases satisfy their separate bounds. Children have length<=floor(parent/2). D18(472)=4759; early prefix c+1 is absorbed by reducing remaining rare count to S-c, totaling<=4760. Full473 prefix with S<=26 costs<=842. Add19 fast visits:4779<5000."
+    },
+    {
+      "obligation": "Adaptive correctness and caching",
+      "conclusion": "No proof step chooses one fixed hidden array. The threshold, fixed S and every outside count are invariants shared by all currently consistent legal completions; later replies can only narrow that family. A returned sum0 position is best in every final completion. Cache reuse preserves that exact prior reply and sends no duplicate external query."
+    }
+  ],
+  "implementationReview": {
+    "entireVisibleCppRead": true,
+    "sections": 8,
+    "frontmatterMatchesMetadata": true,
+    "realPrerequisites": [
+      "interactive",
+      "binary-search",
+      "invariant"
+    ],
+    "apiContainsOriginalDomain": true,
+    "originalAdapter": "PRIZE_ORIGINAL_GRADER includes distributed prize.h, implements global int find_best(int), validates ask vector length2. Generic standalone and synthetic-header adapter are tested separately.",
+    "inputValidation": "N3..200000, budget0..10000 and nonempty Oracle are validated before core allocations or questions. New external questions check budget before callback; detected local reply/classification/capacity contradictions throw runtime_error. Arbitrary dishonest oracles are not promised complete verification.",
+    "integerSafety": "Range checks bound each reply component before adding it, so sums are <=N-1 even for rejected malformed responses. All internal indices, halves, outside sums, small counts and budgets stay safely in int. No public exploration computes rank-count squares.",
+    "exceptionsAndState": "Callback/allocation exceptions propagate; API owns only local vectors and a value Result and retains no callback reference. Previous external effects are not rolled back. Nested calls, result mutation/copy/move and repeated calls cannot affect another invocation.",
+    "resources": "O(N+Q) local time, excluding oracle evaluation; O(N+logN) storage. Cache is N Reply objects, iterative pending stack reserves32 frames and contains<=18. Search itself makes no allocation after reserve, independently fault-tested.",
+    "queryUpperBoundHelper": "min(N,4761+bit_width(N-1)) is valid: global prefix+search<=4760 and fast<=1+bit_width(N-1); caching also bounds asks byN. Whole legal source range is covered."
+  },
+  "reproducedAuthorChecker": {
+    "scope": "Reproduction, not new oracle coverage. Both original published-fence binaries were recompiled unchanged. All deterministic fields including complete maximumCases arrays match author sidecar; only timings/RSS differ.",
+    "normal": {
+      "articleSha256": "228644c6fc0a7324999d8f492c65cc1cf4866b380d66a9bc05893480522a1e43",
+      "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "genericStandaloneFull": {
+        "checks": 9804568,
+        "apiCalls": 26286,
+        "fixedArrayOracleCalls": 308677,
+        "allLegalArraysN3to16": 23807,
+        "adaptiveCompletionRuns": 36,
+        "adaptiveCandidateReplyComparisons": 230117,
+        "allAdaptiveTreeNodesN3to12": 1976,
+        "allAdaptiveTreeLeavesN3to12": 939,
+        "allFeasibleAdaptiveResponseBranchesN3to12": 1966,
+        "largeAdaptiveCompletionRuns": 3,
+        "largeAdaptiveCandidateReplyComparisons": 11527,
+        "allMarkedPatternsN1to18": 524286,
+        "legalCountChains": 13098,
+        "maximumNonCheapest": 472,
+        "maximumNonCheapestReplySum": 26,
+        "invalidCases": 16,
+        "originalAdapterCalls": 0,
+        "maximumQueriesObserved": 4112,
+        "checksum": "12118485734290438769",
+        "seconds": 0.371765,
+        "peakRSSKiB": 21668,
+        "maximumCases": [
+          {
+            "name": "two levels,best0",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 1,
+            "fast": 1,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "two levels,best1",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 18,
+            "fast": 18,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "two levels,best100000",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 2,
+            "fast": 2,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "two levels,best199999",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 19,
+            "fast": 19,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 509,
+            "fast": 2,
+            "prefix": 472,
+            "search": 35
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 491,
+            "fast": 1,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 492,
+            "fast": 2,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 517,
+            "fast": 1,
+            "prefix": 472,
+            "search": 44
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 782,
+            "fast": 1,
+            "prefix": 472,
+            "search": 309
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 510,
+            "fast": 1,
+            "prefix": 472,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 491,
+            "fast": 1,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 799,
+            "fast": 1,
+            "prefix": 472,
+            "search": 326
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 802,
+            "fast": 1,
+            "prefix": 472,
+            "search": 329
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 510,
+            "fast": 1,
+            "prefix": 472,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 491,
+            "fast": 1,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 809,
+            "fast": 1,
+            "prefix": 472,
+            "search": 336
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 338,
+            "fast": 1,
+            "prefix": 1,
+            "search": 336
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 38,
+            "fast": 1,
+            "prefix": 0,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 45,
+            "fast": 1,
+            "prefix": 26,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 338,
+            "fast": 1,
+            "prefix": 0,
+            "search": 337
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 3996,
+            "fast": 1,
+            "prefix": 1,
+            "search": 3994
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 400,
+            "fast": 1,
+            "prefix": 0,
+            "search": 399
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 486,
+            "fast": 1,
+            "prefix": 467,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 3996,
+            "fast": 1,
+            "prefix": 0,
+            "search": 3995
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 4112,
+            "fast": 1,
+            "prefix": 1,
+            "search": 4110
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 400,
+            "fast": 1,
+            "prefix": 0,
+            "search": 399
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 490,
+            "fast": 1,
+            "prefix": 471,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 4112,
+            "fast": 1,
+            "prefix": 0,
+            "search": 4111
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 408,
+            "fast": 1,
+            "prefix": 1,
+            "search": 406
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 38,
+            "fast": 1,
+            "prefix": 0,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 52,
+            "fast": 1,
+            "prefix": 33,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 408,
+            "fast": 1,
+            "prefix": 0,
+            "search": 407
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 472,
+            "nonCheapest": 3,
+            "queries": 394,
+            "fast": 1,
+            "prefix": 393,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 473,
+            "nonCheapest": 3,
+            "queries": 395,
+            "fast": 1,
+            "prefix": 394,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 474,
+            "nonCheapest": 3,
+            "queries": 396,
+            "fast": 1,
+            "prefix": 395,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 475,
+            "nonCheapest": 3,
+            "queries": 396,
+            "fast": 1,
+            "prefix": 395,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 511,
+            "nonCheapest": 3,
+            "queries": 426,
+            "fast": 1,
+            "prefix": 425,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 512,
+            "nonCheapest": 3,
+            "queries": 427,
+            "fast": 1,
+            "prefix": 426,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 513,
+            "nonCheapest": 3,
+            "queries": 428,
+            "fast": 1,
+            "prefix": 427,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 1023,
+            "nonCheapest": 3,
+            "queries": 489,
+            "fast": 1,
+            "prefix": 472,
+            "search": 16
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 1024,
+            "nonCheapest": 3,
+            "queries": 488,
+            "fast": 1,
+            "prefix": 472,
+            "search": 15
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 1025,
+            "nonCheapest": 3,
+            "queries": 489,
+            "fast": 1,
+            "prefix": 472,
+            "search": 16
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 100141,
+            "nonCheapest": 303,
+            "queries": 269,
+            "fast": 1,
+            "prefix": 0,
+            "search": 268
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 98861,
+            "nonCheapest": 253,
+            "queries": 791,
+            "fast": 1,
+            "prefix": 0,
+            "search": 790
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 134919,
+            "nonCheapest": 225,
+            "queries": 885,
+            "fast": 1,
+            "prefix": 0,
+            "search": 884
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 51839,
+            "nonCheapest": 94,
+            "queries": 742,
+            "fast": 1,
+            "prefix": 0,
+            "search": 741
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 77770,
+            "nonCheapest": 257,
+            "queries": 1726,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1725
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 163389,
+            "nonCheapest": 329,
+            "queries": 479,
+            "fast": 1,
+            "prefix": 0,
+            "search": 478
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 108845,
+            "nonCheapest": 193,
+            "queries": 496,
+            "fast": 1,
+            "prefix": 0,
+            "search": 495
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 135971,
+            "nonCheapest": 380,
+            "queries": 771,
+            "fast": 1,
+            "prefix": 0,
+            "search": 770
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 185495,
+            "nonCheapest": 328,
+            "queries": 1045,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1044
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 197229,
+            "nonCheapest": 337,
+            "queries": 1996,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1995
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 103895,
+            "nonCheapest": 141,
+            "queries": 805,
+            "fast": 1,
+            "prefix": 0,
+            "search": 804
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 165452,
+            "nonCheapest": 381,
+            "queries": 873,
+            "fast": 1,
+            "prefix": 0,
+            "search": 872
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 122260,
+            "nonCheapest": 155,
+            "queries": 1108,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1107
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 123340,
+            "nonCheapest": 89,
+            "queries": 819,
+            "fast": 1,
+            "prefix": 0,
+            "search": 818
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 90164,
+            "nonCheapest": 130,
+            "queries": 387,
+            "fast": 1,
+            "prefix": 0,
+            "search": 386
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 181295,
+            "nonCheapest": 412,
+            "queries": 3255,
+            "fast": 1,
+            "prefix": 0,
+            "search": 3254
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 190957,
+            "nonCheapest": 347,
+            "queries": 2437,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2436
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 48645,
+            "nonCheapest": 205,
+            "queries": 336,
+            "fast": 1,
+            "prefix": 0,
+            "search": 335
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 57560,
+            "nonCheapest": 197,
+            "queries": 280,
+            "fast": 1,
+            "prefix": 0,
+            "search": 279
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 175195,
+            "nonCheapest": 323,
+            "queries": 1149,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1148
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 10400,
+            "nonCheapest": 96,
+            "queries": 284,
+            "fast": 1,
+            "prefix": 0,
+            "search": 283
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191050,
+            "nonCheapest": 411,
+            "queries": 2228,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2227
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 155880,
+            "nonCheapest": 230,
+            "queries": 707,
+            "fast": 1,
+            "prefix": 0,
+            "search": 706
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 147570,
+            "nonCheapest": 392,
+            "queries": 2616,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2615
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 113442,
+            "nonCheapest": 306,
+            "queries": 262,
+            "fast": 1,
+            "prefix": 0,
+            "search": 261
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 181689,
+            "nonCheapest": 419,
+            "queries": 1566,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1565
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 151040,
+            "nonCheapest": 372,
+            "queries": 888,
+            "fast": 1,
+            "prefix": 0,
+            "search": 887
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 179863,
+            "nonCheapest": 303,
+            "queries": 990,
+            "fast": 1,
+            "prefix": 0,
+            "search": 989
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191161,
+            "nonCheapest": 328,
+            "queries": 67,
+            "fast": 1,
+            "prefix": 0,
+            "search": 66
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191689,
+            "nonCheapest": 455,
+            "queries": 934,
+            "fast": 1,
+            "prefix": 0,
+            "search": 933
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 142434,
+            "nonCheapest": 375,
+            "queries": 1280,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1279
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 163250,
+            "nonCheapest": 409,
+            "queries": 1339,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1338
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 178369,
+            "nonCheapest": 442,
+            "queries": 2800,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2799
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 82396,
+            "nonCheapest": 286,
+            "queries": 788,
+            "fast": 1,
+            "prefix": 0,
+            "search": 787
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 190901,
+            "nonCheapest": 432,
+            "queries": 316,
+            "fast": 1,
+            "prefix": 0,
+            "search": 315
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 194779,
+            "nonCheapest": 421,
+            "queries": 19,
+            "fast": 1,
+            "prefix": 0,
+            "search": 18
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 131317,
+            "nonCheapest": 338,
+            "queries": 478,
+            "fast": 1,
+            "prefix": 0,
+            "search": 477
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 170859,
+            "nonCheapest": 419,
+            "queries": 2569,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2568
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 125243,
+            "nonCheapest": 357,
+            "queries": 45,
+            "fast": 1,
+            "prefix": 0,
+            "search": 44
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 151668,
+            "nonCheapest": 403,
+            "queries": 1249,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1248
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 141067,
+            "nonCheapest": 331,
+            "queries": 1596,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1595
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191165,
+            "nonCheapest": 412,
+            "queries": 2954,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2953
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 97680,
+            "nonCheapest": 271,
+            "queries": 1081,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1080
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 192533,
+            "nonCheapest": 53,
+            "queries": 512,
+            "fast": 1,
+            "prefix": 0,
+            "search": 511
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 194339,
+            "nonCheapest": 350,
+            "queries": 2597,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2596
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 49589,
+            "nonCheapest": 108,
+            "queries": 841,
+            "fast": 1,
+            "prefix": 0,
+            "search": 840
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 193282,
+            "nonCheapest": 344,
+            "queries": 2694,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2693
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 117033,
+            "nonCheapest": 68,
+            "queries": 670,
+            "fast": 1,
+            "prefix": 0,
+            "search": 669
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 115338,
+            "nonCheapest": 354,
+            "queries": 1874,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1873
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 99489,
+            "nonCheapest": 32,
+            "queries": 224,
+            "fast": 1,
+            "prefix": 0,
+            "search": 223
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 57311,
+            "nonCheapest": 220,
+            "queries": 433,
+            "fast": 1,
+            "prefix": 0,
+            "search": 432
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 113910,
+            "nonCheapest": 150,
+            "queries": 318,
+            "fast": 1,
+            "prefix": 0,
+            "search": 317
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 193154,
+            "nonCheapest": 427,
+            "queries": 2588,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2587
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 175630,
+            "nonCheapest": 379,
+            "queries": 1105,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1104
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 113580,
+            "nonCheapest": 338,
+            "queries": 1358,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1357
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 126967,
+            "nonCheapest": 294,
+            "queries": 423,
+            "fast": 1,
+            "prefix": 0,
+            "search": 422
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 23242,
+            "nonCheapest": 137,
+            "queries": 154,
+            "fast": 1,
+            "prefix": 0,
+            "search": 153
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 78945,
+            "nonCheapest": 229,
+            "queries": 927,
+            "fast": 1,
+            "prefix": 0,
+            "search": 926
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 174108,
+            "nonCheapest": 367,
+            "queries": 754,
+            "fast": 1,
+            "prefix": 0,
+            "search": 753
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 194666,
+            "nonCheapest": 342,
+            "queries": 1676,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1675
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 145981,
+            "nonCheapest": 237,
+            "queries": 1604,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1603
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 168110,
+            "nonCheapest": 324,
+            "queries": 1141,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1140
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 131180,
+            "nonCheapest": 200,
+            "queries": 1365,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1364
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 135599,
+            "nonCheapest": 294,
+            "queries": 1810,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1809
+          }
+        ]
+      },
+      "syntheticHeaderOriginalAdapterSmoke": {
+        "checks": 285071,
+        "apiCalls": 370,
+        "fixedArrayOracleCalls": 28172,
+        "allLegalArraysN3to16": 0,
+        "adaptiveCompletionRuns": 0,
+        "adaptiveCandidateReplyComparisons": 0,
+        "allAdaptiveTreeNodesN3to12": 0,
+        "allAdaptiveTreeLeavesN3to12": 0,
+        "allFeasibleAdaptiveResponseBranchesN3to12": 0,
+        "largeAdaptiveCompletionRuns": 0,
+        "largeAdaptiveCandidateReplyComparisons": 0,
+        "allMarkedPatternsN1to18": 0,
+        "legalCountChains": 0,
+        "maximumNonCheapest": 0,
+        "maximumNonCheapestReplySum": 0,
+        "invalidCases": 21,
+        "originalAdapterCalls": 4,
+        "maximumQueriesObserved": 4112,
+        "checksum": "12874631007238081852",
+        "seconds": 0.0201001,
+        "peakRSSKiB": 21796,
+        "maximumCases": [
+          {
+            "name": "original maximum S472 full source",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 4112,
+            "fast": 1,
+            "prefix": 0,
+            "search": 4111
+          },
+          {
+            "name": "original maximum S26 fallback",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 809,
+            "fast": 1,
+            "prefix": 472,
+            "search": 336
+          },
+          {
+            "name": "original maximum two-level",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 19,
+            "fast": 19,
+            "prefix": 0,
+            "search": 0
+          }
+        ]
+      },
+      "officialHeaderBytesRetrieved": false
+    },
+    "asanUbsan": {
+      "articleSha256": "228644c6fc0a7324999d8f492c65cc1cf4866b380d66a9bc05893480522a1e43",
+      "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "genericStandaloneFull": {
+        "checks": 9804568,
+        "apiCalls": 26286,
+        "fixedArrayOracleCalls": 308677,
+        "allLegalArraysN3to16": 23807,
+        "adaptiveCompletionRuns": 36,
+        "adaptiveCandidateReplyComparisons": 230117,
+        "allAdaptiveTreeNodesN3to12": 1976,
+        "allAdaptiveTreeLeavesN3to12": 939,
+        "allFeasibleAdaptiveResponseBranchesN3to12": 1966,
+        "largeAdaptiveCompletionRuns": 3,
+        "largeAdaptiveCandidateReplyComparisons": 11527,
+        "allMarkedPatternsN1to18": 524286,
+        "legalCountChains": 13098,
+        "maximumNonCheapest": 472,
+        "maximumNonCheapestReplySum": 26,
+        "invalidCases": 16,
+        "originalAdapterCalls": 0,
+        "maximumQueriesObserved": 4112,
+        "checksum": "12118485734290438769",
+        "seconds": 1.50342,
+        "peakRSSKiB": 363224,
+        "maximumCases": [
+          {
+            "name": "two levels,best0",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 1,
+            "fast": 1,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "two levels,best1",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 18,
+            "fast": 18,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "two levels,best100000",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 2,
+            "fast": 2,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "two levels,best199999",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 19,
+            "fast": 19,
+            "prefix": 0,
+            "search": 0
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 509,
+            "fast": 2,
+            "prefix": 472,
+            "search": 35
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 491,
+            "fast": 1,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 492,
+            "fast": 2,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 3,
+            "queries": 517,
+            "fast": 1,
+            "prefix": 472,
+            "search": 44
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 782,
+            "fast": 1,
+            "prefix": 472,
+            "search": 309
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 510,
+            "fast": 1,
+            "prefix": 472,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 491,
+            "fast": 1,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 25,
+            "queries": 799,
+            "fast": 1,
+            "prefix": 472,
+            "search": 326
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 802,
+            "fast": 1,
+            "prefix": 472,
+            "search": 329
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 510,
+            "fast": 1,
+            "prefix": 472,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 491,
+            "fast": 1,
+            "prefix": 472,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 809,
+            "fast": 1,
+            "prefix": 472,
+            "search": 336
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 338,
+            "fast": 1,
+            "prefix": 1,
+            "search": 336
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 38,
+            "fast": 1,
+            "prefix": 0,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 45,
+            "fast": 1,
+            "prefix": 26,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 27,
+            "queries": 338,
+            "fast": 1,
+            "prefix": 0,
+            "search": 337
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 3996,
+            "fast": 1,
+            "prefix": 1,
+            "search": 3994
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 400,
+            "fast": 1,
+            "prefix": 0,
+            "search": 399
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 486,
+            "fast": 1,
+            "prefix": 467,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 468,
+            "queries": 3996,
+            "fast": 1,
+            "prefix": 0,
+            "search": 3995
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 4112,
+            "fast": 1,
+            "prefix": 1,
+            "search": 4110
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 400,
+            "fast": 1,
+            "prefix": 0,
+            "search": 399
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 490,
+            "fast": 1,
+            "prefix": 471,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 4112,
+            "fast": 1,
+            "prefix": 0,
+            "search": 4111
+          },
+          {
+            "name": "source counts/placement0",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 408,
+            "fast": 1,
+            "prefix": 1,
+            "search": 406
+          },
+          {
+            "name": "source counts/placement1",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 38,
+            "fast": 1,
+            "prefix": 0,
+            "search": 37
+          },
+          {
+            "name": "source counts/placement2",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 52,
+            "fast": 1,
+            "prefix": 33,
+            "search": 18
+          },
+          {
+            "name": "source counts/placement3",
+            "n": 200000,
+            "nonCheapest": 34,
+            "queries": 408,
+            "fast": 1,
+            "prefix": 0,
+            "search": 407
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 472,
+            "nonCheapest": 3,
+            "queries": 394,
+            "fast": 1,
+            "prefix": 393,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 473,
+            "nonCheapest": 3,
+            "queries": 395,
+            "fast": 1,
+            "prefix": 394,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 474,
+            "nonCheapest": 3,
+            "queries": 396,
+            "fast": 1,
+            "prefix": 395,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 475,
+            "nonCheapest": 3,
+            "queries": 396,
+            "fast": 1,
+            "prefix": 395,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 511,
+            "nonCheapest": 3,
+            "queries": 426,
+            "fast": 1,
+            "prefix": 425,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 512,
+            "nonCheapest": 3,
+            "queries": 427,
+            "fast": 1,
+            "prefix": 426,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 513,
+            "nonCheapest": 3,
+            "queries": 428,
+            "fast": 1,
+            "prefix": 427,
+            "search": 0
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 1023,
+            "nonCheapest": 3,
+            "queries": 489,
+            "fast": 1,
+            "prefix": 472,
+            "search": 16
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 1024,
+            "nonCheapest": 3,
+            "queries": 488,
+            "fast": 1,
+            "prefix": 472,
+            "search": 15
+          },
+          {
+            "name": "prefix/binary boundary",
+            "n": 1025,
+            "nonCheapest": 3,
+            "queries": 489,
+            "fast": 1,
+            "prefix": 472,
+            "search": 16
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 100141,
+            "nonCheapest": 303,
+            "queries": 269,
+            "fast": 1,
+            "prefix": 0,
+            "search": 268
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 98861,
+            "nonCheapest": 253,
+            "queries": 791,
+            "fast": 1,
+            "prefix": 0,
+            "search": 790
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 134919,
+            "nonCheapest": 225,
+            "queries": 885,
+            "fast": 1,
+            "prefix": 0,
+            "search": 884
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 51839,
+            "nonCheapest": 94,
+            "queries": 742,
+            "fast": 1,
+            "prefix": 0,
+            "search": 741
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 77770,
+            "nonCheapest": 257,
+            "queries": 1726,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1725
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 163389,
+            "nonCheapest": 329,
+            "queries": 479,
+            "fast": 1,
+            "prefix": 0,
+            "search": 478
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 108845,
+            "nonCheapest": 193,
+            "queries": 496,
+            "fast": 1,
+            "prefix": 0,
+            "search": 495
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 135971,
+            "nonCheapest": 380,
+            "queries": 771,
+            "fast": 1,
+            "prefix": 0,
+            "search": 770
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 185495,
+            "nonCheapest": 328,
+            "queries": 1045,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1044
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 197229,
+            "nonCheapest": 337,
+            "queries": 1996,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1995
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 103895,
+            "nonCheapest": 141,
+            "queries": 805,
+            "fast": 1,
+            "prefix": 0,
+            "search": 804
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 165452,
+            "nonCheapest": 381,
+            "queries": 873,
+            "fast": 1,
+            "prefix": 0,
+            "search": 872
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 122260,
+            "nonCheapest": 155,
+            "queries": 1108,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1107
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 123340,
+            "nonCheapest": 89,
+            "queries": 819,
+            "fast": 1,
+            "prefix": 0,
+            "search": 818
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 90164,
+            "nonCheapest": 130,
+            "queries": 387,
+            "fast": 1,
+            "prefix": 0,
+            "search": 386
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 181295,
+            "nonCheapest": 412,
+            "queries": 3255,
+            "fast": 1,
+            "prefix": 0,
+            "search": 3254
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 190957,
+            "nonCheapest": 347,
+            "queries": 2437,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2436
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 48645,
+            "nonCheapest": 205,
+            "queries": 336,
+            "fast": 1,
+            "prefix": 0,
+            "search": 335
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 57560,
+            "nonCheapest": 197,
+            "queries": 280,
+            "fast": 1,
+            "prefix": 0,
+            "search": 279
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 175195,
+            "nonCheapest": 323,
+            "queries": 1149,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1148
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 10400,
+            "nonCheapest": 96,
+            "queries": 284,
+            "fast": 1,
+            "prefix": 0,
+            "search": 283
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191050,
+            "nonCheapest": 411,
+            "queries": 2228,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2227
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 155880,
+            "nonCheapest": 230,
+            "queries": 707,
+            "fast": 1,
+            "prefix": 0,
+            "search": 706
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 147570,
+            "nonCheapest": 392,
+            "queries": 2616,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2615
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 113442,
+            "nonCheapest": 306,
+            "queries": 262,
+            "fast": 1,
+            "prefix": 0,
+            "search": 261
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 181689,
+            "nonCheapest": 419,
+            "queries": 1566,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1565
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 151040,
+            "nonCheapest": 372,
+            "queries": 888,
+            "fast": 1,
+            "prefix": 0,
+            "search": 887
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 179863,
+            "nonCheapest": 303,
+            "queries": 990,
+            "fast": 1,
+            "prefix": 0,
+            "search": 989
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191161,
+            "nonCheapest": 328,
+            "queries": 67,
+            "fast": 1,
+            "prefix": 0,
+            "search": 66
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191689,
+            "nonCheapest": 455,
+            "queries": 934,
+            "fast": 1,
+            "prefix": 0,
+            "search": 933
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 142434,
+            "nonCheapest": 375,
+            "queries": 1280,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1279
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 163250,
+            "nonCheapest": 409,
+            "queries": 1339,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1338
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 178369,
+            "nonCheapest": 442,
+            "queries": 2800,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2799
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 82396,
+            "nonCheapest": 286,
+            "queries": 788,
+            "fast": 1,
+            "prefix": 0,
+            "search": 787
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 190901,
+            "nonCheapest": 432,
+            "queries": 316,
+            "fast": 1,
+            "prefix": 0,
+            "search": 315
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 194779,
+            "nonCheapest": 421,
+            "queries": 19,
+            "fast": 1,
+            "prefix": 0,
+            "search": 18
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 131317,
+            "nonCheapest": 338,
+            "queries": 478,
+            "fast": 1,
+            "prefix": 0,
+            "search": 477
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 170859,
+            "nonCheapest": 419,
+            "queries": 2569,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2568
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 125243,
+            "nonCheapest": 357,
+            "queries": 45,
+            "fast": 1,
+            "prefix": 0,
+            "search": 44
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 151668,
+            "nonCheapest": 403,
+            "queries": 1249,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1248
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 141067,
+            "nonCheapest": 331,
+            "queries": 1596,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1595
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 191165,
+            "nonCheapest": 412,
+            "queries": 2954,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2953
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 97680,
+            "nonCheapest": 271,
+            "queries": 1081,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1080
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 192533,
+            "nonCheapest": 53,
+            "queries": 512,
+            "fast": 1,
+            "prefix": 0,
+            "search": 511
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 194339,
+            "nonCheapest": 350,
+            "queries": 2597,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2596
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 49589,
+            "nonCheapest": 108,
+            "queries": 841,
+            "fast": 1,
+            "prefix": 0,
+            "search": 840
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 193282,
+            "nonCheapest": 344,
+            "queries": 2694,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2693
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 117033,
+            "nonCheapest": 68,
+            "queries": 670,
+            "fast": 1,
+            "prefix": 0,
+            "search": 669
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 115338,
+            "nonCheapest": 354,
+            "queries": 1874,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1873
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 99489,
+            "nonCheapest": 32,
+            "queries": 224,
+            "fast": 1,
+            "prefix": 0,
+            "search": 223
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 57311,
+            "nonCheapest": 220,
+            "queries": 433,
+            "fast": 1,
+            "prefix": 0,
+            "search": 432
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 113910,
+            "nonCheapest": 150,
+            "queries": 318,
+            "fast": 1,
+            "prefix": 0,
+            "search": 317
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 193154,
+            "nonCheapest": 427,
+            "queries": 2588,
+            "fast": 1,
+            "prefix": 0,
+            "search": 2587
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 175630,
+            "nonCheapest": 379,
+            "queries": 1105,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1104
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 113580,
+            "nonCheapest": 338,
+            "queries": 1358,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1357
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 126967,
+            "nonCheapest": 294,
+            "queries": 423,
+            "fast": 1,
+            "prefix": 0,
+            "search": 422
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 23242,
+            "nonCheapest": 137,
+            "queries": 154,
+            "fast": 1,
+            "prefix": 0,
+            "search": 153
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 78945,
+            "nonCheapest": 229,
+            "queries": 927,
+            "fast": 1,
+            "prefix": 0,
+            "search": 926
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 174108,
+            "nonCheapest": 367,
+            "queries": 754,
+            "fast": 1,
+            "prefix": 0,
+            "search": 753
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 194666,
+            "nonCheapest": 342,
+            "queries": 1676,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1675
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 145981,
+            "nonCheapest": 237,
+            "queries": 1604,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1603
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 168110,
+            "nonCheapest": 324,
+            "queries": 1141,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1140
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 131180,
+            "nonCheapest": 200,
+            "queries": 1365,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1364
+          },
+          {
+            "name": "random full legal count chain",
+            "n": 135599,
+            "nonCheapest": 294,
+            "queries": 1810,
+            "fast": 1,
+            "prefix": 0,
+            "search": 1809
+          }
+        ]
+      },
+      "syntheticHeaderOriginalAdapterSmoke": {
+        "checks": 285071,
+        "apiCalls": 370,
+        "fixedArrayOracleCalls": 28172,
+        "allLegalArraysN3to16": 0,
+        "adaptiveCompletionRuns": 0,
+        "adaptiveCandidateReplyComparisons": 0,
+        "allAdaptiveTreeNodesN3to12": 0,
+        "allAdaptiveTreeLeavesN3to12": 0,
+        "allFeasibleAdaptiveResponseBranchesN3to12": 0,
+        "largeAdaptiveCompletionRuns": 0,
+        "largeAdaptiveCandidateReplyComparisons": 0,
+        "allMarkedPatternsN1to18": 0,
+        "legalCountChains": 0,
+        "maximumNonCheapest": 0,
+        "maximumNonCheapestReplySum": 0,
+        "invalidCases": 21,
+        "originalAdapterCalls": 4,
+        "maximumQueriesObserved": 4112,
+        "checksum": "12874631007238081852",
+        "seconds": 0.0786271,
+        "peakRSSKiB": 64900,
+        "maximumCases": [
+          {
+            "name": "original maximum S472 full source",
+            "n": 200000,
+            "nonCheapest": 472,
+            "queries": 4112,
+            "fast": 1,
+            "prefix": 0,
+            "search": 4111
+          },
+          {
+            "name": "original maximum S26 fallback",
+            "n": 200000,
+            "nonCheapest": 26,
+            "queries": 809,
+            "fast": 1,
+            "prefix": 472,
+            "search": 336
+          },
+          {
+            "name": "original maximum two-level",
+            "n": 200000,
+            "nonCheapest": 1,
+            "queries": 19,
+            "fast": 19,
+            "prefix": 0,
+            "search": 0
+          }
+        ]
+      },
+      "officialHeaderBytesRetrieved": false
+    },
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-prize-checker.py",
+      "python3 /tmp/flowchartcp-ioi2017-prize-checker.py --sanitize"
+    ],
+    "leakSanitizer": "detect_leaks=0 exactly as author checker; ASan and UBSan halt_on_error=1"
+  },
+  "additionalIndependentVerification": {
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-prize-independent-extra.py",
+      "python3 /tmp/flowchartcp-ioi2017-prize-independent-extra.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "228644c6fc0a7324999d8f492c65cc1cf4866b380d66a9bc05893480522a1e43",
+      "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+      "sanitize": false,
+      "result": {
+        "checks": 44386,
+        "apiCalls": 3984,
+        "adaptiveRuns": 12,
+        "initialLegalCompletionOccurrences": 75825,
+        "candidateReplyComparisons": 6216314,
+        "maximumAdaptiveQueries": 555,
+        "allocationFaults": 2,
+        "callbackFaults": 3967,
+        "exactRecurrenceLengths": 255,
+        "exactRecurrenceStates": 32640,
+        "checksum": "10991112477329892348",
+        "seconds": 0.325507,
+        "peakRSSKiB": 21668
+      }
+    },
+    "asanUbsan": {
+      "articleSha256": "228644c6fc0a7324999d8f492c65cc1cf4866b380d66a9bc05893480522a1e43",
+      "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+      "sanitize": true,
+      "result": {
+        "checks": 44386,
+        "apiCalls": 3984,
+        "adaptiveRuns": 12,
+        "initialLegalCompletionOccurrences": 75825,
+        "candidateReplyComparisons": 6216314,
+        "maximumAdaptiveQueries": 555,
+        "allocationFaults": 2,
+        "callbackFaults": 3967,
+        "exactRecurrenceLengths": 255,
+        "exactRecurrenceStates": 32640,
+        "checksum": "10991112477329892348",
+        "seconds": 10.0358,
+        "peakRSSKiB": 481056
+      }
+    },
+    "exactVisitRecurrence": "All N1..255 and k1..N (32640 states), every capacity-feasible midpoint right scan length and left/right remaining marked split, including all-consumed/end branches. This independent DP does not assume a balanced split or use sampled binary shapes; its exact worst visits never exceed D_bitwidth(N)(k).",
+    "adaptiveFamilies": "12 adaptive runs with three answer-bucket policies on four exact full-completion families: N80/S3, N200000/S3, N200000/S34, N200000/S472. Variable rank1/rank2 positions enumerate all size3 subsets among20 slots with each best, or all size5 subsets among15 slots with each best; other required ranks are fixed. Every candidate is an entire legal sequence and each reply retains a nonempty compatible set. Initial family occurrences75825 (25275 unique across four families, repeated across3 policies); 6216314 candidate reply evaluations. Every final completion has the returned best. This is supplementary large-domain adversarial testing, not exhaustive traversal of all large legal transcripts.",
+    "allocationAndCallbackFaults": "Two core allocation points (cache before first callback and pending reserve after prefix) independently throw a custom std::bad_alloc subtype; identical exception type propagates and live-byte count returns to baseline. Fresh recovery calls work. All3967 individual callback points on one maximum-domain S472 case throw the identical marker pointer and make no following ask. After reserve, forcing every further allocation to fail still permits a successful complete search with no allocation attempt.",
+    "sanitizerEnvironment": "Initial independent-harness LeakSanitizer attempt reported unsupported ptrace environment; rerun uses detect_leaks=0 as the published checker. Address/undefined checks pass; allocated live bytes are separately asserted for injected-failure unwinding."
+  },
+  "preservation": {
+    "sharedFilesEdited": false,
+    "authorArtifactsEdited": false,
+    "finalAuthorThreeHashesRechecked": true,
+    "initialFrozenPrizeRowExactlyMatchesSidecarCopy": true,
+    "sharedPrizeRowProjectionOntoEveryInitialFieldUnchanged": true,
+    "initialReviewStatus": "unconfirmed",
+    "initialResearchSolutionConfirmed": false,
+    "initialCompletedApiCoverage": false,
+    "initialCorpusResearch4Api0IsHistoricalAndUnchanged": true,
+    "laterPositiveReviewAndResolutionOnlyByParentAfterRegistration": true
+  },
+  "limitations": [
+    "Actual distributed prize.h bytes were not retrieved; exact C++ callback types are independently derived from official generic signature and Notice, then synthetic-header-tested.",
+    "Official omitted efficient4759 implementation/proof remains unverified and unused. The complete separately proved4779 procedure satisfies the full-score5000 condition.",
+    "Tests cannot enumerate all legal/adaptive large inputs; the universal adaptive and query guarantees depend on the checked mathematical invariants/induction."
+  ],
+  "conclusion": "No material defect, unresolved required source fact or required lemma found. Supports independent-analysis subsequent positive review and full-source API resolution after parent registers actual article/reference/feature/guarded root walk. Does not retroactively change the initial fixed audit.",
+  "originalReviewSha256": "0db9612b935013baa20e2f6f2d6ee441f0cf8d2a2d0f75ec066997855638864b",
+  "publishedArticle": "src/content/docs/techniques/rank-count-oracle-equal-level-interval-pruning.mdx",
+  "permanentProbe": {
+    "script": "research/probes/rank-count-prize-independent.py",
+    "normalizedSha256": "003241a7c8cdfd981ed3cade95f66bc142104333488b66ffb07aa8adb3389efe",
+    "normalization": "Only MDX path and removal of implicit /tmp result writes; exact recurrence, compatible-completion adversaries and allocation/callback fault logic unchanged."
+  }
+}

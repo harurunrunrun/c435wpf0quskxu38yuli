@@ -1,0 +1,81 @@
+---
+title: "同じ文字列の接頭辞をつなぐ最少分割は、到達できる右端を段階ごとに伸ばす"
+description: "長さ1から最長一致までを全て使えるので、分割の候補を到達区間へまとめる。"
+techniqueId: prefix-piece-farthest-reach
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+長さ1から最長一致までを全て使えるので、分割の候補を到達区間へまとめる。
+
+## 使う場面
+
+一つの文字列の接頭辞を何度でも使い、別の文字列をできるだけ少ない個数で作りたい。使える接頭辞の長さには欠けがなく、一片の費用は同じ。
+
+## 考え方
+
+材料を $S$、作る文字列を $T$ とする。$T$ の位置 $i$ から一致する $S$ の最長接頭辞の長さを $L_i$ と置く。ここから一片で進める端点は $i+1,\ldots,i+L_i$ の全てである。
+
+$S$・区切り・$T$ を連結した列のZ配列から、全ての $L_i$ を一度に求める。次に「高々 $k$ 片で作れる接頭辞の長さ」は $0$ からある右端 $R_k$ までの区間になることを使う。
+
+$R_0=0$ とし、$0\le i\le R_k$ の開始位置から進める最も遠い端点を取ると $R_{k+1}$ が求まる。以前に調べた位置を再走査せず、新しく届いた位置だけを見る。$|T|$ に初めて届いた段階が最少片数。
+
+その時点の開始位置から最長の一片を確定する貪欲法とは異なる。例えば $S=\texttt{aba}$、$T=\texttt{ababa}$ では最初に `aba` を取ると残りを作れないが、`ab` と `aba` なら作れる。到達区間には両方の分割位置を残す。
+
+## 適用条件
+
+全ての非空接頭辞を何度でも使え、一片の費用が一律1。長さごとに費用が異なる、使える長さが飛び飛び、使用回数に制限がある場合には到達区間だけでは足りない。本文を飛ばして部分列にする操作も扱わない。
+
+実装は各長さ $500000$ 以下のバイト列を扱う。区切りを256として整数列に入れるので、入力の文字と衝突しない。空の $T$ は0片、空の $S$ から非空の $T$ を作る場合は不可能とする。
+
+## なぜ正しいか
+
+高々 $k$ 片で端点 $x$ に届くなら、最後の一片を短くするか、後ろの片を取り除くことで全ての端点 $0\le y\le x$ にも高々 $k$ 片で届く。したがって到達集合は接頭区間になる。
+
+次の一片の開始位置はその区間内にあり、終点は $i+L_i$ 以下。逆に $i+L_i$ には、$i$ に届く分割に最長一致を一片付け足せば届く。従って右端の最大値が次の段階の到達右端と一致する。右端が伸びなければ、新しい分割位置も生まれず不可能である。
+
+## 計算量
+
+全ての開始位置と片の長さをDPで調べると、照合長を前計算しても $O(|S||T|)$ 時間・$O(|T|)$ 空間。Z配列と到達区間の走査では $O(|S|+|T|)$ 時間・空間。各開始位置を一度だけ処理する。
+
+## 実装
+
+`minimum_prefix_pieces` は最少片数、不可能なら $-1$ を返す。AtCoder Libraryの `string` を使う。
+
+```cpp
+#include <atcoder/string>
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <vector>
+int minimum_prefix_pieces(const std::string& s,const std::string& t) {
+    if(s.size()>500000 || t.size()>500000) throw std::invalid_argument("length");
+    if(t.empty()) return 0;
+    if(s.empty()) return -1;
+    std::vector<int> joined;joined.reserve(s.size()+t.size()+1);
+    for(unsigned char c:s) joined.push_back(c);
+    joined.push_back(256);
+    for(unsigned char c:t) joined.push_back(c);
+    auto z=atcoder::z_algorithm(joined);
+    int offset=s.size()+1,n=t.size(),end=0,far=0,pieces=0;
+    for(int i=0;i<n;++i) {
+        far=std::max(far,i+z[offset+i]);
+        if(i==end) {
+            if(far==end) return -1;
+            ++pieces;end=far;
+            if(end>=n) return pieces;
+        }
+    }
+    return -1;
+}
+```
+
+## 関連する手法
+
+[パターンと本文を区切って全ての一致位置を求める](/flowchartcp/techniques/z-concatenate-boundary/) ・ [残す部分列を前後から寄せて削除区間を広げる](/flowchartcp/techniques/subsequence-delete-gap/)
+
+## 参考資料
+
+- [AtCoder：Prefix Concatenation](https://atcoder.jp/contests/abc257/tasks/abc257_g)
+- [公式解説](https://atcoder.jp/contests/abc257/editorial/4246)
+
+<TechniqueReferences techniqueId="prefix-piece-farthest-reach" />

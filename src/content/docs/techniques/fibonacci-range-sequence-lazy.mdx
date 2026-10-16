@@ -1,0 +1,164 @@
+---
+title: "区間へフィボナッチ列を足す更新は、先頭二項を持って子区間へずらす"
+description: "左端からの位置で加算量が変わる更新を、漸化式の初期値二つと区間和だけで伝える。"
+techniqueId: fibonacci-range-sequence-lazy
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+配列の区間へ、左端から順に $1,1,2,3,5,\ldots$ を加える。その後も更新と区間和の質問が混在する。区間内の全要素を一つずつ変更すると、長い区間への更新が多いときに間に合わない。
+
+一様な加算と異なり、同じ更新でも右の子区間に渡す列の先頭は変わる。**更新を列の先頭二項として保存し、区間を分けるときに開始位置をずらす**。
+
+## 考え方
+
+$F_0=0,F_1=1$ とする。加算列を $g_0=a,g_1=b,g_{i+2}=g_{i+1}+g_i$ で表すと、先頭から $k\ge1$ 個ずらした二項は
+
+$$
+(g_k,g_{k+1})=
+(aF_{k-1}+bF_k,\ aF_k+bF_{k+1})
+$$
+
+になる。長さ $L\ge1$ の区間への加算量の合計は
+
+$$
+\sum_{i=0}^{L-1}g_i=aF_L+b(F_{L+1}-1)
+$$
+
+である。フィボナッチ数を先に求めれば、どちらも定数時間で計算できる。
+
+セグメント木の各区間には、現在の和と、まだ子へ渡していない先頭二項 $(a,b)$ を保存する。新しい加算列を重ねるときは二項をそれぞれ足す。同じ漸化式を満たす列の和も、同じ漸化式を満たすためである。
+
+子へ渡すとき、左の子には $(a,b)$ をそのまま使う。左の子の長さを $L$ とすると、右の子には $L$ 個ずらした二項を使う。更新区間が $[l,r)$、完全に含まれるノードの左端が $x$ なら、そのノードの先頭は $(F_{x-l+1},F_{x-l+2})$ である。
+
+## 適用条件
+
+- 更新は、区間の左端から始まる固定のフィボナッチ列の加算である。
+- 必要な集計は区間和であり、全て同じ法で計算する。
+- 更新列同士を足して重ねられ、子区間へのずらし方と区間和を定数時間で求められる。
+
+掲載実装の法は $10^9+9$。割り算は使わない。区間最小値・最大値を求める場合は、列の和と先頭二項だけでは足りない。上書きや反転を混ぜる場合も、更新の合成規則を追加する必要がある。
+
+一般の固定次数の線形漸化式でも、次数分の初期値と位置のずらし方を用意すれば同じ構成を考えられる。ただし、ずらす計算が重くなる場合はその費用も各操作に掛かる。
+
+## なぜ正しいか
+
+二項から後続が一意に決まるので、ノードに保存した二項は、その区間へ加える全ての項を表す。ずらしの式は $k=1$ で $(b,a+b)$ となり、以後はフィボナッチ数の漸化式から帰納的に成り立つ。和の式は、$a$ と $b$ それぞれの係数のフィボナッチ和をまとめたものである。
+
+二つの更新の列を足すと初期値も成分ごとの和になるため、遅延値を重ねても情報を失わない。子へ渡す際は左右それぞれの開始位置に対応する列となり、親の加算内容を過不足なく分けられる。区間和に加算した合計と、子へ渡す列が常に同じ更新を表すので、部分区間の質問でも正しい和が得られる。
+
+## 計算量
+
+一回の更新や質問を要素ごとに処理すると $O(N)$ 時間。フィボナッチ数と木の構築は $O(N)$、更新・区間和は $O(\log(N+1))$ 時間になる。保存領域は $O(N)$、再帰スタックは $O(\log(N+1))$。
+
+## 実装
+
+`FibonacciRangeAddSum(values)` で構築し、`add_fibonacci(l,r)` で半開区間へ $F_1,F_2,\ldots$ を足す。`range_sum(l,r)` は法 $10^9+9$ での和を返す。配列長は300000以下、初期値は符号付き64ビット整数を受け取り、負値も正規化する。
+
+空配列と空区間を許す。配列長超過は `invalid_argument`、$0\le l\le r\le N$ を満たさない範囲は `out_of_range`。子への伝播を行うため、質問メソッドも内部状態を変更する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class FibonacciRangeAddSum {
+public:
+    static constexpr int MOD = 1000000009;
+private:
+    int n;
+    vector<long long> fib, sum, lazy_a, lazy_b;
+
+    static long long normalize(long long value) {
+        value %= MOD;
+        return value < 0 ? value + MOD : value;
+    }
+    pair<long long,long long> shifted(long long a, long long b, int k) const {
+        if (k == 0) return {a, b};
+        return {(a * fib[k - 1] + b * fib[k]) % MOD,
+                (a * fib[k] + b * fib[k + 1]) % MOD};
+    }
+    void apply(int node, int length, long long a, long long b) {
+        long long total = (a * fib[length]
+            + b * normalize(fib[length + 1] - 1)) % MOD;
+        sum[node] = (sum[node] + total) % MOD;
+        lazy_a[node] = (lazy_a[node] + a) % MOD;
+        lazy_b[node] = (lazy_b[node] + b) % MOD;
+    }
+    void push(int node, int left, int right) {
+        if (right - left <= 1 || (lazy_a[node] == 0 && lazy_b[node] == 0)) return;
+        int mid = (left + right) / 2;
+        apply(node * 2, mid - left, lazy_a[node], lazy_b[node]);
+        auto [a, b] = shifted(lazy_a[node], lazy_b[node], mid - left);
+        apply(node * 2 + 1, right - mid, a, b);
+        lazy_a[node] = lazy_b[node] = 0;
+    }
+    void build(int node, int left, int right, const vector<long long>& values) {
+        if (right - left == 1) {
+            sum[node] = normalize(values[left]);
+            return;
+        }
+        int mid = (left + right) / 2;
+        build(node * 2, left, mid, values);
+        build(node * 2 + 1, mid, right, values);
+        sum[node] = (sum[node * 2] + sum[node * 2 + 1]) % MOD;
+    }
+    void add(int node, int left, int right, int l, int r) {
+        if (r <= left || right <= l) return;
+        if (l <= left && right <= r) {
+            int offset = left - l;
+            apply(node, right - left, fib[offset + 1], fib[offset + 2]);
+            return;
+        }
+        push(node, left, right);
+        int mid = (left + right) / 2;
+        add(node * 2, left, mid, l, r);
+        add(node * 2 + 1, mid, right, l, r);
+        sum[node] = (sum[node * 2] + sum[node * 2 + 1]) % MOD;
+    }
+    long long query(int node, int left, int right, int l, int r) {
+        if (r <= left || right <= l) return 0;
+        if (l <= left && right <= r) return sum[node];
+        push(node, left, right);
+        int mid = (left + right) / 2;
+        return (query(node * 2, left, mid, l, r)
+              + query(node * 2 + 1, mid, right, l, r)) % MOD;
+    }
+    void check_range(int l, int r) const {
+        if (l < 0 || l > r || r > n) throw out_of_range("invalid range");
+    }
+public:
+    explicit FibonacciRangeAddSum(const vector<long long>& values) {
+        if (values.size() > 300000) throw invalid_argument("array too long");
+        n = static_cast<int>(values.size());
+        fib.assign(n + 3, 0);
+        fib[1] = 1;
+        for (int i = 2; i < n + 3; ++i) fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;
+        sum.assign(4 * n + 4, 0);
+        lazy_a = lazy_b = sum;
+        if (n) build(1, 0, n, values);
+    }
+    void add_fibonacci(int l, int r) {
+        check_range(l, r);
+        if (l != r) add(1, 0, n, l, r);
+    }
+    int range_sum(int l, int r) {
+        check_range(l, r);
+        return l == r ? 0 : static_cast<int>(query(1, 0, n, l, r));
+    }
+};
+```
+
+## 関連する手法
+
+- [区間の一次変換と遅延伝播](/flowchartcp/techniques/affine-lazy-composition/)：更新の合成を小さな状態で表す。
+- [一次式に分けるDP遷移](/flowchartcp/techniques/dp-affine-transition/)：位置に依存する式を少数の係数へ分ける。
+- [遠い項を求める線形漸化式](/flowchartcp/techniques/linear-recurrence-bostan-mori/)：一つの項だけを求める場合は、区間更新とは別の処理になる。
+
+## 参考資料
+
+- [Codeforces 446C：DZY Loves Fibonacci Numbers](https://codeforces.com/problemset/problem/446/C) — 区間左端からフィボナッチ列を加え、更新の合間に区間和を求める原典。
+
+先頭二項のずらしと区間和の式は、上記の更新規則から導出した。公式解説の等比数列への変形とは分けて扱う。
+
+<TechniqueReferences techniqueId="fibonacci-range-sequence-lazy" />

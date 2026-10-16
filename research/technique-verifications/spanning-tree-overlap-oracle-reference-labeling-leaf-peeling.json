@@ -1,0 +1,1711 @@
+{
+  "techniqueId": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2017-simurgh-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2017-simurgh-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2017-simurgh-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/spanning-tree-overlap-oracle-reference-labeling-leaf-peeling.mdx",
+    "checker": "scripts/check_spanning_tree_overlap_cpp.py",
+    "metadata": "data/techniques-specific-games.json",
+    "reference": "data/references-specific-games.json",
+    "feature": "data/spanning-tree-overlap-problem-features.json"
+  },
+  "metadata": {
+    "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+    "title": "全域木との共通辺数への質問から、隠れた木を葉から復元する",
+    "summary": "基準木の辺を一つずつ交換して秘密の辺かを判別する。既知の基準辺で森を全域木へ補完し、残存する葉の接続先を部分集合への質問で絞る。",
+    "aliases": [
+      "IOI2017 Simurgh find_roads count_common_roads",
+      "spanning tree overlap oracle fundamental cycle reference labeling forest completion leaf peeling",
+      "全域木の共通辺数 基準辺の所属判定 森の補完 葉の星二分"
+    ],
+    "family": "全域木への共通辺数質問と基準辺分類",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "union-find",
+      "binary-search",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+    "source": "IOI",
+    "problemId": "ioi2017_simurgh",
+    "title": "Simurgh",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+    "evidence": "既知の単純連結無向グラフの秘密全域木を、合法な全域木との共通辺数から特定する。基準木の基本閉路交換の差分で基準辺を0/1分類し、任意の森を既知の基準辺で全域木へ補完して本数を得る。各頂点の星から秘密木の次数を調べ、残存葉の部分星を二分して唯一の秘密辺を復元する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に公式原典3頁・公式Editorial2頁・公式EST配布検索本文・Day2Notice・JP公式日別一覧を再読。N2..500/MN−1..N(N−1)/2/単純連結/秘密は固定全域木/全質問がN−1辺の全域木/満点8000回を確認。原典Technical noteのoracle参照渡しと非変更保証を確認。実header bytesのconst修飾は未取得のまま、原典adapterは配布simurgh.hを使い変更可能な局所vectorを渡す。単独generic本体とsynthetic const/nonconst参照header両方のadapterを別compile。公式のoptional ear-decomposition詳細未確認は保持し、選定した基本閉路分類の全証明と5990回上界を独立確認。実MDX可視C++20で通常/ASan+UBSanともfull711667checks/11275recoverCalls/checksum14758130767299308416、別mutable-ref API1559checks/checksum141949014370290246一致。全771 connected小graph×全8135 hiddentree、K6全1296 Prüfer木、400random/1200metamorphic、invalid36、最大N500/M124750の8構成と基準path深499を確認。全371287質問/37828515配列要素を別BFS oracleで検査し、小全tree集合を返答で直接絞った453264比較でも最終一意。full通常.889374秒/RSS21632KiB・ASan8.84106秒/RSS988192KiBはchecker全体とallocator込み。初回positive/全6records保持、resolution-onlyで研究二重加算しない。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2017_simurgh",
+    "title": "Simurgh",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+    "techniqueIds": [
+      "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+    ],
+    "features": [
+      "既知の単純連結無向グラフの中に、一つの固定された秘密全域木がある。",
+      "全域木を質問すると共通辺数が返り、任意集合や単一辺を直接質問できない。",
+      "頂点2〜500・辺N−1〜N(N−1)/2、毎質問N−1個の異なる辺番号、満点8000回。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "notes": "既知の単純連結無向グラフの秘密全域木を、合法な全域木との共通辺数から特定する。基準木の基本閉路交換の差分で基準辺を0/1分類し、任意の森を既知の基準辺で全域木へ補完して本数を得る。各頂点の星から秘密木の次数を調べ、残存葉の部分星を二分して唯一の秘密辺を復元する。",
+    "discoveredBy": "ioi-2017",
+    "publicationDate": "2017-08-01",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+    "statementPages": [
+      1,
+      2,
+      3
+    ],
+    "statementReadMethod": "web full primary PDF text,official EST indexed search for missing numeric glyphs;no visual inspection claimed",
+    "originalHostUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh.pdf",
+    "originalHostOpenResult": "web cache miss initially;official JP-host English copy read in full and primary-host text returned by targeted search",
+    "originalContractVerified": true,
+    "numericBoundsVerified": true,
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": false,
+    "officialEditorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+    "officialEditorialPages": [
+      1,
+      2
+    ],
+    "editorialProvenance": {
+      "taskIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "problemAuthorNotAssumedEditorialAuthor": true,
+      "selectedMethod": "forest completion/degree/leaf peeling from official discussion;general-graph reference classification independently proved with fundamental cycles",
+      "optionalEarDecompositionVerified": false
+    },
+    "originalBounds": {
+      "N": [
+        2,
+        500
+      ],
+      "M": [
+        "N-1",
+        "N(N-1)/2"
+      ],
+      "graph": "connected simple undirected,no loops/no parallel undirected pairs",
+      "edgeIds": "input order0..M-1",
+      "hidden": "fixed spanning tree,N-1 edges",
+      "query": "actual spanning tree,N-1 distinct valid edge IDs",
+      "response": "exact hidden-edge intersection count0..N-1",
+      "queryLimits": {
+        "firstThreeSubtasks": 30000,
+        "completeGraphSubtask": 12000,
+        "fullScoreFinalSubtask": 8000
+      },
+      "sourceSeconds": 3,
+      "sourceMemoryMB": 1024
+    },
+    "numericEvidence": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+      "successfulQuery": "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf \"500\" \"find_roads\"",
+      "returnedFullConstraintsAndSubtasks": true,
+      "notUsingSampleGrader30000AsFullScoreLimit": true
+    },
+    "callback": {
+      "statementFindRoads": "int[] find_roads(int n,int[] u,int[] v)",
+      "cppFindRoads": "std::vector<int> find_roads(int n,std::vector<int> u,std::vector<int> v)",
+      "statementOracle": "int count_common_roads(int[] r)",
+      "technicalNotePage": 3,
+      "technicalNote": "C++ and Pascal pass r by reference for efficiency;grader does not change r",
+      "cppArrayMappingUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "cppArrayMapping": "int[] -> std::vector<int>",
+      "officialHeaderBytesRetrieved": false,
+      "oracleConstQualificationVerified": false,
+      "headerUsingAdapterDoesNotRequireAssumingConstQualification": true,
+      "adapter": "SIMURGH_ORIGINAL_GRADER includes distributed simurgh.h,then passes mutable local vector lvalue",
+      "syntheticTestHeaders": [
+        "int count_common_roads(const vector<int>&)",
+        "int count_common_roads(vector<int>&)"
+      ],
+      "syntheticHeadersNotClaimedOfficial": true,
+      "noStandardInputOutput": true
+    },
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "difficulty": null,
+    "unconfirmedRequiredSourceFacts": [],
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedOptionalSourceDetails": [
+      "公式ear-decomposition圧縮節の詳細証明は未確認。選定したfundamental-cycle手順には使わない。"
+    ]
+  },
+  "api": {
+    "namespace": "tree_overlap",
+    "types": [
+      "Edge=pair<int,int>",
+      "Oracle=function<int(span<const int>)>",
+      "Result {roads,reference,reference_membership,queries,reference_queries,degree_queries,search_queries,query_entries}"
+    ],
+    "functions": [
+      "int query_upper_bound(int n)",
+      "Result recover_hidden_tree(int n,span<const Edge> edges,const Oracle& oracle,int budget=8000)",
+      "conditional global vector<int> find_roads(int n,vector<int> u,vector<int> v)"
+    ],
+    "contract": {
+      "sourceDomain": "entire N2..500/MN−1..N(N−1)/2 simple connected input",
+      "edgeNumbering": "input order retained;canonical endpoint sort is validation only",
+      "budget": "0..8000 accepted;before sending beyond budget throw runtime_error;negative/>8000 invalid_argument",
+      "oracle": "one fixed valid hidden spanning tree;returns integer0..N−1;span valid only during callback,do not retain",
+      "invalidInput": "invalid_argument before callbacks for N/M/endpoints/selfloop/parallel undirected pairs/disconnection/empty callback/budget",
+      "invalidReplies": "runtime_error when range,difference0/1,reference sum,forest count,degree sum,leaf count or progress contradicts expectations;not every adversarial false reply necessarily detected",
+      "callbackExceptions": "propagate identity;external callback effects cannot be rolled back",
+      "allocationFailures": "standard allocation exceptions propagate",
+      "ownership": "input spans not changed or retained;result owns vectors,copy/move;source adapter value arguments",
+      "state": "no shared/global mutable algorithm state;reentrant nested calls and mutations to old results isolated",
+      "stack": "all public graph/DSU/path/leaf routines iterative"
+    }
+  },
+  "proofObligations": {
+    "legalExchange": "T+back has one fundamental cycle;remove any path edge -> a spanning tree;response difference exactly w(back)-w(removed)",
+    "allUnknownZero": "all differences0 imply entire cycle same membership;entirely1 contradicts hidden tree acyclicity;therefore entirely0",
+    "classificationBudget": "each handled cycle contains a new reference label;unknown-edge exchange paid once per reference edge,known-anchor exchange once per handled cycle",
+    "remainingUnknownBridge": "any reference edge in any fundamental cycle would be labeled when that cycle is first processed;an unlabeled edge crosses its T-cut alone,so is a bridge and has membership1",
+    "forestCompletion": "reference T connects the components of every forest;DSU only adds component-crossing known edges and subtracts their exact contribution",
+    "starForest": "simple undirected incident edges share one center,so acyclic",
+    "activeLeaf": "remaining hidden edges form a tree on active vertices;degree1 gives exactly one true active candidate and a partial star remains a forest",
+    "termination": "each recovered edge deletes one active vertex;tree with>=2 active vertices has a leaf;N−1 edges recovered",
+    "unconfirmedRequiredLemmas": [],
+    "optionalEarDecompositionNotUsed": true
+  },
+  "complexity": {
+    "Q": "1+2(N−1)+N+(N−1)ceil(log2(N−1))",
+    "maximumQ": 5990,
+    "sourceFullScoreLimit": 8000,
+    "questionLength": "N−1",
+    "maximumQuestionEntries": 2989010,
+    "localTime": "O(Mlog(M+1)+MN+N²logN alpha(N))",
+    "oracleTime": "excluded external cost;all actual query arrays materialized and charged",
+    "extraSpace": "O(N+M),no transcript retention",
+    "fundamentalPath": "iterative parent/depth climb takes<=N−1 edge steps per non-tree edge",
+    "forestCompletionAndQuestionValidation": "O(N alpha(N)) each,including internal DSU legality check",
+    "integerSafety": "N*(N−1)<=249500 after N<=500;M<=124750;IDs<=124749;degree sum2(N−1)<=998;legal5990*499 entries<=2989010;even configured8000*499 fits int",
+    "sourcePerformance": "full checker ordinary.889374s/RSS21632KiB;max dense path reference two API+literal oracle calls.167808s;generated tests do not substitute worst-case proof",
+    "sanitizerMemoryScope": "988192KiB includes all checker oracles and allocator quarantine across11275 calls;not API-only storage"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "interactive-oracles",
+    "parentGraphId": "interactive-oracles",
+    "parentNodeId": "response",
+    "newAnswerId": "spanning-tree-overlap",
+    "newAnswerLabel": "全域木を指定すると、秘密の全域木との共通辺数が返る",
+    "guardGraphId": "hidden-spanning-tree-overlap-conditions",
+    "canonicalChoices": [
+      "spanning-tree-overlap",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "known-simple-connected",
+        "question": "全ての辺が分かる単純連結な無向グラフで、秘密もその全域木ですか？"
+      },
+      {
+        "id": "fixed-tree-overlap",
+        "question": "毎回全域木を質問し、一つの固定された秘密木との共通辺数が返りますか？"
+      },
+      {
+        "id": "bounds-budget",
+        "question": "頂点2〜500・辺N−1〜N(N−1)/2で、8000回以内に秘密木を特定しますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+    ],
+    "oldGuardPreservation": "append feature answer to response;preserve all old choices/labels/order/targets and detailed guards"
+  },
+  "verification": {
+    "actualSingleVisibleMdxFence": true,
+    "sections": 8,
+    "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+    "checkerSha256": "d98c85a722d1aff09ae2268d10dcdbc90ccf8d2bb8d2eac021766c6b1be345ae",
+    "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-simurgh-checker.py",
+      "python3 /tmp/flowchartcp-ioi2017-simurgh-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "genericWithoutHeaderCompiled": true,
+      "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+      "constReferenceHeaderFull": {
+        "checks": 711667,
+        "recoverCalls": 11275,
+        "literalValidTreeQuestions": 371287,
+        "literalQuestionEntries": 37828515,
+        "exhaustiveConnectedGraphs": 771,
+        "everyHiddenTreeForEverySmallGraph": 8135,
+        "transcriptCompletionComparisons": 453264,
+        "completeN6PruferHiddenTrees": 1296,
+        "randomGraphs": 400,
+        "metamorphicChecks": 1200,
+        "invalidCases": 36,
+        "originalAdapterCalls": 140,
+        "checksum": "14758130767299308416",
+        "seconds": 0.889374,
+        "peakRSSKiB": 21632,
+        "maximumCases": [
+          {
+            "name": "path graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.00741896
+          },
+          {
+            "name": "star graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.00579837
+          },
+          {
+            "name": "complete lexicographic reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.0648129
+          },
+          {
+            "name": "complete lexicographic reference,hidden path",
+            "n": 500,
+            "m": 124750,
+            "queries": 5228,
+            "referenceQueries": 997,
+            "queryEntries": 2608772,
+            "twoApiCallsSeconds": 0.0695726
+          },
+          {
+            "name": "complete lexicographic reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5288,
+            "referenceQueries": 997,
+            "queryEntries": 2638712,
+            "twoApiCallsSeconds": 0.069231
+          },
+          {
+            "name": "complete path reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 5229,
+            "referenceQueries": 997,
+            "queryEntries": 2609271,
+            "twoApiCallsSeconds": 0.165883
+          },
+          {
+            "name": "complete path reference,hidden reference path",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.167808
+          },
+          {
+            "name": "complete permuted reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5030,
+            "referenceQueries": 740,
+            "queryEntries": 2509970,
+            "twoApiCallsSeconds": 0.136475
+          }
+        ]
+      },
+      "mutableReferenceHeaderApiSmoke": {
+        "checks": 1559,
+        "recoverCalls": 127,
+        "literalValidTreeQuestions": 553,
+        "literalQuestionEntries": 1299,
+        "exhaustiveConnectedGraphs": 0,
+        "everyHiddenTreeForEverySmallGraph": 0,
+        "transcriptCompletionComparisons": 0,
+        "completeN6PruferHiddenTrees": 0,
+        "randomGraphs": 0,
+        "metamorphicChecks": 0,
+        "invalidCases": 36,
+        "originalAdapterCalls": 31,
+        "checksum": "141949014370290246",
+        "seconds": 0.000294933,
+        "peakRSSKiB": 21760,
+        "maximumCases": []
+      }
+    },
+    "asanUbsan": {
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "genericWithoutHeaderCompiled": true,
+      "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+      "constReferenceHeaderFull": {
+        "checks": 711667,
+        "recoverCalls": 11275,
+        "literalValidTreeQuestions": 371287,
+        "literalQuestionEntries": 37828515,
+        "exhaustiveConnectedGraphs": 771,
+        "everyHiddenTreeForEverySmallGraph": 8135,
+        "transcriptCompletionComparisons": 453264,
+        "completeN6PruferHiddenTrees": 1296,
+        "randomGraphs": 400,
+        "metamorphicChecks": 1200,
+        "invalidCases": 36,
+        "originalAdapterCalls": 140,
+        "checksum": "14758130767299308416",
+        "seconds": 8.84106,
+        "peakRSSKiB": 988192,
+        "maximumCases": [
+          {
+            "name": "path graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0780041
+          },
+          {
+            "name": "star graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0793593
+          },
+          {
+            "name": "complete lexicographic reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.867264
+          },
+          {
+            "name": "complete lexicographic reference,hidden path",
+            "n": 500,
+            "m": 124750,
+            "queries": 5228,
+            "referenceQueries": 997,
+            "queryEntries": 2608772,
+            "twoApiCallsSeconds": 0.66236
+          },
+          {
+            "name": "complete lexicographic reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5288,
+            "referenceQueries": 997,
+            "queryEntries": 2638712,
+            "twoApiCallsSeconds": 0.67582
+          },
+          {
+            "name": "complete path reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 5229,
+            "referenceQueries": 997,
+            "queryEntries": 2609271,
+            "twoApiCallsSeconds": 1.48938
+          },
+          {
+            "name": "complete path reference,hidden reference path",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 1.34359
+          },
+          {
+            "name": "complete permuted reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5030,
+            "referenceQueries": 740,
+            "queryEntries": 2509970,
+            "twoApiCallsSeconds": 1.07079
+          }
+        ]
+      },
+      "mutableReferenceHeaderApiSmoke": {
+        "checks": 1559,
+        "recoverCalls": 127,
+        "literalValidTreeQuestions": 553,
+        "literalQuestionEntries": 1299,
+        "exhaustiveConnectedGraphs": 0,
+        "everyHiddenTreeForEverySmallGraph": 0,
+        "transcriptCompletionComparisons": 0,
+        "completeN6PruferHiddenTrees": 0,
+        "randomGraphs": 0,
+        "metamorphicChecks": 0,
+        "invalidCases": 36,
+        "originalAdapterCalls": 31,
+        "checksum": "141949014370290246",
+        "seconds": 0.00826397,
+        "peakRSSKiB": 21728,
+        "maximumCases": []
+      }
+    },
+    "oracleIndependence": {
+      "smallGraphs": "all graph edge subsets N2..5;all (N−1)-edge hidden subsets accepted by literal BFS,not published DSU",
+      "eachQuestion": "N−1 valid IDs plus independent BFS connectedness implies no duplicate/no cycle and actual spanning tree;overlap counted against fixed explicit hidden indicator",
+      "transcript": "all small hidden spanning trees retained and filtered by literal intersection after each answer;final candidate set must be exactly output tree",
+      "additionalFamily": "K6 every1296 Prüfer hidden tree;different hidden enumeration than edge subsets",
+      "metamorphic": [
+        "reverse endpoint order",
+        "permute vertex labels",
+        "permute input edge IDs with hidden mapping"
+      ],
+      "maximum": "N500 path/star unique graphs,complete lex reference hidden star/path/Prufer,complete path reference hidden star/path,permuted complete reference;each generic and source adapter"
+    },
+    "countSemantics": "711667 is executed require assertions,not each scanned edge;371287 counts valid literal-oracle callbacks;37828515 sums entries over the whole full checker,not per run bound. Mutableref smoke is a separate binary.",
+    "genericCompiledWithoutHeader": true,
+    "syntheticHeaderVariantsExplicit": true,
+    "officialHeaderBytesNotClaimed": true,
+    "semanticChecksumsAreStrings": true,
+    "independentExternalReviewStatus": "pending parent/peer review;author verification complete"
+  },
+  "initialAuditPreservation": {
+    "auditFile": "/tmp/flowchartcp-ioi2017-audit.json",
+    "auditSha256": "112606343ee4912aac10132d0a0e0aea1c062635aa6642acb14a03396379f78e",
+    "initialRowSha256": "341882d9e8f58514082fa049ede11922e68f90fc0e50521403dbbdd69a406bd7",
+    "initialSixRecordsSha256": "42c4951bdb743dcd5a11862dfe096b53b32048b8da93dfce2487fc35aa68d323",
+    "initialStatusSha256": "8f9c70c294b861f2e102cda5732785872b4509590e8a2ceb339ade6ab6043ff7",
+    "initialSelectionSha256": "1375da7af6e2fde4f445cada6939785e83a4077a8ca803f725ed7babeeb56aa8",
+    "initialSnapshotSha256": "31a4b46903104b1a0e33ba82676a89a4daa68de8c8bbcc870e7a752714fbcd10",
+    "initialRow": {
+      "source": "ioi",
+      "problemId": "ioi2017_simurgh",
+      "officialTaskId": "simurgh",
+      "day": 2,
+      "date": "2017-08-01",
+      "datePrecision": "day",
+      "title": "Simurgh",
+      "englishTitle": "Simurgh",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 2,
+        "date": "2017-08-01",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "既知の単純連結無向グラフで、隠れた全域木を特定する。",
+        "質問も全域木に限られ、隠れた木との共通辺数が返る。満点は8000回以内。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..500",
+          "M": "N−1..N(N−1)/2",
+          "graph": "connected simple undirected",
+          "hidden": "fixed spanning tree with N−1 edges",
+          "everyQuery": "actual spanning tree, N−1 distinct edge IDs",
+          "response": "number of hidden edges in queried tree",
+          "queryLimits": {
+            "firstThreeSubtasks": 30000,
+            "completeGraphSubtask": 12000,
+            "fullScoreFinalSubtask": 8000
+          }
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf \"8000\"",
+          "site:ioi.te.lv/locations/ioi17/contest \"Simurgh\" \"q\" \"500\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。",
+        "additionalEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-CUB.pdf"
+        ]
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+        "features": [
+          "既知の単純連結無向グラフで、隠れた全域木を特定する。",
+          "質問も全域木に限られ、隠れた木との共通辺数が返る。満点は8000回以内。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "reason": "一般対話へ到達するが、合法な全域木質問で基準辺を分類しforest個数へ変換する手順/葉二分/5990回保証がない。集合yes/noや二重み最短距離への質問とはoracleが異なる。",
+        "neededTechniqueIds": [
+          "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-bit-group-testing",
+          "binary-weight-distance-oracle-edge-split-endpoint-search"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "proposedFeatureAnswer": "既知の単純連結無向グラフで、隠れた全域木を特定する。",
+        "proposedBranchAt": {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "currentOptions": [
+            {
+              "id": "tree-distance",
+              "label": "辺は未知だが、指定した二頂点の木距離"
+            },
+            {
+              "id": "unimodal-value",
+              "label": "隠れた単峰列の、指定位置の値"
+            },
+            {
+              "id": "rectangle-count",
+              "label": "各行列に高々一個の配置の、長方形内の個数"
+            },
+            {
+              "id": "batch-subsets",
+              "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+            },
+            {
+              "id": "navigation",
+              "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+            },
+            {
+              "id": "other",
+              "label": "その他の返答形式・通信条件"
+            },
+            {
+              "id": "changing-color-count",
+              "label": "任意集合の会合で、参加者によって変わる色の種類数"
+            },
+            {
+              "id": "transition-count",
+              "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+            },
+            {
+              "id": "prefix-in-substring",
+              "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+            },
+            {
+              "id": "binary-edge-distances",
+              "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "基準木のfundamental cycle交換差分で基準辺membershipを分類。forestを既知基準辺で全域木へ補完して正解個数を得る。全頂点の星で次数を調べ、残存葉の星部分集合を二分して隠れ木を復元する。",
+        "complexity": "質問<=1+2(N−1)+N+(N−1)ceil(log2(N−1))<=5990<8000。素直なfundamental path走査/DSU補完で局所O(MN+N² logN alpha(N))時間・O(N+M)領域。oracle内部処理を含む完成API測定は未実施。",
+        "independentProofSupplement": [
+          "基準木Tの返答bに対し、非木辺eで作るcycleからfを外すと常に全域木で、返答差=w(e)−w(f)。",
+          "未確定T辺を含むcycleだけ処理。既知anchorがあればw(e)を一回で求め各未知辺を一回ずつ分類する。全未知なら全差分を聞き、非0があれば分類、全部0ならcycle全1が不可能なので全部0。",
+          "各未知T辺の質問は一回、処理cycleは高々N−1、anchorも各cycle一回以下。最後までcycleにないT辺は橋で隠れ木に含まれる。",
+          "任意forest FはT辺の追加で全域木へ拡張でき、追加した既知membershipを引けば一回の合法質問でF内の個数が分かる。",
+          "全incident starはforestなので次数が分かる。残存隠れ木の葉では全候補の正解は一つ、部分星質問の二分を高々ceil(log2(N−1))回行う。",
+          "全N<=500に5990回上界を適用でき、サンプルgraderの30000回へ依存しない。"
+        ],
+        "implementationRequirements": [
+          "forest completionと質問budgetを含む完全C++20 callback/APIを作り、全入力/不整合応答/例外/再呼出しを検証する。",
+          "全小グラフ×全隠れ木、N500/M124750、全actual query合法性、ASan/UBSanと独立reviewを行う。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "forest completionと質問budgetを含む完全C++20 callback/APIを作り、全入力/不整合応答/例外/再呼出しを検証する。",
+          "全小グラフ×全隠れ木、N500/M124750、全actual query合法性、ASan/UBSanと独立reviewを行う。"
+        ],
+        "probeEvidence": {
+          "allConnectedSimpleGraphsN2to5": 771,
+          "everyHiddenSpanningTreeForEveryGraph": 8135,
+          "literalValidSpanningTreeQueries": 108860,
+          "maximumObservedSmallQueries": 17,
+          "N500Cases": [
+            {
+              "kind": "path",
+              "N": 500,
+              "M": 499,
+              "queries": 501,
+              "referenceQueries": 1
+            },
+            {
+              "kind": "complete-star",
+              "N": 500,
+              "M": 124750,
+              "queries": 4987,
+              "referenceQueries": 997
+            },
+            {
+              "kind": "complete-path",
+              "N": 500,
+              "M": 124750,
+              "queries": 5228,
+              "referenceQueries": 997
+            },
+            {
+              "kind": "complete-random",
+              "N": 500,
+              "M": 124750,
+              "queries": 5284,
+              "referenceQueries": 997
+            }
+          ],
+          "allN500UpperBound": 5990,
+          "verified": "Independent reference-tree fundamental-cycle differences classify every reference edge in <=1+2(N-1) queries. A forest can be completed with known reference edges; subtract known contribution to get exact forest count. Star counts give hidden degrees; leaf-star subset bisection recovers the hidden tree. EVERY oracle question explicitly DSU-validated as a spanning tree.",
+          "productionApiValidated": false,
+          "officialEarDecompositionProofClaimed": false
+        },
+        "unconfirmedOptionalSourceDetails": [
+          "公式ear-decomposition圧縮節の詳細証明は未確認。選定したfundamental-cycle手順には使わない。"
+        ],
+        "officialEarDecompositionVerified": false,
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed-with-unconfirmed-full-detail",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "title": "対話問題の質問設計",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "ask_interval example",
+          "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+          "scopeMismatch": "整数通信の一般例。二成分順位返答や全域木共通辺の具体戦略/予算保証はない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "interactive-bit-group-testing",
+          "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+          "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+          "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "binary_test_groups",
+          "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+          "scopeMismatch": "n<=100、一つの秘密対象へ任意部分集合のyes/noが可能。Prize/Simurghの合法質問とは異なる。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "binary-weight-distance-oracle-edge-split-endpoint-search",
+          "title": "辺の重みを変えた最短距離への質問から、未知の二頂点を見つける",
+          "file": "src/content/docs/techniques/binary-weight-distance-oracle-edge-split-endpoint-search.mdx",
+          "sha256": "7209d07782ac116496a224b32d3d6515b77eb0d2271279d6fcb44bb79bc441a0",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-construction.json",
+              "sha256": "9c3e92bab5a9dab85eeae6817f436644d816722caa78294dbcc7e853dc17936f"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "find_binary_weight_hidden_pair",
+          "cppFenceSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715",
+          "scopeMismatch": "二重み辺設定の距離を返す固定二端点oracle。隠れ全域木の共通辺数oracleへ置き換えられない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 1,
+        "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ]
+    },
+    "initialStatus": {
+      "fixedProblemListComplete": true,
+      "firstPassAuditComplete": true,
+      "fixedCorpusResearchComplete": false,
+      "fixedCorpusCoverageComplete": false,
+      "globalCoverageComplete": false,
+      "recordCount": 6,
+      "statementVerifiedCount": 6,
+      "numericBoundsVerifiedCount": 6,
+      "numericBoundsUnconfirmedCount": 0,
+      "officialEditorialRetrievedCount": 6,
+      "officialEditorialVerifiedCount": 3,
+      "solutionReviewedCount": 4,
+      "coveredCount": 0,
+      "missingRouteCount": 0,
+      "missingTechniqueCount": 4,
+      "unconfirmedCount": 2,
+      "unavailableCount": 0,
+      "unconfirmedPrincipalDetailsCount": 2,
+      "fullImplementationValidatedCount": 0,
+      "articleResolutionComplete": false,
+      "firstPassAuditCompleteDefinition": "選定済み全6題の原典/数値/資料取得/主要補題の確認状況/初回停止位置を記録。未確認2題を残す。",
+      "fixedCorpusResearchCompleteDefinition": "固定6題の原典全域の選定手順と主要補題が全て確認できた時だけtrue。Nowruz満点出力とPrize満点質問数が未確認なのでfalse。",
+      "articleResolutionNotes": "研究確認4/6、完成記事/API/原典walk/coverage0/6。既存汎用記事をcoveredへ数えない。"
+    },
+    "initialRootTrace": {
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "reached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 1,
+        "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      }
+    },
+    "initialResearchPositivePreserved": true,
+    "initialFullImplementationFalsePreserved": true,
+    "initialResearchReviewedCount": 4,
+    "additionalPositiveResearchReviewsProposed": 0,
+    "resolutionOnly": true,
+    "allInitialSixFieldsUnchanged": true,
+    "sharedFilesEdited": false
+  },
+  "auditResolutionProposal": {
+    "problemId": "ioi2017_simurgh",
+    "status": "covered",
+    "techniqueIds": [
+      "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+    ],
+    "verification": "independent-analysis",
+    "resolvedAt": "2026-10-15",
+    "article": "src/content/docs/techniques/spanning-tree-overlap-oracle-reference-labeling-leaf-peeling.mdx",
+    "checker": "scripts/check_spanning_tree_overlap_cpp.py",
+    "expectedRootChoices": [
+      "spanning-tree-overlap",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "evidence": "Only after independent review plus article/metadata/ref/feature/flow/walk/native checker registration. Preserve initial6rows and research4/6;append only a resolution.",
+    "additionalPositiveResearchReview": false,
+    "externalReviewPending": true
+  },
+  "relatedScopeReview": {
+    "initialRelatedArticleReviews": [
+      {
+        "techniqueId": "interactive",
+        "title": "対話問題の質問設計",
+        "file": "src/content/docs/techniques/interactive.mdx",
+        "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+        "metadataSourceFiles": [
+          {
+            "file": "data/techniques-reasoning.json",
+            "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+          }
+        ],
+        "fullArticleAndAllCodeRead": true,
+        "publishedApi": "ask_interval example",
+        "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+        "scopeMismatch": "整数通信の一般例。二成分順位返答や全域木共通辺の具体戦略/予算保証はない。",
+        "originalFullRangeApiReusable": false,
+        "nativeScopeCounterexampleRun": false,
+        "fullImplementationRevalidatedForOriginal": false
+      },
+      {
+        "techniqueId": "interactive-bit-group-testing",
+        "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+        "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+        "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+        "metadataSourceFiles": [
+          {
+            "file": "data/techniques-specific-games.json",
+            "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+          }
+        ],
+        "fullArticleAndAllCodeRead": true,
+        "publishedApi": "binary_test_groups",
+        "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+        "scopeMismatch": "n<=100、一つの秘密対象へ任意部分集合のyes/noが可能。Prize/Simurghの合法質問とは異なる。",
+        "originalFullRangeApiReusable": false,
+        "nativeScopeCounterexampleRun": false,
+        "fullImplementationRevalidatedForOriginal": false
+      },
+      {
+        "techniqueId": "binary-weight-distance-oracle-edge-split-endpoint-search",
+        "title": "辺の重みを変えた最短距離への質問から、未知の二頂点を見つける",
+        "file": "src/content/docs/techniques/binary-weight-distance-oracle-edge-split-endpoint-search.mdx",
+        "sha256": "7209d07782ac116496a224b32d3d6515b77eb0d2271279d6fcb44bb79bc441a0",
+        "metadataSourceFiles": [
+          {
+            "file": "data/techniques-specific-construction.json",
+            "sha256": "9c3e92bab5a9dab85eeae6817f436644d816722caa78294dbcc7e853dc17936f"
+          }
+        ],
+        "fullArticleAndAllCodeRead": true,
+        "publishedApi": "find_binary_weight_hidden_pair",
+        "cppFenceSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715",
+        "scopeMismatch": "二重み辺設定の距離を返す固定二端点oracle。隠れ全域木の共通辺数oracleへ置き換えられない。",
+        "originalFullRangeApiReusable": false,
+        "nativeScopeCounterexampleRun": false,
+        "fullImplementationRevalidatedForOriginal": false
+      }
+    ],
+    "authorRereadInteractiveAndBitGroupingArticles": true,
+    "scopeMismatch": "generic ask_interval has no legal-tree reconstruction strategy;binary_test_groups allows arbitrary subsets/N<=100/one hidden item;two-weight distance oracle addresses different hidden endpoints and response",
+    "newSpecificApiDoesNotReplaceOrDuplicateExistingScope": true
+  },
+  "publication": {
+    "readyForIndependentReview": true,
+    "sharedEdits": false,
+    "externalPush": false,
+    "registeredCoverageClaimed": false,
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "difficulty": null,
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedRequiredSourceFacts": [],
+    "unconfirmedOptionalSourceDetails": [
+      "公式ear-decomposition圧縮節の詳細証明は未確認。選定したfundamental-cycle手順には使わない。"
+    ],
+    "nextWork": "Optional official ear-decomposition compression proof remains unconfirmed and is not necessary for the chosen5990-query fundamental-cycle API."
+  },
+  "statusAtAuthorFreeze": "author-artifacts-ready-for-independent-review-not-registered",
+  "status": "verified-and-integrated",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/spanning-tree-overlap-oracle-reference-labeling-leaf-peeling.mdx",
+    "checker": "scripts/check_spanning_tree_overlap_cpp.py",
+    "metadataGroup": "games",
+    "entryGraphId": "interactive-oracles",
+    "choices": [
+      "spanning-tree-overlap",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Standard entryPoints advanced/complexity/reasoning; exact publicationdate/year/numericfields.",
+      "Public title/body/C++ unchanged, feature-based guard questions explicit.",
+      "Permanent checker/probe MDXpath and remove implicit tmpoutput writes only; oracle logic unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-ioi2017-simurgh.json"
+  },
+  "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+  "artifactSha256": {
+    "authorArticle": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+    "authorChecker": "d98c85a722d1aff09ae2268d10dcdbc90ccf8d2bb8d2eac021766c6b1be345ae",
+    "authorSidecar": "28808dabe88e03095112778ea9c6ac4f634dd6e9fdc29deeee63381a495aa61e",
+    "publishedArticle": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+    "publishedChecker": "200a18e3368b81c3487f13fa7c2148cdb76ae1cf76997dadc149db92f237a770"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewer": "/root",
+      "reviewedAt": "2026-10-15",
+      "techniqueId": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+      "scope": {
+        "allEightSectionsAndCppRead": true,
+        "completeCheckerRead": true,
+        "completeIndependentReviewAndProbeRead": true
+      },
+      "sourceVerification": {
+        "statement": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+        "statementPagesRead": [
+          1,
+          2,
+          3
+        ],
+        "editorial": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+        "editorialPagesRead": [
+          1,
+          2
+        ],
+        "notice": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+        "noticePagesRead": [
+          1
+        ],
+        "numericPrimary": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+        "numericAcquisition": "Directopen cachemiss;primary indexed search returned fullnumeric/subtasks/technicalnote. No PDF image inspection claimed.",
+        "bounds": "N2..500,MN−1..N(N−1)/2,0basedvalidendpoints,connected/simple/undirected;fixedhiddenN−1tree;everyquestionactualN−1tree;fullscore8000not sample30000.",
+        "sourceTimeSeconds": 3,
+        "sourceMemoryMB": 1024,
+        "date": "2017-08-01",
+        "difficulty": null,
+        "actualHeaderBytesRetrieved": false,
+        "oracleConstQualificationAssumed": false,
+        "adapter": "Originalgeneric+Notice derive value-vector find_roads. Macro includes real distributionheader whenavailable and passesmutablelocalvectorlvalue. Both tests use explicitly synthetic constref/mutableref headers.",
+        "officialEditorialVerified": false,
+        "optionalEarDecompositionProofVerified": false,
+        "selectedMethodIndependentSupplement": "All selected referenceclassification fundamentalcycle lemmas and5990guarantee selfcontained; optionalearparagraph/formula notused."
+      },
+      "proofReview": [
+        "T+e fundamentalcycle exchange produces legalquery withdelta=w(e)−w(f). Aknownanchor fixes e thenallunknownf. Withallunknown,nonzero signs fixe;allzero impliesallcyclelabels equal andall1impossible inhidden tree,thusall0.",
+        "Anyreferenceedge containedinany fundamentalcycle is classifiedwhenfirstsuchcycle isprocessed;remainingunknown crossesitsT-cutalone,soisabridgeand1. Eachunknownedge paidonce;knownanchor paidoncepernonemptyclassificationgroup,atmostN−1groups. Hencebaseline+unknown+anchors<=1+2(N−1).",
+        "ReferenceT connects everyforest component;addonlyDSUcrossingknownreferenceedges. Never subtracta referenceedgealreadyinforest. Subtractaddedknownlabelsfromlegalcompletedtree answer toobtainexactforestcount. Simpleincidentstarsandpartialstarsareforests.",
+        "Activehiddenedges remaina tree. Fullstarqueriesgiveexactdegrees,leafhasexactlyoneactivehiddenedge,balancedhalves locateit. Filterallinactiveendpoints,removeleaf/decrementneighbor,skipstaleleaves,stopafterN−1beforelastdegree0vertex. Complementsmayusepastdeletedverticesbecausetheirreferencecontributionisknown.",
+        "ExactlyNdegreequeries;<=N−1leaves with<=ceil(log2(N−1))halfqueries. Q<=5990atN500,eachquestionN−1=>entries<=2989010. Proofuniversal,notfromobservedmax. AllN2..500integerboundsexplicitlychecked."
+      ],
+      "apiAndResourcesReview": [
+        "ValidateN/budget/callbackbeforeN(N−1)arithmetic,thenMsizebeforecast,endpoints/loops/undirectedparallel/connectedbeforecallback. InputorderingretainsedgeIDs;canonicalsortvalidationonly. Allproductionindices/intproducts fit32bit;alltraversalsiterative.",
+        "Budgetcheckedbeforeoracleinvocation;callbackexceptionpropagatesidentity. Queryspanvalidduringcallonly,callerdoesnotretain,originalgraderdoesnotmutate. Arbitraryfalseanswersarecontractviolations;onlydetectableconsistencychecksarepromised. Noexternalcallbackrollbackpromise.",
+        "O(Mlog(M+1)+MN+N²logN alpha(N))localtimeincludesallfundamentalpathscans,DSUcompletion/legalchecks/materializedquestionvectors. IncidentleafscansO(M),candidateerasechargeswithinnlognbound. Externaloracleworkexcluded. O(N+M)spaceandownedreturnvectors/nosharedstate/reentrant.",
+        "Authorrootpeer fullnative coverevery771connectedN2..5graph/all8135secrets+1296K6Prufer+random/transformed+8maxN500. Everyquestion independentlyBFSchecked. Explicitgenericheaderfreecompile/syntheticconstrefFull/mutablerefSmoke. Additionalpeercoherenttranscriptsendwithasinglefixedsecretmatchingallpastanswers;notclaimedsourceadaptiveoracle.",
+        "Distinctpeerprobe30227checks/396transcripts/11917leafstriplegalchecks/checksum2819309625694043276;all32budgets,29callbackthrows,276allocationfailures. APIpayload2713370bytesmeasuredonlyoneN500construction,notuniversal. Extraprobeordinaryonly,fullsuppliedcheckerASan/UBSan separatelypassed;detect_leaks0."
+      ],
+      "normal": {
+        "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+        "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "genericWithoutHeaderCompiled": true,
+        "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+        "constReferenceHeaderFull": {
+          "checks": 711667,
+          "recoverCalls": 11275,
+          "literalValidTreeQuestions": 371287,
+          "literalQuestionEntries": 37828515,
+          "exhaustiveConnectedGraphs": 771,
+          "everyHiddenTreeForEverySmallGraph": 8135,
+          "transcriptCompletionComparisons": 453264,
+          "completeN6PruferHiddenTrees": 1296,
+          "randomGraphs": 400,
+          "metamorphicChecks": 1200,
+          "invalidCases": 36,
+          "originalAdapterCalls": 140,
+          "checksum": "14758130767299308416",
+          "seconds": 0.877872,
+          "peakRSSKiB": 21636,
+          "maximumCases": [
+            {
+              "name": "path graph unique hidden tree",
+              "n": 500,
+              "m": 499,
+              "queries": 501,
+              "referenceQueries": 1,
+              "queryEntries": 249999,
+              "twoApiCallsSeconds": 0.00774669
+            },
+            {
+              "name": "star graph unique hidden tree",
+              "n": 500,
+              "m": 499,
+              "queries": 501,
+              "referenceQueries": 1,
+              "queryEntries": 249999,
+              "twoApiCallsSeconds": 0.00598305
+            },
+            {
+              "name": "complete lexicographic reference,hidden star",
+              "n": 500,
+              "m": 124750,
+              "queries": 4987,
+              "referenceQueries": 997,
+              "queryEntries": 2488513,
+              "twoApiCallsSeconds": 0.0641386
+            },
+            {
+              "name": "complete lexicographic reference,hidden path",
+              "n": 500,
+              "m": 124750,
+              "queries": 5228,
+              "referenceQueries": 997,
+              "queryEntries": 2608772,
+              "twoApiCallsSeconds": 0.0666852
+            },
+            {
+              "name": "complete lexicographic reference,hidden Prufer tree",
+              "n": 500,
+              "m": 124750,
+              "queries": 5288,
+              "referenceQueries": 997,
+              "queryEntries": 2638712,
+              "twoApiCallsSeconds": 0.0687038
+            },
+            {
+              "name": "complete path reference,hidden star",
+              "n": 500,
+              "m": 124750,
+              "queries": 5229,
+              "referenceQueries": 997,
+              "queryEntries": 2609271,
+              "twoApiCallsSeconds": 0.16293
+            },
+            {
+              "name": "complete path reference,hidden reference path",
+              "n": 500,
+              "m": 124750,
+              "queries": 4987,
+              "referenceQueries": 997,
+              "queryEntries": 2488513,
+              "twoApiCallsSeconds": 0.163978
+            },
+            {
+              "name": "complete permuted reference,hidden Prufer tree",
+              "n": 500,
+              "m": 124750,
+              "queries": 5030,
+              "referenceQueries": 740,
+              "queryEntries": 2509970,
+              "twoApiCallsSeconds": 0.133769
+            }
+          ]
+        },
+        "mutableReferenceHeaderApiSmoke": {
+          "checks": 1559,
+          "recoverCalls": 127,
+          "literalValidTreeQuestions": 553,
+          "literalQuestionEntries": 1299,
+          "exhaustiveConnectedGraphs": 0,
+          "everyHiddenTreeForEverySmallGraph": 0,
+          "transcriptCompletionComparisons": 0,
+          "completeN6PruferHiddenTrees": 0,
+          "randomGraphs": 0,
+          "metamorphicChecks": 0,
+          "invalidCases": 36,
+          "originalAdapterCalls": 31,
+          "checksum": "141949014370290246",
+          "seconds": 0.000261002,
+          "peakRSSKiB": 21764,
+          "maximumCases": []
+        }
+      },
+      "asanUbsan": {
+        "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+        "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "genericWithoutHeaderCompiled": true,
+        "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+        "constReferenceHeaderFull": {
+          "checks": 711667,
+          "recoverCalls": 11275,
+          "literalValidTreeQuestions": 371287,
+          "literalQuestionEntries": 37828515,
+          "exhaustiveConnectedGraphs": 771,
+          "everyHiddenTreeForEverySmallGraph": 8135,
+          "transcriptCompletionComparisons": 453264,
+          "completeN6PruferHiddenTrees": 1296,
+          "randomGraphs": 400,
+          "metamorphicChecks": 1200,
+          "invalidCases": 36,
+          "originalAdapterCalls": 140,
+          "checksum": "14758130767299308416",
+          "seconds": 8.74336,
+          "peakRSSKiB": 1011124,
+          "maximumCases": [
+            {
+              "name": "path graph unique hidden tree",
+              "n": 500,
+              "m": 499,
+              "queries": 501,
+              "referenceQueries": 1,
+              "queryEntries": 249999,
+              "twoApiCallsSeconds": 0.0897389
+            },
+            {
+              "name": "star graph unique hidden tree",
+              "n": 500,
+              "m": 499,
+              "queries": 501,
+              "referenceQueries": 1,
+              "queryEntries": 249999,
+              "twoApiCallsSeconds": 0.0841907
+            },
+            {
+              "name": "complete lexicographic reference,hidden star",
+              "n": 500,
+              "m": 124750,
+              "queries": 4987,
+              "referenceQueries": 997,
+              "queryEntries": 2488513,
+              "twoApiCallsSeconds": 0.859096
+            },
+            {
+              "name": "complete lexicographic reference,hidden path",
+              "n": 500,
+              "m": 124750,
+              "queries": 5228,
+              "referenceQueries": 997,
+              "queryEntries": 2608772,
+              "twoApiCallsSeconds": 0.655956
+            },
+            {
+              "name": "complete lexicographic reference,hidden Prufer tree",
+              "n": 500,
+              "m": 124750,
+              "queries": 5288,
+              "referenceQueries": 997,
+              "queryEntries": 2638712,
+              "twoApiCallsSeconds": 0.678896
+            },
+            {
+              "name": "complete path reference,hidden star",
+              "n": 500,
+              "m": 124750,
+              "queries": 5229,
+              "referenceQueries": 997,
+              "queryEntries": 2609271,
+              "twoApiCallsSeconds": 1.46606
+            },
+            {
+              "name": "complete path reference,hidden reference path",
+              "n": 500,
+              "m": 124750,
+              "queries": 4987,
+              "referenceQueries": 997,
+              "queryEntries": 2488513,
+              "twoApiCallsSeconds": 1.35069
+            },
+            {
+              "name": "complete permuted reference,hidden Prufer tree",
+              "n": 500,
+              "m": 124750,
+              "queries": 5030,
+              "referenceQueries": 740,
+              "queryEntries": 2509970,
+              "twoApiCallsSeconds": 1.05342
+            }
+          ]
+        },
+        "mutableReferenceHeaderApiSmoke": {
+          "checks": 1559,
+          "recoverCalls": 127,
+          "literalValidTreeQuestions": 553,
+          "literalQuestionEntries": 1299,
+          "exhaustiveConnectedGraphs": 0,
+          "everyHiddenTreeForEverySmallGraph": 0,
+          "transcriptCompletionComparisons": 0,
+          "completeN6PruferHiddenTrees": 0,
+          "randomGraphs": 0,
+          "metamorphicChecks": 0,
+          "invalidCases": 36,
+          "originalAdapterCalls": 31,
+          "checksum": "141949014370290246",
+          "seconds": 0.00833018,
+          "peakRSSKiB": 21724,
+          "maximumCases": []
+        }
+      },
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "artifactSha256": {
+        "article": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+        "checker": "d98c85a722d1aff09ae2268d10dcdbc90ccf8d2bb8d2eac021766c6b1be345ae",
+        "sidecar": "28808dabe88e03095112778ea9c6ac4f634dd6e9fdc29deeee63381a495aa61e"
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Standard entryPoints advanced/complexity/reasoning; exact publicationdate/year/numericfields.",
+        "Public title/body/C++ unchanged, feature-based guard questions explicit.",
+        "Permanent checker/probe MDXpath and remove implicit tmpoutput writes only; oracle logic unchanged."
+      ],
+      "sharedFilesModified": false
+    },
+    "normal": {
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "genericWithoutHeaderCompiled": true,
+      "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+      "constReferenceHeaderFull": {
+        "checks": 711667,
+        "recoverCalls": 11275,
+        "literalValidTreeQuestions": 371287,
+        "literalQuestionEntries": 37828515,
+        "exhaustiveConnectedGraphs": 771,
+        "everyHiddenTreeForEverySmallGraph": 8135,
+        "transcriptCompletionComparisons": 453264,
+        "completeN6PruferHiddenTrees": 1296,
+        "randomGraphs": 400,
+        "metamorphicChecks": 1200,
+        "invalidCases": 36,
+        "originalAdapterCalls": 140,
+        "checksum": "14758130767299308416",
+        "seconds": 0.877872,
+        "peakRSSKiB": 21636,
+        "maximumCases": [
+          {
+            "name": "path graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.00774669
+          },
+          {
+            "name": "star graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.00598305
+          },
+          {
+            "name": "complete lexicographic reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.0641386
+          },
+          {
+            "name": "complete lexicographic reference,hidden path",
+            "n": 500,
+            "m": 124750,
+            "queries": 5228,
+            "referenceQueries": 997,
+            "queryEntries": 2608772,
+            "twoApiCallsSeconds": 0.0666852
+          },
+          {
+            "name": "complete lexicographic reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5288,
+            "referenceQueries": 997,
+            "queryEntries": 2638712,
+            "twoApiCallsSeconds": 0.0687038
+          },
+          {
+            "name": "complete path reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 5229,
+            "referenceQueries": 997,
+            "queryEntries": 2609271,
+            "twoApiCallsSeconds": 0.16293
+          },
+          {
+            "name": "complete path reference,hidden reference path",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.163978
+          },
+          {
+            "name": "complete permuted reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5030,
+            "referenceQueries": 740,
+            "queryEntries": 2509970,
+            "twoApiCallsSeconds": 0.133769
+          }
+        ]
+      },
+      "mutableReferenceHeaderApiSmoke": {
+        "checks": 1559,
+        "recoverCalls": 127,
+        "literalValidTreeQuestions": 553,
+        "literalQuestionEntries": 1299,
+        "exhaustiveConnectedGraphs": 0,
+        "everyHiddenTreeForEverySmallGraph": 0,
+        "transcriptCompletionComparisons": 0,
+        "completeN6PruferHiddenTrees": 0,
+        "randomGraphs": 0,
+        "metamorphicChecks": 0,
+        "invalidCases": 36,
+        "originalAdapterCalls": 31,
+        "checksum": "141949014370290246",
+        "seconds": 0.000261002,
+        "peakRSSKiB": 21764,
+        "maximumCases": []
+      }
+    },
+    "asanUbsan": {
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "genericWithoutHeaderCompiled": true,
+      "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+      "constReferenceHeaderFull": {
+        "checks": 711667,
+        "recoverCalls": 11275,
+        "literalValidTreeQuestions": 371287,
+        "literalQuestionEntries": 37828515,
+        "exhaustiveConnectedGraphs": 771,
+        "everyHiddenTreeForEverySmallGraph": 8135,
+        "transcriptCompletionComparisons": 453264,
+        "completeN6PruferHiddenTrees": 1296,
+        "randomGraphs": 400,
+        "metamorphicChecks": 1200,
+        "invalidCases": 36,
+        "originalAdapterCalls": 140,
+        "checksum": "14758130767299308416",
+        "seconds": 8.74336,
+        "peakRSSKiB": 1011124,
+        "maximumCases": [
+          {
+            "name": "path graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0897389
+          },
+          {
+            "name": "star graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0841907
+          },
+          {
+            "name": "complete lexicographic reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.859096
+          },
+          {
+            "name": "complete lexicographic reference,hidden path",
+            "n": 500,
+            "m": 124750,
+            "queries": 5228,
+            "referenceQueries": 997,
+            "queryEntries": 2608772,
+            "twoApiCallsSeconds": 0.655956
+          },
+          {
+            "name": "complete lexicographic reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5288,
+            "referenceQueries": 997,
+            "queryEntries": 2638712,
+            "twoApiCallsSeconds": 0.678896
+          },
+          {
+            "name": "complete path reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 5229,
+            "referenceQueries": 997,
+            "queryEntries": 2609271,
+            "twoApiCallsSeconds": 1.46606
+          },
+          {
+            "name": "complete path reference,hidden reference path",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 1.35069
+          },
+          {
+            "name": "complete permuted reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5030,
+            "referenceQueries": 740,
+            "queryEntries": 2509970,
+            "twoApiCallsSeconds": 1.05342
+          }
+        ]
+      },
+      "mutableReferenceHeaderApiSmoke": {
+        "checks": 1559,
+        "recoverCalls": 127,
+        "literalValidTreeQuestions": 553,
+        "literalQuestionEntries": 1299,
+        "exhaustiveConnectedGraphs": 0,
+        "everyHiddenTreeForEverySmallGraph": 0,
+        "transcriptCompletionComparisons": 0,
+        "completeN6PruferHiddenTrees": 0,
+        "randomGraphs": 0,
+        "metamorphicChecks": 0,
+        "invalidCases": 36,
+        "originalAdapterCalls": 31,
+        "checksum": "141949014370290246",
+        "seconds": 0.00833018,
+        "peakRSSKiB": 21724,
+        "maximumCases": []
+      }
+    },
+    "additionalReviewFile": "research/probes/spanning-tree-overlap-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,225 @@
+---
+title: "戻る辺が二本以下の有向グラフで、道の端を追って全辺の経路分解を数える"
+description: "各頂点で入辺と出辺を対応させ、戻る辺を含む未完成の道だけを二組の端点で管理する。閉じた循環を作る対応を除き、残りの局所対応を階乗でまとめて数える。"
+techniqueId: almost-dag-edge-routing-pairing-frontier-cycle-count
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+番号付きの有向グラフに、送り手と受け手が同数いる。各送り手から異なる受け手へ一つずつ道を作り、全ての辺をちょうど一回使い切る分解を数えたい。どの送り手がどの受け手へ届くかも答えに含める。
+
+ここでいう道は頂点を再訪してよい。辺は全体で一回しか使えないが、送り手や受け手を途中で通過してもよく、一つの道が元のグラフの有向サイクルを通り抜けることもある。
+
+全ての辺が小さい番号から大きい番号へ向かえば、各頂点の入辺と出辺の対応を独立に選べる。逆向きの辺が二本までなら、その辺を含む未完成の道だけを追うことで、送り手に接続されない閉じた循環を除外できる。
+
+## 考え方
+
+各送り手に仮想的な始点からの入辺を一本、各受け手に仮想的な終点への出辺を一本追加する。頂点 $v$ の拡張した入次数と出次数が一致しなければ、分解は存在しない。その共通値を $d(v)$ とする。
+
+各頂点で、入辺を出辺へ一対一に対応させる。これにより全ての辺は、仮想始点から仮想終点へ至る道と、独立した閉じた循環へ分かれる。欲しいのは後者を持たない対応だけである。戻る辺がなければ循環は作れず、答えは $\prod_v d(v)!$ になる。
+
+頂点を番号順に処理する。処理済み頂点での対応を縮めたとき、両端が未処理側に残る道は、未処理側から処理済み側へ入る戻る辺を含む。そのような道は高々二本なので、それぞれの始点となる戻る辺の番号を固定し、現在の終点だけを状態にする。
+
+戻る辺 $a\to b$ は最初、始点 $a$・終点 $b$ の一本の道である。終点に達したら出辺を選んで道を伸ばす。その道の先頭の戻る辺へつなぐと閉じた循環になるので捨て、もう一本の道へつながれば二本を連結する。送り手からの道に接続されたり、受け手へ届いたりした道は、もう閉じた循環を作れないため状態から外す。
+
+## 適用条件
+
+頂点は0始まりで $2\le N\le100$。同じ向きの辺は高々一本で、自己ループはない。番号が減る辺は高々二本であり、それ以外の辺は全て番号が増える向きである。逆向きの二辺 $u\to v$ と $v\to u$ は同時に存在してよい。
+
+各頂点の役割は送り手 `S`、受け手 `R`、どちらでもない `.` のいずれか一つとし、送り手と受け手の人数は等しく、一人以上いる。同じ頂点が両方を兼ねるモデルや空の道は扱わない。頂点番号を自由に並べ替えて戻る辺の本数条件を外したり、辺を区別する多重グラフへそのまま適用したりはできない。
+
+掲載関数 `count_almost_dag_edge_routings(matrix,roles,modulus)` は、隣接行列を0/1文字列の配列で受け取る。原典の頂点1は配列添字0に対応し、別入力の $K$ は行列の下三角から求める。戻り値は経路分解数の剰余である。
+
+法の既定値は $1000000007$。任意の正の32ビット符号付き整数を法にでき、素数を仮定しない。法1の戻り値は0である。剰余が0でも、分解が存在しないとは限らない。
+
+寸法・文字・役割・自己ループ・戻る辺の本数・法の違反は `std::invalid_argument`。構造が正しくても次数が釣り合わない場合や、閉じた循環しか残せない場合は0を返す。原典は少なくとも一分解の存在を保証するが、この関数では存在しない場合も扱う。全ての構造検査を済ませてから次数不一致を判定する。入力は変更せず、呼出し間で状態を共有しない。割当例外はそのまま伝わる。
+
+## なぜ正しいか
+
+**局所対応と道への分解は一対一になる。** 拡張後の各入辺は、対応先の出辺を一つだけ持つ。辺をたどると、仮想始点から出発した道は仮想終点で終わり、それ以外の成分は閉じた循環になる。逆に、全辺を使う正当な経路分解から、各入辺の直後の出辺を一意に復元できる。送り手ごとに道を特定できるので、道の並べ替えを別に数えたり、送り手人数の階乗で割ったりする必要はない。
+
+たとえば辺 $0\to1,1\to0,0\to2$ と、送り手0・受け手2があるとする。道 $0\to1\to0\to2$ は正当である。一方、$0\to2$ と閉じた循環 $0\to1\to0$ に分かれる対応は不正である。元のグラフのサイクルの有無だけでは判定できない。
+
+**二組の端点で、まだ閉じ得る道を全て表せる。** 頂点 $i$ の処理前に、処理済み頂点での対応を縮める。未処理頂点の出辺から始まり、未処理頂点の入辺へ終わる道が処理済み側を通るなら、最初に番号を減らす辺を使う。その辺を道の識別子にする。複数の戻る辺が一つの道へまとまったら、上流側の識別子だけを残す。辺を共有しないので、そのような道は戻る辺の本数以下である。
+
+それ以外の縮約した道は、既に送り手へ接続しているか、既に受け手で終わっている。前者へ別の道をつないでも送り手からの道となり、後者へつなぐと受け手で終わるため、独立した閉じた循環にはならない。将来に必要な情報は、各識別子の道が残っているかと、その未処理の終点だけである。実際の入辺の区別は、そこまでの対応の選び方の個数に含まれている。
+
+状態を $(j,k)$ とし、存在しない道は番兵 $N$ で表す。識別子ごとの始点は、対応する戻る辺の尾 $a_0,a_1$ のまま固定する。処理前に残る道は始点・終点とも $i$ 以上である。始点 $a_z=i$ を処理し終えても他の追跡中の道がそこへつながらなかったなら、その入側は既に送り手へ接続している。従って、その道を状態から除いてよい。受け手へ出る仮想辺を選んだ場合も除く。
+
+**遷移は局所対応を重複なく分ける。** 頂点 $i$ に終点が来た追跡中の道を $c$ 本とする。$c$ は0、1、2のいずれかである。その $c$ 本へ異なる出辺を一つずつ選べば、残る $d(i)-c$ 本の入辺と出辺の対応は $(d(i)-c)!$ 通りある。追跡していない入辺の履歴を状態に持たなくても、この残り方の数は変わらない。
+
+|選んだ出辺|処理|
+|---|---|
+|番号が増える辺、または受け手からの仮想辺|終点を更新する。仮想辺なら道を除く|
+|その道自身の識別子である戻る辺|道が閉じるので捨てる|
+|もう一本の識別子である戻る辺|その道と連結し、上流の識別子と下流の終点を残す|
+
+二本とも頂点 $i$ で終わる場合は、二本の出辺を順序付きで選ぶ。同じ出辺は選べない。二本が互いの戻る辺を選ぶ場合は、二本を合わせた閉じた循環になるので捨てる。片方だけがもう一方の戻る辺を選んだ場合は、もう一方が選んだ出辺を連結後の終点にする。掲載コードの三場合分けは、この表をそのまま実行している。
+
+どんな閉じた循環も戻る辺を含む。その成分の最後の対応を決めた時点で、自己連結か二本の相互連結として必ず検出される。逆に、それらを捨てるときは送り手にも受け手にも接続しない閉じた成分を実際に作っている。従って正当な分解を捨てず、不正な対応を残さない。全頂点の処理後の状態 $(N,N)$ が、求める分解数になる。
+
+## 計算量
+
+隣接行列の検査と戻る辺の識別に $O(N^2)$。一頂点を処理する状態数は $O(N^2)$ である。
+
+追跡中の終点が頂点 $i$ に来ない状態は一回で処理できる。一本だけ来る状態は $O(N)$ 個で、各状態から出辺を $O(N)$ 通り試す。二本とも来る状態は $(i,i)$ の一つだけで、出辺の組を $O(N^2)$ 通り試す。従って一頂点につき $O(N^2)$、全体で **$O(N^3)$ 時間・$O(N^2)$ 追加領域**となる。再帰は使わない。
+
+原典の $T\le20$、$\sum N^2\le20000$ では、$\sum N^3\le100\sum N^2\le2000000$ となる。二層のDPだけを保存するため、処理済み頂点番号を領域の次元に残す必要はない。
+
+局所次数は高々 $N$、添字は高々 $(N+1)^2-1$。法を $m\le2^{31}-1$ とすると、剰余どうしの積は $(m-1)^2<2^{62}$ なので64bit符号付き整数で安全である。階乗を実整数として作らず、一回の乗算ごとに法を取る。
+
+## 実装
+
+`N` は存在しない終点と、受け手へ出る仮想辺の行き先に共用する。実辺の端点は常に `0..N-1` なので衝突しない。戻る辺が足りない識別子の始点は `-1` とし、初期終点を `N` にする。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+int count_almost_dag_edge_routings(
+    const std::vector<std::string>& matrix,
+    const std::string& roles,
+    int modulus = 1000000007) {
+    static_assert(std::numeric_limits<int>::max() >= 2147483647);
+    if (matrix.size() < 2 || matrix.size() > 100 || modulus <= 0)
+        throw std::invalid_argument("N or modulus");
+    const int n = static_cast<int>(matrix.size());
+    if (roles.size() != matrix.size())
+        throw std::invalid_argument("role count");
+    int senders = 0, receivers = 0;
+    for (char role : roles) {
+        if (role == 'S') ++senders;
+        else if (role == 'R') ++receivers;
+        else if (role != '.') throw std::invalid_argument("role character");
+    }
+    if (senders == 0 || senders != receivers)
+        throw std::invalid_argument("sender/receiver balance");
+    for (const auto& row : matrix)
+        if (row.size() != matrix.size())
+            throw std::invalid_argument("matrix dimensions");
+
+    std::vector<std::vector<int>> outgoing(n);
+    std::vector<int> indegree(n), degree(n), back_id(n * n, -1);
+    std::array<int, 2> tail{-1, -1}, head{n, n};
+    int backward = 0;
+    for (int u = 0; u < n; ++u) {
+        for (int v = 0; v < n; ++v) {
+            const char bit = matrix[u][v];
+            if (bit != '0' && bit != '1')
+                throw std::invalid_argument("matrix character");
+            if (bit == '0') continue;
+            if (u == v) throw std::invalid_argument("self loop");
+            outgoing[u].push_back(v);
+            ++indegree[v];
+            if (u > v) {
+                if (backward == 2)
+                    throw std::invalid_argument("more than two backward edges");
+                back_id[u * n + v] = backward;
+                tail[backward] = u;
+                head[backward] = v;
+                ++backward;
+            }
+        }
+    }
+    // All structural validation precedes a possibly zero answer.
+    bool balanced = true;
+    for (int v = 0; v < n; ++v) {
+        degree[v] = indegree[v] + (roles[v] == 'S');
+        if (degree[v] != static_cast<int>(outgoing[v].size()) +
+                             (roles[v] == 'R'))
+            balanced = false;
+        if (roles[v] == 'R') outgoing[v].push_back(n);
+    }
+    if (!balanced) return 0;
+
+    using I = std::int64_t;
+    std::vector<int> factorial(n + 1);
+    factorial[0] = 1 % modulus;
+    for (int d = 1; d <= n; ++d)
+        factorial[d] = static_cast<int>(I(factorial[d - 1]) * d % modulus);
+    const int stride = n + 1, states = stride * stride;
+    std::vector<int> dp(states), next(states);
+    dp[head[0] * stride + head[1]] = 1 % modulus;
+    for (int i = 0; i < n; ++i) {
+        std::fill(next.begin(), next.end(), 0);
+        const auto kind = [&](int destination) {
+            return destination == n ? -1 : back_id[i * n + destination];
+        };
+        for (int j = 0; j <= n; ++j) {
+            for (int k = 0; k <= n; ++k) {
+                const int value = dp[j * stride + k];
+                if (value == 0) continue;
+                const bool hit0 = j == i, hit1 = k == i;
+                const int hits = static_cast<int>(hit0) + static_cast<int>(hit1);
+                if (hits > degree[i]) continue;
+                const int weight = static_cast<int>(
+                    I(value) * factorial[degree[i] - hits] % modulus);
+                const auto put = [&](int x, int y) {
+                    if (tail[0] <= i || x <= i) x = n;
+                    if (tail[1] <= i || y <= i) y = n;
+                    int& target = next[x * stride + y];
+                    target = static_cast<int>((I(target) + weight) % modulus);
+                };
+                if (!hit0 && !hit1) {
+                    put(j, k);
+                } else if (hit0 && !hit1) {
+                    for (int x : outgoing[i]) {
+                        const int first = kind(x);
+                        if (first == 0) continue;
+                        if (first == 1) put(k, n);
+                        else put(x, k);
+                    }
+                } else if (!hit0 && hit1) {
+                    for (int y : outgoing[i]) {
+                        const int second = kind(y);
+                        if (second == 1) continue;
+                        if (second == 0) put(n, j);
+                        else put(j, y);
+                    }
+                } else {
+                    for (int x : outgoing[i]) {
+                        for (int y : outgoing[i]) {
+                            if (x == y) continue;
+                            const int first = kind(x), second = kind(y);
+                            if (first == 0 || second == 1) continue;
+                            if (first == 1) {
+                                if (second == 0) continue;
+                                put(y, n);
+                            } else if (second == 0) {
+                                put(n, x);
+                            } else {
+                                put(x, y);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        dp.swap(next);
+    }
+    return dp[n * stride + n];
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design)では、過去の具体的な選択を、将来の遷移に必要な情報へまとめる。この手法では、未処理側へ両端が残る道の終点がその情報になる。
+
+[境界状態で単一の閉路を管理するDP](/flowchartcp/techniques/frontier-single-cycle)も、道どうしの接続と閉路完成を追う。ここでは格子の幅ではなく、番号を戻る辺の本数によって追跡する道の本数を抑えている。
+
+[次数条件と連結性から考えるオイラー路](/flowchartcp/techniques/euler-degree-connectivity)のように次数を確認するだけでは、複数の送り手からの経路分解数は決まらない。入辺と出辺の局所対応と、送り手に接続しない閉じた成分の除外まで必要になる。
+
+## 参考資料
+
+- [USACO公式原典：Routing Schemes（2021 US Open Platinum、第2問）](https://usaco.org/index.php?page=viewproblem2&cpid=1141)
+- [USACO公式解説：Benjamin Qiによる解析](https://usaco.org/current/data/sol_prob2_platinum_open21.html)
+- [USACO公式競技一覧：2021 US Open](https://usaco.org/index.php?page=open21results)
+
+<TechniqueReferences techniqueId="almost-dag-edge-routing-pairing-frontier-cycle-count" />

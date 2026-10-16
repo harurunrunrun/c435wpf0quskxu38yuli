@@ -1,0 +1,78 @@
+---
+title: "凸包"
+description: "点集合の外周を求め、方向ごとの極値や最遠点の候補を絞ります。"
+techniqueId: convex-hull
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+点集合の外周を求め、方向ごとの極値や最遠点の候補を絞ります。
+
+別名：Convex Hull / Monotone Chain / Andrew Algorithm
+
+## 使う場面
+
+点集合を囲む最小の凸多角形の周長や面積、ある方向への最大内積、最遠の2点を求める場合に使います。凸包の内部の点は方向ごとの極値にはならないため、外周の頂点だけを残せます。
+
+## 考え方
+
+Andrew法では、点を $x$ 座標、次に $y$ 座標でソートします。左から右へ下側の鎖を作り、逆向きに上側の鎖を作ります。
+
+新しい点を加えるとき、直前の2点と新点が左向きに曲がらなければ、中央の点を取り除きます。曲がる向きは外積 $(B-A)\times(C-A)$ の符号で判定します。傾きや角度を浮動小数点で計算する必要はありません。
+
+## 適用条件
+
+同一直線上の境界の点を全部残すか、両端だけ残すかを決めます。以下の実装では重複を除き、同一直線上の点は端点だけを残します。
+
+整数座標では、差と積を計算する前に十分に広い型へ変換します。浮動小数点の誤差を許す比較をソートにそのまま使うと、比較の推移律を壊すことがあるため、ソート順と幾何判定は慎重に分けます。
+
+## なぜ正しいか
+
+ソート順に新点を加えたとき、右向きに曲がる中央の点は、新しい下側の外周から外れます。同一直線上の中央の点も、端点だけ残す方針なら不要です。これらを取り除くことで、下側の凸な鎖を保てます。
+
+逆順に同じ処理を行えば上側の鎖が得られます。端点の重複を除いてつなぐと、すべての点を囲む凸包になります。
+
+## 計算量
+
+ソートは $O(N\log N)$、鎖の構築は $O(N)$、空間は $O(N)$ です。各点はそれぞれの鎖に高々1回追加され、高々1回削除されます。
+
+## 実装
+
+以下は反時計回りの頂点列を返し、先頭の点を末尾へ重ねて返しません。全点が一致すれば1点、同一直線上なら両端の2点になります。
+
+外積は128ビットで計算します。座標の絶対値が $10^9$ 以下など、差と積が128ビットの範囲に収まる入力で使ってください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct Point { long long x,y; auto operator<=>(const Point&) const=default; };
+__int128 cross(Point a,Point b,Point c) {
+    return (__int128(b.x)-a.x)*(__int128(c.y)-a.y)
+         - (__int128(b.y)-a.y)*(__int128(c.x)-a.x);
+}
+vector<Point> convex_hull(vector<Point> p) {
+    sort(p.begin(),p.end()); p.erase(unique(p.begin(),p.end()),p.end());
+    if(p.size()<=1) return p;
+    vector<Point> h;
+    for(Point v:p) {
+        while(h.size()>=2 && cross(h[h.size()-2],h.back(),v)<=0) h.pop_back();
+        h.push_back(v);
+    }
+    size_t lower=h.size();
+    for(int i=int(p.size())-2;i>=0;--i) {
+        Point v=p[i];
+        while(h.size()>lower && cross(h[h.size()-2],h.back(),v)<=0) h.pop_back();
+        h.push_back(v);
+    }
+    h.pop_back(); return h;
+}
+```
+
+## 関連する手法
+
+[座標圧縮](/flowchartcp/techniques/coordinate-compression/) ・ [回転キャリパー](/flowchartcp/techniques/rotating-calipers/)
+
+## 参考資料
+
+- [cp-algorithms: Convex hull construction](https://cp-algorithms.com/geometry/convex-hull.html)
+
+<TechniqueReferences techniqueId="convex-hull" />

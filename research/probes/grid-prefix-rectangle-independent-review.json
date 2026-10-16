@@ -1,0 +1,103 @@
+{
+  "status": "complete-no-material-findings",
+  "techniqueId": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+  "sharedDataModified": false,
+  "authorArtifactsModified": false,
+  "primarySourcesReviewed": {
+    "statement": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "officialReview": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+    "numericEvidence": [
+      "https://ioi2018.jp/tasks/contest1/TWN-seats.pdf",
+      "https://ioi2018.jp/tasks/contest1/RUS-seats.pdf"
+    ],
+    "numeric": {
+      "HWMaximum": 1000000,
+      "QMaximum": 50000,
+      "swapDistinctRequired": true
+    },
+    "acquisition": "web official documents and organizer-hosted translation search text; no PDF visual inspection claimed"
+  },
+  "independentCounterexampleSearch": {
+    "source": "research/probes/grid-prefix-rectangle-corners.cpp",
+    "sourceSha256": "c6c59ab524ff306430085ab0184e828d75a5d2fa0143061b402c1723a0c7729a",
+    "allNonempty5x5Subsets": 33554431,
+    "literalRectangles": 225,
+    "prefixIntervalChecks": 912730,
+    "counterexamples": 0,
+    "checksum": "7828622978098135040",
+    "seconds": 0.146338832
+  },
+  "artifactSha256": {
+    "article": "0f679cd9caf17bd049f737323ab0a4772f2d3e00a42b86fa67cd4e4321f7c9a0",
+    "checker": "146e547dbf91254529fe2c44d6a17c7a7152f14609284d3bbe3d20fbde3d5ef7",
+    "sidecar": "251e5bd3ac3e5acea959d2b755e14e289b9b84321aa9bf0cd59c9696d25b7e38",
+    "cpp": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89"
+  },
+  "proofReview": {
+    "cornerCriterion": "C1>=4. With C3=0, overlapping maximal runs on consecutive rows have identical endpoints; each four-neighbor component is a filled rectangle. Its diagonal contact graph is simple planar and triangle-free; C1=4B-2D then excludes B>=2 at C1=4. Exterior vertices are included and prefix leaves are nonempty.",
+    "update": "A sorted local quadruple contributes exactly [a,b) and [c,d), with sentinelP and zero-length ranges. The eight incident vertex occurrences are fully initialized, sort-uniqued, removed once and restored once after swapping both grid and label-position arrays.",
+    "minimumCount": "Each leaf is one nonempty prefix. All final scores>=4, and full-grid prefix is4, so root minimum-count is the answer. Transactional intermediate states are not queried.",
+    "integerAndMemory": "Every intermediate actual leaf score lies0..V because only present unique-window contributions are removed, then new unique-window contributions added. Every stored minimum was refreshed with ancestors pushed, hence is a past/current score min0..V. Internal lazy is parent-min minus stale-child-min; leaf lazy is leaf-min minus initial leaf score. Thus |lazy|<=V independent of Q; arithmetic<=8P, static int bound1e8 sufficient. Product checked64bit. Payload56P bytes plus4(P+1) scratch; caller arrays and allocator/sanitizer overhead excluded.",
+    "api": "Full original positive-H/W,HW<=1e6,Q<=50000 domain included; same-label swap is a documented extension. Both labels validated before mutation/no-op; all constructor coordinates validated. Deep copy, source-resetting move, checked moved-from getter/update, copy-swap strong assignment, self-copy/self-move and input immutability confirmed."
+  },
+  "reproducedChecker": {
+    "checks": 16930653,
+    "exhaustivePermutations": 174569,
+    "exhaustiveSwapPairs": 4773592,
+    "bitmaps": 74938,
+    "randomInstances": 400,
+    "randomSwaps": 240000,
+    "maximumSwaps": 250000,
+    "maximumCells": 1000000,
+    "checksum": "3501807229918974063",
+    "normal": {
+      "seconds": 8.49341,
+      "peakRSSKiB": 70296
+    },
+    "asanUbsan": {
+      "seconds": 34.6588,
+      "peakRSSKiB": 642972,
+      "passed": true
+    },
+    "maximumScope": "five listed row-major shapes with50000 varied swaps each, checked against independent bbox-derived formulas; all small arrangements use literal bounding-box scans"
+  },
+  "additionalApiProbe": {
+    "copyAllocationFailures": 5,
+    "assignmentAllocationFailures": 5,
+    "successfulCopyBudgets": 1,
+    "successfulAssignmentBudgets": 1,
+    "noAllocationValidSwaps": 30000,
+    "noAllocationGetters": 10000,
+    "cppSha256": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89"
+  },
+  "reproductionCommands": [
+    "python3 scripts/check_prefix_rectangle_grid_cpp.py",
+    "python3 scripts/check_prefix_rectangle_grid_cpp.py --sanitize",
+    "g++ -std=c++20 -O2 -Wall -Wextra -Werror research/probes/grid-prefix-rectangle-corners.cpp -o /tmp/flowchartcp-grid-corners",
+    "/tmp/flowchartcp-grid-corners",
+    "python3 research/probes/grid-prefix-rectangle-api.py"
+  ],
+  "materialFindings": [],
+  "nonblockingNotes": [
+    "Recursion depth20 counts edges from depth0 root; maximum simultaneous call frames21. This distinction was sent to the author.",
+    "Root integration uses guard swaps-only and group range-patterns, replacing author flow suggestion local-swaps / planar group; published code unchanged."
+  ],
+  "resolvedEditorialNotes": [
+    "Last section names standardized to 関連する手法 / 参考資料.",
+    "Moved-from operation wording narrowed to getter/update; construction/assignment remain valid."
+  ],
+  "integratedFlowRegression": {
+    "test": "tests/ioi-2018-rectangle-flow.test.mjs",
+    "sha256": "11dd940e629348db22289f239312570b515c3f53be47d02c1441f2f6ff4bfea0",
+    "passed": 9,
+    "failed": 0,
+    "seconds": 3.796134324,
+    "oldWalksPreserved": 507,
+    "oldGraphsPreserved": 453,
+    "oldNodesPreserved": 3589,
+    "initialIoi2018RowsAndComboResolutionPreserved": true,
+    "otherNewArticle": "two-threshold-component-merge-trees-rectangle-intersection"
+  },
+  "originalReviewSha256": "f0796d98f58162734bf834284f7188ec4562380ca0c76b5edd7ee79873f7258c",
+  "scope": "初回author artifactsに対する独立レビュー。公開記事は日本語を調整したが、C++ fenceのSHAは同一。"
+}

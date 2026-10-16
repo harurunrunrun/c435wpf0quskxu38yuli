@@ -1,0 +1,96 @@
+---
+title: "途中の高さが決まった括弧列は、初めて負になる経路を反射して引く"
+description: "残りの上下移動を数える二項係数から、禁止境界へ初めて達する経路の二項係数を差し引く。"
+techniqueId: ballot-prefix-reflection
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+括弧列や上下に一つずつ動く経路を数えたい。既に接頭辞が固定されていて、現在の高さが $h$、残りの歩数が $L$ と決まっている。高さごとの DP だと二次時間になる。
+
+## 考え方
+
+開き括弧を $+1$、閉じ括弧を $-1$ とする。高さ $h$ から $L$ 歩後に0へ戻るには、上向きの歩数が $u=(L-h)/2$ でなければならない。境界を気にしない列は $\binom Lu$ 個ある。
+
+高さが途中で $-1$ に達する悪い経路を、初めて $-1$ に達するまで反射する。反射後の出発高さは $-h-2$ になり、終点は0のまま。この経路の上向きの歩数は $u+h+1$ なので、求める個数は
+
+$$\binom Lu-\binom L{u+h+1}.$$
+
+$h=0$ なら $\binom L{L/2}-\binom L{L/2+1}$ となり、通常のカタラン数も含む。
+
+## 適用条件
+
+移動は $+1,-1$ の二種類で、途中で高さ0以上を保ち、終点を0にする。接頭辞が既に負になっていたら、後続をどう選んでも正しい括弧列には戻せない。
+
+$L<h$、または $L-h$ が奇数なら答えは0。掲載実装は全長 $n<10^9+7$ で階乗を前計算する。接頭辞が全長を超えると0、括弧以外の文字を含むと例外。空の接頭辞と長さ0も扱う。上限境界、異なる歩幅、途中の障害点がある問題にはこの一回の反射だけでは足りない。
+
+## なぜ正しいか
+
+悪い経路には初めて高さ $-1$ に達する位置が一意にある。その位置までの上下を入れ替えると、出発点を $-h-2$ へ移した経路が得られる。逆に、$-h-2$ から0へ着く経路は必ず $-1$ を通る。その初到達までを反射すれば元の悪い経路が得られるので、一対一対応である。
+
+全経路から悪い経路だけを引くため、負にならない経路がちょうど一回ずつ残る。固定した接頭辞自体の可否は別に確認する。
+
+## 計算量
+
+高さ DP は $O(L^2)$ 時間・$O(L)$ 空間。階乗と逆階乗を $O(n+\log P)$ 時間・$O(n)$ 空間で前計算した後、式の評価は $O(1)$。接頭辞の検査に $O(|S|)$ 時間かかる。複数の高さからの質問でも同じ表を使える。
+
+## 実装
+
+`ballot_completions` は残りの長さと現在の高さを直接受け取る。`complete_bracket_prefix` は文字列の妥当性も確認する。法は固定の素数 $10^9+7$。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+#include <string>
+constexpr long long BALLOT_MOD=1000000007;
+long long ballot_completions(int length,int height,const BinomialTable<BALLOT_MOD>& combinations) {
+    if(length<0 || height<0 || length<height || (length-height)%2) return 0;
+    int up=(length-height)/2;
+    return (combinations.choose(length,up)-combinations.choose(length,up+height+1)+BALLOT_MOD)%BALLOT_MOD;
+}
+long long complete_bracket_prefix(int total,const std::string& prefix) {
+    if(total<0 || prefix.size()>static_cast<std::size_t>(total)) return 0;
+    int height=0;
+    for(char ch:prefix) {
+        if(ch!='(' && ch!=')') throw std::invalid_argument("not a bracket");
+        height+=(ch=='(')?1:-1;
+        if(height<0) return 0;
+    }
+    BinomialTable<BALLOT_MOD> combinations(total);
+    return ballot_completions(total-int(prefix.size()),height,combinations);
+}
+```
+
+## 関連する手法
+
+[括弧列の判定を、合計と接頭和の最小値で持つ](/flowchartcp/techniques/prefix-feasibility/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [CSES：Bracket Sequences II（原典）](https://cses.fi/problemset/task/2187)。
+
+<TechniqueReferences techniqueId="ballot-prefix-reflection" />

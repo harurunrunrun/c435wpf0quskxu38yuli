@@ -1,0 +1,63 @@
+---
+title: "隣り合う位置を選べない部分列の重複を、二つ前までの総数で除く"
+description: "選べる接頭辞を一つ短くし、同じ末尾文字を以前に作れた範囲との差を取る。"
+techniqueId: subsequence-nonadjacent-last-range
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+本文から位置を選んで部分列を作るが、隣り合う二位置は同時に選べない。同じ文字列になる位置の選び方は一種類と数える。位置集合だけを数える DP と、制限のない異なる部分列の DP の両方を、そのまま使えない。
+
+## 考え方
+
+先頭 $i$ 文字から作れる文字列の総数を $A_i$ とし、空文字列も含め $A_0=1$ とする。位置 $i$ の文字 $c$ を選ぶ場合、直前の位置 $i-1$ は選べないので、付ける相手は先頭 $i-2$ 文字までの部分列に限られる。
+
+同じ文字 $c$ が前に現れた最後の位置を $p$ とする。既に末尾 $c$ の文字列として作ったものは、先頭 $p-2$ 文字までの部分列に $c$ を付けた集合である。よって
+
+$$A_i=A_{i-1}+A_{\max(0,i-2)}-\begin{cases}A_{\max(0,p-2)}&p>0\\0&p=0\end{cases}$$
+
+で更新できる。二つ前までの総数だけを使う点が、制約のない部分列の $2A_{i-1}-L_c$ と異なる。答えは最後に空文字列の1を引く。
+
+## 適用条件
+
+同じ結果の文字列を一度だけ数え、選んだ位置は区別しない。選択位置の間隔は2以上とする。英小文字26種類、本文長 $2\times10^5$ 以下を想定する。実装は法 $10^9+7$ に固定し、途中の負値を補正する。必要な間隔や文字ごとの制限が変わる場合は、付加できる接頭辞と重複集合を再確認する。
+
+## なぜ正しいか
+
+位置 $i$ へ $c$ を付ける前の部分列は、先頭 $i-2$ 文字の範囲であれば全て有効である。末尾へ一文字を付ける写像は単射なので、候補数はその範囲の総数になる。
+
+既存の末尾 $c$ の文字列は、末尾の一致位置を最新の $p$ へ移しても有効である。前の選択位置との距離は狭まらないためである。その直前までの部分列は先頭 $p-2$ 文字の範囲に入り、逆にその範囲の全ての部分列へ $c$ を付ければ既存の文字列になる。したがって重複集合の大きさは $A_{\max(0,p-2)}$ であり、その分を引けばよい。
+
+## 計算量
+
+選択位置を全列挙すると指数個の候補になる。直前の同文字までの候補を走査する遷移を、総数の差にすると一文字あたり $O(1)$、合計 $O(N)$ 時間。実装は接頭辞総数の表を持つので $O(N+26)$ 空間。
+
+## 実装
+
+返り値は異なる非空部分列の数。空の本文なら0になる。
+
+```cpp
+#include <array>
+#include <algorithm>
+#include <string>
+#include <vector>
+long long nonadjacent_distinct_subsequence_count(const std::string& text){
+    constexpr long long mod=1000000007;
+    int n=int(text.size());std::array<int,26> last{};std::vector<long long> total(n+1);total[0]=1;
+    for(int i=1;i<=n;++i){int c=text[i-1]-'a',p=last[c];long long duplicate=p?total[std::max(0,p-2)]:0;total[i]=(total[i-1]+total[std::max(0,i-2)]-duplicate+mod)%mod;last[c]=i;}
+    return (total[n]-1+mod)%mod;
+}
+```
+
+## 関連する手法
+
+[同じ部分列を重複して数えるときは直前の出現を使う](/flowchartcp/techniques/dp-last-occurrence/) ・ [部分列の一致を、各文字の次の出現位置で進める](/flowchartcp/techniques/substring-subsequence-next/)
+
+## 参考資料
+
+- [AtCoder：Substrings（原典）](https://atcoder.jp/contests/abc214/tasks/abc214_f)。
+
+- [AtCoder：公式解説](https://atcoder.jp/contests/abc214/editorial/2447)。隣接する位置を選べない場合の遷移範囲と、同じ文字の直前出現による重複除去を確認できる。
+
+<TechniqueReferences techniqueId="subsequence-nonadjacent-last-range" />

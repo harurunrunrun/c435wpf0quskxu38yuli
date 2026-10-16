@@ -1,0 +1,44 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2017_prize",
+    "title": "The Big Prize",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+    "techniqueIds": [
+      "rank-count-oracle-equal-level-interval-pruning"
+    ],
+    "features": [
+      "位置を質問すると、厳密に上位の個数が左右別に返る。種類ごとの個数は、直上の種類の個数の二乗より大きい。",
+      "唯一の最上位を探す。各返答後に全履歴と整合する合法な列が一つ以上残り、隠し列が最初に固定されるとは限らない。",
+      "長さ3〜20万、満点5000質問。返答の再利用と区間内の上位個数で最悪質問数を保証する。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf",
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "discoveredBy": "ioi-2017",
+    "publicationDate": "2017-08-01",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "entryGraphId": "interactive-oracles",
+    "choices": [
+      "rank-pair-counts",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "rank-count-oracle-equal-level-interval-pruning"
+    ],
+    "verificationKind": "independent-analysis"
+  }
+]

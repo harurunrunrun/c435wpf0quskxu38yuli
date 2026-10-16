@@ -1,0 +1,57 @@
+---
+title: "符号が交互で重みが一次式の区間和は、二つの和へ分ける"
+description: "左端によって変わる符号と重みを展開し、点更新に対応する区間和を二つ持ちます。"
+techniqueId: "alternating-linear-weight-prefix"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+点の値を更新しながら、区間の左端から $1,-2,3,-4,\ldots$ を掛けた和を何度も求めるとき。係数が区間ごとに変わるため、そのまま一つの累積和では引けません。
+
+## 考え方
+
+添字を 0 始まりにして $b_i=(-1)^ia_i$、$c_i=(i+1)b_i$ と置きます。
+$$\sum_{i=l}^{r-1}(-1)^{i-l}(i-l+1)a_i=(-1)^l\left(\sum_{i=l}^{r-1}c_i-l\sum_{i=l}^{r-1}b_i\right).$$
+二つの区間和を持ち、最後に左端による補正を行います。重みが $i-l$ の二次式なら同様に $b_i,ib_i,i^2b_i$ の三つの和へ広げられます。
+
+## 適用条件
+
+重みが添字と左端の一次式で、符号は交互、更新は一点の代入であること。代入では元の値との差を構造へ加えます。全体の符号は左端の偶奇で決まります。掲載 API は半開区間 $[l,r)$ です。
+
+## なぜ正しいか
+
+$(-1)^{i-l}=(-1)^l(-1)^i$、$i-l+1=(i+1)-l$ を各項へ代入すれば二つの和が得られます。点の代入による差分も同じ係数を掛けて二構造へ加えるので、更新後も式は保たれます。
+
+## 計算量
+
+各区間を直接走査すると $O(NQ)$。二つの Fenwick 木なら初期化 $O(N\log N)$、更新・クエリ各 $O(\log N)$、空間 $O(N)$。添字倍や答えの総和の桁を考え、実装は 128 bit で中間値を持ちます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class AlternatingWeightedSum {
+    int n;vector<long long> a;vector<__int128> plain,weighted;
+    void add(vector<__int128>& bit,int p,__int128 value){for(++p;p<=n;p+=p&-p)bit[p]+=value;}
+    __int128 prefix(const vector<__int128>& bit,int r)const{__int128 value=0;for(;r;r-=r&-r)value+=bit[r];return value;}
+public:
+    explicit AlternatingWeightedSum(const vector<long long>& values):n(values.size()),a(n),plain(n+1),weighted(n+1){for(int i=0;i<n;++i)set(i,values[i]);}
+    void set(int p,long long value){assert(0<=p && p<n);__int128 delta=(__int128)value-a[p];a[p]=value;if(p&1)delta=-delta;add(plain,p,delta);add(weighted,p,delta*(p+1));}
+    __int128 query(int l,int r)const{assert(0<=l && l<=r && r<=n);
+        __int128 s=prefix(plain,r)-prefix(plain,l),w=prefix(weighted,r)-prefix(weighted,l),answer=w-(__int128)l*s;
+        return l&1 ? -answer : answer;
+    }
+};
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)、[寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [出典の解説](https://github.com/google/coding-competitions-archive/blob/main/kickstart/2020/round_c/candies/problem_statement/analysis.html)
+
+<TechniqueReferences techniqueId="alternating-linear-weight-prefix" />

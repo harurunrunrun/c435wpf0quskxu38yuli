@@ -1,0 +1,139 @@
+---
+title: "木の指定頂点同士を切り離す最少削除は、合流点と指定頂点だけで判断する"
+description: "削除できない指定頂点が少ないとき、途中の一本道を縮めて、上へつながる印が残るかだけ持つ。"
+techniqueId: virtual-tree-marked-vertex-separation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+大きな木に対して、質問ごとに指定頂点の組を変え、それらを互いに行き来できなくする最少の頂点削除数を求める。指定頂点自体は消せず、消せる頂点の費用がすべて1である。各質問の指定頂点数は、木全体の頂点数より十分少ない。
+
+## 考え方
+
+まず、元の木で隣接する指定頂点があるか調べる。その辺の両端は消せないので、この場合は不可能である。
+
+指定頂点をDFS順に並べ、隣り合う頂点のLCAを加えて補助木を作る。補助木の辺は、元の木の一本道を表す。途中には指定頂点も、指定頂点へ向かう分岐もない。
+
+下から見て、各部分木から「まだ上につながっている指定頂点が1個あるか」を渡す。子の方向から来る印の数を $c$ とすると、次のように処理する。
+
+- 現在の頂点が指定頂点なら、印のある子方向をそれぞれ1回の削除で切り、自身の印を上へ渡す。
+- 未指定で $c\ge2$ なら、現在の頂点を1回削除し、上には印を渡さない。
+- 未指定で $c\le1$ なら、その印をそのまま上へ渡す。
+
+指定頂点同士が補助木で隣接していても、元の木で隣接していなければ、間の未指定頂点を1個消せる。元の辺の確認と、圧縮後の辺の確認を混同しない。
+
+## 適用条件
+
+木の形は固定で、指定頂点以外を消す費用が等しく1である。削除費用が頂点ごとに違う場合、合流点を消す選択が最安とは限らず、別の費用DPが必要になる。辺の削除数を求める場合も、合流点1個の削除で複数方向を同時に切れるという性質が使えない。
+
+質問の指定頂点は重複を取り除いてよい。0個または1個なら答えは0。掲載実装は質問に触れた印だけを消して戻し、毎回 $N$ 個の配列初期化をしない。
+
+## なぜ正しいか
+
+補助木で省いた一本道の内部には、指定頂点へ通じる新たな枝がない。内部で何個消しても分離効果は1回と同じなので、必要なら1個だけ消す選択へまとめられる。
+
+下から処理し、既に切り離した成分には印を高々1個しか残さない。指定頂点で $c$ 方向から印が来たら、各方向の経路を少なくとも1か所ずつ切る必要がある。現在の指定頂点は消せず、子方向同士は交わらないため、少なくとも $c$ 回必要で、処理はその下界を達成する。
+
+未指定の頂点へ2個以上の印が来たら、少なくとも1回の削除が必要で、現在の頂点を消すと1回で全てを分離できる。2方向だけのとき、片方の枝を切って1個を上へ残す方法も同じ費用だが、印を残さない方が祖先側の制約を増やさない。0個または1個なら、今は削除しなくても成分内の条件に違反しない。以上を各合流点で繰り返せば最少になる。
+
+## 計算量
+
+質問数を $Q$、各指定頂点数を $k_i$ とする。毎回木全体を処理する $O(NQ)$ から、準備 $O(N\log N)$、質問全体 $O(\sum_i(k_i\log k_i+k_i\log N))$ に改善する。補助木は高々 $2k_i-1$ 頂点。空間は祖先表 $O(N\log N)$ と質問中の $O(k_i)$。
+
+## 実装
+
+`MarkedSeparation` を一度構築し、`minimum_deletions(selected)` を繰り返し呼ぶ。頂点番号は0始まり。不可能なら `-1` を返す。元の木の隣接印を先に調べるので、補助木の辺ごとの長さをDPに持つ必要はない。探索・DPは反復で行う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class MarkedSeparation {
+    int n, lg=1;
+    vector<int> parent, depth, tin, tout;
+    vector<vector<int>> up;
+    vector<unsigned char> marked;
+    bool ancestor(int a,int b) const {
+        return tin[a]<=tin[b] && tin[b]<tout[a];
+    }
+    int lca(int a,int b) const {
+        if(ancestor(a,b)) return a;
+        if(ancestor(b,a)) return b;
+        for(int k=lg-1;k>=0;--k)
+            if(!ancestor(up[k][a],b)) a=up[k][a];
+        return parent[a];
+    }
+public:
+    explicit MarkedSeparation(const vector<vector<int>>& g,int root=0)
+        :n(g.size()),parent(n,-1),depth(n),tin(n),tout(n),marked(n) {
+        assert(n>0 && 0<=root && root<n);
+        while((1LL<<lg)<=n) ++lg;
+        int timer=0;
+        parent[root]=root;
+        vector<pair<int,int>> stack{{root,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;
+            int& i=stack.back().second;
+            if(i==0) tin[v]=timer++;
+            if(i==int(g[v].size())) {
+                tout[v]=timer;stack.pop_back();continue;
+            }
+            int u=g[v][i++];
+            if(u==parent[v]) continue;
+            assert(0<=u && u<n && parent[u]==-1);
+            parent[u]=v;depth[u]=depth[v]+1;stack.push_back({u,0});
+        }
+        assert(timer==n);
+        up.assign(lg,vector<int>(n));up[0]=parent;
+        for(int k=1;k<lg;++k) for(int v=0;v<n;++v)
+            up[k][v]=up[k-1][up[k-1][v]];
+    }
+    int minimum_deletions(vector<int> selected) {
+        if(selected.empty()) return 0;
+        for(int v:selected) assert(0<=v && v<n);
+        auto by_dfs=[&](int a,int b){return tin[a]<tin[b];};
+        sort(selected.begin(),selected.end(),by_dfs);
+        selected.erase(unique(selected.begin(),selected.end()),selected.end());
+        for(int v:selected) marked[v]=1;
+        auto finish=[&](int result) {
+            for(int v:selected) marked[v]=0;
+            return result;
+        };
+        for(int v:selected)
+            if(parent[v]!=v && marked[parent[v]]) return finish(-1);
+        vector<int> nodes=selected;
+        for(int i=1;i<int(selected.size());++i)
+            nodes.push_back(lca(selected[i-1],selected[i]));
+        sort(nodes.begin(),nodes.end(),by_dfs);
+        nodes.erase(unique(nodes.begin(),nodes.end()),nodes.end());
+        int m=nodes.size();
+        vector<int> p(m,-1),stack, incoming(m);
+        for(int i=0;i<m;++i) {
+            while(!stack.empty() && !ancestor(nodes[stack.back()],nodes[i]))
+                stack.pop_back();
+            if(!stack.empty()) p[i]=stack.back();
+            stack.push_back(i);
+        }
+        int answer=0;
+        for(int i=m-1;i>=0;--i) {
+            int open;
+            if(marked[nodes[i]]) {answer+=incoming[i];open=1;}
+            else if(incoming[i]>=2) {++answer;open=0;}
+            else open=incoming[i];
+            if(p[i]!=-1) incoming[p[i]]+=open;
+        }
+        return finish(answer);
+    }
+};
+```
+
+## 関連する手法
+
+[DFS順で隣り合う指定頂点のLCAを加えて補助木を作る](/flowchartcp/techniques/virtual-tree-adjacent-lca/) ・ [木の各成分へ印を一つ残す切断は、親へ渡す成分の印の数だけ持つ](/flowchartcp/techniques/tree-one-mark-components/)
+
+## 参考資料
+
+- [Codeforces：Kingdom and its Cities](https://codeforces.com/problemset/problem/613/D)
+- [Codeforces公式解説](https://codeforces.com/blog/entry/22832)
+
+<TechniqueReferences techniqueId="virtual-tree-marked-vertex-separation" />

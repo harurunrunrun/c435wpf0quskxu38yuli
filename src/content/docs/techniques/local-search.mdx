@@ -1,0 +1,69 @@
+---
+title: "局所探索"
+description: "現在の解を少し変えた候補を調べ、より良い解へ更新する。"
+techniqueId: local-search
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+現在の解を少し変えた候補を調べ、より良い解へ更新する。
+
+## 使う場面
+
+厳密な最適解を求めるのが難しく、解の質に応じて得点が付く問題で使う。合法な初期解があり、少し変更した解を速く評価できる場合に有効である。
+
+## 考え方
+
+解の表し方、少し変更する方法である近傍、評価関数を決める。候補を生成して評価し、採用するかを判断する。山登り法では、現在より評価が高い候補だけを採用する。
+
+毎回すべてを再評価する代わりに、変更した部分の差分だけで得点を更新できれば、同じ時間で多くの候補を試せる。改善が止まる場合は、別の初期解や近傍、焼きなまし法を検討する。
+
+## 適用条件
+
+近傍が合法性を保つか、採用前に検証できる必要がある。差分評価では、変更によって影響を受ける項を漏らさない。候補を棄却するときは、解と補助データを元の状態に戻す。
+
+局所的に改善できない解が、全体でも最適とは限らない。
+
+## なぜ正しいか
+
+改善する候補だけを採用すれば、評価値は悪化しない。状態数が有限なら、厳密な改善を無限に繰り返すこともない。
+
+ただし、ランダムな候補を一定回数試して止める実装では、まだ試していない改善手が残る場合がある。局所最適といい切るには、その近傍をすべて調べる必要がある。
+
+## 計算量
+
+反復回数を $I$、一回のコピー・候補生成・評価を $C$ 時間とすると、全体は $O(IC)$。状態サイズを $N$ とすれば、コピーする実装の空間は $O(N)$。差分評価によって、各反復の費用を下げられる場合がある。
+
+## 実装
+
+`hill_climb` は、評価値を最大化する山登り法の例。`neighbor` で合法な候補を作り、`score` で評価する。候補をコピーして作るため、棄却時の巻き戻しは不要。乱数の初期値と反復回数を固定すると比較しやすい。
+
+```cpp
+#include <cstdint>
+#include <random>
+template<class State, class Score, class Neighbor>
+State hill_climb(State current, int iterations, std::uint64_t seed,
+                 Score score, Neighbor neighbor) {
+    std::mt19937_64 rng(seed);
+    auto current_score = score(current);
+    for (int i = 0; i < iterations; ++i) {
+        State candidate = current;
+        neighbor(candidate, rng); // 合法な近傍を作る
+        auto value = score(candidate);
+        if (value > current_score) {
+            current = candidate; current_score = value;
+        }
+    }
+    return current;
+}
+```
+
+## 関連する手法
+
+[焼きなまし法](../simulated-annealing/) ・ [ビームサーチ](../beam-search/) ・ [いもす法](../difference-array/)
+
+## 参考資料
+
+- [AtCoder Heuristic Contest 入門：差分評価の課題](https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_c)
+- [AtCoder Heuristic Contest 入門 公式解説](https://img.atcoder.jp/intro-heuristics/editorial.pdf)
+
+<TechniqueReferences techniqueId="local-search" />

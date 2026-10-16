@@ -1,0 +1,61 @@
+---
+title: "法が互いに素でない合同式も共通因子を確認して併合する"
+description: "二つの周期が一致する時刻を、剰余の差と GCD から求めます。"
+techniqueId: "crt-noncoprime"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$t\equiv a\pmod m$ と $t\equiv b\pmod n$ を同時に満たす時刻を求めたいとき。周期内の許される剰余が少なければ、剰余の組を列挙してこの併合を繰り返せます。
+
+## 考え方
+
+$t=a+mk$ を二本目へ代入して、$mk\equiv b-a\pmod n$ とします。$g=\gcd(m,n)$ が $b-a$ を割らなければ解なし。割るなら
+
+$$(m/g)k\equiv (b-a)/g\pmod {n/g}.$$
+
+逆元で $k$ を求め、$t$ を $\mathrm{lcm}(m,n)=mn/g$ で正規化します。
+
+## 適用条件
+
+法は正整数。法が互いに素という仮定は不要ですが、剰余の整合性は必要です。法の積は元の整数型に収まらない場合があります。下の実装は二本の 64 bit の法を 128 bit の結果へ併合します。多本数の併合には中間の法の桁数を別に検討します。
+
+## なぜ正しいか
+
+代入後の一次合同式は元の二条件と同値です。解があるとき $k$ は $n/g$ を周期として動き、$t$ の周期は $m(n/g)$。従って得られる剰余類が全ての解です。
+
+## 計算量
+
+周期全体を走査する方法は $O(\mathrm{lcm}(m,n))$。一回の併合は時間 $O(\log\min(m,n))$、追加空間 $O(1)$。各周期に $U,V$ 個の候補があれば、全体は $O(UV\log\min(m,n))$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct CRTAnswer{__int128 residue,modulus;};
+optional<CRTAnswer> combine_two_congruences(long long a,long long m,long long b,long long n){
+    assert(m>0 && n>0);
+    a%=m;if(a<0)a+=m;b%=n;if(b<0)b+=n;
+    long long g=gcd(m,n);__int128 diff=(__int128)b-a;
+    if(diff%g)return nullopt;
+    long long reduced=n/g;
+    __int128 oldr=m/g,r=reduced,oldx=1,x=0;
+    while(r){auto q=oldr/r;auto nr=oldr-q*r;oldr=r;r=nr;
+        auto nx=oldx-q*x;oldx=x;x=nx;}
+    __int128 k=(diff/g*oldx)%reduced;if(k<0)k+=reduced;
+    __int128 period=(__int128)(m/g)*n;
+    return CRTAnswer{((__int128)a+(__int128)m*k)%period,period};
+}
+```
+
+## 関連する手法
+
+[一次合同式は GCD で解の有無を判定してから割る](/flowchartcp/techniques/linear-congruence-gcd/)
+
+## 参考資料
+
+- [AtCoder：Oversleeping の解説](https://atcoder.jp/contests/abc193/editorial/812?lang=en)
+
+<TechniqueReferences techniqueId="crt-noncoprime" />

@@ -1,0 +1,63 @@
+---
+title: "小さい入力で全探索する"
+description: "小さい入力の答えをすべて求め、規則や反例を探す。"
+techniqueId: brute-force-observation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+小さい入力の答えをすべて求め、規則や反例を探す。
+
+## 使う場面
+
+解法の見当が付かないときや、思い付いた規則が本当に成立するか確かめたいときに使う。大きい制約はいったん置いておき、要素数や値を小さくすると、すべての選択を調べられないか考える。
+
+## 考え方
+
+まず、問題の条件をそのまま実装した全探索を作る。答えだけでなく、最適な選び方、操作の前後で変わる量、偶奇なども確認すると、速い解法の手掛かりになる。
+
+例えば部分集合の和をすべて求めれば、同じ和になる選び方や、到達できる和の範囲が見える。そこから、合計値を状態にするDPや半分全列挙を検討できる。観察した規則は、別の入力でも試した上で証明する。
+
+## 適用条件
+
+全探索が小さい範囲では正しい答えを返すことが必要になる。重複する値、負数、要素が少ない場合、並び順の違いなども試す。同じ形の入力だけを調べると、例外を見落としやすい。
+
+## なぜ正しいか
+
+全探索は、列挙した範囲ではすべての候補を調べるため正しい。ただし、小さい入力で規則が成立したことだけでは、一般の入力に対する証明にはならない。帰納法、不変量、交換法などで、見つけた規則の理由を説明する必要がある。
+
+## 計算量
+
+以下の部分集合の列挙は、時間 $O(N2^N)$。異なる和の数を $S$ とすると、結果を保存する空間は $O(S)$。実験で扱う大きさは、全探索が終わる範囲に限定する。
+
+## 実装
+
+`subset_sum_histogram` は、各部分集合和が何通りの選び方で現れるかを返す。空集合も含む。要素数は22以下とし、途中の部分和が符号付き64ビット整数に収まる入力を使う。
+
+```cpp
+#include <map>
+#include <vector>
+#include <cstdint>
+#include <stdexcept>
+std::map<long long, long long> subset_sum_histogram(
+    const std::vector<long long>& a) {
+    if (a.size() > 22) throw std::invalid_argument("experiment size");
+    std::map<long long, long long> histogram;
+    for (std::uint64_t mask = 0; mask < (1ULL << a.size()); ++mask) {
+        long long sum = 0;
+        for (std::size_t i = 0; i < a.size(); ++i)
+            if ((mask >> i) & 1) sum += a[i];
+        ++histogram[sum];
+    }
+    return histogram;
+}
+```
+
+## 関連する手法
+
+[反例探し](../counterexample/) ・ [状態の設計](../state-design/) ・ [対称性](../symmetry/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC182 C](https://atcoder.jp/contests/abc182/editorial/324?lang=en)
+
+<TechniqueReferences techniqueId="brute-force-observation" />

@@ -1,0 +1,78 @@
+[
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_building4",
+    "title": "ビルの飾り付け 4",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/building4.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/building4-review.pdf",
+    "features": [
+      "長さ2Nの各位置でAかBの一方を選び、選んだ値の列を非減少にする。",
+      "AとBをそれぞれ正確にN回使い、可能なら選択列を一つ復元する。"
+    ],
+    "techniqueIds": [
+      "two-choice-nondecreasing-count-interval-reconstruction"
+    ],
+    "verification": "independent-analysis",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-03-20",
+    "cutoff": "2026-10-14"
+  },
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_chameleon",
+    "title": "カメレオンの恋",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon-review.pdf",
+    "features": [
+      "隠れた性別・原色・一対一の好みを持つ2N個体に対し、任意部分集合の会合の色の種類数だけ質問できる。",
+      "全ての同じ原色のN組を、質問20000回以下で特定する。会合での色は相手の参加有無で変わる。"
+    ],
+    "techniqueIds": [
+      "interactive-hidden-bipartite-edge-color-pair-recovery"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-03-21",
+    "cutoff": "2026-10-14"
+  },
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_capital_city",
+    "title": "首都 (Capital City)",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/capital_city.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/capital_city-review.pdf",
+    "features": [
+      "木の頂点が都市ごとの色に分かれ、一色の町全体を別色へ併合できる。",
+      "いずれか一つの都市の町集合を連結にするための最少併合回数を求める。"
+    ],
+    "techniqueIds": [
+      "tree-color-closure-sink-scc"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-03-23",
+    "cutoff": "2026-10-14"
+  },
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_dango2",
+    "title": "伝説の団子職人",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/dango2.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/dango2-review.pdf",
+    "features": [
+      "6個の固定入力それぞれに対して出力ファイルを提出する。",
+      "四つの直線方向で三マスを使い、中央W・両端PとGの串をマス重複なしで多く選ぶ。"
+    ],
+    "techniqueIds": [
+      "grid-triplet-conflict-packing"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-03-23",
+    "cutoff": "2026-10-14"
+  }
+]

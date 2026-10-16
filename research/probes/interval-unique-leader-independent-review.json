@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-15",
+  "techniqueId": "interval-unique-endpoints-singleton-middle-active-lazy",
+  "status": "complete-no-substantive-findings",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-unitedcows-article.mdx",
+      "sha256": "e942d53e28a956c6c8b9b43ce57a20feba14cd2b7deccd22024e2c97865de0e3"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-unitedcows-checker.py",
+      "sha256": "20a8f57ff2321de28e76cbc998675186d6561d4593cbf9936fdf871b0be27617"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-unitedcows-sidecar.json",
+      "sha256": "520e258bf0177852c55dc833fc2107245ff9d82f5773e6901fc2148cc3291324"
+    }
+  },
+  "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf",
+  "sourceVerification": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "officialEditorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+    "independentlyRereadOfficialHtml": true,
+    "division": "Platinum",
+    "goldSameTitleExcluded": true,
+    "editorialAuthor": "Benjamin Qi",
+    "sourceN": "1..200000",
+    "sourceLabels": "1..N",
+    "leaderModel": "two endpoints plus one strict interior position; EACH selected breed occurs exactly once in the ENTIRE delegation, including nonleaders",
+    "sourceDate": "2021",
+    "datePrecision": "year",
+    "exactMonthOrDayClaimed": false,
+    "difficulty": null
+  },
+  "staticReview": {
+    "allPublicCppAndEightSectionsRead": true,
+    "allMetadataSourceUrlsInArticle": true,
+    "proofComplete": true,
+    "points": [
+      "For fixed endpoints, their unique breeds cannot appear inside; therefore every internal singleton supplies exactly one possible third leader. Query restricts left>p to make the new right breed unique.",
+      "Before insertion, a_l tests uniqueness in[l,r) and w_l counts singleton breeds in[l+1,r). Query[p+1,r) must precede every insertion update.",
+      "Previous two equal positions q<p give +1 on[max(0,p),r), -1 on[max(0,q),p). The p endpoint belongs to the positive side because its own position is excluded from its interior.",
+      "Only p changes from active to inactive, permanently. Deactivation before range updates is safe because its weight is no longer used. New r is activated with zero after all updates.",
+      "Tree range delta changes sum by int64(delta)*activeCount. Push precedes a membership change, and replacing a leaf resets count/sum/lazy, so new activation inherits no historical tag.",
+      "At leaves, replace returns before push. Integer half-open queries are either fully covering or disjoint at a leaf, so add/fold do not push nonexistent children.",
+      "Signed int64 labels use only sorting/equality/lower_bound, with no subtraction, absolute value, unsigned sentinel or arithmetic on extreme labels.",
+      "N is checked before narrowing or allocation. 4N<=800000 node slots; count<=N; |lazy|<=2N; widened product<=8e10 and answer<=1333313333400000 fit int64.",
+      "O(Nlog(N+1)) time/O(N) auxiliary memory, logarithmic tree recursion. All caller-visible state is local; empty/short inputs and repeated calls satisfy the documented API."
+    ]
+  },
+  "nativeReproduction": {
+    "commands": [
+      "python3 /tmp/flowchartcp-unitedcows-checker.py",
+      "python3 /tmp/flowchartcp-unitedcows-checker.py --sanitize"
+    ],
+    "normal": {
+      "checks": 8876842,
+      "allFourLabelArrays": 349525,
+      "literalLeaderTriples": 35091758,
+      "invariantArrays": 87380,
+      "invariantSnapshots": 757304,
+      "invariantPoints": 2922420,
+      "randomCases": 2500,
+      "mediumCases": 500,
+      "primitiveSteps": 48000,
+      "maximumCases": 8,
+      "maximumElements": 1600000,
+      "maximumN": 200000,
+      "checksum": "11233411103425697573",
+      "seconds": 1.19021,
+      "peakRSSKiB": 23452,
+      "sanitized": false,
+      "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf"
+    },
+    "asanUbsan": {
+      "checks": 8876842,
+      "allFourLabelArrays": 349525,
+      "literalLeaderTriples": 35091758,
+      "invariantArrays": 87380,
+      "invariantSnapshots": 757304,
+      "invariantPoints": 2922420,
+      "randomCases": 2500,
+      "mediumCases": 500,
+      "primitiveSteps": 48000,
+      "maximumCases": 8,
+      "maximumElements": 1600000,
+      "maximumN": 200000,
+      "checksum": "11233411103425697573",
+      "seconds": 7.82219,
+      "peakRSSKiB": 982356,
+      "sanitized": true,
+      "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf"
+    },
+    "bothCountersAndChecksumEqualAuthor": true,
+    "actualSingleVisibleMdxFenceCompiled": true,
+    "leakSanitizerDisabledOnly": true
+  },
+  "additionalIndependentProbe": {
+    "script": "/tmp/flowchartcp-unitedcows-review-extra.py",
+    "scriptSha256": "e3bac62324f1f106a13d2802863777a58dca387f607b99a074e32f4c7075f625",
+    "result": {
+      "checks": 144583,
+      "allEqualityPartitionsN0to10": 142418,
+      "allTriplesByNearestOccurrence": 15960528,
+      "disjointAlphabetConcatenations": 1008,
+      "maximumN200000Concatenations": 8,
+      "checksum": "5277007377993953808",
+      "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf"
+    },
+    "resultSha256": "68ca36f202511bec91caeee6acf23214f481698ac923c115898b56ef4d912a9b",
+    "allEqualityPatterns": "All restricted-growth strings length0..10, representing every possible equality partition, including five or more distinct labels beyond the author four-label exhaustive domain.",
+    "tripleOracle": "Compute nearest equal before/after for each position by direct pairwise scans. Enumerate every l<m<r; require next[l]>r, prev[r]<l, prev[m]<l and next[m]>r. Crosscheck this predicate against direct full-interval equality counts on every pattern N<=7. No active/lazy/previous-two update recurrence is used.",
+    "concatenationIdentity": "For disjoint label alphabets, F(A+B)=F(A)+F(B)+WA*CB+CA*WB. CA/WA are count and sum of interior-singleton weights for left endpoints unique in their A suffix; CB/WB analogously use right endpoints unique in their B prefix. Separate frequency-map scans compute these statistics. Cross intervals choose independent valid endpoints and the third leader from either block, proving the identity.",
+    "maximumScope": "Eight distinct N=200000 concatenations of length100000 blocks, combining unique/random label patterns, int64 minimum/maximum sentinels as actual labels and repeated breeds;1000 additional random concatenations."
+  },
+  "preservation": {
+    "sharedFilesModifiedByReviewer": false,
+    "authorArtifactsModified": false,
+    "initialSixRecordProjectionSha256": "bc2de4b45dc7d449a1f4726c15c6887140484526f3941b731d0ed8c02b16941e",
+    "initialAllSixFieldsPreserved": true,
+    "completedApiDistinguishedFromOriginalResearchProbe": true,
+    "referenceEvidenceContainsApplicabilityOnly": true,
+    "testsAndTimingsKeptInVerificationNotesAndSidecar": true,
+    "globalCoverageCompletionClaimed": false
+  },
+  "originalReviewSha256": "46f4ad6710d47ae1ca3267e1bddb80d166ac2851088b81b232fd7756427b90ae",
+  "publishedArticle": "src/content/docs/techniques/interval-unique-endpoints-singleton-middle-active-lazy.mdx",
+  "permanentProbe": {
+    "script": "research/probes/interval-unique-leader-independent.py",
+    "originalScriptSha256": "e3bac62324f1f106a13d2802863777a58dca387f607b99a074e32f4c7075f625",
+    "normalizedScriptSha256": "8445509d14207829757c4a9caedb665e123b5884d06a51c9ffb1af000b9fbf58",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Algorithm and assertions unchanged."
+  }
+}

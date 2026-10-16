@@ -1,0 +1,1809 @@
+{
+  "cutoff": "2026-10-14",
+  "globalCoverageComplete": false,
+  "globalProblemCount": null,
+  "policy": "問題群を先に固定し、全問を分野の根からたどる。記事の存在、解法確認、自然な分岐、実装検証を分けて記録する。固定問題群の監査完了を、全世界の網羅完了とは扱わない。",
+  "techniqueArticles": 436,
+  "totalArticles": 514,
+  "mappings": 535,
+  "sourcesWithUnknownTotal": [
+    "atcoder",
+    "codeforces",
+    "library-checker",
+    "cses",
+    "ioi",
+    "joi",
+    "icpc",
+    "usaco",
+    "aoj",
+    "uva",
+    "kattis",
+    "spoj",
+    "codechef",
+    "boj",
+    "luogu",
+    "dmoj",
+    "qoj",
+    "google-archive",
+    "topcoder",
+    "hacker-cup",
+    "leetcode",
+    "sapo",
+    "yukicoder",
+    "poi",
+    "timus"
+  ],
+  "corpora": [
+    {
+      "scope": "2020 December Platinum と 2021 January Platinum の公式全6問",
+      "corpusId": "usaco-2020-dec-2021-jan-platinum",
+      "researchComplete": true,
+      "coverageComplete": true,
+      "reviewedProblems": 6,
+      "coveredProblems": 6,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "usaco",
+          "problemId": "1068",
+          "title": "Sleeping Cows",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "maximal-threshold-matching-sweep-dp"
+          ],
+          "gapId": "threshold-maximal-matching-count"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1069",
+          "title": "Spaceship",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "hierarchical-reset-walk-count"
+          ],
+          "gapId": "higher-label-resets-walk-count"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1070",
+          "title": "Cowmistry",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "xor-bounded-triples-intervals"
+          ],
+          "gapId": "xor-bounded-triples-from-interval-union"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1092",
+          "title": "Sum of Distances",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "synchronous-product-parity-distance-sum"
+          ],
+          "gapId": "synchronous-product-graph-distance-sum"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1093",
+          "title": "Minimum Cost Paths",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "convex-piecewise-quadratic-suffix-cap"
+          ],
+          "gapId": "convex-grid-cost-quadratic-function-cap"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1094",
+          "title": "Paint by Letters",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "grid-rectangle-components-euler-boundary"
+          ],
+          "gapId": "grid-subrectangle-monochromatic-component-count"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "2017 ICPC World Finals の公式冊子A〜Lの全12題。文書自体が非公式と明記する公開解法スケッチは、公式解説と区別する。",
+      "corpusId": "icpc-2017-world-finals",
+      "researchComplete": false,
+      "coverageComplete": false,
+      "reviewedProblems": 11,
+      "coveredProblems": 9,
+      "totalProblems": 12,
+      "records": [
+        {
+          "source": "icpc",
+          "problemId": "wf2017_a",
+          "title": "Airport Construction",
+          "originalClassification": "missing-technique",
+          "currentClassification": "missing-technique",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "longest-contained-segment-nonconvex-polygon"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_b",
+          "title": "Get a Clue!",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "disjoint-candidate-sets-complement-lookup"
+          ],
+          "gapId": "locally-filtered-disjoint-hands-complement"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_c",
+          "title": "Mission Improbable",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "row-column-maxima-height-matching"
+          ],
+          "gapId": "row-column-maxima-shared-witness-matching"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_d",
+          "title": "Money for Nothing",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "pareto-pruned-max-rectangle-monotone-partner"
+          ],
+          "gapId": "implicit-product-profit-pareto-monotone-partner"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_e",
+          "title": "Need for Speed",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "positive-denominator-offset-real-bisection"
+          ],
+          "gapId": "positive-domain-real-offset-monotone-equation"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_f",
+          "title": "Posterize",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "weighted-squared-quantization-interval-dp"
+          ],
+          "gapId": "weighted-integer-mean-quantization-segment-dp"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_g",
+          "title": "Replicate Replicate Rfplicbte",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "xor-grid-predecessor-boundary-single-error"
+          ],
+          "gapId": "xor-cellular-predecessor-one-error-boundary-syndrome"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_h",
+          "title": "Scenery",
+          "originalClassification": "missing-technique",
+          "currentClassification": "missing-technique",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "equal-duration-release-deadline-forbidden-starts"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_i",
+          "title": "Secret Chamber at Mount Rushmore",
+          "originalClassification": "missing-route",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "independent-letter-rewrite-reachability"
+          ],
+          "gapId": "independent-letter-rewrite-reachability-route"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_j",
+          "title": "Son of Pipe Stream",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "two-source-concave-flow-mixture-decomposition"
+          ],
+          "gapId": "two-source-concave-flow-mixture-decomposition"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_k",
+          "title": "Tarot Sham Boast",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "finite-horizon-word-occurrence-overlap-order-proof"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2017_l",
+          "title": "Visual Python++",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "nested-rectangle-corner-sweep-and-validation"
+          ],
+          "gapId": "laminar-rectangle-corner-pairing-and-boundary-validation"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "JOI 2019/2020 春季トレーニング合宿の競技1〜4、各3題の全12題。事前実機練習は除く。",
+      "corpusId": "joi-2020-spring",
+      "researchComplete": false,
+      "coverageComplete": false,
+      "reviewedProblems": 9,
+      "coveredProblems": 9,
+      "totalProblems": 12,
+      "records": [
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_building4",
+          "title": "ビルの飾り付け 4",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "two-choice-nondecreasing-count-interval-reconstruction"
+          ],
+          "gapId": "two-choice-nondecreasing-balanced-count-compression"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_hamburg",
+          "title": "美味しい美味しいハンバーグ",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "few-point-rectangle-stabbing-four-side-cases"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_sweeping",
+          "title": "掃除",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "interval-stabbing-endpoint-contraction-dsu"
+          ],
+          "gapId": "interval-stabbing-one-sided-contraction-tree-dsu"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_chameleon",
+          "title": "カメレオンの恋",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "interactive-hidden-bipartite-edge-color-pair-recovery"
+          ],
+          "gapId": "adaptive-independent-sets-hidden-bipartite-graph-recovery"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_joitter2",
+          "title": "ジョイッターで友だちをつくろう",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "directed-reciprocal-closure-dsu-small-to-large"
+          ],
+          "gapId": "reciprocal-neighbor-closure-queued-small-to-large"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_ruins3",
+          "title": "最古の遺跡 3",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "paired-height-survivors-weighted-dyck-dp"
+          ],
+          "gapId": "survivor-prefix-reduction-weighted-three-step-dyck"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_constellation3",
+          "title": "星座 3",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "skyline-cartesian-star-paths"
+          ],
+          "gapId": "skyline-star-conflicts-ancestor-path-packing"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_harvest",
+          "title": "収穫",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "functional-graph-timed-arrivals-offline"
+          ],
+          "gapId": "circle-cooldown-weighted-functional-arrivals"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_stray",
+          "title": "迷い猫",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "edge-advice-anonymous-navigation"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_capital_city",
+          "title": "首都",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "tree-color-closure-sink-scc"
+          ],
+          "gapId": "tree-color-closure-minimum-connected-union"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_dango2",
+          "title": "伝説の団子職人",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "grid-triplet-conflict-packing"
+          ],
+          "gapId": "output-only-grid-triplet-conflict-packing"
+        },
+        {
+          "source": "joi",
+          "problemId": "joi2020sc_treatment",
+          "title": "治療計画",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "shrinking-treatment-interval-barrier"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "IOI 2020の公式競技2日各3題、全6題。Day1 plants/supertrees/tickets、Day2 biscuits/mushrooms/stations。実機練習と翻訳の重複は除く。公式一覧を技巧照合より先に固定。",
+      "corpusId": "ioi-2020",
+      "researchComplete": true,
+      "coverageComplete": true,
+      "reviewedProblems": 6,
+      "coveredProblems": 6,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "ioi",
+          "problemId": "ioi2020_plants",
+          "title": "植物の比較",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "cyclic-window-height-poset-two-neighbor-doubling"
+          ],
+          "gapId": "cyclic-window-height-order-forced-comparisons"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2020_supertrees",
+          "title": "スーパーツリーをつなげ",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "simple-path-count-matrix-tree-cycle-construction"
+          ],
+          "gapId": "simple-path-count-matrix-tree-cycle-construction"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2020_tickets",
+          "title": "カーニバルのチケット",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "median-ticket-extreme-selection-round-decomposition"
+          ],
+          "gapId": "median-ticket-extreme-selection-round-decomposition"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2020_biscuits",
+          "title": "ビスケットの袋詰め",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "bounded-power-two-equal-bag-prefix-cap-memoization"
+          ],
+          "gapId": "bounded-power-two-coins-equal-bag-value-count"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2020_mushrooms",
+          "title": "キノコを数えよう",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "interactive-transition-count-species-decision-trees"
+          ],
+          "gapId": "adaptive-transition-count-two-species-batched-identification"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2020_stations",
+          "title": "ステーション",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "tree-local-routing-alternating-dfs-labels"
+          ],
+          "gapId": "tree-local-routing-alternating-dfs-labels"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "IOI 2019の公式競技2日各3題、全6題。Day1 shoes/split/rect、Day2 line/vision/walk。実機練習と翻訳の重複を除き、技巧照合前に公式一覧を固定。",
+      "corpusId": "ioi-2019",
+      "researchComplete": true,
+      "coverageComplete": true,
+      "reviewedProblems": 6,
+      "coveredProblems": 6,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "ioi",
+          "problemId": "ioi2019_shoes",
+          "title": "靴の並び替え",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "oriented-equal-pair-adjacent-swaps-fenwick"
+          ],
+          "gapId": "oriented-equal-pair-adjacent-swaps-fenwick"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2019_split",
+          "title": "アトラクションの分割",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "dfs-lowlink-three-size-two-connected-partition"
+          ],
+          "gapId": "dfs-lowlink-three-size-two-connected-partition"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2019_rect",
+          "title": "長方形",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "grid-enclosing-higher-boundary-rectangle-candidates"
+          ],
+          "gapId": "grid-enclosing-higher-boundary-rectangle-candidates"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2019_line",
+          "title": "壊れた線",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "orthogonal-point-cover-spiral-two-chains"
+          ],
+          "gapId": "orthogonal-point-cover-spiral-two-chains"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2019_vision",
+          "title": "視覚プログラム",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "rotated-manhattan-two-mark-boolean-circuit"
+          ],
+          "gapId": "rotated-manhattan-two-mark-boolean-circuit"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2019_walk",
+          "title": "空中通路",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "skywalk-endpoint-sparse-shortest-path"
+          ],
+          "gapId": "skywalk-endpoint-sparse-shortest-path"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "2018 ICPC World Finalsの公式冊子A〜K、全11題。競技日は2018-04-19。公式サイト掲載の非公式sketchを、公式解説と区別して確認。",
+      "corpusId": "icpc-2018-world-finals",
+      "researchComplete": false,
+      "coverageComplete": false,
+      "reviewedProblems": 9,
+      "coveredProblems": 5,
+      "totalProblems": 11,
+      "records": [
+        {
+          "source": "icpc",
+          "problemId": "wf2018_a",
+          "title": "Catch the Plane",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "stochastic-timetable-reverse-event-dp"
+          ],
+          "gapId": "stochastic-timetable-reverse-event-dp"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_b",
+          "title": "Comma Sprinkler",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "word-boundary-comma-closure"
+          ],
+          "gapId": "word-boundary-comma-closure"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_c",
+          "title": "Conquer The World",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "tree-surplus-transport-convex-marginal-merge"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_d",
+          "title": "Gem Island",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "polya-urn-uniform-composition-top-r-sum"
+          ],
+          "gapId": "polya-urn-uniform-composition-top-r-sum"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_e",
+          "title": "Getting a Jump on Crime",
+          "originalClassification": "missing-technique",
+          "currentClassification": "missing-technique",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "ballistic-high-arc-building-visibility"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_f",
+          "title": "Go with the Flow",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "word-wrap-sparse-space-river-dp"
+          ],
+          "gapId": "word-wrap-sparse-space-river-dp"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_g",
+          "title": "Panda Preserve",
+          "originalClassification": "missing-technique",
+          "currentClassification": "missing-technique",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "polygon-vertex-sites-farthest-voronoi"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_h",
+          "title": "Single Cut of Failure",
+          "originalClassification": "missing-technique",
+          "currentClassification": "missing-technique",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "circular-chord-all-crossing-window"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_i",
+          "title": "Triangles",
+          "originalClassification": "missing-technique",
+          "currentClassification": "missing-technique",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "triangular-grid-run-expiry-fenwick"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_j",
+          "title": "Uncrossed Knight’s Tour",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "uncrossed-knight-frontier-periodic-optimum"
+        },
+        {
+          "source": "icpc",
+          "problemId": "wf2018_k",
+          "title": "Wireless is the New Fiber",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "tree-degree-preservation-budget-construction"
+          ],
+          "gapId": "tree-degree-preservation-budget-construction"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "IOI2018公式競技2日各3題の全6題。Day1 combo/seats/werewolf、Day2 doll/highway/meetings。練習4題・Implementation Notice・翻訳重複を除き、技巧照合前に固定。",
+      "corpusId": "ioi-2018",
+      "researchComplete": true,
+      "coverageComplete": true,
+      "reviewedProblems": 6,
+      "coveredProblems": 6,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "ioi",
+          "problemId": "ioi2018_combo",
+          "title": "コンボ",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "unique-first-symbol-prefix-oracle-multiplexing"
+          ],
+          "gapId": "unique-first-symbol-prefix-oracle-multiplexing"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2018_seats",
+          "title": "座席",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "dynamic-grid-prefix-rectangle-corner-minimum-count"
+          ],
+          "gapId": "dynamic-grid-prefix-rectangle-corner-minimum-count"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2018_werewolf",
+          "title": "狼男",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "two-threshold-component-merge-trees-rectangle-intersection"
+          ],
+          "gapId": "two-threshold-component-merge-trees-rectangle-intersection"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2018_doll",
+          "title": "からくり人形",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "alternating-switch-bit-reversal-pruned-router"
+          ],
+          "gapId": "alternating-switch-bit-reversal-pruned-router"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2018_highway",
+          "title": "高速道路の通行料金",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "binary-weight-distance-oracle-edge-split-endpoint-search"
+          ],
+          "gapId": "binary-weight-distance-oracle-edge-split-endpoint-search"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2018_meetings",
+          "title": "会議",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "cartesian-prefix-meeting-cost-single-cross-envelope"
+          ],
+          "gapId": "cartesian-prefix-meeting-cost-single-cross-envelope"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "2021 February Platinumと2021 US Open Platinumの公式各3題、全6題。両大会の公式resultsで対象を先に固定。同名Gold問題と他の大会は除外。",
+      "corpusId": "usaco-2021-february-us-open-platinum",
+      "researchComplete": true,
+      "coverageComplete": true,
+      "reviewedProblems": 6,
+      "coveredProblems": 6,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "usaco",
+          "problemId": "1116",
+          "title": "No Time to Dry",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "monotone-paint-stroke-links-offline-containment"
+          ],
+          "gapId": "monotone-paint-stroke-links-offline-containment"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1117",
+          "title": "Minimizing Edges",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "parity-walk-profile-layer-greedy-realization"
+          ],
+          "gapId": "parity-walk-profile-layer-greedy-realization"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1118",
+          "title": "Counting Graphs",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "parity-walk-profile-layer-inclusion-exclusion-count"
+          ],
+          "gapId": "parity-walk-profile-layer-inclusion-exclusion-count"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1140",
+          "title": "United Cows of Farmer John",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "interval-unique-endpoints-singleton-middle-active-lazy"
+          ],
+          "gapId": "interval-unique-endpoints-singleton-middle-active-lazy"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1141",
+          "title": "Routing Schemes",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "almost-dag-edge-routing-pairing-frontier-cycle-count"
+          ],
+          "gapId": "almost-dag-edge-routing-pairing-frontier-cycle-count"
+        },
+        {
+          "source": "usaco",
+          "problemId": "1142",
+          "title": "Balanced Subsets",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "orthogonally-convex-row-interval-phase-prefix-dp"
+          ],
+          "gapId": "orthogonally-convex-row-interval-phase-prefix-dp"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "IOI2017 official competition, exactly3tasks on day1 and3 on day2; exclude practice and translation duplicates.",
+      "corpusId": "ioi-2017",
+      "researchComplete": false,
+      "coverageComplete": false,
+      "reviewedProblems": 5,
+      "coveredProblems": 5,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "ioi",
+          "problemId": "ioi2017_nowruz",
+          "title": "ノウルーズ",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "unconfirmed",
+          "resolved": false,
+          "techniqueIds": [],
+          "gapId": "induced-grid-tree-single-neighbor-leaf-growth"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2017_wiring",
+          "title": "配線",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+          ],
+          "gapId": "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2017_train",
+          "title": "電車のおもちゃ",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "buchi-owned-graph-repeated-target-attractor-elimination"
+          ],
+          "gapId": "buchi-owned-graph-repeated-target-attractor-elimination"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2017_prize",
+          "title": "The Big Prize",
+          "originalClassification": "unconfirmed",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "rank-count-oracle-equal-level-interval-pruning"
+          ],
+          "gapId": "rank-count-oracle-equal-level-interval-pruning"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2017_simurgh",
+          "title": "Simurgh",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+          ],
+          "gapId": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2017_books",
+          "title": "古文書",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "permutation-cycle-interval-closure-two-sided-walk-greedy"
+          ],
+          "gapId": "permutation-cycle-interval-closure-two-sided-walk-greedy"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "scope": "IOI2016 本競技全6題。練習と翻訳重複を除外、技巧照合前に母数固定。",
+      "corpusId": "ioi-2016",
+      "researchComplete": true,
+      "coverageComplete": true,
+      "reviewedProblems": 6,
+      "coveredProblems": 6,
+      "totalProblems": 6,
+      "records": [
+        {
+          "source": "ioi",
+          "problemId": "ioi2016_molecules",
+          "title": "分子の検出",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "bounded-spread-subset-sum-sorted-window-witness"
+          ],
+          "gapId": "bounded-spread-subset-sum-sorted-window-witness"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2016_railroad",
+          "title": "ジェットコースター",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "directed-line-balance-euler-augmentation-mst"
+          ],
+          "gapId": "directed-line-balance-euler-augmentation-mst"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2016_shortcut",
+          "title": "近道",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+          ],
+          "gapId": "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2016_paint",
+          "title": "お絵かきパズル",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+          ],
+          "gapId": "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2016_messy",
+          "title": "バグの解読",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "precompiled-permutation-partition-signature-membership"
+          ],
+          "gapId": "precompiled-permutation-partition-signature-membership"
+        },
+        {
+          "source": "ioi",
+          "problemId": "ioi2016_aliens",
+          "title": "宇宙人",
+          "originalClassification": "missing-technique",
+          "currentClassification": "covered",
+          "resolved": true,
+          "techniqueIds": [
+            "diagonal-square-union-cover-monge-penalty-cht"
+          ],
+          "gapId": "diagonal-square-union-cover-monge-penalty-cht"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "knownGaps": [
+    {
+      "id": "steiner-terminal-subset-shortest",
+      "features": "少数の指定頂点を全てつなぎ、共有する辺は一度だけ費用に加える。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "steiner-terminal-subset-shortest"
+      ]
+    },
+    {
+      "id": "spanning-tree-laplacian-minor",
+      "features": "無向グラフで、全頂点を結ぶ木を何通り選べるか数える。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "spanning-tree-laplacian-minor"
+      ]
+    },
+    {
+      "id": "general-matching-blossom-contraction",
+      "features": "奇閉路を含む相性関係から、同じ対象を二度使わずできるだけ多くの組を作る。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "general-matching-blossom-contraction"
+      ]
+    },
+    {
+      "id": "lcs-bit-parallel-length",
+      "features": "二つの列の最長共通部分列の長さだけを、DP表全体より少ないワード演算で求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "lcs-bit-parallel-length"
+      ]
+    },
+    {
+      "id": "fps-square-root",
+      "features": "二乗すると与えた係数列になる級数を、先頭の非零項と根の存在を確認して求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "fps-square-root"
+      ]
+    },
+    {
+      "id": "fps-compositional-inverse",
+      "features": "定数項が0の級数について、合成するとxになる係数列を求める。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "fps-compositional-inverse"
+      ]
+    },
+    {
+      "id": "threshold-maximal-matching-count",
+      "features": "二種類の対象が同数あり、左の値が右の値以下なら一対一で組にできる。 組を追加できる二対象が残らない対応を全て数える。組数の最大化ではない。 同じ値でも対象は別々に区別し、対象を使わない対応も許す。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "maximal-threshold-matching-sweep-dp"
+      ]
+    },
+    {
+      "id": "higher-label-resets-walk-count",
+      "features": "有向グラフを移動するたび一つの番号を使い、同じ番号の再使用の間には必ずより大きい番号を使う。 始点・最初の番号・終点・最後の番号を指定した問い合わせが複数ある。 歩数を指定せず、合法な移動列と番号列の組の個数を数える。頂点の再訪は許す。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "hierarchical-reset-walk-count"
+      ]
+    },
+    {
+      "id": "xor-bounded-triples-from-interval-union",
+      "features": "候補の非負整数集合が、互いに重ならない閉区間の和として与えられ、全要素を列挙できない。 異なる三数を順序を区別せず選び、三つの全ての組の XOR が上限以下になるものを数える。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "xor-bounded-triples-intervals"
+      ]
+    },
+    {
+      "id": "synchronous-product-graph-distance-sum",
+      "features": "一つの状態が、複数のグラフから一頂点ずつ選んだ組で表される。 一手ごとに全グラフで同時に一辺ずつ進み、一部の成分だけ待つ操作はない。 全成分の始点から、到達できる全ての組への最短距離の総和を求める。組の総数は巨大で列挙できない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "synchronous-product-parity-distance-sum"
+      ]
+    },
+    {
+      "id": "convex-grid-cost-quadratic-function-cap",
+      "features": "非常に縦長の格子で、右へ進む費用が現在の行番号の二乗、下へ進む費用が現在の列に与えられた値になる。 移動は右と下だけで、共通始点から複数の到着マスまでの最小費用を答える。 全ての行を走査できず、列ごとの費用関数を小さく保存する必要がある。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "convex-piecewise-quadratic-suffix-cap"
+      ]
+    },
+    {
+      "id": "grid-subrectangle-monochromatic-component-count",
+      "features": "色が決まった格子で、同じ色の辺隣接する一つながりを一回で塗れる。上書きはしない。 指定した部分長方形だけを塗る最少回数を、複数の独立した問い合わせについて求める。 長方形の外側を通ってつながる同色マスは、一つにまとめられない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "grid-rectangle-components-euler-boundary"
+      ]
+    },
+    {
+      "id": "longest-contained-segment-nonconvex-polygon",
+      "features": "単純多角形の内部と境界だけに収まる、最長の一本の線分を求める。 凸性は保証されず、最適な線分の端点を入力頂点だけに限定できない。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "polygon-contained-longest-line-extension"
+      ]
+    },
+    {
+      "id": "locally-filtered-disjoint-hands-complement",
+      "features": "既知の一人の手札と応答履歴から、他の各人が持つカード集合を制約する。 各人の手札数は固定で、集合は互いに素。残った秘密カードを各分類ごとに特定できるかを求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "disjoint-candidate-sets-complement-lookup"
+      ]
+    },
+    {
+      "id": "row-column-maxima-shared-witness-matching",
+      "features": "非負整数の高さ表で、各行・各列の最大値と、各セルが0か非0かを保つ。 残す高さの総和を最小にし、取り除ける総量を最大化する。非零セル間で積み替えてよい。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "row-column-maxima-height-matching"
+      ]
+    },
+    {
+      "id": "implicit-product-profit-pareto-monotone-partner",
+      "features": "生産者と消費者から一つずつ選び、価格差と取引可能日数の積を最大化する。 両群が最大500000件あり、全ての二者の組を調べられない。利益が正でないときは取引しなくてよい。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "pareto-pruned-max-rectangle-monotone-partner"
+      ]
+    },
+    {
+      "id": "positive-domain-real-offset-monotone-equation",
+      "features": "全区間の表示速度へ同じ未知の実数を足し、距離÷真の速度の合計を既知の時間へ合わせる。 各真の速度は正。未知量は負にもなり得て、指定精度で実数を返す。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "positive-denominator-offset-real-bisection"
+      ]
+    },
+    {
+      "id": "weighted-integer-mean-quantization-segment-dp",
+      "features": "小さい整数値域の重み付き値を、最大K個の整数の代表値へ置き換える。 各値は最も近い代表値を使い、重み付きの二乗誤差の総和を最小にする。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "weighted-squared-quantization-interval-dp"
+      ]
+    },
+    {
+      "id": "xor-cellular-predecessor-one-error-boundary-syndrome",
+      "features": "無限二次元格子で、各セルを自身と周囲八セルのXORへ同時更新する。 各更新後に高々一セルの誤反転があり、最終の有限図形から最小の初期外接長方形を復元する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "xor-grid-predecessor-boundary-single-error"
+      ]
+    },
+    {
+      "id": "equal-duration-release-deadline-forbidden-starts",
+      "features": "全て同じ正の処理時間の仕事に、個別の開始可能時刻と完了締切がある。 仕事を中断せず一人で全件実行できるかを判定する。開始を待つ判断が必要で、単位整数時刻の処理とは限らない。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "equal-duration-release-deadline-forbidden-starts"
+      ]
+    },
+    {
+      "id": "independent-letter-rewrite-reachability-route",
+      "features": "一文字を別の一文字へ置き換える有向の規則を、各位置で独立に0回以上適用できる。 複数の語の対について、長さを変えずに各文字を目標の文字へ変換できるかを判定する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "independent-letter-rewrite-reachability"
+      ]
+    },
+    {
+      "id": "two-source-concave-flow-mixture-decomposition",
+      "features": "別々の二始点から一終点へ流す二種類が無向辺の容量を共有し、同じ辺で逆方向には流せない。 種類ごとの保存則を守り、流入量の重み付き幾何平均を最大化する。各辺での実数の流れも出力する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "two-source-concave-flow-mixture-decomposition"
+      ]
+    },
+    {
+      "id": "finite-horizon-word-occurrence-overlap-order-proof",
+      "features": "同じ長さの複数の語について、一様独立な三文字の長い列に一回以上現れる確率の大小を比べる。 確率の数値を直接出さず、同確率なら入力順を保って語を並べる。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "finite-horizon-pattern-occurrence-overlap-order"
+      ]
+    },
+    {
+      "id": "laminar-rectangle-corner-pairing-and-boundary-validation",
+      "features": "左上の角の集合と右下の角の集合を一対一で組にし、軸に平行な長方形を復元する。 どの二長方形も一方が他方に含まれるか互いに離れ、境界は接触・交差しない必要がある。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "nested-rectangle-corner-sweep-and-validation"
+      ]
+    },
+    {
+      "id": "two-choice-nondecreasing-balanced-count-compression",
+      "features": "長さ2Nの各位置でAかBの一方を選び、選んだ値の列を非減少にする。 AとBをそれぞれ正確にN回使い、可能なら選択列を一つ復元する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "two-choice-nondecreasing-count-interval-reconstruction"
+      ]
+    },
+    {
+      "id": "few-point-rectangle-stabbing-four-side-cases",
+      "features": "N個の軸平行閉長方形を、K<=4個の整数点で全て刺す配置を一つ構成する。 合法配置は存在すると保証される。同じ点を複数回出力してもよく、長方形の境界も含む。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "four-point-axis-aligned-rectangle-stabbing"
+      ]
+    },
+    {
+      "id": "interval-stabbing-one-sided-contraction-tree-dsu",
+      "features": "三角形領域の点を追加し、水平/垂直の掃除で条件を満たす全点の片座標を境界へ移す。 点の番号ごとに現在座標を答える。二方向の移動と新点追加が混在し、単純な点ごとのシミュレーションはできない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "interval-stabbing-endpoint-contraction-dsu"
+      ]
+    },
+    {
+      "id": "adaptive-independent-sets-hidden-bipartite-graph-recovery",
+      "features": "隠れた性別・原色・一対一の好みを持つ2N個体に対し、任意部分集合の会合の色の種類数だけ質問できる。 全ての同じ原色のN組を、質問20000回以下で特定する。会合での色は相手の参加有無で変わる。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "interactive-hidden-bipartite-edge-color-pair-recovery"
+      ]
+    },
+    {
+      "id": "reciprocal-neighbor-closure-queued-small-to-large",
+      "features": "有向辺を一日一本ずつ追加し、x→yかつy↔zならx→zを繰り返し追加した閉包の辺数を毎日求める。 相互辺でつながる集団の併合が連鎖し、閉包は単なる有向到達性ではない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "directed-reciprocal-closure-dsu-small-to-large"
+      ]
+    },
+    {
+      "id": "survivor-prefix-reduction-weighted-three-step-dyck",
+      "features": "1..Nが各2回ある長さ2Nの列について、同じ正の高さでは最後の位置だけを守り、それ以外を一斉に1減らす操作をN回行う。 操作後に正の高さが残る位置集合を指定し、元の重複順列の個数を法10^9+7で数える。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "paired-height-survivors-weighted-dyck-dp"
+      ]
+    },
+    {
+      "id": "skyline-star-conflicts-ancestor-path-packing",
+      "features": "列ごとに下側をビルが覆う画像で、ビルを含まないどの長方形にも残す星を高々一つにする。 星を消す費用の総和を最小化する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "skyline-cartesian-star-paths"
+      ]
+    },
+    {
+      "id": "circle-cooldown-weighted-functional-arrivals",
+      "features": "円周上の全従業員が同速度で歩き、各木の実は収穫からC秒後に再生する。 指定従業員が指定時刻までに得る実の個数を、多数の質問に答える。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "functional-graph-timed-arrivals-offline"
+      ]
+    },
+    {
+      "id": "edge-advice-anonymous-navigation",
+      "features": "全グラフを知る側が辺へ少数種類の印を付け、別プロセスの移動者を頂点0へ案内する。 移動者は直前の辺を除いた印別の辺数だけ見られ、同じ印の辺の選択は採点側が決める。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "anonymous-edge-label-navigation",
+        "binary-path-orientation-advice"
+      ]
+    },
+    {
+      "id": "tree-color-closure-minimum-connected-union",
+      "features": "木の頂点が都市ごとの色に分かれ、一色の町全体を別色へ併合できる。 いずれか一つの都市の町集合を連結にするための最少併合回数を求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "tree-color-closure-sink-scc"
+      ]
+    },
+    {
+      "id": "output-only-grid-triplet-conflict-packing",
+      "features": "6個の固定入力それぞれに対して出力ファイルを提出する。 四つの直線方向で三マスを使い、中央W・両端PとGの串をマス重複なしで多く選ぶ。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "grid-triplet-conflict-packing"
+      ]
+    },
+    {
+      "id": "shrinking-treatment-interval-barrier",
+      "features": "日付・区間・費用を持つ治療計画を選ぶ。治療後も感染は隣家へ毎日広がる。 最後に全員が未感染となる計画集合の最小費用、または不可能を求める。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "shrinking-interval-treatment-barrier",
+        "dijkstra-dominance-report-delete"
+      ]
+    },
+    {
+      "id": "cyclic-window-height-order-forced-comparisons",
+      "features": "円周上の各位置について、直後のk−1本のうち自分より高い植物の本数だけが与えられる。 記録と整合する全ての相異なる高さの配置で、二本の大小が確定するかを多数回問う。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "cyclic-window-height-poset-two-neighbor-doubling"
+      ]
+    },
+    {
+      "id": "simple-path-count-matrix-tree-cycle-construction",
+      "features": "無向単純グラフの全頂点対について、単純路の本数0/1/2/3を指定する行列が与えられる。 全ての本数を満たす辺集合を構築するか、不可能と判定する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "simple-path-count-matrix-tree-cycle-construction"
+      ]
+    },
+    {
+      "id": "median-ticket-extreme-selection-round-decomposition",
+      "features": "偶数n色それぞれに値が整列したm枚の券があり、kラウンドで各色から一枚ずつ使う。 各ラウンドの得点は全券の値から最適な中央値への絶対差和で、合計最大値と実際の割当を求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "median-ticket-extreme-selection-round-decomposition"
+      ]
+    },
+    {
+      "id": "bounded-power-two-coins-equal-bag-value-count",
+      "features": "味が2の冪である各種類のビスケットに有限の個数がある。 x袋全ての味の和を同じtにできるような、異なる非負整数tの個数を数える。配り方の数は数えない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "bounded-power-two-equal-bag-prefix-cap-memoization"
+      ]
+    },
+    {
+      "id": "adaptive-transition-count-two-species-batched-identification",
+      "features": "二種類のキノコがあり、0番だけがAと既知である。相異なる番号の列を質問すると、隣接する種類の変化回数が返る。 適応的graderにも正しく、質問回数と全質問長の制約内でAの総数を数える。満点は厳しい回数上限を要する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "interactive-transition-count-species-decision-trees"
+      ]
+    },
+    {
+      "id": "tree-local-routing-alternating-dfs-labels",
+      "features": "木の全体を見られる準備段階で、各頂点へ相異なる小さい整数ラベルを付ける。 実行段階には現在地・目的地・隣接先のラベルだけを与え、目的地への最初の隣接先を返す。0..n−1への圧縮は満点のラベル範囲を満たす構成であり、その範囲を必須条件とはしない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "tree-local-routing-alternating-dfs-labels"
+      ]
+    },
+    {
+      "id": "oriented-equal-pair-adjacent-swaps-fenwick",
+      "features": "符号で左右を表す同サイズの品物を一列に置き、隣接二要素の交換だけを行う。 最終列を左・右の同サイズ対の連結にし、交換回数を最小にする。同じサイズは複数対あってよい。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "oriented-equal-pair-adjacent-swaps-fenwick"
+      ]
+    },
+    {
+      "id": "dfs-lowlink-three-size-two-connected-partition",
+      "features": "連結な無向単純グラフの全頂点を、指定された三サイズa,b,cの集合へ分ける。 三集合のうち少なくとも二つを、その集合内の辺だけで連結にする。構築または不可能判定が必要。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "dfs-lowlink-three-size-two-connected-partition"
+      ]
+    },
+    {
+      "id": "grid-enclosing-higher-boundary-rectangle-candidates",
+      "features": "高さのある格子で、盤面の外周に触れない長方形の個数を数える。 内側の各セルは、同じ行で左右に隣接する外側二セルと、同じ列で上下に隣接する外側二セルの四つ全てより厳密に低い必要がある。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "grid-enclosing-higher-boundary-rectangle-candidates"
+      ]
+    },
+    {
+      "id": "orthogonal-point-cover-spiral-two-chains",
+      "features": "固定入力の点集合で全x座標・全y座標がそれぞれ異なる。原点から始まる水平・垂直線分の折れ線で全点を通る出力を作る。 点は線分端点でなくてもよく、自己交差と重なりは許される。線分数が少ないほど高得点のoutput-only問題。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "orthogonal-point-cover-spiral-two-chains"
+      ]
+    },
+    {
+      "id": "rotated-manhattan-two-mark-boolean-circuit",
+      "features": "H×Wの二値画像には黒いセルがちょうど二つあり、そのマンハッタン距離がKかを全画像で判定する。 画像の値を先に読めず、NOT/AND/OR/XORゲート列を生成する。前のゲート出力だけを参照し、ゲート総数と全入力端子数の両方に上限がある。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "rotated-manhattan-two-mark-boolean-circuit"
+      ]
+    },
+    {
+      "id": "skywalk-endpoint-sparse-shortest-path",
+      "features": "高さを持つ鉛直なビルと、端点がビル上にある水平な通路の和集合だけを移動する。 通路と途中のビルの交点でも乗り換えられ、地上の横移動はできない。指定二ビルの根元間の最短距離または到達不能を求める。水平通路どうしは端点以外で交わらない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "skywalk-endpoint-sparse-shortest-path"
+      ]
+    },
+    {
+      "id": "stochastic-timetable-reverse-event-dp",
+      "features": "出発・到着時刻が決まった有向の移動で、各便が独立な確率で実行される。失敗はその便を試した時に分かる。 期限までに目的地へ着く確率を、待機や便の選択によって最大化する。同時刻の乗換は不可、同じ場所・同じ時刻に試せる便は一つ。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "stochastic-timetable-reverse-event-dp"
+      ]
+    },
+    {
+      "id": "word-boundary-comma-closure",
+      "features": "同じ語の前・後にある読点を、別の出現の前・後へ反復して広げる。 隣接する二語の間の読点は、前語の後状態と後語の前状態を結ぶ。文の区切りを越えて読点を追加しない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "word-boundary-comma-closure"
+      ]
+    },
+    {
+      "id": "tree-surplus-transport-convex-marginal-merge",
+      "features": "重み付き木の各頂点に供給と必要量があり、必要量以上を残すよう最小費用で運ぶ。 供給総量は需要以上で、余りはどこに残してもよい。一般の最小費用流では大きすぎる木と供給総量を扱う。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "tree-surplus-transport-convex-marginal-merge"
+      ]
+    },
+    {
+      "id": "polya-urn-uniform-composition-top-r-sum",
+      "features": "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。 固定回数後の、重みが大きい上位r人の合計の期待値を求める。各人の重みは独立ではない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "polya-urn-uniform-composition-top-r-sum"
+      ]
+    },
+    {
+      "id": "ballistic-high-arc-building-visibility",
+      "features": "同じ初速度で中心間を跳ぶ軌道を選び、途中の各長方形屋根より高く通るかを判定する。 到達できる有向辺を作り、最少ジャンプ回数を求める。角を通る場合は四つの屋根すべてを避ける。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "ballistic-high-arc-building-visibility"
+      ]
+    },
+    {
+      "id": "word-wrap-sparse-space-river-dp",
+      "features": "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。 行幅を選んで鎖を最大にし、同じ長さなら最小の行幅を返す。行末の余白は鎖へ含めない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "word-wrap-sparse-space-river-dp"
+      ]
+    },
+    {
+      "id": "polygon-vertex-sites-farthest-voronoi",
+      "features": "単純多角形の全頂点を固定中心とした同半径の円板の和で、多角形全体を覆う最小半径を求める。 多角形内部の点から最寄りの頂点までの距離の最大値。凹多角形や辺の途中の最適点も含む。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "polygon-vertex-sites-farthest-voronoi"
+      ]
+    },
+    {
+      "id": "circular-chord-all-crossing-window",
+      "features": "長方形境界の異なる辺を結ぶ多数の弦を、最小本数の弦で全て横切る。 入力の端点はすべて異なる。出力端点は異なる辺に置き、既存端点と角から距離を取る必要がある。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "circular-chord-all-crossing-window"
+      ]
+    },
+    {
+      "id": "triangular-grid-run-expiry-fenwick",
+      "features": "辺が欠けうる三角格子の図から、入力の辺だけで構成される全サイズ・二方向の三角形を数える。 任意の三頂点の角度分類ではなく、三辺の連続したrunが揃う個数を集計する。",
+      "state": "pending",
+      "resolved": false,
+      "techniqueIds": [
+        "triangular-grid-run-expiry-fenwick"
+      ]
+    },
+    {
+      "id": "uncrossed-knight-frontier-periodic-optimum",
+      "features": "短辺8以下、長辺10^15以下の盤面で、ナイトの線分が交差も接触もしない単純な閉路を作る。 全マスを使う必要はなく、訪れるマス数の最大を求める。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "uncrossed-knight-frontier-periodic-optimum"
+      ]
+    },
+    {
+      "id": "tree-degree-preservation-budget-construction",
+      "features": "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。 元と異なる次数を持つ頂点の個数を最小にする。新しい辺を元の辺集合から選ぶ必要はない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "tree-degree-preservation-budget-construction"
+      ]
+    },
+    {
+      "id": "unique-first-symbol-prefix-oracle-multiplexing",
+      "features": "4文字からなる未知列の先頭文字は、その後には二度と現れない。質問文字列に含まれる未知列の最長接頭辞長が返る。 質問の長さ4N以内、満点N+2回以内で未知列全体を特定する。単なる等値質問ではない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "unique-first-symbol-prefix-oracle-multiplexing"
+      ]
+    },
+    {
+      "id": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+      "features": "長方形格子に0..HW−1の順列を置く。番号の接頭集合が埋まった長方形になるものの個数を求める。 二つの番号の位置を交換するたびに個数を返す。空の外周を含む局所2×2の角の条件へ直せる。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "dynamic-grid-prefix-rectangle-corner-minimum-count"
+      ]
+    },
+    {
+      "id": "two-threshold-component-merge-trees-rectangle-intersection",
+      "features": "無向連結グラフで人間は頂点番号>=L、狼は頂点番号<=Rだけを通れる。始点から人間で始め、ある頂点で一度だけ狼へ変わって終点へ行く。 多数の(S,E,L,R)について可否を求める。変身頂点を列挙せず、二方向の制限付き到達成分の共通頂点を探す。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "two-threshold-component-merge-trees-rectangle-intersection"
+      ]
+    },
+    {
+      "id": "alternating-switch-bit-reversal-pruned-router",
+      "features": "入口へ来るたびX/Yを交互に選ぶ二出口スイッチと、一出口のトリガーをつなぎ、指定トリガー列を繰り返す回路を構築する。 初回の基点復帰までに列を厳密に再生し、全スイッチを初期Xへ戻す。スイッチ個数と状態変化総数を両方制限する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "alternating-switch-bit-reversal-pruned-router"
+      ]
+    },
+    {
+      "id": "binary-weight-distance-oracle-edge-split-endpoint-search",
+      "features": "既知の無向単純連結グラフで、二つの未知頂点は固定されている。各辺へ既知A/Bの二重みを自由に割り当てたとき、未知二点間の最短距離だけを質問できる。 A<Bの任意整数に対して未知二点を特定する。一般グラフの複数最短路も扱い、満点50回以内を保証する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "binary-weight-distance-oracle-edge-split-endpoint-search"
+      ]
+    },
+    {
+      "id": "cartesian-prefix-meeting-cost-single-cross-envelope",
+      "features": "固定の高さ列の各区間について、その中の会場xを選び、各参加者iからxまでの最大高さを全員分足した費用を最小にする。 多数の区間queryに対し最適な会場も区間ごとに変わる。高さが等しい場合もあり、単なる区間最大や全区間の最大値総和ではない。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "cartesian-prefix-meeting-cost-single-cross-envelope"
+      ]
+    },
+    {
+      "id": "monotone-paint-stroke-links-offline-containment",
+      "features": "指定区間だけを濃い色で上書きできるとき、完成までの最小筆数を多数回求める",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "monotone-paint-stroke-links-offline-containment"
+      ]
+    },
+    {
+      "id": "parity-walk-profile-layer-greedy-realization",
+      "features": "始点から各頂点へ到達できる全歩数を保ち、グラフの辺数を最小にする",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "parity-walk-profile-layer-greedy-realization"
+      ]
+    },
+    {
+      "id": "parity-walk-profile-layer-inclusion-exclusion-count",
+      "features": "始点から各頂点へ到達できる全歩数を保つ、ラベル付きグラフの個数を数える",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "parity-walk-profile-layer-inclusion-exclusion-count"
+      ]
+    },
+    {
+      "id": "interval-unique-endpoints-singleton-middle-active-lazy",
+      "features": "区間の両端と内側一点を選び、その三値がそれぞれ区間内で一度だけ現れる選び方を数える",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "interval-unique-endpoints-singleton-middle-active-lazy"
+      ]
+    },
+    {
+      "id": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+      "features": "複数の始点と終点を対応させ、全有向辺を一度使う経路分解の個数を数える",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "almost-dag-edge-routing-pairing-frontier-cycle-count"
+      ]
+    },
+    {
+      "id": "orthogonally-convex-row-interval-phase-prefix-dp",
+      "features": "草のあるマスから、四連結で各行・各列が途切れない非空部分集合を数える",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "orthogonally-convex-row-interval-phase-prefix-dp"
+      ]
+    },
+    {
+      "id": "induced-grid-tree-single-neighbor-leaf-growth",
+      "features": "固定入力の障害物盤面で残す自由セルを選び、その4近傍誘導グラフを木にする。 次数1のセルを目標個数以上にし、10個の出力ファイルを提出する。",
+      "state": "unconfirmed",
+      "resolved": false,
+      "techniqueIds": [
+        "induced-grid-tree-single-neighbor-leaf-growth"
+      ]
+    },
+    {
+      "id": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+      "features": "直線上の赤点/青点を、各点が少なくとも一本の異色間の線に接続するように結ぶ。 一つの点を何本にも使えて、全配線長の合計を最小にする。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+      ]
+    },
+    {
+      "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+      "features": "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。 無限に充電駅を訪れる側と、やがて電池切れにする側の勝敗を全開始点で求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "buchi-owned-graph-repeated-target-attractor-elimination"
+      ]
+    },
+    {
+      "id": "rank-count-oracle-equal-level-interval-pruning",
+      "features": "位置を質問すると、その箱より高価な箱の左右の個数が返る。種類ごとの個数は前の種類の二乗より多い。 返答列に整合する配列を適応的に選ぶgraderを相手に、唯一の最上位の箱を満点質問数で探す。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "rank-count-oracle-equal-level-interval-pruning"
+      ]
+    },
+    {
+      "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+      "features": "既知の単純連結無向グラフで、隠れた全域木を特定する。 質問も全域木に限られ、隠れた木との共通辺数が返る。満点は8000回以内。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+      ]
+    },
+    {
+      "id": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+      "features": "一冊だけ持って直線棚の本を置換し、開始位置へ戻るまでの歩行距離を最小にする。 順列cycleの運搬下界と、実際に触れたcycleの区間閉包を利用する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "permutation-cycle-interval-closure-two-sided-walk-greedy"
+      ]
+    },
+    {
+      "id": "bounded-spread-subset-sum-sorted-window-witness",
+      "features": "正の重さから個数自由の部分集合を一つ選び、合計を範囲へ収める。範囲幅が最大・最小の重さの差以上。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "bounded-spread-subset-sum-sorted-window-witness"
+      ]
+    },
+    {
+      "id": "directed-line-balance-euler-augmentation-mst",
+      "features": "全ての入場上限・退出速度の組を一度ずつ並べ、連続する組の減速距離の総和を最小にする。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "directed-line-balance-euler-augmentation-mst"
+      ]
+    },
+    {
+      "id": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+      "features": "各頂点に高々一本の枝がある重み付き道へ、異なる主駅二つの間に固定長の辺を一本追加し、全駅間距離の最大を最小にする。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+      ]
+    },
+    {
+      "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+      "features": "既知の黒白と未定マスがある一列について、指定された長さ順の黒blockを作る全解で共通の色を求める。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+      ]
+    },
+    {
+      "id": "precompiled-permutation-partition-signature-membership",
+      "features": "書き込んだ0/1文字列集合が一度のcompileで同じ未知のbit置換を受け、その後の所属判定だけから置換全体を復元する。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "precompiled-permutation-partition-signature-membership"
+      ]
+    },
+    {
+      "id": "diagonal-square-union-cover-monge-penalty-cht",
+      "features": "対角線上の二頂点を持つ正方形を高々K枚選び、全指定セルを覆うunion面積を最小にする。重複セルは一度だけ数える。",
+      "state": "resolved",
+      "resolved": true,
+      "techniqueIds": [
+        "diagonal-square-union-cover-monge-penalty-cht"
+      ]
+    }
+  ],
+  "unresolvedKnownGaps": 14,
+  "errors": []
+}

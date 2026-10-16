@@ -1,0 +1,239 @@
+---
+title: "番号を小さい順に集めたマスが長方形になる段階を、交換後も数える"
+description: "格子の各頂点を囲む四マスから形を評価し、長方形となる条件を最小値4で表す。二マスの交換を少数の区間加算に直し、全ての段階の答えを更新する。"
+techniqueId: dynamic-grid-prefix-rectangle-corner-minimum-count
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+$H\times W$ 格子の各マスに、$0,1,\ldots,P-1$ の番号が一つずつ置かれている。ただし $P=HW$。二つの番号の位置を繰り返し交換し、そのたびに、番号 $0$ から $t$ までのマスが一つの軸平行な長方形をちょうど埋める $t$ の個数を求めたい。
+
+番号 $0$ から $t$ までを選ぶ状態を、段階 $t$ と呼ぶ。選ぶ枚数は1から $P$ までの $P$ 通りあり、交換のたびに全ての外接長方形を作り直すと遅い。形を小さな窓で評価し、番号の大小による変化を区間へまとめると、交換一回を $O(\log P)$ にできる。
+
+## 考え方
+
+段階 $t$ で選んだマスを黒、残りと格子の外側を白とする。格子の各頂点を囲む2×2窓を見て、黒マスが1個の窓数を $C_1(t)$、3個の窓数を $C_3(t)$ と置く。外周にも窓があり、外側のマスは常に白である。
+
+非空の黒集合について、次の条件が成り立つ。
+
+$$
+F(t)=C_1(t)+C_3(t)\ge4,
+\qquad F(t)=4\iff\text{黒集合が一つの長方形}.
+$$
+
+各窓に含まれる四つの番号を小さい順に $a\le b\le c\le d$ とする。外側の番号には $P$ を使う。この窓の黒マス数が奇数なのは、ちょうど
+
+$$
+t\in[a,b)\ \text{または}\ t\in[c,d)
+$$
+
+のときである。従って窓一つの寄与は、高々二つの区間への1加算となる。重なる外側の番号などによる空区間は無視する。
+
+全 $t=0,\ldots,P-1$ の $F(t)$ を、区間加算・全体最小値・最小値の個数を持つ遅延セグメント木で管理する。全マスを選んだ段階は必ず長方形なので、全体最小値は常に4であり、その個数が答えとなる。
+
+二マスの交換で変わる窓は、それぞれのマスに接する四頂点だけである。最大八頂点を重複除去し、古い寄与を引き、番号を交換して、新しい寄与を足せばよい。
+
+## 適用条件
+
+番号は重複のない $0,\ldots,HW-1$ の全順列である。数える形は、穴を持たない一つの軸平行長方形であり、一行・一列・一マスも含む。一枚以上選んだ段階だけを数える。空集合を葉へ含めるとその評価値は0となり、最小値4による集計が使えない。
+
+掲載クラス `PrefixRectangleGrid` は $H,W\ge1$、$HW\le1000000$ を扱う。コンストラクタへ番号ごとの行配列と列配列を渡し、`rectangle_prefixes()` で現在の個数、`swap_labels(a,b)` で交換後の個数を得る。原典の $HW\le1000000$、交換50000回以下を全て含む。呼出し回数の状態は持たず、同じ番号どうしの交換も何も変更しない操作として扱う。
+
+寸法・配列長・座標・重複マス・番号範囲の誤りは `std::invalid_argument`。不正な交換は状態を変えない。移動元のオブジェクトへの個数取得・交換は `std::logic_error`。コピーは独立した状態を持ち、代入は割当に失敗しても代入先の元の状態を保つ。標準の割当例外はそのまま伝わる。入力配列を変更せず、正常な交換中には割当を行わない。
+
+## なぜ正しいか
+
+**角の評価値4が長方形を特徴付ける。** 任意の非空の有限黒集合で、最上段の左端と右端には黒マス1個の窓が二つある。最下段にも別の二つがあるので、常に $C_1\ge4$ である。一マスだけでも、四隅の頂点は別々に数える。従って $C_1+C_3=4$ なら $C_1=4$ かつ $C_3=0$ である。
+
+$C_3=0$ とする。隣接する二行の黒い連続区間が列を共有するとき、左右どちらかの端が異なれば、その端に黒3個の窓ができてしまう。よって重なる連続区間の両端は一致する。このことを上下の接続に沿って繰り返すと、各4近傍連結成分は、同じ列区間が連続する行に並ぶ一つの長方形となる。穴や欠けを持つ成分は残らない。
+
+異なる長方形成分が接するなら、格子の頂点で斜めに接するだけである。辺を共有すれば4近傍でつながる。成分数を $B$、斜めの接触数を $D$ とすると、各長方形の四つの角から、一接触ごとに黒1個の窓が二つ失われるため、$C_1=4B-2D$ となる。
+
+成分を頂点、接触を辺とするグラフは単純平面グラフである。同じ二長方形は二か所で斜めに接せず、長方形の内部から接触点へ線を引けば、別成分を横切らずに辺を描ける。また三角形を持たない。三つの軸平行な閉長方形が互いに接すれば、行と列の区間がそれぞれ共通点を持つので、三つに共通する点がある。しかしその点の周囲で三成分を置くと、どれか二つが辺でつながってしまう。
+
+従って $B=2$ なら $D\le1$ から $C_1\ge6$、$B\ge3$ なら三角形のない単純平面グラフの $D\le2B-4$ から $C_1\ge8$ である。$C_1=4$ となるのは一成分のときだけで、その成分は長方形である。逆に一つの長方形では、四隅だけが黒1個の窓となり、黒3個の窓はない。これで必要十分性が示された。斜めに触れる黒マスを一つの成分と見なさないこと、外周の窓も数えることが重要である。
+
+**窓の寄与は二つの半開区間である。** しきい値 $t$ が四つの番号を順に越えると、その窓の黒マス数は0、1、2、3、4と変わる。奇数になるのは $[a,b)$ と $[c,d)$ だけである。番号 $P$ はどの葉 $t<P$ でも黒にならない。外側が複数含まれる場合や一行・一列でも同じ式が使える。
+
+**交換は局所更新で十分である。** 交換したマスを含まない窓では、四番号が変わらない。影響する頂点の集合から古い寄与を一度ずつ除き、交換後の寄与を一度ずつ足すと、全葉の値は新しい $F(t)$ と一致する。隣接マスや斜めに接するマスでは共有頂点があるので、頂点を重複除去してから処理する。
+
+セグメント木の各節点は、その区間の最小値と、その最小値になる葉数を持つ。区間全体への加算は最小値だけを動かし、葉数を変えない。子を併合するときは、小さい最小値を選び、同じ最小値を持つ子の葉数を足す。この不変条件と $\min_t F(t)=4$ により、根の個数が、集合が長方形となる段階の数を表す。更新途中の根を答えとして使わず、除去・交換・追加が全て終わってから返す。
+
+## 計算量
+
+格子の頂点数は $(H+1)(W+1)\le4HW=4P$。初期化では全窓の二区間を差分配列へ足し、累積和から木を一括構築するので **$O(P)$ 時間**となる。初期化にも区間更新を繰り返すと、不要な $\log P$ が付く。
+
+交換では高々八窓について、高々二区間の除去と追加を行うため **$O(\log P)$ 時間**。交換 $Q$ 回の合計は **$O(P+Q\log P)$ 時間、$O(P)$ 空間**である。再帰呼び出しの深さは、根を深さ0として $P\le1000000$ で20以下。同時に呼ばれる関数は最大21個となる。
+
+木の最小値・個数・遅延値は `int` で足りる。評価値と個数は高々 $4P$ と $P$。更新途中も、重複のない窓の寄与を取り除いてから加えるので、各葉は非負で高々窓数となる。遅延値は親と未反映の子の最小値の差として有界であり、交換回数に比例して増え続けない。寸法の積の検査には64bit整数を使う。掲載実装の所有領域は、32bitの `int` なら木の三配列と格子・位置で約 $56P$ バイト、初期化中の差分配列を含め約 $60P$ バイトである。呼出し側の入力配列とアロケータの管理領域は別になる。
+
+## 実装
+
+葉 $t$ は「番号 $t$ 以下」を表す。窓は頂点座標 `(row,column)` で識別するので、格子が一行や一列でも外周を自然に扱える。半開区間の端が $P$ の場合も木の範囲に一致する。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+class PrefixRectangleGrid {
+    static_assert(std::numeric_limits<int>::max() >= 100000000);
+    int height_ = 0, width_ = 0, size_ = 0;
+    std::vector<int> grid_, position_, minimum_, count_, lazy_;
+
+    void ensure_live() const {
+        if (size_ == 0) throw std::logic_error("moved-from grid");
+    }
+    int cell(int row, int column) const noexcept {
+        if (row < 0 || row >= height_ || column < 0 || column >= width_)
+            return size_; // Exterior stays white for every nonempty prefix.
+        return grid_[row * width_ + column];
+    }
+    std::array<int, 4> window(int row, int column) const noexcept {
+        std::array<int, 4> values{cell(row - 1, column - 1),
+            cell(row - 1, column), cell(row, column - 1), cell(row, column)};
+        std::sort(values.begin(), values.end());
+        return values;
+    }
+    void pull(int node) noexcept {
+        minimum_[node] = std::min(minimum_[2 * node], minimum_[2 * node + 1]);
+        count_[node] = 0;
+        if (minimum_[2 * node] == minimum_[node]) count_[node] += count_[2 * node];
+        if (minimum_[2 * node + 1] == minimum_[node]) count_[node] += count_[2 * node + 1];
+    }
+    void build(int node, int left, int right, const std::vector<int>& score) noexcept {
+        if (right - left == 1) {
+            minimum_[node] = score[left];
+            count_[node] = 1;
+            return;
+        }
+        const int middle = left + (right - left) / 2;
+        build(2 * node, left, middle, score);
+        build(2 * node + 1, middle, right, score);
+        pull(node);
+    }
+    void apply(int node, int delta) noexcept {
+        minimum_[node] += delta;
+        lazy_[node] += delta;
+    }
+    void push(int node) noexcept {
+        if (lazy_[node] == 0) return;
+        apply(2 * node, lazy_[node]);
+        apply(2 * node + 1, lazy_[node]);
+        lazy_[node] = 0;
+    }
+    void add(int node, int left, int right, int from, int to, int delta) noexcept {
+        if (from <= left && right <= to) { apply(node, delta); return; }
+        push(node);
+        const int middle = left + (right - left) / 2;
+        if (from < middle) add(2 * node, left, middle, from, to, delta);
+        if (middle < to) add(2 * node + 1, middle, right, from, to, delta);
+        pull(node);
+    }
+    void update_window(int row, int column, int delta) noexcept {
+        const auto values = window(row, column);
+        for (int i : {0, 2})
+            if (values[i] < values[i + 1])
+                add(1, 0, size_, values[i], values[i + 1], delta);
+    }
+    void swap_state(PrefixRectangleGrid& other) noexcept {
+        using std::swap;
+        swap(height_, other.height_); swap(width_, other.width_); swap(size_, other.size_);
+        grid_.swap(other.grid_); position_.swap(other.position_);
+        minimum_.swap(other.minimum_); count_.swap(other.count_); lazy_.swap(other.lazy_);
+    }
+
+public:
+    PrefixRectangleGrid(int height, int width, const std::vector<int>& row,
+                        const std::vector<int>& column) {
+        if (height < 1 || width < 1 || height > 1000000 || width > 1000000)
+            throw std::invalid_argument("invalid grid dimensions");
+        const std::int64_t product = std::int64_t(height) * width;
+        if (product > 1000000) throw std::invalid_argument("grid has too many cells");
+        height_ = height; width_ = width; size_ = int(product);
+        if (row.size() != std::size_t(size_) || column.size() != std::size_t(size_))
+            throw std::invalid_argument("wrong coordinate array length");
+        grid_.assign(size_, -1); position_.resize(size_);
+        for (int label = 0; label < size_; ++label) {
+            if (row[label] < 0 || row[label] >= height_ ||
+                column[label] < 0 || column[label] >= width_)
+                throw std::invalid_argument("coordinate outside grid");
+            const int index = row[label] * width_ + column[label];
+            if (grid_[index] != -1) throw std::invalid_argument("duplicate cell");
+            grid_[index] = label; position_[label] = index;
+        }
+        std::vector<int> score(size_ + 1, 0);
+        for (int r = 0; r <= height_; ++r) for (int c = 0; c <= width_; ++c) {
+            const auto values = window(r, c);
+            for (int i : {0, 2}) if (values[i] < values[i + 1]) {
+                ++score[values[i]]; --score[values[i + 1]];
+            }
+        }
+        for (int i = 1; i < size_; ++i) score[i] += score[i - 1];
+        minimum_.assign(4 * size_, 0); count_.assign(4 * size_, 0);
+        lazy_.assign(4 * size_, 0);
+        build(1, 0, size_, score);
+    }
+    PrefixRectangleGrid(const PrefixRectangleGrid&) = default;
+    PrefixRectangleGrid(PrefixRectangleGrid&& other) noexcept
+        : height_(other.height_), width_(other.width_), size_(other.size_),
+          grid_(std::move(other.grid_)), position_(std::move(other.position_)),
+          minimum_(std::move(other.minimum_)), count_(std::move(other.count_)),
+          lazy_(std::move(other.lazy_)) {
+        other.height_ = other.width_ = other.size_ = 0;
+    }
+    PrefixRectangleGrid& operator=(PrefixRectangleGrid other) noexcept {
+        swap_state(other);
+        return *this;
+    }
+    int rectangle_prefixes() const {
+        ensure_live();
+        return count_[1];
+    }
+    int swap_labels(int a, int b) {
+        ensure_live();
+        if (a < 0 || a >= size_ || b < 0 || b >= size_)
+            throw std::invalid_argument("label outside grid");
+        if (a == b) return count_[1];
+        const int first = position_[a], second = position_[b];
+        std::array<std::pair<int, int>, 8> vertices;
+        int used = 0;
+        for (int index : {first, second}) {
+            const int r = index / width_, c = index % width_;
+            for (int dr = 0; dr <= 1; ++dr) for (int dc = 0; dc <= 1; ++dc)
+                vertices[used++] = {r + dr, c + dc};
+        }
+        std::sort(vertices.begin(), vertices.end());
+        const auto end = std::unique(vertices.begin(), vertices.end());
+        for (auto it = vertices.begin(); it != end; ++it)
+            update_window(it->first, it->second, -1);
+        std::swap(grid_[first], grid_[second]);
+        std::swap(position_[a], position_[b]);
+        for (auto it = vertices.begin(); it != end; ++it)
+            update_window(it->first, it->second, 1);
+        return count_[1];
+    }
+};
+```
+
+## 関連する手法
+
+**番号のしきい値を葉にする**と、一つのマスの変更が全ての段階に影響しても、その寄与を高々二区間にまとめられる。四番号の並び順が区間の端点を与える。区間加算後の最小値が理論上の下限と一致する個数を数える形は、別の局所評価にも応用できる。
+
+黒マス2個の窓は、横並びでも対角でも寄与0である。それでも対角接触を持つ別成分を誤って長方形と判定しないことは、上の成分数の議論が保証する。外周を省くと、全面が黒のときにも四隅を数えられない。
+
+外接長方形の面積と選んだマスの枚数を直接比べる方法は、静的な一巡や小規模な確認に適する。任意の番号交換を多数扱うときは、この局所窓からの区間更新を使える。番号が重複する入力、長方形を複数許す判定、空集合を含む集計には、評価値の下限と等号条件を改めて調べる必要がある。
+
+## 参考資料
+
+[IOI 2018 Seats 原典](https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf)と[公式 Review](https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf)が、格子の番号交換と角の個数を用いる発想の出典である。原典の数値範囲は主催者配布の[ポーランド語版](https://ioi2018.jp/tasks/contest1/POL-seats.pdf)・[インドネシア語版](https://ioi2018.jp/tasks/contest1/IDN-seats.pdf)にも記載されている。
+
+[Tomasz Idziaszek による後年の詳しい補足](https://www.algonotes.com/en/solutions-ioi2018/#seats)は、公式 Review とは別の著者資料である。ここでは角の等号条件と更新区間を上のように証明し、最小値とその個数を保つ実装へまとめた。
+
+<TechniqueReferences techniqueId="dynamic-grid-prefix-rectangle-corner-minimum-count" />

@@ -1,0 +1,76 @@
+---
+title: "Aliens trick"
+description: "選ぶ個数に罰則を付け、個数の次元を除いた最適化から指定個数の答えを求めます。"
+techniqueId: aliens-trick
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+選ぶ個数に罰則を付け、個数の次元を除いた最適化から指定個数の答えを求めます。
+
+別名：Aliens Trick / Alien DP / WQS Binary Search / Lagrangian Relaxation
+
+## 使う場面
+
+「ちょうど $K$ 個選ぶ」「ちょうど $K$ 区間に分ける」という制約のために、DPへ個数の次元が加わる場合に使います。個数を指定しなければ高速に最適化できることが前提です。さらに、個数ごとの最小費用が凸になることを証明する必要があります。
+
+## 考え方
+
+個数 $k$ の最小費用を $F(k)$ とし、1個選ぶごとに罰則 $\lambda$ を加えた
+
+$$G(\lambda)=\min_k\{F(k)+\lambda k\}$$
+
+を計算します。この計算では個数を状態に持たず、最小費用と、その解で選んだ個数を組にして保存します。同じ費用なら個数が多い方を選びます。
+
+罰則を大きくするほど、最適な個数は小さくなります。最適な個数が $K$ 以上になる最後の整数罰則を二分探索し、$G(\lambda)-\lambda K$ を求めます。
+
+## 適用条件
+
+ここで説明する整数罰則版では、実現可能な個数が連続した整数で、$F(k)$ が整数値を取り、差分 $F(k+1)-F(k)$ が非減少であることを要求します。これが離散凸性です。個数の単調性だけでは、指定個数の答えを復元できません。
+
+探索の下端では最適個数が $K$ 以上、上端では $K$ 未満になることも必要です。$K$ が実現可能な最小個数の場合はこの上端を取れないため、十分に大きな罰則でその個数を選ばせ、直接補正するなど別に処理します。
+
+## なぜ正しいか
+
+罰則の異なる2つの最適解を比較すると、罰則が増えたときに個数が増えないことが分かります。また、離散凸性によって、個数 $K$ が最適になる罰則が存在します。
+
+個数が一度に複数減る場合も、凸な $F$ ではその範囲が同じ直線上にあります。そのため、個数が多い方を選ぶ規則で境界の罰則を求めれば、選ばれた個数が $K$ と一致しなくても、補正値は $F(K)$ になります。
+
+## 計算量
+
+罰則の探索幅を $W$、1回の個数制約を外した最適化の時間を $T$ とすると、全体は $O(T\log W)$ です。空間はその最適化に従います。個数の次元を除いても遷移が重い場合は、凸包トリックなどを組み合わせます。
+
+## 実装
+
+`solve(lambda)` は罰則付きの最小費用と個数を返す関数です。`exact_count` はその関数を使って境界の罰則を探します。DPの候補比較には `better` を使い、同じ費用なら個数が多い方を選んでください。
+
+このコードには問題ごとのDPは含まれていません。`lo` と `hi` は上記の個数条件を満たす値として渡し、費用と罰則の積は128ビットで扱います。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std; using i128=__int128_t;
+struct Penalized { i128 value; int count; };
+// solve(lambda): minimizes F(k)+lambda*k; on ties chooses larger k.
+// lo is feasible (count>=K); hi is infeasible (count<K).
+template<class Solve>
+i128 exact_count(int K,long long lo,long long hi,Solve solve) {
+    assert(lo<hi && solve(lo).count>=K && solve(hi).count<K);
+    while(i128(hi)-lo>1) {
+        long long mid=(long long)(i128(lo)+(i128(hi)-lo)/2);
+        if(solve(mid).count>=K) lo=mid; else hi=mid;
+    }
+    return solve(lo).value-i128(lo)*K;
+}
+bool better(Penalized a,Penalized b) {
+    return a.value<b.value || (a.value==b.value && a.count>b.count);
+}
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [USACO Guide: Lagrangian Relaxation](https://usaco.guide/adv/lagrange)
+
+<TechniqueReferences techniqueId="aliens-trick" />

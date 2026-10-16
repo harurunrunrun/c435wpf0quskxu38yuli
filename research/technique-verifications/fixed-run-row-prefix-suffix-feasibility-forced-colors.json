@@ -1,0 +1,1949 @@
+{
+  "techniqueId": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2016-paint-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2016-paint-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2016-paint-sidecar.json",
+    "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+    "checkerSha256": "00dd659431c89375365412d3e146094d5c8fca49b229423888445baee51aa366",
+    "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+    "authorArticleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+    "authorCheckerSha256": "00dd659431c89375365412d3e146094d5c8fca49b229423888445baee51aa366",
+    "authorSidecarSha256": "3df9c188d4be9b1b413b62eae2e0c76134b71a12bbd48b4776537a130f4465be",
+    "publishedArticleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+    "publishedCheckerSha256": "6d242beeda428047d95cf7781d75016ce2e4c08dc11018dffcc0f40b8bcf527c"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/fixed-run-row-prefix-suffix-feasibility-forced-colors.mdx",
+    "techniqueGroup": "data/techniques-specific-dp-patterns.json",
+    "referenceGroup": "data/references-specific-dp-patterns.json",
+    "feature": "data/fixed-run-forced-colors-problem-features.json",
+    "checker": "scripts/check_fixed_run_forced_colors_cpp.py",
+    "verification": "research/technique-verifications/fixed-run-row-prefix-suffix-feasibility-forced-colors.json"
+  },
+  "metadata": {
+    "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+    "title": "黒い連続区間の長さから、全ての塗り方で共通する色を求める",
+    "summary": "前後の配置可否をつなぎ、白にできる位置と黒い区間を置ける範囲を集めて各マスの色を確定する。",
+    "aliases": [
+      "Fixed run row prefix suffix feasibility forced colors",
+      "IOI2016 Paint By Numbers solve_puzzle",
+      "Nonogram row all solutions forced black white",
+      "お絵かきパズル 黒区間長 既知色 前後DP 必須色"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "state-design",
+      "difference-array"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+    "source": "IOI",
+    "problemId": "ioi2016_paint",
+    "title": "Paint By Numbers",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "evidence": "黒い連続区間の個数・正の長さ・左からの順序が指定され、既知の黒白に合う全ての塗り方で共通する色を求める。前後の区間配置可否をつなぎ、各位置を白にできるかと各黒区間を置ける範囲を集めれば、全解で黒・白・両方のどれが可能かを判定できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に日本委員会配布の英語原典3頁・日本語原典3頁、公式17頁Solutionsの第8〜10頁、Day2 Notice、公式課題一覧をwebで再読。原典N1..200000/K1..min(N,100)/長さ1..N、黒X・白_・未定.、出力?、全区間の個数/順序/白separator、少なくとも一解あり、2秒/2GB、2016-08-16を確認。原典generic string solve_puzzle(string s,int[] c)とNoticeの型対応からC++ adapterを導出し、元grader header bytes未取得とは区別した。公式の前後可否DP・白可能性・黒区間全配置を採用し、端点・反転添字・差分による和集合・矛盾入力の契約を独立に証明。実MDXの単一可視C++20を通常/ASan+UBSanで抽出検査し、同18676424checks/1008660API/checksum16381575956586682632成功。全N0..10の88573部分行について1398101の完成色列/観測対応を直接列挙、921587整合観測群（原典範囲919540、0run拡張2047）、N<=7の全実現可能clue列×全観測で矛盾77096件、literal全割当52092093件（乱択/例を含む）、原典4例、乱択1800・不変変換5273・不正21・bad_alloc6箇所・最大N20万10構成を検査。通常native2.13068秒/RSS48036KiB、ASan11.7405秒/RSS1022048KiB。全suite時間と原典一入力の2秒を同一視せず、最大単独core通常.142369秒/ASan.66506秒はこの環境の実測として記録。初回positive6行/status/selection/snapshotを保持し、研究二重加算なしのresolution-only。 その後rootと別担当が全原典範囲・証明・実fence通常ASanを再確認。前後DPを使わない黒区間の開始位置列挙1658887配置と、既知の両端追加・曖昧色の両固定・14割当faultを加えた別oracle117367検査/45193APIでも一致を確認して登録した。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2016_paint",
+    "title": "Paint By Numbers",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+    "techniqueIds": [
+      "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+    ],
+    "features": [
+      "一列の既知黒X・既知白_・未定.と、左からの黒い連続区間の正の長さの並びが与えられる。",
+      "区間数・順序・長さを全て守り、隣り合う区間を少なくとも一マスの白で分離する。",
+      "全ての合法な完成行について、必ず黒・必ず白・両方可能な位置を出力する。少なくとも一解あり。",
+      "原典N1〜200000/K1〜min(N,100)/各長さ1〜N。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "notes": "黒い連続区間の個数・正の長さ・左からの順序が指定され、既知の黒白に合う全ての塗り方で共通する色を求める。前後の区間配置可否をつなぎ、各位置を白にできるかと各黒区間を置ける範囲を集めれば、全解で黒・白・両方のどれが可能かを判定できる。",
+    "discoveredBy": "ioi-2016"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+    "japaneseStatementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf",
+    "statementPages": 3,
+    "sourceContractVerified": true,
+    "originalNumericBoundsVerified": true,
+    "numericBoundsVerified": true,
+    "originalBounds": {
+      "N": [
+        1,
+        200000
+      ],
+      "K": [
+        1,
+        100
+      ],
+      "K_le_N": true,
+      "c_i": "1..N",
+      "inputAlphabet": [
+        "X",
+        "_",
+        "."
+      ],
+      "outputAlphabet": [
+        "X",
+        "_",
+        "?"
+      ],
+      "blocks": "Exactly K ordered positive-length maximal black runs,adjacent runs separated by at least one white cell",
+      "solutionExistsGuaranteed": true,
+      "answer": "X/underscore if forced in every valid completion,question mark iff both colors occur"
+    },
+    "sourceSeconds": 2,
+    "sourceMemoryGB": 2,
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+    "noticeCppArrayType": "std::vector<int>",
+    "noticeCppStringType": "std::string",
+    "noticeProhibitsStandardInputOutput": true,
+    "genericSignature": "string solve_puzzle(string s,int[] c)",
+    "derivedCppSignature": "std::string solve_puzzle(std::string s,std::vector<int> c)",
+    "derivedSignatureEvidence": "Statement generic signature plus Day2 Notice's C++ string/array correspondence;actual grader header declaration bytes are not claimed.",
+    "cppHeaderBytesRetrieved": false,
+    "primaryPdfImagesClaimedRead": false,
+    "readMethod": "web primary PDF text;all numeric formulas displaced to English p3 lines119..126 were read and assembled;JP translation and official task index cross-check",
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "editorialPages": [
+      8,
+      9,
+      10
+    ],
+    "editorialAuthor": "Michal Forišek",
+    "chosenOfficialProcedure": "Steps1..5: known-color prefix information,prefix/suffix feasibility,white-cell split,per-clue legal block locations;independent range-difference aggregation avoids a run-length factor.",
+    "independentDetailsNotClaimedVerbatim": [
+      "Boundary sentinels are represented by excluding actual neighboring white positions and using F[remaining][0].",
+      "The reverse DP is indexed into the original row and white-prefix array rather than allocating reversed inputs.",
+      "Well-formed inconsistent input and empty/zero-clue extensions have explicit API behavior beyond the source guarantee."
+    ],
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "difficulty": null,
+    "unconfirmedRequiredSourceFacts": [],
+    "unconfirmedRequiredLemmas": [],
+    "optionalUnknowns": [
+      "Actual original grader header bytes and any declaration qualifiers beyond statement/Notice derivation.",
+      "Restricted unknown/white-only greedy alternatives and their proofs are not used as the full solution."
+    ]
+  },
+  "api": {
+    "namespace": "run_colors",
+    "function": "std::optional<std::string> forced_colors(std::string_view row,std::span<const int> clues)",
+    "adapters": [
+      "std::string solve_puzzle(std::string s,std::vector<int> c)"
+    ],
+    "publicBounds": {
+      "N": [
+        0,
+        200000
+      ],
+      "K": [
+        0,
+        100
+      ],
+      "K_le_N": true,
+      "clueLengths": "1..N",
+      "inputAlphabet": [
+        "X",
+        "_",
+        "."
+      ]
+    },
+    "emptyInput": "N=K=0 -> engaged optional containing empty string;N=0,K>0 is invalid clue count",
+    "zeroClues": "K=0,N>0 -> all underscores if no known X;otherwise nullopt. This extension is outside source K>=1.",
+    "noSolution": "Well-formed impossible row/clues -> nullopt;the original-name adapter throws invalid_argument because the source promises a valid solution.",
+    "invalid": "invalid_argument for size/count/character/length violations. Full row and all clues are validated before minimum-length rejection or DP allocation,including malformed trailing entries.",
+    "allocationFailure": "std::bad_alloc and standard allocation exceptions propagate without catching. Six successive allocation sites are injected and followed by successful independent calls.",
+    "state": "All tables/counters local to one call;const view/span inputs unchanged;no global mutable state,no IO,no recursion.",
+    "output": "Same-length X/_/? string,not one arbitrary completion",
+    "reentrancyVerified": true,
+    "sourceComplete": true,
+    "headers": "Standalone C++20 fence has no external grader dependency. Exact derived by-value source adapter type is compile-time asserted;no original header retrieval claimed."
+  },
+  "proof": {
+    "requiredUnconfirmedLemmas": [],
+    "lemmas": [
+      "F[t][j] completely partitions feasible prefixes by a white last cell or the exact final clue ending at j,with a preceding white separator when present.",
+      "F[0][j] is true exactly when the prefix has no mandatory black;F[t>0][0] is false. This enforces edge placements and remaining clue counts.",
+      "Reverse row and reverse clue order give the same recurrence for suffixes,with prefix-white lookup white[N-a]==white[N-b].",
+      "A nonmandatory-black cell v can be white exactly when some t satisfies F[t][v] and B[K-t][N-v-1].",
+      "Clue t can occupy [a,b) exactly when there is no known white inside,existing immediate neighbors may be white,and F[t][max(0,a-1)] and B[K-t-1][max(0,N-b-1)] both hold.",
+      "The legal placements enumerate all black-cell possibilities;range-difference union preserves every cell without per-placement length scanning.",
+      "After total feasibility has been checked,every cell admits at least one color,so the pair of white/black possibilities determines X/_/? uniquely."
+    ],
+    "originalGuaranteedExistenceUsedOnlyAfter": "forward[K][N] has been independently checked;generic contradictions return before combining color possibilities."
+  },
+  "complexity": {
+    "time": "O(NK) for original N,K>=1;generic O((N+1)(K+1)),with K=0 taking O(N) validation/output and N=0 taking O(1)",
+    "space": "O(NK) original;O((N+1)(K+1)) generic;O(1) stack,no recursive calls",
+    "byteTables": {
+      "cellType": "std::uint8_t",
+      "perTable": "(K+1)(N+1)",
+      "maximumTwoTables": 40400202
+    },
+    "majorElementPayload": {
+      "formula": "2(K+1)(N+1)+8(N+1)+N+(N+1)",
+      "maximumBytes": 42400211,
+      "exclusions": "Input buffers,vector/string management,allocator bookkeeping/capacity overhead;this is major element payload,not a process RSS upper bound."
+    },
+    "integer": {
+      "minimumLength": "std::int64_t,sum(clues)+max(0,K-1)",
+      "knownWhitePrefixMaximum": 200000,
+      "differenceAbsoluteBound": 20000100,
+      "differenceType": "std::int32_t",
+      "tableIndex": "std::size_t products after N<=200000/K<=100;all int positions are checked before indexing",
+      "maxIndexProduct": 20200101
+    },
+    "sourceBudget": {
+      "seconds": 2,
+      "memoryGB": 2
+    },
+    "observation": "Largest measured normal single-core invocation.142369s;san.66506s. Full regression duration and ASan process RSS include the oracle,quarantine,and repeated maximum invocations and are not source single-input complexity."
+  },
+  "flowSuggestion": {
+    "entryGraphId": "dp",
+    "parentGraphId": "dp-sequence-removals",
+    "parentNodeId": "split-kind",
+    "newAnswerId": "fixed-run-colors",
+    "newAnswerLabel": "黒い連続区間の長さが順に決まり、各マスの確定色を求める",
+    "guardGraphId": "fixed-run-forced-colors-conditions",
+    "canonicalChoices": [
+      "sequence-removals",
+      "split",
+      "fixed-run-colors",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "fixed-positive-runs",
+        "question": "黒い連続区間の個数・正の長さ・左からの順序が固定ですか？",
+        "explanation": "指定された黒区間を全て一回ずつ置き、隣の黒区間とは少なくとも一マスの白で分離します。区間を並べ替えたり、長さの一部だけを使ったりしません。"
+      },
+      {
+        "id": "partial-colors-all-solutions",
+        "question": "既知の黒白に合う全ての塗り方から、必ず同じ色になるマスを求めますか？",
+        "explanation": "入力はX/_/.で、一解だけの復元ではなく、全解で黒・白・両方可能のどれかを各位置で判定します。原典は少なくとも一解を保証します。"
+      },
+      {
+        "id": "bounds",
+        "question": "列の長さ20万以下、黒区間100個以下で、各長さは列長以下ですか？",
+        "explanation": "原典は1<=K<=min(N,100)、N<=200000、1<=c_i<=Nです。前後の可否表を1要素1バイトで保持します。汎用APIの空列・0区間・矛盾入力は本文で別に定めます。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+    ],
+    "oldGuardPreservation": "Append one feature answer and its route before unknown while preserving every existing parent field/old option and answer relative order and all existing guards.",
+    "alternateRootAssessment": [
+      {
+        "root": "ranges",
+        "result": "Root asks aggregate/query/selection/sequence changes;none directly expresses all-completion forced colors,so no existing branch is forced into yes."
+      },
+      {
+        "root": "grid-arrangements",
+        "featureChoice": "color-numbers",
+        "result": "A one-row coloring can be described here,but adding the concrete feature at the original dp sequential-run split stop is the more direct continuation and preserves the recorded first stop."
+      }
+    ]
+  },
+  "verification": {
+    "actualSingleVisibleMdxFence": true,
+    "naturalJapaneseEightSections": true,
+    "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+    "checkerSha256": "00dd659431c89375365412d3e146094d5c8fca49b229423888445baee51aa366",
+    "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2016-paint-checker.py",
+      "python3 /tmp/flowchartcp-ioi2016-paint-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 18676424,
+      "apiCalls": 1008660,
+      "partialRows": 88573,
+      "literalFullAssignmentPairs": 52092093,
+      "exhaustiveCompletionRevealPairs": 1398101,
+      "primarySamples": 4,
+      "consistentObservationClueGroups": 921587,
+      "originalDomainGroups": 919540,
+      "zeroRunExtensionGroups": 2047,
+      "contradictoryObservationClueCases": 77096,
+      "adapterCalls": 2830,
+      "randomInputs": 1800,
+      "metamorphicChecks": 5273,
+      "invalidCalls": 21,
+      "allocationFaults": 6,
+      "checksum": "16381575956586682632",
+      "seconds": 2.13068,
+      "peakRSSKiB": 48036,
+      "maximumCases": [
+        {
+          "name": "full length single run",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00314751
+        },
+        {
+          "name": "single run length199999 overlaps",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00245336
+        },
+        {
+          "name": "100 singleton runs,all positions ambiguous",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.130207
+        },
+        {
+          "name": "100 tight runs,no slack",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.142369
+        },
+        {
+          "name": "all exact known cells",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.0545141
+        },
+        {
+          "name": "known white in unique tight run",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.023841
+        },
+        {
+          "name": "100 runs each2000 cannot fit separators",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 4.3161e-05
+        },
+        {
+          "name": "100 separated mandatory singleton positions",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.10861
+        },
+        {
+          "name": "100 singleton runs inside known white margins",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.121869
+        },
+        {
+          "name": "zero run extension",
+          "n": 200000,
+          "k": 0,
+          "exists": true,
+          "coreSeconds": 0.00013068
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 18676424,
+      "apiCalls": 1008660,
+      "partialRows": 88573,
+      "literalFullAssignmentPairs": 52092093,
+      "exhaustiveCompletionRevealPairs": 1398101,
+      "primarySamples": 4,
+      "consistentObservationClueGroups": 921587,
+      "originalDomainGroups": 919540,
+      "zeroRunExtensionGroups": 2047,
+      "contradictoryObservationClueCases": 77096,
+      "adapterCalls": 2830,
+      "randomInputs": 1800,
+      "metamorphicChecks": 5273,
+      "invalidCalls": 21,
+      "allocationFaults": 6,
+      "checksum": "16381575956586682632",
+      "seconds": 11.7405,
+      "peakRSSKiB": 1022048,
+      "maximumCases": [
+        {
+          "name": "full length single run",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00694452
+        },
+        {
+          "name": "single run length199999 overlaps",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.0186026
+        },
+        {
+          "name": "100 singleton runs,all positions ambiguous",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.624557
+        },
+        {
+          "name": "100 tight runs,no slack",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.66506
+        },
+        {
+          "name": "all exact known cells",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.399694
+        },
+        {
+          "name": "known white in unique tight run",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.131171
+        },
+        {
+          "name": "100 runs each2000 cannot fit separators",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.00010544
+        },
+        {
+          "name": "100 separated mandatory singleton positions",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.581912
+        },
+        {
+          "name": "100 singleton runs inside known white margins",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.504548
+        },
+        {
+          "name": "zero run extension",
+          "n": 200000,
+          "k": 0,
+          "exists": true,
+          "coreSeconds": 0.00026537
+        }
+      ]
+    },
+    "counterSemantics": {
+      "checks": "Every require assertion,including output-color checks;not unique puzzle count.",
+      "apiCalls": "1008660 generic/adapter invocations,including malformed calls and seven allocation-injection attempts (six failures then success).",
+      "partialRows": "All ternary partial rows of lengths0..10:sum3^N=88573,with empty and zero-clue extensions explicitly distinguished.",
+      "exhaustiveCompletionRevealPairs": "1398101 compatible complete-binary-row/partial-observation pairs over N0..10,exactly sum4^N. Full row runs are extracted literally;groups aggregate bitwise intersection/union.",
+      "consistentObservationClueGroups": "921587 unique (partial row,ordered positive-run list) consistent groups:919540 original-domain groups plus2047 zero-clue extension groups.",
+      "contradictoryObservationClueCases": "For N0..7,every ternary partial row is crossed with every ordered run list appearing in some full binary row;77096 missing groups must return nullopt.",
+      "literalFullAssignmentPairs": "52092093 explicitly examined full masks:1398101 compatible exhaustive pairs plus all masks examined by independent example/random oracles. It is not the number of unique full rows or API calls.",
+      "adapterCalls": "2830 direct derived source-name entries,including empty/zero-run extensions and three invalid adapter calls;full source examples and successful maximum cases are included.",
+      "random": "1800 independent full-mask inputs up toN18;5273 reversal/fixed-color-reveal/white-padding invariance comparisons.",
+      "maximum": "10 families atN200000:seven source-valid consistent families,two well-formed contradictions and one zero-clue extension. Valid answers run generic and adapter;contradictions run generic only.",
+      "invalid": "21 public calls expected to throw invalid_argument:18 generic malformed inputs,two malformed adapter inputs,and one otherwise well-formed contradiction passed to the source adapter (outside its guaranteed-solution contract). Generic contradictions return nullopt separately.",
+      "allocationFaults": "Six successive actual core allocation sites are made to throw bad_alloc;the seventh attempt succeeds. Each failed call is followed by a successful reentrant call,without mutating caller input."
+    },
+    "oracleIndependence": "Enumerate literal full binary color rows,extract maximal black runs by scanning,and group all compatible partial observations. Expected forced colors are intersection/union over these full assignments,without prefix/suffix feasibility,separator recurrence,or range-difference logic. Maximum tight layouts use sum(clues)+K-1=N uniqueness;mandatory singleton cases consume all100 runs;all-unknown singleton positions each admit black and white when there is slack.",
+    "apiTypeChecks": "static_assert confirms generic optional<string> and Notice-derived std::string(*)(std::string,std::vector<int>) adapter;wrong input? is explicitly rejected.",
+    "allocationFaultInjectionPerformed": true,
+    "faultHarnessDetails": "GNU noinline replacement new/delete route through malloc/free and a countdown. noinline prevents GCC's false mismatched-new-delete optimization warning;published fence is unchanged and ordinary -Wall -Wextra -Werror remains active.",
+    "independentExternalReviewStatus": "pending"
+  },
+  "relatedArticleReview": [
+    {
+      "techniqueId": "state-design",
+      "file": "src/content/docs/techniques/state-design.mdx",
+      "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+      "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "状態の設計",
+      "scopeMismatch": "掲載コードはparity_bfs。run長/既知色/block間白/全解の必須色のDPではない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-reasoning.json",
+          "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+        }
+      ]
+    },
+    {
+      "techniqueId": "lcs-hirschberg-reconstruction",
+      "file": "src/content/docs/techniques/lcs-hirschberg-reconstruction.mdx",
+      "sha256": "71a231f205c405281d19107ecf72153dd5ce19f91fa8d191e9a3f793022e84dd",
+      "cppFenceSha256": "eeabbdf36fc567410c670914c7d2aff7d8de089e6b35abefe57f89c01f6f9cbe",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "最長共通部分列を省メモリで復元するなら、前後の長さから分割位置を探す",
+      "scopeMismatch": "前後DPは共通の発想だが、二列の一つの最長共通部分列を返す。全てのrow completionでの白黒可否を集計しない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-specific-dp.json",
+          "sha256": "628fbc5cf99ec515a7b4ca2a93ca57499f373bd9f0fa830bdbce1c18289f4ab1"
+        }
+      ]
+    }
+  ],
+  "rootTrace": {
+    "initialReached": {
+      "graphId": "dp-sequence-removals",
+      "nodeId": "split-kind",
+      "type": "question",
+      "title": "区間の分け方には、どの条件がありますか？",
+      "options": [
+        {
+          "id": "exact-count",
+          "label": "ちょうど K 個の区間に分ける"
+        },
+        {
+          "id": "cut-cost",
+          "label": "一つの区間を切り、左右へ分けた費用を足す"
+        },
+        {
+          "id": "stages",
+          "label": "前の段の分割位置から、次の段を決める"
+        },
+        {
+          "id": "general",
+          "label": "個数を自由にし、合計費用を最小にする"
+        },
+        {
+          "id": "distinct-score",
+          "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+        },
+        {
+          "id": "equal-pair-cost",
+          "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+        },
+        {
+          "id": "space-rivers",
+          "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ],
+      "techniques": [],
+      "conditions": []
+    },
+    "initialSteps": [
+      {
+        "graphId": "dp",
+        "nodeId": "defined",
+        "question": "選び方や分け方の特徴はどれですか？",
+        "answer": "sequence-removals",
+        "answerLabel": "列の分割・隣接要素の併合や削除",
+        "target": "category-sequence-removals"
+      },
+      {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "defined",
+        "question": "選び方や分け方の特徴はどれですか？",
+        "answer": "split",
+        "answerLabel": "順番を保ち、連続した区間へ分ける",
+        "target": "split-kind"
+      }
+    ],
+    "initialNavigationReplay": {
+      "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+      "stepsSha256": "e7c76611418c52cd19ea3f9108bad0d5dc58cafb9822eb9825df4c021468a98a",
+      "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+      "choicesConsumed": 2,
+      "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+      "routeBoundaries": [
+        "dp/category-sequence-removals"
+      ],
+      "all15EntryDomainsConsidered": [
+        "ranges",
+        "dp",
+        "graphs",
+        "flow-matching",
+        "strings",
+        "math",
+        "geometry",
+        "game-probability",
+        "thinking",
+        "heuristic",
+        "condition-check",
+        "set-operations",
+        "interactive-oracles",
+        "grid-arrangements",
+        "fixed-output"
+      ],
+      "originalReferenceAlreadyRegistered": false
+    },
+    "currentReadFlowSha256": "36f10515b9a2e36e1a60a6dc85e9721dc0af5ea4f6504b87ea1848395ce9ac67",
+    "currentSteps": [
+      {
+        "graphId": "dp",
+        "nodeId": "defined",
+        "question": "選び方や分け方の特徴はどれですか？",
+        "answer": "sequence-removals",
+        "answerLabel": "列の分割・隣接要素の併合や削除",
+        "target": "category-sequence-removals"
+      },
+      {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "defined",
+        "question": "選び方や分け方の特徴はどれですか？",
+        "answer": "split",
+        "answerLabel": "順番を保ち、連続した区間へ分ける",
+        "target": "split-kind"
+      }
+    ],
+    "currentStop": {
+      "id": "split-kind",
+      "type": "question",
+      "title": "区間の分け方には、どの条件がありますか？",
+      "explanation": "個数の固定、区間の切断、遷移元の範囲を選びます。",
+      "options": [
+        {
+          "id": "exact-count",
+          "label": "ちょうど K 個の区間に分ける"
+        },
+        {
+          "id": "cut-cost",
+          "label": "一つの区間を切り、左右へ分けた費用を足す"
+        },
+        {
+          "id": "stages",
+          "label": "前の段の分割位置から、次の段を決める"
+        },
+        {
+          "id": "general",
+          "label": "個数を自由にし、合計費用を最小にする"
+        },
+        {
+          "id": "distinct-score",
+          "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+        },
+        {
+          "id": "equal-pair-cost",
+          "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+        },
+        {
+          "id": "space-rivers",
+          "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ],
+      "answers": {
+        "exact-count": "convex-route",
+        "cut-cost": "cut-layout",
+        "stages": "monge-route",
+        "general": "transitions",
+        "unknown": "check",
+        "distinct-score": "distinct-partition-route",
+        "equal-pair-cost": "equal-pair-partition-route",
+        "space-rivers": "space-rivers-route"
+      }
+    },
+    "currentTraceMatchesInitial": true,
+    "chosenEntry": "dp",
+    "reason": "The row consists of a fixed ordered sequence of contiguous black runs separated by white positions. This is a concrete sequential placement feasibility/all-solutions task;existing exact-K whole-row partition branches do not encode white gaps or all-color possibility union.",
+    "allExistingRootFieldsToRemainUnchanged": true
+  },
+  "initialAuditPreservation": {
+    "auditFile": "data/corpus-audits/ioi-2016.json",
+    "auditShaAtAuthorRead": "61080103392ea9cce3755f1359277586e2306763e9def5b3413d161396cabb89",
+    "originalAuditArchive": "research/snapshots/ioi-2016-original-audit.json.gz",
+    "originalAuditSha256": "d69b49d6672dcbf4145ef36c7d265bc135fb848a3561f4523677bd76d7318b83",
+    "initialRow": {
+      "source": "ioi",
+      "problemId": "ioi2016_paint",
+      "officialTaskId": "paint",
+      "title": "お絵かきパズル",
+      "englishTitle": "Paint By Numbers",
+      "day": 2,
+      "date": "2016-08-16",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day2/paint.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 2,
+        "date": "2016-08-16",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "既知の黒白と未定マスがある一列について、指定された長さ順の黒blockを作る全解で共通の色を求める。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            1,
+            200000
+          ],
+          "K": [
+            1,
+            100
+          ],
+          "K_le_N": true,
+          "c_i": "1..N",
+          "inputAlphabet": [
+            "X",
+            "_",
+            "."
+          ],
+          "outputAlphabet": [
+            "X",
+            "_",
+            "?"
+          ],
+          "blocks": "exact clue count/order/length, adjacent black blocks need at least one white cell",
+          "solutionExistsGuaranteed": true,
+          "answer": "color forced in every consistent full solution; ? if both colors possible"
+        },
+        "genericApi": "string solve_puzzle(string s,int[] c)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          7,
+          3,
+          22,
+          27,
+          21,
+          10,
+          10
+        ],
+        "subtaskBounds": [
+          "N<=20,K=1,allunknown",
+          "N<=20,allunknown",
+          "N<=100,allunknown",
+          "N<=100,onlyunknown/white",
+          "N<=100",
+          "N<=5000,K<=100",
+          "N<=200000,K<=100"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "dp",
+      "choices": [
+        "sequence-removals",
+        "split"
+      ],
+      "steps": [
+        {
+          "graphId": "dp",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "sequence-removals",
+          "answerLabel": "列の分割・隣接要素の併合や削除",
+          "target": "category-sequence-removals"
+        },
+        {
+          "graphId": "dp-sequence-removals",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "split",
+          "answerLabel": "順番を保ち、連続した区間へ分ける",
+          "target": "split-kind"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "type": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "options": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "type": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "options": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "type": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "options": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+        "features": [
+          "既知の黒白と未定マスがある一列について、指定された長さ順の黒blockを作る全解で共通の色を求める。"
+        ],
+        "firstMissingGraphId": "dp-sequence-removals",
+        "firstMissingNodeId": "split-kind",
+        "stopNodeType": "question",
+        "currentQuestion": "区間の分け方には、どの条件がありますか？",
+        "currentOptions": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "連続区間の分割条件に、長さ順が指定された黒blockと既知色を満たす全解の共通セル色を答える分岐がない。K黒blockだけへの分割と、白gapを含む全列のK区間分割を同一視しない。",
+        "neededTechniqueIds": [
+          "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "state-design",
+          "lcs-hirschberg-reconstruction"
+        ],
+        "proposedFeatureAnswer": "長さの並びが決まった黒い連続区間を置き、既知の色に合う全解で各位置の必須色を求める",
+        "proposedBranchAt": {
+          "graphId": "dp-sequence-removals",
+          "nodeId": "split-kind",
+          "question": "区間の分け方には、どの条件がありますか？",
+          "currentOptions": [
+            {
+              "id": "exact-count",
+              "label": "ちょうど K 個の区間に分ける"
+            },
+            {
+              "id": "cut-cost",
+              "label": "一つの区間を切り、左右へ分けた費用を足す"
+            },
+            {
+              "id": "stages",
+              "label": "前の段の分割位置から、次の段を決める"
+            },
+            {
+              "id": "general",
+              "label": "個数を自由にし、合計費用を最小にする"
+            },
+            {
+              "id": "distinct-score",
+              "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+            },
+            {
+              "id": "equal-pair-cost",
+              "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+            },
+            {
+              "id": "space-rivers",
+              "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "既知色prefix sumsと、使用済clue数×prefix長の可否DPを前後から作る。各セルの白の可能性は分割clue数で判定し、各blockの合法な配置区間をrange-addして黒の可能性をまとめる。",
+        "complexity": "O(NK)時間・O(NK)空間。N20万/K100、前後2表をbyteで約40.4MB、原典2GB以内の設計可能。",
+        "independentProofSupplement": [
+          "prefix可否F[t][j]は末尾を白にするか長さc[t−1]の最後のblockにする場合で完全に分かれる。block内に既知白がなく、直前が白にでき、前のt−1blockのprefixが成立することが必要十分。",
+          "逆列/逆clueでも同じ表を作る。位置vを白にできるのは、既知黒でなく、左にtblock/右にK−tblockを独立に置けるtがある時に限る。白セルが接続を分離する。",
+          "clue tを[a,b)に置けるのはblock内の既知白なし、両隣が既知黒でなく、左prefixと右suffixが成立する時に限る。全合法区間を差分へ加えれば、黒になれる位置の和集合が得られる。",
+          "原典は少なくとも一解を保証するため、白/黒どちらかは必ず可能。片方だけなら確定色、両方なら?。端のseparatorは空prefix/suffixとして扱い、強制黒をblock外へ落とさない。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            8,
+            9,
+            10
+          ],
+          "printedAuthor": "Michal Forišek",
+          "independentDetailsNotClaimedVerbatim": "原典保証の存在を利用する。未来の汎用APIでは矛盾入力時の返し方を明示する必要があり、研究prototypeのassertを完成APIの例外契約とは呼ばない。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Restricted white-only greedy solutions are not the chosen full solution."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allConsistentCluesAndPartialRowsN1to8": 62701,
+          "literalFullSolutionRevealPairs": 86870,
+          "verified": "Prefix/suffix feasibility and per-block range marking equal color intersection/union across every literal full binary solution consistent with each observation, including mandatory black/white separation sentinels. O(NK), full K100/N200000 state bound identified.",
+          "unconfirmed": "No production reusable memory-bounded C++20/API, inconsistent-input policy, maximum/sanitizer validation yet."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "状態の設計",
+          "scopeMismatch": "掲載コードはparity_bfs。run長/既知色/block間白/全解の必須色のDPではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        },
+        {
+          "techniqueId": "lcs-hirschberg-reconstruction",
+          "file": "src/content/docs/techniques/lcs-hirschberg-reconstruction.mdx",
+          "sha256": "71a231f205c405281d19107ecf72153dd5ce19f91fa8d191e9a3f793022e84dd",
+          "cppFenceSha256": "eeabbdf36fc567410c670914c7d2aff7d8de089e6b35abefe57f89c01f6f9cbe",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "最長共通部分列を省メモリで復元するなら、前後の長さから分割位置を探す",
+          "scopeMismatch": "前後DPは共通の発想だが、二列の一つの最長共通部分列を返す。全てのrow completionでの白黒可否を集計しない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-dp.json",
+              "sha256": "628fbc5cf99ec515a7b4ca2a93ca57499f373bd9f0fa830bdbce1c18289f4ab1"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "e7c76611418c52cd19ea3f9108bad0d5dc58cafb9822eb9825df4c021468a98a",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 2,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "dp/category-sequence-removals"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ]
+    },
+    "initialRowSha256": "6cf79e7f5bd9e01b6a19fe8eecf38c6c940ecbbf92d6f8b5bd4d3df256d9592c",
+    "initialStatus": {
+      "fixedProblemListComplete": true,
+      "firstPassAuditComplete": true,
+      "fixedCorpusResearchComplete": true,
+      "fixedCorpusCoverageComplete": false,
+      "globalCoverageComplete": false,
+      "globalLearningComplete": false,
+      "recordCount": 6,
+      "statementVerifiedCount": 6,
+      "numericBoundsVerifiedCount": 6,
+      "numericBoundsUnconfirmedCount": 0,
+      "officialEditorialRetrievedCount": 6,
+      "officialEditorialVerifiedCount": 6,
+      "solutionReviewedCount": 6,
+      "coveredCount": 0,
+      "missingRouteCount": 0,
+      "missingTechniqueCount": 6,
+      "unconfirmedCount": 0,
+      "unavailableCount": 0,
+      "unconfirmedPrincipalDetailsCount": 0,
+      "fullImplementationValidatedCount": 0,
+      "articleResolutionComplete": false,
+      "fixedCorpusResearchCompleteDefinition": "固定6題の選定した原典全域手順と主要補題が一次資料+独立証明で確認できた状態。全別解や完成API/記事の存在を意味しない。",
+      "articleResolutionNotes": "研究6/6、完成API/記事対応/原典walk/coverage0/6。今後のresolutionを初回へ遡及しない。"
+    },
+    "initialStatusSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialSelectionSha256": "203a4b9f29e2711a5c680ee99496647b0066fec106c3d2393be318c498561c7e",
+    "initialSixRecordsSha256": "1fd300bf660b59cfe36cf0a9a16c41a83ed05a399e799801fce12a1e6e3f6584",
+    "initialSnapshotSha256": "e8a57e1f82671067c45c714f870c7d4f9e652a885ce79fb258c0c23987ff59ce",
+    "registeredSnapshotSha256": "ad1e3b69580b58a72b4fd627f1bd165a47ed372d166d106e8e505e7169959d68",
+    "snapshotNormalization": "Only original snapshotRoot /tmp/flowchartcp-ioi2016-baseline was normalized by root registration to research/snapshots/ioi-2016-manifest.json;every other original snapshot field is preserved.",
+    "hashEncoding": "UTF8 json.dumps(sort_keys=True,separators=(',',':'),ensure_ascii=False);Python numeric-key lexical order explicitly retained. Original raw SHA is authoritative.",
+    "allInitialSixFieldsUnchanged": true,
+    "initialResearchPositivePreserved": true,
+    "initialFullImplementationFalsePreserved": true,
+    "initialResearchCount": 6,
+    "initialCoverageCount": 0,
+    "additionalPositiveResearchReviewsProposed": 0,
+    "resolutionOnly": true,
+    "existingResolutionsAtRead": [
+      {
+        "problemId": "ioi2016_molecules",
+        "resolution": {
+          "status": "verified",
+          "reviewedAt": "2026-10-15",
+          "techniqueIds": [
+            "bounded-spread-subset-sum-sorted-window-witness"
+          ],
+          "rootWalkFile": "data/problem-walks.json",
+          "sourceVerification": {
+            "checkedAt": "2026-10-15",
+            "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+            "statementPages": 3,
+            "sourceContractVerified": true,
+            "originalNumericBoundsVerified": true,
+            "numericBoundsVerified": true,
+            "originalBounds": {
+              "N": [
+                1,
+                200000
+              ],
+              "weights": [
+                1,
+                2147483647
+              ],
+              "lower": [
+                1,
+                2147483647
+              ],
+              "upper": [
+                1,
+                2147483647
+              ],
+              "rangeOrder": "l<=u",
+              "width": "u-l>=max(w)-min(w)",
+              "selection": "each original index at most once,cardinality free,return any one witness",
+              "answerOrder": "any order",
+              "noSolution": "empty vector",
+              "emptySubsetValid": false
+            },
+            "sourceSeconds": 1,
+            "sourceMemoryGB": 2,
+            "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+            "noticeCppArrayType": "std::vector<int>",
+            "noticeProhibitsStandardInputOutput": true,
+            "cppHeaderBytesRetrieved": false,
+            "primaryPdfImagesClaimedRead": false,
+            "readMethod": "web primary PDF text; displaced full numeric formulas read at original lines97/98; primary indexed archive API full text",
+            "officialEditorialRetrieved": true,
+            "officialEditorialVerified": true,
+            "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+            "editorialPages": [
+              1,
+              2
+            ],
+            "editorialAuthor": "Shi-Chun Tsai",
+            "chosenOfficialProcedure": "Greedy2: sorted contiguous segment with two pointers",
+            "editorialTypoNotUsed": "p1 Greedy1 prints maxSum[k]<=l; correct necessary suffix endpoint is >=l. This implementation and proof use Greedy2 and do not assume that typo.",
+            "apiEditions": {
+              "japaneseCommitteeISC": {
+                "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+                "generic": "int[] solve(int l,int u,int[] w)",
+                "pages": [
+                  1,
+                  2
+                ]
+              },
+              "officialArchiveApiISC": {
+                "url": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+                "generic": "int[] find_subset(int l,int u,int[] w)",
+                "readMethod": "primary indexed search text Country:api-ISC; actual direct open may time out",
+                "exactQuery": "site:ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf \"find_subset\""
+              },
+              "relativePublicationChronologyVerified": false,
+              "derivedCppSignatureEvidence": "Generic signatures plus Day1 Notice type mapping,not actual header bytes.",
+              "actualCppHeadersVerified": false
+            },
+            "sourceDate": "2016-08-14",
+            "datePrecision": "day",
+            "exactDateVerified": true,
+            "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+            "difficulty": null,
+            "unconfirmedRequiredSourceFacts": [],
+            "unconfirmedRequiredLemmas": [],
+            "optionalUnknowns": [
+              "Relative publication order of solve and find_subset editions.",
+              "Actual original grader header bytes and any qualifiers beyond the generic statement/Notice derivation.",
+              "Other two greedy variants are not used or fully reviewed."
+            ]
+          },
+          "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、既存Aliensresolutionを保持し、Moleculesへresolutionだけ追加。任意k個の解をソート後k窓へ移す飛び幅補題、正の二端点完全性、元添字復元と64bit一時和を証明。原典全域C++20、solve/find_subsetの版差を保った二adapter、全小順序配列・literal部分集合・全適合範囲・最大N20万・不正・反復・通常ASanと独立の個数別生成多項式/large-offset/割当faultを確認。header未取得・版の年代未確認を維持し、研究positiveを二重加算しない。"
+        }
+      },
+      {
+        "problemId": "ioi2016_aliens",
+        "resolution": {
+          "status": "verified",
+          "reviewedAt": "2026-10-15",
+          "techniqueIds": [
+            "diagonal-square-union-cover-monge-penalty-cht"
+          ],
+          "rootWalkFile": "data/problem-walks.json",
+          "sourceVerification": {
+            "checkedAt": "2026-10-15",
+            "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+            "statementPages": 3,
+            "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+            "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+            "editorialPages": 17,
+            "relevantOneBasedPages": [
+              14,
+              15,
+              16,
+              17
+            ],
+            "printedAuthor": "Chethiya Abeysinghe",
+            "editorialProvenance": "Official IOI archive actual Solutions link1012; same source as frozen audit. High-level proof and formulas read as primary text, independent supplements identified separately.",
+            "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+            "noticePages": 1,
+            "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+            "contestDate": "2016-08-16",
+            "datePrecision": "day",
+            "exactDateVerified": true,
+            "difficulty": null,
+            "originalNumericBoundsVerified": true,
+            "originalConstraints": {
+              "N": [
+                1,
+                100000
+              ],
+              "M": [
+                1,
+                1000000
+              ],
+              "K": "1..N",
+              "r_i": "0..M−1",
+              "c_i": "0..M−1",
+              "duplicatesAllowed": true,
+              "photoShape": "axis-aligned complete integer cells with opposite corners on main diagonal",
+              "objective": "covered-cell union cardinality",
+              "photoLimit": "at most K",
+              "timeSeconds": 2,
+              "memoryGB": 2,
+              "originalGenericApi": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+              "originalExamples": [
+                {
+                  "N": 5,
+                  "M": 7,
+                  "K": 2,
+                  "answer": 25
+                },
+                {
+                  "N": 2,
+                  "M": 6,
+                  "K": 2,
+                  "answer": 16
+                }
+              ]
+            },
+            "cppSignatureEvidence": {
+              "statementGeneric": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+              "noticeMapping": {
+                "int64": "long long",
+                "int[]": "std::vector<int>"
+              },
+              "derivedSignature": "long long take_photos(int n,int m,int k,std::vector<int> r,std::vector<int> c)",
+              "actualCppHeaderRetrieved": false,
+              "headerReadNotClaimed": true
+            },
+            "originalFullRangeIncludedByApi": true,
+            "unconfirmedPrincipalLemmas": [],
+            "unconfirmedAlternatives": [
+              "Editorial smaller-subtask Knuth optimization is neither used nor claimed verified."
+            ]
+          },
+          "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置を保持し、Aliensへresolutionだけ追加。包含除去・連続群の完全性と全unionの隣接重複控除、Monge二経路均衡交換・枚数離散凸、整数罰金境界・少数枚tie・128bit単調CHTを作者/root/独立reviewで確認。原典全域take_photosと実fenceをliteral全photo集合・別DP・全小順序点列・最大30構成・例外・再入・ASanで確認。別constructive交換969547組とliteral全分割・座標拡大を追加。実header未取得を維持し、同一研究positiveを二重加算しない。"
+        }
+      }
+    ],
+    "sharedFilesEdited": []
+  },
+  "resolutionProposal": {
+    "problemId": "ioi2016_paint",
+    "status": "verified",
+    "techniqueIds": [
+      "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+    ],
+    "reviewedAt": "2026-10-15",
+    "verification": "independent-analysis",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "notes": "初回positive研究6行/status/selection/snapshotを保持し、完全記事/C++20/全原典API/実MDXのliteral oracle・最大・不正・通常ASanと別peerreviewが揃った後にresolutionだけを追加する。subsequentSolutionReviewsは追加せず、他2件の既存resolutionも全field保持する。",
+    "sourceVerificationTarget": "research/technique-verifications/fixed-run-row-prefix-suffix-feasibility-forced-colors.json"
+  },
+  "integrationGate": {
+    "authorArticleAndFullApiValidationComplete": true,
+    "sourceBoundsVerified": true,
+    "unconfirmedRequiredLemmas": [],
+    "independentPeerReviewRequired": true,
+    "independentPeerReviewCompleted": false,
+    "sharedRegistrationPerformed": false
+  },
+  "preservation": {
+    "sharedDataOrArticleOrAuditOrFlowModified": false,
+    "initialSixRowsUnchanged": true,
+    "formerResearchPrototypeNotRelabeled": true,
+    "externalPushOrPublication": false,
+    "envFileRead": false,
+    "status": "author-frozen-awaiting-independent-review"
+  },
+  "statusAtAuthorFreeze": "author-frozen-awaiting-independent-review",
+  "status": "verified-and-integrated",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/fixed-run-row-prefix-suffix-feasibility-forced-colors.mdx",
+    "checker": "scripts/check_fixed_run_forced_colors_cpp.py",
+    "metadataGroup": "dp-patterns",
+    "entryGraphId": "dp",
+    "choices": [
+      "sequence-removals",
+      "split",
+      "fixed-run-colors",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": {
+      "article": "none;entire MDX/CPP preserved",
+      "checker": "only default article path to published repository file",
+      "independentProbe": "only default article path to published repository file",
+      "metadata": "entryPoints order advanced/complexity/reasoning",
+      "flow": "positive original bounds and separator-space wording from frozen flowcase;no API storage details on graph",
+      "resolutionNotes": "refer to actual three existing resolutions instead of author-time two;no initial fields modified"
+    },
+    "independentReviewFile": "research/probes/fixed-run-forced-colors-independent-review.json",
+    "independentProbe": "research/probes/fixed-run-forced-colors-independent.py",
+    "flowWordingNormalization": {
+      "guard": "bounds",
+      "authorWording": {
+        "id": "bounds",
+        "title": "列の長さ20万以下、黒区間100個以下で、各長さは列長以下ですか？",
+        "explanation": "原典は1<=K<=min(N,100)、N<=200000、1<=c_i<=Nです。前後の可否表を1要素1バイトで保持します。汎用APIの空列・0区間・矛盾入力は本文で別に定めます。"
+      },
+      "reason": "State positive source bounds and separator space in plain Japanese; keep API extension/implementation storage details in the article."
+    },
+    "featureSchemaNormalization": {
+      "addedFields": {
+        "publicationDate": "2016-08-16",
+        "publicationDatePrecision": "day",
+        "publicationYear": 2016,
+        "originalNumericBoundsVerified": true
+      },
+      "reason": "Preserve author fields and supply common feature date/year/bounds aliases from independently verified primary source;first flow suite detected missing aliases without changing proof or C++."
+    }
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "date": "2026-10-15",
+      "allEightSectionsAndEntireCppRead": true,
+      "completeCheckerAndIndependentProbeRead": true,
+      "sourceScopeAndOfficialSelectedProofReviewed": true,
+      "sourceReading": "Primary English Paint3p/Day2 Notice1p and official Solutions8–10p full text read;not PDF visual inspection. Independent peer additionally reread JPN3p.",
+      "materialFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "independentReviewSha256": "f91966414842ff4c72cc46f8e2cab8c67321b53643b874591944386e4d95359f",
+      "rootNormal": {
+        "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+        "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 18676424,
+        "apiCalls": 1008660,
+        "partialRows": 88573,
+        "literalFullAssignmentPairs": 52092093,
+        "exhaustiveCompletionRevealPairs": 1398101,
+        "primarySamples": 4,
+        "consistentObservationClueGroups": 921587,
+        "originalDomainGroups": 919540,
+        "zeroRunExtensionGroups": 2047,
+        "contradictoryObservationClueCases": 77096,
+        "adapterCalls": 2830,
+        "randomInputs": 1800,
+        "metamorphicChecks": 5273,
+        "invalidCalls": 21,
+        "allocationFaults": 6,
+        "checksum": "16381575956586682632",
+        "seconds": 2.14977,
+        "peakRSSKiB": 48036,
+        "maximumCases": [
+          {
+            "name": "full length single run",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.00287499
+          },
+          {
+            "name": "single run length199999 overlaps",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.00220017
+          },
+          {
+            "name": "100 singleton runs,all positions ambiguous",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.11908
+          },
+          {
+            "name": "100 tight runs,no slack",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.129995
+          },
+          {
+            "name": "all exact known cells",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.0532876
+          },
+          {
+            "name": "known white in unique tight run",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 0.0230202
+          },
+          {
+            "name": "100 runs each2000 cannot fit separators",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 4.3077e-05
+          },
+          {
+            "name": "100 separated mandatory singleton positions",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.113131
+          },
+          {
+            "name": "100 singleton runs inside known white margins",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.127967
+          },
+          {
+            "name": "zero run extension",
+            "n": 200000,
+            "k": 0,
+            "exists": true,
+            "coreSeconds": 0.000132164
+          }
+        ]
+      },
+      "rootAsanUbsan": {
+        "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+        "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 18676424,
+        "apiCalls": 1008660,
+        "partialRows": 88573,
+        "literalFullAssignmentPairs": 52092093,
+        "exhaustiveCompletionRevealPairs": 1398101,
+        "primarySamples": 4,
+        "consistentObservationClueGroups": 921587,
+        "originalDomainGroups": 919540,
+        "zeroRunExtensionGroups": 2047,
+        "contradictoryObservationClueCases": 77096,
+        "adapterCalls": 2830,
+        "randomInputs": 1800,
+        "metamorphicChecks": 5273,
+        "invalidCalls": 21,
+        "allocationFaults": 6,
+        "checksum": "16381575956586682632",
+        "seconds": 12.2569,
+        "peakRSSKiB": 1051984,
+        "maximumCases": [
+          {
+            "name": "full length single run",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.00728183
+          },
+          {
+            "name": "single run length199999 overlaps",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.0248334
+          },
+          {
+            "name": "100 singleton runs,all positions ambiguous",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.638956
+          },
+          {
+            "name": "100 tight runs,no slack",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.703716
+          },
+          {
+            "name": "all exact known cells",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.402948
+          },
+          {
+            "name": "known white in unique tight run",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 0.151766
+          },
+          {
+            "name": "100 runs each2000 cannot fit separators",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 0.000101881
+          },
+          {
+            "name": "100 separated mandatory singleton positions",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.587047
+          },
+          {
+            "name": "100 singleton runs inside known white margins",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.540843
+          },
+          {
+            "name": "zero run extension",
+            "n": 200000,
+            "k": 0,
+            "exists": true,
+            "coreSeconds": 0.000221198
+          }
+        ]
+      },
+      "allDeterministicAuthorPeerRootNormalAsanFieldsMatch": true,
+      "normalizationAtIntegration": {
+        "article": "none;entire MDX/CPP preserved",
+        "checker": "only default article path to published repository file",
+        "independentProbe": "only default article path to published repository file",
+        "metadata": "entryPoints order advanced/complexity/reasoning",
+        "flow": "positive original bounds and separator-space wording from frozen flowcase;no API storage details on graph",
+        "resolutionNotes": "refer to actual three existing resolutions instead of author-time two;no initial fields modified"
+      },
+      "limitations": [
+        "Actual grader header bytes not retrieved;adapter derived from generic statement plus Notice.",
+        "Browser/Astro production build unavailable and not claimed.",
+        "Separate independent small-placement oracle is bounded;maximum range is supported by proof and native maximum cases."
+      ]
+    },
+    "normal": {
+      "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 18676424,
+      "apiCalls": 1008660,
+      "partialRows": 88573,
+      "literalFullAssignmentPairs": 52092093,
+      "exhaustiveCompletionRevealPairs": 1398101,
+      "primarySamples": 4,
+      "consistentObservationClueGroups": 921587,
+      "originalDomainGroups": 919540,
+      "zeroRunExtensionGroups": 2047,
+      "contradictoryObservationClueCases": 77096,
+      "adapterCalls": 2830,
+      "randomInputs": 1800,
+      "metamorphicChecks": 5273,
+      "invalidCalls": 21,
+      "allocationFaults": 6,
+      "checksum": "16381575956586682632",
+      "seconds": 2.14977,
+      "peakRSSKiB": 48036,
+      "maximumCases": [
+        {
+          "name": "full length single run",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00287499
+        },
+        {
+          "name": "single run length199999 overlaps",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00220017
+        },
+        {
+          "name": "100 singleton runs,all positions ambiguous",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.11908
+        },
+        {
+          "name": "100 tight runs,no slack",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.129995
+        },
+        {
+          "name": "all exact known cells",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.0532876
+        },
+        {
+          "name": "known white in unique tight run",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.0230202
+        },
+        {
+          "name": "100 runs each2000 cannot fit separators",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 4.3077e-05
+        },
+        {
+          "name": "100 separated mandatory singleton positions",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.113131
+        },
+        {
+          "name": "100 singleton runs inside known white margins",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.127967
+        },
+        {
+          "name": "zero run extension",
+          "n": 200000,
+          "k": 0,
+          "exists": true,
+          "coreSeconds": 0.000132164
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 18676424,
+      "apiCalls": 1008660,
+      "partialRows": 88573,
+      "literalFullAssignmentPairs": 52092093,
+      "exhaustiveCompletionRevealPairs": 1398101,
+      "primarySamples": 4,
+      "consistentObservationClueGroups": 921587,
+      "originalDomainGroups": 919540,
+      "zeroRunExtensionGroups": 2047,
+      "contradictoryObservationClueCases": 77096,
+      "adapterCalls": 2830,
+      "randomInputs": 1800,
+      "metamorphicChecks": 5273,
+      "invalidCalls": 21,
+      "allocationFaults": 6,
+      "checksum": "16381575956586682632",
+      "seconds": 12.2569,
+      "peakRSSKiB": 1051984,
+      "maximumCases": [
+        {
+          "name": "full length single run",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00728183
+        },
+        {
+          "name": "single run length199999 overlaps",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.0248334
+        },
+        {
+          "name": "100 singleton runs,all positions ambiguous",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.638956
+        },
+        {
+          "name": "100 tight runs,no slack",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.703716
+        },
+        {
+          "name": "all exact known cells",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.402948
+        },
+        {
+          "name": "known white in unique tight run",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.151766
+        },
+        {
+          "name": "100 runs each2000 cannot fit separators",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.000101881
+        },
+        {
+          "name": "100 separated mandatory singleton positions",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.587047
+        },
+        {
+          "name": "100 singleton runs inside known white margins",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.540843
+        },
+        {
+          "name": "zero run extension",
+          "n": 200000,
+          "k": 0,
+          "exists": true,
+          "coreSeconds": 0.000221198
+        }
+      ]
+    },
+    "additionalReviewFile": "research/probes/fixed-run-forced-colors-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

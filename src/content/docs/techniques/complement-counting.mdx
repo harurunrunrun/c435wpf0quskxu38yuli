@@ -1,0 +1,65 @@
+---
+title: "補集合で数える"
+description: "条件を満たさない対象を数え、全体から引いて答えを求める。"
+techniqueId: complement-counting
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+条件を満たさない対象を数え、全体から引いて答えを求める。
+
+## 使う場面
+
+「少なくとも一つ含む」「どれかの条件を満たす」などを直接数えるのが難しいときに使う。逆の「一つも含まない」「すべての条件を満たさない」を数える方が簡単かを考える。
+
+## 考え方
+
+全体を $U$、条件を満たす対象を $A$ とすると、個数は $|U|-|U\setminus A|$ で求まる。
+
+例えば $K$ 種類の文字からなる長さ $N$ の列は $K^N$ 通りある。指定した一文字を含まない列は $(K-1)^N$ 通りなので、その文字を少なくとも一度含む列は $K^N-(K-1)^N$ 通りになる。除く条件が複数ある場合は、重なりを包除原理で調整する。
+
+## 適用条件
+
+全体と除く対象を、同じルールで数える必要がある。先頭の0や空の列を許すかもそろえる。
+
+複数の失敗条件をそれぞれ引くだけでは、両方を満たす対象を二重に引いてしまう。法を取って計算するときは、引き算の結果を0以上に正規化する。
+
+## なぜ正しいか
+
+全体は、条件を満たす対象と満たさない対象に重複なく分かれる。そのため、全体から満たさない対象の個数を引けば、必要な個数が残る。
+
+## 計算量
+
+文字列の例では、繰り返し二乗法で累乗を求めるため時間 $O(\log N)$、追加空間 $O(1)$。除く条件が $R$ 個ある一般の包除原理では、最大 $2^R$ 個の項を扱う。
+
+## 実装
+
+`contains_designated_symbol(n, k, mod)` は、長さ `n`、文字の種類数 `k` の列で、指定した一文字を含む列の個数を `mod` で割った余りを返す。`k` と `mod` は正の整数とする。
+
+```cpp
+#include <stdexcept>
+long long mod_power(long long a, unsigned long long n, long long mod) {
+    long long result = 1 % mod;
+    a %= mod;
+    while (n) {
+        if (n & 1) result = (__int128)result * a % mod;
+        a = (__int128)a * a % mod;
+        n >>= 1;
+    }
+    return result;
+}
+long long contains_designated_symbol(unsigned long long n, long long k, long long mod) {
+    if (k < 1 || mod < 1) throw std::invalid_argument("positive alphabet and modulus");
+    long long x = mod_power(k, n, mod), y = mod_power(k - 1, n, mod);
+    return x >= y ? x - y : mod - (y - x);
+}
+```
+
+## 関連する手法
+
+[寄与の数え上げ](../contribution/) ・ [状態の設計](../state-design/) ・ [期待値の線形性](../probability-expectation/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC178 C](https://atcoder.jp/contests/abc178/editorial/104)
+
+<TechniqueReferences techniqueId="complement-counting" />

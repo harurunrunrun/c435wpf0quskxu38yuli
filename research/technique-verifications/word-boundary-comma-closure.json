@@ -1,0 +1,386 @@
+{
+  "techniqueId": "word-boundary-comma-closure",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-comma-article.mdx",
+    "checker": "/tmp/flowchartcp-comma-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/word-boundary-comma-closure.mdx",
+    "checker": "scripts/check_word_boundary_comma_cpp.py"
+  },
+  "metadata": {
+    "id": "word-boundary-comma-closure",
+    "title": "同じ語の前後へ読点を追加する規則を、一度の探索で処理する",
+    "summary": "語の前と後を別の状態にし、文内の隣接を辺で結ぶ。元の読点からの到達集合で、追加規則の最小の不動点を求める。",
+    "aliases": [
+      "ICPC 2018 Comma Sprinkler",
+      "word boundary comma closure",
+      "before after word bipartite propagation",
+      "同語 前後二状態 読点 最小不動点"
+    ],
+    "family": "文字列の制約伝播",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2"
+    ]
+  },
+  "reference": {
+    "techniqueId": "word-boundary-comma-closure",
+    "source": "ICPC",
+    "problemId": "wf2018_b",
+    "title": "Comma Sprinkler",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+    "evidence": "同じ語の前・後の読点を全文の同じ側へ反復して追加し、文頭・文末は除く。語ごとに前後の二状態を分け、同じ文の隣接二語の前語後状態と後語前状態を無向辺で結ぶ。既存読点の両端から到達する状態を求めれば、規則の反復が作る最小不動点と一致する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-04-19",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "原典3〜4頁の全規則・全文法・長さ2..1000000を2026-10-15に再読。英小文字の非空語、語から開始、語間は空白一つ/読点と空白/句点と空白、末尾語は句点で終了し後続なし。原典の全範囲を掲載APIが含み、語・句点・空白を保持し読点追加だけを行う。非公式sketch2頁の前後二頂点を参照し、一語前後の区別、辺の双方向伝播、既存読点からの到達性と合法規則の対応、最小不動点と適用順独立を独立に証明した。sketchは公式ドメイン掲載だが自身がunofficial analysisと明記するため公式解説とは扱わない。実MDX単一可視C++20を抽出し、全134117小文章の規則反復と全閉包配置列挙、全文字列87381件の独立宣言文法、5000乱択、原典最大100万文字の長語/50万語/出力1499997字/9万辺伝播/20万種類40万状態を検証。通常/ASan+UBSanとも1051695 checks、checksum10870040000863900980。競技日2018-04-19はICPC公式ニュースで確認、難度null。"
+  },
+  "problemFeature": {
+    "source": "ICPC",
+    "problemId": "wf2018_b",
+    "title": "Comma Sprinkler",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+    "techniqueIds": [
+      "word-boundary-comma-closure"
+    ],
+    "features": [
+      "同じ語のある出現の直前に読点があれば、全文の他の同語の直前にも追加する。直後の規則もあり、反復して増えなくなるまで続ける。",
+      "語・語順・句点・空白は固定し、文頭前/文末後へ読点を追加しない。同じ語を通じて別の文の内部へ伝播することはある。",
+      "英小文字の非空語からなる2..1000000文字。語間は空白一つ、読点と空白、句点と空白のいずれかで、最後は句点。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "discoveredBy": "icpc-2018-world-finals",
+    "notes": "同じ語の前・後の読点を全文の同じ側へ反復して追加し、文頭・文末は除く。語ごとに前後の二状態を分け、同じ文の隣接二語の前語後状態と後語前状態を無向辺で結ぶ。既存読点の両端から到達する状態を求めれば、規則の反復が作る最小不動点と一致する。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+    "statementPages": [
+      3,
+      4
+    ],
+    "statementTotalPages": 22,
+    "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+    "sketchPages": [
+      2
+    ],
+    "disclaimerPage": 1,
+    "sketchAuthors": [
+      "Per Austrin",
+      "Jakub Onufry Wojtaszczyk"
+    ],
+    "sketchProvenance": "ICPC official domain hosts it, but the opening disclaimer explicitly calls it unofficial analysis; not an official editorial.",
+    "officialEditorialVerified": false,
+    "retrieval": "Official primary PDFs read through web-extracted text. Complete numeric bounds and grammar/rules were visible; no local PDF or image inspection claimed.",
+    "originalNumericBoundsVerified": true,
+    "originalConstraints": {
+      "textLength": {
+        "minimum": 2,
+        "maximum": 1000000
+      },
+      "alphabet": "lowercase English letters, comma, period, ASCII space",
+      "word": "maximal nonempty sequence of lowercase letters",
+      "startsWithWord": true,
+      "betweenWords": [
+        "one space",
+        "comma immediately followed by one space",
+        "period immediately followed by one space"
+      ],
+      "final": "last word followed by a period, with no trailing space",
+      "line": "one text line, input newline is not part of text",
+      "timeLimitSeconds": 8,
+      "memoryLimit": "not asserted"
+    },
+    "originalRules": [
+      "A comma immediately before one occurrence of a word forces a comma before all other occurrences except sentence starts and already marked positions.",
+      "A comma immediately after one occurrence forces one after all others except sentence ends and already marked positions.",
+      "Repeat additions until neither rule can add a comma."
+    ],
+    "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "contestDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "apiContainsEntireOriginalRange": true,
+    "containmentProof": [
+      "Input byte length2..1000000 exactly includes the original length range.",
+      "Scanner accepts every lowercase nonempty word and exactly the three permitted intervening separators, with a terminal period and no trailing bytes.",
+      "There is no per-word length bound: a999999-letter word plus final period is accepted.",
+      "Output has no1000000-byte cap; newly inserted commas are retained.",
+      "Only input length/syntax is invalid_argument; standard container allocation exceptions propagate."
+    ],
+    "unconfirmedLemmas": []
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "solution": "retrieved-and-reviewed",
+      "publicEditorialSketch": "retrieved-and-reviewed",
+      "officialEditorialVerified": false,
+      "officialEditorial": "not-asserted-unofficial-disclaimer"
+    },
+    "evidenceUrls": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+      "https://news.icpc.global/wf2018/"
+    ],
+    "notes": "原典3〜4頁の全規則・全文法・長さ2..1000000を2026-10-15に再読。英小文字の非空語、語から開始、語間は空白一つ/読点と空白/句点と空白、末尾語は句点で終了し後続なし。原典の全範囲を掲載APIが含み、語・句点・空白を保持し読点追加だけを行う。非公式sketch2頁の前後二頂点を参照し、一語前後の区別、辺の双方向伝播、既存読点からの到達性と合法規則の対応、最小不動点と適用順独立を独立に証明した。sketchは公式ドメイン掲載だが自身がunofficial analysisと明記するため公式解説とは扱わない。実MDX単一可視C++20を抽出し、全134117小文章の規則反復と全閉包配置列挙、全文字列87381件の独立宣言文法、5000乱択、原典最大100万文字の長語/50万語/出力1499997字/9万辺伝播/20万種類40万状態を検証。通常/ASan+UBSanとも1051695 checks、checksum10870040000863900980。競技日2018-04-19はICPC公式ニュースで確認、難度null。"
+  },
+  "api": {
+    "signature": "std::string close_word_boundary_commas(std::string_view text)",
+    "input": "2..1000000 bytes, ASCII lowercase nonempty words and exact original punctuation/space grammar, no input newline.",
+    "grammar": "[a-z]+(( |, |\\. )[a-z]+)*\\.",
+    "wordEquality": "byte-for-byte equality of whole words; prefixes such as a/aa/ab are distinct",
+    "output": "Unique least fixed point of comma additions, preserving every word, order, original comma, period, space and final no-trailing-space convention. Output may exceed1000000.",
+    "errors": "std::invalid_argument for invalid length, alphabet, empty words, spacing, punctuation, missing final period or trailing data; standard allocation exceptions propagate.",
+    "inputUnchanged": true,
+    "persistentState": false,
+    "lifetime": "All string_views point into the still-live immutable input for this call. Return value owns its own storage; no view escapes.",
+    "platform": "int can represent1000000, enforced by static_assert",
+    "integerSafety": [
+      "A validated input T contains K words with2K<=T, so D<=K<=500000.",
+      "IDs0..D-1 and states0..2D-1 fit int;2D<=1000000.",
+      "Queue indices/string offsets use size_t and remain bounded by input/state counts.",
+      "reserve(T+K)<=1500000 has no size_t overflow on a platform supporting the validated input."
+    ],
+    "outputBound": "length <=T+K-1 <T+K<=1500000; tested output1499997.",
+    "idempotence": "Mathematical closure is idempotent. A second API call is valid only when that output also satisfies the explicit input length cap; small outputs are tested for idempotence and a1499997-byte output is intentionally rejected as a new input.",
+    "time": "O(T log(D+1)) worst case including lexicographic map comparisons; graph traversal O(D+K).",
+    "space": "O(T) auxiliary plus returned string; no recursive traversal.",
+    "maximumOriginalInputExecuted": 1000000,
+    "largestOutputExecuted": 1499997,
+    "largestDistinctVocabularyExecuted": 200000,
+    "largestStateCountExecuted": 400000,
+    "longestConstructedPropagationPath": 90000
+  },
+  "proofInvariants": [
+    "For every word type w, before[w] and after[w] are distinct; no equivalence is introduced merely because they refer to the same word.",
+    "A non-period gap a b is an undirected edge after[a]--before[b]. A comma there activates exactly these two sides.",
+    "When either endpoint is active, the corresponding literal word-side rule can insert a comma at that gap and activate the other endpoint. Both edge directions are legal.",
+    "No edge is added at a sentence boundary. Global word identity can still propagate into another sentence, but cannot put a comma at its start/end.",
+    "Every BFS path from an original comma can be realized by finitely many legal rule additions.",
+    "Inductively every legal insertion has a forcing side already reachable from an original comma; therefore no process reaches outside the BFS closure.",
+    "Reachability is closed on both endpoints of every gap and contains original marks. Reconstructed output is closed and is included in every closed extension, proving least fixed point, uniqueness and rule-order independence.",
+    "Lexing fixes words and separators before propagation; rendering copies words and period separators, adding only commas at eligible gaps.",
+    "No initial comma means no active state and no insertion. Duplicate graph edges and self-adjacent equal words preserve reachability."
+  ],
+  "flowSuggestion": {
+    "entryGraphId": "strings",
+    "existingChoices": [
+      "changes"
+    ],
+    "firstMissingGraphId": "strings-change-goals",
+    "firstMissingNodeId": "text-task",
+    "proposedAnswerId": "comma-propagation",
+    "proposedAnswerLabel": "同じ語の前後へ読点を繰り返し追加し、増えなくなる文章を求める",
+    "guardGraphId": "word-boundary-comma-conditions",
+    "guards": [
+      {
+        "id": "word-side-rules",
+        "feature": "同じ語の前への追加と後への追加がそれぞれ全文に働き、語や語順を変えず読点を追加するだけ。"
+      },
+      {
+        "id": "sentence-boundaries",
+        "feature": "文頭前/文末後には追加せず、既存の読点・句点・空白を保持する。"
+      },
+      {
+        "id": "bounds",
+        "feature": "2〜100万文字の一行。英小文字の語と、空白一つ/読点と空白/句点と空白で区切り、最後は句点で終わる。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "word-boundary-comma-closure"
+    ]
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "checks": 1051695,
+    "smallValidOracleCalls": 139190,
+    "exhaustiveTexts": 134117,
+    "allClosedConfigurationCases": 134190,
+    "closedConfigurationsEnumerated": 667190,
+    "closedConfigurationsAccepted": 165590,
+    "lexicalStrings": 87381,
+    "lexicalValid": 73,
+    "invalidCases": 87338,
+    "randomCases": 5000,
+    "maximumRulePassesIncludingFinalStablePass": 7,
+    "checksum": "10870040000863900980",
+    "normalCommand": "python3 /tmp/flowchartcp-comma-checker.py /tmp/flowchartcp-comma-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-comma-checker.py /tmp/flowchartcp-comma-article.mdx --sanitize",
+    "normalSeconds": 0.361659,
+    "normalPeakRSSKiB": 48376,
+    "normalMaximumSingleCallSeconds": 0.0481626,
+    "asanUbsan": {
+      "passed": true,
+      "flags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer"
+      ],
+      "checks": 1051695,
+      "checksum": "10870040000863900980",
+      "seconds": 3.79796,
+      "peakRSSKiB": 667072,
+      "leakSanitizer": false,
+      "maximumSingleCallSeconds": 0.207018
+    },
+    "oracle": "No word-state graph or BFS in either oracle. First, repeatedly apply literal pairwise string-comparison rules to comma positions using the previous pass snapshot. Second, enumerate every comma configuration extending the initial commas on non-period gaps, check literal closure, and compare the unique minimum-cardinality closed set and intersection of all closed sets to that fixed point.",
+    "exhaustiveDomains": [
+      {
+        "vocabulary": [
+          "a",
+          "b"
+        ],
+        "tokenCounts": "1..7",
+        "allGapKinds": [
+          "space",
+          "comma",
+          "period"
+        ],
+        "texts": 111974
+      },
+      {
+        "vocabulary": [
+          "a",
+          "aa",
+          "ab"
+        ],
+        "tokenCounts": "1..5",
+        "allGapKinds": [
+          "space",
+          "comma",
+          "period"
+        ],
+        "texts": 22143
+      }
+    ],
+    "lexicalOracle": "All87381 raw strings of length0..8 over a/space/comma/period. Independent anchored POSIX regex grammar and regex word extraction accept73; all others must throw. Regex is checker-only libc code, not part of the published C++20 API.",
+    "randomDomain": "5000 texts of1..25 words from11 prefix-sharing words, three gap kinds, seed20180419; literal-rule oracle, no graph.",
+    "maximumCases": [
+      {
+        "inputBytes": 1000000,
+        "case": "one999999-letter word plus period",
+        "expected": "unchanged"
+      },
+      {
+        "inputBytes": 1000000,
+        "words": 500000,
+        "case": "all same word, no source comma",
+        "expected": "unchanged"
+      },
+      {
+        "inputBytes": 1000000,
+        "words": 499999,
+        "case": "one aa word and otherwise a, one original comma, one sentence",
+        "expectedOutputBytes": 1499997
+      },
+      {
+        "inputBytes": 1000000,
+        "distinctWords": 90001,
+        "case": "90000-edge alternating after(A)-before(B) path encoded by two-word sentences; long unique endpoint gives exact input limit",
+        "expectedOutputBytes": 1089999
+      },
+      {
+        "inputBytes": 1000000,
+        "distinctWords": 200000,
+        "stateCount": 400000,
+        "case": "all words distinct, a single initial comma; marked before state does not activate same word after state",
+        "expected": "unchanged"
+      }
+    ],
+    "otherCases": [
+      "Both official examples, singleton, no commas, same-word adjacency, all-sentence-end exceptions.",
+      "Explicit two-side counterexample red, blue. blue green. remains unchanged.",
+      "Forward and reverse propagation a, b. a c. d c.; exact prefixes a/aa/ab remain different words.",
+      "Uppercase, digit, underscore, punctuation variants, tab/newline/CR/NUL/high-byte/UTF8, leading/trailing/double spaces, malformed comma/period sequences.",
+      "1000001-byte valid-looking input rejected; expanded1499997-byte output is preserved then rejected only if submitted as a fresh input outside the API range.",
+      "Every small valid call checks unchanged input and closure idempotence; interleaved marked/unmarked calls establish no persistent state."
+    ],
+    "maximumInputBytes": 1000000,
+    "maximumOutputBytes": 1499997,
+    "unconfirmedLemmas": [],
+    "sharedFilesModified": false
+  },
+  "editorNotes": [
+    "Eight technique sections and one complete visible reusable C++20 fence; no per-problem explanation page.",
+    "Article omits research/retrieval history and test counts. Those are recorded only in this sidecar/checker.",
+    "Initial fixed audit is not modified; completed technique/code/flow can be recorded as later resolution by parent after independent review.",
+    "Only requested /tmp article/checker/sidecar are authored.",
+    "A standard-library regex instantiation warned under GCC15 sanitizer compilation; the checker grammar oracle was changed to libc POSIX regex while retaining all-Werror sanitizer checking and leaving the published implementation unchanged.",
+    "No source memory limit is asserted; measured RSS is empirical for this environment."
+  ],
+  "artifactSha256": {
+    "article": "0313f6c6ff8b52fc4cf4fdfe2c7a41781357827b4184bb3a01db14cd044a4ade",
+    "checker": "c6409958597ab70b08348be1ab85832101b99ad6b16d3a953bca3756c0359951"
+  },
+  "cppSha256": "4df54db641760af0061bbd1baf4e8b8247eaf731c703c2049b2b6670c5c1529f",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/word-boundary-comma-closure.mdx",
+    "checker": "scripts/check_word_boundary_comma_cpp.py",
+    "entryGraphId": "strings",
+    "choices": [
+      "changes",
+      "comma-propagation",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "4df54db641760af0061bbd1baf4e8b8247eaf731c703c2049b2b6670c5c1529f",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "laterReviewStorage": "The initial solution was already positively reviewed. The new implementation/proof review remains in this sidecar and the resolution; no duplicate subsequentSolutionReviews is appended to the historical corpus record."
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "notes": "公式原典3/4頁と非公式sketch2頁を再読し、前後二状態・文境界・最小不動点・辞書の文字比較・字句解析・出力長を独立に確認した。"
+  }
+}

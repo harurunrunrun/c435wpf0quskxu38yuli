@@ -1,0 +1,452 @@
+[
+  {
+    "id": "two-fenwick-range-add",
+    "title": "区間加算と区間和を二つのFenwick Treeで処理する",
+    "summary": "差分の和と添字を掛けた差分の和を管理し、二重の累積を式に直す。",
+    "aliases": [
+      "Range Add Range Sum",
+      "Two Fenwick Trees",
+      "区間加算・区間和"
+    ],
+    "family": "配列・区間",
+    "level": "中級",
+    "prerequisites": [
+      "difference-array",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/awc0014/editorial/16419"
+    ]
+  },
+  {
+    "id": "difference-2d-corners",
+    "title": "長方形への加算を四隅に記録する",
+    "summary": "二次元の差分配列を使い、長方形の面積に比例する更新を省く。",
+    "aliases": [
+      "2D Difference Array",
+      "2D Imos",
+      "二次元いもす法"
+    ],
+    "family": "配列・区間",
+    "level": "入門",
+    "prerequisites": [
+      "difference-array"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://github.com/E869120/kyopro_educational_90/blob/main/sol/028.cpp"
+    ]
+  },
+  {
+    "id": "affine-lazy-composition",
+    "title": "区間の一次変換を合成して遅延伝播する",
+    "summary": "加算・乗算・代入を一次変換としてまとめ、適用順を保って区間和を更新する。",
+    "aliases": [
+      "Range Affine Range Sum",
+      "Affine Composition",
+      "アフィン変換"
+    ],
+    "family": "データ構造・区間",
+    "level": "上級",
+    "prerequisites": [
+      "lazy-segment-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_en/lazysegtree.html"
+    ]
+  },
+  {
+    "id": "range-chmin-second-maximum",
+    "title": "区間の上限更新を第二最大値でまとめて処理する",
+    "summary": "最大値だけが変わる場合に限り、個数を使って区間和を一度で更新する。",
+    "aliases": [
+      "Range Chmin",
+      "Segment Tree Beats",
+      "第二最大値"
+    ],
+    "family": "データ構造・区間",
+    "level": "上級",
+    "prerequisites": [
+      "segment-tree-beats"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/range_chmin_chmax_add_range_sum/sol/correct.cpp"
+    ]
+  },
+  {
+    "id": "subarray-extremum-contribution",
+    "title": "全区間の最大値を各要素の寄与に分ける",
+    "summary": "左右で最大値が変わる境界を求め、端点の選び方を掛けて数える。",
+    "aliases": [
+      "Sum of Subarray Maximums",
+      "Monotonic Stack",
+      "単調スタック",
+      "区間最大値の総和"
+    ],
+    "family": "配列・区間",
+    "level": "中級",
+    "prerequisites": [
+      "contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc407/editorial/13108"
+    ]
+  },
+  {
+    "id": "subarray-prefix-frequency",
+    "title": "和が指定値になる区間を累積和の頻度で数える",
+    "summary": "右端を固定し、必要な過去の累積和を辞書で数える。",
+    "aliases": [
+      "Subarray Sum Equals K",
+      "Prefix Sum Frequency",
+      "累積和と辞書"
+    ],
+    "family": "配列・区間",
+    "level": "入門",
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc233/editorial/3163"
+    ]
+  },
+  {
+    "id": "subarray-prefix-order",
+    "title": "和や平均の下限を累積和の大小関係に直す",
+    "summary": "過去の累積和の頻度をFenwick Treeで管理し、負数を含む区間を数える。",
+    "aliases": [
+      "Subarray Sum Inequality",
+      "Mean Threshold",
+      "区間の平均",
+      "累積和の大小関係"
+    ],
+    "family": "配列・区間",
+    "level": "中級",
+    "prerequisites": [
+      "prefix-sum",
+      "coordinate-compression",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/arc075/editorial.pdf"
+    ]
+  },
+  {
+    "id": "sliding-distinct-count",
+    "title": "区間をずらしながら値の種類数を更新する",
+    "summary": "出現回数が0と1の間で変わるときだけ、種類数を増減する。",
+    "aliases": [
+      "Sliding Window Distinct Count",
+      "固定長区間の種類数"
+    ],
+    "family": "配列・区間",
+    "level": "入門",
+    "prerequisites": [
+      "sliding-window",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc210/editorial/2297"
+    ]
+  },
+  {
+    "id": "offline-rightmost-occurrence",
+    "title": "区間の種類数を各値の最新位置だけで数える",
+    "summary": "問い合わせを右端順に並べ、同じ値を代表する1を最後の出現位置へ移す。",
+    "aliases": [
+      "Offline Distinct Range Queries",
+      "Last Occurrence",
+      "Latest Occurrence",
+      "最新の出現位置"
+    ],
+    "family": "クエリ・処理順",
+    "level": "中級",
+    "prerequisites": [
+      "offline-queries",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc174/editorial.pdf"
+    ]
+  },
+  {
+    "id": "reverse-edge-deletion",
+    "title": "辺の削除を逆順の追加に変える",
+    "summary": "連結性を壊す操作を反転し、成分サイズから頂点対の数を更新する。",
+    "aliases": [
+      "Reverse Edge Deletion",
+      "Offline Decremental Connectivity",
+      "逆順Union-Find"
+    ],
+    "family": "グラフ・連結性",
+    "level": "中級",
+    "prerequisites": [
+      "reverse-thinking",
+      "union-find"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc120/editorial.pdf"
+    ]
+  },
+  {
+    "id": "connectivity-time-intervals",
+    "title": "辺が存在する時間区間を分割して連結性を求める",
+    "summary": "追加と削除の両方を、時間のセグメント木と巻き戻し可能なUnion-Findで扱う。",
+    "aliases": [
+      "Offline Dynamic Connectivity",
+      "Segment Tree Over Time",
+      "時間のセグメント木"
+    ],
+    "family": "グラフ・連結性",
+    "level": "上級",
+    "prerequisites": [
+      "rollback-dsu",
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/data_structures/deleting_in_log_n.html"
+    ]
+  },
+  {
+    "id": "reroot-prefix-suffix",
+    "title": "全方位木DPで一つの方向だけ除いて集計する",
+    "summary": "隣接する部分木の結果を左右から累積し、子へ渡す情報を定数時間で作る。",
+    "aliases": [
+      "Rerooting Prefix Suffix",
+      "Excluding One Child",
+      "左右の累積"
+    ],
+    "family": "木・動的計画法",
+    "level": "上級",
+    "prerequisites": [
+      "rerooting"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc222/editorial/2763"
+    ]
+  },
+  {
+    "id": "reroot-directed-edge-state",
+    "title": "全方位木DPの状態を辺の向きごとに定義する",
+    "summary": "辺を切った片側の情報を保存し、根を変えても意味が変わらない状態にする。",
+    "aliases": [
+      "Directed Edge DP",
+      "Rerooting Messages",
+      "有向辺の状態"
+    ],
+    "family": "木・動的計画法",
+    "level": "上級",
+    "prerequisites": [
+      "rerooting"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc222/editorial/2763"
+    ]
+  },
+  {
+    "id": "tree-path-prefix-lca",
+    "title": "木の経路和を根からの累積和とLCAで求める",
+    "summary": "二つの根への経路から、重複する共通部分を二度引く。",
+    "aliases": [
+      "Tree Path Sum",
+      "LCA",
+      "Root Distance",
+      "根からの距離"
+    ],
+    "family": "木・経路",
+    "level": "中級",
+    "prerequisites": [
+      "doubling",
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc014/editorial.pdf"
+    ]
+  },
+  {
+    "id": "subtree-euler-interval",
+    "title": "部分木をDFS順の連続区間に変換する",
+    "summary": "部分木の頂点を配列上の区間に並べ、和や個数の問い合わせへ直す。",
+    "aliases": [
+      "Subtree Query",
+      "DFS Order",
+      "Euler Tour",
+      "部分木クエリ"
+    ],
+    "family": "木・部分木",
+    "level": "中級",
+    "prerequisites": [
+      "tree-dp",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc202/editorial/1864"
+    ]
+  },
+  {
+    "id": "virtual-tree-adjacent-lca",
+    "title": "DFS順で隣り合う指定頂点のLCAを加えて補助木を作る",
+    "summary": "DFS順の隣接対だけを見て、必要な分岐を残した小さい木に圧縮する。",
+    "aliases": [
+      "Virtual Tree",
+      "Auxiliary Tree",
+      "Adjacent LCA",
+      "DFS順とLCA"
+    ],
+    "family": "木・部分木",
+    "level": "上級",
+    "prerequisites": [
+      "virtual-tree",
+      "doubling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc340/editorial/9249"
+    ]
+  },
+  {
+    "id": "centroid-count-cross-subtrees",
+    "title": "重心を通る頂点対を異なる部分木の間だけで数える",
+    "summary": "一つの部分木を照会してから登録し、同じ側の二頂点を混ぜない。",
+    "aliases": [
+      "Centroid Path Counting",
+      "Fixed Length Paths",
+      "重心分解の数え上げ"
+    ],
+    "family": "木・距離",
+    "level": "上級",
+    "prerequisites": [
+      "centroid-decomposition"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/problems/cses-2080-fixed-length-paths-i/solution"
+    ]
+  },
+  {
+    "id": "dsu-threshold-queries",
+    "title": "重みのしきい値順に辺を追加して連結性を共有する",
+    "summary": "問い合わせをソートし、使える辺が増える向きにUnion-Findを更新する。",
+    "aliases": [
+      "Threshold Connectivity Queries",
+      "Kruskal Queries",
+      "重み順Union-Find"
+    ],
+    "family": "グラフ・連結性",
+    "level": "中級",
+    "prerequisites": [
+      "union-find",
+      "offline-queries"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc235/editorial/3263",
+      "https://usaco.org/index.php?cpid=789&page=viewproblem2",
+      "https://usaco.org/current/data/sol_mootube_gold_jan18.html"
+    ]
+  }
+]

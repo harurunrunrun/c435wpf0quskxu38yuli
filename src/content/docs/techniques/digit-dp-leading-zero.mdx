@@ -1,0 +1,68 @@
+---
+title: "桁DPでは先頭の0と数字としての0を分ける"
+description: "短い数を0埋めして扱うとき、まだ数字が始まっていない状態を用意します。"
+techniqueId: digit-dp-leading-zero
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+短い数を0埋めして扱うとき、まだ数字が始まっていない状態を用意します。
+
+## 使う場面
+
+上限 $B$ 以下の整数を桁DPで数え、隣接する桁の一致などを禁止する場合です。短い数を0埋めすると、たとえば5を `005` として扱います。この先頭の0まで通常の数字として比較すると、実際には隣接桁のない5を除いてしまいます。
+
+## 考え方
+
+$dp[pos][tight][prev]$ を持ち、まだ非零の数字を置いていない場合の `prev` を番兵10とします。番兵の状態で0を置くと番兵のまま進みます。非零の数字を置いたら通常の前の桁として保存し、それ以降の0は本物の数字として条件を判定します。`tight` はここまで上限と一致するかです。
+
+## 適用条件
+
+先頭の0が数の性質へ影響しない場合に使います。桁数を固定した文字列の問題では、先頭の0も通常の要素です。また、整数0を含めるかを決めます。以下では最後まで番兵の状態を0として1回数えます。
+
+## なぜ正しいか
+
+各非負整数は、上限と同じ桁数への0埋めで一意に表せます。数字が始まるまで条件を適用しないため、元の整数に存在しない桁を判定しません。開始後はすべての桁を通常どおり処理し、`tight` が上限を越える遷移を防ぎます。
+
+## 計算量
+
+範囲内の整数を列挙する $O(B\log B)$ 時間から、$L$ 桁なら $O(L\cdot2\cdot11\cdot10)$ 時間になります。全桁を保存する $O(L)$ の状態配列も、前後の2層で $O(1)$ 作業空間にできます。
+
+## 実装
+
+`count_no_equal_neighbors(B)` は0以上 $B$ 以下で隣接する同じ桁を持たない整数の数を返します。$0\le B\le10^{18}$ を扱い、負の上限では0です。区間 $[A,B]$ の個数は `f(B) - f(A-1)` です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long count_no_equal_neighbors(long long B) {
+    if(B<0) return 0;
+    assert(B<=1000000000000000000LL);
+    array<array<long long,11>,2> dp{}; dp[1][10]=1;
+    for(char ch:to_string(B)) {
+        array<array<long long,11>,2> next{}; int digit=ch-'0';
+        for(int tight=0;tight<2;++tight) for(int prev=0;prev<=10;++prev) {
+            int limit=tight?digit:9;
+            for(int d=0;d<=limit;++d) {
+                int p=(prev==10 && d==0)?10:d;
+                if(prev!=10 && prev==d) continue;
+                int nt=tight && d==digit;
+                next[nt][p]+=dp[tight][prev];
+            }
+        }
+        dp=next;
+    }
+    long long answer=0;
+    for(const auto& row:dp) for(long long ways:row) answer+=ways;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[桁DP](/flowchartcp/techniques/digit-dp/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [CSES：Counting Numbersの解説・実装](https://usaco.guide/problems/cses-2220-counting-numbers/solution)
+
+<TechniqueReferences techniqueId="digit-dp-leading-zero" />

@@ -1,0 +1,66 @@
+---
+title: "終了しない対戦は、負け状態から逆向きに勝敗を確定する"
+description: "負けへ進める状態と、全ての行き先が勝ちになる状態を逆辺で伝えます。"
+techniqueId: "retrograde-winning-draw"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+現在位置から有向辺を一つ選んで移動し、出辺がない場所で手番を迎えると負ける対戦。状態の再訪が許され、永遠に続く場合を引分にするなら、再帰の循環を勝ち負けのどちらかに決めつけられません。
+
+## 考え方
+
+出次数0の状態を負けとしてキューへ入れます。確定した状態から逆辺を辿り、負けへ移れる未確定状態は勝ちにします。勝ちへ向かう辺を数え、全ての行き先が勝ちになった状態を負けにします。最後まで未確定の状態が引分です。
+
+しりとりでは文字列全体を状態にせず、次の単語の先頭に必要な末尾3文字を状態にします。一つの単語が「先頭3文字から末尾3文字への辺」に対応します。
+
+## 適用条件
+
+有限の状態集合と合法手が列挙でき、盤面の履歴が次の合法手に影響しないこと。各自が負けを避けることを優先し、その上で勝ちを選びます。単語の使用回数に制限があるなら、末尾だけでは状態が足りません。
+
+## なぜ正しいか
+
+負けへ進める状態はその一手で勝てます。全行き先が勝ちなら、どの手でも相手に勝ちを渡すので負けです。逆向きの伝播はこの二つの十分条件だけで確定します。未確定の状態には負けへの辺がなく、少なくとも一つ未確定への辺があります。互いにその辺を選び続けて負けを回避できるため引分です。
+
+## 計算量
+
+全状態を繰り返し走査すると最悪 $O(V(V+E))$。未処理の出辺数を持つキュー処理なら各頂点と各辺を一度ずつ扱い、時間・空間とも $O(V+E)$。多重辺も一つずつ数えます。
+
+## 実装
+
+返り値は、手番の側にとって負けが -1、引分が 0、勝ちが 1 です。しりとりで最初の単語を先手が既に言った場合、末尾の状態の手番は後手であることに注意します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> classify_normal_graph_game(const vector<vector<int>>& next){
+    int n=next.size();
+    vector<vector<int>> previous(n);
+    vector<int> remaining(n),result(n);
+    queue<int> pending;
+    for(int v=0;v<n;++v){
+        remaining[v]=next[v].size();
+        for(int u:next[v]){assert(0<=u && u<n);previous[u].push_back(v);}
+        if(remaining[v]==0){result[v]=-1;pending.push(v);}
+    }
+    while(!pending.empty()){
+        int u=pending.front();pending.pop();
+        for(int v:previous[u])if(result[v]==0){
+            if(result[u]==-1){result[v]=1;pending.push(v);}
+            else if(--remaining[v]==0){result[v]=-1;pending.push(v);}
+        }
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[Grundy数](/flowchartcp/techniques/game-theory/)、[逆順処理](/flowchartcp/techniques/reverse-thinking/)、[グラフへの帰着](/flowchartcp/techniques/graph-reduction/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc209/editorial/2237)
+
+<TechniqueReferences techniqueId="retrograde-winning-draw" />

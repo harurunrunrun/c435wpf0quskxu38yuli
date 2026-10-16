@@ -1,0 +1,84 @@
+---
+title: "マージテク"
+description: "小さい集合を大きい集合に併合し、各要素の移動回数を抑える。"
+techniqueId: small-to-large
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+小さい集合を大きい集合に併合し、各要素の移動回数を抑える。
+
+## 使う場面
+
+木の各部分木で、値の集合や出現回数を集計するときに使う。子の結果を親に毎回コピーすると、鎖状の木では二乗時間になる場合がある。大きい結果をそのまま使い、小さい側だけを追加すると移動回数を減らせる。
+
+## 考え方
+
+二つの集合を比べ、小さい側の要素を大きい側に移す。併合後は小さい側の容器を使わず、併合先をその後の結果として持つ。
+
+色の出現回数を表で管理する場合は、同じ色を一つのキーにまとめる。以下の実装では、表のキー数ではなく、その表が表している元の頂点数で大小を比べる。これにより、移動する頂点が属する集団の大きさが毎回倍以上になる。
+
+## 適用条件
+
+併合先を入れ替える操作が十分速く、併合によって各要素の属する集団が大きくなることが必要になる。
+
+重複するキーがある場合、キー数だけでは集団が倍増したとはいえない。計算量の証明では、何の大きさを比較するかを明確にする。全頂点について完成した集合を別々にコピーして残すと、空間が二乗になる場合がある。
+
+## なぜ正しいか
+
+小さい側から移る元要素は、併合後に少なくとも2倍の大きさの集団へ属する。集団の大きさは $N$ 以下なので、各要素は高々 $O(\log N)$ 回しか移動しない。頻度表で同じキーをまとめる場合も、一つのキーの処理をそのキーに含まれる元要素に対応させれば、この上界を使える。
+
+## 計算量
+
+元要素の移動回数は全体で $O(N\log N)$。平衡二分探索木の `map` に追加する実装は、1回の操作に $O(\log N)$ かかるため時間 $O(N\log^2 N)$、空間 $O(N)$。ハッシュ表を使う場合の期待時間は $O(N\log N)$。
+
+## 実装
+
+`distinct_in_subtrees` は、頂点0を根とする各部分木の色の種類数を返す。入力は連結な無向木と、各頂点の色の配列。`mass` は表が代表する頂点数であり、色の種類数とは異なる。併合した子の表は空になる。
+
+```cpp
+#include <vector>
+#include <map>
+#include <algorithm>
+using namespace std;
+struct ColorBag {
+    int mass=0;
+    map<int,int> frequency;
+    void absorb(ColorBag& other) {
+        if(mass<other.mass) {
+            swap(mass,other.mass);
+            frequency.swap(other.frequency);
+        }
+        for(auto [color,count]:other.frequency) frequency[color]+=count;
+        mass+=other.mass;
+        other.mass=0;other.frequency.clear();
+    }
+};
+vector<int> distinct_in_subtrees(const vector<vector<int>>& g,const vector<int>& color) {
+    int n=g.size();
+    if(n==0) return {};
+    vector<int> parent(n,-1),order{0},answer(n);
+    parent[0]=0;
+    for(int i=0;i<int(order.size());++i)
+        for(int u:g[order[i]]) if(u!=parent[order[i]]) {
+            parent[u]=order[i];order.push_back(u);
+        }
+    vector<ColorBag> bag(n);
+    for(int i=n-1;i>=0;--i) {
+        int v=order[i];
+        bag[v].mass=1;bag[v].frequency[color[v]]=1;
+        for(int u:g[v]) if(parent[u]==v && u!=v) bag[v].absorb(bag[u]);
+        answer[v]=bag[v].frequency.size();
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [Union-Find](/flowchartcp/techniques/union-find/) ・ [オフラインクエリ](/flowchartcp/techniques/offline-queries/)
+
+## 参考資料
+
+- [USACO Guide: Small-To-Large Merging](https://usaco.guide/plat/merging)
+
+<TechniqueReferences techniqueId="small-to-large" />

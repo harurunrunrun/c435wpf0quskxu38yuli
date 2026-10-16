@@ -1,0 +1,41 @@
+{
+  "name": "flowchartcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4321",
+    "build": "npm run validate && node scripts/build-diagrams.mjs && astro build",
+    "build:local": "npm run validate && node scripts/build-local.mjs",
+    "preview:local": "node scripts/preview-local.mjs",
+    "preview": "astro preview --host 127.0.0.1 --port 4321",
+    "check": "astro check",
+    "validate": "node scripts/validate.mjs",
+    "test": "node scripts/run-tests.mjs",
+    "test:cpp": "python3 scripts/check_cpp.py",
+    "test:cpp:specific": "python3 scripts/check_specific_cpp.py",
+    "test:browser": "playwright test",
+    "collect": "node scripts/collect.mjs",
+    "verify:links": "node scripts/check-links.mjs",
+    "verify:local": "node scripts/check-links.mjs --local",
+    "audit:coverage": "node scripts/audit-coverage.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.16.0",
+    "@astrojs/starlight": "^0.37.0",
+    "@astrojs/mdx": "^4.3.0",
+    "katex": "^0.16.25",
+    "remark-math": "^6.0.0",
+    "rehype-katex": "^7.0.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.3",
+    "tsx": "^4.20.6",
+    "@playwright/test": "^1.56.0",
+    "pagefind": "^1.4.0"
+  }
+}

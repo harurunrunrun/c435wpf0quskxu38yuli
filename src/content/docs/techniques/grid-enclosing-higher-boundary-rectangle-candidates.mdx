@@ -1,0 +1,237 @@
+---
+title: "各行・各列で両端が内部より高い長方形を数える"
+description: "内部の最大セルから候補を作り、各行・各列で同じ外側の二位置が条件を満たし続けるかを確かめる。等しい候補をまとめ、厳密な高さの条件を満たすものを数える。"
+techniqueId: grid-enclosing-higher-boundary-rectangle-candidates
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+高さのある格子で、盤面の外周に触れない空でない長方形を数えたい。内部セル $(i,j)$ は、同じ行にある左右の外側セルと、同じ列にある上下の外側セルの**四つ全てより真に低い**必要がある。
+
+長方形を $[t,b]\times[l,r]$ とすると、全ての内部セルについて
+
+$$a_{i,j}<\min(a_{i,l-1},a_{i,r+1},a_{t-1,j},a_{b+1,j})$$
+
+を求める。外側の四隅のセルは条件に含めない。長方形内の総和や点集合の数え上げとは異なり、行ごと、列ごとに外側との厳密な大小を確かめる。
+
+## 考え方
+
+一つのセルから、上下左右へ**最初に現れる真に高いセル**を求める。その四セルが全て存在すれば、そのすぐ内側を一つの候補長方形とする。全セルが一つずつしか候補を出さないので、候補数はセル数以下である。
+
+任意の有効長方形で、内部の最大高さのセルを一つ選ぶ。このセルより真に高いセルは内部にはなく、同じ行・列の外側四セルは全てそれより高い。従って四方向の最初の高いセルは、ちょうど求める外境界となる。この観察で全有効長方形を候補に含められる。
+
+候補の高さ条件を一セルずつ調べ直す代わりに、一次元の区間を使う。一列の位置 $L<R$ が
+
+$$\max_{L<j<R}a_j<\min(a_L,a_R),\qquad R-L\ge2$$
+
+を満たすとき、この二位置を**高い両端**と呼ぶ。候補の横方向の条件は、同じ両端 $(l-1,r+1)$ が行 $t$ から $b$ まで途切れず現れることに等しい。縦方向も、両端 $(t-1,b+1)$ が列 $l$ から $r$ まで続くことに等しい。
+
+候補を下端の順に並べ、行を上から走査する。各両端について、最後に現れた行と連続出現の開始行を保持し、その時点で横方向を判定する。横を通過した候補を右端の順へ並べ替え、列を左から走査して縦方向を判定する。
+
+## 適用条件
+
+掲載APIは、行数・列数がそれぞれ $1\ldots2500$、高さが $0\ldots7000000$ の長方形配列を扱い、原典の全範囲を含む。高さの同値と0を許す。比較は厳密であり、同じ高さは境界にならない。行数か列数が3未満なら、有効長方形は0個である。
+
+`count_strictly_enclosed_rectangles(grid)` は64bit整数の個数を返す。空配列、空行、異なる行長、範囲外の大きさや高さは `std::invalid_argument`。答えが必ず0になる小さい形でも、配列全体を検査する。入力は変更せず、割当例外はそのまま伝える。全状態は呼出し内にあり、同じ配列にも別の配列にも繰り返し使える。
+
+高さの更新、非厳密な比較、外側の四隅も含む条件には、この手順をそのまま流用しない。掲載実装は2500以下の座標を12bitに収め、両端の組を直接表へ置く。この範囲を拡張する場合は、キー、時刻の格納幅と表の大きさを再設計する。
+
+## なぜ正しいか
+
+**候補の完全性。** 有効長方形の内部最大セルを選ぶと、その行と列の内部は全てそのセル以下である。外側四セルは条件からそのセルより真に高い。従って四方向の最初の高い位置は、外側四セルの位置に一致する。このセルは必ず元の長方形を生成する。最大が複数あっても、どれを選んでもこの議論は成立する。
+
+一方、任意のセルが生成した候補は、それだけでは有効とは限らない。他の行・列にある大きな値も調べる必要がある。候補の四座標を整数キーにして先に重複を除き、後の検査に通った異なる長方形だけを数える。各有効長方形に生成元のセルを一つ対応させると、同じセルは二候補を生成できないので、答えもセル数以下となる。
+
+**高い両端の列挙。** 一次元であるセルの左右の最初の高い位置を取ると、その間は全てそのセル以下だから、その二位置は高い両端である。逆に高い両端の内部最大セルからは、その二位置が最初の高い位置として得られる。従って全内部セルから二位置を出せば、必要な両端を漏れなく得られる。
+
+最初の高い位置は単調スタックで求める。現在値以下の要素を全てpopし、残った末尾を使う。等しい値もpopするので、内部最大の同値が続いても境界を誤らない。同じ両端が一行内で何度出ても、最後の出現行が現在行なら更新を省き、一度の出現として扱う。
+
+**連続出現による必要十分性。** 横の両端が一行で高い両端になることは、その行の内部セル全てが左右の外側セルより真に低いことそのものである。従って候補の全行で同じ両端が現れることが横条件の必要十分条件となる。現在行を $b$ とし、最後の出現が $b$、連続出現の開始が $t$ 以下なら、行 $t\ldots b$ の全てを満たす。縦も全く同じ判定である。横と縦を両方通すことが、原典の四つの不等式全てを満たすことに等しい。
+
+表には、ある両端を最後に見た位置と連続出現の開始だけを残せばよい。直前の位置にもあれば開始を引き継ぎ、それ以外なら現在位置からやり直す。出現のなかった両端を毎行消去する必要はない。候補は下端・右端の順で検査するので、将来の出現を誤って使うこともない。
+
+## 計算量
+
+$n,m\ge3$ の場合を考え、$C=nm$、重複を含む候補数を $P\le(n-2)(m-2)\le C$ とする。どちらかの辺が3未満なら、全入力の検査だけを $O(nm)$ 時間で行い、0を返す。単調スタックの各走査は、一要素につきpush・popが高々一回なので $O(C)$。候補キーは12bitの四座標、計48bitである。8bitずつ6回の安定なradix sortを二度使い、並べ替えと重複除去も $O(C)$ とする。
+
+二位置 $L<R<d$ の表は $R(R-1)/2+L$ を添字とし、$d(d-1)/2$ 要素で足りる。二方向の表の初期化を含め、時間は **$O(nm+n^2+m^2)$**、空間は **$O(nm+\max(n^2,m^2))$**。これは原典の縦横各2500を全て扱う。
+
+表は方向ごとに破棄する。最大入力で主要な補助配列が保持するデータ量は、入力を平坦化した4$C$ byte、候補とsort用領域が各8$P$ byteで、高々125000000 byte。呼出し元の入力要素25MB、vectorの管理領域、allocatorの管理領域はこの補助領域と別である。原典の値渡しadapterへlvalueを渡す場合の入力複製も別に必要になる。行の左右境界は各2$C$ byteで、候補生成が終わったらsort前に解放する。再帰は使わない。
+
+座標と出現時刻は2500以下で12bitに収まり、pair表の要素数は最大3123750。添字の積は `std::size_t`、キーは64bit符号なし整数で作る。個数は64bitで数える。高さ同士の比較だけを使い、高さの加減算によるoverflowもない。
+
+## 実装
+
+補助関数は四座標の格納・並べ替えと、一列の最初の高い位置を扱う。API本体は候補生成、行の検査、列の検査の三段階である。原典の `count_rectangles` 形式の入口も最後に含めた。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+
+namespace enclosing_rectangle_detail {
+using Key = std::uint64_t;
+constexpr unsigned field_bits = 12;
+constexpr std::uint32_t field_mask = (1U << field_bits) - 1;
+constexpr std::uint16_t absent = std::numeric_limits<std::uint16_t>::max();
+static_assert(std::numeric_limits<int>::max() >= 7000000);
+
+Key pack(int a, int b, int c, int d) {
+    return (Key(a) << 36) | (Key(b) << 24) | (Key(c) << 12) | Key(d);
+}
+int field(Key key, unsigned shift) { return int((key >> shift) & field_mask); }
+
+void radix_sort(std::vector<Key>& keys) {
+    std::vector<Key> scratch(keys.size());
+    for (unsigned shift = 0; shift < 48; shift += 8) {
+        std::array<std::size_t, 256> position{};
+        for (Key key : keys) ++position[(key >> shift) & 255];
+        std::size_t total = 0;
+        for (auto& count : position) {
+            const std::size_t old = count; count = total; total += old;
+        }
+        for (Key key : keys) scratch[position[(key >> shift) & 255]++] = key;
+        keys.swap(scratch);
+    }
+}
+
+template<class ValueAt>
+void neighbors(int length, ValueAt value,
+               std::vector<std::uint16_t>& before,
+               std::vector<std::uint16_t>& after, std::vector<int>& stack) {
+    before.resize(length); after.resize(length); stack.clear();
+    for (int i = 0; i < length; ++i) {
+        while (!stack.empty() && value(stack.back()) <= value(i)) stack.pop_back();
+        before[i] = stack.empty() ? absent : std::uint16_t(stack.back());
+        stack.push_back(i);
+    }
+    stack.clear();
+    for (int i = length - 1; i >= 0; --i) {
+        while (!stack.empty() && value(stack.back()) <= value(i)) stack.pop_back();
+        after[i] = stack.empty() ? absent : std::uint16_t(stack.back());
+        stack.push_back(i);
+    }
+}
+
+std::size_t pair_index(int left, int right) {
+    return std::size_t(right) * (right - 1) / 2 + left;
+}
+std::size_t pair_slots(int length) { return std::size_t(length) * (length - 1) / 2; }
+
+void note(std::vector<std::uint32_t>& runs, int left, int right, int stamp) {
+    auto& entry = runs[pair_index(left, right)];
+    const std::uint32_t last = entry & field_mask;
+    if (last == std::uint32_t(stamp)) return;
+    const std::uint32_t start = last != 0 && last + 1 == std::uint32_t(stamp)
+        ? entry >> field_bits : std::uint32_t(stamp);
+    entry = (start << field_bits) | std::uint32_t(stamp);
+}
+bool covers(const std::vector<std::uint32_t>& runs, int left, int right,
+            int first_stamp, int last_stamp) {
+    const std::uint32_t entry = runs[pair_index(left, right)];
+    return (entry & field_mask) == std::uint32_t(last_stamp)
+        && (entry >> field_bits) <= std::uint32_t(first_stamp);
+}
+} // namespace enclosing_rectangle_detail
+
+long long count_strictly_enclosed_rectangles(const std::vector<std::vector<int>>& grid) {
+    using namespace enclosing_rectangle_detail;
+    if (grid.empty() || grid.size() > 2500 || grid.front().empty() || grid.front().size() > 2500)
+        throw std::invalid_argument("grid dimensions outside supported range");
+    const int n = int(grid.size()), m = int(grid.front().size());
+    for (const auto& row : grid) {
+        if (row.size() != std::size_t(m)) throw std::invalid_argument("ragged grid");
+        for (int height : row) if (height < 0 || height > 7000000)
+            throw std::invalid_argument("grid height outside supported range");
+    }
+    if (n < 3 || m < 3) return 0;
+    const std::size_t cells = std::size_t(n) * m;
+    std::vector<int> a; a.reserve(cells);
+    for (const auto& row : grid) a.insert(a.end(), row.begin(), row.end());
+    std::vector<std::uint16_t> before, after;
+    std::vector<int> stack; stack.reserve(std::max(n, m));
+    std::vector<Key> keys; keys.reserve(std::size_t(n - 2) * (m - 2));
+    {
+        std::vector<std::uint16_t> left(cells), right(cells);
+        for (int row = 0; row < n; ++row) {
+            neighbors(m, [&](int column) { return a[std::size_t(row) * m + column]; }, before, after, stack);
+            std::copy(before.begin(), before.end(), left.begin() + std::size_t(row) * m);
+            std::copy(after.begin(), after.end(), right.begin() + std::size_t(row) * m);
+        }
+        for (int column = 1; column < m - 1; ++column) {
+            neighbors(n, [&](int row) { return a[std::size_t(row) * m + column]; }, before, after, stack);
+            for (int row = 1; row < n - 1; ++row) {
+                const std::size_t id = std::size_t(row) * m + column;
+                if (before[row] == absent || after[row] == absent || left[id] == absent || right[id] == absent) continue;
+                keys.push_back(pack(after[row] - 1, before[row] + 1, right[id] - 1, left[id] + 1));
+            }
+        }
+    }
+    if (keys.empty()) return 0;
+    radix_sort(keys); // (bottom, top, right, left)
+    keys.erase(std::unique(keys.begin(), keys.end()), keys.end());
+    {
+        std::vector<std::uint32_t> runs(pair_slots(m), 0);
+        std::size_t read = 0, written = 0;
+        for (int row = 0; row < n; ++row) {
+            neighbors(m, [&](int column) { return a[std::size_t(row) * m + column]; }, before, after, stack);
+            for (int column = 1; column < m - 1; ++column)
+                if (before[column] != absent && after[column] != absent)
+                    note(runs, before[column], after[column], row + 1);
+            while (read < keys.size() && field(keys[read], 36) == row) {
+                const Key key = keys[read++];
+                const int bottom = field(key, 36), top = field(key, 24);
+                const int right = field(key, 12), left = field(key, 0);
+                if (covers(runs, left - 1, right + 1, top + 1, bottom + 1))
+                    keys[written++] = pack(right, left, bottom, top);
+            }
+        }
+        keys.resize(written);
+    }
+    if (keys.empty()) return 0;
+    radix_sort(keys); // (right, left, bottom, top), still distinct
+    long long answer = 0;
+    {
+        std::vector<std::uint32_t> runs(pair_slots(n), 0);
+        std::size_t read = 0;
+        for (int column = 0; column < m; ++column) {
+            neighbors(n, [&](int row) { return a[std::size_t(row) * m + column]; }, before, after, stack);
+            for (int row = 1; row < n - 1; ++row)
+                if (before[row] != absent && after[row] != absent)
+                    note(runs, before[row], after[row], column + 1);
+            while (read < keys.size() && field(keys[read], 36) == column) {
+                const Key key = keys[read++];
+                const int right = field(key, 36), left = field(key, 24);
+                const int bottom = field(key, 12), top = field(key, 0);
+                answer += covers(runs, top - 1, bottom + 1, left + 1, right + 1);
+            }
+        }
+    }
+    return answer;
+}
+
+long long count_rectangles(std::vector<std::vector<int>> grid) {
+    return count_strictly_enclosed_rectangles(grid);
+}
+```
+
+## 関連する手法
+
+- [区間最大値の寄与](/flowchartcp/techniques/subarray-extremum-contribution/)：最大セルに長方形を対応させ、全候補数を抑える。
+- [累積和](/flowchartcp/techniques/prefix-sum/)：区間内の和を取得する場合とは異なり、ここでは同じ両端の出現が途切れた位置を保持する。
+- [不変条件](/flowchartcp/techniques/invariant/)：両端ごとの最後の出現と連続出現の開始が、現在位置までの正確な連続出現区間を表す。
+
+## 参考資料
+
+- [IOI 2019 Rectangles 原典](https://ioinformatics.org/files/ioi2019problem3.pdf)：長方形内部の各セルと、同じ行・列の外側四セルの厳密な比較。
+- [日本委員会配布の日本語原典](https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf)、[大会配布の台湾語原典](https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf)：縦横各2500、高さ0〜7000000の制約。
+- [大会配布の公式Review](https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf)：行・列のgood pairを列挙して結合する方針と、別の16構造による方針。掲載実装の最大セル候補・連続run照合・直接表・radix sortは独立に証明した手順である。
+- [日本委員会の公式日別一覧](https://www2.ioi-jp.org/ioi/2019/tasks/index.html)：競技日1は2019年8月6日。
+
+<TechniqueReferences techniqueId="grid-enclosing-higher-boundary-rectangle-candidates" />

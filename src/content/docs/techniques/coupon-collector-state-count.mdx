@@ -1,0 +1,52 @@
+---
+title: "等確率で種類を集めるなら、未収集の個数で待ち時間を分ける"
+description: "収集済みの集合を持たず、新しい種類が出るまでの期待回数を足します。"
+techniqueId: "coupon-collector-state-count"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+全 $N$ 種類から毎回独立に一つを等確率で選び、全種類が現れるまでの回数を求めるとき。収集済みの種類の名前が、その後の確率に影響しないことが手掛かりです。
+
+## 考え方
+
+収集済みが $i$ 種類なら、新しい種類が出る確率は $p_i=(N-i)/N$。その一種類を増やすまでの待ち時間は $1/p_i$ です。初めに $s$ 種類あるなら、期待回数は $\sum_{i=s}^{N-1}N/(N-i)$。集合の全パターンを状態にする必要がなくなります。
+
+## 適用条件
+
+各種類の選択確率が等しく、試行が独立であること。確率が種類ごとに違う場合、同じ収集個数でも残りの種類によって確率が変わります。初期個数は $0\le s\le N$、$N\ge1$。
+
+## なぜ正しいか
+
+成功までの期待回数を $E$ とすると、$E=1+(1-p)E$ より $E=1/p$。収集個数は一度に一つだけ増えるので、全ての段階の待ち時間を通ります。段階どうしの独立性を仮定せず、期待値の線形性で足せます。
+
+## 計算量
+
+集合を区別すると最大 $2^N$ 状態。個数ごとの待ち時間の和なら時間 $O(N-s)$、追加空間 $O(1)$。
+
+## 実装
+
+`expected_collection_steps(n,collected)` は、既に `collected` 種類を集めた状態からの残り回数の期待値です。省略時は原典に合わせて一種類を収集済みとします。何も持たずに始める場合は第二引数に 0 を指定します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double expected_collection_steps(int n,int collected=1){
+    assert(n>=1 && 0<=collected && collected<=n);
+    long double answer=0;
+    for(long long missing=1;missing<=n-collected;++missing)
+        answer+=(long double)n/missing;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[期待値の線形性](/flowchartcp/techniques/probability-expectation/)、[対称性](/flowchartcp/techniques/symmetry/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc194/editorial/864)
+
+<TechniqueReferences techniqueId="coupon-collector-state-count" />

@@ -1,0 +1,80 @@
+---
+title: "永続セグメント木"
+description: "更新前の状態を残しながら、新しい状態のセグメント木を作ります。"
+techniqueId: persistent-segment-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+更新前の状態を残しながら、新しい状態のセグメント木を作ります。
+
+別名：Persistent Segment Tree / Path Copying
+
+## 使う場面
+
+過去の配列への問い合わせや、過去の状態から分岐する更新を扱う場合に使います。配列を毎回コピーすると1回 $O(N)$ の時間と空間が必要ですが、セグメント木の一点更新で変わるのは、根から葉までの $O(\log N)$ 個のノードだけです。
+
+## 考え方
+
+各状態について根の番号を保存します。更新する経路のノードだけを新しく作り、変更しない子は以前のノードを共有します。共有しているノードは書き換えません。
+
+区間内の値の順位を求める応用では、配列の各接頭辞について、値ごとの頻度を持つ木を作ります。接頭辞 $r$ と接頭辞 $l$ の木の頻度を引くと、区間 $[l,r)$ の頻度になります。その差を見ながら木を降りることで、区間の $k$ 番目の値も求められます。
+
+## 適用条件
+
+過去の状態と共有するノードを変更しないことが必要です。遅延伝播を使う場合は、子へ更新を伝える前に、その子も複製します。
+
+2つの根の値の差を利用できるのは、和や個数など差を取れる集計です。接頭辞の最小値同士を引いても、区間最小値にはなりません。以下の実装は、0で初期化した配列への一点加算と区間和を扱います。
+
+## なぜ正しいか
+
+更新する経路の外側は新旧の状態で同じなので、共有しても正しい値が得られます。経路上では、更新後の子と共有した子を結合し、新しい集計値を作ります。以前のノードは変えないため、古い根から問い合わせれば更新前の値が得られます。
+
+## 計算量
+
+一点更新と区間和の取得はそれぞれ $O(\log N)$ です。以下の実装では0の木を共有するため、初期空間は $O(1)$、$U$ 回の更新後の空間は $O(U\log N)$ です。任意の初期配列から明示的に木を作る場合は、さらに $O(N)$ の時間と空間が必要です。
+
+## 実装
+
+`tree.add(old_root, p, delta)` は位置 `p` に加算した新しい根を返します。元の根も保存しておけば、両方の状態へ問い合わせられます。
+
+ノードを保存する `vector` は追加によって再確保されるため、再帰中にはノードへの参照を保持せず、番号を使っています。区間和は `long long` の範囲内に収めてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct PersistentSum {
+    struct Node { int l=0,r=0; long long sum=0; };
+    int n; vector<Node> t={{}}; // root 0: the all-zero array
+    explicit PersistentSum(int n):n(n) { assert(n>0); }
+    int add(int v,int l,int r,int p,long long delta) {
+        int u=t.size(); t.push_back(t[v]); t[u].sum+=delta;
+        if(r-l>1) {
+            int m=(l+r)/2;
+            if(p<m) { int z=add(t[u].l,l,m,p,delta); t[u].l=z; }
+            else { int z=add(t[u].r,m,r,p,delta); t[u].r=z; }
+        }
+        return u;
+    }
+    int add(int root,int p,long long delta) {
+        assert(0<=p && p<n); return add(root,0,n,p,delta);
+    }
+    long long sum(int v,int l,int r,int a,int b) const {
+        if(v==0 || b<=l || r<=a) return 0;
+        if(a<=l && r<=b) return t[v].sum;
+        int m=(l+r)/2; return sum(t[v].l,l,m,a,b)+sum(t[v].r,m,r,a,b);
+    }
+    long long sum(int root,int l,int r) const {
+        assert(0<=l && l<=r && r<=n); return sum(root,0,n,l,r);
+    }
+};
+```
+
+## 関連する手法
+
+[セグメント木](/flowchartcp/techniques/segment-tree/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [cp-algorithms: Persistent Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
+
+<TechniqueReferences techniqueId="persistent-segment-tree" />

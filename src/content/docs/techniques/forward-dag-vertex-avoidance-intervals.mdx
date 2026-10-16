@@ -1,0 +1,124 @@
+---
+title: "前向きの辺だけのグラフで各頂点を避ける最短路は、飛び越す辺を区間へ配る"
+description: "始点からと終点までの距離を共有し、一つの辺が飛び越せる頂点全体へ同じ候補を使う。"
+techniqueId: forward-dag-vertex-avoidance-intervals
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+頂点に順序があり、全ての辺が小さい番号から大きい番号へ向かう。一つの始点から一つの終点への最短距離を、**各途中の頂点を一つずつ禁止した場合**について求めたい。全ての辺の費用は1とする。
+
+禁止するたびに探索し直すと重い。一方、番号が厳密に増えるため、ある頂点を避ける経路は、その頂点を前から後ろへ飛び越す辺を必ず持つ。この辺を使う前後の距離を共有する。
+
+## 考え方
+
+頂点を $0..N-1$、始点を0、終点を $N-1$ とする。禁止なしで、始点からの距離 $d_s[u]$ と終点までの距離 $d_t[v]$ を求める。番号順とその逆順のDPでよい。
+
+頂点 $k$ を避けるため、$u<k<v$ を満たす辺 $u\to v$ を使う。その経路の候補は
+
+$$
+d_s[u]+1+d_t[v]
+$$
+
+である。$u$ へ至る経路は $u$ 以下の番号しか使わず、$v$ からの経路は $v$ 以上しか使わないので、どちらも $k$ を踏まない。
+
+この候補は、辺 $u\to v$ が飛び越す全ての頂点 $k\in[u+1,v)$ で共通になる。従って、**各辺を、区間に一定の候補値を置く操作へ変える**。
+
+頂点 $k$ を左から走査する。始まる区間を最小ヒープへ追加し、右端を過ぎた区間はヒープの先頭に来たときに捨てる。残った最小値が頂点 $k$ を禁止した答えになる。
+
+例えば辺 $1\to5$ の候補は、頂点2・3・4を禁止する三つの質問で同じ値を使える。辺の長さに上限がなくても、一つずつ配る必要はない。
+
+## 適用条件
+
+- 全ての辺は、与えられた順序で厳密に前へ進み、始点が先頭、終点が末尾にある。
+- 始点・終点は固定し、各質問では元のグラフから一頂点だけを除く。
+- 全ての辺の費用が1で、必要なのは最小の使用辺数である。
+
+後ろへ戻る辺や有向閉路がある場合、禁止なしの前後の最短路が禁止頂点を通る可能性があり、このままでは候補として使えない。複数頂点を同時に禁止する場合も、一辺の飛び越しだけでは足りない。
+
+番号順が前向きでないDAGなら、始点から到達でき、かつ終点へ到達できる頂点だけを残してトポロジカル順に並べ直す。この部分グラフでは始点が先頭、終点が末尾になる。残さなかった頂点は元から始点・終点間の経路に現れないので、その頂点を禁止した答えは元の最短距離と同じである。元から到達不能なら全ての答えが到達不能になる。掲載実装ではこの前処理は行わない。
+
+重み付きの前向きグラフでも、前後の最小費用を同じ順序で求めれば基本の式は成り立つ。ただし掲載実装は全辺費用1であり、重みや負値は受け取らない。
+
+## なぜ正しいか
+
+始点から終点へ進む経路が途中の頂点 $k$ を使わないなら、$k$ より小さい番号から $k$ より大きい番号へ移る瞬間がある。そのときの辺を $u\to v$ とすると、$u<k<v$ である。
+
+その経路の費用は、前後それぞれの最短距離を使う $d_s[u]+1+d_t[v]$ 以上になる。一方、番号が前へしか進まないので、その前後の最短路も $k$ を使わず、候補の値を実際に達成できる。従って、$k$ を飛び越す辺の候補の最小値が答えである。
+
+走査時には、左端が $k$ 以下になった候補区間を全て追加する。先頭の区間が既に終了していれば除き、先頭が有効になるまで繰り返す。先頭以外に終了済みの区間が残っていても、その値は有効な先頭以上なので最小値を妨げない。必要な区間の最小値だけを正しく取り出せる。
+
+## 計算量
+
+頂点ごとに探索すると $O(N(N+M))$ 時間。前後の距離の計算は $O(N+M)$、各候補の追加と削除は高々一回ずつなので、合計 $O(N+M\log(M+1))$ 時間、$O(N+M)$ 空間になる。
+
+ジャンプ幅が小さい場合は、禁止頂点の近くの辺だけを調べる方法も使える。区間候補にすると、ジャンプ幅に比例して同じ辺を調べ直す必要がなくなる。
+
+## 実装
+
+`shortest_paths_avoiding_each_forward_vertex(n, edges)` は、頂点を一つ除いた答えを頂点順に返す。始点0または終点 $N-1$ を除く場合と、到達できない場合は $-1$。頂点が一つなら `{-1}` になる。
+
+頂点数は $1..200000$、辺数は2000000以下、各辺は $0\le u<v<N$ とする。多重辺は許す。辺数超過は `length_error`、それ以外の条件違反は `invalid_argument`。
+
+到達可能な距離は $N-1$ 以下なので、到達不能の印として $N$ を使える。到達不能な側を持つ辺は候補へ加えない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> shortest_paths_avoiding_each_forward_vertex(
+        int n, const vector<pair<int,int>>& edges) {
+    if (edges.size() > 2000000) throw length_error("too many edges");
+    if (n < 1 || n > 200000) throw invalid_argument("invalid vertex count");
+    vector<vector<int>> outgoing(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || v >= n || u >= v)
+            throw invalid_argument("edges must go strictly forward");
+        outgoing[u].push_back(v);
+    }
+    vector<int> from_start(n, n), to_finish(n, n), answer(n, -1);
+    from_start[0] = 0;
+    for (int u = 0; u < n; ++u) {
+        if (from_start[u] == n) continue;
+        for (int v : outgoing[u])
+            from_start[v] = min(from_start[v], from_start[u] + 1);
+    }
+    to_finish[n - 1] = 0;
+    for (int u = n - 1; u >= 0; --u) {
+        for (int v : outgoing[u]) if (to_finish[v] != n)
+            to_finish[u] = min(to_finish[u], to_finish[v] + 1);
+    }
+    if (from_start[n - 1] == n) return answer;
+
+    // Each candidate stores its cost and its last valid forbidden vertex.
+    priority_queue<pair<int,int>, vector<pair<int,int>>,
+                   greater<pair<int,int>>> candidates;
+    for (int forbidden = 1; forbidden + 1 < n; ++forbidden) {
+        int u = forbidden - 1;
+        if (from_start[u] != n) {
+            for (int v : outgoing[u]) {
+                if (v <= forbidden || to_finish[v] == n) continue;
+                candidates.emplace(from_start[u] + 1 + to_finish[v], v - 1);
+            }
+        }
+        while (!candidates.empty() && candidates.top().second < forbidden)
+            candidates.pop();
+        if (!candidates.empty()) answer[forbidden] = candidates.top().first;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [一本ずつ辺を禁止する最短距離](/flowchartcp/techniques/unweighted-edge-removal-shortest/)：一般の単位重みグラフで、選んだ最短路上の辺だけを再探索する。
+- [一辺だけ費用を変える最短路](/flowchartcp/techniques/shortest-one-edge-discount/)：固定した一辺を前後の距離で挟む考え方。
+- [端点順に区間を処理する](/flowchartcp/techniques/sweep-interval-endpoints/)：候補の有効期間を、開始と終了で管理する。
+
+## 参考資料
+
+- [AtCoder ABC291 F：Teleporter and Closed off](https://atcoder.jp/contests/abc291/tasks/abc291_f) — 前向きの辺で移動し、各途中の都市を避ける最短距離を求める原典。
+- [AtCoder ABC291 F公式解説](https://atcoder.jp/contests/abc291/editorial/5864) — 禁止頂点を飛び越す一辺と、始点・終点側の距離を組み合わせる式。区間へまとめてヒープで処理する方法は、この式から導ける。
+
+<TechniqueReferences techniqueId="forward-dag-vertex-avoidance-intervals" />

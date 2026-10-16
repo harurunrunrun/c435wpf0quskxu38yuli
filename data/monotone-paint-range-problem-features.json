@@ -1,0 +1,32 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1116",
+    "title": "No Time to Dry",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+    "techniqueIds": [
+      "monotone-paint-stroke-links-offline-containment"
+    ],
+    "features": [
+      "固定の完成色列に薄い順の大小関係があり、一筆で連続区間を一色に塗れる。濃い色を薄い色へ戻せない。",
+      "各質問は全体が未塗装の状態から独立に始め、指定区間の中だけを完成させ、区間外は未塗装に残す最小筆数を求める。",
+      "原典N,Q各1..200000、色1..N、1始まり両端込み1<=a<=b<=N。掲載APIは0始まり半開区間・任意int64色・空列/空区間/質問なしも扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021-02",
+    "publicationDatePrecision": "month",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "notes": "等色二位置の最短距離ではなく、間に薄い色がない連続出現を結ぶリンク数を数える。区間外へはみ出す筆や質問間で塗装を使い回す操作は許さない。"
+  }
+]

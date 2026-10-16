@@ -1,0 +1,166 @@
+---
+title: "一度だけ並べ替わるビットの対応を、集合への所属質問で復元する"
+description: "区間の外を1、左半分の一点だけを1にした文字列を先に登録し、並べ替え後の所属判定で位置集合を二分する。"
+techniqueId: precompiled-permutation-partition-signature-membership
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+長さが同じ二値文字列を集合へ登録できる。その後、一回だけ、全ての文字列のビット位置が同じ未知の置換で並べ替わる。並べ替え後には、指定した文字列が集合に含まれるかだけを質問できる。この条件で、全てのビットの対応を復元したい。
+
+質問を見てから登録する文字列を変えることはできない。先に全ての部分問題を識別する文字列を用意し、後から所属判定で対応する位置集合を分ける。
+
+## 考え方
+
+元の位置の区間 $I=[l,r)$ を二等分し、左半分を $L$ とする。$I$ の外を全て1、内側を全て0にして、$L$ の一点だけを1へ変えた文字列を、その点ごとに登録する。この操作を、左右の区間にも再帰的に行う。
+
+一回の並べ替え後、$I$ に対応する出力位置の集合を $S$ とする。最初は全位置である。$S$ の外を全て1、内側を0にした文字列で、候補位置 $v\in S$ だけを1へ変えて質問する。集合に含まれれば $v$ の元の位置は $L$ にあり、含まれなければ右半分にある。全候補を分類し、それぞれの半分へ同じ処理を進める。
+
+葉では、元の位置一個に対応する出力位置一個が分かる。出力位置 $v$ に対して元の位置を記録すれば、求める置換となる。
+
+## 適用条件
+
+全ての登録文字列に同じ固定の置換が作用し、その後の所属判定が正確であることが必要である。集合は最初に空で、全登録の後に一回だけ並べ替え、全質問はその後に行う。
+
+掲載APIは $N$ が1以上128以下の二冪の場合を扱う。$h=\log_2N$ とすると、必要な登録回数は $W=Nh/2$、質問回数は $R=Nh$。$N=1$ ではどちらも0回だが、並べ替えの呼び出しは一回行う。この回数以上の予算を、外部への呼び出しを始める前に確認する。
+
+原典の全小課題の予算もこの構成で満たす。$N=32$ では登録80回・質問160回であり、予算320/1024と1024/320の両方に収まる。$N=128$ では448/896で、厳しい方の896/896にも収まる。
+
+## なぜ正しいか
+
+並べ替えを $y_i=x_{p_i}$ と表す。出力位置 $i$ に元の位置 $p_i$ が移ってくる向きである。
+
+まず、別の部分問題の登録文字列と誤って一致しないことを示す。大きさ $m$ の区間から作った文字列に含まれる1の個数は $N-m+1$。深さが違えば $m$ が異なるため、1の個数も違う。同じ深さの別区間は互いに素である。0の位置は自分の区間内にあり、$m\ge2$ なので空ではない。従って、別区間から作った文字列の0の位置集合と一致しない。置換はこの区別を保つ。
+
+現在の $S$ が、元の区間 $I$ の正しい出力位置集合だと仮定する。質問文字列を元の位置へ戻して考えると、$I$ の外は1、内側は0で、$p_v$ の位置だけが1である。これと同じ文字列を登録したのは、$p_v$ が左半分にある場合に限る。先ほどの区別により、別の部分問題の文字列が判定を変えることもない。
+
+よって所属判定で左右を正確に分けられる。最初の全位置集合は正しく、分割のたびにこの性質を保つので、全ての葉の対応も正しい。葉で `answer[出力位置] = 元の位置` と記録するため、返るのは $p$ 自身である。
+
+各深さの区間は全位置を分ける。登録する点は各区間の半数なので、深さごとに登録 $N/2$ 回、質問は全候補を調べて $N$ 回。深さは $h$ だから、予算は未知の置換によらず上記の値となる。
+
+## 計算量
+
+外部関数の呼び出しは登録 $Nh/2$ 回、並べ替え1回、所属判定 $Nh$ 回。渡す文字列の総長は $3N^2h/2$ で、最大 $N=128$ では172032文字となる。外部の集合実装による処理時間は別に数える。
+
+本体では各内部節点で長さ $N$ の文字列を作り、各候補の分類は深さごとに一回行うため、外部関数内の処理を除く時間は $O(N^2+N\log N)$。原典用の値渡しを含め、文字列の受け渡しを長さに比例すると数えた時間は $O(N^2\log N)$ である。$N=1$ は定数時間。
+
+文字列は子へ進む前に破棄する。分類済みの位置配列は、再帰経路に沿って長さが半減するため合計 $O(N)$。返す配列と呼び出し履歴を含む本体の追加空間は $O(N)$、再帰の深さは高々7である。外部の集合が全登録文字列を保持する領域は別で、文字列の要素領域は最大57344文字。原典の時間2秒・メモリ2GBの範囲で扱える規模である。
+
+## 実装
+
+`partition_membership::restore` は登録・並べ替え・所属判定の三つのcallbackを受け取り、出力位置から元の位置への置換を返す。文字列callbackは文字列を読み取る契約で、登録と並べ替えは `void`、所属判定は `bool` を返す。callbackの例外と領域確保の例外はそのまま伝える。失敗後の外部集合は呼び出し元が作り直す。
+
+長さ・予算が契約外なら、callbackを呼ぶ前に `std::invalid_argument`。左右の要素数が合わない返答には `std::runtime_error`。内部状態は呼び出しごとに作る。
+
+原典用の入口を使うときは `PARTITION_MEMBERSHIP_USE_GRADER` を定義し、配布された `messy.h` を利用する。末尾のadapterは、原典の一般型と実装上の注意に従って三つの関数へ接続する。
+
+```cpp
+#include <algorithm>
+#include <bit>
+#include <concepts>
+#include <functional>
+#include <numeric>
+#include <stdexcept>
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+namespace partition_membership {
+struct Budget { int writes, reads; };
+
+inline Budget required_budget(int n) {
+    if (n < 1 || n > 128 || !std::has_single_bit(static_cast<unsigned>(n)))
+        throw std::invalid_argument("n must be a power of two in [1,128]");
+    const int height = static_cast<int>(std::bit_width(static_cast<unsigned>(n))) - 1;
+    return {(n / 2) * height, n * height};
+}
+
+template<class Add, class Compile, class Check>
+requires std::invocable<Add&, const std::string&>
+    && std::same_as<std::invoke_result_t<Add&, const std::string&>, void>
+    && std::invocable<Compile&>
+    && std::same_as<std::invoke_result_t<Compile&>, void>
+    && std::invocable<Check&, const std::string&>
+    && std::same_as<std::invoke_result_t<Check&, const std::string&>, bool>
+std::vector<int> restore(int n, int max_writes, int max_reads,
+                         Add&& add, Compile&& compile, Check&& check) {
+    const Budget need = required_budget(n);
+    if (max_writes < 0 || max_reads < 0
+        || max_writes < need.writes || max_reads < need.reads)
+        throw std::invalid_argument("insufficient budget for this construction");
+    std::vector<int> answer(n), positions(n);
+    std::iota(positions.begin(), positions.end(), 0);
+    auto write = [&](auto&& self, int l, int r) -> void {
+        if (r - l == 1) return;
+        const int mid = (l + r) / 2;
+        {
+            std::string x(n, '1');
+            std::fill(x.begin() + l, x.begin() + r, '0');
+            for (int i = l; i < mid; ++i) {
+                x[i] = '1';
+                std::invoke(add, std::as_const(x));
+                x[i] = '0';
+            }
+        }
+        self(self, l, mid);
+        self(self, mid, r);
+    };
+    write(write, 0, n);
+    std::invoke(compile);
+    auto read = [&](auto&& self, int l, int r,
+                    const std::vector<int>& current) -> void {
+        if (r - l == 1) {
+            answer[current.front()] = l;
+            return;
+        }
+        const int mid = (l + r) / 2;
+        std::vector<int> left, right;
+        left.reserve(mid - l);
+        right.reserve(r - mid);
+        {
+            std::string x(n, '1');
+            for (int v : current) x[v] = '0';
+            for (int v : current) {
+                x[v] = '1';
+                const bool belongs = std::invoke(check, std::as_const(x));
+                x[v] = '0';
+                (belongs ? left : right).push_back(v);
+            }
+        }
+        if (left.size() != static_cast<std::size_t>(mid - l)
+            || right.size() != static_cast<std::size_t>(r - mid))
+            throw std::runtime_error("inconsistent membership replies");
+        self(self, l, mid, left);
+        self(self, mid, r, right);
+    };
+    read(read, 0, n, positions);
+    return answer;
+}
+} // namespace partition_membership
+
+#ifdef PARTITION_MEMBERSHIP_USE_GRADER
+#include "messy.h"
+std::vector<int> restore_permutation(int n, int w, int r) {
+    return partition_membership::restore(n, w, r,
+        [](std::string x) { add_element(x); },
+        [] { compile_set(); },
+        [](std::string x) { return check_element(x); });
+}
+#endif
+```
+
+## 関連する手法
+
+[一個の隠れた番号をビットごとの質問で特定する方法](/flowchartcp/techniques/interactive-bit-group-testing/) では、各質問の集合を自由に選べる。この技巧では、後の所属質問に意味を持たせるため、最初に登録する集合を設計する。[状態の設計](/flowchartcp/techniques/state-design/) と同じく、再帰中の集合が何を表すかを明示すると、復元の向きと分割の不変条件を保ちやすい。
+
+## 参考資料
+
+- [日本委員会配布の英語原典](https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf) — 操作の順序、置換の向き、関数形式、全小課題の予算。
+- [日本語原典](https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf) — 同一置換による集合の変換と所属判定。
+- [公式解説、第11〜13頁](https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf) — 区間外を1にする分割法と所属判定による復元。
+- [競技日2の実装上の注意](https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf) — C++の型対応、時間2秒・メモリ2GB、外部関数を使う形式。
+- [日本委員会の公式課題一覧](https://www2.ioi-jp.org/ioi/2016/tasks/index.html) — 競技日2は2016年8月16日。
+
+<TechniqueReferences techniqueId="precompiled-permutation-partition-signature-membership" />

@@ -1,0 +1,2554 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "usaco-2021-february-us-open-platinum",
+  "title": "USACO2021February・USOpen Platinum全6題を先に固定した監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "fixedBeforeTechniqueSearch": true,
+    "fixedProblemListComplete": true,
+    "source": "/tmp/flowchartcp-usaco2021-spring-selection.json",
+    "selectionRule": "Read both official final-results Platinum sections FIRST; take their numbered problems1..3 with no replacement. Titles were fixed before ID searches; canonical IDs fixed before full statement/solution review.",
+    "contests": [
+      {
+        "contest": "USACO 2021 February Contest",
+        "division": "Platinum",
+        "problemCount": 3,
+        "indexUrl": "https://usaco.org/index.php?page=feb21results",
+        "sourceDate": "2021-02",
+        "datePrecision": "month",
+        "exactDateVerified": false,
+        "dayStatus": "not yet verified from primary calendar"
+      },
+      {
+        "contest": "USACO 2021 US Open",
+        "division": "Platinum",
+        "problemCount": 3,
+        "indexUrl": "https://usaco.org/index.php?page=open21results",
+        "sourceDate": "2021",
+        "datePrecision": "year",
+        "exactDateVerified": false,
+        "dayStatus": "exact month/day not yet verified from primary calendar"
+      }
+    ],
+    "problemIds": [
+      "1116",
+      "1117",
+      "1118",
+      "1140",
+      "1141",
+      "1142"
+    ],
+    "problemCount": 6,
+    "sequence": [
+      "official final-results Platinum problem1..3 titles enumerated for BOTH contests",
+      "canonical IDs resolved and selection fixed; only ID-search snippets exposed partial statements",
+      "ALL six full original statements read and numeric/semantic facts recorded",
+      "ALL six official Solution links opened, chosen full-method lemmas read/independently completed",
+      "research-only independent small exhaustive oracles run",
+      "frozen metadata/article scopes compared and natural raw routes replayed"
+    ],
+    "noProblemSubstitution": true,
+    "sameNamedGoldAndOtherSourceProblemsExcluded": true,
+    "dateStatus": "Official exact days not found. February sourceDate2021-02/month; USOpen sourceDate2021/year. Calendar precision remains explicit unconfirmed."
+  },
+  "snapshot": {
+    "frozenAtUTC": "2026-10-15T08:08:09.698513+00:00",
+    "sourceRoot": "/home/admin2/flowchartcp/site",
+    "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+    "attempt": 1,
+    "stableBeforeCopyAfter": true,
+    "fileCount": 620,
+    "articleCount": 488,
+    "techniqueMetadataCount": 488,
+    "uniqueTechniqueIds": 488,
+    "referenceCount": 509,
+    "flowGraphCount": 455,
+    "walkCount": 509,
+    "flowRawSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+    "walkRawSha256": "6a2fbef69e87ea9ae44c8b19d281c46c478293cdee4c80897ee32e7b3ee3ce90",
+    "rawFileLedgerSha256": "94fe3a533a7bea30ceab38e0134388265176d409c2ee414cfa5b1e7b4ea65b5c",
+    "scope": "Every top-level data/*.json including metadata/references/features/flow/walk plus every technique MDX and frozen flow/content runtime; no later counts retroactively substituted.",
+    "metadataArticleCountAudited": 488,
+    "flowSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+    "mdxScope": "All488 registered article bodies available at frozen paths and searched with condition-based terms; nearby scope/proof/API articles read as recorded. Does not claim every488 article read line-by-line.",
+    "metadataRawFiles": [
+      "data/techniques-advanced.json",
+      "data/techniques-core.json",
+      "data/techniques-reasoning.json",
+      "data/techniques-specific-algebra.json",
+      "data/techniques-specific-bit-patterns.json",
+      "data/techniques-specific-combinatorics.json",
+      "data/techniques-specific-construction.json",
+      "data/techniques-specific-core.json",
+      "data/techniques-specific-dp-extensions.json",
+      "data/techniques-specific-dp-patterns.json",
+      "data/techniques-specific-dp-structures.json",
+      "data/techniques-specific-dp.json",
+      "data/techniques-specific-flow-matching.json",
+      "data/techniques-specific-games.json",
+      "data/techniques-specific-geometry.json",
+      "data/techniques-specific-graph-extensions.json",
+      "data/techniques-specific-graphs.json",
+      "data/techniques-specific-heuristic.json",
+      "data/techniques-specific-integer-patterns.json",
+      "data/techniques-specific-math.json",
+      "data/techniques-specific-offline.json",
+      "data/techniques-specific-olympiad-patterns.json",
+      "data/techniques-specific-operation-patterns.json",
+      "data/techniques-specific-planar-patterns.json",
+      "data/techniques-specific-probability-patterns.json",
+      "data/techniques-specific-range-patterns.json",
+      "data/techniques-specific-selection-patterns.json",
+      "data/techniques-specific-string-extensions.json",
+      "data/techniques-specific-string-patterns.json",
+      "data/techniques-specific-strings.json",
+      "data/techniques-specific-tree-paths.json",
+      "data/techniques-specific-tree-patterns.json"
+    ],
+    "referenceRawFiles": [
+      "data/references-advanced.json",
+      "data/references-core.json",
+      "data/references-reasoning.json",
+      "data/references-specific-algebra.json",
+      "data/references-specific-bit-patterns.json",
+      "data/references-specific-combinatorics.json",
+      "data/references-specific-construction.json",
+      "data/references-specific-core.json",
+      "data/references-specific-coverage-round3.json",
+      "data/references-specific-dp-extensions.json",
+      "data/references-specific-dp-patterns.json",
+      "data/references-specific-dp-structures.json",
+      "data/references-specific-dp.json",
+      "data/references-specific-flow-matching.json",
+      "data/references-specific-games.json",
+      "data/references-specific-geometry.json",
+      "data/references-specific-graph-extensions.json",
+      "data/references-specific-graphs.json",
+      "data/references-specific-heuristic.json",
+      "data/references-specific-integer-patterns.json",
+      "data/references-specific-math.json",
+      "data/references-specific-offline.json",
+      "data/references-specific-olympiad-patterns.json",
+      "data/references-specific-operation-patterns.json",
+      "data/references-specific-planar-patterns.json",
+      "data/references-specific-probability-patterns.json",
+      "data/references-specific-range-patterns.json",
+      "data/references-specific-selection-patterns.json",
+      "data/references-specific-string-extensions.json",
+      "data/references-specific-string-patterns.json",
+      "data/references-specific-strings.json",
+      "data/references-specific-tree-paths.json",
+      "data/references-specific-tree-patterns.json"
+    ],
+    "rawShaLedger": "/tmp/flowchartcp-usaco2021-spring-snapshot/SHA256SUMS",
+    "beforeSha": "/tmp/flowchartcp-usaco2021-spring-snapshot/hashes-before.json",
+    "afterSha": "/tmp/flowchartcp-usaco2021-spring-snapshot/hashes-after.json",
+    "stability": "Source hashes beforecopy == hashescopied == source hashes aftercopy; parent held its Doll/Highway mutation until notification. These initial488/455/509 counts never replaced by later live counts."
+  },
+  "status": {
+    "firstPassAuditComplete": true,
+    "fixedProblemListComplete": true,
+    "fixedCorpusResearchComplete": true,
+    "fixedCorpusResearchCompleteDefinition": "全固定6題について原典のモデル/全数値と、少なくとも一つの満点解法の必要な主要補題を確認した場合のみtrue。代替解法の全証明や未確認の正確な開催日・完成API・教材網羅を意味しない。",
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "officialEditorialVerifiedCount": 6,
+    "solutionReviewedCount": 6,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 6,
+    "unconfirmedCount": 0,
+    "unavailableCount": 0,
+    "requiredSolutionLemmasUnconfirmedCount": 0,
+    "exactContestDatesVerifiedCount": 0,
+    "exactContestDatesUnconfirmedCount": 2,
+    "completeProductionApiCount": 0,
+    "registeredTechniqueCount": 0
+  },
+  "classificationDefinitions": {
+    "covered": "必要な具体技巧の証明・完成API/実装記事があり、原典の特徴から分野根を辿って適用条件を確認し到達する。",
+    "missing-route": "必要な具体技巧の記事/APIは完成しているが自然な特徴の経路がない。",
+    "missing-technique": "原典と選んだ満点手順は確認できたが、必要な具体技巧の記事/完成APIがない。一般記事や部品だけではcoveredにしない。",
+    "unconfirmed": "原典モデル/数値・選んだ満点解法の必要主要補題・具体対応のいずれかが未確認。正確な日付精度は別fieldで管理する。",
+    "unavailable": "必要一次資料を取得できない。"
+  },
+  "materials": {
+    "primaryOnly": true,
+    "contestIndexes": [
+      "https://usaco.org/index.php?page=feb21results",
+      "https://usaco.org/index.php?page=open21results"
+    ],
+    "statementUrls": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1142"
+    ],
+    "officialEditorialUrls": [
+      "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+      "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+      "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+      "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+      "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+      "https://usaco.org/current/data/sol_prob3_platinum_open21.html"
+    ],
+    "officialProvenance": "Both officialresults sections directly list each chosenPlatinum problem andSolution; all six editorial headers name their analysisauthors. No unofficialguide used as source of verification.",
+    "fullProblemTextReproduced": false,
+    "exactCalendarLimitation": "Official results list2021/February or2021USOpen but no exact start/end calendar dates. Primary official calendar searches did not confirm them; no remembered date inserted."
+  },
+  "records": [
+    {
+      "source": "usaco",
+      "problemId": "1116",
+      "title": "No Time to Dry",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+      "contest": {
+        "name": "USACO 2021 February Contest",
+        "division": "Platinum",
+        "number": 1,
+        "year": 2021,
+        "sourceDate": "2021-02",
+        "datePrecision": "month",
+        "exactDateVerified": false
+      },
+      "sourceDate": "2021-02",
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式resultsが2021大会を明記するため2026-10-14以前と確認。正確な未確認月日を補わない。",
+      "difficulty": null,
+      "features": [
+        "指定区間だけを濃い色で上書きできるとき、完成までの最小筆数を多数回求める",
+        "単点の答え1、同色連続列は1筆、[2,1,2]は3筆。"
+      ],
+      "constraints": {
+        "source": "official problem statement",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..200000",
+          "Q": "1..200000",
+          "colors": "1..N, increasing darkness",
+          "queries": "1<=a<=b<=N, paint onlyinside range, outside remainsuncolored; queries independent",
+          "paint": "onecontiguousinterval/color perstroke, no lighteroverdarker"
+        },
+        "notes": "全6原典の全文を読了してから公式解説へ進んだ。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "aggregate-goals",
+        "static"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "aggregate-goals",
+          "answerLabel": "連続する区間・利用期間・開催日の得点を集計する"
+        },
+        {
+          "graphId": "range-aggregate-goals",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "static",
+          "answerLabel": "変わらない配列の指定区間を集計する"
+        }
+      ],
+      "initialReached": {
+        "graphId": "range-static",
+        "nodeId": "kind",
+        "type": "question",
+        "title": "変わらない配列から何を求めますか？",
+        "options": [
+          {
+            "id": "occurrence-goals",
+            "label": "値の出現・区間内の順位・条件を満たす部分列数"
+          },
+          {
+            "id": "aggregate-forms",
+            "label": "最小最大・並べ替えた一致・全加算後の値"
+          },
+          {
+            "id": "sum",
+            "label": "指定区間の和・XOR"
+          },
+          {
+            "id": "iterate",
+            "label": "同じ移動を K 回繰り返した位置"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "canonicalRouteEnd": {
+        "graphId": "range-static",
+        "nodeId": "kind",
+        "type": "question",
+        "title": "変わらない配列から何を求めますか？",
+        "options": [
+          {
+            "id": "occurrence-goals",
+            "label": "値の出現・区間内の順位・条件を満たす部分列数"
+          },
+          {
+            "id": "aggregate-forms",
+            "label": "最小最大・並べ替えた一致・全加算後の値"
+          },
+          {
+            "id": "sum",
+            "label": "指定区間の和・XOR"
+          },
+          {
+            "id": "iterate",
+            "label": "同じ移動を K 回繰り返した位置"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "gap": {
+        "id": "monotone-paint-stroke-links-offline-containment",
+        "features": [
+          "指定区間だけを濃い色で上書きできるとき、完成までの最小筆数を多数回求める"
+        ],
+        "firstMissingGraphId": "range-static",
+        "firstMissingNodeId": "kind",
+        "stopNodeType": "question",
+        "currentQuestion": "変わらない配列から何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "occurrence-goals",
+            "label": "値の出現・区間内の順位・条件を満たす部分列数"
+          },
+          {
+            "id": "aggregate-forms",
+            "label": "最小最大・並べ替えた一致・全加算後の値"
+          },
+          {
+            "id": "sum",
+            "label": "指定区間の和・XOR"
+          },
+          {
+            "id": "iterate",
+            "label": "同じ移動を K 回繰り返した位置"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "指定区間だけを濃い色で上書きできるとき、完成までの最小筆数を多数回求める",
+        "reason": "固定配列の区間集計には到達するが、順序付き色の上書き最小回数という回答がない。等値対の最短距離・種類数・一般offlineでは、間に小さい色がない同色リンクと筆数の同値を説明できない。",
+        "neededTechniqueIds": [
+          "monotone-paint-stroke-links-offline-containment"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "offline-range-equal-gap",
+          "subarray-extremum-contribution",
+          "grid-rectangle-components-euler-boundary"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "officialEditorialAuthors": [
+          "Benjamin Qi"
+        ],
+        "editorialProvenance": "対象大会の公式results Platinum problem1..3のSolution直リンク。非公式教材からのタグ転記ではない。",
+        "method": "等色A_l=A_rで内部が全て厳密に大きい対を単調stackでO(N)個生成する。一区間の最小筆数は長さ−区間内に両端を含むそのリンク本数。質問を右端で走査し、閉じたリンクを左端へ+1記録してFenwick区間和を引く。",
+        "independentProofSupplement": [
+          "同色を一筆で結べるのは、その間により薄い最終色がないとき。より薄い位置を濃く塗ると後から戻せないので、こうした障害をまたぐ同色出現は別の筆を必要とする。",
+          "有効な同色リンクは各色の連続出現を結ぶ鎖であり、成分ごとに薄い色から一筆ずつ塗れば実現できる。制限区間でも内部リンクだけの森林となり、必要十分な筆数は頂点数−辺数。",
+          "stackから新色より大きい色をpopし、topが等しければリンクを一つ生成してtopを最新位置へ置換。等値を二重保持しないため内部の厳密大と空の内部の両方を扱う。",
+          "右端rまでに閉じた全リンクの左端へ+1する。左端L以上の記録数は、両端が[L,r]内にあるリンク数そのもの。"
+        ],
+        "complexity": "O((N+Q)logN)時間、O(N+Q)空間。質問を右端bucketに入れればQlogQは不要。筆数<=区間長。",
+        "boundaryAndPitfalls": [
+          "単点の答え1、同色連続列は1筆、[2,1,2]は3筆。",
+          "上書きなし同色成分の問題ではない。色は1..Nで濃さ順がある。"
+        ],
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+          "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+          "https://usaco.org/index.php?page=feb21results"
+        ],
+        "fullImplementationValidated": false,
+        "unconfirmedRequiredLemmas": [],
+        "implementationRequirements": [
+          "任意の順序付き整数色/座標圧縮と半開区間を受ける完全C++20 API。N,Q各20万を包含。",
+          "同色stack更新・隣接等色・小さい色の障害・区間外未塗装・単点・独立呼出しと不正区間を検査。",
+          "実MDX C++を実塗りBFS/全小色列・全区間/maxで照合しASan/UBSan。"
+        ],
+        "probeResult": {
+          "arrays": 1092,
+          "allSubintervals": 19956,
+          "literalPaintingBFSStates": 5460,
+          "oracle": "BFS from all-zero fence, enumerate EVERY legal contiguous brush stroke of colors1..3 (never decrease any cell), then compare minimum action counts. No monotone-stack oracle."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-from-full-official-statement",
+        "publicationBeforeCutoff": "verified-from-official-2021-contest-title",
+        "exactContestDate": "unconfirmed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-api-flow-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "offline-range-equal-gap",
+          "file": "src/content/docs/techniques/offline-range-equal-gap.mdx",
+          "sha256": "82c58765fe9ee4b6db49aec8f49f6d5a6c3130c3fc574b675d8d2c51c0ddca5b",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "全ての連続同値出現対を最短距離の候補にする記事。ここでは間により小さい色がある対を除外し、有効リンクの本数から筆数を求める。"
+        },
+        {
+          "techniqueId": "subarray-extremum-contribution",
+          "file": "src/content/docs/techniques/subarray-extremum-contribution.mdx",
+          "sha256": "02c2260416e06ab697b9eac3c5bba5c80a2eba8f1c769a6fe7f5e1df51c19833",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "単調stackで極値の担当範囲を求めるが、同色を結ぶbrush成分と多数区間の内包リンク数は扱わない。"
+        },
+        {
+          "techniqueId": "grid-rectangle-components-euler-boundary",
+          "file": "src/content/docs/techniques/grid-rectangle-components-euler-boundary.mdx",
+          "sha256": "9df245577b10bfe299b45b07200d99334d4a78a7344e4dbf25d243e2525c4a8a",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "静的二次元の上書きなし同色成分。原典は一次元で濃い色の上書きを許すため、同色の直接隣接成分数と最小筆数は一致しない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; reads only stable frozen flow",
+        "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+        "allEntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "choicesConsumed": 2,
+        "stepsSha256": "8a0f14316534627cc767751fc84fd6285b06570468e49c58c9763aeb78d43a8c",
+        "graphDataSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+        "routeTransitions": [
+          {
+            "fromGraphId": "ranges",
+            "fromNodeId": "aggregate-goals-route",
+            "toGraphId": "range-aggregate-goals"
+          },
+          {
+            "fromGraphId": "range-aggregate-goals",
+            "fromNodeId": "static-route",
+            "toGraphId": "range-static"
+          }
+        ],
+        "stopAtFirstMissingSpecificFeature": true
+      },
+      "unconfirmed": {
+        "exactContestStartEndDay": true,
+        "exactContestMonth": false,
+        "requiredSolutionLemma": false,
+        "productionApiArticleValidation": true
+      },
+      "verificationNotes": [
+        "固定6題を公式結果一覧から選び終えてから全原典、全解説、凍結教材照合の順に確認。",
+        "原典特徴と主要証明を確認した研究段階。完成C++20/API/記事/分岐/原典walkを追加・検証するまでcoveredにしない。",
+        "開催日精度は公式本文で確認できたFeb月/Open年のみ。現在のsidebar日程、検索のクロール日、非公式の記憶を開催日へ転用しない。"
+      ],
+      "alternativeRoute": {
+        "entryGraphId": "ranges",
+        "choices": [
+          "query-times",
+          "offline",
+          "yes",
+          "yes"
+        ],
+        "steps": [
+          {
+            "graphId": "ranges",
+            "nodeId": "updates",
+            "question": "数列について、何を求めますか？",
+            "answer": "query-times",
+            "answerLabel": "多数の問い合わせ・過去の状態・初めて条件を満たす時刻"
+          },
+          {
+            "graphId": "range-query-times",
+            "nodeId": "updates",
+            "question": "数列について、何を求めますか？",
+            "answer": "offline",
+            "answerLabel": "多数の問い合わせをまとめて処理する"
+          },
+          {
+            "graphId": "range-offline",
+            "nodeId": "allowed",
+            "question": "問い合わせと更新をすべて先に読めますか？",
+            "answer": "yes",
+            "answerLabel": "はい"
+          },
+          {
+            "graphId": "range-offline",
+            "nodeId": "sort",
+            "question": "問い合わせを片方の端点や閾値で並べると、追加だけで処理できますか？",
+            "answer": "yes",
+            "answerLabel": "はい"
+          }
+        ],
+        "initialReached": {
+          "graphId": "range-offline",
+          "nodeId": "sweep",
+          "type": "result",
+          "title": "走査順を変えて集計する",
+          "options": [],
+          "techniques": [
+            "offline-queries",
+            "fenwick-tree"
+          ]
+        },
+        "limitation": "既知の有効リンクを数える部分には一般offline/BITを使えるが、原典の最小筆数→有効リンクの主要同値が記事にない。canonical gapは自然な静的区間集計の質問で固定。"
+      },
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "monotone-paint-stroke-links-offline-containment"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の全field/分類/状態/凍結停止位置を保持。原典全域を含む完全C++20/API、主要補題/時間空間/整数境界を作者・root・別review者で独立確認し、全小literal oracleと原典最大、通常/ASan/UBSan、追加独立probeと特徴の根分岐まで確認して不足を解消。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1117",
+      "title": "Minimizing Edges",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+      "contest": {
+        "name": "USACO 2021 February Contest",
+        "division": "Platinum",
+        "number": 2,
+        "year": 2021,
+        "sourceDate": "2021-02",
+        "datePrecision": "month",
+        "exactDateVerified": false
+      },
+      "sourceDate": "2021-02",
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式resultsが2021大会を明記するため2026-10-14以前と確認。正確な未確認月日を補わない。",
+      "difficulty": null,
+      "features": [
+        "始点から各頂点へ到達できる全歩数を保ち、グラフの辺数を最小にする",
+        "loop可/多重辺不可。Gprimeは元graphの部分graphに限らない。"
+      ],
+      "constraints": {
+        "source": "official problem statement",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..100000",
+          "M": "N−1..N(N+1)/2, sumM<=200000",
+          "T": "1..50000,sumN<=100000",
+          "graph": "connectedundirected, selfloops allowed, no parallel edges",
+          "target": "preserve all root1→a walk-length feasibility for ALLa and b>=0; repeatededges counted; minimize edges; Gprime not restrictedtosubgraph"
+        },
+        "notes": "全6原典の全文を読了してから公式解説へ進んだ。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "network-connection"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "network-connection",
+          "answerLabel": "全体の接続・接続の変化・道路の復元"
+        }
+      ],
+      "initialReached": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "canonicalRouteEnd": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "gap": {
+        "id": "parity-walk-profile-layer-greedy-realization",
+        "features": [
+          "始点から各頂点へ到達できる全歩数を保ち、グラフの辺数を最小にする"
+        ],
+        "firstMissingGraphId": "graphs-network-connection",
+        "firstMissingNodeId": "shortest",
+        "stopNodeType": "question",
+        "currentQuestion": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "始点から各頂点へ到達できる全歩数を保ち、グラフの辺数を最小にする",
+        "reason": "道路復元の選択肢は全二点最短距離表や単純路本数表であり、固定始点の全walk長の真偽を保つ回答がない。偶奇別距離を計算する既存記事にも、許容A/B/C辺と最小実現greedyがない。",
+        "neededTechniqueIds": [
+          "parity-walk-profile-layer-greedy-realization"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "synchronous-product-parity-distance-sum",
+          "distance-matrix-essential-edges",
+          "bipartite-component-edge-addition-count"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "officialEditorialAuthors": [
+          "Benjamin Qi",
+          "Danny Mittal"
+        ],
+        "editorialProvenance": "対象大会の公式results Platinum problem1..3のSolution直リンク。非公式教材からのタグ転記ではない。",
+        "method": "偶奇二層BFSでg(v)=(even,odd)を求め、h(v)=(a<b)へまとめる。二部ならBFS木のN−1。非二部ではhのA=(a−1,b−1)、B=(a−1,b+1)/(a+1,b−1)、末端C=(a,a+1)内の辺だけを許し、各頂点に二つの距離の前駆証人を付ける。同じa+bの層の隣接bucketへ渡すB辺数を、同費用なら将来へ渡すgreedyで最小化する。",
+        "independentProofSupplement": [
+          "連結N>=2の無向graphでは一往復により各偶奇の最小歩数以降を二歩ずつ実現できる。従って全walk長の言語は二つの最小歩数と同値。sortしても整数の偶奇から元のgを復元できる。",
+          "許容辺は両端の偶奇距離に対しd(v,p)<=d(u,1−p)+1を双方で守るものだけ。これをhで分類するとA/B/Cとなる。全非零距離に−1の前駆証人があれば、距離について帰納して必要な最短walkを実現できる。rootのeven0は証人不要、odd距離の証人だけ要る。",
+          "A前駆一本なら二つの距離を同時に満たす。なければ左Bと右Bが両方必要、b=a+1の末端だけ右Bを同profileのC辺/loopが代替する。Aは上層側だけの制約を満たし、B/Cは同a+b層内なので層ごと独立。",
+          "bucketサイズf、左からの既存B辺数pは可能な限り別頂点へ分散する。A候補があれば、左Bを既に持つx=min(f,p)頂点には右Bを、残りにはAを一本ずつ足す。費用同額なら右の制約を助ける選択が優越する。Aがなければ不足の左Bをmax(f−p,0)本補い、右Bをf本作る。",
+          "root a0はeven証人を免除し、b>1なら右Bを一本だけ作る。層末端Cでは、A候補があればf−floor(min(p,f)/2)、なければmax(f−p,0)+ceil(f/2)が追加費用。C一本は最大二頂点を満たし、奇数の残り一頂点はloopで満たす。非末端で次bucketが空なら既存Aへ一本ずつつなぎブロックを終える。"
+        ],
+        "complexity": "BFS O(N+M)、profileの整列/mapとgreedy O(NlogN)。全体O(NlogN+M)時間、O(N+M)空間。総N<=1e5/総M<=2e5を包含。",
+        "boundaryAndPitfalls": [
+          "loop可/多重辺不可。Gprimeは元graphの部分graphに限らない。",
+          "二部ならopposite parity未到達をINFとしてN−1。root1は0歩だけ無条件。"
+        ],
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+          "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+          "https://usaco.org/index.php?page=feb21results"
+        ],
+        "fullImplementationValidated": false,
+        "unconfirmedRequiredLemmas": [],
+        "implementationRequirements": [
+          "loopを正しく二層へ移すBFS、二部INF、root例外、a+b層/空bucket/末端Cを含む再利用C++20/API。",
+          "greedyが返す辺数だけでなく任意Gprimeでよいこと/元辺に限定しないことを明示。原典N10万/総M20万で実行。",
+          "全小loop付きgraphの完全walk言語群内最小辺数をoracleにし、公開fenceを通常/ASan/UBSan検証。"
+        ],
+        "probeResult": {
+          "allConnectedUndirectedGraphsWithOptionalLoopsN2to5": 23940,
+          "completeInfiniteWalkLanguageGroups": 932,
+          "literalParityFeasibilityComparisons": 595764,
+          "oracle": "Enumerate EVERY labeled graph including loops/no parallel; group by the COMPLETE eventually-periodic sequence of literal exact-length reachable vertex bitsets (cycle detection, not an arbitrary length cutoff). Min edge count over the entire group is independent oracle for greedy."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-from-full-official-statement",
+        "publicationBeforeCutoff": "verified-from-official-2021-contest-title",
+        "exactContestDate": "unconfirmed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-api-flow-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "synchronous-product-parity-distance-sum",
+          "file": "src/content/docs/techniques/synchronous-product-parity-distance-sum.mdx",
+          "sha256": "74d1847356382ee96f12b01a0081a2977da371a4d98e6a82afc74699eaaceec7",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "無向walkの偶奇別最小距離から二歩刻みの到達性を使う点は共通。ただしグラフを実現/最小辺数へ変換するAPI・A/B/C層の証明はない。"
+        },
+        {
+          "techniqueId": "distance-matrix-essential-edges",
+          "file": "src/content/docs/techniques/distance-matrix-essential-edges.mdx",
+          "sha256": "fb49903a578074ce7531f41259e9f0e58314128f49333e34ce7bc14d15b71a39",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "全二点の数値最短距離を保存する重み付き道路復元。固定始点の全walk長、loop、別の辺を許す無向実現とは異なる。"
+        },
+        {
+          "techniqueId": "bipartite-component-edge-addition-count",
+          "file": "src/content/docs/techniques/bipartite-component-edge-addition-count.mdx",
+          "sha256": "b12016f0044c095a2edc0d6613ff276f6a95f4c4f0c46e472d403846b8cb1c52",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "二部性を保つ辺一本の追加数であり、各頂点の二つの歩数しきい値を同時に保存する最小実現ではない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; reads only stable frozen flow",
+        "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+        "allEntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "choicesConsumed": 1,
+        "stepsSha256": "e98d7ec0041121f6d217290ce2f7bef44612709ee3516be839224272a174a60c",
+        "graphDataSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+        "routeTransitions": [
+          {
+            "fromGraphId": "graphs",
+            "fromNodeId": "category-network-connection",
+            "toGraphId": "graphs-network-connection"
+          }
+        ],
+        "stopAtFirstMissingSpecificFeature": true
+      },
+      "unconfirmed": {
+        "exactContestStartEndDay": true,
+        "exactContestMonth": false,
+        "requiredSolutionLemma": false,
+        "productionApiArticleValidation": true
+      },
+      "verificationNotes": [
+        "固定6題を公式結果一覧から選び終えてから全原典、全解説、凍結教材照合の順に確認。",
+        "原典特徴と主要証明を確認した研究段階。完成C++20/API/記事/分岐/原典walkを追加・検証するまでcoveredにしない。",
+        "開催日精度は公式本文で確認できたFeb月/Open年のみ。現在のsidebar日程、検索のクロール日、非公式の記憶を開催日へ転用しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "parity-walk-profile-layer-greedy-realization"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+          "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+          "contestIndexUrl": "https://usaco.org/index.php?page=feb21results",
+          "officialEditorialAuthors": [
+            "Benjamin Qi",
+            "Danny Mittal"
+          ],
+          "officialEditorialProvenance": "USACO公式2021February結果一覧のPlatinum第2題Solution直リンク、本文Analysis見出しの著者名を確認。",
+          "statementAndAllNumericBoundsVerified": true,
+          "sourceBounds": {
+            "N": "2..100000",
+            "M": "N-1..N(N+1)/2; sum M<=200000",
+            "T": "1..50000",
+            "sumN": 100000,
+            "graph": "connected undirected, optional self-loops, no parallel edges",
+            "target": "for every labeled vertex a and integer b>=0 preserve root1 walk reachability of exactly b traversed edges; repeated edges count; arbitrary new edges allowed"
+          },
+          "sourceDate": "2021-02",
+          "datePrecision": "month",
+          "exactDateVerified": false,
+          "exactDays": "unconfirmed; never inferred from recollection/sidebar/crawl date",
+          "difficulty": null,
+          "division": "USACO Platinum",
+          "apiContainsEntireSourceRange": true,
+          "unconfirmedIndependentLemmas": []
+        },
+        "notes": "初回の全field・分類・状態・凍結停止位置を保持。研究は初回に確認済みなので重複reviewを加えない。完全C++20/API、原典全域の条件・証明・計算量・整数境界を作者・root・別review者で確認し、小規模全列挙、原典最大、通常/ASan/UBSan、追加独立oracle、特徴からの根経路で不足を解消。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1118",
+      "title": "Counting Graphs",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+      "contest": {
+        "name": "USACO 2021 February Contest",
+        "division": "Platinum",
+        "number": 3,
+        "year": 2021,
+        "sourceDate": "2021-02",
+        "datePrecision": "month",
+        "exactDateVerified": false
+      },
+      "sourceDate": "2021-02",
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式resultsが2021大会を明記するため2026-10-14以前と確認。正確な未確認月日を補わない。",
+      "difficulty": null,
+      "features": [
+        "始点から各頂点へ到達できる全歩数を保つ、ラベル付きグラフの個数を数える",
+        "辺はラベル付き頂点対で区別、loopも一つの選択。"
+      ],
+      "constraints": {
+        "source": "official problem statement",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..100",
+          "M": "N−1..N(N+1)/2",
+          "T": "1..25000,sumN²<=100000",
+          "graph": "connectedundirected with loops allowed/no parallel edges",
+          "target": "same ALL rootwalk-length feasibility, count labeledGprime mod1000000007"
+        },
+        "notes": "全6原典の全文を読了してから公式解説へ進んだ。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "network-connection"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "network-connection",
+          "answerLabel": "全体の接続・接続の変化・道路の復元"
+        }
+      ],
+      "initialReached": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "canonicalRouteEnd": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "gap": {
+        "id": "parity-walk-profile-layer-inclusion-exclusion-count",
+        "features": [
+          "始点から各頂点へ到達できる全歩数を保つ、ラベル付きグラフの個数を数える"
+        ],
+        "firstMissingGraphId": "graphs-network-connection",
+        "firstMissingNodeId": "shortest",
+        "stopNodeType": "question",
+        "currentQuestion": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "始点から各頂点へ到達できる全歩数を保つ、ラベル付きグラフの個数を数える",
+        "reason": "全walk長の真偽を保存してgraphそのものを数える枝がなく、同名CountingGraphsの別原典はMSTの唯一性であって対応しない。一般包除や偶奇距離だけでは層の未充足頂点数DPを説明できない。",
+        "neededTechniqueIds": [
+          "parity-walk-profile-layer-inclusion-exclusion-count"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "synchronous-product-parity-distance-sum",
+          "unique-mst-completion-count",
+          "inclusion-exclusion-forbidden"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "officialEditorialAuthors": [
+          "Danny Mittal",
+          "Benjamin Qi"
+        ],
+        "editorialProvenance": "対象大会の公式results Platinum problem1..3のSolution直リンク。非公式教材からのタグ転記ではない。",
+        "method": "1117と同じ偶奇profileのA/B/C辺条件を使う。二部なら各距離層の頂点が一つ前の層から非空辺集合を選ぶ積。非二部ならa+b層ごと、前bucketへのB辺と下層へのA辺を二段で選び、未充足頂点数を状態にする。B辺行列の指定行/列非零とC末端の指定頂点非孤立を包除する。",
+        "independentProofSupplement": [
+          "1117の偶奇profileと許容辺/前駆証人の必要十分性を共有する。A辺の選択は上層側だけに影響するので、異なるa+b層の選択は独立に掛けられる。",
+          "二部で距離層人数f_dならprod_{d>=1}(2^{f_(d−1)}−1)^{f_d}。同層辺/loop/距離を飛ばす辺は許さず、各非根の直前層への少なくとも一本だけを要求する。",
+          "前bucketサイズp、未充足y、現bucketサイズmでx頂点をB入辺無しとする場合、C(m,x)Σ_{k=0}^y(−1)^k C(y,k)(2^{p−k}−1)^{m−x}通り。指定y行とm−x列を両方非零にする0/1辺行列の包除である。",
+          "B入辺無しy頂点にはAが必須。A下層サイズl、最終未充足xは他のm−y頂点から選び、C(m−y,x)(2^l−1)^{m−x}を掛ける。A/Bを両方持つ場合も選択は一意な段階へ分解される。",
+          "C終端サイズm、未充足yを救うloop込み内部graph数はΣ_{k=0}^y(−1)^k C(y,k)2^{(m−k)(m−k+1)/2}。この式は公式説明ではexerciseであり、必要y頂点を孤立させる補集合から独立に導出した。root0距離は免除しodd側のみ未充足として初期化。"
+        ],
+        "complexity": "powers/binomialを前計算してO(N³+M)時間、O(N²+M)空間にできる。原典はN<=100/総N²<=1e5、法1e9+7。公式掲載直接累乗版の細かいlog因子は実装時に区別する。",
+        "boundaryAndPitfalls": [
+          "辺はラベル付き頂点対で区別、loopも一つの選択。",
+          "同名CF1857GやJanuaryの別problemをsource照合で混同しない。"
+        ],
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+          "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+          "https://usaco.org/index.php?page=feb21results"
+        ],
+        "fullImplementationValidated": false,
+        "unconfirmedRequiredLemmas": [],
+        "implementationRequirements": [
+          "二部/非二部、a0 root、空bucket、C終端とloopsの完全API。法/0^0/二項係数の範囲を明示。",
+          "N100/総N²1e5を含むC++20と積/累乗前計算・整数境界を確認。",
+          "全小graph完全walk言語の群サイズをexact oracleに公開fenceを照合し、通常/ASan/UBSan。"
+        ],
+        "probeResult": {
+          "allConnectedUndirectedGraphsWithOptionalLoopsN2to5": 23940,
+          "completeInfiniteWalkLanguageGroups": 932,
+          "oracle": "Group size in the same exhaustive infinite-language partition is independent graph-count oracle; compare bipartite formula, layered two-stage PIE, root exemption and independently derived terminal C-edge/loop PIE. Exact integers, not modulo coincidences."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-from-full-official-statement",
+        "publicationBeforeCutoff": "verified-from-official-2021-contest-title",
+        "exactContestDate": "unconfirmed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-api-flow-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "synchronous-product-parity-distance-sum",
+          "file": "src/content/docs/techniques/synchronous-product-parity-distance-sum.mdx",
+          "sha256": "74d1847356382ee96f12b01a0081a2977da371a4d98e6a82afc74699eaaceec7",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "偶奇最小walkの性質まで共通だが、実現graphの辺選択数を数えない。"
+        },
+        {
+          "techniqueId": "unique-mst-completion-count",
+          "file": "src/content/docs/techniques/unique-mst-completion-count.mdx",
+          "sha256": "dc18ce766268cb5b4876f0d7a76d8f123ed53541474972459200a7c6fd61390a",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "Codeforces1857Gの同名CountingGraphs。指定木が唯一MSTになる追加辺の個数であり、USACOcpid1118の全walk言語保存とは別問題。"
+        },
+        {
+          "techniqueId": "inclusion-exclusion-forbidden",
+          "file": "src/content/docs/techniques/inclusion-exclusion-forbidden.mdx",
+          "sha256": "f7909ade73c4979492e43887327aa7548c05ed48c9ad81e7da0cfc718a2858ad",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "必須文字が欠ける列の包除。二部辺行列の両側非零条件とloops付きC終端を扱う具体DPではない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; reads only stable frozen flow",
+        "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+        "allEntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "choicesConsumed": 1,
+        "stepsSha256": "e98d7ec0041121f6d217290ce2f7bef44612709ee3516be839224272a174a60c",
+        "graphDataSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+        "routeTransitions": [
+          {
+            "fromGraphId": "graphs",
+            "fromNodeId": "category-network-connection",
+            "toGraphId": "graphs-network-connection"
+          }
+        ],
+        "stopAtFirstMissingSpecificFeature": true
+      },
+      "unconfirmed": {
+        "exactContestStartEndDay": true,
+        "exactContestMonth": false,
+        "requiredSolutionLemma": false,
+        "productionApiArticleValidation": true
+      },
+      "verificationNotes": [
+        "固定6題を公式結果一覧から選び終えてから全原典、全解説、凍結教材照合の順に確認。",
+        "原典特徴と主要証明を確認した研究段階。完成C++20/API/記事/分岐/原典walkを追加・検証するまでcoveredにしない。",
+        "開催日精度は公式本文で確認できたFeb月/Open年のみ。現在のsidebar日程、検索のクロール日、非公式の記憶を開催日へ転用しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "parity-walk-profile-layer-inclusion-exclusion-count"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+          "officialEditorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+          "officialResultsUrl": "https://usaco.org/index.php?page=feb21results",
+          "statementFullTextAndNumericBoundsVerified": true,
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "officialEditorialAuthors": [
+            "Danny Mittal",
+            "Benjamin Qi"
+          ],
+          "officialEditorialProvenance": "USACO公式February2021resultsのPlatinum第3問Counting GraphsのSolution直接リンク。本文Analysis著者名と二段DPの式、C終端exercise記述および掲載C++を確認。",
+          "sourceBounds": {
+            "N": "2..100",
+            "M": "N-1..N(N+1)/2",
+            "T": "1..25000",
+            "sumN2": "<=100000",
+            "modulus": 1000000007,
+            "graph": "connected undirected labeled vertices1..N; optional selfloops; noparalleledges",
+            "walk": "root1 to eachvertex, ALL integerlengthb>=0, edge andvertexrevisits count",
+            "target": "numberofallrealizinggraphs on SAME labels, arbitrarynewedgesallowed, modulo1e9+7"
+          },
+          "date": "2021-02",
+          "datePrecision": "month",
+          "exactDateVerified": false,
+          "dateEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+          "dateLimitation": "Officialheaders/results confirm2021February only. Noexactdayinferred frommemory/sidebar/crawltime.",
+          "terminalFormulaProvenance": "Officialprose leaves exactCformula asanexercise. Independentlyderive byisolatingrequiredvertices; actualofficialC++lines149..160 implements samealternatingsum. Do notclaim proseexplicitlystatesformula.",
+          "unconfirmedOriginalNumericBounds": [],
+          "unconfirmedRequiredLemmas": [],
+          "visualInspectionClaimed": false
+        },
+        "notes": "初回の全field・分類・状態・凍結経路、既存3resolutionを保持。研究は初回に確認済みなので重複reviewを追加しない。全原典範囲の完全C++20と正当性・計算量・整数境界を作者/root/別review者で確認。通常/ASan/独立literal oracle/最大入力、特徴の根経路で不足を解消。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1140",
+      "title": "United Cows of Farmer John",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+      "contest": {
+        "name": "USACO 2021 US Open",
+        "division": "Platinum",
+        "number": 1,
+        "year": 2021,
+        "sourceDate": "2021",
+        "datePrecision": "year",
+        "exactDateVerified": false
+      },
+      "sourceDate": "2021",
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式resultsが2021大会を明記するため2026-10-14以前と確認。正確な未確認月日を補わない。",
+      "difficulty": null,
+      "features": [
+        "区間の両端と内側一点を選び、その三値がそれぞれ区間内で一度だけ現れる選び方を数える",
+        "leader同士が異色なだけでは不足。leaderbreedは非leaderも含む区間全員と異なる。"
+      ],
+      "constraints": {
+        "source": "official problem statement",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..200000",
+          "breeds": "1..N",
+          "interval": "contiguous length>=3, endpointsare2leaders plusoneinteriorleader",
+          "leaders": "threeleaders eachbreedunique among ENTIREinterval, not only pairwise distinct",
+          "target": "count interval+leaders, exact64bitanswer"
+        },
+        "notes": "全6原典の全文を読了してから公式解説へ進んだ。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "aggregate-goals",
+        "window"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "aggregate-goals",
+          "answerLabel": "連続する区間・利用期間・開催日の得点を集計する"
+        },
+        {
+          "graphId": "range-aggregate-goals",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "window",
+          "answerLabel": "連続する区間の長さ・個数・和・最大最小"
+        }
+      ],
+      "initialReached": {
+        "graphId": "range-window",
+        "nodeId": "wanted",
+        "type": "question",
+        "title": "連続する区間について何を求めますか？",
+        "options": [
+          {
+            "id": "aggregate-values",
+            "label": "固定長の集計、全区間の最大最小・GCD・OR"
+          },
+          {
+            "id": "sum-conditions",
+            "label": "区間和・平均・長さ制限・和と XOR の一致"
+          },
+          {
+            "id": "feasible-selection",
+            "label": "種類数・重複・移動費用・訪問予算の範囲で区間を選ぶ"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "canonicalRouteEnd": {
+        "graphId": "range-window",
+        "nodeId": "wanted",
+        "type": "question",
+        "title": "連続する区間について何を求めますか？",
+        "options": [
+          {
+            "id": "aggregate-values",
+            "label": "固定長の集計、全区間の最大最小・GCD・OR"
+          },
+          {
+            "id": "sum-conditions",
+            "label": "区間和・平均・長さ制限・和と XOR の一致"
+          },
+          {
+            "id": "feasible-selection",
+            "label": "種類数・重複・移動費用・訪問予算の範囲で区間を選ぶ"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "gap": {
+        "id": "interval-unique-endpoints-singleton-middle-active-lazy",
+        "features": [
+          "区間の両端と内側一点を選び、その三値がそれぞれ区間内で一度だけ現れる選び方を数える"
+        ],
+        "firstMissingGraphId": "range-window",
+        "firstMissingNodeId": "wanted",
+        "stopNodeType": "question",
+        "currentQuestion": "連続する区間について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "aggregate-values",
+            "label": "固定長の集計、全区間の最大最小・GCD・OR"
+          },
+          {
+            "id": "sum-conditions",
+            "label": "区間和・平均・長さ制限・和と XOR の一致"
+          },
+          {
+            "id": "feasible-selection",
+            "label": "種類数・重複・移動費用・訪問予算の範囲で区間を選ぶ"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "区間の両端と内側一点を選び、その三値がそれぞれ区間内で一度だけ現れる選び方を数える",
+        "reason": "連続区間の個数へは進めるが、両端単出現を満たす候補左端と内部単出現数の積を数える枝がない。全区間singleton寄与やsingleton一つの証人とは数量が異なる。",
+        "neededTechniqueIds": [
+          "interval-unique-endpoints-singleton-middle-active-lazy"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "singleton-subarray-contribution",
+          "offline-range-singleton-witness",
+          "lazy-segment-tree"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "officialEditorialAuthors": [
+          "Benjamin Qi"
+        ],
+        "editorialProvenance": "対象大会の公式results Platinum problem1..3のSolution直リンク。非公式教材からのタグ転記ではない。",
+        "method": "右端rを加える直前に、左端lが[l,r−1]で単出現ならactive[l]=1、内部[l+1,r−1]のsingleton個数をw[l]とする。直前同色位置pより右のlのΣactive[l]w[l]を加える。r追加後にpをdeactivate、wの[p,r)へ+1、[pp,p)へ−1し、現在位置をactive/w0で追加。active個数と積和を持つlazyで実行。",
+        "independentProofSupplement": [
+          "両端leaderが区間で単出現なら、その二breedは互いにも内部にも現れない。従って内部leaderの選択数は内部singleton個数と等しい。右端breedの直前位置より左を除けば右端の単出現条件を保証する。",
+          "同じbreedの前二出現pp<p<rを用いると、rを内部へ加えてsingleton数が増える左端lはp<=l<r、減る左端はpp<=l<pだけ。負のsentinelは有効左端0へclampする。",
+          "以前の同色左端pは以後永久にactiveでない。nodeはactive人数cとΣactive*wを持ち、wへのdelta加算をsum+=delta*cで処理する。point無効化前にはlazyをpushし、過去の加算と人数を取り違えない。",
+          "答えは全位置三点組C(N,3)以下なので原典N200000で符号付き64bitに収まる。内部singleton値更新には−1があり、unsigned算術へ安易に移さない。"
+        ],
+        "complexity": "O(NlogN)時間、O(N)空間。最大exact答えC(200000,3)=1333313333400000。",
+        "boundaryAndPitfalls": [
+          "leader同士が異色なだけでは不足。leaderbreedは非leaderも含む区間全員と異なる。",
+          "同名Goldは今回の対象外。区間長<3は寄与0。"
+        ],
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+          "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+          "https://usaco.org/index.php?page=open21results"
+        ],
+        "fullImplementationValidated": false,
+        "unconfirmedRequiredLemmas": [],
+        "implementationRequirements": [
+          "queryの前後、前二出現sentinel、activate/deactivateとlazyの完全C++20/API。色圧縮とN20万全包含。",
+          "全同色/全異色/交互/少数色と各三leader全列挙、原典PlatinumをGold版と分けて確認。",
+          "公開fenceをexact triple oracle/max/不正API/呼出し独立性/ASan/UBSanで検証。"
+        ],
+        "probeResult": {
+          "allArraysLength1to8AlphabetAtMost3": 9833,
+          "allLeaderTriplesTested": 461322,
+          "oracle": "Enumerate ALL ordered-by-position leader triples l<m<r; directly count each leader breed in ENTIREdelegation l..r. Compare literal active/singleton interval-update equations (not a production lazy API), also check every intermediate active/weight invariant."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-from-full-official-statement",
+        "publicationBeforeCutoff": "verified-from-official-2021-contest-title",
+        "exactContestDate": "unconfirmed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-api-flow-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "singleton-subarray-contribution",
+          "file": "src/content/docs/techniques/singleton-subarray-contribution.mdx",
+          "sha256": "342c85f8a3467d792df9e5a5ab46b1f639c1124d409a1a0aafbbc4bf6d8e9c7b",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "全区間の一単出現の寄与は数えるが、両端も全区間内で単出現という追加条件と内側leaderの選択を同時には数えない。"
+        },
+        {
+          "techniqueId": "offline-range-singleton-witness",
+          "file": "src/content/docs/techniques/offline-range-singleton-witness.mdx",
+          "sha256": "972f7b8ac0222dc782f3f4f2466fd8843ac53fefcb8603a83bc61579bd8365cc",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "静的区間の単出現値一つを返すだけで、全区間/三leaderの総数ではない。"
+        },
+        {
+          "techniqueId": "lazy-segment-tree",
+          "file": "src/content/docs/techniques/lazy-segment-tree.mdx",
+          "sha256": "37fb93ce171c2a1deee8e07e0f5ebdcce02faf5f6f5c5371e47b2c370d0e38b8",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "一般affine sumの実装。active点だけの加算と不可逆deactivate、前二出現の範囲からunique数を更新する技巧/APIはない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; reads only stable frozen flow",
+        "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+        "allEntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "choicesConsumed": 2,
+        "stepsSha256": "5d5a2510251389b1c0f7899ce81411545374b38b66cbade52e71a02e2e49d02a",
+        "graphDataSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+        "routeTransitions": [
+          {
+            "fromGraphId": "ranges",
+            "fromNodeId": "aggregate-goals-route",
+            "toGraphId": "range-aggregate-goals"
+          },
+          {
+            "fromGraphId": "range-aggregate-goals",
+            "fromNodeId": "window-route",
+            "toGraphId": "range-window"
+          }
+        ],
+        "stopAtFirstMissingSpecificFeature": true
+      },
+      "unconfirmed": {
+        "exactContestStartEndDay": true,
+        "exactContestMonth": true,
+        "requiredSolutionLemma": false,
+        "productionApiArticleValidation": true
+      },
+      "verificationNotes": [
+        "固定6題を公式結果一覧から選び終えてから全原典、全解説、凍結教材照合の順に確認。",
+        "原典特徴と主要証明を確認した研究段階。完成C++20/API/記事/分岐/原典walkを追加・検証するまでcoveredにしない。",
+        "開催日精度は公式本文で確認できたFeb月/Open年のみ。現在のsidebar日程、検索のクロール日、非公式の記憶を開催日へ転用しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "interval-unique-endpoints-singleton-middle-active-lazy"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+          "officialEditorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+          "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+          "statementFullTextVerified": true,
+          "numericBoundsVerified": true,
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "officialEditorialAuthor": "Benjamin Qi",
+          "problemCredit": "Benjamin Qi",
+          "officialEditorialProvenance": "USACO2021 US Open公式resultsのPlatinum第1問1140のSolution直接リンク。Goldに同じ問題名があるが別rowであり、対象を混同しない。",
+          "sourceBounds": {
+            "N": "1..200000",
+            "breeds": "each1..N",
+            "delegation": "contiguous interval length>=3",
+            "leaders": "exactly3, endpoints plus1 strictinterior position",
+            "uniqueness": "EVERY leaderbreed occurs exactlyonce in the ENTIREdelegation includingnonleaders",
+            "count": "differentintervals or differentleaders counted separately, exact64bit count"
+          },
+          "date": "2021",
+          "datePrecision": "year",
+          "exactDateVerified": false,
+          "exactContestMonthVerified": false,
+          "dateEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+          "dateLimitation": "Primary title/results confirmyear2021 only; no exactmonth/day asserted. No currentUSACOcalendar/crawl time imported as historicalcontestdate.",
+          "method": "Primary officialHTML fulltext/formulas/visiblecode reread throughweb; noPDF/visualclaim.",
+          "unconfirmedOriginalNumericBounds": [],
+          "unconfirmedRequiredLemmas": []
+        },
+        "notes": "初回の全field・分類・状態・凍結停止位置を保持。研究は初回に確認済みなので重複reviewを加えない。完全C++20/API、原典全域の条件・証明・計算量・整数境界を作者・root・別review者で確認し、小規模全列挙、原典最大、通常/ASan/UBSan、追加独立oracle、特徴からの根経路で不足を解消。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1141",
+      "title": "Routing Schemes",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+      "contest": {
+        "name": "USACO 2021 US Open",
+        "division": "Platinum",
+        "number": 2,
+        "year": 2021,
+        "sourceDate": "2021",
+        "datePrecision": "year",
+        "exactDateVerified": false
+      },
+      "sourceDate": "2021",
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式resultsが2021大会を明記するため2026-10-14以前と確認。正確な未確認月日を補わない。",
+      "difficulty": null,
+      "features": [
+        "複数の始点と終点を対応させ、全有向辺を一度使う経路分解の個数を数える",
+        "全辺一度だが頂点は複数回通れる。senders/receiversの途中通過も可能。"
+      ],
+      "constraints": {
+        "source": "official problem statement",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..100",
+          "T": "1..20,sumN²<=20000",
+          "K": "0..2 edgeswithfrom>to; allothers increasing",
+          "graph": "directed0/1 adjacency, no selfloops, verticesmayrevisit inpath, eachDIRECTEDedge usedexactlyonceacrossallpaths",
+          "roles": "Ssenders andSreceivers,S>=1, eachnodeS/R/neither; everyendpoint distinct",
+          "guarantee": "atleastonevalidscheme",
+          "target": "countschemes mod1000000007"
+        },
+        "notes": "全6原典の全文を読了してから公式解説へ進んだ。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "walk-goals"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "walk-goals",
+          "answerLabel": "移動費用・訪れる頂点・辺の通り方"
+        }
+      ],
+      "initialReached": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "canonicalRouteEnd": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "gap": {
+        "id": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+        "features": [
+          "複数の始点と終点を対応させ、全有向辺を一度使う経路分解の個数を数える"
+        ],
+        "firstMissingGraphId": "graphs-walk-goals",
+        "firstMissingNodeId": "shortest",
+        "stopNodeType": "question",
+        "currentQuestion": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "複数の始点と終点を対応させ、全有向辺を一度使う経路分解の個数を数える",
+        "reason": "全辺を一度通る枝は指定一始点/一終点の構築であり、複数sender/receiverの対応も含めた経路分解の数え上げを選べない。一般のgrid plug DPとは幅の条件も対象も違う。",
+        "neededTechniqueIds": [
+          "almost-dag-edge-routing-pairing-frontier-cycle-count"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "euler-degree-connectivity",
+          "frontier-single-cycle",
+          "dag-path-cover-vertex-disjoint"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "officialEditorialAuthors": [
+          "Benjamin Qi"
+        ],
+        "editorialProvenance": "対象大会の公式results Platinum problem1..3のSolution直リンク。非公式教材からのタグ転記ではない。",
+        "method": "各senderに仮想入辺、receiverに仮想出辺を追加し、各頂点で入出辺のbijectionを選ぶ。全pairingのうちsenderから来ない閉路成分を排除する。番号順に頂点を処理し、最大二つのbackwardedgeを含む未完道の未来端点を状態にする。追跡道の到着0/1/2本に対し異なる出辺を選び、道の合併と閉路の禁止を行い、残りの局所pairing数(deg−tracked)!を掛ける。",
+        "independentProofSupplement": [
+          "全辺一度の経路分解と、仮想S入辺から仮想R出辺へ至る閉路なし局所bijectionは一対一。次数整合だけでは別閉路が残るので不足。",
+          "閉路があれば少なくとも一本のbackwardedgeを含む。処理済み部分を縮約した未完道のうち、未来に始点/終点が両方あるものだけが将来閉路を作るため、その最大K本の端点だけを保持する。",
+          "同一追跡道へ戻る出辺は即閉路として拒否。他方のbackwardedgeへ入るなら二道を合併する。二本が同時到着し互いのbackwardedgeへ入る二重crossも閉路なので拒否する。receiverでの終端や過去へ確定した端点は状態から落とす。",
+          "追跡入辺c本へ割り当てるc出辺は相異なる。残る入出辺の組は任意の(deg−c)!通りで、状態遷移に必要な情報は増えない。完成時に追跡道なしなら別閉路は一つも残らない。",
+          "c0の状態はO(N²)個で定数遷移、c1の状態はO(N)個でO(N)候補、c2は一状態でO(N²)候補。各行O(N²)、全体O(N³)となる。"
+        ],
+        "complexity": "K<=2でO(N³)時間。行をrollすればO(N²)空間、公式の全行保存はO(N³)空間。原典N<=100/総N²<=20000を含む。",
+        "boundaryAndPitfalls": [
+          "全辺一度だが頂点は複数回通れる。senders/receiversの途中通過も可能。",
+          "公式末尾には別O(N²)PIE/小行列式とBESTによる一般K解もある。今回の主要確認は上記frontier満点解。別PIEの相殺証明/BESTの規約は未確認として保留し、確認済みのchosen methodへ混ぜない。"
+        ],
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+          "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+          "https://usaco.org/index.php?page=open21results"
+        ],
+        "fullImplementationValidated": false,
+        "unconfirmedRequiredLemmas": [],
+        "implementationRequirements": [
+          "role/次数/仮想辺/頂点再訪を定義した完全C++20/API。K0/1/2と道合併・両道cross閉路・receiver終端を明示。",
+          "法1e9+7/factorial0/deg0の孤立点、原典は存在保証ありだが一般APIで不正/0解をどう返すか決める。",
+          "実trail列挙をoracleに全小graph・全roleと比較し、N100/通常/ASan/UBSanを確認。"
+        ],
+        "probeResult": {
+          "allDirectedSimpleGraphsN2to4WithAtMostTwoBackwardEdges": 1468,
+          "allDegreeBalancedRoleConfigurationsWithSender": 574,
+          "validInstances": 562,
+          "balancedButNoValidScheme": 12,
+          "allLiteralTrailSchemes": 1481,
+          "oracle": "For EVERY eligible graph, local degree balance uniquely determines S/R/. roles. Enumerate actual sender-to-unusedreceiver edge-disjoint directed TRAILS in fixed sender order, permitting repeated vertices, stopping at receivers optionally, accepting iff EVERY edge used once. Compare two-backedge frontier DP including single-path cycle closure, cross merger, double cross closure, receiver termination and deg-minus-tracked factorial."
+        },
+        "unconfirmedOptionalApproaches": [
+          "公式末尾のO(N²)PIE/小行列式の相殺証明とBESTによるEuler回路の数え方規約は今回は未完。これは検証済みO(N³)frontier満点解と分離する。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-from-full-official-statement",
+        "publicationBeforeCutoff": "verified-from-official-2021-contest-title",
+        "exactContestDate": "unconfirmed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-api-flow-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "euler-degree-connectivity",
+          "file": "src/content/docs/techniques/euler-degree-connectivity.mdx",
+          "sha256": "777802d7b13319261e739199fc7f31f9959ba0ac5a9a5396a3c2f17c3a454d1c",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "指定s/tのEulertrailを一つ構築するAPIで、局所pairingの総数から閉路成分を除く数え上げは扱わない。"
+        },
+        {
+          "techniqueId": "frontier-single-cycle",
+          "file": "src/content/docs/techniques/frontier-single-cycle.mdx",
+          "sha256": "cad6a26e9f2bc47f93ae398e21e05e3b99b2aa80df9fa5a755e07ea4b3644961",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "幅12以下の無向格子Hamilton閉路。原典はN100のほぼDAG、有向辺を全使用する複数trail分解であり、K<=2 backwardedgeの圧縮が必要。"
+        },
+        {
+          "techniqueId": "dag-path-cover-vertex-disjoint",
+          "file": "src/content/docs/techniques/dag-path-cover-vertex-disjoint.mdx",
+          "sha256": "36b60700441b34de29f849ec8d5dac952f2878d33241f91f325d052535d3983f",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "頂点を一度ずつ使うパスの最小本数であり、全辺一度/頂点再訪可/経路分解個数とは異なる。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; reads only stable frozen flow",
+        "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+        "allEntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "choicesConsumed": 1,
+        "stepsSha256": "f031a5882eedc28b1bc62bd2d7d24d395d8339aa0e065a3d0b7934ec9bee4528",
+        "graphDataSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+        "routeTransitions": [
+          {
+            "fromGraphId": "graphs",
+            "fromNodeId": "category-walk-goals",
+            "toGraphId": "graphs-walk-goals"
+          }
+        ],
+        "stopAtFirstMissingSpecificFeature": true
+      },
+      "unconfirmed": {
+        "exactContestStartEndDay": true,
+        "exactContestMonth": true,
+        "requiredSolutionLemma": false,
+        "productionApiArticleValidation": true
+      },
+      "verificationNotes": [
+        "固定6題を公式結果一覧から選び終えてから全原典、全解説、凍結教材照合の順に確認。",
+        "原典特徴と主要証明を確認した研究段階。完成C++20/API/記事/分岐/原典walkを追加・検証するまでcoveredにしない。",
+        "開催日精度は公式本文で確認できたFeb月/Open年のみ。現在のsidebar日程、検索のクロール日、非公式の記憶を開催日へ転用しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "almost-dag-edge-routing-pairing-frontier-cycle-count"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+          "officialEditorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+          "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+          "statementFullTextAndNumericBoundsVerified": true,
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "officialEditorialAuthors": [
+            "Benjamin Qi"
+          ],
+          "officialEditorialProvenance": "公式resultsのPlatinum第2問Routing SchemesのSolution直接リンク。Analysis by Benjamin Qiを確認。採用した固定二識別子のO(N³)解法は本文K>1説明と公式掲載C++の対応を読み、欠けた状態不変条件/端点規則を独立に証明した。",
+          "chosenMethod": "O(N³) fixed two-slot frontier DP, rolled to O(N²) storage",
+          "sourceBounds": {
+            "N": "2..100",
+            "K": "0..2 backward arcs u>v; every other actual arc u<v",
+            "T": "1..20",
+            "sumN2": "<=20000",
+            "modulus": 1000000007,
+            "input": "NxN bit matrix, diagonal all0; hence no parallel same-direction arcs or selfloops; antiparallel arcs allowed",
+            "roles": "each vertex exactly S/R/.; #S=#R>=1, so endpoints distinct and source!=sink for every trail",
+            "routes": "exactly one trail per sender to distinct receiver, every original directed arc used exactly once globally, repeated vertices/intermediate S/R allowed",
+            "guarantee": "at least one valid scheme",
+            "emptyPaths": "impossible under disjoint S/R roles; no API extension to both-role vertices"
+          },
+          "date": "2021",
+          "datePrecision": "year",
+          "exactDateVerified": false,
+          "dateEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+          "dateLimitation": "Official source/results confirm2021USOpen. Exactmonth/day were not verified and are not inferred from remembered schedules/sidebar/crawl dates.",
+          "originalFullRangeContained": true,
+          "unconfirmedOriginalNumericBounds": [],
+          "unconfirmedRequiredLemmas": [],
+          "unconfirmedOptionalApproaches": [
+            "Official final O(N²) PIE/determinant cancellation proof is explicitly left to reader; not independently completed here.",
+            "General-K determinant/BEST formulation and exact Euler-tour conventions remain unverified. These are separate nextWork, not part of completed O(N³) API."
+          ],
+          "visualInspectionClaimed": false
+        },
+        "notes": "初回の全field・状態・凍結経路と既存5resolutionを保持。原典全域の完全C++20と証明・計算量・整数境界を作者/root/別review者で確認し、通常/ASan・独立oracle・最大入力と特徴の根経路へ接続した。研究は初回に確認済みなので重複reviewを追加しない。別のO(N²)包除/行列式/BESTは未確認として残す。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1142",
+      "title": "Balanced Subsets",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+      "contest": {
+        "name": "USACO 2021 US Open",
+        "division": "Platinum",
+        "number": 3,
+        "year": 2021,
+        "sourceDate": "2021",
+        "datePrecision": "year",
+        "exactDateVerified": false
+      },
+      "sourceDate": "2021",
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式resultsが2021大会を明記するため2026-10-14以前と確認。正確な未確認月日を補わない。",
+      "difficulty": null,
+      "features": [
+        "草のあるマスから、四連結で各行・各列が途切れない非空部分集合を数える",
+        "長方形の個数ではない。行列で各々凸な4連結polyominoを数え、空集合を除く。"
+      ],
+      "constraints": {
+        "source": "official problem statement",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..150",
+          "grid": "N×N, G/.",
+          "subset": "nonempty grassy4connected with everyoccupiedrow andcolumn acontiguousinterval",
+          "target": "countorthogonallyconvexconnectedsubsets mod1000000007"
+        },
+        "notes": "全6原典の全文を読了してから公式解説へ進んだ。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "grid-arrangements",
+      "choices": [
+        "color-numbers"
+      ],
+      "steps": [
+        {
+          "graphId": "grid-arrangements",
+          "nodeId": "goal",
+          "question": "格子で何を求めますか？",
+          "answer": "color-numbers",
+          "answerLabel": "色や数を置く条件・選んだマスの外接長方形"
+        }
+      ],
+      "initialReached": {
+        "graphId": "grid-color-numbers",
+        "nodeId": "goal",
+        "type": "question",
+        "title": "格子で何を求めますか？",
+        "options": [
+          {
+            "id": "other",
+            "label": "その他の格子の配置・被覆"
+          },
+          {
+            "id": "color-separation",
+            "label": "二色のマスが同じ行・列を使わない配置の個数"
+          },
+          {
+            "id": "bounding-area",
+            "label": "一様に選んだ K マスの、外接長方形の期待面積"
+          },
+          {
+            "id": "neighbor-modulo",
+            "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+          },
+          {
+            "id": "height-silhouette",
+            "label": "各行・各列の最大高さと、各マスが空かを保って残す総量を最小にする"
+          },
+          {
+            "id": "rectangle-components",
+            "label": "固定された色の格子で、各部分長方形の中だけの同色成分数を求める"
+          },
+          {
+            "id": "xor-predecessor",
+            "label": "3×3のXOR更新と一セルの誤りから、最小の初期図形を逆算する"
+          },
+          {
+            "id": "prefix-rectangles",
+            "label": "二番号を交換するたび、番号順に選んだマスが長方形になる段階を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "canonicalRouteEnd": {
+        "graphId": "grid-color-numbers",
+        "nodeId": "goal",
+        "type": "question",
+        "title": "格子で何を求めますか？",
+        "options": [
+          {
+            "id": "other",
+            "label": "その他の格子の配置・被覆"
+          },
+          {
+            "id": "color-separation",
+            "label": "二色のマスが同じ行・列を使わない配置の個数"
+          },
+          {
+            "id": "bounding-area",
+            "label": "一様に選んだ K マスの、外接長方形の期待面積"
+          },
+          {
+            "id": "neighbor-modulo",
+            "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+          },
+          {
+            "id": "height-silhouette",
+            "label": "各行・各列の最大高さと、各マスが空かを保って残す総量を最小にする"
+          },
+          {
+            "id": "rectangle-components",
+            "label": "固定された色の格子で、各部分長方形の中だけの同色成分数を求める"
+          },
+          {
+            "id": "xor-predecessor",
+            "label": "3×3のXOR更新と一セルの誤りから、最小の初期図形を逆算する"
+          },
+          {
+            "id": "prefix-rectangles",
+            "label": "二番号を交換するたび、番号順に選んだマスが長方形になる段階を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "gap": {
+        "id": "orthogonally-convex-row-interval-phase-prefix-dp",
+        "features": [
+          "草のあるマスから、四連結で各行・各列が途切れない非空部分集合を数える"
+        ],
+        "firstMissingGraphId": "grid-color-numbers",
+        "firstMissingNodeId": "goal",
+        "stopNodeType": "question",
+        "currentQuestion": "格子で何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "other",
+            "label": "その他の格子の配置・被覆"
+          },
+          {
+            "id": "color-separation",
+            "label": "二色のマスが同じ行・列を使わない配置の個数"
+          },
+          {
+            "id": "bounding-area",
+            "label": "一様に選んだ K マスの、外接長方形の期待面積"
+          },
+          {
+            "id": "neighbor-modulo",
+            "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+          },
+          {
+            "id": "height-silhouette",
+            "label": "各行・各列の最大高さと、各マスが空かを保って残す総量を最小にする"
+          },
+          {
+            "id": "rectangle-components",
+            "label": "固定された色の格子で、各部分長方形の中だけの同色成分数を求める"
+          },
+          {
+            "id": "xor-predecessor",
+            "label": "3×3のXOR更新と一セルの誤りから、最小の初期図形を逆算する"
+          },
+          {
+            "id": "prefix-rectangles",
+            "label": "二番号を交換するたび、番号順に選んだマスが長方形になる段階を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "草のあるマスから、四連結で各行・各列が途切れない非空部分集合を数える",
+        "reason": "格子の配置/選択へは進めるが、全使用マスを選ぶHamilton閉路、固定矩形内成分、番号prefix矩形性のいずれでもない。行ごとの区間/両端の一転換と2D累積DPが不足する。",
+        "neededTechniqueIds": [
+          "orthogonally-convex-row-interval-phase-prefix-dp"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "frontier-single-cycle",
+          "grid-rectangle-components-euler-boundary",
+          "prefix-sum"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "officialEditorialAuthors": [
+          "Spencer Compton"
+        ],
+        "editorialProvenance": "対象大会の公式results Platinum problem1..3のSolution直リンク。非公式教材からのタグ転記ではない。",
+        "method": "非空行は連続し各行は[L_i,R_i]。連続行の区間overlapに加え、Lは非増加から非減少へ一度だけ、Rは非減少から非増加へ一度だけ変化することが列連続性と同値。現在行のL/Rと最初の厳密な内向き変化が起きたかの二flagを持つ。前行L/Rの条件を矩形範囲へ分け、四枚の2D prefix sumで遷移する。",
+        "independentProofSupplement": [
+          "行の連続区間性は原典条件そのもの。四連結なら非空行に空白行がなく、隣接行区間がoverlapする。逆にこれで全選択マスは四連結。",
+          "overlapを保ちながらLが増えた後で減れば、その間に一度消えた列が再出現し列連続性に反する。Rも逆向きに同じ。逆に谷型L/山型Rなら、各列についてL_i<=cかつR_i>=cとなる行集合が区間同士の交わりなので途切れない。",
+          "phaseは最初の厳密L増加/R減少で切り替え、等号では切り替えない。これで平坦部の好きな位置で切り替えて同じ集合を重複計数することを防ぐ。",
+          "前区間[l,r]と新[L,R]のoverlapはl<=R,r>=L。L旧phase0→新0はl>=L、0→1はl<L、1→1はl<=L。Rは0→0 r<=R、0→1 r>R、1→1 r>=R。各組をoverlapと交差すると(l,r)の長方形範囲となる。l>rの状態は0とし、定数個の矩形和でO(1)遷移。",
+          "各行の全G連続区間だけを受理し、単一行開始はflags0/0で1を加える。全底行・全区間・全flagを足すと非空集合を一意に数える。"
+        ],
+        "complexity": "O(N³)時間、行をrollしてO(N²)空間。原典N<=150を包含。mod1e9+7、2D累積差分の負値補正が必要。",
+        "boundaryAndPitfalls": [
+          "長方形の個数ではない。行列で各々凸な4連結polyominoを数え、空集合を除く。",
+          "斜めだけの接触では4連結でない。L/Rの等号でphaseを二重に切り替えない。"
+        ],
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+          "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+          "https://usaco.org/index.php?page=open21results"
+        ],
+        "fullImplementationValidated": false,
+        "unconfirmedRequiredLemmas": [],
+        "implementationRequirements": [
+          "行/列の向き・inclusive overlap・strict phaseと開始状態を具体化した完全C++20/API。G/.とempty/不揃い盤/上限を検査。",
+          "全小実subsetの4BFSと行列穴判定を独立oracleに公開fence/矩形和最適化と照合。",
+          "N150の全草/全空/細い形/穴/対角接触/等号平坦部、ASan/UBSan。"
+        ],
+        "probeResult": {
+          "everyNonemptyBitmapEveryH_W1to4": 74938,
+          "allGrassBoardsN1to3AndRandom4": 1556,
+          "oracle": "Enumerate actual cell subsets and test literal occupied-row contiguity, occupied-column contiguity,4-neighbor BFS connectivity. Compare endpoint/unimodality characterization for EVERYsmallshape. Zeta sum over allvalidsubsets gives exact answer for eachgrassboard, independently checked against interval/two-strict-phase-flags DP. No prefix-sum optimization/API implemented in this research probe."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-from-full-official-statement",
+        "publicationBeforeCutoff": "verified-from-official-2021-contest-title",
+        "exactContestDate": "unconfirmed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-api-flow-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "frontier-single-cycle",
+          "file": "src/content/docs/techniques/frontier-single-cycle.mdx",
+          "sha256": "cad6a26e9f2bc47f93ae398e21e05e3b99b2aa80df9fa5a755e07ea4b3644961",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "全使用マスの一閉路と幅12のplug状態であり、行列凸な任意部分集合のN150数え上げとは異なる。"
+        },
+        {
+          "techniqueId": "grid-rectangle-components-euler-boundary",
+          "file": "src/content/docs/techniques/grid-rectangle-components-euler-boundary.mdx",
+          "sha256": "9df245577b10bfe299b45b07200d99334d4a78a7344e4dbf25d243e2525c4a8a",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "固定された部分長方形内の色成分数。選ぶ部分集合そのものを数えず、矩形以外の直交凸形の境界を扱わない。"
+        },
+        {
+          "techniqueId": "prefix-sum",
+          "file": "src/content/docs/techniques/prefix-sum.mdx",
+          "sha256": "8ac6537327de079dc9a5e1e0b05bf45226959e65850670104f5156540cd59961",
+          "reviewedSections": [
+            "scope",
+            "applicability",
+            "proof",
+            "API contract"
+          ],
+          "scopeMismatch": "二次元矩形和の部品だけで、行区間状態/strict phase/連結なoverlap条件と重複のない生成は説明しない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; reads only stable frozen flow",
+        "snapshotRoot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+        "allEntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "choicesConsumed": 1,
+        "stepsSha256": "cbbff07ac5c528ae659d0590df796ea2b67ebcbe8b6442a25c987113bb8efe23",
+        "graphDataSha256": "8e65013cc25d38030aed330d1f08d812f25cedd7dc78e33990386e03f238d256",
+        "routeTransitions": [
+          {
+            "fromGraphId": "grid-arrangements",
+            "fromNodeId": "color-numbers-route",
+            "toGraphId": "grid-color-numbers"
+          }
+        ],
+        "stopAtFirstMissingSpecificFeature": true
+      },
+      "unconfirmed": {
+        "exactContestStartEndDay": true,
+        "exactContestMonth": true,
+        "requiredSolutionLemma": false,
+        "productionApiArticleValidation": true
+      },
+      "verificationNotes": [
+        "固定6題を公式結果一覧から選び終えてから全原典、全解説、凍結教材照合の順に確認。",
+        "原典特徴と主要証明を確認した研究段階。完成C++20/API/記事/分岐/原典walkを追加・検証するまでcoveredにしない。",
+        "開催日精度は公式本文で確認できたFeb月/Open年のみ。現在のsidebar日程、検索のクロール日、非公式の記憶を開催日へ転用しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "orthogonally-convex-row-interval-phase-prefix-dp"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+          "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+          "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+          "statementFullTextVerified": true,
+          "numericBoundsVerified": true,
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "officialEditorialAuthors": [
+            "Spencer Compton"
+          ],
+          "officialReferenceCodeAuthor": "Danny Mittal",
+          "problemCredits": [
+            "Benjamin Qi"
+          ],
+          "sourceBounds": {
+            "N": "1..150",
+            "grid": "N×N, characters G/.",
+            "subset": "nonempty, G cells only,4-connected, each occupied row and column is a contiguous interval",
+            "modulus": 1000000007
+          },
+          "sourceDate": "2021",
+          "datePrecision": "year",
+          "exactContestMonthVerified": false,
+          "exactContestDayVerified": false,
+          "dateEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+          "difficulty": null,
+          "cutoff": "2026-10-14",
+          "provenance": "Official open21results Platinum problem3 View problem/Solution links; Analysis by Spencer Compton and embedded Danny Mittal Java code read on official host. Initial editorial request accidentally opened problem1 (UCFJ) before using the exact audited problem3 URL; problem1 is not used as Balanced evidence.",
+          "apiContainsEntireSourceRange": true,
+          "chosenFullSolutionVerified": true,
+          "unconfirmedOriginalNumericBounds": [],
+          "unconfirmedRequiredLemmas": [],
+          "visualInspectionClaimed": false
+        },
+        "notes": "初回の全field・分類・状態・凍結経路、既存3resolutionを保持。研究は初回に確認済みなので重複reviewを追加しない。全原典範囲の完全C++20と正当性・計算量・整数境界を作者/root/別review者で確認。通常/ASan/独立literal oracle/最大入力、特徴の根経路で不足を解消。"
+      }
+    }
+  ],
+  "validation": {
+    "researchProbe": "/tmp/flowchartcp-usaco2021-spring-probe.py",
+    "researchProbeResult": "/tmp/flowchartcp-usaco2021-spring-probe.json",
+    "command": "python3 /tmp/flowchartcp-usaco2021-spring-probe.py",
+    "probeCodeSha256": "ed3d68d4b7c76726f604c069c22e3b12c49a8e512523b9961c03dbe2957463bf",
+    "rawReplay": "Every canonical initialReached/gap/currentQuestion/options/questionanswerlabel is compared against raw frozen graph; alternativeNoTime route kept separate.",
+    "productionCodeCompiled": false,
+    "productionSanitizersRun": false,
+    "productionMaximumCasesRun": false,
+    "scope": "Small independent research lemma probes only; concrete reusableC++20/article/max/API/native/sanitizer checks remain future completion work.",
+    "independentRawReplayResult": {
+      "recordsReplayed": 6,
+      "questionsAndAnswerLabelsVerified": 8,
+      "frozenFilesShaRechecked": 620,
+      "allInitialReachedAndGapFieldsEqualFrozenNodes": true,
+      "interpreter": "independent raw JSON graph/node/options/answers/route interpreter, no live data/runtime dependency"
+    },
+    "researchProbeDeterministicResultSha256": "915c586f90b6224b194dbe3b5b9cb68c1770f8b7147a6168614525e3446a559b",
+    "observedProbeSeconds": 1.4371560830040835
+  },
+  "limits": [
+    "対象は先行固定した二大会Platinum各3題だけ。既存2020December/2021January群と混合しない。",
+    "全世界の未見問題や全USACO大会を網羅したという主張ではない。",
+    "初回不足6題は記事・分岐・参照・feature・歩行が完成するまでcoveredへ変更しない。",
+    "公式解説に載る代替手順が全て確認済みという意味ではない。Routingの別PIE/BESTは未確認として分離した。",
+    "開催日の正確な月日が未確認な場合はyear/month精度を保持する。難度は全題null。"
+  ],
+  "preservation": {
+    "sharedFilesModified": false,
+    "initialSnapshotImmutable": true,
+    "liveParentIntegrationDoesNotChangeInitialCounts": true,
+    "noSourceProblemRewrite": true,
+    "noArticleCreatedThisAudit": true
+  },
+  "artifacts": {
+    "audit": "/tmp/flowchartcp-usaco2021-spring-audit.json",
+    "notes": "/tmp/flowchartcp-usaco2021-spring-notes.md",
+    "selection": "/tmp/flowchartcp-usaco2021-spring-selection.json",
+    "snapshot": "/tmp/flowchartcp-usaco2021-spring-snapshot",
+    "probe": "/tmp/flowchartcp-usaco2021-spring-probe.py",
+    "probeResult": "/tmp/flowchartcp-usaco2021-spring-probe.json",
+    "registrationProposal": "/tmp/flowchartcp-usaco2021-spring-registration-proposal.json"
+  },
+  "stageCounts": {
+    "officialProblemListFixed": 6,
+    "statementsRetrieved": 6,
+    "statementsReviewed": 6,
+    "fullNumericRangesVerified": 6,
+    "officialSolutionsRetrieved": 6,
+    "chosenFullSolutionsReviewed": 6,
+    "requiredMajorLemmasVerified": 6,
+    "fineGrainedTechniqueGapsExtracted": 6,
+    "frozenRootRoutesReplayed": 6,
+    "existingCompletedApiMapped": 0,
+    "exactContestDateVerified": 0
+  }
+}

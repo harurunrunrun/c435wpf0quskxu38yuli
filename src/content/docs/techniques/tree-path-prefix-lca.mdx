@@ -1,0 +1,91 @@
+---
+title: "木の経路和を根からの累積和とLCAで求める"
+description: "二つの根への経路から、重複する共通部分を二度引く。"
+techniqueId: tree-path-prefix-lca
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+二つの根への経路から、重複する共通部分を二度引く。
+
+## 使う場面
+
+重みが変わらない木で、多数の二頂点間の経路和を求める。問い合わせごとに経路をたどると、長い鎖で時間がかかる。
+
+## 考え方
+
+一つの根を決め、根から頂点 $v$ までの辺重みの合計を $P_v$ とする。$c=\mathrm{LCA}(u,v)$ とすると、経路の和は $P_u+P_v-2P_c$ になる。
+
+頂点重みの場合は、LCAの頂点を一度残す必要があるため、根からの頂点和を使った上で $w_c$ を足し戻す。
+
+## 適用条件
+
+足し算のように、共通部分を引ける集計を対象とする。経路の最大値は二つの根への最大値から引き算で求められない。辺の重みが更新される場合は、静的な累積和をそのまま使い続けられない。
+
+負の辺でも、木の一意な単純経路の和としては使える。最短の歩道を求める一般グラフの問題とは異なる。
+
+## なぜ正しいか
+
+根から $u$ と $v$ への経路は、根からLCAまでを二重に含む。それを二度引くと、LCAから両端へ至る経路だけが残る。これらをつないだものが、木上の唯一の経路になる。
+
+## 計算量
+
+毎回経路をたどる $O(NQ)$ から、ダブリングの前計算 $O(N\log N)$ と問い合わせ $O(Q\log N)$ に改善する。空間は $O(N\log N)$。
+
+## 実装
+
+`RootedTree` は非空の連結な無向木を受け取り、`path_sum(u,v)` で辺の経路和を返す。深さと祖先表はLCAの計算に、累積距離は経路和の計算に使う。途中の距離と計算式が64ビットに収まる必要がある。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <cassert>
+struct RootedTree {
+    int n,log=1;
+    std::vector<int> parent,depth,tin,tout,order;
+    std::vector<long long> distance;
+    std::vector<std::vector<int>> up;
+    explicit RootedTree(const std::vector<std::vector<std::pair<int,long long>>>& g,int root=0)
+        :n(g.size()),parent(n,-1),depth(n),tin(n),tout(n),distance(n) {
+        assert(n>0 && 0<=root && root<n);
+        while((1LL<<log)<=n) ++log;
+        parent[root]=root;
+        std::vector<std::pair<int,int>> stack{{root,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;
+            int& i=stack.back().second;
+            if(i==0) { tin[v]=order.size();order.push_back(v); }
+            if(i==int(g[v].size())) { tout[v]=order.size();stack.pop_back();continue; }
+            auto [u,w]=g[v][i++];
+            if(u==parent[v]) continue;
+            parent[u]=v;depth[u]=depth[v]+1;distance[u]=distance[v]+w;
+            stack.push_back({u,0});
+        }
+        assert(int(order.size())==n);
+        up.assign(log,std::vector<int>(n));up[0]=parent;
+        for(int b=1;b<log;++b)
+            for(int v=0;v<n;++v) up[b][v]=up[b-1][up[b-1][v]];
+    }
+    bool ancestor(int a,int b) const { return tin[a]<=tin[b] && tin[b]<tout[a]; }
+    int lca(int a,int b) const {
+        if(ancestor(a,b)) return a;
+        if(ancestor(b,a)) return b;
+        for(int k=log-1;k>=0;--k) if(!ancestor(up[k][a],b)) a=up[k][a];
+        return parent[a];
+    }
+    long long path_sum(int a,int b) const {
+        int c=lca(a,b);
+        return distance[a]+distance[b]-2*distance[c];
+    }
+};
+```
+
+## 関連する手法
+
+[ダブリング](/flowchartcp/techniques/doubling/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC014 D](https://img.atcoder.jp/abc014/editorial.pdf)
+
+<TechniqueReferences techniqueId="tree-path-prefix-lca" />

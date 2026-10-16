@@ -1,0 +1,101 @@
+[
+  {
+    "id": "weighted-tree-exact-length-min-edges",
+    "title": "木の経路長を固定して辺数を最小にするなら、距離ごとの最小深さを別枝と合わせる",
+    "summary": "重心からの距離をキーに最小の辺数を保存し、同じ子部分木の組を除いて補数を探します。",
+    "aliases": [
+      "IOI Race centroid minimum edges exact distance",
+      "weighted tree exact length min depth"
+    ],
+    "family": "経路・区間・選択の集計",
+    "prerequisites": [
+      "centroid-count-cross-subtrees"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://ioinformatics.org/files/ioi2011problem2.pdf"
+    ]
+  },
+  {
+    "id": "range-clamp-composition",
+    "title": "区間の上限・下限更新で最後の各値だけ欲しいなら、切り詰める写像を合成する",
+    "summary": "値の分布を集計せず、各区間に残る更新を二つの境界で持ちます。",
+    "aliases": [
+      "IOI Wall clamp composition",
+      "range chmin chmax final values"
+    ],
+    "family": "経路・区間・選択の集計",
+    "prerequisites": [
+      "affine-lazy-composition"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://www.ioi2014.org/competition/images/tasks/day1/wall/wall.pdf",
+      "https://www.ioi2014.org/competition/images/tasks/day1/wall/wall-solution.pdf"
+    ]
+  },
+  {
+    "id": "active-top-k-count-sum",
+    "title": "候補を出し入れしながら上位k個の和を求めるなら、個数と値の和を同時に持つ",
+    "summary": "値順の累積個数で境界を探し、境界より大きい値の総和と残りの個数を足します。",
+    "aliases": [
+      "active top k count sum",
+      "largest active values Fenwick sum",
+      "IOI Holiday selection kernel"
+    ],
+    "family": "経路・区間・選択の集計",
+    "prerequisites": [
+      "fenwick-prefix-lower-bound"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday.pdf",
+      "https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday-solution.pdf"
+    ]
+  },
+  {
+    "id": "median-window-budget",
+    "title": "一次元で同じ重さの対象を集めるなら、中央値への費用を区間和で求めて窓を動かす",
+    "summary": "選択を連続区間に絞り、中央値の両側の距離和を定数時間で計算します。",
+    "aliases": [
+      "IOI Rice Hub median prefix window",
+      "maximum points relocation absolute distance budget"
+    ],
+    "family": "経路・区間・選択の集計",
+    "prerequisites": [
+      "prefix-sum",
+      "two-pointers"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://ioinformatics.org/files/ioi2011problem3.pdf"
+    ]
+  }
+]

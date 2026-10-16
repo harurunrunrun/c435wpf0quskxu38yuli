@@ -1,0 +1,161 @@
+---
+title: "大きな上限までのトーティエントの和を、同じ商の区間とメモ化で求める"
+description: "約数ごとのトーティエントの和が元の数になる恒等式から、累積和だけの再帰式を作ります。小さい値を篩い、大きい値は上限を割った商だけ計算します。"
+techniqueId: summatory-totient-quotient-memo
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$1$ から $N$ までのオイラーのトーティエント関数の和
+
+$$
+S(N)=\sum_{n=1}^{N}\varphi(n)
+$$
+
+を求めます。$N$ が $10^{10}$ 程度あり、全ての $\varphi(n)$ を求める篩の時間や配列を用意できない場合に使います。$\varphi(1)=1$、$S(0)=0$ とします。
+
+手掛かりは、**約数について足すと簡単になる関数の、非常に大きな区間の和**です。一般に、数論的関数の畳み込みに既知の累積和があると、同じ形の方法を検討できます。このトーティエントの場合の方法は、杜教篩・Dujiao sieve とも呼ばれます。
+
+## 考え方
+
+恒等式 $\sum_{d\mid n}\varphi(d)=n$ を、$1\le n\le x$ で足します。$n=dk$ と書き換えて、先に $k$ を固定すると
+
+$$
+\frac{x(x+1)}2
+=\sum_{k=1}^{x}S\!\left(\left\lfloor\frac{x}{k}\right\rfloor\right)
+$$
+
+です。$k=1$ の項を左辺に分離して
+
+$$
+S(x)=\frac{x(x+1)}2-
+\sum_{k=2}^{x}S\!\left(\left\lfloor\frac{x}{k}\right\rfloor\right)
+$$
+
+を得ます。$k\ge2$ の引数は全て $x$ より小さいので、再帰的に求められます。
+
+同じ商 $q=\lfloor x/l\rfloor$ になる最後の位置は $r=\lfloor x/q\rfloor$ です。$l$ から $r$ までを一度に処理すれば、引く値は $(r-l+1)S(q)$ となります。各 $x$ における異なる商は $O(\sqrt x)$ 個です。
+
+ただし、これだけでは小さい引数の計算を繰り返します。閾値 $B$ 以下の累積和は線形篩で用意し、それより大きい引数の結果だけメモします。
+
+一つの上限 $N$ から再帰を始めると、現れる引数は全て $\lfloor N/i\rfloor$ の形です。さらに $B\ge\sqrt N$ とすれば、$B$ より大きい異なる引数は、$i=\lfloor N/x\rfloor$ を添字とする配列で一意に区別できます。ハッシュ表を使わずに保存できます。
+
+## 適用条件
+
+- 使う恒等式と、変形後の既知の累積和を確認します。任意の数論的関数に、トーティエントと同じ再帰式を使うことはできません。
+- ここでは一つの上限 $N$ について求めます。異なる上限ごとに掲載関数を呼ぶと、篩やメモの作成も毎回行います。
+- 配列の添字を $\lfloor N/x\rfloor$ にする場合、再帰の全引数が元の $N$ の商であることと、閾値 $B\ge\sqrt N$ の両方が必要です。任意の $x$ の問い合わせを同じメモ配列へ混ぜてはいけません。
+
+掲載実装は $0\le N\le10^{10}$、法 $998244353$ に限定します。篩の値や累積和は法で保持しても、商を計算する引数は元の整数のままにします。三角数は `__int128` で $N(N+1)/2$ を計算してから法を取るため、途中の 64 bit オーバーフローを避けられます。法の逆元で 2 を割る必要もありません。
+
+## なぜ正しいか
+
+$1$ から $n$ までの整数を $\gcd(a,n)$ ごとに分類すると、その個数の合計は $\sum_{d\mid n}\varphi(d)=n$ となります。この恒等式の全ての項を $n=dk$ によって並べ替えると、先ほどの $S(x)$ の式が得られます。
+
+同じ商になる区間では $S(\lfloor x/k\rfloor)$ が一定です。その区間の項数を掛けて引く処理は、元の和の項を過不足なくまとめています。閾値以下の正しい値を基底とし、再帰の引数が真に小さくなるため、帰納的に全ての $S(x)$ が正しく求まります。
+
+また、正の整数 $i,j$ について
+
+$$
+\left\lfloor\frac{\lfloor N/i\rfloor}{j}\right\rfloor
+=\left\lfloor\frac{N}{ij}\right\rfloor
+$$
+
+なので、再帰しても引数は元の $N$ の商に留まります。$x>\sqrt N$ の範囲では、異なる商 $x$ が同じ $\lfloor N/x\rfloor$ を持つことはありません。従って掲載のメモの添字で値が衝突しません。
+
+## 計算量
+
+全ての値を線形篩で求める方法は $O(N)$ 時間・空間です。
+
+閾値を $B\ge\sqrt N$ とします。篩に $O(B)$ 時間・空間が必要です。$B$ より大きい引数は高々 $N/B$ 個で、その計算時間の和は
+
+$$
+O\!\left(\sum_{i=1}^{\lfloor N/B\rfloor}\sqrt{N/i}\right)
+=O(N/\sqrt B)
+$$
+
+です。合計は $O(B+N/\sqrt B)$ 時間、$O(B+N/B)$ 補助空間です。再帰の深さは $O(\log N)$ で、この空間の範囲に含まれます。整数の演算を定数時間として数えています。
+
+掲載実装は $B=\lceil N^{2/3}\rceil$ とし、$O(N^{2/3})$ 時間・空間です。$N=10^{10}$ では $B=4641589$ となり、累積和の主な配列は 32 bit 整数約 464 万個です。より小さい $B$ を選べば篩の領域を減らせますが、再帰側の計算時間は増えます。
+
+## 実装
+
+`summatory_totient(n)` が $S(n)\bmod998244353$ を返します。空の和である `n=0` は 0 です。負の値や対応する上限を超えた値は `invalid_argument` にします。閾値は浮動小数点数の丸めに頼らず、$B^3\ge N^2$ を満たす最小の整数として決めます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int summatory_totient(long long n) {
+    using i128 = __int128;
+    constexpr int mod = 998244353;
+    if (n < 0 || n > 10000000000LL) {
+        throw invalid_argument("n must be in [0, 10^10]");
+    }
+    if (n == 0) return 0;
+
+    int low = 1, high = int(min(n, 5000000LL));
+    const i128 target = i128(n) * n;
+    while (low < high) {
+        int middle = low + (high - low) / 2;
+        if (i128(middle) * middle * middle >= target) high = middle;
+        else low = middle + 1;
+    }
+    const int threshold = low;
+    vector<int> prefix(threshold + 1), primes;
+    prefix[1] = 1;
+    for (int i = 2; i <= threshold; ++i) {
+        if (prefix[i] == 0) {
+            prefix[i] = i - 1;
+            primes.push_back(i);
+        }
+        for (int p : primes) {
+            long long product = 1LL * i * p;
+            if (product > threshold) break;
+            if (i % p == 0) {
+                prefix[size_t(product)] = prefix[i] * p;
+                break;
+            }
+            prefix[size_t(product)] = prefix[i] * (p - 1);
+        }
+    }
+    for (int i = 1; i <= threshold; ++i) {
+        prefix[i] = int((1LL * prefix[i] + prefix[i - 1]) % mod);
+    }
+
+    vector<int> memo(size_t(n / (threshold + 1)) + 1, -1);
+    auto solve = [&](auto&& self, long long x) -> int {
+        if (x <= threshold) return prefix[size_t(x)];
+        int& saved = memo[size_t(n / x)];
+        if (saved != -1) return saved;
+        long long result = static_cast<long long>((i128(x) * (x + 1) / 2) % mod);
+        for (long long left = 2; left <= x; ) {
+            long long quotient = x / left;
+            long long right = x / quotient;
+            long long term = ((right - left + 1) % mod)
+                           * self(self, quotient) % mod;
+            result -= term;
+            if (result < 0) result += mod;
+            left = right + 1;
+        }
+        return saved = int(result);
+    };
+    return solve(solve, n);
+}
+```
+
+線形篩で使う `prefix` は、篩を終えるまでは個々の $\varphi(i)$ を保存し、その後で累積和へ変えます。途中で累積和へ変えると、後の合成数の計算に必要な値を壊します。メモは元の上限に結び付いているため、関数の外へ持ち越しません。
+
+## 関連する手法
+
+- [商が変わらない範囲をまとめる](/flowchartcp/techniques/quotient-blocks/)
+- [メビウス反転](/flowchartcp/techniques/mobius-inversion/)
+
+## 参考資料
+
+- [Library Checker: Sum of Totient Function の原典仕様](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/task.md)
+- [Library Checker: 制約と実行時間の設定](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/info.toml)
+- [Library Checker: 商ごとの累積和を保存する公式正解実装](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/sol/correct.cpp)
+
+<TechniqueReferences techniqueId="summatory-totient-quotient-memo" />

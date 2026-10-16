@@ -1,0 +1,117 @@
+---
+title: "選んだ数のANDを0にする個数は、残る1ビットを上位集合の集計と包除で消す"
+description: "各マスクの1を全て持つ入力の個数から非空の選び方を求め、1の個数による符号を付けて合計する。"
+techniqueId: subset-and-zero-superset-inclusion
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+非負整数の列から、一つ以上の位置を選ぶ。選んだ全要素のANDが0になる選び方を数えたい。要素数が多くても、値が20ビット程度なら、残ってはいけない1ビットの集合についてまとめて計算できる。
+
+同じ値が複数あっても位置が違えば別の選択として数える。二数だけを選ぶ場合や、全要素を必ず選ぶ場合とは選択の範囲が異なる。
+
+## 考え方
+
+マスク $S$ の1を全て持つ入力の個数を
+
+$$c[S]=\#\{i\mid (a_i\mathbin{\mathrm{AND}}S)=S\}$$
+
+とする。この $c[S]$ 個の位置だけから非空集合を選べば、ANDの結果に $S$ の全ビットが残る。その選び方は $2^{c[S]}-1$ 通りである。
+
+ANDに一つでも1が残る選び方を包除で除くと、求める答えは
+
+$$\sum_{S=0}^{2^B-1}(-1)^{\operatorname{popcount}(S)}\bigl(2^{c[S]}-1\bigr)$$
+
+になる。$S=0$ の項は全非空集合 $2^N-1$ で、1ビットを指定した項を引き、2ビットを指定した項を足す。
+
+$c$ は値ごとの出現回数から作る。ビット $b$ を含まないマスク $S$ に `c[S | (1 << b)]` を加えると、$b$ を持つ入力と持たない入力をまとめられる。全ビットを処理すると、各マスクを含む上位集合の頻度が集まる。部分集合の頻度を集めると向きが逆になるので注意する。
+
+例えば値が1、2、3なら、全非空集合は7通り。下位ビットを全て持つ位置からの選び方は3通り、次のビットも3通りで、両方を持つ位置からは1通りになる。従って $7-3-3+1=2$ 通りである。
+
+## 適用条件
+
+- 各値を $B$ ビットで表せ、長さ $2^B$ の配列を作れる。掲載実装は $0\le B\le20$、要素数100万以下を扱う。
+- 非空の添字部分集合を全て数える。選ぶ個数の固定、隣接条件、重み、選ぶ順序などの追加条件はない。
+- 同じ値の位置も別々に選べる。頻度を存在の真偽値へ置き換えると、重複値の選び方を失う。
+- 掲載実装の法は $10^9+7$ である。割り算は使わないので、この包除自体に法が素数という条件はない。
+
+0を含む選択は必ずANDが0になるが、0を含まない要素だけでANDが0になる場合もある。0の個数だけからは答えを求められない。$2^{c[S]}$ から1を引いて非空にする式は、ビット幅0や空配列にもそのまま使える。
+
+## なぜ正しいか
+
+上位集合の集計では、処理したビットのうち $S$ が0の位置について、入力側が0の場合と1の場合の出現数を合わせる。$S$ が1の位置は入力側も1に固定し、未処理のビットは一致したまま保つ。全ビットを処理した後は、$S$ が1と指定した位置だけが固定され、それ以外は自由になるため、ちょうど $c[S]$ を得る。
+
+一つの非空の位置集合を固定し、そのANDを $T$ とする。この集合は $S$ が $T$ の部分集合のときに限り $2^{c[S]}-1$ の項へ含まれる。$T$ の1の個数を $k$ とすると、最終的な寄与は
+
+$$\sum_{S\subseteq T}(-1)^{|S|}=(1-1)^k$$
+
+である。$T=0$ なら空マスクの1項だけで寄与は1。$T\ne0$ なら寄与は0になる。従ってANDが0の非空集合だけが一度ずつ数えられる。
+
+## 計算量
+
+要素数を $N$、ビット幅を $B$ とする。2の累乗を $N$ まで前計算すると、時間は $O((B+1)2^B+N)$、空間は $O(2^B+N)$。$B\ge1$ なら時間は $O(B2^B+N)$ と書ける。入力の位置集合を列挙する $O(2^N)$ ではなく、値のビット幅に対して指数時間を使う。
+
+## 実装
+
+答えを $10^9+7$ で割った余りとして返す。空配列の答えは0。範囲外のビット幅、要素数、値には `invalid_argument` を投げる。ビット幅0では全要素が0であり、全非空集合を数える。
+
+```cpp
+#include <bit>
+#include <cstddef>
+#include <stdexcept>
+#include <vector>
+using namespace std;
+
+int count_nonempty_and_zero(const vector<int>& values, int bit_width) {
+    constexpr int mod = 1000000007;
+    if (bit_width < 0 || bit_width > 20 || values.size() > 1000000) {
+        throw invalid_argument("unsupported bit width or input size");
+    }
+    const int size = 1 << bit_width;
+    for (int value : values) {
+        if (value < 0 || value >= size) {
+            throw invalid_argument("value outside the given bit width");
+        }
+    }
+    if (values.empty()) return 0;
+
+    vector<int> count(size, 0);
+    for (int value : values) ++count[value];
+    for (int bit = 0; bit < bit_width; ++bit) {
+        const int flag = 1 << bit;
+        for (int mask = 0; mask < size; ++mask) {
+            if ((mask & flag) == 0) count[mask] += count[mask | flag];
+        }
+    }
+
+    vector<int> power_of_two(values.size() + 1, 1);
+    for (size_t i = 1; i < power_of_two.size(); ++i) {
+        power_of_two[i] = static_cast<int>(2LL * power_of_two[i - 1] % mod);
+    }
+    int answer = 0;
+    for (int mask = 0; mask < size; ++mask) {
+        int ways = power_of_two[count[mask]] - 1;
+        if (ways < 0) ways += mod;
+        if ((popcount(static_cast<unsigned int>(mask)) & 1) == 0) {
+            answer += ways;
+            if (answer >= mod) answer -= mod;
+        } else {
+            answer -= ways;
+            if (answer < 0) answer += mod;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[部分集合ゼータ変換](/flowchartcp/techniques/subset-transform/)の加算方向を逆にすると、上位集合の頻度が求まる。[ANDが0の相手を一つ探す場合](/flowchartcp/techniques/disjoint-mask-subset-witness/)は、個数から選び方を作らず、補集合に含まれる入力値を一つ保存すればよい。
+
+## 参考資料
+
+- [Codeforces 449D — Jzzhu and Numbers](https://codeforces.com/problemset/problem/449/D)
+- [Codeforces Round 257 公式解説：D](https://codeforces.com/blog/entry/13112)
+
+<TechniqueReferences techniqueId="subset-and-zero-superset-inclusion" />

@@ -1,0 +1,336 @@
+[
+  {
+    "id": "decimal-substring-divisibility",
+    "title": "十進部分文字列の可除性は、10と互いに素なら右揃えの余りを照合する",
+    "summary": "桁の重みをそろえた二つの接尾辞の余りを比較し、法が2・5のときは末尾の一桁へ分けます。",
+    "aliases": [
+      "Divisible Substring suffix residues",
+      "decimal substring divisibility coprime ten",
+      "right aligned suffix modulo"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "subarray-prefix-frequency",
+      "linear-congruence-gcd"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc158/tasks/abc158_e",
+      "https://img.atcoder.jp/abc158/editorial.pdf"
+    ]
+  },
+  {
+    "id": "lcm-removal-unique-maximum",
+    "title": "一つ消した後の最小公倍数は、最大指数を一人だけが持つ素因数で区別する",
+    "summary": "素因数ごとの最大指数と保持者数を調べ、消すと変化する要素だけを別の結果として数えます。",
+    "aliases": [
+      "LCM on Whiteboard unique exponent maximum",
+      "remove one LCM distinct values",
+      "prime exponent unique owner"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "divisor-multiple-reversal"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc259/tasks/abc259_e",
+      "https://atcoder.jp/contests/abc259/editorial/4294"
+    ]
+  },
+  {
+    "id": "squarefree-product-pairs",
+    "title": "二数の積が平方になる組は、奇数指数の素因数だけを残して同じ値を数える",
+    "summary": "正の値から平方因子を除いた代表を作り、零を含む組は別に足します。",
+    "aliases": [
+      "squarefree kernel product square pairs",
+      "Square Pair",
+      "odd prime exponent signature"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc342/tasks/abc342_d",
+      "https://atcoder.jp/contests/abc342/editorial/9449"
+    ]
+  },
+  {
+    "id": "gcd-pairs-exclude-divides",
+    "title": "共通因子はあるが互いに割り切らない二数は、最大公約数の個数から真の倍数を引く",
+    "summary": "先に小さい方と大きい方を決め、共通因子の条件と割り切らない条件を別々に数えます。",
+    "aliases": [
+      "Divide Both gcd pairs nondividing",
+      "integer interval gcd pairs exclude divisibility",
+      "exact gcd multiple subtraction"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "gcd-divisibility-count",
+      "divisor-multiple-reversal"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc206/tasks/abc206_e",
+      "https://atcoder.jp/contests/abc206/editorial/2107"
+    ]
+  },
+  {
+    "id": "prime-mod-power-tower",
+    "title": "指数も累乗で巨大なら、底が法の倍数かを分けて指数を法の一つ手前で計算する",
+    "summary": "素数の法で底が非零のときだけ指数をp−1で縮め、指数0の扱いを先に確定します。",
+    "aliases": [
+      "Integer Sequence Fair power tower modulo prime",
+      "Fermat exponent reduction base zero",
+      "M power K power N modulo"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "factorial-inverses",
+      "matrix-exponentiation"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc228/tasks/abc228_e",
+      "https://atcoder.jp/contests/abc228/editorial/2954"
+    ]
+  },
+  {
+    "id": "half-multiple-two-adic",
+    "title": "全ての半分の奇数倍を満たす数は、2の指数をそろえて最小公倍数の奇数倍にする",
+    "summary": "共通の倍数条件と奇数商の条件を分け、2で割れる回数の不一致を先に排除します。",
+    "aliases": [
+      "Semi Common Multiple two adic LCM",
+      "odd multiples of half even numbers",
+      "same power of two semi common"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "linear-congruence-gcd",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc150/tasks/abc150_d",
+      "https://img.atcoder.jp/abc150/editorial.pdf"
+    ]
+  },
+  {
+    "id": "factorial-divisibility-threshold",
+    "title": "階乗が指定数の倍数になる最初の位置は、素因数ごとの必要指数を判定する",
+    "summary": "階乗を作らず、各素数の指数を繰り返し除算で求め、必要指数に達する位置を探します。",
+    "aliases": [
+      "Factorial and Multiple inverse Legendre",
+      "minimum n factorial divisible k",
+      "factorial prime valuation threshold"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "binary-search",
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc280/tasks/abc280_d",
+      "https://atcoder.jp/contests/abc280/editorial/5341"
+    ]
+  },
+  {
+    "id": "decimal-length-rank-sum",
+    "title": "同じ桁数内の順位の総和は、十の冪で区切って三角数を足す",
+    "summary": "桁数の変わる境界だけを調べ、各区間の順位1から長さまでをまとめて足します。",
+    "aliases": [
+      "digitnum decimal length rank triangular sum",
+      "decimal digit blocks arithmetic progression",
+      "sum within digit length ranks"
+    ],
+    "family": "整数の条件と素因数",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "contribution",
+      "quotient-blocks"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc238/tasks/abc238_c",
+      "https://atcoder.jp/contests/abc238/editorial/3365"
+    ]
+  },
+  {
+    "id": "digit-sum-divides-value",
+    "aliases": [
+      "Digit Sum Divides Value",
+      "Harshad Number Digit DP",
+      "Fix Final Digit Sum",
+      "桁和で割り切れる整数",
+      "最終桁和の固定"
+    ],
+    "prerequisites": [
+      "digit-dp",
+      "digit-dp-leading-zero"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc336/tasks/abc336_e",
+      "https://atcoder.jp/contests/abc336/editorial/9055"
+    ],
+    "family": "整数・数論",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "整数が自分の桁和で割り切れる条件は、桁和を固定して余りを持つ",
+    "summary": "最後まで決まらない桁和を先に列挙し、桁和と整数の余りを同時に更新する。"
+  },
+  {
+    "id": "pair-floor-ratio-frequency",
+    "aliases": [
+      "Pair Floor Ratio Frequency",
+      "Sum of Max Min Floor Ratios",
+      "Harmonic Quotient Buckets",
+      "二数の商の床の総和",
+      "小さい値を分母にする頻度集計"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "quotient-blocks"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc356/tasks/abc356_e",
+      "https://atcoder.jp/contests/abc356/editorial/10116"
+    ],
+    "family": "整数・数論",
+    "level": "中級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "全ての二数の商の床を足すなら、分母ごとに商が同じ値域をまとめる",
+    "summary": "正整数の頻度と累積個数から、同じ商になる区間を数え、同値の添字対を別に加える。"
+  },
+  {
+    "id": "bounded-power-two-equal-bag-prefix-cap-memoization",
+    "title": "重さが2の累乗の品物を各袋に配り、等しくできる合計値を数える",
+    "summary": "小さい重さからの供給量を条件にし、合計値の上限を2の累乗で分ける再帰で、実現できる値を重複なく数える。",
+    "aliases": [
+      "IOI 2020 Packing Biscuits",
+      "equal bags powers of two prefix supply",
+      "bounded power-two tastiness memoization",
+      "二冪の在庫 同じ味の袋 合計値の種類数"
+    ],
+    "family": "整数の条件と数え上げ",
+    "level": "上級",
+    "prerequisites": [
+      "digit-dp",
+      "state-design"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+      "https://ioi.te.lv/locations/ioi20/contest/",
+      "https://ioi.te.lv/locations/ioi20/contest/day2/Biscuits/HUN.pdf"
+    ]
+  },
+  {
+    "id": "rotated-manhattan-two-mark-boolean-circuit",
+    "title": "二つの黒画素の距離を判定する論理回路を作る",
+    "summary": "対角線ごとの占有と接頭ORを共有し、位置が未知の二画素のマンハッタン距離を少数のゲートで判定する。",
+    "aliases": [
+      "IOI2019 Vision Program rotated diagonal prefix OR circuit",
+      "two unknown marked pixels Manhattan exact-distance Boolean network",
+      "回転座標 対角線 占有幅 接頭OR 論理ゲート 回路生成"
+    ],
+    "family": "論理回路の構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "manhattan-transform",
+      "prefix-sum",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem5.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/statement/vision-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/grader/grader.cpp",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  }
+]

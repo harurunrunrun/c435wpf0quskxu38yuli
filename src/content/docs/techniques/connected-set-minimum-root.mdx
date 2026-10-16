@@ -1,0 +1,100 @@
+---
+title: "値幅を制限する木の連結集合は、最小値の頂点を添字で一つに決めて根にする"
+description: "同値の最小頂点を添字で一つに決め、許された頂点だけで根を含む連結集合の積を取る。"
+techniqueId: connected-set-minimum-root
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の頂点に値があり、選んだ頂点が連結で、最大値と最小値の差も指定幅以下になる集合を数えたい。最大値・最小値の組を状態にする代わりに、最小値を担当する頂点を先に決める。
+
+## 考え方
+
+集合の中で $(a_v,v)$ が辞書順最小の頂点を根 $r$ とする。根を固定したら、使えるのは
+
+$$a_r\le a_v\le a_r+d,\qquad a_v=a_r\text{ なら }v\ge r$$
+
+を満たす頂点だけ。この許可頂点だけを通って根から到達できる木を作る。
+
+頂点 $v$ を含み、その下から選ぶ連結集合数を $f_v$ とすると、
+
+$$f_v=\prod_{u\text{ は子}}(1+f_u).$$
+
+子側を全く選ばない一通りか、子を含む連結集合を選ぶ。全ての根について $f_r$ を足す。等値を全て許すだけでは、同じ集合を最小値の頂点の数だけ重複してしまう。
+
+## 適用条件
+
+無向の木で、選ぶのは頂点の非空連結集合。集合は添字を区別し、順序を数えない。一般のグラフでは子側が独立でなく、積の式では数えられない。連結性を満たさずに、禁止頂点を飛び越して子孫を選んでもいけない。
+
+実装は $N\le2000$、値の絶対値 $10^9$ 以下、$0\le d\le2\times10^9$、法 $10^9+7$。負の値や等値を扱う。木であることを一回確認し、各根の計算は反復の探索順の逆順で行う。空の木の答えは0。
+
+## なぜ正しいか
+
+各非空集合には $(値,添字)$ が最小の頂点が一意にある。値幅条件を満たす集合の他の頂点は必ず許可条件を満たし、連結性から根へ至る途中の頂点も全て集合内にある。よってその担当根の探索木の中で数えられる。
+
+根を含む連結集合が子部分木を使う場合は、子自身を含む必要がある。木には子部分木をまたぐ別の辺がないため、子側の選択は独立に掛けられる。許可条件を満たす頂点だけの集合は値幅も満たし、担当はその根なので、和にも積にも重複がない。
+
+## 計算量
+
+全頂点集合の列挙は $O(N2^N)$ 時間。最小・最大の値を持つ表の代わりに、各根で $O(N)$ の探索と積を行い、全体 $O(N^2)$ 時間、補助空間 $O(N)$。根ごとに木の複製や値ごとの三次元表を作る必要はない。
+
+## 実装
+
+`count_connected_bounded_value_sets` は0始まりの頂点と辺を受け取る。親へ戻る辺と、許可されない頂点を除いて探索する。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+int count_connected_bounded_value_sets(const std::vector<long long>& value,
+                                      const std::vector<std::pair<int,int>>& edges,long long width) {
+    constexpr long long MOD=1000000007;
+    int n=int(value.size());
+    if(n>2000 || width<0 || width>2000000000LL) throw std::invalid_argument("range");
+    if(n==0) {if(!edges.empty())throw std::invalid_argument("edges");return 0;}
+    if(int(edges.size())!=n-1) throw std::invalid_argument("tree edge count");
+    std::vector<std::vector<int>> graph(n);
+    for(long long x:value) if(x<-1000000000 || x>1000000000) throw std::invalid_argument("value");
+    for(auto [u,v]:edges) {
+        if(u<0 || u>=n || v<0 || v>=n || u==v) throw std::invalid_argument("edge");
+        graph[u].push_back(v);graph[v].push_back(u);
+    }
+    std::vector<int> parent(n,-2),order{0};parent[0]=-1;
+    for(std::size_t i=0;i<order.size();++i) for(int u:graph[order[i]]) if(u!=parent[order[i]]) {
+        if(parent[u]!=-2) throw std::invalid_argument("cycle");
+        parent[u]=order[i];order.push_back(u);
+    }
+    if(int(order.size())!=n) throw std::invalid_argument("disconnected");
+    long long answer=0;std::vector<long long> ways(n);
+    for(int root=0;root<n;++root) {
+        order.assign(1,root);parent[root]=-1;
+        for(std::size_t i=0;i<order.size();++i) {
+            int v=order[i];
+            for(int u:graph[v]) if(u!=parent[v] && value[u]>=value[root] && value[u]-value[root]<=width
+                                   && (value[u]!=value[root] || u>root)) {
+                parent[u]=v;order.push_back(u);
+            }
+        }
+        for(auto it=order.rbegin();it!=order.rend();++it) {
+            int v=*it;ways[v]=1;
+            for(int u:graph[v]) if(parent[u]==v && value[u]>=value[root] && value[u]-value[root]<=width
+                                   && (value[u]!=value[root] || u>root)) ways[v]=ways[v]*(1+ways[u])%MOD;
+        }
+        answer=(answer+ways[root])%MOD;
+    }
+    return int(answer);
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [厳密な大小条件のDPは同じ値をまとめて更新する](/flowchartcp/techniques/dp-batch-equal-keys/)
+
+## 参考資料
+
+- [Codeforces：D - Valid Sets（原典）](https://codeforces.com/problemset/problem/486/D)。
+- [Codeforces：D - Valid Sets（公式解説）](https://codeforces.com/blog/entry/14678)。
+
+<TechniqueReferences techniqueId="connected-set-minimum-root" />

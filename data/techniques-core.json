@@ -1,0 +1,629 @@
+[
+  {
+    "id": "prefix-sum",
+    "title": "累積和",
+    "aliases": [
+      "Prefix Sum",
+      "Prefix Sums",
+      "部分和"
+    ],
+    "family": "配列・区間",
+    "level": "入門",
+    "summary": "先頭からの和を前計算し、区間の和を引き算1回で求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/silver/prefix-sums"
+    ]
+  },
+  {
+    "id": "difference-array",
+    "title": "いもす法",
+    "aliases": [
+      "Difference Array",
+      "Imos Method",
+      "差分配列"
+    ],
+    "family": "配列・区間",
+    "level": "入門",
+    "summary": "区間への加算を両端に記録し、累積和で最終的な値を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/silver/more-prefix-sums"
+    ]
+  },
+  {
+    "id": "coordinate-compression",
+    "title": "座標圧縮",
+    "aliases": [
+      "Coordinate Compression",
+      "Rank Compression"
+    ],
+    "family": "配列・値域",
+    "level": "入門",
+    "summary": "値の大小関係を保ちながら、登場する値を小さい整数に置き換える。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/silver/sorting-custom",
+      "https://usaco.org/current/data/sol_prob2_silver_dec20.html"
+    ]
+  },
+  {
+    "id": "binary-search",
+    "title": "二分探索",
+    "aliases": [
+      "Binary Search",
+      "Binary Search on Answer",
+      "答えの二分探索",
+      "Parametric Search"
+    ],
+    "family": "探索・単調性",
+    "level": "入門",
+    "summary": "単調な判定結果が切り替わる位置を、探索範囲を半分にしながら求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/silver/binary-search"
+    ]
+  },
+  {
+    "id": "two-pointers",
+    "title": "尺取り法",
+    "aliases": [
+      "Two Pointers",
+      "二つのポインタ"
+    ],
+    "family": "探索・単調性",
+    "level": "入門",
+    "summary": "左右の端点を後戻りさせずに動かして、条件を満たす区間を調べる。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/silver/two-pointers"
+    ]
+  },
+  {
+    "id": "sliding-window",
+    "title": "スライディングウィンドウ",
+    "aliases": [
+      "Sliding Window",
+      "移動窓"
+    ],
+    "family": "配列・区間",
+    "level": "入門",
+    "summary": "区間を一つずつずらし、出ていく要素と入る要素だけを更新する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/sliding-window"
+    ]
+  },
+  {
+    "id": "monotone-queue",
+    "title": "単調キュー",
+    "aliases": [
+      "Monotone Queue",
+      "Monotonic Deque"
+    ],
+    "family": "配列・区間",
+    "level": "中級",
+    "summary": "最大値や最小値になり得る候補だけを残して、移動する区間を処理する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "sliding-window"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/sliding-window"
+    ]
+  },
+  {
+    "id": "meet-in-the-middle",
+    "title": "半分全列挙",
+    "aliases": [
+      "Meet in the Middle",
+      "MITM",
+      "半分全探索"
+    ],
+    "family": "指数時間の改善",
+    "level": "中級",
+    "summary": "選択肢を二つに分けて列挙し、両側の結果を組み合わせる。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/meet-in-the-middle"
+    ]
+  },
+  {
+    "id": "bitmask-dp",
+    "title": "bit DP",
+    "aliases": [
+      "Bitmask DP",
+      "Subset DP",
+      "部分集合DP",
+      "集合DP"
+    ],
+    "family": "動的計画法",
+    "level": "中級",
+    "summary": "選んだ要素の集合をビット列で表し、集合ごとの状態を保存する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/dp-bitmasks"
+    ]
+  },
+  {
+    "id": "subset-transform",
+    "title": "部分集合ゼータ変換",
+    "aliases": [
+      "Subset Zeta Transform",
+      "SOS DP",
+      "Sum over Subsets",
+      "Subset Möbius Transform",
+      "部分集合メビウス変換"
+    ],
+    "family": "集合・代数",
+    "level": "上級",
+    "summary": "各集合の部分集合に対する総和を、ビットごとの加算でまとめて求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bitmask-dp",
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/plat/dp-sos"
+    ]
+  },
+  {
+    "id": "knapsack",
+    "title": "ナップサックDP",
+    "aliases": [
+      "Knapsack DP",
+      "0/1 Knapsack",
+      "Unbounded Knapsack"
+    ],
+    "family": "動的計画法",
+    "level": "入門",
+    "summary": "合計の重さや価値を状態にして、品物を選ぶ最適な組み合わせを求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/knapsack",
+      "https://usaco.guide/problems/cses-1634-minimizing-coins/solution"
+    ]
+  },
+  {
+    "id": "digit-dp",
+    "title": "桁DP",
+    "aliases": [
+      "Digit DP"
+    ],
+    "family": "動的計画法",
+    "level": "中級",
+    "summary": "整数を上の桁から決めながら、条件を満たす数の個数を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/digit-dp",
+      "https://usaco.guide/problems/cses-2220-counting-numbers/solution"
+    ]
+  },
+  {
+    "id": "interval-dp",
+    "title": "区間DP",
+    "aliases": [
+      "Interval DP",
+      "Range DP"
+    ],
+    "family": "動的計画法",
+    "level": "中級",
+    "summary": "連続区間ごとの結果を保存し、短い区間から長い区間を組み立てる。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/dp-ranges"
+    ]
+  },
+  {
+    "id": "tree-dp",
+    "title": "木DP",
+    "aliases": [
+      "Tree DP",
+      "DP on Trees"
+    ],
+    "family": "木・動的計画法",
+    "level": "中級",
+    "summary": "子の部分木の結果から、親の部分木の結果を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/dp-trees"
+    ]
+  },
+  {
+    "id": "rerooting",
+    "title": "全方位木DP",
+    "aliases": [
+      "Rerooting DP",
+      "All Roots Tree DP"
+    ],
+    "family": "木・動的計画法",
+    "level": "上級",
+    "summary": "一つの木で根を変えたときの答えを、辺の両方向の情報からまとめて求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "tree-dp",
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/all-roots"
+    ]
+  },
+  {
+    "id": "bfs",
+    "title": "幅優先探索",
+    "aliases": [
+      "Breadth-First Search",
+      "BFS",
+      "多始点BFS"
+    ],
+    "family": "グラフ・最短路",
+    "level": "入門",
+    "summary": "近い頂点から順に探索して、辺数が最小の経路を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc420/editorial/13751"
+    ]
+  },
+  {
+    "id": "zero-one-bfs",
+    "title": "0-1 BFS",
+    "aliases": [
+      "0-1 BFS",
+      "01 BFS",
+      "Zero One BFS"
+    ],
+    "family": "グラフ・最短路",
+    "level": "中級",
+    "summary": "辺の重みが0か1のグラフで、両端キューを使って最短距離を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bfs"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc176/editorial/65"
+    ]
+  },
+  {
+    "id": "dijkstra",
+    "title": "ダイクストラ法",
+    "aliases": [
+      "Dijkstra",
+      "Dijkstra Algorithm",
+      "Single Source Shortest Path",
+      "SSSP"
+    ],
+    "family": "グラフ・最短路",
+    "level": "中級",
+    "summary": "辺の重みが非負のグラフで、距離の最小候補から最短距離を確定する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bfs"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/shortest-paths"
+    ]
+  },
+  {
+    "id": "bellman-ford",
+    "title": "ベルマン–フォード法",
+    "aliases": [
+      "Bellman-Ford",
+      "Bellman–Ford",
+      "ベルマンフォード法",
+      "Negative Cycle Detection"
+    ],
+    "family": "グラフ・最短路",
+    "level": "中級",
+    "summary": "すべての辺による距離の更新を繰り返し、負の辺や負閉路を扱う。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "dijkstra"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/adv/sp-neg"
+    ]
+  },
+  {
+    "id": "dag-dp",
+    "title": "DAG上のDP",
+    "aliases": [
+      "DAG DP",
+      "Dynamic Programming on Directed Acyclic Graphs"
+    ],
+    "family": "グラフ・動的計画法",
+    "level": "中級",
+    "summary": "閉路のない有向グラフを依存順に処理して、経路の値を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "topological-sort"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/toposort"
+    ]
+  },
+  {
+    "id": "union-find",
+    "title": "Union-Find",
+    "aliases": [
+      "Union Find",
+      "Disjoint Set Union",
+      "DSU",
+      "素集合データ構造"
+    ],
+    "family": "データ構造・連結性",
+    "level": "入門",
+    "summary": "集合の併合と、二つの要素が同じ集合に属するかの判定を行う。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_en/dsu.html",
+      "https://usaco.guide/gold/dsu"
+    ]
+  },
+  {
+    "id": "topological-sort",
+    "title": "トポロジカルソート",
+    "aliases": [
+      "Topological Sort",
+      "Kahn Algorithm",
+      "位相順序"
+    ],
+    "family": "グラフ・依存順序",
+    "level": "入門",
+    "summary": "有向辺で示された前後関係を、すべて満たす頂点の順序を求める。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/gold/toposort"
+    ]
+  },
+  {
+    "id": "scc",
+    "title": "強連結成分分解",
+    "aliases": [
+      "Strongly Connected Components",
+      "SCC",
+      "Kosaraju Algorithm"
+    ],
+    "family": "グラフ・構造",
+    "level": "中級",
+    "summary": "互いに行き来できる頂点をまとめ、有向グラフを閉路のない構造に縮約する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "topological-sort"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_en/scc.html"
+    ]
+  },
+  {
+    "id": "fenwick-tree",
+    "title": "Fenwick Tree",
+    "aliases": [
+      "Fenwick Tree",
+      "Binary Indexed Tree",
+      "BIT"
+    ],
+    "family": "データ構造・区間",
+    "level": "中級",
+    "summary": "点への加算と区間の和を、どちらも対数時間で処理する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_en/fenwicktree.html"
+    ]
+  },
+  {
+    "id": "segment-tree",
+    "title": "セグメント木",
+    "aliases": [
+      "Segment Tree",
+      "セグメントツリー",
+      "Monoid"
+    ],
+    "family": "データ構造・区間",
+    "level": "中級",
+    "summary": "区間の集計を二分木に保存し、点の更新と区間への問い合わせを処理する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_en/segtree.html"
+    ]
+  },
+  {
+    "id": "small-to-large",
+    "title": "マージテク",
+    "aliases": [
+      "Small-to-Large Merging",
+      "小さい集合から大きい集合への併合",
+      "DSU on Tree"
+    ],
+    "family": "木・データ構造",
+    "level": "上級",
+    "summary": "小さい集合を大きい集合に併合し、各要素の移動回数を抑える。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "tree-dp"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/plat/merging"
+    ]
+  },
+  {
+    "id": "doubling",
+    "title": "ダブリング",
+    "aliases": [
+      "Doubling",
+      "Binary Lifting",
+      "Binary Jumping",
+      "二進リフティング"
+    ],
+    "family": "反復・木",
+    "level": "中級",
+    "summary": "2の累乗回の遷移を前計算し、多数回の反復を短い回数で処理する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/plat/binary-jump"
+    ]
+  },
+  {
+    "id": "offline-queries",
+    "title": "オフラインクエリ",
+    "aliases": [
+      "Offline Queries",
+      "Offline Processing",
+      "Sweep Queries",
+      "オフライン処理"
+    ],
+    "family": "クエリ・処理順",
+    "level": "中級",
+    "summary": "問い合わせを並べ替え、前の計算結果を使える順序で処理する。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc174/editorial.pdf",
+      "https://usaco.guide/problems/cses-1139-distinct-colors/solution"
+    ]
+  }
+]

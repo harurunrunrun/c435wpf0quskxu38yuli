@@ -1,0 +1,154 @@
+---
+title: "最小全域木に必須の辺は、同じ重みの辺をまとめて縮約後の橋で判定する"
+description: "軽い辺でつながる成分を縮約し、同じ重みの候補を併合する前に三分類する。"
+techniqueId: mst-equal-weight-edge-classification
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+重み付き無向グラフの各辺について、「どの最小全域木にも入らない」「一部に入る」「全てに入る」を区別したい。同じ重みの辺があり、一度だけKruskal法を実行した選択結果では必須かどうか分からない。
+
+## 考え方
+
+辺を重み順に並べ、**同じ重みの辺をまとめて処理する**。重み $w$ の処理開始時に、Union-Findには重みが $w$ より小さい辺だけを追加しておく。
+
+各成分を一点に縮約し、今回の重みの辺で補助グラフを作る。元の辺に対する答えは次の三つに分かれる。
+
+- 縮約後に自己ループになる：どの最小全域木にも入らない。
+- 補助グラフの橋になる：全ての最小全域木に入る。
+- それ以外：一部の最小全域木に入るが、全てには入らない。
+
+この重みの判定が全て終わってから、今回の辺をUnion-Findへ追加する。一本ずつ追加しながら判定すると、同じ重みの代替辺まで「既につながっている」として落としてしまう。
+
+元のグラフが単純でも、縮約後には多重辺が生じる。二点を結ぶ同じ重みの辺が二本あれば、どちらも橋ではない。橋検出では、親**頂点**ではなく、直前に通った**辺番号**だけを除外する。
+
+## 適用条件
+
+入力は固定された無向グラフ。重みの大小と等号を正確に比較できる必要がある。負の重み、多重辺、自己ループがあってもよい。
+
+連結なら最小全域木を分類する。非連結なら全域木は存在しないが、各連結成分を張る**最小全域森**に対して同じ分類を行える。下の実装は連結成分数も返すので、全域木だけを扱う呼び出し側は `components == 1` を確認する。
+
+## なぜ正しいか
+
+重み $w$ 未満の辺でつながる各成分は、それより重い辺を選ぶ前に内部をつなげられる。Kruskal法の交換論法により、この時点の成分分割は同じ重み内の選び方に依存しない。縮約後に自己ループとなる辺は、より軽い辺だけの経路で両端がつながっているため、採用すると閉路内の交換で総重みを減らせる。
+
+自己ループを除いた補助グラフでは、各連結成分を同じ重みの辺で張る木を自由に選べる。橋を外すとその成分を張れないため、全ての選択に必要である。橋ではない辺は、その辺を含めた木にも、除いた木にも延長できるので、一部の選択にだけ含まれる。どの選択でもこの重みで結ばれる成分と採用本数は同じになり、残りをKruskal法で続けて最小全域森へ延長できる。
+
+## 計算量
+
+辺ごとに採用・禁止を指定して最小全域木を作り直す方法は、おおむね $O(M^2\log M)$ 時間。重みの一括処理では整列に $O(M\log M)$、Union-Findに $O(M\alpha(N))$、全補助グラフの橋検出に合計 $O(M)$ 時間を使う。初期化を含めて $O(N+M\log M)$ 時間、空間は $O(N+M)$。
+
+各重みで全 $N$ 頂点を初期化せず、その重みの辺に接続する成分だけを補助グラフへ載せることが、この計算量の条件である。
+
+## 実装
+
+`classify_msf_edges(n, edges)` に0始まりの頂点と `(u,v,w)` の列を渡す。返り値の `use[i]` は入力の辺番号に対応する。`None` は不使用、`Some` は一部で使用、`Every` は必須。`n >= 1` と正しい頂点番号を仮定する。
+
+重みは64ビット整数の全範囲を使用でき、総和の計算は不要。橋検出は明示的なスタックを用いるため、長い鎖でも再帰の深さに依存しない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+enum class MstEdgeUse { None, Some, Every };
+struct MstClassification {
+    int components;
+    vector<MstEdgeUse> use;
+};
+
+MstClassification classify_msf_edges(
+        int n, const vector<tuple<int,int,long long>>& edges) {
+    assert(n >= 1);
+    int m = int(edges.size()), components = n;
+    vector<int> order(m), dsu(n, -1), local(n, -1);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&](int a, int b) {
+        return get<2>(edges[a]) < get<2>(edges[b]);
+    });
+    auto find = [&](int v) {
+        int r = v;
+        while (dsu[r] >= 0) r = dsu[r];
+        while (v != r) {
+            int next = dsu[v]; dsu[v] = r; v = next;
+        }
+        return r;
+    };
+    auto unite = [&](int u, int v) {
+        u = find(u); v = find(v);
+        if (u == v) return;
+        if (dsu[u] > dsu[v]) swap(u, v);
+        dsu[u] += dsu[v]; dsu[v] = u; --components;
+    };
+    vector<MstEdgeUse> answer(m, MstEdgeUse::None);
+    for (int left = 0; left < m; ) {
+        int right = left;
+        while (right < m && get<2>(edges[order[right]]) ==
+                              get<2>(edges[order[left]])) ++right;
+        vector<int> touched;
+        vector<vector<pair<int,int>>> graph;
+        auto vertex = [&](int root) {
+            if (local[root] < 0) {
+                local[root] = int(graph.size());
+                graph.emplace_back(); touched.push_back(root);
+            }
+            return local[root];
+        };
+        for (int i = left; i < right; ++i) {
+            int id = order[i];
+            auto [u,v,w] = edges[id];
+            int a = find(u), b = find(v);
+            if (a == b) continue;
+            a = vertex(a); b = vertex(b);
+            answer[id] = MstEdgeUse::Some;
+            graph[a].push_back({b,id}); graph[b].push_back({a,id});
+        }
+        int k = int(graph.size()), timer = 0;
+        vector<int> tin(k, -1), low(k), parent(k, -1);
+        vector<int> parent_edge(k, -1), next(k, 0), stack;
+        for (int start = 0; start < k; ++start) if (tin[start] < 0) {
+            tin[start] = low[start] = timer++; stack.push_back(start);
+            while (!stack.empty()) {
+                int v = stack.back();
+                if (next[v] == int(graph[v].size())) {
+                    stack.pop_back();
+                    if (parent[v] >= 0) {
+                        int p = parent[v];
+                        if (low[v] > tin[p])
+                            answer[parent_edge[v]] = MstEdgeUse::Every;
+                        low[p] = min(low[p], low[v]);
+                    }
+                    continue;
+                }
+                auto [u,id] = graph[v][next[v]++];
+                if (id == parent_edge[v]) continue;
+                if (tin[u] < 0) {
+                    parent[u] = v; parent_edge[u] = id;
+                    tin[u] = low[u] = timer++; stack.push_back(u);
+                } else {
+                    low[v] = min(low[v], tin[u]);
+                }
+            }
+        }
+        for (int root : touched) local[root] = -1;
+        // 必ず全辺の分類後に、同じ重みの成分を併合する。
+        for (int i = left; i < right; ++i) {
+            auto [u,v,w] = edges[order[i]]; unite(u,v);
+        }
+        left = right;
+    }
+    return {components, move(answer)};
+}
+```
+
+## 関連する手法
+
+[Union-Find](/flowchartcp/techniques/union-find/) ・ [橋を使った辺の切断判定](/flowchartcp/techniques/bridge-edge-failure/) ・ [辺一本の追加とパス上の最大辺との交換](/flowchartcp/techniques/mst-replacement-edge/) ・ [厳密に重い次の全域木](/flowchartcp/techniques/strict-second-mst-two-maxima/)
+
+## 参考資料
+
+- [Codeforces：Edges in MST](https://codeforces.com/problemset/problem/160/D)
+- [Codeforces公式解説：同じ重みの一括処理、縮約、橋による三分類](https://codeforces.com/blog/entry/4108?mobile=true)
+- [LeetCode：Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree](https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/)
+
+<TechniqueReferences techniqueId="mst-equal-weight-edge-classification" />

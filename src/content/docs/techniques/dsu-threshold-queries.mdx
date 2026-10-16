@@ -1,0 +1,106 @@
+---
+title: "重みのしきい値順に辺を追加して連結性を共有する"
+description: "問い合わせをソートし、使える辺が増える向きにUnion-Findを更新する。"
+techniqueId: dsu-threshold-queries
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+問い合わせをソートし、使える辺が増える向きにUnion-Findを更新する。
+
+## 使う場面
+
+重み付き無向グラフで、「重みが $T$ 未満の辺だけを使うと二頂点は連結か」を多数回問う。問い合わせごとにグラフを作って探索する処理を省きたい。
+
+## 考え方
+
+辺を重みの昇順、問い合わせをしきい値の昇順に並べる。現在の問い合わせのしきい値未満の辺を、前回から続けてUnion-Findに追加する。二頂点の代表が等しければ連結している。
+
+最小全域木の候補辺を調べる場合などは、同じ重みの辺を使うかどうかが判定に影響する。条件が「未満」なら、重みが等しい辺は問い合わせ後に追加する。
+
+「重みが $K$ 以上の辺だけを使い、始点から届く頂点数」を求めるなら、辺と問い合わせを降順にします。重みがしきい値以上の辺を先に足し、Union-Find の成分サイズを返します。始点自身を除く個数なら、そこから1を引きます。
+
+## 適用条件
+
+問い合わせが独立していて、先に分かっている必要がある。候補辺を判定するだけなら、その候補を後の問い合わせ用のグラフに追加してはいけない。
+
+「未満」と「以下」を取り違えない。重み5の一本の辺があるとき、しきい値5未満では未連結、5以下では連結になる。
+
+「以上」の場合は、重みがしきい値と等しい辺も人数を数える前に追加します。木の二点の経路で最小の辺重みが $K$ 以上という条件は、経路上の全辺が $K$ 以上という条件と一致します。
+
+## なぜ正しいか
+
+しきい値が増えると利用できる辺は増えるだけなので、以前追加した辺を削除する必要がない。各問い合わせ時のUnion-Findには、その条件で使える辺がちょうど反映されている。したがって代表の一致は、条件を満たす辺だけでの到達可能性と同じになる。
+
+## 計算量
+
+毎回探索すると $O(Q(N+M))$。辺数 $M$、問い合わせ数 $Q$ に対して、ソートを含めて $O(M\log M+Q\log Q+(N+M+Q)\alpha(N))$ 時間、$O(N+M+Q)$ 空間。
+
+## 実装
+
+`threshold_connected` は重みが `limit` 未満の辺での連結性を返す。答えは元の問い合わせ順に並ぶ。「以下」に変える場合は、辺を追加する比較を変更する。
+
+`threshold_component_sizes` は重みが `limit` 以上の辺での成分サイズを返し、始点自身も含みます。こちらも元の問い合わせ順です。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+struct SizeDSU {
+    std::vector<int> p;
+    explicit SizeDSU(int n):p(n,-1) {}
+    int root(int v) { return p[v]<0?v:p[v]=root(p[v]); }
+    int size(int v) { return -p[root(v)]; }
+    bool merge(int a,int b) {
+        a=root(a);b=root(b);
+        if(a==b) return false;
+        if(p[a]>p[b]) std::swap(a,b);
+        p[a]+=p[b];p[b]=a;
+        return true;
+    }
+};
+#include <numeric>
+struct WeightedEdge { int u,v;long long weight; };
+struct ThresholdQuery { int u,v;long long limit; };
+std::vector<bool> threshold_connected(int n,std::vector<WeightedEdge> edges,const std::vector<ThresholdQuery>& queries) {
+    std::sort(edges.begin(),edges.end(),[](auto a,auto b){return a.weight<b.weight;});
+    std::vector<int> order(queries.size());std::iota(order.begin(),order.end(),0);
+    std::sort(order.begin(),order.end(),[&](int a,int b){return queries[a].limit<queries[b].limit;});
+    SizeDSU dsu(n);std::vector<bool> answer(queries.size());int next=0;
+    for(int id:order) {
+        auto q=queries[id];
+        while(next<int(edges.size()) && edges[next].weight<q.limit) {
+            auto e=edges[next++];dsu.merge(e.u,e.v);
+        }
+        answer[id]=dsu.root(q.u)==dsu.root(q.v);
+    }
+    return answer;
+}
+struct ComponentThresholdQuery { int vertex;long long limit; };
+std::vector<int> threshold_component_sizes(int n,std::vector<WeightedEdge> edges,
+    const std::vector<ComponentThresholdQuery>& queries) {
+    std::sort(edges.begin(),edges.end(),[](auto a,auto b){return a.weight>b.weight;});
+    std::vector<int> order(queries.size());std::iota(order.begin(),order.end(),0);
+    std::sort(order.begin(),order.end(),[&](int a,int b){return queries[a].limit>queries[b].limit;});
+    SizeDSU dsu(n);std::vector<int> answer(queries.size());int next=0;
+    for(int id:order) {
+        auto q=queries[id];assert(0<=q.vertex && q.vertex<n);
+        while(next<int(edges.size()) && edges[next].weight>=q.limit) {
+            auto e=edges[next++];dsu.merge(e.u,e.v);
+        }
+        answer[id]=dsu.size(q.vertex);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[Union-Find](/flowchartcp/techniques/union-find/) ・ [オフラインクエリ](/flowchartcp/techniques/offline-queries/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC235 E](https://atcoder.jp/contests/abc235/editorial/3263)
+- [USACO：MooTube（Gold）の原典](https://usaco.org/index.php?cpid=789&page=viewproblem2)
+- [USACO 公式解説：しきい値を降順に処理する](https://usaco.org/current/data/sol_mootube_gold_jan18.html)
+
+<TechniqueReferences techniqueId="dsu-threshold-queries" />

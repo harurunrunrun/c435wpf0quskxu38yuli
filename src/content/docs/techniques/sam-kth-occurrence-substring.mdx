@@ -1,0 +1,100 @@
+---
+title: "部分文字列の辞書順 K 番目を、出現回数ぶんの停止で選ぶ"
+description: "同じ文字列を出現回数だけ並べる順序統計では、各状態で止まる重みを1から出現回数へ変える。"
+techniqueId: sam-kth-occurrence-substring
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定した本文の全ての部分文字列を辞書順に並べ、その $K$ 番目だけがほしい。同じ文字列が異なる位置に現れる場合は、その回数だけ重複して並べる。候補を文字列として全て保存すると、二次個の候補にそれぞれ文字数がかかる。
+
+## 考え方
+
+本文の部分文字列を受理する suffix automaton を作る。根からの一つの経路は一つの部分文字列を表す。各状態 $v$ から続けられる候補の個数 $ways_v$ を、遷移先から逆順に計算する。
+
+状態で終える重みを、その状態の終端位置の数 $occ_v$ とする。本文を伸ばしてできた状態に1、複製状態に0を置き、長い状態から suffix link の親へ足せば $occ_v$ が求まる。
+
+$$ways_v=occ_v+\sum_{v\xrightarrow{c}u}ways_u$$
+
+根だけは空文字列を数えず、停止重みを0とする。
+
+復元では `a` から遷移を調べる。その枝の個数より $K$ が大きければ、個数を引いて次の枝へ進む。枝を選んだら一文字を追加し、現在の文字列を $occ_v$ 回並べた部分に $K$ が入れば終了する。入らなければ $occ_v$ を引いて、さらに長い文字列へ進む。
+
+## 適用条件
+
+本文は固定され、文字は英小文字26種類。重複する出現を別の候補として数える。出現区間の重なりも除かない。実装は $N\le2\times10^5$ とし、候補数の上限 $N(N+1)/2$ が64ビットに収まる。$K$ は1始まり。範囲外なら `nullopt` を返す。空文字列は候補に含めない。
+
+## なぜ正しいか
+
+suffix automaton の状態は終端位置の集合が同じ部分文字列をまとめたもので、根から読める非空文字列は本文の部分文字列と一致する。遷移は一文字に対して高々一つなので、同じ文字列を経路の違いで重複して数えることはない。
+
+同じ状態へ至る文字列は終端位置の集合が等しく、出現回数も等しい。各位置の寄与を suffix link の祖先へ集約すると、各状態の全ての終端位置をちょうど一度ずつ数えられる。その重みを停止回数にすれば、各部分文字列が出現回数だけ現れる。
+
+辞書順では短い接頭辞自身が、その接頭辞を伸ばした全ての文字列より先に来る。次に最初の異なる文字の順序で枝が連続するので、個数を引きながら降りる選択は $K$ 番目を保つ。
+
+## 計算量
+
+全区間を文字列として保存すると $O(N^3)$ 文字を持つ場合がある。状態数と遷移数は $O(N)$。固定26文字の配列を使う構築・集計は $O(26N)$ 時間、復元は答えの長さを $L$ として $O(26L)$ 時間、空間は $O(26N+L)$。個数の上限を越えない条件で、飽和処理なしの64ビット加算を使う。
+
+
+
+## 実装
+
+`kth_substring(text,k,true)` を呼ぶ。状態構築を含む、一回の質問用の関数である。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <optional>
+#include <string>
+#include <vector>
+class SubstringStates {
+public:
+    struct State {std::array<int,26> next;int link=-1,length=0;long long occurrences=0;State(){next.fill(-1);}};
+    std::vector<State> state;
+    std::vector<int> order;
+    explicit SubstringStates(const std::string& text){
+        state.reserve(2*text.size()+1);state.emplace_back();int last=0;
+        for(char ch:text){
+            int c=ch-'a',cur=int(state.size());state.emplace_back();state[cur].length=state[last].length+1;state[cur].occurrences=1;
+            int p=last;while(p!=-1 && state[p].next[c]==-1){state[p].next[c]=cur;p=state[p].link;}
+            if(p==-1)state[cur].link=0;
+            else {int q=state[p].next[c];if(state[p].length+1==state[q].length)state[cur].link=q;
+                else {int clone=int(state.size());state.push_back(state[q]);state[clone].length=state[p].length+1;state[clone].occurrences=0;
+                    while(p!=-1 && state[p].next[c]==q){state[p].next[c]=clone;p=state[p].link;}
+                    state[q].link=state[cur].link=clone;
+                }
+            }
+            last=cur;
+        }
+        std::vector<int> count(text.size()+1);for(const auto& v:state)++count[v.length];
+        for(int i=1;i<int(count.size());++i)count[i]+=count[i-1];
+        order.resize(state.size());for(int i=int(state.size())-1;i>=0;--i)order[--count[state[i].length]]=i;
+        for(int i=int(order.size())-1;i>0;--i){int v=order[i];state[state[v].link].occurrences+=state[v].occurrences;}
+    }
+};
+std::optional<std::string> kth_substring(const std::string& text,long long k,bool count_occurrences){
+    SubstringStates automaton(text);const auto& states=automaton.state;
+    std::vector<long long> ways(states.size());
+    auto stop=[&](int v){return v==0?0LL:count_occurrences?states[v].occurrences:1LL;};
+    for(int i=int(automaton.order.size())-1;i>=0;--i){int v=automaton.order[i];ways[v]=stop(v);for(int u:states[v].next)if(u!=-1)ways[v]+=ways[u];}
+    if(k<1 || k>ways[0])return std::nullopt;
+    std::string answer;int v=0;
+    while(true){
+        for(int c=0;c<26;++c){int u=states[v].next[c];if(u==-1)continue;if(k>ways[u]){k-=ways[u];continue;}
+            answer.push_back(char('a'+c));if(k<=stop(u))return answer;k-=stop(u);v=u;break;
+        }
+    }
+}
+```
+
+## 関連する手法
+
+[異なる部分文字列の辞書順 K 番目を、遷移先の個数で選ぶ](/flowchartcp/techniques/sam-kth-distinct-substring/) ・ [異なる部分文字列を、状態が受け持つ長さの区間へ一つずつ足す](/flowchartcp/techniques/sam-length-distribution/)
+
+## 参考資料
+
+- [CSES：Substring Order II（原典）](https://cses.fi/problemset/task/2109)。
+
+<TechniqueReferences techniqueId="sam-kth-occurrence-substring" />

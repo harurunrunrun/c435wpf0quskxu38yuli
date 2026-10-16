@@ -1,0 +1,67 @@
+---
+title: "締切までに終える仕事数は、締切順に足して超えたら最長の仕事を外す"
+description: "開始可能時刻が共通なら、採用済みの合計時間と最長時間を持ち、採用数を減らす損失を最小にします。"
+techniqueId: deadline-duration-remove-longest
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+仕事を任意に並べられるが、各仕事に締切がある。処理時間が違うため、締切の早い仕事を無条件に採用しても件数は最大にならない。全仕事を同じ時刻から始められることが手掛かりになる。
+
+## 考え方
+
+仕事を締切の昇順に並べる。各仕事を一度採用し、合計時間がその締切を超えたら、今までの採用候補で処理時間が最長の仕事を一つ外す。除外後の合計は、追加前より大きくならないので、除外は一回で足りる。
+
+採用候補は最大ヒープ、合計時間は整数一つで管理する。仕事を出力したい場合はヒープに番号も持たせ、最後に残った仕事を締切順に並べる。
+
+## 適用条件
+
+一台での処理、共通の開始時刻、正の処理時間、仕事ごとの完了締切、最大件数という条件が必要。開始可能時刻が別々の場合や、仕事ごとの利益を最大化する場合はこの交換では解けない。実装では20万件、処理時間と締切はそれぞれ $10^{12}$ 以下として、合計を64bit整数に収める。
+
+## なぜ正しいか
+
+選んだ仕事は締切順に並べてよい。隣接した締切逆順の二仕事を交換すると、早い締切の仕事は以前より早く終わり、もう一方も以前の遅い完了時刻までには終わる。
+
+その順序で最初に遅れる仕事までの候補を考える。全てを採用することはできず、最適解もこの接頭辞から少なくとも一件を除く。最長の仕事を $m$ とする。最適解が代わりに $j$ を除いているなら、$m$ を外し $j$ を戻す解へ交換できる。遅れが初めて起きた位置より前では、候補全体でも締切を満たしていたため、その部分集合も間に合う。その位置以降の合計時間は $p_m\ge p_j$ により増えない。したがって $m$ を除く最適解が存在する。
+
+この除外を繰り返す。既に安全に除外した仕事を除いた列で同じ議論が成り立つため、残った候補の件数が最大になる。
+
+## 計算量
+
+部分集合を調べて各集合を締切順に検証すると時間は $O(2^N N\log N)$、追加空間は $O(N)$。締切順の走査とヒープで時間 $O(N\log N)$、入力のコピーとヒープを含む追加空間 $O(N)$。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <queue>
+#include <stdexcept>
+#include <vector>
+struct DeadlineJob { long long duration, deadline; };
+int maximum_on_time_jobs(std::vector<DeadlineJob> jobs) {
+    if (jobs.size()>200000) throw std::invalid_argument("too many jobs");
+    for (auto j:jobs) if (j.duration<=0 || j.duration>1000000000000LL ||
+                         j.deadline<0 || j.deadline>1000000000000LL)
+        throw std::invalid_argument("job bounds");
+    std::sort(jobs.begin(),jobs.end(),[](auto a,auto b){return a.deadline<b.deadline;});
+    std::priority_queue<long long> selected;
+    long long total=0;
+    for (auto j:jobs) {
+        selected.push(j.duration); total+=j.duration;
+        if (total>j.deadline) { total-=selected.top(); selected.pop(); }
+    }
+    return static_cast<int>(selected.size());
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [LeetCode — Course Schedule III](https://leetcode.com/problems/course-schedule-iii/description/)
+
+<TechniqueReferences techniqueId="deadline-duration-remove-longest" />

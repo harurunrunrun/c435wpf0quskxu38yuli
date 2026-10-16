@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/home/admin2/flowchartcp/site/tests/ioi2016-railroad-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 5.780981155010522,
+  "testFile": "tests/ioi2016-railroad-flow.test.mjs",
+  "testSha256": "86f748395637715e2e87d1fb1a7702a703d34aec2a279a2f8cb49f19d8e5a251",
+  "preparedTmpFile": "/tmp/flowchartcp-ioi2016-railroad-flow.test.mjs",
+  "preparedAndPublishedBytesIdentical": true,
+  "tapFile": "/tmp/flowchartcp-ioi2016-railroad-flow-results.tap",
+  "tapSha256": "baa9159cc4beeceae90a4fab2d31ed97bdb5e535e6f2651c38f2e0e896377992",
+  "caseFile": "/tmp/flowchartcp-ioi2016-railroad-flow-case.json",
+  "caseSha256": "ad66e25f2293fb2e9f5d35f5caf4530b663d77de06667f7f4883b91c6827ff59",
+  "frozenBaseline": {
+    "articles": 510,
+    "graphs": 477,
+    "nodes": 3733,
+    "walks": 531,
+    "corpora": 10,
+    "datasetJsonMembers": 79,
+    "rawSha256": {
+      "flows": "36f10515b9a2e36e1a60a6dc85e9721dc0af5ea4f6504b87ea1848395ce9ac67",
+      "walks": "fe3cb55324df0d29971c71d5a139f88cddb138879eb7fdb04b5f2114969d4f14",
+      "ioi2016-audit": "61080103392ea9cce3755f1359277586e2306763e9def5b3413d161396cabb89",
+      "dataset": "34ef01aaf50e43f9c1e35a9692b5cb8c433c6321e87c7ee1dc42115540a5c35e"
+    }
+  },
+  "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+  "allowedSharedFiles": [
+    "tests/ioi2016-railroad-flow.test.mjs",
+    "research/probes/ioi2016-railroad-flow-results.json"
+  ],
+  "otherSharedFilesModified": false,
+  "coveragePolicy": "All ten prior fixed-corpus fields,Aliens/Molecules prior resolutions,and all frozen metadata/references remain unchanged. Initial Railroad researched-positive6/6/coverage0/6/API0 stays fixed. Only resolution is appended. Current research6/6 and coverage>=3;deleting Railroad resolution or production article/ref/walk/valid steps reduces coverage by1. An invalid actual MDX fence fails real product preflight and gates all corpus coverage to0. Future legitimate resolutions are allowed.",
+  "scope": [
+    "complete old531 records/hash and independent raw replay including every target/question/answer label/terminal",
+    "every old477 graph and3733 node field/order/target/result",
+    "all79 frozen dataset raw hashes and all10 corpus initial fields+existing Aliens/Molecules resolutions",
+    "every old metadata/reference field and relative order",
+    "593 local prefixes/404 completed share URLs with Back",
+    "new three guards/all six no-unknown branches/both displays/SVG answers and article href",
+    "primary full N/s/t/entry/exit/no-return/Notice/date/null/source-header provenance",
+    "physical acceptance/cut correction/MST/Euler proof and exact normal+ASan native counters",
+    "new independent2752841 assertion connector-count enumeration/Euler-to-physical certificate evidence",
+    "actual standalone core+sourceadapter small overflow/invalid/MST smoke",
+    "missing article/ref/source/walk/validsteps coverage -1 and actual broken C++ fence preflight0"
+  ],
+  "resultsFile": "research/probes/ioi2016-railroad-flow-results.json",
+  "detectedAndResolvedIntegrationIssue": {
+    "firstRunTests": 10,
+    "firstRunPassed": 9,
+    "firstRunFailed": 1,
+    "cause": "New feature file retained proposal schema without standard techniqueIds/url/evidenceUrl/verification/exactDateVerified.",
+    "fixedBy": "Parent normalized only the new feature fields and recorded normalization in integration metadata.",
+    "testAssertionsUnchanged": true,
+    "firstFailureJson": "/tmp/flowchartcp-ioi2016-railroad-flow-first-feature-schema-failure.json",
+    "firstFailureTap": "/tmp/flowchartcp-ioi2016-railroad-flow-first-feature-schema-failure.tap"
+  }
+}

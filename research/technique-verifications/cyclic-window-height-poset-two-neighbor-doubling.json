@@ -1,0 +1,457 @@
+{
+  "techniqueId": "cyclic-window-height-poset-two-neighbor-doubling",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-plants-article.mdx",
+    "checker": "/tmp/flowchartcp-plants-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/cyclic-window-height-poset-two-neighbor-doubling.mdx",
+    "checker": "scripts/check_cyclic_window_order_cpp.py"
+  },
+  "metadata": {
+    "id": "cyclic-window-height-poset-two-neighbor-doubling",
+    "title": "円周上の「自分より高い個数」から、必ず成り立つ大小関係を求める",
+    "summary": "条件に合う高さ順を一つ作り、近い二点の大小が全ての配置で共通することを使う。左右の候補への移動距離をまとめ、多数の比較に答える。",
+    "aliases": [
+      "IOI 2020 Comparing Plants",
+      "cyclic window height poset two neighbor doubling",
+      "circular local rank forced comparison",
+      "循環順位個数 全整合配置 半順序 最高下位候補"
+    ],
+    "family": "循環区間の順位制約",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "lazy-segment-tree",
+      "topological-sort",
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-original-ac.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/task.yaml"
+    ]
+  },
+  "reference": {
+    "techniqueId": "cyclic-window-height-poset-two-neighbor-doubling",
+    "source": "IOI",
+    "problemId": "ioi2020_plants",
+    "title": "植物の比較 (Comparing Plants)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+    "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+    "evidence": "円周の固定長K窓にある自分より高い個数から、全整合高さ順で共通する大小を答える。残余0と直前窓の0依存を解いて一つの順位を復元すると、距離K未満の対の向きは全配置で不変となる。整合配置はこの近距離DAGの線形拡張であり、左右の最高下位候補と距離の二冪表で、その到達性を質問ごと対数時間で判定できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2020-09-16",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に主催者公式原典と公式Editorialを再読。公式PDFの通常web/ローカル抽出では数式が欠けるため、AOI公式配布repoで存在確認した英語原典をGitHub読取/base64で取得し、全3頁を画像化して実際に読み、2<=K<=N<=200000、1<=Q<=200000、0<=r[i]<=K−1、0<=x<y<N、全高さ相異/整合配置存在を確認した。公式Editorialの方針と配布満点modelを参照し、残余0選択と未知DAGのsourceの同値、同一除去順から近距離辺の不変性、整合高さ順と線形拡張、rank差帰納による左右2辺圧縮、lift上の折返し除去と目標初横断、最高下位候補の単調道への貪欲挿入を独立に証明した。初回audit未確認fieldsは変更せず、追加の確認として記録。実MDX単一可視完全C++20を抽出し、N<=8/K全値の全362879順列を同一観測215446群へまとめ、全整合順列の比較の共通部分と全13368156質問を照合。N<=6の全71992個数配列で存在判定を比較（不整合68872）。1500乱択/全1924051比較、N200000の6instanceで各200000質問、K1/2/100000/199999/200000、方向/曖昧0/同添字/循環境界/無効状態/copy-moveを検証。通常/ASan+UBSanとも19024422 checks、checksum3615291826092893586。通常1.66715秒/38980KiB、san8.52024秒/708200KiB。競技日2020-09-16は日本委員会公式日別一覧、難度null。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2020_plants",
+    "title": "植物の比較 (Comparing Plants)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+    "techniqueIds": [
+      "cyclic-window-height-poset-two-neighbor-doubling"
+    ],
+    "features": [
+      "円周上の各位置について、時計回りの次のK−1位置のうち自分より厳密に高い個数だけが与えられる。窓幅Kは全位置で同じ。",
+      "高さは全て相異なり、観測と整合する配置が存在する。その全配置で二位置の大小が確定するか、多数の質問に答える。",
+      "原典は2<=K<=N<=200000、質問200000回以下、個数0..K−1。掲載APIはK1と同添字も明示的に拡張して扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-16",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "discoveredBy": "ioi-2020",
+    "notes": "円周の固定長K窓にある自分より高い個数から、全整合高さ順で共通する大小を答える。残余0と直前窓の0依存を解いて一つの順位を復元すると、距離K未満の対の向きは全配置で不変となる。整合配置はこの近距離DAGの線形拡張であり、左右の最高下位候補と距離の二冪表で、その到達性を質問ごと対数時間で判定できる。",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+    "statementPages": [
+      1,
+      2,
+      3
+    ],
+    "officialEditorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+    "officialEditorialPages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "officialEditorialProvenance": "IOI2020 host task index explicitly links this PDF as Editorial for Plants.",
+    "officialIndexUrl": "https://ioi2020.sg/ioi-2020-tasks/",
+    "taskAuthor": "Jo Sunghyeon",
+    "editorialRetrieved": true,
+    "officialEditorialFullFormulaTranscriptionVerified": false,
+    "editorialLimitation": "Web extraction omits many mathematical symbols; original editorial page images were not obtained/read. The missing definitions and necessity/sufficiency are independently proved rather than claimed as literally transcribed.",
+    "distributionRepository": "austrian-olympiad-informatics/ioi-tasks",
+    "distributionCommit": "91af60db7e0ebf3ebc87a8f5f6522baa649aee73",
+    "distributionDirectoryTreeSha": "8c1a42a86621c808c1f6e9e885975446a20a7cfc",
+    "distributionPrimaryPdfUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+    "distributionPrimaryPdfGitBlobSha": "9bae2102f72be2876ca164ef07f21f4e2bc2868f",
+    "distributionPrimaryPdfSha256": "e7397d11dddef1005646bef0465a559127e790d32cc123db4761eef3aed3c794",
+    "retrieval": "GitHub read connector returned base64 of the verified existing English ISC PDF; decoded locally, rendered with pdftoppm, and all3 page images actually inspected with view_image. No shell network request or pending download approval.",
+    "numericBoundsVerified": true,
+    "sourceBounds": {
+      "N": "2..200000",
+      "K": "2..N",
+      "Q": "1..200000",
+      "r": "0..K−1 at all original positions",
+      "query": "0<=x<y<N",
+      "height": "all distinct; only relative order matters",
+      "consistency": "at least one valid configuration exists"
+    },
+    "sourceReturns": {
+      "1": "x definitely taller",
+      "-1": "x definitely shorter",
+      "0": "inconclusive; different valid strict orders give both directions"
+    },
+    "window": "nextK−1 clockwise positions in fixed original cyclic indices, not the nextK−1 live positions after deletion",
+    "referenceModelsRead": [
+      {
+        "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-original-ac.cpp",
+        "gitBlobSha": "0f0a9ca65017046ae9da9ed300b85d76933ada2e",
+        "role": "packaged model; task.yaml expected score100"
+      },
+      {
+        "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-yanhao-ac.cpp",
+        "gitBlobSha": "895166e0ae4e8dbf4b8c70e65120881de2a3c940",
+        "role": "alternate packaged full-score model, not used as an oracle"
+      },
+      {
+        "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/grader/grader.cpp",
+        "gitBlobSha": "fa6fd34f652e2898d4874c45d8b9f25e13f15917",
+        "role": "public grader calls init once then compare_plants for every query"
+      }
+    ],
+    "distributionConfiguration": {
+      "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/task.yaml",
+      "gitBlobSha": "085fea282a8abc7ddc17c71e8edaa7837e62a526",
+      "expectedModelScore": 100,
+      "timeLimitSeconds": 4,
+      "memoryLimitMiB": 2048,
+      "scope": "AOI rehost judge configuration; not asserted as a numeric constraint printed in the IOI statement"
+    },
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "contestDate": "2020-09-16",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "initialAuditNumericUnconfirmedPreserved": true,
+    "initialAuditProofUnconfirmedPreserved": true,
+    "apiContainsEntireOriginalRange": true,
+    "containmentProof": [
+      "N2..200000,K2..N is included in API1<=K<=N<=200000.",
+      "All original observations0<=r<K pass range validation and consistency guarantee prevents semantic rejection.",
+      "Original x<y valid pairs are included in either-order API; up to200000 immutable query calls fit O((N+Q)logN).",
+      "Original heights distinct, so no original equality case is silently treated as a height tie.0 is ambiguity; same-index0 is an explicitly separate API extension."
+    ],
+    "unconfirmedIndependentLemmas": []
+  },
+  "supportingEvidence": {
+    "localPdf": "/tmp/flowchartcp-plants-primary.pdf",
+    "localImages": [
+      "/tmp/flowchartcp-plants-primary-1.png",
+      "/tmp/flowchartcp-plants-primary-2.png",
+      "/tmp/flowchartcp-plants-primary-3.png"
+    ],
+    "holdForIndependentReview": true,
+    "notPublishedSiteAssets": true,
+    "imageSha256": {
+      "/tmp/flowchartcp-plants-primary-1.png": "80ccd10d67701fd5cb6dc4df1889404c92d1bb6711901f3edd3aebed20aeaf38",
+      "/tmp/flowchartcp-plants-primary-2.png": "3a6e5cf2c51b49d6337db73011a9393faff7556eab731b4a339015a582d18e25",
+      "/tmp/flowchartcp-plants-primary-3.png": "47d7c27817207580fad5bd191227e5a78d77819f132e3991a9178b23acce36c4"
+    }
+  },
+  "subsequentSourceVerification": {
+    "checkedAt": "2026-10-15",
+    "status": "verified",
+    "kind": "official-committee-distributed-original-pdf-images",
+    "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+    "evidenceUrls": [
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+      "https://ioi2020.sg/ioi-2020-tasks/",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ],
+    "numericBoundsVerified": true,
+    "notes": "初回auditの数式抽出欠落/未確認を履歴として保持し、今回の実画像確認で全数値と実装API範囲包含を追加確定。"
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-visually-reviewed",
+      "officialEditorialRetrieved": true,
+      "officialEditorialVerified": false,
+      "officialEditorial": "official-source-retrieved-formulas-partly-unreadable",
+      "solution": "independently-proved-and-validated"
+    },
+    "evidenceUrls": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+      "https://ioi2020.sg/ioi-2020-tasks/",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-original-ac.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/task.yaml",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ],
+    "notes": "2026-10-15に主催者公式原典と公式Editorialを再読。公式PDFの通常web/ローカル抽出では数式が欠けるため、AOI公式配布repoで存在確認した英語原典をGitHub読取/base64で取得し、全3頁を画像化して実際に読み、2<=K<=N<=200000、1<=Q<=200000、0<=r[i]<=K−1、0<=x<y<N、全高さ相異/整合配置存在を確認した。公式Editorialの方針と配布満点modelを参照し、残余0選択と未知DAGのsourceの同値、同一除去順から近距離辺の不変性、整合高さ順と線形拡張、rank差帰納による左右2辺圧縮、lift上の折返し除去と目標初横断、最高下位候補の単調道への貪欲挿入を独立に証明した。初回audit未確認fieldsは変更せず、追加の確認として記録。実MDX単一可視完全C++20を抽出し、N<=8/K全値の全362879順列を同一観測215446群へまとめ、全整合順列の比較の共通部分と全13368156質問を照合。N<=6の全71992個数配列で存在判定を比較（不整合68872）。1500乱択/全1924051比較、N200000の6instanceで各200000質問、K1/2/100000/199999/200000、方向/曖昧0/同添字/循環境界/無効状態/copy-moveを検証。通常/ASan+UBSanとも19024422 checks、checksum3615291826092893586。通常1.66715秒/38980KiB、san8.52024秒/708200KiB。競技日2020-09-16は日本委員会公式日別一覧、難度null。"
+  },
+  "api": {
+    "constructor": "CyclicWindowOrder(int k, const std::vector<int>& taller)",
+    "query": "int compare(int x,int y) const",
+    "representative": "const std::vector<int>& representative_rank() const; rank0 is tallest",
+    "input": "1<=K<=N<=200000; each0<=r<K; must admit distinct heights, checked semantically",
+    "queryRange": "0<=x,y<N, any order; x==y returns0. No query-count state or cap; original Q<=200000 covered.",
+    "result": "1 iff x taller in all configurations, -1 iff shorter in all,0 iff both strict comparisons possible; identical-index0 is separate extension",
+    "initializationErrors": "std::invalid_argument for empty/oversized N, invalidK, r out of range, or no consistent ordering",
+    "queryErrors": "std::invalid_argument for invalid indices, before identical-index shortcut",
+    "stateErrors": "std::logic_error on compare/representative_rank for moved-from objects",
+    "copyMove": "deep copy constructor; noexcept move constructor resets source n to0; pass-by-value copy-swap assignment gives strong assignment guarantee; self-copy/self-move work",
+    "allocationErrors": "standard exceptions propagate; failed construction yields no usable object, failed parameter copy leaves assignment target unchanged",
+    "inputUnchanged": true,
+    "persistentGlobalState": false,
+    "threadUse": "Queries and rank access are const after successful construction; each object owns its tables.",
+    "integerSafety": [
+      "All indices/counts/ranks<=200000.",
+      "Residual sentinel10^9 minus at mostN future decrements remains positive. Lazy values stay within the asserted int range.",
+      "4N tree indices and power-of-two segment tree allocation indices are bounded below10^6.",
+      "Directional distances are1..N−1 or sentinelN; adding two capped distances is<=2N<=400000.",
+      "Circular arithmetic current+distance/current-distance+N stays within[-N,2N]; no negative modulo argument is used.",
+      "At N200000 levels18,1<<levels<=262144 fits int.",
+      "No height magnitude arithmetic or count sum overN is needed."
+    ],
+    "time": "preprocess O(NlogN), each query O(logN), Q queries O((N+Q)logN)",
+    "space": "O(NlogN) persistent, O(N) construction scratch",
+    "maximumDistanceTableBytesAtSourceN": 28800000,
+    "queryCountExecutedPerMaximumInstance": 200000
+  },
+  "proof": {
+    "status": "independently-complete",
+    "sourceCriterion": "Residual0 excludes taller clockwise neighbours. If a taller left neighbour has positive residual, its still taller clockwise witness must lie strictly between it and x, otherwise residual(x)=0 is contradicted. Iteration ends at a left residual0, contradicting the criterion. Conversely a source has residual0 and no left residual0.",
+    "zeroSetCriterion": "For an ordered cyclic zero set, a zero has no other zero in its precedingK−1 fixed positions iff its gap from the preceding zero is>=K; singleton gap=N. Inserting/removing a zero changes only its own/successor eligibility.",
+    "consistencyAndInvariant": "The same residual-driven removal run is a topological order of every consistent local comparison DAG. Conflicting orientation of any near pair cannot both be respected, so the near DAG is invariant. A completed run itself reproduces every count; failure to find a source before completion is inconsistent.",
+    "linearExtensions": "Every topological order preserves all counted local comparisons and hence the observations; all consistent orders are exactly linear extensions. A pair is forced iff one reaches the other. If neither reaches the other, adding either directed edge is acyclic and witnesses both orders.",
+    "twoEdges": "For full edge x->y in one side window, the tallest shorter side candidate c is y or has x>c>y. Since c,y share a lengthK−1 arc, c->y is a full edge. Induct on strictly decreasing rank difference to replace it with chosen edges.",
+    "directionChanges": "Lift a full-DAG path onto integer coordinates, choosing a signed displacement of absolute value<K for each edge. Two opposite directions put their outer endpoints in the same lengthK−1 arc, so replace by the direct descending-height edge with net displacement, reducing the number of edges. Repeating yields a monotone directed path.",
+    "fullTurns": "If a monotone path winds past the first occurrence of target, its first crossing edge starts above target and at distance<K from it. End there directly, so a no-overshoot path exists.",
+    "greedy": "The highest shorter side candidate c is at least as high as the first next vertex v of a monotone path. If c lies before v, append c->v. If after v, splice c to the first original path vertex at or beyond c, whose crossing edge has length<K and whose height<=v<=c. If c is beyond target, target is a direct near neighbour of current.",
+    "query": "Follow as many positive-distance candidate edges as fit before target. Existence is preserved by the greedy lemma; the final remaining-distance<K and rank(current)<=rank(target) checks precisely the direct final edge or exact target. Query both directions.",
+    "capping": "No-overshoot query budget<N, so replacing any jump distance>=N by sentinelN makes it unusable and cannot alter the answer.",
+    "unconfirmedLemmas": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "existingChoices": [
+      "group-constraints"
+    ],
+    "firstMissingGraphId": "graphs-group-constraints",
+    "firstMissingNodeId": "shortest",
+    "proposedAnswerId": "cyclic-ranks",
+    "proposedAnswerLabel": "循環する同じ長さの窓で、自分より高い個数から全配置共通の大小を問う",
+    "guardGraphId": "cyclic-window-height-order-conditions",
+    "guards": [
+      {
+        "id": "fixed-cyclic-window",
+        "feature": "円周の固定位置で、全位置共通Kの次K−1位置にいる自分より厳密に高い個数を知る。"
+      },
+      {
+        "id": "all-configurations",
+        "feature": "高さは全て相異なり、整合配置が存在する。全整合配置で二位置の大小が確定するかを求め、曖昧なら0とする。"
+      },
+      {
+        "id": "bounds",
+        "feature": "1<=K<=N<=200000、個数0..K−1。質問20万回以下なら全体O((N+Q)logN)で扱える。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "cyclic-window-height-poset-two-neighbor-doubling"
+    ]
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "checks": 19024422,
+    "smallPermutationsEnumerated": 362879,
+    "observationGroups": 215446,
+    "allPairsQueriesAgainstAllConfigurations": 13368156,
+    "semanticCountVectors": 71992,
+    "impossibleCountVectors": 68872,
+    "randomInstances": 1500,
+    "randomQueries": 1924051,
+    "maximumScaleQueries": 1200000,
+    "maximumN": 200000,
+    "maximumJumpLevels": 18,
+    "checksum": "3615291826092893586",
+    "normalCommand": "python3 /tmp/flowchartcp-plants-checker.py /tmp/flowchartcp-plants-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-plants-checker.py /tmp/flowchartcp-plants-article.mdx --sanitize",
+    "normalSeconds": 1.66715,
+    "normalPeakRSSKiB": 38980,
+    "normalMaximumConstructionSeconds": 0.123859,
+    "normalMaximum200000QueryBatchSeconds": 0.144362,
+    "asanUbsan": {
+      "passed": true,
+      "flags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer"
+      ],
+      "checks": 19024422,
+      "checksum": "3615291826092893586",
+      "seconds": 8.52024,
+      "peakRSSKiB": 708200,
+      "maximumConstructionSeconds": 0.508505,
+      "maximum200000QueryBatchSeconds": 0.211621,
+      "leakSanitizer": false
+    },
+    "oracle": "For every N1..8,K1..N enumerate ALL N! height permutations; compute counts by literal nextK−1 comparisons; group identical count arrays. Bitwise intersection of pair comparisons across the whole group is exactly the independently expected forced relation; union gives both witness directions for ambiguous pairs. No greedy construction, graph, segment tree or doubling in this oracle.",
+    "extraSmallChecks": [
+      "Every returned representative is a full rank permutation and literally reproduces its entire observation.",
+      "An independently built full near-comparison DAG closure also equals the intersection over all grouped actual permutations, checking the poset theorem separately.",
+      "For every N<=6,K<=N enumerate ALL K^N in-range count arrays; constructor accepts exactly those present in the permutation groups."
+    ],
+    "randomOracle": "1500 shuffled heights with2<=N<=60 and1<=K<=N, seed20200916. Explicitly construct all near edges from the independent true heights, compute bitset Warshall closure, compare all ordered pairs.",
+    "maximumCases": [
+      {
+        "N": 200000,
+        "K": 2,
+        "Q": 200000,
+        "heights": "strictly increasing by index",
+        "expected": "all pairs forced, long decreasing path and18 jump levels"
+      },
+      {
+        "N": 200000,
+        "K": 2,
+        "Q": 200000,
+        "heights": "alternating local maxima/minima",
+        "expected": "only adjacent high-low pairs forced, distant pairs ambiguous"
+      },
+      {
+        "N": 200000,
+        "K": 100000,
+        "Q": 200000,
+        "heights": "increasing index",
+        "expected": "all forced, critical2K=N boundary"
+      },
+      {
+        "N": 200000,
+        "K": 199999,
+        "Q": 200000,
+        "heights": "increasing index",
+        "expected": "all forced, almost whole circle window"
+      },
+      {
+        "N": 200000,
+        "K": 200000,
+        "Q": 200000,
+        "heights": "increasing index",
+        "expected": "all forced, full window maximum"
+      },
+      {
+        "N": 200000,
+        "K": 1,
+        "Q": 200000,
+        "heights": "not constrained",
+        "expected": "all distinct queried pairs ambiguous; explicit general API extension"
+      }
+    ],
+    "otherCases": [
+      "Both original examples; x<y source calls and reversed arbitrary-order API calls; same-index0 and N=K=1.",
+      "N200001/empty/invalidK/count values/inconsistent cycles; invalid query indices even when equal.",
+      "Deep copy, move and checked moved-from compare/rank access, copy assignment, self-copy, self-move and interleaved independent objects."
+    ],
+    "sharedFilesModified": false,
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "Eight technique sections and one always-visible complete C++20 reusable class; no per-problem explanation page.",
+    "Article focuses on model/proofs/API/complexity/code. Retrieval history, test counts and timings are sidecar-only.",
+    "Initial shared IOI2020 audit remains unchanged; original unconfirmed facts can be resolved by later source/solution verification after independent review.",
+    "Only the three requested technique artifacts are deliverables; PDF/PNG evidence is temporary and retained for reviewer inspection.",
+    "Official editorial source is authentic, but missing extracted formulas are not falsely claimed to have been visually read. The necessary definitions and lemmas are independently proved and exhaustively checked.",
+    "Original grader interface is online init/compare; the class offers preprocessing once and immutable comparisons, so its complexity includes all original queries."
+  ],
+  "artifactSha256": {
+    "article": "df60bcac5c5a21b9e7d1558f35f39f6d1e26e248ce19f61825c79d304f820ed1",
+    "checker": "cbeefcf633ce5643ae72bf7d8f1ded506ec186635c0a7a63d04f71d3fddf3ff6",
+    "publishedArticle": "993899731b75f52ad73f8036408a64b3c785d30093a260872f9ba0543b79ccf5"
+  },
+  "cppSha256": "d8dfab3f30ed369b6ab511e5585c2ad80cec9c5f0a46518ebbfbbe49ab17b0c1",
+  "auditGapId": "cyclic-window-height-order-forced-comparisons",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/cyclic-window-height-poset-two-neighbor-doubling.mdx",
+    "checker": "scripts/check_cyclic_window_order_cpp.py",
+    "entryGraphId": "graphs",
+    "choices": [
+      "group-constraints",
+      "cyclic-ranks",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "d8dfab3f30ed369b6ab511e5585c2ad80cec9c5f0a46518ebbfbbe49ab17b0c1",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "normalizedSolutionStatus": "retrieved-and-reviewed",
+    "originalAuthorSidecarStatusPreserved": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewers": [
+      "usaco_cowmistry_article",
+      "root"
+    ],
+    "normalAndAsanUbsanPassed": true,
+    "primaryImagesAndProofReviewed": true,
+    "normalSeconds": 1.64018,
+    "asanUbsanSeconds": 8.59736,
+    "checks": 19024422,
+    "checksum": "3615291826092893586",
+    "additionalClosureOracle": {
+      "file": "research/probes/cyclic-window-order-independent.py",
+      "results": "research/probes/cyclic-window-order-independent-results.json",
+      "cases": 48,
+      "comparisons": 18555245,
+      "checksum": "13630968379293366250"
+    },
+    "notes": "二者が原典3頁の画像、zero抽出と不変DAG、rank差帰納、単調道とgreedy交換、飽和doubling、全掲載APIを独立精読。作者と独立review者とrootの通常・ASan/UBSanで同一結果。独立reviewではN65..1000の全近距離DAG閉包と反転後観測でも照合。"
+  }
+}

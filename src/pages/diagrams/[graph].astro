@@ -1,0 +1,24 @@
+---
+import { graphs } from '../../lib/flow';
+import { techniques } from '../../lib/content';
+import { renderDiagramViewerHtml } from '../../lib/diagram-viewer';
+import '../../styles/diagram-viewer.css';
+
+export function getStaticPaths() { return graphs.map(graph => ({ params: { graph: graph.id }, props: { graph } })); }
+const { graph } = Astro.props;
+const titles = Object.fromEntries(techniques.map(technique => [technique.id, technique.title]));
+const html = renderDiagramViewerHtml(graph, import.meta.env.BASE_URL, titles);
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{graph.title}の図</title>
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+  </head>
+  <body>
+    <Fragment set:html={html} />
+    <script>import '../../lib/diagram-viewer-client';</script>
+  </body>
+</html>

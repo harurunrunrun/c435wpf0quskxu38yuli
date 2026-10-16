@@ -1,0 +1,83 @@
+---
+title: "条件付き整数の総和は、桁DPで個数と値の和を一緒に更新する"
+description: "数字を一桁付け足す変換を、状態内の個数と総和だけに作用させます。"
+techniqueId: digit-required-count-sum
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+上限以下の整数を数える桁DPが組めても、それらの総和のために値そのものを状態へ加える必要はありません。同じ状態の値をまとめて、一桁追加の効果を式にします。
+
+## 考え方
+
+ある状態の個数を $c$、整数値の総和を $s$ とします。数字 $d$ を追加すると、各値は $x\mapsto 10x+d$ なので、
+
+$$c'\mathrel{+}=c,\qquad s'\mathrel{+}=10s+dc.$$
+
+状態には、上限とまだ一致しているか、数が始まっているか、指定数字のうちどれを使ったかを持ちます。指定されていない数字はマスクへ入れなくて構いません。数が始まる前の0は、指定数字0の出現にも数えません。最後に、始まっていて全指定数字を含む状態の総和を足します。
+
+## 適用条件
+
+数字の出現条件は「少なくとも一回」で、出現位置や回数の上限はありません。正の整数を対象にします。法は998244353。上限は余分な先頭0のない十進文字列で、0も受け付けます。指定数字は重複を除いて扱えます。数値を整数型へ変換しません。
+
+## なぜ正しいか
+
+桁列の上限比較を保つ遷移は、対象の整数を先頭0で長さを揃えた一意な表現として生成します。startedの状態が、補った0と数の一部の0を区別します。同じ状態のどの整数にも同じ次桁が許され、値の変換は一次式です。和を取った上式は個別変換の和と一致するため、個数と総和だけで遷移を再現できます。
+
+## 計算量
+
+整数を列挙する時間は上限に比例します。桁数 $L$、指定数字の種類数 $m$ に対し時間 $O(10L2^m)$、空間 $O(2^m)$。指定数字以外の出現集合を保存しないため、$m<10$ のとき状態も減ります。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int sum_with_required_digits(const string& bound, const vector<int>& required) {
+    constexpr long long MOD = 998244353;
+    if (bound.empty() || (bound.size() > 1 && bound[0] == '0')) throw invalid_argument("canonical decimal");
+    for (char c : bound) if (c < '0' || c > '9') throw invalid_argument("decimal");
+    array<int, 10> bit; bit.fill(-1);
+    int m = 0;
+    for (int d : required) {
+        if (d < 0 || d > 9) throw invalid_argument("digit");
+        if (bit[d] == -1) bit[d] = m++;
+    }
+    struct Cell { long long count = 0, sum = 0; };
+    int states = 1 << m;
+    vector<array<Cell, 4>> dp(states), ndp(states);
+    dp[0][2].count = 1; // tight=1, started=0
+    for (char character : bound) {
+        for (auto& row : ndp) row = {};
+        int limit = character - '0';
+        for (int mask = 0; mask < states; ++mask) for (int flag = 0; flag < 4; ++flag) {
+            auto cell = dp[mask][flag];
+            if (cell.count == 0 && cell.sum == 0) continue;
+            bool tight = flag / 2, started = flag % 2;
+            for (int d = 0; d <= (tight ? limit : 9); ++d) {
+                bool ns = started || d != 0, nt = tight && d == limit;
+                int nm = mask;
+                if (ns && bit[d] >= 0) nm |= 1 << bit[d];
+                auto& next = ndp[nm][int(nt) * 2 + int(ns)];
+                next.count = (next.count + cell.count) % MOD;
+                next.sum = (next.sum + 10 * cell.sum + d * cell.count) % MOD;
+            }
+        }
+        dp.swap(ndp);
+    }
+    return int((dp.back()[1].sum + dp.back()[3].sum) % MOD);
+}
+```
+
+## 関連する手法
+
+- [桁DPでは先頭の0と数字としての0を分ける](/flowchartcp/techniques/digit-dp-leading-zero/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/abc235/tasks/abc235_f)
+- [公式解説・根拠資料](https://atcoder.jp/contests/abc235/editorial/3259)
+
+<TechniqueReferences techniqueId="digit-required-count-sum" />

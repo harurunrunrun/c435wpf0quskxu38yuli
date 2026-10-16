@@ -1,0 +1,94 @@
+---
+title: "区間の上限更新を第二最大値でまとめて処理する"
+description: "最大値だけが変わる場合に限り、個数を使って区間和を一度で更新する。"
+techniqueId: range-chmin-second-maximum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+最大値だけが変わる場合に限り、個数を使って区間和を一度で更新する。
+
+## 使う場面
+
+配列の区間に $a_i\leftarrow\min(a_i,x)$ を行い、区間和を求める。上限を設定するたびに要素を一つずつ更新する処理を速くしたい。
+
+## 考え方
+
+各ノードに最大値 $M$、それ未満の最大値 $S$、最大値の個数 $c$、区間和を保存する。$x\ge M$ なら変化なし。$S<x<M$ なら最大値の要素だけが $x$ へ変わり、区間和から $(M-x)c$ を引けばよい。
+
+$x\le S$ の場合は、下の子へ進む。親で下げた最大値は、子へ降りるときにその上限として反映する。
+
+## 適用条件
+
+第二最大値は、最大値と異なる値のうちの最大とする。$x=S$ では二つの値が合流して個数が変わるため、以下の情報だけで同じ処理はできない。最大値だけで判断しても、例えば $[2,5]$ を上限3にした後の和を、最大値と個数だけでは一般に更新できない。
+
+## なぜ正しいか
+
+第二最大値より上の上限なら、最大値以外の要素は変化しない。変化する個数が $c$ と分かるため、和も正しく更新できる。それ以外は子に分けて処理し、結果を合成する。深く進む操作では区間内の異なる値が合流するため、その総回数を償却して評価できる。
+
+## 計算量
+
+素朴な上限更新は1件 $O(N)$。上限更新と区間和だけの構成では、全 $Q$ 件を合わせて $O((N+Q)\log N)$ 時間、空間 $O(N)$。個々の上限更新が必ず $O(\log N)$ という保証ではない。
+
+## 実装
+
+以下は上限更新と区間和に絞った実装。値と上限は `NEG` より大きく、すべての和と差分積が符号付き64ビット整数に収まる入力を使う。区間加算や下限更新は含めていない。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <limits>
+#include <cassert>
+struct ChminSumTree {
+    static constexpr long long NEG=std::numeric_limits<long long>::lowest()/4;
+    struct Node { long long sum=0,mx=NEG,second=NEG;int count=0; };
+    int n;std::vector<Node> t;
+    explicit ChminSumTree(const std::vector<long long>& a):n(a.size()),t(4*n+4) { if(n) build(1,0,n,a); }
+    void pull(int v) {
+        Node a=t[2*v],b=t[2*v+1],c;
+        c.sum=a.sum+b.sum;c.mx=std::max(a.mx,b.mx);
+        c.count=(a.mx==c.mx?a.count:0)+(b.mx==c.mx?b.count:0);
+        c.second=std::max(a.mx==c.mx?a.second:a.mx,b.mx==c.mx?b.second:b.mx);
+        t[v]=c;
+    }
+    void build(int v,int l,int r,const std::vector<long long>& a) {
+        if(r-l==1) { assert(a[l]>NEG);t[v]={a[l],a[l],NEG,1};return; }
+        int m=(l+r)/2;build(2*v,l,m,a);build(2*v+1,m,r,a);pull(v);
+    }
+    void lower_max(int v,long long x) {
+        if(x>=t[v].mx) return;
+        assert(t[v].second<x);
+        t[v].sum-=(t[v].mx-x)*t[v].count;t[v].mx=x;
+    }
+    void push(int v) { lower_max(2*v,t[v].mx);lower_max(2*v+1,t[v].mx); }
+    void update(int v,int l,int r,int ql,int qr,long long x) {
+        if(qr<=l || r<=ql || t[v].mx<=x) return;
+        if(ql<=l && r<=qr && t[v].second<x) { lower_max(v,x);return; }
+        push(v);int m=(l+r)/2;
+        update(2*v,l,m,ql,qr,x);update(2*v+1,m,r,ql,qr,x);pull(v);
+    }
+    long long query(int v,int l,int r,int ql,int qr) {
+        if(qr<=l || r<=ql) return 0;
+        if(ql<=l && r<=qr) return t[v].sum;
+        push(v);int m=(l+r)/2;
+        return query(2*v,l,m,ql,qr)+query(2*v+1,m,r,ql,qr);
+    }
+    void chmin(int l,int r,long long x) {
+        assert(0<=l && l<=r && r<=n && x>NEG);
+        if(l<r) update(1,0,n,l,r,x);
+    }
+    long long sum(int l,int r) {
+        assert(0<=l && l<=r && r<=n);
+        return l==r?0:query(1,0,n,l,r);
+    }
+};
+```
+
+## 関連する手法
+
+[Segment Tree Beats](/flowchartcp/techniques/segment-tree-beats/)
+
+## 参考資料
+
+- [Library Checker：公式参照実装](https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/range_chmin_chmax_add_range_sum/sol/correct.cpp)
+
+<TechniqueReferences techniqueId="range-chmin-second-maximum" />

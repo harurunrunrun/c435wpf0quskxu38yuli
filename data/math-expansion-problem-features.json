@@ -1,0 +1,228 @@
+[
+  {
+    "techniqueId": "digit-sum-residue-dp",
+    "source": "AtCoder",
+    "problemId": "dp_s",
+    "title": "Digit Sum",
+    "statementUrl": "https://atcoder.jp/contests/dp/tasks/dp_s",
+    "evidenceUrl": "https://atcoder.jp/contests/dp/tasks/dp_s",
+    "features": [
+      "十進の上限Kが最大10000桁",
+      "正整数1..Kを数える",
+      "桁和がDの倍数"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。問題文のみを根拠とする対応は独立に証明し、小規模全探索と比較。"
+  },
+  {
+    "techniqueId": "subset-coprime-small-primes",
+    "source": "AtCoder",
+    "problemId": "abc195_f",
+    "title": "Coprime Present",
+    "statementUrl": "https://atcoder.jp/contests/abc195/tasks/abc195_f",
+    "evidenceUrl": "https://atcoder.jp/contests/abc195/editorial/858?lang=ja",
+    "features": [
+      "A..Bの各整数を一回まで選ぶ",
+      "B-A<=72で数値自体は10^18まで",
+      "相異なる全ての選択ペアが互いに素",
+      "空集合も数える"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "linear-congruence-gcd",
+    "source": "AtCoder",
+    "problemId": "abc186_e",
+    "title": "Throne",
+    "statementUrl": "https://atcoder.jp/contests/abc186/tasks/abc186_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc186/editorial/422",
+    "features": [
+      "N個の場所を循環する",
+      "SからKずつ移動する",
+      "最初に0へ到達する非負回数、到達不能もある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "crt-noncoprime",
+    "source": "AtCoder",
+    "problemId": "abc193_e",
+    "title": "Oversleeping",
+    "statementUrl": "https://atcoder.jp/contests/abc193/tasks/abc193_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc193/editorial/812?lang=en",
+    "features": [
+      "周期2(X+Y)の停止区間と周期P+Qの起きる区間",
+      "各周期内の稼働幅は500以下",
+      "両方を満たす最小時刻、解なしもある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "lattice-pick-area",
+    "source": "CSES",
+    "problemId": "2193",
+    "title": "Polygon Lattice Points",
+    "statementUrl": "https://cses.fi/problemset/task/2193",
+    "evidenceUrl": "https://cses.fi/problemset/task/2193",
+    "features": [
+      "整数座標の単純多角形",
+      "頂点は境界順に与えられる",
+      "自己交差なし",
+      "内部と境界の格子点の個数"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。問題文のみを根拠とする対応は独立に証明し、小規模全探索と比較。"
+  },
+  {
+    "techniqueId": "rectangle-union-sweep",
+    "source": "CSES",
+    "problemId": "1741",
+    "title": "Area of Rectangles",
+    "statementUrl": "https://cses.fi/problemset/task/1741",
+    "evidenceUrl": "https://cses.fi/problemset/task/1741",
+    "features": [
+      "軸平行長方形が最大100000個",
+      "重複は一回だけ数える和集合面積",
+      "座標は最大絶対値10^6"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。問題文のみを根拠とする対応は独立に証明し、小規模全探索と比較。"
+  },
+  {
+    "techniqueId": "manhattan-transform",
+    "source": "AtCoder",
+    "problemId": "abc178_e",
+    "title": "Dist Max",
+    "statementUrl": "https://atcoder.jp/contests/abc178/tasks/abc178_e",
+    "evidenceUrl": "https://img.atcoder.jp/abc178/editorial-E-phcdiydzyqa.pdf",
+    "features": [
+      "二次元の多数の点",
+      "点対のマンハッタン距離の最大値",
+      "同じ座標の点もある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "circle-square-distance",
+    "source": "AtCoder",
+    "problemId": "abc259_d",
+    "title": "Circumferences",
+    "statementUrl": "https://atcoder.jp/contests/abc259/tasks/abc259_d",
+    "evidenceUrl": "https://atcoder.jp/contests/abc259/editorial/4280",
+    "features": [
+      "整数の中心と正の半径を持つ円",
+      "円周上だけ移動する",
+      "接点や交点で別の円へ移れる",
+      "内包するだけでは円周間を移れない"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "knapsack-bitset-shift",
+    "source": "AtCoder",
+    "problemId": "abc204_d",
+    "title": "Cooking",
+    "statementUrl": "https://atcoder.jp/contests/abc204/tasks/abc204_d",
+    "evidenceUrl": "https://atcoder.jp/contests/abc204/tasks/abc204_d",
+    "features": [
+      "二つの機械に全仕事を一回ずつ割り当てる",
+      "各仕事の時間は正整数で合計が小さい",
+      "片方の合計時間の可否から最大終了時間を最小にする"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。問題文のみを根拠とする対応は独立に証明し、小規模全探索と比較。"
+  },
+  {
+    "techniqueId": "subset-sum-repeated-binary",
+    "source": "AtCoder",
+    "problemId": "abc286_d",
+    "title": "Money in Hand",
+    "statementUrl": "https://atcoder.jp/contests/abc286/tasks/abc286_d",
+    "evidenceUrl": "https://atcoder.jp/contests/abc286/tasks/abc286_d",
+    "features": [
+      "硬貨の額面ごとに枚数の上限",
+      "ちょうど指定金額を作れるか",
+      "同じ種類を0枚から上限まで使える"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。問題文のみを根拠とする対応は独立に証明し、小規模全探索と比較。"
+  },
+  {
+    "techniqueId": "matrix-walk-sum-block",
+    "source": "AtCoder",
+    "problemId": "abc293_e",
+    "title": "Geometric Progression",
+    "statementUrl": "https://atcoder.jp/contests/abc293/tasks/abc293_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc293/editorial/5962",
+    "features": [
+      "A^0からA^(X-1)までの等比和",
+      "X<=10^12",
+      "法Mは素数とは限らない",
+      "A-1の逆元が存在しない場合もある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "cyclic-dp-first-state",
+    "source": "AtCoder",
+    "problemId": "abc251_e",
+    "title": "Takahashi and Animals",
+    "statementUrl": "https://atcoder.jp/contests/abc251/tasks/abc251_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc251/editorial/3991",
+    "features": [
+      "各選択が隣接する二つの対象を覆う",
+      "最後の選択も最初の対象を覆う",
+      "全対象を覆う最小の正の費用"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公開解説の該当箇所を確認。"
+  },
+  {
+    "techniqueId": "rectangle-split-dp",
+    "source": "IOI",
+    "problemId": "2009-raisins",
+    "title": "Raisins",
+    "statementUrl": "https://ioi.te.lv/locations/ioi09/contest/4_Raisins4bcf.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi09/contest/4_Raisins4bcf.pdf",
+    "features": [
+      "最大50×50の重み付き格子",
+      "一つの長方形を横または縦の端から端まで切る",
+      "切断費用は切る前の長方形の重み総和",
+      "最後に全てのセルへ分ける"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。問題文のみを根拠とする対応は独立に証明し、小規模全探索と比較。"
+  }
+]

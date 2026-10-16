@@ -1,0 +1,77 @@
+---
+title: "回転キャリパー"
+description: "凸多角形の向かい合う支持点を単調に動かし、直径などを線形時間で求めます。"
+techniqueId: rotating-calipers
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+凸多角形の向かい合う支持点を単調に動かし、直径などを線形時間で求めます。
+
+別名：Rotating Calipers / Antipodal Pairs / 凸多角形の直径
+
+## 使う場面
+
+点集合の最遠の2点や、凸多角形の幅を求める場合に使います。凸包の頂点に候補を絞っても、すべての頂点ペアを比べると $O(H^2)$ です。辺の向きを回していくと、それに対して最も遠い頂点も一方向に動く性質を使います。
+
+## 考え方
+
+凸包の各辺について、その辺の直線から最も遠い頂点を探します。距離の大小は外積の大きさで比較できます。次の辺へ進むときは、前に見つけた頂点から前方へだけ動かします。
+
+直径を求める場合は、この向かい側の頂点と辺の両端との距離を調べます。平行な辺によって同じ最大値を取る頂点が並ぶ場合は、隣の頂点も確認します。
+
+## 適用条件
+
+頂点列は反時計回りの凸包で、同一直線上の中間点と、末尾の始点の重複を除きます。点数が0、1、2の場合は先に処理します。
+
+非凸多角形では支持点の単調性が成立しません。整数座標の直径は平方距離で比較すると、平方根や浮動小数点誤差を避けられます。
+
+## なぜ正しいか
+
+最遠の2点には、それぞれを通る平行な支持線を置けます。そのため、辺の向きを回して現れる向かい合った頂点の候補の中に、最遠ペアが含まれます。
+
+凸性によって、辺の向きが一周する間に支持点が逆戻りすることはありません。同じ距離の候補も確認すれば、最遠ペアを落とさず一周で処理できます。
+
+## 計算量
+
+凸包の頂点数を $H$ とすると、時間は $O(H)$、追加空間は $O(1)$ です。任意の $N$ 点から始める場合は、凸包の構築を含めて $O(N\log N)$ です。
+
+## 実装
+
+以下は、厳密に凸な反時計回りの頂点列を受け取り、直径の平方を128ビットで返します。外積と平方距離も128ビットで計算するので、それらが型の範囲に収まる座標を使います。実際の距離を出力する場合だけ、必要な精度に合わせて平方根を取ります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct CaliperPoint { long long x,y; };
+__int128 area(CaliperPoint a,CaliperPoint b,CaliperPoint c) {
+    return (__int128(b.x)-a.x)*(__int128(c.y)-a.y)
+         - (__int128(b.y)-a.y)*(__int128(c.x)-a.x);
+}
+__int128 distance2(CaliperPoint a,CaliperPoint b) {
+    __int128 dx=__int128(a.x)-b.x,dy=__int128(a.y)-b.y; return dx*dx+dy*dy;
+}
+__int128 diameter2(const vector<CaliperPoint>& p) {
+    int n=p.size(); if(n<=1) return 0; if(n==2) return distance2(p[0],p[1]);
+    int j=1; __int128 answer=0;
+    for(int i=0;i<n;++i) {
+        int k=(i+1)%n;
+        while(area(p[i],p[k],p[(j+1)%n])>area(p[i],p[k],p[j])) j=(j+1)%n;
+        answer=max(answer,max(distance2(p[i],p[j]),distance2(p[k],p[j])));
+        int next=(j+1)%n;
+        if(area(p[i],p[k],p[next])==area(p[i],p[k],p[j]))
+            answer=max(answer,max(distance2(p[i],p[next]),distance2(p[k],p[next])));
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[凸包](/flowchartcp/techniques/convex-hull/) ・ [尺取り法](/flowchartcp/techniques/two-pointers/)
+
+## 参考資料
+
+- [Toussaint: Solving Geometric Problems with the Rotating Calipers（原論文）](https://cgm.cs.mcgill.ca/~godfried/publications/calipers.pdf)
+- [maspypy: 最遠点対（作者実装）](https://raw.githubusercontent.com/maspypy/library/main/geo/furthest_pair.hpp)
+
+<TechniqueReferences techniqueId="rotating-calipers" />

@@ -1,0 +1,75 @@
+---
+title: "同一直線の点を、最大公約数と向きの統一でまとめる"
+description: "傾きを分数で表さず、基準点からの整数方向を正規化して直線の重複を除く。"
+techniqueId: collinear-direction-gcd
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+異なる整数点のうち $K$ 点以上を通る直線を数えたい。点の組ごとに直線を作って全点を調べると $O(N^3)$ になる。垂直な直線も含むため、小数の傾きを辞書のキーにしない。
+
+## 考え方
+
+基準点 $p_i$ から他の点への差 $(dx,dy)$ を $g=\gcd(|dx|,|dy|)$ で割る。さらに $dx>0$、または $dx=0,dy>0$ になるよう符号を統一する。これで同じ直線上の正方向・逆方向が一つのキーになる。
+
+同じキーの点が $K-1$ 個以上あれば、その基準点を含む直線は条件を満たす。ただし、そのグループに添字が $i$ より小さい点があれば数えない。一本の直線は、その上の最小添字を基準点にしたときだけ数えられる。
+
+$K=1$ は各点を通る直線が無数にあるため別に扱う。
+
+## 適用条件
+
+異なる整数座標の点を要求する。重複点がある場合、差がゼロになり、同一直線上の点数へ重複をどう含めるかも変わる。実装では方向を集約するときに重複点を検出したら例外にする。
+
+座標の絶対値は $10^{12}$ 以下。差の絶対値を64ビットで取れることを保証する。反対向きも同一視するのは「直線」を扱うためであり、半直線や有向ベクトルの分類では符号を消さない。
+
+## なぜ正しいか
+
+異なる二点からの差を最大公約数で割ったものは、同じ有理数方向の最小の整数表現である。符号も統一したキーが等しいことと、基準点を通る同一直線上にあることが同値になる。
+
+条件を満たす直線に対し、最小添字の点では同じグループに十分な点がいて、より小さい点はいないので一回数える。他の基準点では最小添字の点が同じグループにいるため数えない。
+
+## 計算量
+
+全点を各直線候補へ照合すると $O(N^3)$。順序付き辞書での集約は $O(N^2\log N)$ 時間、一つの基準点の辞書だけ持つので追加 $O(N)$ 空間。ハッシュ辞書なら期待 $O(N^2)$ にできる。
+
+## 実装
+
+`count_rich_lines` は $K=1$ なら `nullopt` を返す。空集合や $K>N$ では0になる。
+
+```cpp
+#include <cstdlib>
+#include <map>
+#include <numeric>
+#include <optional>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+struct Point { long long x,y; };
+std::optional<long long> count_rich_lines(const std::vector<Point>& p,int k){
+    if(k<1)throw std::invalid_argument("positive k");
+    if(p.empty() || k>int(p.size()))return 0;
+    if(k==1)return std::nullopt;
+    long long answer=0;
+    for(int i=0;i<int(p.size());++i){std::map<std::pair<long long,long long>,std::pair<int,bool>> groups;
+        for(int j=0;j<int(p.size());++j)if(i!=j){long long x=p[j].x-p[i].x,y=p[j].y-p[i].y;
+            if(x==0 && y==0)throw std::invalid_argument("duplicate point");
+            long long g=std::gcd(std::llabs(x),std::llabs(y));x/=g;y/=g;
+            if(x<0 || (x==0 && y<0)){x=-x;y=-y;}
+            auto& group=groups[{x,y}];++group.first;group.second|=j<i;
+        }
+        for(auto [direction,group]:groups)if(group.first+1>=k && !group.second)++answer;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[内積ゼロの禁止関係を、直線方向と直交方向の二群にまとめる](/flowchartcp/techniques/perpendicular-direction-pairs/) ・ [三角形の角を、中心からの方向順と二つの境界でまとめて数える](/flowchartcp/techniques/angle-vector-two-pointers/)
+
+## 参考資料
+
+- [AtCoder：K-colinear Line（原典）](https://atcoder.jp/contests/abc248/tasks/abc248_e)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="collinear-direction-gcd" />

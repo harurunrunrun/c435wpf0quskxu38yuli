@@ -1,0 +1,78 @@
+---
+title: "ちょうどK個のDPを選択1回の罰則で解く"
+description: "個数ごとの最小費用が凸なら、選択回数へ罰則を付けて個数の次元を除きます。"
+techniqueId: dp-exact-count-penalty
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+個数ごとの最小費用が凸なら、選択回数へ罰則を付けて個数の次元を除きます。
+
+## 使う場面
+
+隣り合わない位置をちょうど $K$ 個選び、費用 $a_i$ の和を最小にする例を考えます。通常は $dp[i][k]=\min(dp[i-1][k],dp[i-2][k-1]+a_i)$ で、個数の次元が必要です。個数ごとの費用が凸であることを証明できれば、その次元を除けます。
+
+## 考え方
+
+1位置選ぶたびに罰則 $\lambda$ を加えます。個数を指定しないDPを $D[i]=\min(D[i-1],D[i-2]+a_i+\lambda)$ で計算し、最小費用と選んだ個数を同時に保存します。同じ費用なら個数が多い方を選びます。
+
+罰則を増やすと個数は減ります。個数が $K$ 以上になる最後の整数罰則を探し、罰則付き費用から $\lambda K$ を引きます。
+
+## 適用条件
+
+個数の単調性だけでは不十分で、個数別の最小費用 $F(k)$ が離散凸であることが必要です。この例では、隣接しない位置の選択に限ります。任意の競合グラフに広げると凸性が崩れることがあります。同じ費用の比較規則も、二分探索の条件とそろえます。
+
+## なぜ正しいか
+
+$k-1$ 個と $k+1$ 個の最適な選択の差は、交互に選ばれたパスの集合になります。個数が1多いパスの一つを交換すると、両方を $k$ 個にでき、費用の合計は変わりません。したがって $2F(k)\le F(k-1)+F(k+1)$ です。
+
+この凸性により $K$ を最適にする整数罰則が存在し、個数が複数飛ぶ境界でも補正した値が $F(K)$ に一致します。
+
+## 計算量
+
+時間は $O(NK)$ から $O(N\log S)$ に変わります。$S=1+\sum_i|a_i|$ とすれば罰則を $[-S,S]$ で探せます。個数DPを2層で持つ $O(K)$ 空間から、罰則付きDPの直前2状態だけの $O(1)$ 作業空間になります。$K$ が小さいなら元のDPも比較します。
+
+## 実装
+
+`nonadjacent_exact_cost(a, K)` は、隣り合わない $K$ 位置の最小費用です。$0\le K\le\lceil N/2\rceil$、費用の絶対値の総和は $10^{15}$ 以下とします。DP、同値時の個数比較、罰則の二分探索まで含めます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using PenaltyInt=__int128_t;
+struct CountCost { PenaltyInt value; int count; };
+CountCost choose_count_cost(CountCost a,CountCost b) {
+    if(a.value!=b.value) return a.value<b.value?a:b;
+    return a.count>b.count?a:b;
+}
+PenaltyInt nonadjacent_exact_cost(const vector<long long>& a,int K) {
+    assert(0<=K && K<=(int(a.size())+1)/2); if(K==0) return 0;
+    PenaltyInt bound=1;
+    for(long long x:a) bound+=x>=0?PenaltyInt(x):-PenaltyInt(x);
+    assert(bound<=1000000000000001LL);
+    auto solve=[&](long long penalty) {
+        CountCost two{0,0},one{0,0};
+        for(long long x:a) {
+            CountCost take{two.value+x+penalty,two.count+1};
+            auto next=choose_count_cost(one,take); two=one; one=next;
+        }
+        return one;
+    };
+    long long lo=-static_cast<long long>(bound),hi=static_cast<long long>(bound);
+    assert(solve(lo).count>=K && solve(hi).count<K);
+    while(PenaltyInt(hi)-lo>1) {
+        long long mid=static_cast<long long>(PenaltyInt(lo)+(PenaltyInt(hi)-lo)/2);
+        if(solve(mid).count>=K) lo=mid; else hi=mid;
+    }
+    return solve(lo).value-PenaltyInt(lo)*K;
+}
+```
+
+## 関連する手法
+
+[Aliens trick](/flowchartcp/techniques/aliens-trick/) ・ [二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [AtCoder：E - Subsegments with Large Sumsの解説・実装](https://atcoder.jp/contests/arc168/editorial/7739)
+
+<TechniqueReferences techniqueId="dp-exact-count-penalty" />

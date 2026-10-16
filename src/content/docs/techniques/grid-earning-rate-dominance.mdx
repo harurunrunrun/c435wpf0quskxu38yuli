@@ -1,0 +1,102 @@
+---
+title: "稼いで進む経路は、最高収入と最少行動数・最大の余りだけを残す"
+description: "不足分だけを最高収入で稼ぐと残金が一回分未満になることを使い、遅い到着を支配して消す。"
+techniqueId: grid-earning-rate-dominance
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+右と下にだけ進む盤面で、滞在してお金を稼ぎ、移動費用を払う。終点へ最少の行動回数で着きたい。所持金や経過回数を数値の軸にすると、料金の大きさに比例する状態が必要になる。
+
+## 考え方
+
+訪問した中で最高の一回の収入を $p$ とする。後で低い収入の場所で稼ぐ操作は、その最高収入の場所を通ったときへ移せる。経路を先に決めることを考えれば、過去の最高収入で必要な分だけを稼ぐという仮想操作は、実際の待機へ置き換えられる。
+
+位置と $p$ ごとに、行動回数 $t$ を最小にし、同数なら残金 $c$ を最大にした一組だけを持つ。費用 $w$ の次の移動では、
+
+$$q=\max\left(0,\left\lceil\frac{w-c}{p}\right\rceil\right),\qquad(t',c')=(t+q+1,c+qp-w).$$
+
+次の位置の収入で $p$ を更新する。必要分だけを稼ぐ表では常に $0\le c<p$ となる。この上限が、到着が遅い状態を捨てる根拠である。
+
+## 適用条件
+
+移動は右と下だけで、同じ位置へ着くまでの移動回数は経路によらず同じ。稼ぐ費用は一回の行動だけで収入は正、所持金上限はなく、稼いだ時刻による制約もない。移動費用は非負で、収入や費用が変化しない。
+
+実装は正方形の盤面 $N\le80$、収入 $1\ldots10^9$、移動費用 $0\ldots10^9$。各マスの収入を値で圧縮し、同じ最高収入の状態をまとめる。初期残金は0。一マスの盤面は0行動。過去へ戻れないこと自体は問題ないが、待機を過去へ移せない締切・残金上限がある場合はこの縮約を使えない。
+
+## なぜ正しいか
+
+同じ経路の後の稼ぐ操作を、それより前の高収入の場所へ移しても、その間の残金が増えるだけなので支払いを妨げない。従って必要な稼ぎを、各移動前の最高収入へ集約できる。
+
+不足したときだけ最少回数を稼ぐと、支払い後の余りは $p$ 未満。既に支払えるときも以前の余りから非負の費用を引くので同じ上限を保ち、収入の最大値が増えた後も保たれる。
+
+同じ位置・最高収入に、一回以上遅く着く別の状態があるとする。早い状態の経路上の最高収入の場所で、その差の回数だけ追加で稼げば、同じ到着回数で残金を少なくとも $p$ 増やせる。遅い状態の余りは $p$ 未満なので、早い状態から作った残金のほうが大きい。到着回数が同じ場合も残金が多い方だけでよい。この支配により一組だけ残せる。
+
+## 計算量
+
+残金を金額の値域 $C$ で持つ表は $O(N^2C)$ 状態になり、金額が $10^9$ では使えない。異なる収入の個数を $R\le N^2$ とすると、縮約後は $O(N^2R)$ 時間。全位置の状態を保存すると $O(N^2R)$ 空間だが、実装は上の行と左のマスだけを参照し $O(NR+N^2)$ 空間にする。最悪時間は $O(N^4)$。
+
+## 実装
+
+`income` は $N\times N$、`right` は $N\times(N-1)$、`down` は $(N-1)\times N$。移動に一行動を加え、稼ぐ回数は整数の切り上げで求める。料金の全累積や行動回数は64ビットで扱う。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+long long minimum_earning_grid_actions(const std::vector<std::vector<long long>>& income,
+                                      const std::vector<std::vector<long long>>& right,
+                                      const std::vector<std::vector<long long>>& down) {
+    int n=int(income.size());
+    if(n<1 || n>80 || int(right.size())!=n || int(down.size())!=n-1) throw std::invalid_argument("size");
+    std::vector<long long> rates;
+    for(int i=0;i<n;++i) {
+        if(int(income[i].size())!=n || int(right[i].size())!=n-1) throw std::invalid_argument("row");
+        for(long long x:income[i]) {if(x<1 || x>1000000000)throw std::invalid_argument("income");rates.push_back(x);}
+        for(long long x:right[i]) if(x<0 || x>1000000000) throw std::invalid_argument("cost");
+    }
+    for(const auto& row:down) {
+        if(int(row.size())!=n) throw std::invalid_argument("row");
+        for(long long x:row) if(x<0 || x>1000000000) throw std::invalid_argument("cost");
+    }
+    std::sort(rates.begin(),rates.end());rates.erase(std::unique(rates.begin(),rates.end()),rates.end());
+    struct State {long long actions,cash;};
+    constexpr long long INF=4000000000000000000LL;
+    int kinds=int(rates.size());
+    std::vector<std::vector<State>> column(n,std::vector<State>(kinds,{INF,0}));
+    for(int i=0;i<n;++i) for(int j=0;j<n;++j) {
+        int current=int(std::lower_bound(rates.begin(),rates.end(),income[i][j])-rates.begin());
+        std::vector<State> next(kinds,{INF,0});
+        if(i==0 && j==0) next[current]={0,0};
+        auto advance=[&](const std::vector<State>& from,long long cost) {
+            for(int k=0;k<kinds;++k) if(from[k].actions!=INF) {
+                long long missing=std::max(0LL,cost-from[k].cash);
+                long long wait=(missing+rates[k]-1)/rates[k];
+                State candidate{from[k].actions+wait+1,from[k].cash+wait*rates[k]-cost};
+                State& best=next[std::max(k,current)];
+                if(candidate.actions<best.actions || (candidate.actions==best.actions && candidate.cash>best.cash)) best=candidate;
+            }
+        };
+        if(i>0) advance(column[j],down[i-1][j]);
+        if(j>0) advance(column[j-1],right[i][j-1]);
+        column[j]=std::move(next);
+    }
+    long long answer=INF;
+    for(auto state:column.back()) answer=std::min(answer,state.actions);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[同じ長さの増加部分列は末尾が小さい状態だけ残す](/flowchartcp/techniques/dp-state-dominance/) ・ [直前の層しか使わないDPは配列を使い回す](/flowchartcp/techniques/dp-dimension-rolling/)
+
+## 参考資料
+
+- [AtCoder：F - Earn to Advance（原典）](https://atcoder.jp/contests/abc344/tasks/abc344_f)。
+- [AtCoder：F - Earn to Advance（公式解説）](https://atcoder.jp/contests/abc344/editorial/9496)。
+
+<TechniqueReferences techniqueId="grid-earning-rate-dominance" />

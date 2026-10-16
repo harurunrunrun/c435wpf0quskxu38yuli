@@ -1,0 +1,1867 @@
+{
+  "techniqueId": "orthogonal-point-cover-spiral-two-chains",
+  "status": "verified-and-integrated",
+  "auditGapId": "orthogonal-point-cover-spiral-two-chains",
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "sourceDate": "2019-08-08",
+    "sourceDatePrecision": "day",
+    "exactDateVerified": true,
+    "contestDay": 2,
+    "difficulty": null,
+    "cutoffVerification": "contest-before-cutoff",
+    "originalNumericBoundsVerified": true,
+    "originalOutputContractVerified": true,
+    "originalScoringTableVerified": true,
+    "fullSourceRangeIncluded": true,
+    "sourceBounds": {
+      "N": [
+        1,
+        100000
+      ],
+      "inputCoordinate": [
+        1,
+        1000000000
+      ],
+      "distinctness": "All x coordinates pairwise distinct; all y coordinates pairwise distinct. No stronger general-position assumption is needed.",
+      "origin": [
+        0,
+        0
+      ],
+      "coverage": "Every input dot lies on at least one closed horizontal/vertical segment; dot need not be an endpoint.",
+      "selfCrossingAllowed": true,
+      "overlapAllowed": true,
+      "outputCoordinate": [
+        -2000000000,
+        2000000000
+      ],
+      "outputFormat": "First line k, then k integer vertex pairs p1..pk; implicit p0=(0,0) is not printed.",
+      "outputOnly": true,
+      "inputFiles": 10,
+      "perFilePoints": 10,
+      "submittedFileMaximum": "15MB for each output or zipped file",
+      "sourceCodeSubmitted": false,
+      "visualizerDisplayOnlyLimit": 1000
+    },
+    "scoring": {
+      "validityRequired": true,
+      "thresholdsDescending": true,
+      "ifKEqualsCi": "i points for i1..10",
+      "ifCiPlus1LessThanKLessThanCi": "i+(c_i-k)/(c_i-c_(i+1)) for i1..9",
+      "ifKAboveC1": 0,
+      "ifKBelowC10": 10,
+      "fullScoreCondition": "k<=c10=N+3, for each of the10 fixed inputs",
+      "table": [
+        {
+          "cases": [
+            "01"
+          ],
+          "N": 20,
+          "c": [
+            50,
+            45,
+            40,
+            37,
+            35,
+            33,
+            28,
+            26,
+            25,
+            23
+          ]
+        },
+        {
+          "cases": [
+            "02"
+          ],
+          "N": 600,
+          "c": [
+            1200,
+            937,
+            674,
+            651,
+            640,
+            628,
+            616,
+            610,
+            607,
+            603
+          ]
+        },
+        {
+          "cases": [
+            "03"
+          ],
+          "N": 5000,
+          "c": [
+            10000,
+            7607,
+            5213,
+            5125,
+            5081,
+            5037,
+            5020,
+            5012,
+            5008,
+            5003
+          ]
+        },
+        {
+          "cases": [
+            "04"
+          ],
+          "N": 50000,
+          "c": [
+            100000,
+            75336,
+            50671,
+            50359,
+            50203,
+            50047,
+            50025,
+            50014,
+            50009,
+            50003
+          ]
+        },
+        {
+          "cases": [
+            "05"
+          ],
+          "N": 72018,
+          "c": [
+            144036,
+            108430,
+            72824,
+            72446,
+            72257,
+            72067,
+            72044,
+            72033,
+            72027,
+            72021
+          ]
+        },
+        {
+          "cases": [
+            "06"
+          ],
+          "N": 91891,
+          "c": [
+            183782,
+            138292,
+            92801,
+            92371,
+            92156,
+            91941,
+            91918,
+            91906,
+            91900,
+            91894
+          ]
+        },
+        {
+          "cases": [
+            "07",
+            "08",
+            "09",
+            "10"
+          ],
+          "N": 100000,
+          "c": [
+            200000,
+            150475,
+            100949,
+            100500,
+            100275,
+            100050,
+            100027,
+            100015,
+            100009,
+            100003
+          ]
+        }
+      ],
+      "tableColumnCases": [
+        [
+          "01"
+        ],
+        [
+          "02"
+        ],
+        [
+          "03"
+        ],
+        [
+          "04"
+        ],
+        [
+          "05"
+        ],
+        [
+          "06"
+        ],
+        [
+          "07",
+          "08",
+          "09",
+          "10"
+        ]
+      ],
+      "tableRows": {
+        "N": [
+          20,
+          600,
+          5000,
+          50000,
+          72018,
+          91891,
+          100000
+        ],
+        "c1": [
+          50,
+          1200,
+          10000,
+          100000,
+          144036,
+          183782,
+          200000
+        ],
+        "c2": [
+          45,
+          937,
+          7607,
+          75336,
+          108430,
+          138292,
+          150475
+        ],
+        "c3": [
+          40,
+          674,
+          5213,
+          50671,
+          72824,
+          92801,
+          100949
+        ],
+        "c4": [
+          37,
+          651,
+          5125,
+          50359,
+          72446,
+          92371,
+          100500
+        ],
+        "c5": [
+          35,
+          640,
+          5081,
+          50203,
+          72257,
+          92156,
+          100275
+        ],
+        "c6": [
+          33,
+          628,
+          5037,
+          50047,
+          72067,
+          91941,
+          100050
+        ],
+        "c7": [
+          28,
+          616,
+          5020,
+          50025,
+          72044,
+          91918,
+          100027
+        ],
+        "c8": [
+          26,
+          610,
+          5012,
+          50014,
+          72033,
+          91906,
+          100015
+        ],
+        "c9": [
+          25,
+          607,
+          5008,
+          50009,
+          72027,
+          91900,
+          100009
+        ],
+        "c10": [
+          23,
+          603,
+          5003,
+          50003,
+          72021,
+          91894,
+          100003
+        ]
+      },
+      "perInputThresholds": [
+        {
+          "case": "01",
+          "N": 20,
+          "c": [
+            50,
+            45,
+            40,
+            37,
+            35,
+            33,
+            28,
+            26,
+            25,
+            23
+          ]
+        },
+        {
+          "case": "02",
+          "N": 600,
+          "c": [
+            1200,
+            937,
+            674,
+            651,
+            640,
+            628,
+            616,
+            610,
+            607,
+            603
+          ]
+        },
+        {
+          "case": "03",
+          "N": 5000,
+          "c": [
+            10000,
+            7607,
+            5213,
+            5125,
+            5081,
+            5037,
+            5020,
+            5012,
+            5008,
+            5003
+          ]
+        },
+        {
+          "case": "04",
+          "N": 50000,
+          "c": [
+            100000,
+            75336,
+            50671,
+            50359,
+            50203,
+            50047,
+            50025,
+            50014,
+            50009,
+            50003
+          ]
+        },
+        {
+          "case": "05",
+          "N": 72018,
+          "c": [
+            144036,
+            108430,
+            72824,
+            72446,
+            72257,
+            72067,
+            72044,
+            72033,
+            72027,
+            72021
+          ]
+        },
+        {
+          "case": "06",
+          "N": 91891,
+          "c": [
+            183782,
+            138292,
+            92801,
+            92371,
+            92156,
+            91941,
+            91918,
+            91906,
+            91900,
+            91894
+          ]
+        },
+        {
+          "case": "07",
+          "N": 100000,
+          "c": [
+            200000,
+            150475,
+            100949,
+            100500,
+            100275,
+            100050,
+            100027,
+            100015,
+            100009,
+            100003
+          ]
+        },
+        {
+          "case": "08",
+          "N": 100000,
+          "c": [
+            200000,
+            150475,
+            100949,
+            100500,
+            100275,
+            100050,
+            100027,
+            100015,
+            100009,
+            100003
+          ]
+        },
+        {
+          "case": "09",
+          "N": 100000,
+          "c": [
+            200000,
+            150475,
+            100949,
+            100500,
+            100275,
+            100050,
+            100027,
+            100015,
+            100009,
+            100003
+          ]
+        },
+        {
+          "case": "10",
+          "N": 100000,
+          "c": [
+            200000,
+            150475,
+            100949,
+            100500,
+            100275,
+            100050,
+            100027,
+            100015,
+            100009,
+            100003
+          ]
+        }
+      ]
+    },
+    "materials": [
+      {
+        "kind": "official-statement",
+        "url": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+        "status": "retrieved-and-reviewed",
+        "acquisition": "web text; numeric expressions missing from ordinary extraction"
+      },
+      {
+        "kind": "official-contest-statement",
+        "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+        "status": "retrieved-and-reviewed",
+        "acquisition": "web search full indexed result returned numeric/scoring table with query site:ioi.te.lv/locations/ioi19/contest/day2/Line \"N\" \"3\" \"100\""
+      },
+      {
+        "kind": "national-committee-statement-mirror",
+        "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+        "status": "retrieved-and-reviewed",
+        "acquisition": "GitHub connector fetch_file encoding=base64; decoded exact PDF bytes; pdftoppm and view_image of pages1,2,3 actually inspected",
+        "localPdf": "/tmp/flowchartcp-line-source/line-en.pdf",
+        "sha256": "b2dd1f7236c90f4237908f368cbc95dfcb31980d7378d8aea6f7cf2e5380721e",
+        "gitBlobSha": "cc00e3496b500456a521e4128aa3e2ba5b9593a3",
+        "imagePaths": [
+          "/tmp/flowchartcp-line-source/line-page1.png",
+          "/tmp/flowchartcp-line-source/line-page2.png",
+          "/tmp/flowchartcp-line-source/line-page3.png",
+          "/tmp/flowchartcp-line-source/line-page4.png"
+        ],
+        "verifiedPages": {
+          "1": "origin,10 input files, positive dots qualitative distinct x/y, legal geometry, output-only",
+          "2": "output k and p1..pk, no origin, integer output, sample and not actual scored input",
+          "3": "all numeric bounds,15MB, all scoring formulas and every table cell",
+          "4": "visualizer shows only first1000 segments; a display restriction, not output/grader segment cap"
+        }
+      },
+      {
+        "kind": "official-editorial-sketch",
+        "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+        "status": "retrieved-and-reviewed-as-sketch",
+        "acquisition": "host archive two-page English HSC Review read with web; N+6 decomposition and N+3 bound stated, final connection tricks omitted",
+        "claimsNotMade": [
+          "We do not attribute the deterministic one-connector proof below to this Review.",
+          "Missing chain-complexity formula exponents are not visually verified."
+        ]
+      },
+      {
+        "kind": "national-committee-distributed-reference-code",
+        "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+        "status": "retrieved-and-reviewed",
+        "gitBlobSha": "dca0531e734d7c778dbf98ad28c730e488f63908",
+        "method": "Three-object decomposition;384 order/orientation candidates with last-segment adjustment. Used as provenance and comparison; our API is an independently derived deterministic three-object connection. Original code authorship not independently established from its header."
+      },
+      {
+        "kind": "national-committee-distributed-checker",
+        "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+        "status": "retrieved-and-reviewed",
+        "gitBlobSha": "bfa7ba1f544bd4e7a757d632c54a0ec4ac51234a",
+        "method": "Axis-aligned legality; per-support-line interval unions and inclusive dot coverage; exact scoring table matches statement image."
+      },
+      {
+        "kind": "official-contest-calendar",
+        "url": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+        "status": "retrieved-and-reviewed",
+        "verifiedDate": "2019-08-08"
+      }
+    ],
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": false,
+    "solutionVerificationKind": "independent-analysis",
+    "chosenFullScoreConstructionProved": true,
+    "unconfirmedRequiredLemmas": [],
+    "originalContestData": {
+      "acquired": false,
+      "filesTested": 0,
+      "mustNotConflateWithGeneratedInputs": true,
+      "attempts": [
+        {
+          "tool": "GitHub fetch_file",
+          "path": "ioi2019-line/tc/01.in.gz",
+          "result": "Git-LFS pointer only, not input bytes"
+        },
+        {
+          "tool": "GitHub fetch_file encoding=base64",
+          "path": "ioi2019-line/attachment/line.zip",
+          "result": "content empty for5.6MB API item"
+        },
+        {
+          "tool": "GitHub fetch_blob",
+          "blobSha": "d72969fb2c8d09189892cf6b40c9d0458698d3a2",
+          "result": "UnicodeDecodeError on binary bytes"
+        },
+        {
+          "tool": "GitHub fetch git-blob API URL",
+          "result": "error, no usable archive"
+        },
+        {
+          "tool": "native curl default sandbox",
+          "url": "https://raw.githubusercontent.com/austrian-olympiad-informatics/ioi-tasks/main/ioi2019-line/attachment/line.zip",
+          "result": "exit6 Could not resolve host: raw.githubusercontent.com"
+        },
+        {
+          "tool": "native curl require_escalated",
+          "result": "exit6 Could not resolve host: raw.githubusercontent.com; not an automatic approval-review rejection"
+        }
+      ],
+      "effect": "No claim that actual10 outputs were generated/tested. Universal constructive proof covers their complete verified source domain, and generated maximum cases plus all relative-order small inputs test that construction."
+    }
+  },
+  "artifacts": {
+    "article": "/tmp/flowchartcp-line-article.mdx",
+    "checker": "/tmp/flowchartcp-line-checker.py",
+    "sidecar": "/tmp/flowchartcp-line-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/orthogonal-point-cover-spiral-two-chains.mdx",
+    "checker": "scripts/check_orthogonal_point_cover_cpp.py",
+    "metadata": "data/techniques-specific-planar-patterns.json",
+    "reference": "data/references-specific-planar-patterns.json",
+    "feature": "data/orthogonal-point-cover-problem-features.json"
+  },
+  "metadata": {
+    "id": "orthogonal-point-cover-spiral-two-chains",
+    "title": "点集合を二つの単調鎖と螺旋に分け、少ない縦横線分で結ぶ",
+    "summary": "四方向の極値点を螺旋へ、角を兼ねる点を二つの単調鎖へ分ける。末尾の線分を延ばして次の部分へ一本で接続し、原点から全点を通る折れ線を点数に三本加えた本数以内で構成する。",
+    "aliases": [
+      "IOI2019 Broken Line N+3 orthogonal polyline",
+      "two monotone chains inside-out spiral one-connector construction",
+      "相異なる横縦座標 極値除去 入れ子長方形 点数プラス三本"
+    ],
+    "family": "極値の除去と末尾の延長による幾何構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant",
+      "output-only"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem4.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "orthogonal-point-cover-spiral-two-chains",
+    "source": "IOI",
+    "problemId": "ioi2019_line",
+    "title": "Broken Line",
+    "url": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2019-08-08",
+    "sourceDatePrecision": "day",
+    "cutoffVerification": "contest-before-cutoff",
+    "evidence": "相異なる正整数の横縦座標を持つ点集合を、原点からN+3本以内の縦横折れ線で覆う。角点を二単調鎖へ、四つの異なる極値を螺旋へ分け、末線分の延長と逆向き初線分で各部分を追加一本で接続する。内外螺旋は末尾の下/左向き不変量で各長方形四本。",
+    "verificationNotes": "原典の全数値・満点閾値・出力制約はAOI委員会配布英語PDFのp1/p2/p3を実画像で読み、公式LVA検索本文と同配布採点器の全表に照合した。公式Reviewは螺旋＋二鎖とN+3を述べるsketchで、接続詳細は省略する。右上がり鎖→右下がり鎖→内外螺旋という固定順を使い、末尾延長と逆向き平行な始線分を一本の垂直線分で結ぶ決定構築を独立証明した。螺旋末尾は下向き又は左向きを保ち、次の外側長方形の最初の極値点の側を選ぶことで四本/層となる。原典全域を含む完全C++20を実MDXから抽出、n1..9全409113順位順列を全点×全線分のliteral包含で検査、6000乱択/6000変換、最大10万点の鎖・25000層・全三部分・元座標端を含む15生成case、14不正APIとwriterを通常/ASan+UBSanで照合した。両28709275checks/checksum16725969703083196、normal0.804934s/RSS21548KiB、san7.31009s/RSS638428KiB。公式10原入力のarchiveは取得不能で0件、生成した同Nの入力を原本と取り違えない。初回unconfirmed/全field/status/snapshotと既存resolutionは保持し、独立review後に後続positive reviewとresolutionのみを追記する。"
+  },
+  "problemFeature": {
+    "problemId": "ioi2019_line",
+    "source": "IOI",
+    "officialTaskId": "line",
+    "contest": "IOI2019",
+    "contestDay": 2,
+    "sourceDate": "2019-08-08",
+    "sourceDatePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "techniqueId": "orthogonal-point-cover-spiral-two-chains",
+    "features": [
+      "全x座標・全y座標がそれぞれ相異なる正整数点集合",
+      "原点始点の縦横折れ線、点は辺の途中に置ける",
+      "自己交差と重なりを許し、N+3本以内の構成で足りる",
+      "N<=100000,座標1..1e9,出力座標±2e9"
+    ],
+    "verification": "independent-analysis",
+    "fullOriginalRangeIncluded": true,
+    "url": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+    "techniqueIds": [
+      "orthogonal-point-cover-spiral-two-chains"
+    ],
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-08",
+    "publicationYear": 2019,
+    "publicationDatePrecision": "day",
+    "discoveredBy": "ioi-2019"
+  },
+  "api": {
+    "function": "std::vector<orthogonal_cover::Point> orthogonal_cover::cover_points_orthogonally(const std::vector<Point>& points)",
+    "writer": "void orthogonal_cover::write_line_output(std::ostream&, const std::vector<Point>&)",
+    "type": "Point has signed64bit x,y; result includes origin as first vertex",
+    "sourceInputRangeIncluded": true,
+    "extensions": [
+      "N=0 returns origin only",
+      "arbitrary input ordering"
+    ],
+    "domain": {
+      "N": [
+        0,
+        100000
+      ],
+      "x": [
+        1,
+        1000000000
+      ],
+      "y": [
+        1,
+        1000000000
+      ],
+      "distinct": "x and y each pairwise distinct"
+    },
+    "returns": "origin plus at most N+3 nonzero axis-aligned segments covering every dot, all vertex coordinates0..1000000001",
+    "exceptions": "std::invalid_argument for too many points, out-of-domain coordinates, duplicate x or duplicate y; allocation and ostream policy exceptions propagate",
+    "state": "pure local per call; input const and unchanged; result independent copies; writer builds/validates before emitting",
+    "sourceCodeSubmission": "not required by original output-only task; API generates each output file without unresolved external symbols"
+  },
+  "proof": {
+    "verification": "independent-analysis",
+    "unconfirmedRequiredLemmas": [],
+    "decomposition": "Corner SW/NE removal yields increasing chain; NW/SE yields decreasing chain; each4-distinct-extrema peel yields strict nested rectangle, all assigned sides interior. Each dot assigned once.",
+    "chainCost": "s monotone dots covered by s alternating-axis segments; extend last endpoint in its travel direction, add perpendicular new segment to next dot.",
+    "connectionLemma": "A last segment with axis a/direction d and a new monotone chain can be joined with one extra perpendicular segment by orienting the new chain first segment on axis a/direction-d, extending both beyond both required coordinates to z=max+1 or min-1. Increasing first chain starts with rightward H, so origin needs only a V connector; decreasing second chain always supplies the required direction through reversal.",
+    "spiralStart": "First side H bottom if incoming H, V left if incoming V, direction opposite incoming, same one-connector scheme. Four sides finish V down or H left, respectively. With no chains origin uses H connector to left edge then V upwards.",
+    "spiralInduction": "Extend current V down to outer bottom, or H left to outer left; endpoint lies strictly within other-coordinate interval; choose first direction toward that side extreme and follow remaining3 sides. Extreme-side coordinate differs by global distinctness. Finish with same down/left ray, exactly4 new segments for4 new dots.",
+    "count": "N=a+b+4r; each nonempty object uses its assigned dot count plus at most one connector; at most3 objects, so<=N+3",
+    "numeric": "all new z are extrema of valid0..1e9 inputs plus/minus1, so output0..1e9+1; no cross product/total-length accumulation; int64 intermediates safe; ints only for<=100000 indices"
+  },
+  "complexity": {
+    "time": "O(N log(N+1))",
+    "space": "O(N) excluding caller input",
+    "details": "sort index arrays and chain arrays; used flags plus4 monotone extreme pointers each advance at mostN; each output vertex appended at mostonce then possible endpoint extensions; no recursion proportional to N or number of layers",
+    "maximumSourceN": 100000,
+    "maximumSpiralLayers": 25000,
+    "maximumOutputSegments": 100003,
+    "maximumOutputVertices": 100004,
+    "conservativeOutputTextBytes": 2200073,
+    "payload": "logical vectors are2*N int indices, N flags, <=N chain Point values, <=N/4 Box values of6 int64, <=N+4 output Point values; capacities/allocator overhead additional; native full suite RSS21548KiB includes independent interval geometry checker and output serialization"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "geometry",
+    "choices": [
+      "orthogonal-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "parentGraphId": "geometry",
+    "parentNodeId": "geometry-task",
+    "addOption": {
+      "id": "orthogonal-cover",
+      "label": "全点を通る縦横の折れ線を、少ない本数で作る"
+    },
+    "detailGraphId": "orthogonal-point-cover-conditions",
+    "guards": [
+      {
+        "id": "distinct-positive-coordinates",
+        "title": "全点は原点より右上で、横座標も縦座標もそれぞれ異なりますか？",
+        "explanation": "横座標どうし、縦座標どうしの相異性をそれぞれ確認します。これにより長方形の各極値が一意になります。"
+      },
+      {
+        "id": "free-crossing-orthogonal-cover",
+        "title": "交差と重なりを許す縦横の折れ線で、全点を通ればよいですか？",
+        "explanation": "原点から始め、点を線分の途中に置けます。交差禁止や距離最小化の条件は含めません。"
+      },
+      {
+        "id": "bounds-and-segment-budget",
+        "title": "10万点以下で、点数に三本足した本数までの構成で足りますか？",
+        "explanation": "入力座標は1以上10億以下で、出力座標は少なくとも0から10億+1まで使えます。64bit座標で末尾を延長します。"
+      }
+    ],
+    "allNoAndUnknownTarget": "condition-check",
+    "resultTechniqueIds": [
+      "orthogonal-point-cover-spiral-two-chains"
+    ],
+    "resultTitle": "二つの単調鎖と内外の螺旋を、各一本の追加で接続する",
+    "note": "Proposal only; no shared flow edits. A direct geometry entry avoids changing prior answer targets or legacy output-only result. Root may select a suitable existing category while preserving all old routes."
+  },
+  "initialAuditPolicy": "Initial IOI2019 six records/status/snapshot/technicalFindings including Line unconfirmed and source numeric false remain untouched. Existing5 resolutions remain untouched. Future Line subsequentSolutionReviews append with explicit positive independent-analysis, then resolution only after article/API/flow/independent review. New original numeric evidence belongs to resolution.sourceVerification, not initial flags.",
+  "initialLineRecordCanonicalSha256": "89891b85eacf8c26c8202fe57eef36d852f3acb4cf446158fdd89444de9c46ed",
+  "subsequentSolutionReview": {
+    "reviewedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "evidenceUrls": [
+      "https://ioinformatics.org/files/ioi2019problem4.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ],
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "solution": "retrieved-and-reviewed",
+      "officialEditorialVerified": false
+    },
+    "notes": "原典の全数値・満点閾値・出力制約はAOI委員会配布英語PDFのp1/p2/p3を実画像で読み、公式LVA検索本文と同配布採点器の全表に照合した。公式Reviewは螺旋＋二鎖とN+3を述べるsketchで、接続詳細は省略する。右上がり鎖→右下がり鎖→内外螺旋という固定順を使い、末尾延長と逆向き平行な始線分を一本の垂直線分で結ぶ決定構築を独立証明した。螺旋末尾は下向き又は左向きを保ち、次の外側長方形の最初の極値点の側を選ぶことで四本/層となる。原典全域を含む完全C++20を実MDXから抽出、n1..9全409113順位順列を全点×全線分のliteral包含で検査、6000乱択/6000変換、最大10万点の鎖・25000層・全三部分・元座標端を含む15生成case、14不正APIとwriterを通常/ASan+UBSanで照合した。両28709275checks/checksum16725969703083196、normal0.804934s/RSS21548KiB、san7.31009s/RSS638428KiB。公式10原入力のarchiveは取得不能で0件、生成した同Nの入力を原本と取り違えない。初回unconfirmed/全field/status/snapshotと既存resolutionは保持し、独立review後に後続positive reviewとresolutionのみを追記する。 作者と別review者に加えrootもPDF全4頁の画像・全数値・採点表を確認した。接続の完全な独立証明・通常/ASan・支持座標辞書oracleと厳密座標変換を確認し、後続reviewを一件追加する。原本10入力を取得・実行したとは扱わない。"
+  },
+  "resolutionProposal": {
+    "status": "pending-registration-and-independent-review",
+    "techniqueIds": [
+      "orthogonal-point-cover-spiral-two-chains"
+    ],
+    "sourceVerification": {
+      "checkedAt": "2026-10-15",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+      "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+      "sourceDate": "2019-08-08",
+      "sourceDatePrecision": "day",
+      "exactDateVerified": true,
+      "contestDay": 2,
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "originalNumericBoundsVerified": true,
+      "originalOutputContractVerified": true,
+      "originalScoringTableVerified": true,
+      "fullSourceRangeIncluded": true,
+      "sourceBounds": {
+        "N": [
+          1,
+          100000
+        ],
+        "inputCoordinate": [
+          1,
+          1000000000
+        ],
+        "distinctness": "All x coordinates pairwise distinct; all y coordinates pairwise distinct. No stronger general-position assumption is needed.",
+        "origin": [
+          0,
+          0
+        ],
+        "coverage": "Every input dot lies on at least one closed horizontal/vertical segment; dot need not be an endpoint.",
+        "selfCrossingAllowed": true,
+        "overlapAllowed": true,
+        "outputCoordinate": [
+          -2000000000,
+          2000000000
+        ],
+        "outputFormat": "First line k, then k integer vertex pairs p1..pk; implicit p0=(0,0) is not printed.",
+        "outputOnly": true,
+        "inputFiles": 10,
+        "perFilePoints": 10,
+        "submittedFileMaximum": "15MB for each output or zipped file",
+        "sourceCodeSubmitted": false
+      },
+      "scoring": {
+        "validityRequired": true,
+        "thresholdsDescending": true,
+        "ifKEqualsCi": "i points for i1..10",
+        "ifCiPlus1LessThanKLessThanCi": "i+(c_i-k)/(c_i-c_(i+1)) for i1..9",
+        "ifKAboveC1": 0,
+        "ifKBelowC10": 10,
+        "fullScoreCondition": "k<=c10=N+3, for each of the10 fixed inputs",
+        "table": [
+          {
+            "cases": [
+              "01"
+            ],
+            "N": 20,
+            "c": [
+              50,
+              45,
+              40,
+              37,
+              35,
+              33,
+              28,
+              26,
+              25,
+              23
+            ]
+          },
+          {
+            "cases": [
+              "02"
+            ],
+            "N": 600,
+            "c": [
+              1200,
+              937,
+              674,
+              651,
+              640,
+              628,
+              616,
+              610,
+              607,
+              603
+            ]
+          },
+          {
+            "cases": [
+              "03"
+            ],
+            "N": 5000,
+            "c": [
+              10000,
+              7607,
+              5213,
+              5125,
+              5081,
+              5037,
+              5020,
+              5012,
+              5008,
+              5003
+            ]
+          },
+          {
+            "cases": [
+              "04"
+            ],
+            "N": 50000,
+            "c": [
+              100000,
+              75336,
+              50671,
+              50359,
+              50203,
+              50047,
+              50025,
+              50014,
+              50009,
+              50003
+            ]
+          },
+          {
+            "cases": [
+              "05"
+            ],
+            "N": 72018,
+            "c": [
+              144036,
+              108430,
+              72824,
+              72446,
+              72257,
+              72067,
+              72044,
+              72033,
+              72027,
+              72021
+            ]
+          },
+          {
+            "cases": [
+              "06"
+            ],
+            "N": 91891,
+            "c": [
+              183782,
+              138292,
+              92801,
+              92371,
+              92156,
+              91941,
+              91918,
+              91906,
+              91900,
+              91894
+            ]
+          },
+          {
+            "cases": [
+              "07",
+              "08",
+              "09",
+              "10"
+            ],
+            "N": 100000,
+            "c": [
+              200000,
+              150475,
+              100949,
+              100500,
+              100275,
+              100050,
+              100027,
+              100015,
+              100009,
+              100003
+            ]
+          }
+        ]
+      },
+      "materials": [
+        {
+          "kind": "official-statement",
+          "url": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+          "status": "retrieved-and-reviewed",
+          "acquisition": "web text; numeric expressions missing from ordinary extraction"
+        },
+        {
+          "kind": "official-contest-statement",
+          "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+          "status": "retrieved-and-reviewed",
+          "acquisition": "web search full indexed result returned numeric/scoring table with query site:ioi.te.lv/locations/ioi19/contest/day2/Line \"N\" \"3\" \"100\""
+        },
+        {
+          "kind": "national-committee-statement-mirror",
+          "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+          "status": "retrieved-and-reviewed",
+          "acquisition": "GitHub connector fetch_file encoding=base64; decoded exact PDF bytes; pdftoppm and view_image of pages1,2,3 actually inspected",
+          "localPdf": "/tmp/flowchartcp-line-source/line-en.pdf",
+          "sha256": "b2dd1f7236c90f4237908f368cbc95dfcb31980d7378d8aea6f7cf2e5380721e",
+          "gitBlobSha": "cc00e3496b500456a521e4128aa3e2ba5b9593a3",
+          "imagePaths": [
+            "/tmp/flowchartcp-line-source/line-page1.png",
+            "/tmp/flowchartcp-line-source/line-page2.png",
+            "/tmp/flowchartcp-line-source/line-page3.png"
+          ],
+          "verifiedPages": {
+            "1": "origin,10 input files, positive dots qualitative distinct x/y, legal geometry, output-only",
+            "2": "output k and p1..pk, no origin, integer output, sample and not actual scored input",
+            "3": "all numeric bounds,15MB, all scoring formulas and every table cell"
+          }
+        },
+        {
+          "kind": "official-editorial-sketch",
+          "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+          "status": "retrieved-and-reviewed-as-sketch",
+          "acquisition": "host archive two-page English HSC Review read with web; N+6 decomposition and N+3 bound stated, final connection tricks omitted",
+          "claimsNotMade": [
+            "We do not attribute the deterministic one-connector proof below to this Review.",
+            "Missing chain-complexity formula exponents are not visually verified."
+          ]
+        },
+        {
+          "kind": "national-committee-distributed-reference-code",
+          "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+          "status": "retrieved-and-reviewed",
+          "gitBlobSha": "dca0531e734d7c778dbf98ad28c730e488f63908",
+          "method": "Three-object decomposition;384 order/orientation candidates with last-segment adjustment. Used as provenance and comparison; our API is an independently derived deterministic three-object connection. Original code authorship not independently established from its header."
+        },
+        {
+          "kind": "national-committee-distributed-checker",
+          "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+          "status": "retrieved-and-reviewed",
+          "gitBlobSha": "bfa7ba1f544bd4e7a757d632c54a0ec4ac51234a",
+          "method": "Axis-aligned legality; per-support-line interval unions and inclusive dot coverage; exact scoring table matches statement image."
+        },
+        {
+          "kind": "official-contest-calendar",
+          "url": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+          "status": "retrieved-and-reviewed",
+          "verifiedDate": "2019-08-08"
+        }
+      ],
+      "officialEditorialRetrieved": true,
+      "officialEditorialVerified": false,
+      "solutionVerificationKind": "independent-analysis",
+      "chosenFullScoreConstructionProved": true,
+      "unconfirmedRequiredLemmas": [],
+      "originalContestData": {
+        "acquired": false,
+        "filesTested": 0,
+        "mustNotConflateWithGeneratedInputs": true,
+        "attempts": [
+          {
+            "tool": "GitHub fetch_file",
+            "path": "ioi2019-line/tc/01.in.gz",
+            "result": "Git-LFS pointer only, not input bytes"
+          },
+          {
+            "tool": "GitHub fetch_file encoding=base64",
+            "path": "ioi2019-line/attachment/line.zip",
+            "result": "content empty for5.6MB API item"
+          },
+          {
+            "tool": "GitHub fetch_blob",
+            "blobSha": "d72969fb2c8d09189892cf6b40c9d0458698d3a2",
+            "result": "UnicodeDecodeError on binary bytes"
+          },
+          {
+            "tool": "GitHub fetch git-blob API URL",
+            "result": "error, no usable archive"
+          },
+          {
+            "tool": "native curl default sandbox",
+            "url": "https://raw.githubusercontent.com/austrian-olympiad-informatics/ioi-tasks/main/ioi2019-line/attachment/line.zip",
+            "result": "exit6 Could not resolve host: raw.githubusercontent.com"
+          },
+          {
+            "tool": "native curl require_escalated",
+            "result": "exit6 Could not resolve host: raw.githubusercontent.com; not an automatic approval-review rejection"
+          }
+        ],
+        "effect": "No claim that actual10 outputs were generated/tested. Universal constructive proof covers their complete verified source domain, and generated maximum cases plus all relative-order small inputs test that construction."
+      }
+    },
+    "noInitialRecordOverwrite": true
+  },
+  "verification": {
+    "commandNormal": "python3 /tmp/flowchartcp-line-checker.py",
+    "commandAsanUbsan": "python3 /tmp/flowchartcp-line-checker.py --sanitize",
+    "actualMdxSingleVisibleCppFenceExtracted": true,
+    "fenceCompilesStandalone": true,
+    "compilerFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizerFlags": [
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "sanitizerRuntime": "ASAN_OPTIONS detect_leaks=0:halt_on_error=1; UBSAN_OPTIONS halt_on_error=1",
+    "normal": {
+      "checks": 28709275,
+      "rankPermutations": 409113,
+      "smallOutputSegments": 5239480,
+      "literalPointSegmentTests": 72632802,
+      "interiorCoveredPoints": 4103442,
+      "randomCases": 6000,
+      "metamorphicChecks": 6000,
+      "invalidCalls": 14,
+      "originalContestInputFilesTested": 0,
+      "checksum": "16725969703083196",
+      "seconds": 0.804934,
+      "peakRSSKiB": 21548,
+      "maximumCases": [
+        {
+          "name": "increasing chain",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177806
+        },
+        {
+          "name": "decreasing chain",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "25000 strictly nested four-point boxes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177795
+        },
+        {
+          "name": "nested boxes at original coordinate extremes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1977779
+        },
+        {
+          "name": "random all three parts at1e9",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "reversed input with same canonical path",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "alternating high low ranks",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "two chains plus deep spiral",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1177813
+        },
+        {
+          "name": "generated scoring-table size20",
+          "n": 20,
+          "segments": 23,
+          "outputBytes": 117
+        },
+        {
+          "name": "generated scoring-table size600",
+          "n": 600,
+          "segments": 603,
+          "outputBytes": 4460
+        },
+        {
+          "name": "generated scoring-table size5000",
+          "n": 5000,
+          "segments": 5003,
+          "outputBytes": 46379
+        },
+        {
+          "name": "generated scoring-table size50000",
+          "n": 50000,
+          "segments": 50003,
+          "outputBytes": 563650
+        },
+        {
+          "name": "generated scoring-table size72018",
+          "n": 72018,
+          "segments": 72021,
+          "outputBytes": 825368
+        },
+        {
+          "name": "generated scoring-table size91891",
+          "n": 91891,
+          "segments": 91894,
+          "outputBytes": 1062604
+        },
+        {
+          "name": "generated scoring-table size100000",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1159571
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "article": "/tmp/flowchartcp-line-article.mdx"
+    },
+    "asanUbsan": {
+      "checks": 28709275,
+      "rankPermutations": 409113,
+      "smallOutputSegments": 5239480,
+      "literalPointSegmentTests": 72632802,
+      "interiorCoveredPoints": 4103442,
+      "randomCases": 6000,
+      "metamorphicChecks": 6000,
+      "invalidCalls": 14,
+      "originalContestInputFilesTested": 0,
+      "checksum": "16725969703083196",
+      "seconds": 7.31009,
+      "peakRSSKiB": 638428,
+      "maximumCases": [
+        {
+          "name": "increasing chain",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177806
+        },
+        {
+          "name": "decreasing chain",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "25000 strictly nested four-point boxes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177795
+        },
+        {
+          "name": "nested boxes at original coordinate extremes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1977779
+        },
+        {
+          "name": "random all three parts at1e9",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "reversed input with same canonical path",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "alternating high low ranks",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "two chains plus deep spiral",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1177813
+        },
+        {
+          "name": "generated scoring-table size20",
+          "n": 20,
+          "segments": 23,
+          "outputBytes": 117
+        },
+        {
+          "name": "generated scoring-table size600",
+          "n": 600,
+          "segments": 603,
+          "outputBytes": 4460
+        },
+        {
+          "name": "generated scoring-table size5000",
+          "n": 5000,
+          "segments": 5003,
+          "outputBytes": 46379
+        },
+        {
+          "name": "generated scoring-table size50000",
+          "n": 50000,
+          "segments": 50003,
+          "outputBytes": 563650
+        },
+        {
+          "name": "generated scoring-table size72018",
+          "n": 72018,
+          "segments": 72021,
+          "outputBytes": 825368
+        },
+        {
+          "name": "generated scoring-table size91891",
+          "n": 91891,
+          "segments": 91894,
+          "outputBytes": 1062604
+        },
+        {
+          "name": "generated scoring-table size100000",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1159571
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "article": "/tmp/flowchartcp-line-article.mdx"
+    },
+    "oracle": "Every point directly tested against every closed output segment for small inputs, no peeling/chain decisions. Maximum independent geometry uses sorted supporting-line interval unions. Output serialization exact parse. No demand that construction be globally minimum; guarantee isN+3.",
+    "coverage": [
+      "all409113 rank permutations for n1..9",
+      "all axes/distinctness/coordinate/nonzero-segment/closed-dot membership checked",
+      "6000 random with nonuniform cubic gaps and original endpoints1/1e9",
+      "6000 input permutation/transpose/x,y reflection variants",
+      "14 invalid calls including INT64 extrema, duplicate coordinates,100001 points; input preserved; writer emits no partial data on invalid input",
+      "empty/repeated/interleaved valid calls, independent returned objects",
+      "15 maximum or score-table-size generated cases, original10 data files not obtained",
+      "max100000 increasing/decreasing chains,25000 nested four-extreme boxes, all3 objects, coordinate endpoint span, output<=1977779bytes in suite"
+    ],
+    "testResultSemanticLimitation": "Metamorphic and generated score-table-sized inputs are not the original contest inputs. Equality of source10-file thresholds is source verification; universal N+3 guarantee is independently proved, not inferred from tests."
+  },
+  "editorNotes": [
+    "Exactly8 sections; common construction technique; description exactly metadata.summary; prereqs invariant/output-only verified existing; entryPoints advanced/complexity/reasoning.",
+    "No shared metadata/article/flow/audit/walk/test edits.",
+    "Full official scoring table and acquisition notes live in this sidecar, article keeps technique/API explanation central."
+  ],
+  "artifactSha256": {
+    "article": "b2336a9286aa712aa54c5a536cc22ce297ce21df74e72947398b5f92433f5b9f",
+    "checker": "6ea68952d09fae006f4e8f7a324b3fb0632da0df0afa64faba043ef2cfe480e0",
+    "publishedArticle": "eefdf5fa18ed20005a02f05eb2bcf6154508a0346593aea3c2f005ca34ce3356",
+    "publishedChecker": "bdafffcf2d6793f146b42037e21f71e75a6f11638c462222947e0ab412afdbab"
+  },
+  "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/orthogonal-point-cover-spiral-two-chains.mdx",
+    "checker": "scripts/check_orthogonal_point_cover_cpp.py",
+    "metadataGroup": "planar-patterns",
+    "entryGraphId": "geometry",
+    "choices": [
+      "orthogonal-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": false,
+    "proseNormalization": "関連二リンクを/flowchartcp/techniques/.../へ、空入力計算量を明記。C++変更なし。",
+    "verificationRecord": "research/verification-2026-10-15-routing-line.json",
+    "navigationConnectionVerified": true,
+    "flowRegression": {
+      "test": "tests/routing-line-flow.test.mjs",
+      "sha256": "1adcd413c2c66928c297bf9c0a50ae1fe8290e57a5cb1d3826d8fd91ec8f9f6e",
+      "results": "research/probes/routing-line-flow-results.json"
+    }
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "reviewedAt": "2026-10-15",
+      "reviewer": "/root",
+      "status": "passed",
+      "techniqueId": "orthogonal-point-cover-spiral-two-chains",
+      "artifactSha256": {
+        "article": "b2336a9286aa712aa54c5a536cc22ce297ce21df74e72947398b5f92433f5b9f",
+        "checker": "6ea68952d09fae006f4e8f7a324b3fb0632da0df0afa64faba043ef2cfe480e0",
+        "sidecar": "30a7f2fbbd9170c080543c3fff05e6923501ce46654f9993390abd21053cf414"
+      },
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "normal": {
+        "checks": 28709275,
+        "rankPermutations": 409113,
+        "smallOutputSegments": 5239480,
+        "literalPointSegmentTests": 72632802,
+        "interiorCoveredPoints": 4103442,
+        "randomCases": 6000,
+        "metamorphicChecks": 6000,
+        "invalidCalls": 14,
+        "originalContestInputFilesTested": 0,
+        "checksum": "16725969703083196",
+        "seconds": 0.805147,
+        "peakRSSKiB": 21540,
+        "maximumCases": [
+          {
+            "name": "increasing chain",
+            "n": 100000,
+            "segments": 100001,
+            "outputBytes": 1177806
+          },
+          {
+            "name": "decreasing chain",
+            "n": 100000,
+            "segments": 100002,
+            "outputBytes": 1177815
+          },
+          {
+            "name": "25000 strictly nested four-point boxes",
+            "n": 100000,
+            "segments": 100001,
+            "outputBytes": 1177795
+          },
+          {
+            "name": "nested boxes at original coordinate extremes",
+            "n": 100000,
+            "segments": 100001,
+            "outputBytes": 1977779
+          },
+          {
+            "name": "random all three parts at1e9",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1959525
+          },
+          {
+            "name": "reversed input with same canonical path",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1959525
+          },
+          {
+            "name": "alternating high low ranks",
+            "n": 100000,
+            "segments": 100002,
+            "outputBytes": 1177815
+          },
+          {
+            "name": "two chains plus deep spiral",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1177813
+          },
+          {
+            "name": "generated scoring-table size20",
+            "n": 20,
+            "segments": 23,
+            "outputBytes": 117
+          },
+          {
+            "name": "generated scoring-table size600",
+            "n": 600,
+            "segments": 603,
+            "outputBytes": 4460
+          },
+          {
+            "name": "generated scoring-table size5000",
+            "n": 5000,
+            "segments": 5003,
+            "outputBytes": 46379
+          },
+          {
+            "name": "generated scoring-table size50000",
+            "n": 50000,
+            "segments": 50003,
+            "outputBytes": 563650
+          },
+          {
+            "name": "generated scoring-table size72018",
+            "n": 72018,
+            "segments": 72021,
+            "outputBytes": 825368
+          },
+          {
+            "name": "generated scoring-table size91891",
+            "n": 91891,
+            "segments": 91894,
+            "outputBytes": 1062604
+          },
+          {
+            "name": "generated scoring-table size100000",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1159571
+          }
+        ],
+        "sanitized": false,
+        "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+        "article": "/tmp/flowchartcp-line-article.mdx"
+      },
+      "asanUbsan": {
+        "checks": 28709275,
+        "rankPermutations": 409113,
+        "smallOutputSegments": 5239480,
+        "literalPointSegmentTests": 72632802,
+        "interiorCoveredPoints": 4103442,
+        "randomCases": 6000,
+        "metamorphicChecks": 6000,
+        "invalidCalls": 14,
+        "originalContestInputFilesTested": 0,
+        "checksum": "16725969703083196",
+        "seconds": 8.15603,
+        "peakRSSKiB": 711600,
+        "maximumCases": [
+          {
+            "name": "increasing chain",
+            "n": 100000,
+            "segments": 100001,
+            "outputBytes": 1177806
+          },
+          {
+            "name": "decreasing chain",
+            "n": 100000,
+            "segments": 100002,
+            "outputBytes": 1177815
+          },
+          {
+            "name": "25000 strictly nested four-point boxes",
+            "n": 100000,
+            "segments": 100001,
+            "outputBytes": 1177795
+          },
+          {
+            "name": "nested boxes at original coordinate extremes",
+            "n": 100000,
+            "segments": 100001,
+            "outputBytes": 1977779
+          },
+          {
+            "name": "random all three parts at1e9",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1959525
+          },
+          {
+            "name": "reversed input with same canonical path",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1959525
+          },
+          {
+            "name": "alternating high low ranks",
+            "n": 100000,
+            "segments": 100002,
+            "outputBytes": 1177815
+          },
+          {
+            "name": "two chains plus deep spiral",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1177813
+          },
+          {
+            "name": "generated scoring-table size20",
+            "n": 20,
+            "segments": 23,
+            "outputBytes": 117
+          },
+          {
+            "name": "generated scoring-table size600",
+            "n": 600,
+            "segments": 603,
+            "outputBytes": 4460
+          },
+          {
+            "name": "generated scoring-table size5000",
+            "n": 5000,
+            "segments": 5003,
+            "outputBytes": 46379
+          },
+          {
+            "name": "generated scoring-table size50000",
+            "n": 50000,
+            "segments": 50003,
+            "outputBytes": 563650
+          },
+          {
+            "name": "generated scoring-table size72018",
+            "n": 72018,
+            "segments": 72021,
+            "outputBytes": 825368
+          },
+          {
+            "name": "generated scoring-table size91891",
+            "n": 91891,
+            "segments": 91894,
+            "outputBytes": 1062604
+          },
+          {
+            "name": "generated scoring-table size100000",
+            "n": 100000,
+            "segments": 100003,
+            "outputBytes": 1159571
+          }
+        ],
+        "sanitized": true,
+        "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+        "article": "/tmp/flowchartcp-line-article.mdx"
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "sharedMutationAtReview": false,
+      "sourceVerification": {
+        "statementPdfSha256": "b2dd1f7236c90f4237908f368cbc95dfcb31980d7378d8aea6f7cf2e5380721e",
+        "pdfPagesActuallyViewed": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "allScoringTableCellsVerified": true,
+        "sourceDatePrimaryActuallyRead": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+        "sourceDate": "2019-08-08",
+        "fullSourceDomainVerified": true,
+        "officialEditorialVerified": false,
+        "proofKind": "independent-analysis",
+        "actualOriginalInputFilesTested": 0
+      },
+      "proofReview": [
+        "SW/NE角は他全点とproduct orderで比較可能、NW/SEはdual orderで比較可能なので各鎖はx順でstrict単調。四極値が異なる場合は各辺内部にあり、除去後のbboxは全軸でstrict内側。N=a+b+4r。",
+        "鎖は単調方向へ直前末尾を延ばすので既通過点を保ち、一点につき一本。最後は実入力点で、axis/directionを保持。",
+        "次の右下がり鎖は順序反転で初線分の軸/向きを前末尾に平行逆向きへ必ず選べる。両末/始座標の外側1へ延ばすと追加は垂直接続一本。singletonも同じ。各x/y相異により接続非零。",
+        "innerboxは下又は左側を初辺とし、末尾延長/垂直接続一本。4辺の後は必ず下向き又は左向き。nochainsは原点から左辺へ水平一本。",
+        "outerboxへは末尾を下/左辺まで既方向に延長。初辺の極値点のある側を選ぶので途中から始める一本がその点を覆い、残る三辺を完全に通って同じ下/左向きを復元。strict入れ子と全座標相異により非零。",
+        "nonempty parts<=3でN+3線分。新座標はinput/originと入力境界一単位外のみ、延長の累積なしで0..1e9+1。交差/重なり許可。"
+      ],
+      "apiReview": [
+        "N0拡張は原点一つ、原典N1..100k全域を包含。各入力座標1..1e9、x全相異/y全相異を構築前に検査。sharedaxis/非正/上限違反はinvalid_argument。",
+        "残数>0で各extreme走査に必ず未削除pointが存在。残数<4は四極値distinctにならずcornerを選ぶ。n+4reserveは最大頂点数。int64coordinate/差safe。入力const/呼出独立/反復。",
+        "原点除外writerの線分数/点列、出力整数範囲、15MBを確認。理論最大2,200,073byte。生成15最大/scoring同size casesは実大会10inputと区別。"
+      ],
+      "complexityReview": "4本のsorted-pointerは全体O(N)、sortingO(N log(N+1))・領域O(N)。空入力はO(1)と掲載時明記。",
+      "proseNormalization": "関連二リンクを/flowchartcp/techniques/.../へ、空入力計算量を明記。C++変更なし。"
+    },
+    "normal": {
+      "checks": 28709275,
+      "rankPermutations": 409113,
+      "smallOutputSegments": 5239480,
+      "literalPointSegmentTests": 72632802,
+      "interiorCoveredPoints": 4103442,
+      "randomCases": 6000,
+      "metamorphicChecks": 6000,
+      "invalidCalls": 14,
+      "originalContestInputFilesTested": 0,
+      "checksum": "16725969703083196",
+      "seconds": 0.805147,
+      "peakRSSKiB": 21540,
+      "maximumCases": [
+        {
+          "name": "increasing chain",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177806
+        },
+        {
+          "name": "decreasing chain",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "25000 strictly nested four-point boxes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177795
+        },
+        {
+          "name": "nested boxes at original coordinate extremes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1977779
+        },
+        {
+          "name": "random all three parts at1e9",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "reversed input with same canonical path",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "alternating high low ranks",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "two chains plus deep spiral",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1177813
+        },
+        {
+          "name": "generated scoring-table size20",
+          "n": 20,
+          "segments": 23,
+          "outputBytes": 117
+        },
+        {
+          "name": "generated scoring-table size600",
+          "n": 600,
+          "segments": 603,
+          "outputBytes": 4460
+        },
+        {
+          "name": "generated scoring-table size5000",
+          "n": 5000,
+          "segments": 5003,
+          "outputBytes": 46379
+        },
+        {
+          "name": "generated scoring-table size50000",
+          "n": 50000,
+          "segments": 50003,
+          "outputBytes": 563650
+        },
+        {
+          "name": "generated scoring-table size72018",
+          "n": 72018,
+          "segments": 72021,
+          "outputBytes": 825368
+        },
+        {
+          "name": "generated scoring-table size91891",
+          "n": 91891,
+          "segments": 91894,
+          "outputBytes": 1062604
+        },
+        {
+          "name": "generated scoring-table size100000",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1159571
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "article": "/tmp/flowchartcp-line-article.mdx"
+    },
+    "asanUbsan": {
+      "checks": 28709275,
+      "rankPermutations": 409113,
+      "smallOutputSegments": 5239480,
+      "literalPointSegmentTests": 72632802,
+      "interiorCoveredPoints": 4103442,
+      "randomCases": 6000,
+      "metamorphicChecks": 6000,
+      "invalidCalls": 14,
+      "originalContestInputFilesTested": 0,
+      "checksum": "16725969703083196",
+      "seconds": 8.15603,
+      "peakRSSKiB": 711600,
+      "maximumCases": [
+        {
+          "name": "increasing chain",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177806
+        },
+        {
+          "name": "decreasing chain",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "25000 strictly nested four-point boxes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177795
+        },
+        {
+          "name": "nested boxes at original coordinate extremes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1977779
+        },
+        {
+          "name": "random all three parts at1e9",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "reversed input with same canonical path",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "alternating high low ranks",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "two chains plus deep spiral",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1177813
+        },
+        {
+          "name": "generated scoring-table size20",
+          "n": 20,
+          "segments": 23,
+          "outputBytes": 117
+        },
+        {
+          "name": "generated scoring-table size600",
+          "n": 600,
+          "segments": 603,
+          "outputBytes": 4460
+        },
+        {
+          "name": "generated scoring-table size5000",
+          "n": 5000,
+          "segments": 5003,
+          "outputBytes": 46379
+        },
+        {
+          "name": "generated scoring-table size50000",
+          "n": 50000,
+          "segments": 50003,
+          "outputBytes": 563650
+        },
+        {
+          "name": "generated scoring-table size72018",
+          "n": 72018,
+          "segments": 72021,
+          "outputBytes": 825368
+        },
+        {
+          "name": "generated scoring-table size91891",
+          "n": 91891,
+          "segments": 91894,
+          "outputBytes": 1062604
+        },
+        {
+          "name": "generated scoring-table size100000",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1159571
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "article": "/tmp/flowchartcp-line-article.mdx"
+    },
+    "additionalReviewFile": "research/probes/orthogonal-point-cover-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

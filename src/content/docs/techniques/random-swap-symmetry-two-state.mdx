@@ -1,0 +1,58 @@
+---
+title: "一個の印付き要素をランダム交換するなら、元の位置と残りの位置に分ける"
+description: "残りの位置の対称性で確率を一変数へまとめ、定常値との差を累乗して交換回数への依存を減らす。"
+techniqueId: "random-swap-symmetry-two-state"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+一個だけ印の付いた球があり、全ての位置から二つの添字を一様に選んで交換を繰り返すとき。印のない球を全て区別した順列の分布は不要です。最初の位置以外は同じ確率で印付き球を持ちます。
+
+## 考え方
+
+$k$ 回後に位置1にいる確率を $p_k$ とします。同じ添字を二度選ぶ場合も数えると、
+$$p_{k+1}=\left(1-\frac2N\right)p_k+\frac2{N^2}.$$
+定常値 $1/N$ を引けば等比数列です。$r=1-2/N$ とおくと $p_k=1/N+(1-1/N)r^k$。残りの位置の平均は $(N+2)/2$ なので、求める位置の期待値は
+$$\frac{N+1}{2}-\frac{N-1}{2}r^k.$$
+$N=1$ では常に1です。
+
+## 適用条件
+
+二つの添字を復元抽出し、全ての順序付き組を等確率に選ぶこと。同じ添字の組を除く規則なら係数が変わります。位置によって選ばれやすさが違う場合も対称性を再確認します。実装は $N<P$、$P=998244353$、操作0回と64ビット符号なし整数の回数も扱います。
+
+## なぜ正しいか
+
+現在位置1なら他へ移る組が $2(N-1)$ 個、別の位置なら位置1へ移る組が2個あります。この二通りから再帰が得られます。初期状態と操作が位置2以降の任意の置換に対して不変なので、それらの確率は等しいままです。一次式の定常値を引いた式を $k$ 回適用すれば累乗の式になります。
+
+## 計算量
+
+時間 $O(\log K+\log P)$、空間 $O(1)$。$N$ 個の位置を追う処理を二種類へ縮め、さらに $K$ 回の反復を累乗に置き換えます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int random_swap_expected_position(long long n,uint64_t steps){
+    constexpr long long mod=998244353;
+    if(n<1||n>=mod)throw invalid_argument("position count");
+    if(n==1)return 1;
+    auto power=[&](long long a,uint64_t e){long long r=1;for(;e;e>>=1,a=a*a%mod)if(e&1)r=r*a%mod;return r;};
+    long long inverse=power(n,mod-2),half=(mod+1)/2;
+    long long ratio=(1-2*inverse%mod+mod)%mod;
+    long long answer=((n+1)%mod*half%mod-(n-1)*half%mod*power(ratio,steps)%mod+mod)%mod;
+    return int(answer);
+}
+```
+
+## 関連する手法
+
+- [対称性](/flowchartcp/techniques/symmetry/)
+- [期待値の線形性](/flowchartcp/techniques/probability-expectation/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/abc360/tasks/abc360_e)
+
+<TechniqueReferences techniqueId="random-swap-symmetry-two-state" />

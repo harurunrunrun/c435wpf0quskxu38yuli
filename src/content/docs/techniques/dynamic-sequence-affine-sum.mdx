@@ -1,0 +1,270 @@
+---
+title: "挿入・削除・反転がある列で、一次変換と区間和を処理する"
+description: "要素数で区間を切り出す木に、一次変換の遅延伝播を載せます。値の変換と順序の反転を別々に管理します。"
+techniqueId: dynamic-sequence-affine-sum
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+現在位置を指定した要素の挿入・削除、区間の反転、区間の各値を $x\mapsto ax+b$ で変える操作、区間和の問い合わせが混在します。挿入や反転のたびに要素の位置が変わるため、元の添字に固定した区間だけを管理しても対応できません。
+
+**列を要素数で分割できる木に、区間和と一次変換の遅延伝播を加えます。** 一つの部分木が区間全体を表すように切り出せば、値の変換も反転も、その部分木の根に記録できます。
+
+## 考え方
+
+列は二分木の中間順に並べます。各部分木に要素数 $k$ と和 $S$ を持ち、要素数で分割して対象区間だけを取り出します。分割と連結の方法は[区間の切り出しと反転](/flowchartcp/techniques/sequence-cut-reverse-split-merge/)と同じです。
+
+区間の全ての値へ $f(x)=ax+b$ を適用すると、区間和は
+
+$$
+S\leftarrow aS+bk
+$$
+
+となります。根自身の値も変え、子へまだ渡していない変換を $(a,b)$ として保存します。
+
+子への未伝播の変換が $f(x)=Ax+B$ のとき、新しい $g(x)=ax+b$ を後から適用すると、子へ渡すべき変換は
+
+$$
+g(f(x))=(aA)x+(aB+b)
+$$
+
+です。したがって、保存する組は $(A,B)\leftarrow(aA,aB+b)$ です。順番を逆にすると、加算の後に乗算する場合などに答えが変わります。代入 $x\leftarrow b$ は $a=0$ として表せるため、特別な印を増やす必要はありません。
+
+一方、反転では左右の子を交換し、反転の印を反転します。**位置によらず同じ一次変換を全要素へ適用すること**と、要素の順序を反転することは交換できます。例えば `[u,v]` を反転してから変換しても、変換してから反転しても `[av+b,au+b]` です。このため、値の変換と反転を独立な二つの印として管理できます。
+
+## 適用条件
+
+同じ区間に同じ係数 $a,b$ を適用し、和を求める場合の手法です。掲載コードは法 $998244353$ で計算します。除算は使わないため、和と変換だけなら法が素数である必要はありません。ただし、法を変更するときは積の型の範囲を確認してください。
+
+反転との交換可能性は、更新が位置に依存しないことによります。「区間内の左から $i$ 番目に $i$ を加える」などの更新を、このまま同じ印で扱うことはできません。反転時の係数の変換や、分割時に子へ渡す位置のずれを管理する必要があります。
+
+また、集計を関数合成や行列積へ変える場合は、反転で集計の順番も変わります。和の実装をそのまま置き換えるだけでは足りず、順方向・逆方向の集計が必要です。
+
+## なぜ正しいか
+
+各部分木は、中間順で連続する部分列を表します。要素数による分割で対象区間を一つの部分木へ切り出せるので、部分木全体への処理は指定区間への処理と一致します。
+
+一次変換を予約したとき、根の値と保存する和には直ちにその変換を適用します。子にはまだ適用していなくても、保存する合成変換を後で渡せば、全要素が同じ順番で変換されます。子へ渡す前に分割・連結で子を取り替えると、別の要素まで更新してしまいます。そのため、木を組み替える根では必ず `push` を先に行います。
+
+反転の印は左右の子の交換と、各子の反転によって逆順を表します。一次変換とは交換できるため、両方の印を子へ送る順番によらず同じ列になります。分割・連結の後は、子の和と根の値から和を再計算します。以上により、各操作後も要素数・和・未伝播の変換が、表している列と一致します。
+
+## 計算量
+
+乱数の優先度が操作列から独立であるという通常の解析では、各操作は期待 $O(\log N)$ 時間です。挿入・削除では、保存用配列の拡張を含めると期待償却時間です。初期列は1要素ずつ連結するため、期待 $O(N\log N)$ 時間で構築します。全要素の書き出しは $O(N)$ 時間です。
+
+同時に存在した要素数の最大値を $P$ として、保存領域は $O(P)$ です。削除した場所を再利用します。再帰の深さは期待 $O(\log N)$ ですが、最悪の場合は木が偏り、分割・連結の時間も再帰の深さも $O(N)$ になります。期待計算量の基礎は[Aragon・Seidel の原論文](https://faculty.washington.edu/aragon/pubs/rst89.pdf)にあります。以下では擬似乱数生成器 `mt19937_64` を使います。
+
+## 実装
+
+0始まりの半開区間 $[l,r)$ です。空区間も受け付け、和は0、更新と反転は何もしません。値・変換の係数は符号付きの `long long` で渡せます。内部で法の範囲へ正規化します。削除は1要素です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class DynamicAffineSequence {
+public:
+    static constexpr long long mod = 998244353;
+
+private:
+    struct Node {
+        int left = 0, right = 0, count = 1;
+        uint64_t priority = 0, serial = 0;
+        long long value = 0, sum = 0;
+        long long lazy_a = 1, lazy_b = 0;
+        bool reversed = false;
+    };
+    vector<Node> nodes{Node{}};
+    vector<int> free_nodes;
+    int root = 0;
+    uint64_t next_serial = 0;
+    mt19937_64 random;
+
+    static uint64_t runtime_seed() {
+        random_device rd;
+        return (uint64_t(rd()) << 32) ^ uint64_t(rd());
+    }
+    static long long norm(long long x) {
+        x %= mod;
+        return x < 0 ? x + mod : x;
+    }
+    int count(int v) const { return v ? nodes[v].count : 0; }
+    long long sum(int v) const { return v ? nodes[v].sum : 0; }
+    bool higher(int a, int b) const {
+        return pair{nodes[a].priority, nodes[a].serial}
+             > pair{nodes[b].priority, nodes[b].serial};
+    }
+    void pull(int v) {
+        nodes[v].count = count(nodes[v].left) + 1 + count(nodes[v].right);
+        nodes[v].sum = (sum(nodes[v].left) + nodes[v].value
+                      + sum(nodes[v].right)) % mod;
+    }
+    void affine_node(int v, long long a, long long b) {
+        if (!v) return;
+        Node& t = nodes[v];
+        t.value = (a * t.value + b) % mod;
+        t.sum = (a * t.sum + b * t.count) % mod;
+        // 後から来た変換を、既に待っている変換の外側へ合成する。
+        t.lazy_a = a * t.lazy_a % mod;
+        t.lazy_b = (a * t.lazy_b + b) % mod;
+    }
+    void reverse_node(int v) {
+        if (!v) return;
+        swap(nodes[v].left, nodes[v].right);
+        nodes[v].reversed = !nodes[v].reversed;
+    }
+    void push(int v) {
+        if (!v) return;
+        int left = nodes[v].left, right = nodes[v].right;
+        if (nodes[v].lazy_a != 1 || nodes[v].lazy_b != 0) {
+            affine_node(left, nodes[v].lazy_a, nodes[v].lazy_b);
+            affine_node(right, nodes[v].lazy_a, nodes[v].lazy_b);
+            nodes[v].lazy_a = 1;
+            nodes[v].lazy_b = 0;
+        }
+        if (nodes[v].reversed) {
+            reverse_node(left);
+            reverse_node(right);
+            nodes[v].reversed = false;
+        }
+    }
+    pair<int, int> split(int v, int k) {
+        if (!v) return {0, 0};
+        push(v);
+        int left_count = count(nodes[v].left);
+        if (k <= left_count) {
+            auto [a, b] = split(nodes[v].left, k);
+            nodes[v].left = b;
+            pull(v);
+            return {a, v};
+        }
+        auto [a, b] = split(nodes[v].right, k - left_count - 1);
+        nodes[v].right = a;
+        pull(v);
+        return {v, b};
+    }
+    int merge(int a, int b) {
+        if (!a || !b) return a ? a : b;
+        if (higher(a, b)) {
+            push(a);
+            nodes[a].right = merge(nodes[a].right, b);
+            pull(a);
+            return a;
+        }
+        push(b);
+        nodes[b].left = merge(a, nodes[b].left);
+        pull(b);
+        return b;
+    }
+    int make_node(long long value) {
+        if (next_serial == numeric_limits<uint64_t>::max())
+            throw length_error("too many generated nodes");
+        int v;
+        if (free_nodes.empty()) {
+            if (nodes.size() >= size_t(numeric_limits<int>::max()))
+                throw length_error("too many nodes");
+            v = int(nodes.size());
+            nodes.emplace_back();
+        } else {
+            v = free_nodes.back();
+            free_nodes.pop_back();
+        }
+        nodes[v] = Node{};
+        nodes[v].value = nodes[v].sum = norm(value);
+        nodes[v].priority = random();
+        nodes[v].serial = next_serial++;
+        return v;
+    }
+    void check_range(int l, int r) const {
+        assert(0 <= l && l <= r && r <= size());
+    }
+
+public:
+    explicit DynamicAffineSequence(const vector<long long>& initial = {},
+                                  uint64_t seed = runtime_seed()) : random(seed) {
+        for (long long x : initial) {
+            int v = make_node(x);
+            root = merge(root, v);
+        }
+    }
+    DynamicAffineSequence(const DynamicAffineSequence&) = delete;
+    DynamicAffineSequence& operator=(const DynamicAffineSequence&) = delete;
+    DynamicAffineSequence(DynamicAffineSequence&&) = delete;
+    DynamicAffineSequence& operator=(DynamicAffineSequence&&) = delete;
+    int size() const { return count(root); }
+    void insert(int pos, long long value) {
+        assert(0 <= pos && pos <= size());
+        int v = make_node(value);
+        auto [a, b] = split(root, pos);
+        root = merge(merge(a, v), b);
+    }
+    void erase(int pos) {
+        assert(0 <= pos && pos < size());
+        auto [a, rest] = split(root, pos);
+        auto [removed, b] = split(rest, 1);
+        assert(count(removed) == 1);
+        free_nodes.push_back(removed);
+        root = merge(a, b);
+    }
+    void reverse(int l, int r) {
+        check_range(l, r);
+        auto [a, rest] = split(root, l);
+        auto [b, c] = split(rest, r - l);
+        reverse_node(b);
+        root = merge(merge(a, b), c);
+    }
+    void apply_affine(int l, int r, long long a, long long b) {
+        check_range(l, r);
+        auto [left, rest] = split(root, l);
+        auto [middle, right] = split(rest, r - l);
+        affine_node(middle, norm(a), norm(b));
+        root = merge(merge(left, middle), right);
+    }
+    long long range_sum(int l, int r) {
+        check_range(l, r);
+        auto [a, rest] = split(root, l);
+        auto [b, c] = split(rest, r - l);
+        long long result = sum(b);
+        root = merge(merge(a, b), c);
+        return result;
+    }
+    vector<long long> values() {
+        vector<long long> result;
+        result.reserve(size());
+        vector<int> stack;
+        int v = root;
+        while (v || !stack.empty()) {
+            while (v) {
+                push(v);
+                stack.push_back(v);
+                v = nodes[v].left;
+            }
+            v = stack.back();
+            stack.pop_back();
+            result.push_back(nodes[v].value);
+            v = nodes[v].right;
+        }
+        return result;
+    }
+};
+```
+
+全ての係数と和は $0$ 以上、法未満です。部分木の要素数は `int` に収まるように制限しているため、`a * sum + b * count` は `long long` に収まります。法や要素数の型を大きくする場合は、`__int128` などで積を計算してください。
+
+保存領域は配列が所有し、削除した節点の添字を再利用します。コピーと移動を禁止しているため、列を共有する複数の根は作りません。異なる版の列を残す永続化には別の実装が必要です。
+
+## 関連する手法
+
+- [列の区間を切り出して、反転・移動する](/flowchartcp/techniques/sequence-cut-reverse-split-merge/)：要素数による分割・連結と反転の部分。
+- [区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/)：位置が固定された列への一次変換と区間和。
+- [辺をつなぎ替えながら、向きのあるパスを集計する](/flowchartcp/techniques/dynamic-forest-path-aggregate/)：列ではなく、形が変わる森のパスを集計する場合。
+
+## 参考資料
+
+- [Aragon・Seidel: Randomized Search Trees](https://faculty.washington.edu/aragon/pubs/rst89.pdf)
+- [Library Checker: Dynamic Sequence Range Affine Range Sum](https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum)
+- [Library Checker の原典仕様](https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/dynamic_sequence_range_affine_range_sum/task.md)
+- [Library Checker の公開解答](https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/dynamic_sequence_range_affine_range_sum/sol/correct.cpp)：平衡木に要素数・和・一次変換・反転を持たせる実装。平衡化には AVL 木を使っています。
+
+<TechniqueReferences techniqueId="dynamic-sequence-affine-sum" />

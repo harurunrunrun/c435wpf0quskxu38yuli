@@ -1,0 +1,67 @@
+---
+title: "区間DP"
+description: "連続区間ごとの結果を保存し、短い区間から長い区間を組み立てる。"
+techniqueId: interval-dp
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+連続区間ごとの結果を保存し、短い区間から長い区間を組み立てる。
+
+## 使う場面
+
+隣り合う要素の合体、区間の両端を取る操作、括弧のような入れ子構造を扱うときに使う。最初または最後の操作を決めると、残る問題が連続区間に分かれるかを考える。
+
+## 考え方
+
+隣り合う二つの塊を合体する例では、$dp[l][r]$ を区間 $[l,r)$ を一つにする最小費用とする。最後に合体する二つの塊の境界を $k$ とすれば、左右の費用 $dp[l][k]$ と $dp[k][r]$ に、最後の合体費用を加えればよい。
+
+すべての分割点 $k$ を試して最小を取る。参照する左右の区間は短いので、区間長の小さい順に計算する。区間の両端を取る操作では、左右のどちらを取るかを遷移として使う。
+
+## 適用条件
+
+区間の外側に必要な情報を、区間の状態に保存できることが必要になる。合体後の性質が操作順によって変わる場合は、その性質も状態に加える。
+
+隣接していない要素も自由に合体できる問題では、区間だけの状態は不十分な場合がある。高速化するためにKnuth最適化などを使うときは、それぞれの成立条件を確認する。
+
+## なぜ正しいか
+
+隣接する塊だけを合体するなら、最後の合体はある境界で左右に分かれる。その境界を固定すると、左右の操作は独立に最適化できる。すべての境界を試す遷移は、どの合法な合体手順の最後の操作も含む。短い区間の最適値が正しいと仮定すれば、長い区間も正しく求まる。
+
+## 計算量
+
+区間の数は $O(N^2)$。各区間で $O(N)$ 個の分割点を試す例では、時間は $O(N^3)$、空間は $O(N^2)$。区間和を累積和で求めると、各分割点の評価は $O(1)$ になる。
+
+## 実装
+
+`adjacent_merge_cost` は、隣接する二つの塊を合体するたびに、合体後の重さを支払う場合の最小総費用を返す。重さは非負とし、途中の費用も $2^{60}$ 未満とする。要素数が0または1なら費用は0。
+
+```cpp
+#include <vector>
+#include <algorithm>
+using namespace std;
+long long adjacent_merge_cost(const vector<long long>& a) {
+    int n=a.size();
+    vector<long long> p(n+1);
+    for(int i=0;i<n;++i) p[i+1]=p[i]+a[i];
+    vector dp(n+1,vector<long long>(n+1,0));
+    const long long INF=1LL<<60;
+    for(int len=2;len<=n;++len)
+        for(int l=0;l+len<=n;++l) {
+            int r=l+len;
+            dp[l][r]=INF;
+            for(int k=l+1;k<r;++k)
+                dp[l][r]=min(dp[l][r],dp[l][k]+dp[k][r]+p[r]-p[l]);
+        }
+    return dp[0][n];
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [ナップサックDP](/flowchartcp/techniques/knapsack/)
+
+## 参考資料
+
+- [USACO Guide: Range DP](https://usaco.guide/gold/dp-ranges)
+
+<TechniqueReferences techniqueId="interval-dp" />

@@ -1,0 +1,128 @@
+---
+title: "回文の長さと出現回数の積は、各末尾の最長回文に印を付けて求める"
+description: "同じ内容の回文を一つの頂点にまとめ、出現回数を接尾辞リンクへ集めてから評価する。"
+techniqueId: eertree-palindrome-length-frequency
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一つの文字列から回文を選び、**長さ×出現回数**を最大にしたい。出現位置が重なっていても、それぞれ一回と数える。同じ内容の回文の出現をまとめて扱う必要がある。
+
+最長回文だけを選んでもよいとは限らない。例えば `aaaaa` では、長さ5の回文の値は5だが、`aaa` は3回現れるため値は9になる。中心ごとの半径だけでなく、同じ内容の回文をまとめた回数がほしい。
+
+## 考え方
+
+回文木の各頂点を、一種類の非空回文に対応させる。頂点 $v$ には長さ $len_v$ と、最長の真の回文接尾辞を指す $link(v)$ を持たせる。
+
+文字列を左から読み、位置 $i$ まで読んだときの**最長回文接尾辞だけ**に一個の印を付ける。この段階の印の数は、各回文の出現回数ではない。例えば `aaa` の最後では `aaa` に印を付けるが、同じ末尾の `aa` と `a` の出現も後で反映する。
+
+全文字を読んだら、長い回文から短い回文へ
+
+$$cnt_{link(v)}\mathrel{+}=cnt_v$$
+
+を行う。接尾辞リンクを逆向きに見た木の部分木和であり、最長回文として付けた印が、同じ末尾の全ての回文へ一個ずつ届く。最後に各非空頂点の $len_v\cdot cnt_v$ を比較する。
+
+実装では長さ順のソートも不要である。ある回文を初めて作るとき、その真の回文接尾辞は既に存在する。したがって、頂点を作成順の逆順で処理しても、必ず子の回数を集めてから接尾辞リンクへ渡せる。
+
+## 適用条件
+
+本文は固定し、重なりを含む出現回数を数える。互いに重ならない出現を何回選べるかという条件では、接尾辞リンクの単純な和では足りない。区間を指定した質問や途中の文字変更にも、この全文に対する集計をそのまま使えない。
+
+実装は英小文字26種類、長さ $N\le10^6$ を受け取る。空文字列では候補がないものとして0を返す。英小文字以外は `std::invalid_argument`、長さ超過は `std::length_error` とする。積の計算には `long long` を使う。この上限では $N^2\le10^{12}$ なので収まる。
+
+## なぜ正しいか
+
+ある位置 $i$ で終わる回文は、位置 $i$ までの最長回文接尾辞と、その頂点から接尾辞リンクをたどって得られる非空回文の全てである。最長のものから真の回文接尾辞を繰り返し選べば、長い方から短い方へ、全ての回文接尾辞を列挙できる。
+
+したがって、位置 $i$ で付けた一個の印は、リンクを介して伝えると、位置 $i$ で終わる各回文へちょうど一回ずつ届く。異なる位置の印は別の出現に対応する。全位置について加算した後の $cnt_v$ は、重なりも含めた回文 $v$ の出現回数に等しい。
+
+また、文字を一個追加して初めて現れる回文は、最長回文接尾辞だけである。それより短い回文接尾辞は、その最長回文の接頭辞にもなるため、追加前の本文中に存在する。よって回文木は全ての異なる回文を漏れなく一頂点ずつ保持する。全頂点で積を比較すれば、全ての候補の最大値を得る。
+
+## 計算量
+
+頂点数は二つの特殊頂点を含めて高々 $N+2$。固定26文字の遷移配列を使うため、構築・回数の伝播・最大値の計算は合計 $O(N)$ 時間、補助空間は $O(N)$。構築時の接尾辞リンクの走査は、全ての文字追加を合わせた償却計算量である。一文字の追加が常に定数時間という意味ではない。
+
+各頂点に26本分の遷移を確保するため、長い本文ではメモリ使用量も確認する。文字の種類を増やして連想配列へ変更する場合は、その検索・挿入の計算量も加わる。
+
+## 実装
+
+長さ $-1$ と0の特殊頂点を使う。`last` は現在の最長回文接尾辞であり、各文字の追加後にそこへ一回だけ加算する。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+long long maximum_palindrome_length_frequency(const std::string& s) {
+    if (s.size() > 1'000'000) {
+        throw std::length_error("text is too long");
+    }
+    for (unsigned char c : s) {
+        if (c < 'a' || c > 'z') {
+            throw std::invalid_argument("expected lowercase letters");
+        }
+    }
+    struct Node {
+        std::array<int, 26> next{};
+        int length = 0;
+        int link = 0;
+        long long count = 0;
+    };
+    std::vector<Node> tree;
+    tree.reserve(s.size() + 2);
+    tree.emplace_back();
+    tree.emplace_back();
+    tree[0].length = -1;
+    int last = 1;
+    const int n = int(s.size());
+
+    for (int i = 0; i < n; ++i) {
+        const int c = s[i] - 'a';
+        auto extendable = [&](int v) {
+            const int left = i - tree[v].length - 1;
+            return left >= 0 && s[left] == s[i];
+        };
+        int parent = last;
+        while (!extendable(parent)) parent = tree[parent].link;
+        if (tree[parent].next[c] == 0) {
+            const int current = int(tree.size());
+            tree.emplace_back();
+            tree[current].length = tree[parent].length + 2;
+            tree[parent].next[c] = current;
+            if (tree[current].length == 1) {
+                tree[current].link = 1;
+            } else {
+                int suffix = tree[parent].link;
+                while (!extendable(suffix)) suffix = tree[suffix].link;
+                tree[current].link = tree[suffix].next[c];
+            }
+        }
+        last = tree[parent].next[c];
+        ++tree[last].count;
+    }
+
+    for (int v = int(tree.size()) - 1; v >= 2; --v) {
+        tree[tree[v].link].count += tree[v].count;
+    }
+    long long answer = 0;
+    for (int v = 2; v < int(tree.size()); ++v) {
+        answer = std::max(answer, tree[v].length * tree[v].count);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[回文木](/flowchartcp/techniques/palindromic-tree/) ・ [回文を中心の半径にまとめて数える](/flowchartcp/techniques/palindrome-center-contribution/) ・ [failure linkへ出現回数を集める](/flowchartcp/techniques/aho-failure-aggregation/)
+
+## 参考資料
+
+- [APIO 2014：公式問題集の保存版](https://archive.algo.is/ioi/apio/2014/apio2014_problemset.pdf)。Palindromesの条件と制約を確認できる。
+- [洛谷 P3649：APIO2014 回文串](https://www.luogu.com.cn/problem/P3649)。同じ問題のオンラインジャッジ。
+- [Rubinchik・Shur：EERTREE論文](https://arxiv.org/html/1506.04862v2)。2.4節の命題3で、最長回文接尾辞への記録と接尾辞リンク上の集計による積の最大化を扱う。
+
+<TechniqueReferences techniqueId="eertree-palindrome-length-frequency" />

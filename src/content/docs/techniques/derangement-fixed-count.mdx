@@ -1,0 +1,96 @@
+---
+title: "元の位置へ戻る個数を指定した順列は、固定点を選んで残りを完全順列にする"
+description: "固定点を一つも持たない並べ替えを二つ前までの漸化式で数え、指定した固定点数の二項係数を掛ける。"
+techniqueId: derangement-fixed-count
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+区別できる $n$ 個を一対一に並べ替え、元の位置へ戻る要素を禁止したい。または元の位置に残る要素をちょうど $k$ 個にしたい。順列を列挙すると $n!$ 通りになる。
+
+## 考え方
+
+固定点のない順列数を $D_n$ とする。$D_0=1,D_1=0$ で、
+
+$$D_n=(n-1)(D_{n-1}+D_{n-2}).$$
+
+ちょうど $k$ 個の固定点を持つ順列数は
+
+$$\binom nkD_{n-k}.$$
+
+固定点となる添字を先に選び、残りの添字上で固定点を禁止する。残りが一個なら並べ替えようがないため、固定点数 $n-1$ の答えは0になる。
+
+## 適用条件
+
+要素と位置を区別し、全ての一対一対応が可能で、禁止するのは各要素と自分の位置の組だけである。別の禁止位置もある場合や、同じ品物を区別しない場合にはこの漸化式をそのまま使えない。
+
+実装の法は $10^9+7$。$n<P$ の階乗表を使い、$k$ が範囲外なら0。$n=0,k=0$ の空の順列は1とする。固定点を全て禁止する質問は `fixed=0` で求める。
+
+## なぜ正しいか
+
+要素1の移動先を $j\ne1$ として選ぶと $n-1$ 通りある。要素 $j$ が位置1へ来るなら、1と $j$ を除いた $n-2$ 要素の完全順列になる。
+
+要素 $j$ が位置1へ来ない場合は、巡回置換の中で1を取り除き、1へ入る辺を1から $j$ へ出る辺につなぎ直す。残りは $n-1$ 要素の完全順列であり、$j$ の直前へ1を挿入すれば元へ戻せる。この二つの場合が $D_{n-2}$ と $D_{n-1}$ を与える。
+
+固定点の集合は順列から一意に定まる。集合を選んだ後、残りは完全順列でなければ「ちょうど」を満たさないため、二項係数との積で重複なく数えられる。
+
+## 計算量
+
+全順列の検査は $O(nn!)$ 時間。$D_0$ から $D_n$ までと階乗表を前計算する実装は $O(n+\log P)$ 時間、$O(n)$ 空間。その後の固定点数の質問は $O(1)$。完全順列数だけなら直前二つを持つ $O(1)$ 補助空間でも求められる。
+
+## 実装
+
+`FixedPointCounts(n)` を一度作り、`count(fixed)` で同じ全長の固定点数を何度も問い合わせられる。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+constexpr long long DERANGEMENT_MOD=1000000007;
+struct FixedPointCounts {
+    int n;
+    BinomialTable<DERANGEMENT_MOD> combinations;
+    std::vector<long long> derangement;
+    explicit FixedPointCounts(int size):n(size),combinations(size),derangement(size+1,0) {
+        derangement[0]=1;
+        for(int i=2;i<=n;++i) derangement[i]=(i-1)*(derangement[i-1]+derangement[i-2])%DERANGEMENT_MOD;
+    }
+    long long count(int fixed) const {
+        if(fixed<0 || fixed>n) return 0;
+        return combinations.choose(n,fixed)*derangement[n-fixed]%DERANGEMENT_MOD;
+    }
+};
+```
+
+## 関連する手法
+
+[組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/) ・ [全ての指定文字を含む列を、欠ける文字から数える](/flowchartcp/techniques/inclusion-exclusion-forbidden/)
+
+## 参考資料
+
+- [CSES：Christmas Party（原典）](https://cses.fi/problemset/task/1717)。
+
+<TechniqueReferences techniqueId="derangement-fixed-count" />

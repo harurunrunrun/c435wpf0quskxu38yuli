@@ -1,0 +1,28 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2019_shoes",
+    "title": "靴の並び替え (Arranging Shoes)",
+    "url": "https://ioinformatics.org/files/ioi2019problem1.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf",
+    "techniqueIds": [
+      "oriented-equal-pair-adjacent-swaps-fenwick"
+    ],
+    "features": [
+      "符号で左右を表す同サイズの要素を一列に置き、隣接二要素の交換だけを行う。",
+      "最終列は同サイズの負・正の対の連結。同じサイズが複数対あってよく、対どうしの順序は自由。",
+      "全サイズで左右個数が一致する。原典最大100000対・200000要素、サイズ1..nを掲載APIが含む。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "official-editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-06",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "notes": "同じサイズの左・右を一対として負・正の順に連結する。対の順序は自由で、同サイズが複数対あってよい。最左未処理要素と最左の逆符号同サイズを組にし、二位置の間に生存する個数と、先頭が右なら向きの一回分を加える。出現位置のキューとFenwickの削除で最小隣接交換数を求められる。",
+    "discoveredBy": "ioi-2019"
+  }
+]

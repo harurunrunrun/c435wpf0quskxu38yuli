@@ -1,0 +1,73 @@
+---
+title: "0-1 BFS"
+description: "辺の重みが0か1のグラフで、両端キューを使って最短距離を求める。"
+techniqueId: zero-one-bfs
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+辺の重みが0か1のグラフで、両端キューを使って最短距離を求める。
+
+## 使う場面
+
+無料の移動と、費用1の操作が混在するグラフで使う。移動回数そのものではなく、有料の操作を何回使うかを最小化する場合などに現れる。
+
+## 考え方
+
+距離を改善した頂点を両端キューに入れる。重み0の辺を通った場合は先頭へ、重み1の辺を通った場合は末尾へ入れる。これにより、距離の小さい候補から処理できる。
+
+一度見つけた頂点でも、後からもっと小さい距離になる場合がある。以下の実装では、追加時の距離も保存し、取り出した候補が古い場合は処理しない。
+
+## 適用条件
+
+すべての辺重みが0または1である必要がある。重み2以上の候補を末尾に入れるだけでは、距離の順序を保てない。
+
+通常の幅優先探索のように、最初の発見で距離を固定してはいけない。重み0の閉路がある場合も、距離が厳密に小さくなったときだけ追加すれば、同じ距離で探索を繰り返すことはない。
+
+## なぜ正しいか
+
+先頭にある距離 $d$ の候補からは、距離 $d$ または $d+1$ の候補だけが生まれる。前者を先頭へ、後者を末尾へ入れると、候補は距離順に並ぶ。ダイクストラ法と同様に、最新の最小候補を取り出した時点で、その距離が最短であると確定できる。
+
+## 計算量
+
+時間は $O(V+E)$。グラフと古い候補も含めた両端キューの空間は $O(V+E)$。
+
+## 実装
+
+`zero_one_bfs(g, s)` は始点 `s` からの最短距離を返す。隣接リストの組は行き先と重みの順。到達できない頂点には $2^{30}$ が入り、有限の距離はそれ未満とする。
+
+```cpp
+#include <vector>
+#include <deque>
+#include <utility>
+#include <cassert>
+using namespace std;
+vector<int> zero_one_bfs(const vector<vector<pair<int,int>>>& g,int s) {
+    int n=g.size(),INF=1<<30;
+    assert(0<=s && s<n);
+    vector<int> d(n,INF);
+    deque<pair<int,int>> q;
+    d[s]=0; q.push_front({0,s});
+    while(!q.empty()) {
+        auto [dv,v]=q.front(); q.pop_front();
+        if(dv!=d[v]) continue;
+        for(auto [u,w]:g[v]) {
+            assert(w==0 || w==1);
+            if(d[u]<=dv+w) continue;
+            d[u]=dv+w;
+            if(w==0) q.push_front({d[u],u});
+            else q.push_back({d[u],u});
+        }
+    }
+    return d;
+}
+```
+
+## 関連する手法
+
+[幅優先探索](/flowchartcp/techniques/bfs/) ・ [ダイクストラ法](/flowchartcp/techniques/dijkstra/)
+
+## 参考資料
+
+- [AtCoder公式解説: ABC176 D](https://atcoder.jp/contests/abc176/editorial/65)
+
+<TechniqueReferences techniqueId="zero-one-bfs" />

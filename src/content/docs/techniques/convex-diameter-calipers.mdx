@@ -1,0 +1,77 @@
+---
+title: "最も遠い二点を凸包に絞り、向かい合う頂点を一周させる"
+description: "内側の点を除き、支持線が平行になる頂点対だけを単調に調べる。"
+techniqueId: convex-diameter-calipers
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+整数座標の点集合から、ユークリッド距離が最大の異なる二点を求めたい。全点対を調べる代わりに、外周上の点だけへ候補を減らせる。
+
+## 考え方
+
+最も遠い点は凸包の頂点から選べる。凸包の各辺 $p_ip_{i+1}$ に対し、その直線から最も離れた頂点 $p_j$ を求める。辺の方向を順に回すと、$j$ も反時計回りにしか進まない。
+
+距離を比較する組は $p_i,p_j$ と $p_{i+1},p_j$。向かい側の辺が平行で、$p_j,p_{j+1}$ の高さが等しい場合は、両方との組を調べる。最後に平方根を取る必要はなく、距離の二乗で最大化する。
+
+## 適用条件
+
+実装は任意順の点集合を受け取り、重複を除いて狭義凸包を作る。元の添字を返すため、重複点のうち一つの添字を残す。すべて同一点なら異なる元添字の二点を返し、距離は0。全点が共線なら両端が答えになる。
+
+各座標の絶対値は $10^{12}$ 以下、点数は `int` に収まる範囲を想定する。面積・距離の二乗を128ビットで比較する。
+
+## なぜ正しいか
+
+凸領域内の一点を固定すると、距離の二乗はもう一点の凸関数である。その最大値は凸包の頂点で達成できる。最遠対の二点には、それらを通る平行な支持線を引ける。支持線を一周回す過程で、この対を含む向かい合う接触点が列挙される。
+
+凸多角形上の線形関数の最大点は、関数の方向が回ると境界を順に進む。辺の高さを最大化する添字を戻さない探索で全対が確認できる。高さが同じ隣接頂点の扱いが、平行な辺や長方形の対角線を漏らさないために必要である。
+
+## 計算量
+
+全点対は $O(N^2)$ 時間。凸包 $O(N\log N)$、凸包の頂点数を $H$ として対の探索は $O(H)$ 時間。全体 $O(N\log N)$ 時間、$O(N)$ 空間。既に狭義凸包なら後半だけでよい。
+
+## 実装
+
+`furthest_pair` は異なる元添字の組を返す。同距離の答えが複数ある場合は一つを返す。
+
+```cpp
+#include <algorithm>
+#include <utility>
+#include <vector>
+#include <stdexcept>
+struct Point { long long x,y; };
+using i128=__int128_t;
+std::pair<int,int> furthest_pair(const std::vector<Point>& input){
+    int n=input.size();if(n<2)throw std::invalid_argument("at least two points");
+    struct Vertex{long long x,y;int id;};std::vector<Vertex> p;
+    for(int i=0;i<n;++i)p.push_back({input[i].x,input[i].y,i});
+    std::sort(p.begin(),p.end(),[](Vertex a,Vertex b){return a.x!=b.x?a.x<b.x:a.y<b.y;});
+    p.erase(std::unique(p.begin(),p.end(),[](Vertex a,Vertex b){return a.x==b.x && a.y==b.y;}),p.end());
+    if(p.size()==1)return {0,1};
+    auto turn=[](Vertex a,Vertex b,Vertex c){return (i128(b.x)-a.x)*(i128(c.y)-a.y)-(i128(b.y)-a.y)*(i128(c.x)-a.x);};
+    auto distance=[](Vertex a,Vertex b){i128 x=i128(a.x)-b.x,y=i128(a.y)-b.y;return x*x+y*y;};
+    std::vector<Vertex> h;
+    for(Vertex v:p){while(h.size()>=2 && turn(h[h.size()-2],h.back(),v)<=0)h.pop_back();h.push_back(v);}
+    int lower=h.size();for(int i=int(p.size())-2;i>=0;--i){while(int(h.size())>lower && turn(h[h.size()-2],h.back(),p[i])<=0)h.pop_back();h.push_back(p[i]);}h.pop_back();
+    int m=h.size();if(m==2)return {h[0].id,h[1].id};
+    i128 best=-1;std::pair<int,int> answer;int j=1;
+    auto update=[&](int a,int b){i128 d=distance(h[a],h[b]);if(d>best){best=d;answer={h[a].id,h[b].id};}};
+    for(int i=0;i<m;++i){int next=(i+1)%m;
+        while(turn(h[i],h[next],h[(j+1)%m])>turn(h[i],h[next],h[j]))j=(j+1)%m;
+        update(i,j);update(next,j);
+        if(turn(h[i],h[next],h[(j+1)%m])==turn(h[i],h[next],h[j])){update(i,(j+1)%m);update(next,(j+1)%m);}
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[最も近い二点を、左右の境界付近だけ比較して求める](/flowchartcp/techniques/geometry-closest-pair/) ・ [図形を挟む平行線の最小幅を、凸包の辺ごとに求める](/flowchartcp/techniques/convex-minimum-width/)
+
+## 参考資料
+
+- [Library Checker：Furthest Pair（原典）](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/geo/furthest_pair/task.md)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="convex-diameter-calipers" />

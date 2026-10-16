@@ -1,0 +1,123 @@
+---
+title: "木の経路長を固定して辺数を最小にするなら、距離ごとの最小深さを別枝と合わせる"
+description: "重心からの距離をキーに最小の辺数を保存し、同じ子部分木の組を除いて補数を探します。"
+techniqueId: weighted-tree-exact-length-min-edges
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+距離がちょうど $K$ の経路を探すが、距離だけでなく辺数を最小にしたい場面です。全頂点を始点にする探索を、経路が通る重心で分けます。
+
+## 考え方
+
+重心 $c$ からの距離 $d$ ごとに、既に処理した子部分木の中で最小の辺数 $B[d]$ を持ちます。重心自身を $B[0]=0$ として登録します。
+
+次の子部分木で距離 $d$、辺数 $h$ の頂点を見たら、$B[K-d]+h$ を候補にします。その部分木を全て照会してから、$B[d]\leftarrow\min(B[d],h)$ として登録します。先に登録すると、重心を通らない同じ枝の二点を組にしてしまいます。
+
+重心を通らない経路は、重心を削除した各成分の中で同じ処理を続けます。距離配列は、触った添字だけを消して使い回します。毎回 $K+1$ 個を初期化すると、重心分解の利点が失われます。
+
+## 適用条件
+
+無向の木で、辺の長さは非負整数です。負の辺がある場合、「距離が $K$ を越えたらその先を見ない」という枝刈りができません。実装は頂点数20万以下、$0\le K\le10^6$、辺長 $0\ldots10^6$ に対応します。
+
+経路の両端は異なります。$K=0$ でも空の経路を答えにせず、長さ0の辺を使う経路を探します。返り値は最小辺数、不可能なら $-1$ です。木の探索は反復処理で行い、長い鎖でも再帰スタックを使いません。
+
+## なぜ正しいか
+
+任意の二頂点の経路について、重心分解を下る途中で、両端が異なる成分へ分かれるか、片方が重心になる段階があります。その段階で経路は必ず重心を通ります。それ以前には同じ子部分木なので照会対象から除かれます。
+
+重心を通る経路の距離と辺数は、両側の値の和です。補数 $K-d$ に対して辺数が小さい側だけを保存すれば、他方が同じときの合計辺数を悪化させません。照会前には別の子部分木しか登録されていないため、二つの経路をつないでも頂点が重複しません。
+
+## 計算量
+
+全始点から探索すると時間 $O(N^2)$。改善後は時間 $O(N\log N+K)$、空間 $O(N+K)$。各重心の成分サイズが半分以下になるので、一頂点を処理する段数は $O(\log N)$ です。距離配列の全初期化は一回だけで、以後の初期化量は実際に処理した頂点数以内です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int minimum_edges_exact_tree_length(int n, int target, const vector<tuple<int,int,int>>& edges) {
+    if (n < 0 || n > 200000 || target < 0 || target > 1000000) throw invalid_argument("bounds");
+    if (n == 0) { if (!edges.empty()) throw invalid_argument("edges"); return -1; }
+    if (int(edges.size()) != n - 1) throw invalid_argument("tree edge count");
+    vector<vector<pair<int,int>>> graph(n);
+    for (auto [u,v,w] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v || w < 0 || w > 1000000)
+            throw invalid_argument("edge");
+        graph[u].push_back({v,w}); graph[v].push_back({u,w});
+    }
+    vector<int> parent(n,-2), visited{0}; parent[0] = -1;
+    for (size_t i = 0; i < visited.size(); ++i) {
+        int v = visited[i];
+        for (auto [u,w] : graph[v]) if (u != parent[v]) {
+            (void)w;
+            if (parent[u] != -2) throw invalid_argument("cycle");
+            parent[u] = v; visited.push_back(u);
+        }
+    }
+    if (int(visited.size()) != n) throw invalid_argument("disconnected");
+    vector<bool> removed(n);
+    vector<int> size(n), pending{0}, best(target + 1,n + 1);
+    int answer = n + 1;
+    while (!pending.empty()) {
+        int start = pending.back(); pending.pop_back();
+        if (removed[start]) continue;
+        vector<int> order{start}; parent[start] = -1;
+        for (size_t i = 0; i < order.size(); ++i) {
+            int v = order[i];
+            for (auto [u,w] : graph[v]) if (!removed[u] && u != parent[v]) {
+                (void)w; parent[u] = v; order.push_back(u);
+            }
+        }
+        for (auto it = order.rbegin(); it != order.rend(); ++it) {
+            int v = *it; size[v] = 1;
+            for (auto [u,w] : graph[v]) if (!removed[u] && parent[u] == v) {
+                (void)w; size[v] += size[u];
+            }
+        }
+        int centroid = start, least = int(order.size());
+        for (int v : order) {
+            int largest = int(order.size()) - size[v];
+            for (auto [u,w] : graph[v]) if (!removed[u] && parent[u] == v) {
+                (void)w; largest = max(largest,size[u]);
+            }
+            if (largest < least) { least = largest; centroid = v; }
+        }
+        removed[centroid] = true;
+        vector<int> touched{0}; best[0] = 0;
+        for (auto [child,weight] : graph[centroid]) if (!removed[child]) {
+            pending.push_back(child);
+            vector<pair<int,int>> values;
+            vector<tuple<int,int,int,int>> stack{{child,centroid,weight,1}};
+            while (!stack.empty()) {
+                auto [v,p,d,h] = stack.back(); stack.pop_back();
+                if (d > target) continue;
+                values.push_back({d,h});
+                for (auto [u,w] : graph[v]) if (!removed[u] && u != p)
+                    stack.push_back({u,v,d+w,h+1});
+            }
+            for (auto [distance,depth] : values)
+                if (best[target-distance] <= n) answer = min(answer,depth+best[target-distance]);
+            for (auto [distance,depth] : values) {
+                if (best[distance] == n + 1) touched.push_back(distance);
+                best[distance] = min(best[distance],depth);
+            }
+        }
+        for (int distance : touched) best[distance] = n + 1;
+    }
+    return answer <= n ? answer : -1;
+}
+```
+
+## 関連する手法
+
+- [重心を通る頂点対を異なる部分木の間だけで数える](/flowchartcp/techniques/centroid-count-cross-subtrees/)
+
+## 参考資料
+
+- [IOI 公式問題](https://ioinformatics.org/files/ioi2011problem2.pdf)
+
+<TechniqueReferences techniqueId="weighted-tree-exact-length-min-edges" />

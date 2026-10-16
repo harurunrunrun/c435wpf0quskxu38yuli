@@ -1,0 +1,898 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "usaco-2020-dec-2021-jan-platinum",
+  "title": "USACO 2020 December・2021 January Platinum の全6題を先に固定した監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "fixedBeforeTechniqueSearch": true,
+    "selectionRule": "指定した二大会の公式結果一覧の Platinum 部門の問題1〜3。技巧や既存記事に合う問題への差し替えはしない。",
+    "contests": [
+      {
+        "yearMonth": "2020-12",
+        "division": "Platinum",
+        "expectedProblemCount": 3,
+        "indexUrl": "https://usaco.org/index.php?page=dec20results"
+      },
+      {
+        "yearMonth": "2021-01",
+        "division": "Platinum",
+        "expectedProblemCount": 3,
+        "indexUrl": "https://usaco.org/index.php?page=jan21results"
+      }
+    ]
+  },
+  "snapshot": {
+    "techniqueMetadataCount": 445,
+    "specificTechniqueCount": 367,
+    "articleCount": 450,
+    "flowGraphCount": 410,
+    "flowSha256": "ac920c886f7e41a7029626e85287e0638bb5b1e7d18f0839a2310e0787771ee7",
+    "note": "原典確認後・今回の新技巧追加前の監査。親による追加後は再走査が必要。",
+    "registeredArticleCount": 445,
+    "articleCountNote": "articleCount は書き込み時点のMDX実ファイル数。並行作業中の未登録記事を含む。今回の照合対象は metadata に登録されていた445件。",
+    "metadataArticleCountAudited": 445
+  },
+  "status": {
+    "fixedCorpusResearchComplete": true,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "officialEditorialVerifiedCount": 6,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 6,
+    "unconfirmedCount": 0,
+    "unavailableCount": 0
+  },
+  "classificationDefinitions": {
+    "covered": "必要な具体技巧の記事があり、問題の特徴から根をたどると適用条件を確認して記事へ到達する。",
+    "missing-route": "必要な具体技巧の記事はあるが、自然な回答経路がない。",
+    "missing-technique": "既存の一般論や部分的な記事だけでは必要な技巧・実装を説明できない。",
+    "unconfirmed": "原典・解説・対応のいずれかを確認できない。"
+  },
+  "limits": [
+    "全世界の問題の列挙・取得・網羅を完了したという意味ではない。",
+    "全6題の原典と公式解説の確認を完了したが、監査時点では6題とも必要な具体技巧が不足する。",
+    "一般の記事が存在すること、アルゴリズム名が一致することだけでは covered としない。",
+    "不足技巧の候補IDは未登録の提案であり、実装・証明・テスト・分岐・再走査を終えるまで使用例の確認済み対応へ加えない。"
+  ],
+  "records": [
+    {
+      "source": "usaco",
+      "problemId": "1068",
+      "title": "Sleeping Cows",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1068",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_dec20.html",
+      "contest": {
+        "name": "USACO 2020 December Contest",
+        "division": "Platinum",
+        "problemNumber": 1,
+        "yearMonth": "2020-12",
+        "exactDateVerified": false
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式結果一覧と原典の大会名で年月と部門を確認。開催日の日単位では未確認。",
+      "difficulty": "USACO Platinum",
+      "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1068",
+      "features": [
+        "二種類の対象が同数あり、左の値が右の値以下なら一対一で組にできる。",
+        "組を追加できる二対象が残らない対応を全て数える。組数の最大化ではない。",
+        "同じ値でも対象は別々に区別し、対象を使わない対応も許す。"
+      ],
+      "constraints": {
+        "N": "1..3000",
+        "s_i,t_i": "1..10^9",
+        "modulus": 1000000007
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "pair-goals",
+        "pairs"
+      ],
+      "steps": [
+        {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "pair-goals",
+          "answerLabel": "対象を重複して使わずに組を選び、個数・利益・必須の組を求める"
+        },
+        {
+          "graphId": "assignment-pair-goals",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "pairs",
+          "answerLabel": "同じ対象を二回使わず、組を選ぶ"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "threshold-maximal-matching-count",
+        "features": [
+          "二種類の対象が同数あり、左の値が右の値以下なら一対一で組にできる。",
+          "組を追加できる二対象が残らない対応を全て数える。組数の最大化ではない。",
+          "同じ値でも対象は別々に区別し、対象を使わない対応も許す。"
+        ],
+        "firstMissingGraphId": "assignment-pair-goals",
+        "firstMissingNodeId": "pair-purpose",
+        "reason": "「最大組数」「指定頂点を必ず使う」「その他の対応条件」だけで、追加できる組が残らない対応の個数へ進む回答がない。最大対応の記事は最適な組数を求めるもので、極大対応の総数を扱わない。",
+        "neededTechniqueIds": [
+          "threshold-maximal-matching-dp"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "matching",
+          "dp-open-groups-gap-cost",
+          "state-design"
+        ],
+        "currentOptions": [
+          {
+            "id": "maximize",
+            "label": "選べる組の個数を最大にする"
+          },
+          {
+            "id": "mandatory",
+            "label": "指定された対象を必ず組に含め、残りは任意"
+          },
+          {
+            "id": "other",
+            "label": "その他の一対一対応の条件"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "二種類の対象が同数あり、左の値が右の値以下なら一対一で組にできる。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialAuthor": "Nick Wu",
+        "method": "値を昇順に走査し、予約済みで未対応の左対象数と、既に左対象を未使用のまま残したかを持つ。右対象を使わない遷移は未使用の左対象がないときだけ許す。同じ値では左対象を先に処理し、左の値≤右の値を表す。",
+        "implementationRequirements": [
+          "count_maximal_threshold_matchings(left_values,right_values,mod) の再利用可能な実装。対象は添字で区別する。",
+          "未対応を予約する数 k とフラグの O(N) 配列。右と組ませるときの係数 k を掛ける。",
+          "空入力、同値、全ての組が可能、全て不可能、一部のみ可能を検証し、小規模の対応全列挙と比較する。"
+        ],
+        "complexity": "公式解説は O(N^2) 時間の走査DP。処理層を使い回せば O(N) 追加空間。",
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1068",
+          "https://usaco.org/current/data/sol_prob1_platinum_dec20.html"
+        ]
+      },
+      "collectionStatus": "statement-and-official-editorial-verified",
+      "techniqueMappingStatus": "not-registered-until-article-and-flow-are-implemented",
+      "reviewedAt": "2026-10-15",
+      "alternativeRoute": {
+        "entryGraphId": "dp",
+        "choices": [
+          "linked-groups"
+        ],
+        "graphId": "dp-linked-groups",
+        "nodeId": "defined",
+        "reason": "二者の大小制約で極大対応を数える選択肢もなく、履歴設計の一般論までしか案内できない。",
+        "steps": [
+          {
+            "graphId": "dp",
+            "nodeId": "defined",
+            "question": "選び方や分け方の特徴はどれですか？",
+            "answer": "linked-groups",
+            "answerLabel": "二者の条件・組分け・選択の依存関係"
+          }
+        ]
+      },
+      "resolution": {
+        "status": "verified",
+        "techniqueIds": [
+          "maximal-threshold-matching-sweep-dp"
+        ],
+        "reviewedAt": "2026-10-15",
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "固定群を先に監査した不足について、記事・証明・実際のC++全探索比較・特徴からの分岐を追加し、根から再走査した。元の監査時点の分類と停止位置はそのまま保持する。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1069",
+      "title": "Spaceship",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1069",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_dec20.html",
+      "contest": {
+        "name": "USACO 2020 December Contest",
+        "division": "Platinum",
+        "problemNumber": 2,
+        "yearMonth": "2020-12",
+        "exactDateVerified": false
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式結果一覧と原典の大会名で年月と部門を確認。開催日の日単位では未確認。",
+      "difficulty": "USACO Platinum",
+      "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1069",
+      "features": [
+        "有向グラフを移動するたび一つの番号を使い、同じ番号の再使用の間には必ずより大きい番号を使う。",
+        "始点・最初の番号・終点・最後の番号を指定した問い合わせが複数ある。",
+        "歩数を指定せず、合法な移動列と番号列の組の個数を数える。頂点の再訪は許す。"
+      ],
+      "constraints": {
+        "N,K,Q": "1..60",
+        "graph": "有向、自己ループを許し、重複辺はない",
+        "modulus": 1000000007
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "walk-goals"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "walk-goals",
+          "answerLabel": "移動費用・訪れる頂点・辺の通り方"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "higher-label-resets-walk-count",
+        "features": [
+          "有向グラフを移動するたび一つの番号を使い、同じ番号の再使用の間には必ずより大きい番号を使う。",
+          "始点・最初の番号・終点・最後の番号を指定した問い合わせが複数ある。",
+          "歩数を指定せず、合法な移動列と番号列の組の個数を数える。頂点の再訪は許す。"
+        ],
+        "firstMissingGraphId": "graphs-walk-goals",
+        "firstMissingNodeId": "shortest",
+        "reason": "歩数固定、訪問回数の偶奇、全辺一回などの質問は、番号の再使用を大きい番号が復活させる規則に一致しない。固定した歩数も周期的で同じ遷移も仮定できず、行列累乗への到達を正解扱いできない。",
+        "neededTechniqueIds": [
+          "hierarchical-reset-walk-count",
+          "query-endpoint-pseudostates"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "bitmask-dp",
+          "dag-dp",
+          "state-design",
+          "matrix-exponentiation"
+        ],
+        "currentOptions": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "有向グラフを移動するたび一つの番号を使い、同じ番号の再使用の間には必ずより大きい番号を使う。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialAuthor": "Danny Mittal",
+        "method": "最大の番号は一度だけ出るので、その番号を押した場所を中央として前後へ分ける。使える最大番号を一つずつ増やし、左右の到着数の積を足す。問い合わせごとの始終条件を特殊な端点状態へ追加し、計算を共有する。",
+        "implementationRequirements": [
+          "番号上限ごとの二層の端点間個数表。中央の部屋に対応する左右のベクトルを作り、外積を足す。",
+          "問い合わせ用の特殊始点・特殊終点は内部の部屋として移動させず、最初と最後の番号にだけ空列を許す。",
+          "N,K≤小さい値で使用済み番号マスクを持つ独立DPと照合し、同一始終点・自己ループ・最初と最後が同じ番号も検査する。"
+        ],
+        "complexity": "全問い合わせを特殊端点にした公式解説の計算は O(K N (N+Q)^2) 時間。番号層を使い回せば O((N+Q)^2) の主要表。",
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1069",
+          "https://usaco.org/current/data/sol_prob2_platinum_dec20.html"
+        ]
+      },
+      "collectionStatus": "statement-and-official-editorial-verified",
+      "techniqueMappingStatus": "not-registered-until-article-and-flow-are-implemented",
+      "reviewedAt": "2026-10-15",
+      "alternativeRoute": {
+        "entryGraphId": "dp",
+        "choices": [
+          "generation-history",
+          "history"
+        ],
+        "graphId": "dp-state",
+        "nodeId": "constraint",
+        "reason": "履歴設計の入口はあるが、最大番号による左右分割や問い合わせ端点の共有は説明されていない。",
+        "steps": [
+          {
+            "graphId": "dp",
+            "nodeId": "defined",
+            "question": "選び方や分け方の特徴はどれですか？",
+            "answer": "generation-history",
+            "answerLabel": "整数や列の生成・前の値や履歴の条件"
+          },
+          {
+            "graphId": "dp-generation-history",
+            "nodeId": "defined",
+            "question": "選び方や分け方の特徴はどれですか？",
+            "answer": "history",
+            "answerLabel": "どの履歴を残すか決まっていない"
+          }
+        ]
+      },
+      "resolution": {
+        "status": "verified",
+        "techniqueIds": [
+          "hierarchical-reset-walk-count"
+        ],
+        "reviewedAt": "2026-10-15",
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "固定群の監査で見つかった条件を具体的な技巧記事・証明・実MDXのC++独立比較・適用条件の分岐へ反映し、分野の根から再走査した。元の監査結果と停止位置は保持する。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1070",
+      "title": "Cowmistry",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1070",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_dec20.html",
+      "contest": {
+        "name": "USACO 2020 December Contest",
+        "division": "Platinum",
+        "problemNumber": 3,
+        "yearMonth": "2020-12",
+        "exactDateVerified": false
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式結果一覧と原典の大会名で年月と部門を確認。開催日の日単位では未確認。",
+      "difficulty": "USACO Platinum",
+      "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1070",
+      "features": [
+        "候補の非負整数集合が、互いに重ならない閉区間の和として与えられ、全要素を列挙できない。",
+        "異なる三数を順序を区別せず選び、三つの全ての組の XOR が上限以下になるものを数える。"
+      ],
+      "constraints": {
+        "N": "1..20000",
+        "K": "1..10^9",
+        "l_i,r_i": "0..10^9",
+        "intervals": "互いに重ならず、値の昇順",
+        "modulus": 1000000007
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "math",
+      "choices": [
+        "bits-digits",
+        "bit-constraints"
+      ],
+      "steps": [
+        {
+          "graphId": "math",
+          "nodeId": "number-task",
+          "question": "整数や式について何を求めますか？",
+          "answer": "bits-digits",
+          "answerLabel": "桁や AND・OR・XOR の条件"
+        },
+        {
+          "graphId": "math-bits-digits",
+          "nodeId": "number-task",
+          "question": "整数や式について何を求めますか？",
+          "answer": "bit-constraints",
+          "answerLabel": "AND・OR・XOR の等式を満たす整数や列の構築・個数・最適値"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "xor-bounded-triples-from-interval-union",
+        "features": [
+          "候補の非負整数集合が、互いに重ならない閉区間の和として与えられ、全要素を列挙できない。",
+          "異なる三数を順序を区別せず選び、三つの全ての組の XOR が上限以下になるものを数える。"
+        ],
+        "firstMissingGraphId": "bit-constraint-features",
+        "firstMissingNodeId": "goal",
+        "reason": "既存のビット条件の枝は等式、総和、共通XORでの最大値最小化を扱う。全三組のXORに上限を課した三数の計数と、巨大な候補集合の区間表現に対応する枝・実装がない。",
+        "neededTechniqueIds": [
+          "xor-bounded-triples-intervals"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "xor-minimax-bit-partition",
+          "digit-dp",
+          "bitwise-contribution"
+        ],
+        "currentOptions": [
+          {
+            "id": "range-and",
+            "label": "各区間の AND を指定し、その条件を満たす整数列を一つ作る"
+          },
+          {
+            "id": "or-count",
+            "label": "少数の整数について、三つ選んだ OR の等式を満たす列の個数"
+          },
+          {
+            "id": "sum-xor-bound",
+            "label": "和と XOR が等しい二数の組を、和の上限付きで数える"
+          },
+          {
+            "id": "popcounts",
+            "label": "XOR と二数それぞれの 1 ビット数を指定し、二数を作る"
+          },
+          {
+            "id": "bounded-xor",
+            "label": "共通の X に上限を付け、各値との XOR の合計を最大化する"
+          },
+          {
+            "id": "and-sum",
+            "label": "二数の AND と通常の和を同時に指定し、存在を判定する"
+          },
+          {
+            "id": "buy-generators",
+            "label": "値を購入し、買った値の部分集合 XOR で全ての値を作る費用"
+          },
+          {
+            "id": "sum-xor-window",
+            "label": "通常の和と XOR が等しい、連続区間の個数"
+          },
+          {
+            "id": "xor-minimax",
+            "label": "全要素へ同じXORをかけ、変換後の最大値を最小にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "候補の非負整数集合が、互いに重ならない閉区間の和として与えられ、全要素を列挙できない。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialAuthor": "Benjamin Qi",
+        "method": "上限を二冪のブロックへ分けると、三数は同じ大きなブロック内に限られる。同じ半分から三つ選ぶ場合と、一対二で半分をまたぐ場合を分ける。後者は一数に対して相手側で許される数の個数の二項係数を足し、下位ビットと区間の切断で再帰集計する。",
+        "implementationRequirements": [
+          "区間集合のままビットの半分へ切断する再帰と、完全に埋まった二冪ブロックの一括処理。",
+          "一対二の選び方の重複除去、K+1 による≤から<への変換、法の下の二項係数を明記する。",
+          "小さい値域の全三数列挙と比較し、K=2^b−1、区間端をまたぐ場合、区間が連続する場合と隙間がある場合を検査する。"
+        ],
+        "complexity": "公式解説は再帰部分を O(N log K) とし、O(N log^2 K) や O(N log^3 K) の実装も通ると説明。整列や区間の振り分けに使う辞書の費用は別途見積もる。",
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1070",
+          "https://usaco.org/current/data/sol_prob3_platinum_dec20.html"
+        ]
+      },
+      "collectionStatus": "statement-and-official-editorial-verified",
+      "techniqueMappingStatus": "not-registered-until-article-and-flow-are-implemented",
+      "reviewedAt": "2026-10-15",
+      "resolution": {
+        "status": "verified",
+        "techniqueIds": [
+          "xor-bounded-triples-intervals"
+        ],
+        "reviewedAt": "2026-10-15",
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回監査の分類・停止位置は維持。公式条件を再確認し、具体記事・証明・再利用C++20・独立oracleによる比較と別担当レビューを揃えた。問題の特徴から必要条件を確認して根から再走査した。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1092",
+      "title": "Sum of Distances",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1092",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_jan21.html",
+      "contest": {
+        "name": "USACO 2021 January Contest",
+        "division": "Platinum",
+        "problemNumber": 1,
+        "yearMonth": "2021-01",
+        "exactDateVerified": false
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式結果一覧と原典の大会名で年月と部門を確認。開催日の日単位では未確認。",
+      "difficulty": "USACO Platinum",
+      "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1092",
+      "features": [
+        "一つの状態が、複数のグラフから一頂点ずつ選んだ組で表される。",
+        "一手ごとに全グラフで同時に一辺ずつ進み、一部の成分だけ待つ操作はない。",
+        "全成分の始点から、到達できる全ての組への最短距離の総和を求める。組の総数は巨大で列挙できない。"
+      ],
+      "constraints": {
+        "K": "2..50000",
+        "N_i": "2以上",
+        "sum N_i": "100000以下",
+        "sum M_i": "200000以下",
+        "graph": "各因子は連結無向。自己ループを許し、重複辺はない",
+        "modulus": 1000000007
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "walk-goals",
+        "distance"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "walk-goals",
+          "answerLabel": "移動費用・訪れる頂点・辺の通り方"
+        },
+        {
+          "graphId": "graphs-walk-goals",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "distance",
+          "answerLabel": "移動費用や移動回数の最小値"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "synchronous-product-graph-distance-sum",
+        "features": [
+          "一つの状態が、複数のグラフから一頂点ずつ選んだ組で表される。",
+          "一手ごとに全グラフで同時に一辺ずつ進み、一部の成分だけ待つ操作はない。",
+          "全成分の始点から、到達できる全ての組への最短距離の総和を求める。組の総数は巨大で列挙できない。"
+        ],
+        "firstMissingGraphId": "shortest-path",
+        "firstMissingNodeId": "movement",
+        "reason": "既存の移動の質問に、因子グラフを同時に進む直積状態と巨大な全到着組の集計がない。各因子で幅優先探索する一般記事だけでは、歩数の偶奇の整合と到着組の重複補正を解決しない。",
+        "neededTechniqueIds": [
+          "synchronous-product-parity-distance-sum",
+          "groupwise-maximum-sum-cdf-products"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "bfs",
+          "state-design",
+          "contribution",
+          "complement-counting"
+        ],
+        "currentOptions": [
+          {
+            "id": "distance-costs",
+            "label": "移動の費用や、距離を求める始点を扱う"
+          },
+          {
+            "id": "movement-memory",
+            "label": "位置以外に、モード・方向・残り資源を覚える"
+          },
+          {
+            "id": "many-connections",
+            "label": "多数の移動が、区間・集合・共通の費用式で決まる"
+          },
+          {
+            "id": "xor-walk",
+            "label": "辺重みの合計ではなく、XOR を最小にする再訪できる経路"
+          },
+          {
+            "id": "mandatory-edges",
+            "label": "全ての最短路に必要な辺、または一辺を軽くして必須にする最小量"
+          },
+          {
+            "id": "exact-k-cost",
+            "label": "ちょうどK本の辺を使い、移動費用を最小にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "一つの状態が、複数のグラフから一頂点ずつ選んだ組で表される。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialAuthor": "Spencer Compton",
+        "method": "各因子で偶数歩・奇数歩の最短距離を求める。無向辺の往復で二歩ずつ延ばせるため、同じ偶奇にそろえた全成分の所要歩数は最大値になる。偶数の最大値和と奇数の最大値和を足し、両方使える組の大きい方を引く。最大値以下の組数は、因子ごとの距離以下の頂点数の積から集計する。",
+        "implementationRequirements": [
+          "偶奇を二層にした幅優先探索、片方の偶奇が到達不能な頂点の扱い。",
+          "各群から一つずつ選んだ値の最大値の総和を、しきい値以下の個数の積の差分で計算する。",
+          "二部グラフ同士、非二部との混合、自己ループ、到達不能な組を含む小規模積グラフを明示生成し、全幅優先探索と照合する。"
+        ],
+        "complexity": "公式解説の前後の積を分ける集計では O(sum N_i + sum M_i) 時間。積の更新にセグメント木や逆元を使う別案も掲載。",
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1092",
+          "https://usaco.org/current/data/sol_prob1_platinum_jan21.html"
+        ]
+      },
+      "collectionStatus": "statement-and-official-editorial-verified",
+      "techniqueMappingStatus": "not-registered-until-article-and-flow-are-implemented",
+      "reviewedAt": "2026-10-15",
+      "resolution": {
+        "status": "verified",
+        "techniqueIds": [
+          "synchronous-product-parity-distance-sum"
+        ],
+        "reviewedAt": "2026-10-15",
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "固定群を先に監査した不足について、記事・証明・実際のC++全探索比較・特徴からの分岐を追加し、根から再走査した。元の監査時点の分類と停止位置はそのまま保持する。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1093",
+      "title": "Minimum Cost Paths",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1093",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_jan21.html",
+      "contest": {
+        "name": "USACO 2021 January Contest",
+        "division": "Platinum",
+        "problemNumber": 2,
+        "yearMonth": "2021-01",
+        "exactDateVerified": false
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式結果一覧と原典の大会名で年月と部門を確認。開催日の日単位では未確認。",
+      "difficulty": "USACO Platinum",
+      "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1093",
+      "features": [
+        "非常に縦長の格子で、右へ進む費用が現在の行番号の二乗、下へ進む費用が現在の列に与えられた値になる。",
+        "移動は右と下だけで、共通始点から複数の到着マスまでの最小費用を答える。",
+        "全ての行を走査できず、列ごとの費用関数を小さく保存する必要がある。"
+      ],
+      "constraints": {
+        "N": "2..10^9",
+        "M,Q": "2..200000 / 1..200000",
+        "c_y": "1..10^9",
+        "queries": "1≤x≤N, 1≤y≤M"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "grid-arrangements",
+      "choices": [
+        "movement-cycles",
+        "right-down"
+      ],
+      "steps": [
+        {
+          "graphId": "grid-arrangements",
+          "nodeId": "goal",
+          "question": "格子で何を求めますか？",
+          "answer": "movement-cycles",
+          "answerLabel": "経路・収集・全ての使用マスを通る一つの閉路"
+        },
+        {
+          "graphId": "grid-movement-cycles",
+          "nodeId": "goal",
+          "question": "格子で何を求めますか？",
+          "answer": "right-down",
+          "answerLabel": "右・下へ進む経路の個数や、経路上の値"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "convex-grid-cost-quadratic-function-cap",
+        "features": [
+          "非常に縦長の格子で、右へ進む費用が現在の行番号の二乗、下へ進む費用が現在の列に与えられた値になる。",
+          "移動は右と下だけで、共通始点から複数の到着マスまでの最小費用を答える。",
+          "全ての行を走査できず、列ごとの費用関数を小さく保存する必要がある。"
+        ],
+        "firstMissingGraphId": "grid-movement-cycles",
+        "firstMissingNodeId": "path-goal",
+        "reason": "右下経路の枝は障害物の少ない経路数、XOR、稼いで進む最少行動回数だけを分ける。区分二次の凸費用関数を保つ記事はなく、折れ線の実装へそのまま帰着できない。",
+        "neededTechniqueIds": [
+          "convex-piecewise-quadratic-suffix-cap"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "dp-piecewise-linear-cost",
+          "slope-trick",
+          "dp-quadratic-transition",
+          "convex-hull-trick"
+        ],
+        "currentOptions": [
+          {
+            "id": "blocked",
+            "label": "盤面は大きいが、通れないマスが少ない経路数"
+          },
+          {
+            "id": "other",
+            "label": "その他の経路の条件"
+          },
+          {
+            "id": "xor",
+            "label": "通ったマスの値の XOR が指定値になる経路数"
+          },
+          {
+            "id": "earn-before-move",
+            "label": "各場所で稼ぎ、移動費用を払って右・下へ進む最少行動回数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "非常に縦長の格子で、右へ進む費用が現在の行番号の二乗、下へ進む費用が現在の列に与えられた値になる。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialAuthor": "Benjamin Qi",
+        "method": "列までの最小費用を行座標の離散凸関数として持つ。次列へ進むと二乗費用を加え、列内の下移動はその関数の後半の傾きを列の移動費用で打ち切る操作になる。二次式の区間と境界をスタックに保存し、不要な区間を末尾から消す。列順に問い合わせを処理し、座標を二分探索で評価する。",
+        "implementationRequirements": [
+          "区分ごとの二次式と右端を保持し、二次式の加算・後半の直線化・一点評価を実装する。",
+          "離散差分が移動費用を超える最初の行を整数二分探索で求め、同じ傾きや区間長一も扱う。",
+          "小さい全格子DPとの照合、上下費用が増加/減少/同値、行番号10^9付近、64ビット乗算の評価範囲を検査する。"
+        ],
+        "complexity": "公式実装は区間のスタックからの削除を償却し、各列の境界を二分探索、各問い合わせの区間を二分探索する。O(M log N + Q log M) 時間、O(M+Q) 空間を見込める。",
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1093",
+          "https://usaco.org/current/data/sol_prob2_platinum_jan21.html"
+        ]
+      },
+      "collectionStatus": "statement-and-official-editorial-verified",
+      "techniqueMappingStatus": "not-registered-until-article-and-flow-are-implemented",
+      "reviewedAt": "2026-10-15",
+      "alternativeRoute": {
+        "entryGraphId": "dp",
+        "choices": [
+          "placement-time",
+          "cost-function"
+        ],
+        "graphId": "dp-placement-time",
+        "nodeId": "cost-shape",
+        "reason": "費用が差の二乗ではなく、同一変数の二乗追加と傾きの打切り。一般の凸包トリックや折れ線の実装では必要な更新を表せない。",
+        "steps": [
+          {
+            "graphId": "dp",
+            "nodeId": "defined",
+            "question": "選び方や分け方の特徴はどれですか？",
+            "answer": "placement-time",
+            "answerLabel": "位置・移動時間・仕事の実行条件"
+          },
+          {
+            "graphId": "dp-placement-time",
+            "nodeId": "defined",
+            "question": "選び方や分け方の特徴はどれですか？",
+            "answer": "cost-function",
+            "answerLabel": "順に処理し、位置や高さの費用を最小にする"
+          }
+        ]
+      },
+      "resolution": {
+        "status": "verified",
+        "techniqueIds": [
+          "convex-piecewise-quadratic-suffix-cap"
+        ],
+        "reviewedAt": "2026-10-15",
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の分類・停止位置を維持。公式原典と解説を再確認し、離散凸性・境界一致・末尾削除・二分探索の証明と128ビット評価を実装。公開MDXのコードを抽出した21926323比較、別担当の原典・証明・APIレビュー、特徴からの根経路再生を通過した。"
+      }
+    },
+    {
+      "source": "usaco",
+      "problemId": "1094",
+      "title": "Paint by Letters",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1094",
+      "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_jan21.html",
+      "contest": {
+        "name": "USACO 2021 January Contest",
+        "division": "Platinum",
+        "problemNumber": 3,
+        "yearMonth": "2021-01",
+        "exactDateVerified": false
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式結果一覧と原典の大会名で年月と部門を確認。開催日の日単位では未確認。",
+      "difficulty": "USACO Platinum",
+      "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1094",
+      "features": [
+        "色が決まった格子で、同じ色の辺隣接する一つながりを一回で塗れる。上書きはしない。",
+        "指定した部分長方形だけを塗る最少回数を、複数の独立した問い合わせについて求める。",
+        "長方形の外側を通ってつながる同色マスは、一つにまとめられない。"
+      ],
+      "constraints": {
+        "N,M": "1..1000",
+        "Q": "1..1000",
+        "colors": "A..Z",
+        "queries": "固定色格子内の部分長方形。各問い合わせは独立"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "grid-arrangements",
+      "choices": [
+        "color-numbers"
+      ],
+      "steps": [
+        {
+          "graphId": "grid-arrangements",
+          "nodeId": "goal",
+          "question": "格子で何を求めますか？",
+          "answer": "color-numbers",
+          "answerLabel": "色や数を置く条件・選んだマスの外接長方形"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "grid-subrectangle-monochromatic-component-count",
+        "features": [
+          "色が決まった格子で、同じ色の辺隣接する一つながりを一回で塗れる。上書きはしない。",
+          "指定した部分長方形だけを塗る最少回数を、複数の独立した問い合わせについて求める。",
+          "長方形の外側を通ってつながる同色マスは、一つにまとめられない。"
+        ],
+        "firstMissingGraphId": "grid-color-numbers",
+        "firstMissingNodeId": "goal",
+        "reason": "色の配置の枝には行列を二色で共有しない配置の計数などしかなく、固定された色の部分長方形内の連結成分数を答える枝がない。全盤面の成分ラベルの個数だけでは、切断されて分裂する成分を扱えない。",
+        "neededTechniqueIds": [
+          "grid-rectangle-components-euler-boundary"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "prefix-sum",
+          "graph-reduction",
+          "union-find",
+          "frontier-single-cycle"
+        ],
+        "currentOptions": [
+          {
+            "id": "other",
+            "label": "その他の格子の配置・被覆"
+          },
+          {
+            "id": "color-separation",
+            "label": "二色のマスが同じ行・列を使わない配置の個数"
+          },
+          {
+            "id": "bounding-area",
+            "label": "一様に選んだ K マスの、外接長方形の期待面積"
+          },
+          {
+            "id": "neighbor-modulo",
+            "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "色が決まった格子で、同じ色の辺隣接する一つながりを一回で塗れる。上書きはしない。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialAuthor": "Andi Qu, Benjamin Qi, Danny Mittal",
+        "method": "異色セルの境界線と長方形の外周を辺とする平面グラフへ変える。塗り回数は有界面の数なので辺数−頂点数+連結成分数で求める。辺数は二次元累積和で集計する。境界線の各成分の代表点を累積和で仮集計し、長方形の外へ出る成分は外周だけを走査して補正する。",
+        "implementationRequirements": [
+          "格子の角のグラフ、異色境界の連結成分、代表点の二次元累積和を前処理する。",
+          "長方形の境界上の成分を訪問時刻で重複除去し、外周へ吸収される成分を正しく補正する。",
+          "小さい全二色盤面・全長方形を素朴な色別探索と比較し、単色、囲まれた領域、盤面外周、幅一・高さ一、外側だけでつながる色を確認する。"
+        ],
+        "complexity": "公式解説の最初の方法は O(NM+Q(N+M)) 時間。各問い合わせで面積ではなく外周だけを走査する。",
+        "sourceUrls": [
+          "https://usaco.org/index.php?page=viewproblem2&cpid=1094",
+          "https://usaco.org/current/data/sol_prob3_platinum_jan21.html"
+        ]
+      },
+      "collectionStatus": "statement-and-official-editorial-verified",
+      "techniqueMappingStatus": "not-registered-until-article-and-flow-are-implemented",
+      "reviewedAt": "2026-10-15",
+      "resolution": {
+        "status": "verified",
+        "techniqueIds": [
+          "grid-rectangle-components-euler-boundary"
+        ],
+        "reviewedAt": "2026-10-15",
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回監査の分類・停止位置は維持。公式条件を再確認し、具体記事・証明・再利用C++20・独立oracleによる比較と別担当レビューを揃えた。問題の特徴から必要条件を確認して根から再走査した。"
+      }
+    }
+  ]
+}

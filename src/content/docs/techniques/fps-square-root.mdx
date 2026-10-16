@@ -1,0 +1,176 @@
+---
+title: "二乗すると元の列になる係数を、最初の非零項から求める"
+description: "先頭の零を外して平方根の存在を判定し、定数項の根を選んで正しい次数を倍々に伸ばします。"
+techniqueId: fps-square-root
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+係数列 $F$ に対し、$G^2\equiv F\pmod{x^N}$ となる列を一つ求めます。平方を展開して係数を一項ずつ決めると時間 $O(N^2)$ になります。多数の係数が必要なら、既に正しい部分を保ちながら長さを倍にします。
+
+先頭に零がある場合は、いきなり逆数を取れません。最初に非零になる次数と、その係数が平方になるかを確かめます。
+
+## 考え方
+
+$N$ 次未満が全て零なら、答えの一つは零列です。それ以外では、最初の非零項を $a_ex^e$ とします。二乗の最初の非零次数は必ず偶数なので、$e$ が奇数なら解はありません。$e=2s$ なら、
+
+$$F=x^{2s}H,\qquad G=x^sQ$$
+
+と分けます。$H$ の定数項の平方根 $r$ がなければ解なし、あれば $Q=r$ から始めます。先頭 $m$ 項まで正しいとき、
+
+$$Q_{\mathrm{new}}=\frac{Q+H/Q}{2}\pmod{x^{\min(2m,N-2s)}}$$
+
+で伸ばします。$Q(0)=r\ne0$ なので、内部の逆数を計算できます。最後に $s$ 項ずらして、長さ $N$ にします。
+
+例えば $F=x^2+2x^3+x^4$ なら $s=1$、$H=1+2x+x^2$ で、$Q=1+x$、$G=x+x^2$ を得ます。
+
+## 適用条件
+
+係数が奇素数 $p$ の有限体であるとします。$2$ の逆元が必要です。最初の非零係数の平方根が存在することも必要で、非零であるだけでは足りません。標数 $2$ や合成数の法には、この判定と更新をそのまま適用しません。
+
+掲載実装は法 $998244353$、$0\le N\le2^{21}$、入力長も $2^{21}$ 以下です。係数は $[0,p)$ とし、足りない項は零、$N$ 次以上の項は結果に影響しないものとします。範囲外の長さや係数には `invalid_argument` を投げます。入力全体を検査するため、使わない高次項に不正な係数があっても例外になります。
+
+$s>0$ では、$Q$ に必要なのは $N-2s$ 項です。$G$ の高い側の $s$ 項は二乗の先頭 $N$ 項に影響しないため、実装では零にします。平方根が常に二つだけだと考えないようにします。全て零の場合にも、零列以外の根が存在することがあります。
+
+## なぜ正しいか
+
+有限体には零因子がないため、最初の非零項の二乗は消えません。したがって、非零列が平方になるには $e=2s$ と $a_e=r^2$ が必要です。これらを満たすと $H(0)\ne0$ で、選んだ $r$ ごとに後続の係数が定まります。新しい係数には非零の $2r$ が掛かるので、係数比較でも一意に解けます。
+
+今の誤差が $E=Q^2-H$ で、$x^m$ の倍数とします。更新は $Q_{\mathrm{new}}=Q-E/(2Q)$ とも書けるため、
+
+$$Q_{\mathrm{new}}^2-H=\frac{E^2}{4Q^2}$$
+
+です。分母は可逆で、誤差が $x^{2m}$ の倍数になります。これで必要な精度まで更新でき、$x^{2s}$ を掛け直せば元の合同式を満たします。
+
+定数項の根には Tonelli–Shanks 法を使います。この法では $p-1=119\cdot2^{23}$ で、$3$ は平方非剰余です。非零の $a$ に対し、まず $a^{(p-1)/2}=1$ で平方剰余かを判定します。初期値を $t=a^{119}$、$r=a^{60}$、$c=3^{119}$、$m=23$ とすると、$r^2=at$、$c$ の位数は $2^m$、$t$ の位数は $2^{m-1}$ の約数です。
+
+$t\ne1$ なら、$t^{2^i}=1$ となる最小の $1\le i<m$ を探し、$b=c^{2^{m-i-1}}$ として $r\gets rb$、$t\gets tb^2$、$c\gets b^2$、$m\gets i$ とします。$t$ と $b^2$ はともに位数 $2^i$ なので、どちらの $2^{i-1}$ 乗も $-1$ です。その積の位数は $2^{i-1}$ の約数となり、更新後も同じ不変条件を保ちます。$m$ が狭義に減るため停止し、$r^2=at$ を保ったまま $t=1$、すなわち $r^2=a$ が得られます。
+
+## 計算量
+
+入力長を $L$、必要な精度を $N$ とします。検査と先頭の零の走査に $O(L+N)$、倍化する更新全体に $O(N\log N)$ 時間、$O(N)$ 補助空間を使います。定数項の平方根は、素数を変数とすれば $O(\log^2p)$ 時間です。掲載実装では法を固定しています。
+
+各段で逆数を最初から求めても、その段の長さに対して $O(m\log m)$ です。段の長さは倍々に増えるので、全体の計算量は保たれます。変換長の上限には、切り詰める前の積も含めます。
+
+## 実装
+
+`fps_square_root(f,n)` は解がなければ `nullopt`、あればちょうど `n` 項を返します。先頭の零を除いた $H$ の定数項について、二つの平方根のうち小さい整数表現を選びます。畳み込みと逆数の補助関数も含む C++20 のコードです。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> fps_inverse(const vector<int>& f,int n) {
+    assert(0<=n && n<=(1<<21));
+    if(n==0) return {};
+    assert(!f.empty() && f[0]!=0);
+    vector<int> g{ntt998::power(f[0],ntt998::MOD-2)};
+    while(int(g.size())<n) {
+        int m=min(n,2*int(g.size()));
+        vector<int> part(f.begin(),f.begin()+min(m,int(f.size())));
+        auto correction=ntt998::convolution(part,g);
+        correction.resize(m);
+        for(int& x:correction) x=(ntt998::MOD-x)%ntt998::MOD;
+        correction[0]=(correction[0]+2)%ntt998::MOD;
+        g=ntt998::convolution(g,correction);
+        g.resize(m);
+    }
+    return g;
+}
+
+optional<int> scalar_square_root(int a) {
+    using namespace ntt998;
+    if(a==0) return 0;
+    if(power(a,(MOD-1)/2)!=1) return nullopt;
+    int t=power(a,119),r=power(a,60),c=power(3,119),m=23;
+    while(t!=1) {
+        int i=0,value=t;
+        while(value!=1) {value=1LL*value*value%MOD; ++i;}
+        assert(i<m);
+        int b=power(c,1<<(m-i-1));
+        r=1LL*r*b%MOD;
+        c=1LL*b*b%MOD;
+        t=1LL*t*c%MOD;
+        m=i;
+    }
+    return min(r,MOD-r);
+}
+
+optional<vector<int>> fps_square_root(const vector<int>& f,int n) {
+    using namespace ntt998;
+    if(n<0 || n>(1<<21) || f.size()>size_t(1<<21))
+        throw invalid_argument("unsupported series length");
+    for(int a:f) if(a<0 || a>=MOD) throw invalid_argument("coefficient out of range");
+    vector<int> answer(n);
+    int first=0,known=min(n,int(f.size()));
+    while(first<known && f[first]==0) ++first;
+    if(first==known) return answer;
+    if(first%2) return nullopt;
+    auto root=scalar_square_root(f[first]);
+    if(!root) return nullopt;
+    int precision=n-first;
+    vector<int> h(precision);
+    for(int i=0;i<precision && first+i<int(f.size());++i) h[i]=f[first+i];
+    vector<int> q{*root};
+    constexpr int inverse_two=(MOD+1)/2;
+    while(int(q.size())<precision) {
+        int length=min(precision,2*int(q.size()));
+        vector<int> prefix(h.begin(),h.begin()+length);
+        auto quotient=convolution(prefix,fps_inverse(q,length));
+        quotient.resize(length);
+        q.resize(length);
+        for(int i=0;i<length;++i)
+            q[i]=1LL*(q[i]+quotient[i])*inverse_two%MOD;
+    }
+    copy(q.begin(),q.end(),answer.begin()+first/2);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[積を1にする係数列を、誤差を二乗して伸ばす](/flowchartcp/techniques/fps-inverse-newton/) ・ [NTT・畳み込み](/flowchartcp/techniques/ntt/)
+
+## 参考資料
+
+- [Library Checker: 定義と入出力](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/task.md)
+- [Library Checker: 公開参照実装](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/sol/correct.cpp)
+- [Library Checker: 制約](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/info.toml)
+
+<TechniqueReferences techniqueId="fps-square-root" />

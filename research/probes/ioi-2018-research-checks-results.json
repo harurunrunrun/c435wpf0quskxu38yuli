@@ -1,0 +1,42 @@
+{
+  "combo": {
+    "allLegalStringsLength1to8": 13120,
+    "largestQueries": 10,
+    "oracle": "literal longest secret prefix that occurs as substring"
+  },
+  "seats": {
+    "allNonemptyBitmapsUpTo4x4": 74938,
+    "permutations": 1481,
+    "everySwap": 21784,
+    "oracle": "bbox area == cardinality for each label prefix; no corner criterion used by oracle"
+  },
+  "werewolf": {
+    "allConnectedSimpleGraphsN2to5": 771,
+    "allValidQueries": 115398,
+    "oracle": "direct two-form BFS versus two activation trees + Euler rectangles + independent Fenwick sweep"
+  },
+  "doll": {
+    "allTwoTriggerSequencesLength1to8": 510,
+    "maximumN": 200000,
+    "maximumM": 100000,
+    "switchesAtMaximum": 200012,
+    "changesAtMaximum": 3836286,
+    "oracle": "literal toggle state machine until first origin return; exact trigger sequence and every final switch checked"
+  },
+  "highway": {
+    "allConnectedSimpleGraphsN2to5": 771,
+    "allPairsTimesThreeTollSettings": 22563,
+    "maximumQueriesSmall": 7,
+    "maximumSplitCeilLogsAtN90000": 32,
+    "fullQueryBound": 50,
+    "oracle": "Dijkstra on each actual queried A/B weighting; answer pair checked, no shortest-path-tree assumption in oracle"
+  },
+  "meetings": {
+    "allHeightArraysN1to7Values1to3": 3279,
+    "allIntervalQueries": 81192,
+    "allCartesianPrefixEntries": 63084,
+    "equalHeightsIncluded": true,
+    "oracle": "enumerate every meeting site and every participant, take literal intervening maximum; vector DP and one-cross inequality checked"
+  },
+  "seconds": 2.5393610389946843
+}

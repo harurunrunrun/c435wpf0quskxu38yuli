@@ -1,0 +1,82 @@
+---
+title: "最短距離の表から道路を復元するなら、第三の頂点で等号になる辺を除く"
+description: "三角不等式で表の矛盾を検出し、迂回で再現できない距離だけを直接つなぐ。"
+techniqueId: distance-matrix-essential-edges
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+三角不等式で表の矛盾を検出し、迂回で再現できない距離だけを直接つなぐ。
+
+## 使う場面
+
+道路そのものではなく、全ての二地点間の最短距離が与えられる。矛盾の有無を判定し、表の距離を保つために必要な道路だけを選びたい。
+
+## 考え方
+
+全ての三点で
+
+$$d_{ij}\le d_{ik}+d_{kj}$$
+
+を確かめる。一つでも破れたら、$k$ を経由する方が表より短いため復元不能。
+
+表が矛盾しないとき、$i,j$ と異なる $k$ で $d_{ij}=d_{ik}+d_{kj}$ なら、直接の辺 $(i,j)$ は不要。このような $k$ が存在しない組だけを長さ $d_{ij}$ で結ぶ。
+
+等号の検査では $k=i$ と $k=j$ を除く。対角の0を使った自明な等号まで辺の省略理由にすると、全ての辺を失ってしまう。
+
+## 適用条件
+
+無向グラフの有限な全対距離で、対角0、対称、異なる頂点の距離は厳密に正。掲載実装は $1\le N\le300$ の整数表を受け取る。
+
+0距離の異なる頂点を許すと、等号分割の両側が元より短いとは限らず、全ての0辺を一緒に消してしまう。そうした問題では0距離の同値類を先にまとめるなど、別の処理が要る。
+
+## なぜ正しいか
+
+三角不等式が成り立てば、全組を表の距離で結んだ完全グラフは表を実現する。複数の辺による経路も、三角不等式を繰り返し使えば表の距離より短くならない。
+
+第三点の等号がない組では、最短経路に中間頂点を一つでも使うと、その頂点による等号が生じて矛盾する。従って表の長さの直接辺が必要で、これらの長さの合計は下限となる。
+
+省いた組は等号で二つに分けられる。両距離は正で、元の距離より小さいため、距離の昇順に考えれば分割を繰り返して必須辺だけの経路へ到達する。よって必須辺だけで全距離を再現でき、下限の総和を達成する。
+
+## 計算量
+
+候補道路集合ごとに全対距離を求める全列挙は $O(2^{N(N-1)/2}N^3)$ 時間・$O(N^2)$ 空間。三点の比較による方法は $O(N^3)$ 時間、距離表と出力辺に $O(N^2)$ 空間。表の値を辺削除のたびに全対最短距離で確かめ直す必要はない。
+
+## 実装
+
+`restore_minimum_roads` は必要な辺と長さの総和を返し、矛盾した距離表なら `nullopt`。形式が正方行列でなければ例外。辺長は64ビット整数、比較時の加算と総和は128ビット整数で行う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct RestoredRoads {
+    __int128 total=0;
+    vector<tuple<int,int,long long>> edges;
+};
+optional<RestoredRoads> restore_minimum_roads(const vector<vector<long long>>& d) {
+    int n=d.size();if(n<1 || n>300) throw invalid_argument("vertex count");
+    for(const auto& row:d) if(int(row.size())!=n) throw invalid_argument("square matrix required");
+    for(int i=0;i<n;++i) for(int j=0;j<n;++j)
+        if((i==j && d[i][j]!=0) || (i!=j && d[i][j]<=0) || d[i][j]!=d[j][i]) return nullopt;
+    RestoredRoads result;
+    for(int i=0;i<n;++i) for(int j=i+1;j<n;++j) {
+        bool redundant=false;
+        for(int k=0;k<n;++k) if(k!=i && k!=j) {
+            __int128 through=(__int128)d[i][k]+d[k][j];
+            if(through<d[i][j]) return nullopt;
+            if(through==d[i][j]) redundant=true;
+        }
+        if(!redundant) {result.edges.push_back({i,j,d[i][j]});result.total+=d[i][j];}
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder：Restoring Road Network](https://atcoder.jp/contests/abc074/tasks/arc083_b)
+
+<TechniqueReferences techniqueId="distance-matrix-essential-edges" />

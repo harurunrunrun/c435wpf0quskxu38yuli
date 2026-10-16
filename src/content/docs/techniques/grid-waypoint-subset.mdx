@@ -1,0 +1,112 @@
+---
+title: "収集点の少ない迷路は、特別な点間の最短距離だけで訪問集合を持つ"
+description: "全マスと収集集合の積を、始点・収集点・終点の距離表と訪問順の DP へ縮める。"
+techniqueId: grid-waypoint-subset
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+迷路のマス数は大きいが、途中で集める対象は少ない。移動回数の上限内に終点へ着き、訪れた対象数を最大にしたい。全マスと対象の集合を掛けた探索状態を減らす。
+
+## 考え方
+
+始点、$K$ 個の収集点、終点だけを特別な点とする。各点から通常の最短距離探索を行い、特別な点間の距離 $D$ を作る。
+
+収集点の訪問集合を $S$、最後の収集点を $i$ とした最短の移動回数を $dp[S][i]$ とする。
+
+$$dp[S\cup\{j\}][j]\leftarrow\min(dp[S\cup\{j\}][j],dp[S][i]+D_{i,j}).$$
+
+$dp[S][i]+D_{i,G}$ が上限以下なら $|S|$ 個を集めて終点へ着ける。何も集めない場合は始点から終点への距離だけを判定する。
+
+## 適用条件
+
+盤面は静的で、一度収集しても道の通行条件や移動費用は変わらない。通常のマスや収集点は再訪でき、収集済みの点からも自由に移動できる。終点を途中で通った後に移動を続けることも許す。鍵・扉・移動回数ごとの変化があると、距離表を一つに固定できない。
+
+実装は上下左右の一移動一単位、縦横300以下、収集点18以下。始点 `S` と終点 `G` はそれぞれ一つ、収集点 `o`、壁 `#`、通常マス `.`。上限は非負の64ビット整数で受け取り、到達不能なら $-1$ を返す。対象が0個、途中で別の対象を拾う最短路、終点を一度通り過ぎる経路も扱う。
+
+## なぜ正しいか
+
+DP の選んだ訪問順に各点間の最短路をつなぐと、その集合を少なくとも全て集める実際の経路ができる。途中で集合に書かれていない対象を拾っても、得点は増えるだけで移動条件は変わらないので、DP は実現不能な得点を作らない。
+
+逆に、任意の実際の経路で収集点を初めて訪れた順を取り出す。隣り合う特別点間の実際の移動回数は距離表の値以上であり、その順を DP で辿った費用は元の経路以下。従って実際の最適な収集数も DP のどこかで候補になる。この両方向により最大収集数は一致する。
+
+## 計算量
+
+全マスと収集集合の積で探索すると $O(HW2^K)$ 時間・空間。縮約後は距離表の作成に $O((K+2)HW)$ 時間、訪問 DP に $O(K^22^K)$ 時間。補助空間は $O(HW+K^2+K2^K)$。対象数が少ないことが必要で、迷路の大きさだけを根拠に集合 DP を使わない。
+
+## 実装
+
+返り値は終点に着く経路で得られる最大の収集数。距離が上限を超えた状態は、その先も改善しないため遷移しない。
+
+```cpp
+#include <algorithm>
+#include <bit>
+#include <queue>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+int maximum_grid_collectibles(const std::vector<std::string>& board,long long budget) {
+    int h=int(board.size()),w=h?int(board[0].size()):0;
+    if(h<1 || h>300 || w<1 || w>300 || budget<0) throw std::invalid_argument("range");
+    std::vector<std::pair<int,int>> point;std::pair<int,int> start{-1,-1},goal{-1,-1};
+    for(int r=0;r<h;++r) {
+        if(int(board[r].size())!=w) throw std::invalid_argument("row");
+        for(int c=0;c<w;++c) {
+            char ch=board[r][c];
+            if(ch=='o') point.push_back({r,c});
+            else if(ch=='S') {if(start.first!=-1)throw std::invalid_argument("start");start={r,c};}
+            else if(ch=='G') {if(goal.first!=-1)throw std::invalid_argument("goal");goal={r,c};}
+            else if(ch!='.' && ch!='#') throw std::invalid_argument("cell");
+        }
+    }
+    int k=int(point.size());
+    if(k>18 || start.first==-1 || goal.first==-1) throw std::invalid_argument("special points");
+    point.push_back(start);point.push_back(goal);
+    constexpr int INF=1000000000;
+    std::vector<std::vector<int>> distance(k+2,std::vector<int>(k+2,INF));
+    const int dr[4]={-1,1,0,0},dc[4]={0,0,-1,1};
+    for(int source=0;source<k+2;++source) {
+        std::vector<int> cells(h*w,-1);std::queue<int> queue;
+        int first=point[source].first*w+point[source].second;cells[first]=0;queue.push(first);
+        while(!queue.empty()) {
+            int v=queue.front();queue.pop();int r=v/w,c=v%w;
+            for(int dir=0;dir<4;++dir) {
+                int nr=r+dr[dir],nc=c+dc[dir];
+                if(nr<0 || nr>=h || nc<0 || nc>=w || board[nr][nc]=='#') continue;
+                int u=nr*w+nc;if(cells[u]!=-1)continue;cells[u]=cells[v]+1;queue.push(u);
+            }
+        }
+        for(int target=0;target<k+2;++target) {
+            int d=cells[point[target].first*w+point[target].second];
+            if(d>=0) distance[source][target]=d;
+        }
+    }
+    if(distance[k][k+1]==INF || distance[k][k+1]>budget) return -1;
+    int answer=0;unsigned states=1u<<k;
+    std::vector<int> dp(static_cast<std::size_t>(states)*k,INF);
+    for(int i=0;i<k;++i) dp[static_cast<std::size_t>(1u<<i)*k+i]=distance[k][i];
+    for(unsigned mask=1;mask<states;++mask) for(int i=0;i<k;++i) if(mask>>i&1u) {
+        int used=dp[static_cast<std::size_t>(mask)*k+i];
+        if(used==INF || used>budget) continue;
+        if(distance[i][k+1]!=INF && used+distance[i][k+1]<=budget) answer=std::max(answer,std::popcount(mask));
+        for(int j=0;j<k;++j) if(!(mask>>j&1u) && distance[i][j]!=INF) {
+            int next_used=used+distance[i][j];if(next_used>budget)continue;
+            int& next=dp[static_cast<std::size_t>(mask|(1u<<j))*k+j];next=std::min(next,next_used);
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[幅優先探索](/flowchartcp/techniques/bfs/) ・ [bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [AtCoder：E - Pac-Takahashi（原典）](https://atcoder.jp/contests/abc301/tasks/abc301_e)。
+- [AtCoder：E - Pac-Takahashi（公式解説）](https://atcoder.jp/contests/abc301/tasks/abc301_e/editorial)。
+
+<TechniqueReferences techniqueId="grid-waypoint-subset" />

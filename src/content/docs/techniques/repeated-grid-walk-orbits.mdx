@@ -1,0 +1,96 @@
+---
+title: "同じ格子歩行を大量に繰り返すなら、一周期の移動量で軌道と区間に分ける"
+description: "訪問点を平行移動で重なる群に分け、繰返し回数を各群の整数区間の長さに変える。"
+techniqueId: repeated-grid-walk-orbits
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+上下左右の移動列を、実行できないほど多い回数繰り返す。総移動距離ではなく、一度でも訪れた格子点の種類数を知りたい。同じ点を何度訪れるかの重複があるため、一周期の点数に回数を掛けるだけでは足りない。
+
+## 考え方
+
+一周期の移動量を $d=(a,b)$、一周期に訪れる点の集合を $V$ とする。全体は $V,V+d,\ldots,V+(K-1)d$ の和集合。
+
+$d=(0,0)$ なら毎回同じ点だけを訪れる。それ以外では、必要に応じて軸を交換・反転し、$a>0$ にする。各点 $(x,y)$ を
+
+$$q=\left\lfloor\frac xa\right\rfloor,\qquad r=x-qa,\qquad s=y-qb$$
+
+へ分解する。同じ $(r,s)$ の点は、ちょうど $d$ の整数倍だけ離れている。同じ軌道上では点の位置を整数 $q$ 一つで表せる。
+
+一周期の点の位置が $q$ なら、繰返し後は整数区間 $[q,q+K-1]$ を訪れる。軌道ごとに $q$ を整列し、等しい長さの区間の和集合を数える。先頭は $K$ 点、次からは直前の $q$ との差を $g$ として $\min(K,g)$ 点が増える。
+
+## 適用条件
+
+各回の動きが全く同じで、平面に障害物や境界がなく、点の訪問だけを数えること。向きが変わる命令や、訪問状況によって挙動が変わる歩行にはそのまま使わない。
+
+掲載実装は移動列長 $2\times10^5$ 以下、$0\le K\le10^{12}$。$K=0$ では初期点だけを数える。軌道の代表値 $s$ は元の座標より大きくなるため `long long` にする。原点を含め、周期内の重複点も区間の重なりとして除く。
+
+## なぜ正しいか
+
+分解した点は $(x,y)=(r,s)+q(a,b)$ と復元できる。$0\le r<a$ なので、二点が $d$ の整数倍だけ離れていることと $(r,s)$ の一致が同値。従って異なる軌道の訪問点が重なることはない。
+
+同じ軌道では一回の反復で $q$ が1増えるので、各点から生じる位置は連続する $K$ 個の整数である。等長区間を左端順に見ると右端も同じ順に並ぶ。新しい区間の左端が直前と $g$ 離れていれば、新しく増えるのは重ならない末尾の $g$ 点、または区間全体の $K$ 点。よって $\min(K,g)$ を加える操作で全重複を除ける。
+
+## 計算量
+
+移動列の長さを $L$ とする。全反復を実行して集合に入れると、$O(LK\log(LK+1))$ 時間、最大 $O(LK)$ 空間。軌道への分解と整列は $O(L\log(L+1))$ 時間、追加空間 $O(L)$。$K$ の大きさに反復回数は依存しない。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+long long count_repeated_grid_visits(const std::string& moves,long long repetitions) {
+    if(moves.size()>200000 || repetitions<0 || repetitions>1000000000000LL) throw std::invalid_argument("range");
+    std::vector<std::pair<long long,long long>> points={{0,0}};
+    long long x=0,y=0;
+    for(char c:moves) {
+        if(c=='L') --x;else if(c=='R') ++x;else if(c=='U') --y;else if(c=='D') ++y;
+        else throw std::invalid_argument("invalid move");
+        points.emplace_back(x,y);
+    }
+    if(repetitions==0) return 1;
+    long long a=x,b=y;
+    if(a==0 && b==0) {
+        std::sort(points.begin(),points.end());return std::unique(points.begin(),points.end())-points.begin();
+    }
+    bool swap_axes=a==0;
+    if(swap_axes) std::swap(a,b);
+    bool reflect=a<0;if(reflect) a=-a;
+    std::vector<std::tuple<long long,long long,long long>> records;
+    for(auto [u,v]:points) {
+        if(swap_axes) std::swap(u,v);
+        if(reflect) u=-u;
+        long long q=u/a;if(u%a<0) --q;
+        records.emplace_back(u-q*a,v-q*b,q);
+    }
+    std::sort(records.begin(),records.end());long long answer=0,previous_q=0;
+    std::pair<long long,long long> previous_key;bool first=true;
+    for(auto [r,s,q]:records) {
+        auto key=std::pair{r,s};
+        if(first || key!=previous_key) answer+=repetitions;
+        else answer+=std::min(repetitions,q-previous_q);
+        first=false;previous_key=key;previous_q=q;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [半開区間の開始と終了をまとめる](/flowchartcp/techniques/sweep-interval-endpoints/)
+- [余りごとの連鎖で反復文字列を扱う](/flowchartcp/techniques/periodic-match-residue-chains/)
+
+## 参考資料
+
+- [AtCoder — Cleaning Robot](https://atcoder.jp/contests/abc219/tasks/abc219_f)
+- [公式解説](https://atcoder.jp/contests/abc219/editorial/2654)
+
+<TechniqueReferences techniqueId="repeated-grid-walk-orbits" />

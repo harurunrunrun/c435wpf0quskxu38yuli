@@ -1,0 +1,38 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2016_aliens",
+    "title": "宇宙人 (Aliens)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "対角線上に角を持つマス目の正方形で全指定セルを覆う",
+      "高々K枚、重複セルは一度だけ数える面積の最小化",
+      "指定セル1〜10万/盤面一辺1〜100万/座標0始まり、点重複可"
+    ],
+    "entryGraphId": "geometry",
+    "choices": [
+      "enclosing-regions",
+      "point-set-shapes",
+      "diagonal-square-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "diagonal-square-union-cover-monge-penalty-cht"
+    ],
+    "conditions": [
+      "diagonal-cell-squares",
+      "union-at-most-k",
+      "bounds"
+    ],
+    "date": "2016-08-16",
+    "difficulty": null,
+    "publicationDate": "2016-08-16",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

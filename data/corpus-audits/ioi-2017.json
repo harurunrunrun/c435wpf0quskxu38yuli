@@ -1,0 +1,3058 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2017",
+  "title": "IOI2017 本競技全6題の固定初回監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "corpusId": "ioi-2017",
+    "selectedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "indexUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "selectionBeforeTechniqueMatching": true,
+    "scope": "IOI2017 official competition, exactly3tasks on day1 and3 on day2; exclude practice and translation duplicates.",
+    "totalProblems": 6,
+    "selectionRule": "Take every official English task in the two competition-day sections of the Japanese national committee listing. Canonical task IDs and statement URLs are to be confirmed from actual linked originals, not guessed from names.",
+    "records": [
+      {
+        "title": "Nowruz",
+        "day": 1,
+        "sourceDate": "2017-07-30"
+      },
+      {
+        "title": "Wiring",
+        "day": 1,
+        "sourceDate": "2017-07-30"
+      },
+      {
+        "title": "Toy Train",
+        "day": 1,
+        "sourceDate": "2017-07-30"
+      },
+      {
+        "title": "The Big Prize",
+        "day": 2,
+        "sourceDate": "2017-08-01"
+      },
+      {
+        "title": "Simurgh",
+        "day": 2,
+        "sourceDate": "2017-08-01"
+      },
+      {
+        "title": "Ancient Books",
+        "day": 2,
+        "sourceDate": "2017-08-01"
+      }
+    ],
+    "currentSiteBaseline": {
+      "allArticles": 498,
+      "specificTechniques": 420,
+      "graphs": 465,
+      "walks": 519
+    },
+    "sharedRegistration": false,
+    "selectionFile": "/tmp/flowchartcp-ioi2017-selection.json",
+    "selectionSha256": "3b93bcdae6d32392e837c062c3db01d16d991abc2c679b59b17624d82cc2e762",
+    "fixedProblemListComplete": true,
+    "allStatementTaskIdsAndActualLinksVerified": true,
+    "notes": [
+      "selection原本の「ID/URLはこれから確認」は選定時点の注記。本監査では実リンク/各原典ヘッダで全6ID/URLを確認した。",
+      "技巧への適合性で題の入替/母数の縮小をしていない。"
+    ],
+    "fixedBeforeTechniqueSearch": true
+  },
+  "snapshot": {
+    "root": "research/snapshots",
+    "manifestFile": "research/snapshots/ioi-2017-manifest.json",
+    "manifestSha256": "b90b3af7a72cc9c6485662606109f1bea9ac4bb2eef8a643c9b46fd79514beae",
+    "coreRawFileCount": 921,
+    "coreLedgerSha256": "718d89756d8413a1836046b321415fa220edb68718173fb5797039574fa7e71e",
+    "dependencyExtensionFileCount": 571,
+    "allRawFileCount": 1492,
+    "extendedLedgerSha256": "1c2d89f4e92c6dcf6279b26a1a206082331906385f8be2a866e10f50e0765bac",
+    "initialCounts": {
+      "allTechniqueMdx": 498,
+      "flowcharts": 465,
+      "walks": 519,
+      "metadataRecords": 498,
+      "referenceRecords": 519,
+      "specificTechniques": 420,
+      "entryDomains": 15
+    },
+    "primaryFiles": {
+      "data/flows.json": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+      "data/problem-walks.json": "4d0fd03bc210fd47f941af4ba336289d354a9012d9e3238f5b34b3a56b680adb",
+      "data/sources.json": "c21f623232bc680f62603bc52fc6e5b7773930d68e234272494764369d6e8c2d",
+      "src/lib/flow.ts": "9e72450184a8dbb9185164bce5a67a15e9d5565cfcd956d9e761e08cf6b92fe8",
+      "src/lib/flow-layout.ts": "7e8d9ee81e46b86e4f660396580e384727651df11995ab6ec648a7e574544789",
+      "vendor/typescript.cjs": "e4290952f4ea693572645fe2c6a02406ee7bdc9fa4323bb73338bf4b485c6cb8",
+      "scripts/local-modules.mjs": "c8db0ef26b9034d37230aa55e9842605487c449961d306dece491bb92b121327"
+    },
+    "beforeEqualsAfterPerEpoch": true,
+    "originalCoreUnchangedAfterDependencyExtension": true,
+    "extensionEpochNotes": {
+      "filesAdded": 571,
+      "roots": [
+        "vendor",
+        "public"
+      ],
+      "eachFileHashBeforeEqualsAfter": true,
+      "original921LiveChangesAtExtension": [
+        "data/corpus-audits/ioi-2019.json",
+        "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+        "data/coverage-plan.json",
+        "data/coverage-report.json",
+        "data/flows.json",
+        "data/problem-walks.json",
+        "data/references-specific-graph-extensions.json",
+        "data/references-specific-planar-patterns.json",
+        "data/research-ledger.json",
+        "data/sources.json",
+        "data/techniques-specific-graph-extensions.json",
+        "data/techniques-specific-planar-patterns.json"
+      ],
+      "notes": "Original data/src/scripts/tests baseline is immutable even if parent updates live files. Vendor/compiler/public dependencies were then copied and hash-checked as a separate unchanged dependency extension.",
+      "originalCoreRemainsUnchangedInSnapshot": true
+    },
+    "noRetroactiveCountUpdates": true,
+    "originalManifestSha256": "a9e8a03f631af26f183e9c1839b76226f2857bd8d6b8ffb369285c4d7d40d8e0",
+    "allHistoricalRawFilesPermanentlyStored": false,
+    "allHistoricalMdxPermanentlyStored": false,
+    "retainedFullMdxCount": 13,
+    "flowSnapshotFile": "research/snapshots/ioi-2017-flow.json.gz",
+    "techniqueSnapshotFile": "research/snapshots/ioi-2017-technique.json.gz",
+    "walkSnapshotFile": "research/snapshots/ioi-2017-walk.json.gz",
+    "referenceSnapshotFile": "research/snapshots/ioi-2017-reference.json.gz",
+    "sourceSnapshotFile": "research/snapshots/ioi-2017-source.json.gz",
+    "retained-rawSnapshotFile": "research/snapshots/ioi-2017-retained-raw.json.gz",
+    "original-auditSnapshotFile": "research/snapshots/ioi-2017-original-audit.json.gz",
+    "original-probeSnapshotFile": "research/snapshots/ioi-2017-original-probe.py.gz",
+    "original-notesSnapshotFile": "research/snapshots/ioi-2017-original-notes.md.gz",
+    "flowSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+    "techniqueSha256": "56432346cc04f996751bea2bbf5eabf702a34af24a23b98e3acdee954611b6e1",
+    "walkSha256": "4d0fd03bc210fd47f941af4ba336289d354a9012d9e3238f5b34b3a56b680adb",
+    "referenceSha256": "76e8d8f01068c3d478906078b1ccc2a702f98e4f1b4668679cf423d7cb54eda5",
+    "sourceSha256": "c21f623232bc680f62603bc52fc6e5b7773930d68e234272494764369d6e8c2d",
+    "retained-rawSha256": "7a876603dce38e900529c69e94d0a1e229be9a7d79b7301628e7e8076daee252",
+    "original-auditSha256": "112606343ee4912aac10132d0a0e0aea1c062635aa6642acb14a03396379f78e",
+    "original-probeSha256": "18a76ae16bc2ab3ca68dfa3e74672acb57099a9ad6dbb78679735e387a906993",
+    "original-notesSha256": "096921befd3eec4a6e0c5751efe2e35037c32d6be86ed7b590ac034aa92e99a6"
+  },
+  "records": [
+    {
+      "source": "ioi",
+      "problemId": "ioi2017_nowruz",
+      "officialTaskId": "nowruz",
+      "day": 1,
+      "date": "2017-07-30",
+      "datePrecision": "day",
+      "title": "ノウルーズ",
+      "englishTitle": "Nowruz",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-nowruz-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/nowruz.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 1,
+        "date": "2017-07-30",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "固定入力の障害物盤面で残す自由セルを選び、その4近傍誘導グラフを木にする。",
+        "次数1のセルを目標個数以上にし、10個の出力ファイルを提出する。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "rows": "1..1024",
+          "columns": "1..1024",
+          "fixedInputs": 10,
+          "graph": "remaining free cells, every orthogonal adjacency present",
+          "leaf": "degree exactly1; singleton has0 leaves",
+          "scorePerInput": "floor to2 decimals of min(10,10*l/k); full10 when l>=k",
+          "fullScoreExistenceGuaranteed": true,
+          "independentKUpperBound": "not separately stated in the retrieved visible Constraints"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz/nowruz-BRA.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day1/nowruz/ \"m\" \"n\" \"1024\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。",
+        "additionalEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz/nowruz-NOR.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz/nowruz-LVA.pdf"
+        ]
+      },
+      "reviewStatus": "unconfirmed",
+      "verification": "official-editorial-partial-with-unconfirmed-detail",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "fixed-output",
+      "choices": [],
+      "steps": [],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "output-only"
+      ],
+      "initialReached": {
+        "graphId": "fixed-output",
+        "nodeId": "output-result",
+        "type": "result",
+        "title": "固定入力の出力を改善する",
+        "options": [],
+        "techniques": [
+          "output-only"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "fixed-output",
+        "nodeId": "output-result",
+        "type": "result",
+        "title": "固定入力の出力を改善する",
+        "options": [],
+        "techniques": [
+          "output-only"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "output-only"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "fixed-output",
+        "nodeId": "output-result",
+        "type": "result",
+        "title": "固定入力の出力を改善する",
+        "options": [],
+        "techniques": [
+          "output-only"
+        ]
+      },
+      "researchSolutionConfirmed": false,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "induced-grid-tree-single-neighbor-leaf-growth",
+        "features": [
+          "固定入力の障害物盤面で残す自由セルを選び、その4近傍誘導グラフを木にする。",
+          "次数1のセルを目標個数以上にし、10個の出力ファイルを提出する。"
+        ],
+        "firstMissingGraphId": "fixed-output",
+        "firstMissingNodeId": "output-result",
+        "stopNodeType": "result",
+        "reason": "出力ファイル保存の一般記事へ到達するが、残すセルの誘導木性、分岐のある木の葉の局所差分、目標葉数へ向けた探索はない。公式10入力の満点出力も未確認。",
+        "neededTechniqueIds": [
+          "induced-grid-tree-single-neighbor-leaf-growth"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "output-only",
+          "heuristic-path-tail-rollback"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "固定入力の出力を改善する",
+        "proposedFeatureAnswer": "固定入力の障害物盤面で残す自由セルを選び、その4近傍誘導グラフを木にする。",
+        "proposedBranchAt": {
+          "graphId": "fixed-output",
+          "nodeId": "output-result",
+          "question": "固定入力の出力を改善する",
+          "currentOptions": [],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "chosenFullSolutionVerified": false,
+        "method": "未使用自由セルの既存隣接が一つなら誘導木へ追加でき、葉差分は1+[親次数=0]−[親次数=1]。乱択再始動/複数セル拡張は満点保証が未確認。",
+        "complexity": "一セル追加の合法性と葉差分は4近傍でO(1)。固定10入力へ満点となる探索全体の時間/試行回数/出力品質保証は未確認。",
+        "independentProofSupplement": [
+          "非空誘導木に既存隣接がちょうど一つのセルを加えると連結かつ辺数=頂点数−1を保つ。",
+          "次数1を葉とするので、一頂点からの追加では葉が二つ増える。",
+          "固定順/固定開始は2x3障害物なしでも葉2で止まり、葉3の誘導星が存在する。最適性を導かない。"
+        ],
+        "implementationRequirements": [
+          "元の固定10入力を取得できる場合だけ個別に出力合法性/得点を検証する。",
+          "再利用するなら局所状態/削除と復元/乱択seed/目標未達の返却を契約化し、最適性とは区別する。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2017/tasks/day1-nowruz-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/nowruz.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz/nowruz-BRA.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 3,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "公式の固定10入力/満点出力は取得・検査していない。",
+          "Editorialの86点/99+点の経験的手順を100点保証へ拡張する証明はない。"
+        ],
+        "remainingImplementationValidation": [
+          "元の固定10入力を取得できる場合だけ個別に出力合法性/得点を検証する。",
+          "再利用するなら局所状態/削除と復元/乱択seed/目標未達の返却を契約化し、最適性とは区別する。"
+        ],
+        "probeEvidence": {
+          "allNonemptyFreeBoardsH_W1to3": 673,
+          "growthRuns": 673,
+          "exactlyOneNeighborInsertionsChecked": 1254,
+          "nonOptimalFixedOrderRuns": 160,
+          "counterexample": {
+            "h": 2,
+            "w": 3,
+            "freeMask": 28,
+            "greedyMask": 4,
+            "greedyLeaves": 0,
+            "optimalLeaves": 2
+          },
+          "connectedFullGridCounterexample": {
+            "h": 2,
+            "w": 3,
+            "freeMask": 63,
+            "greedyMask": 47,
+            "greedyLeaves": 2,
+            "optimalLeaves": 3
+          },
+          "verified": "Adding a free cell with exactly one existing marked neighbor preserves induced connected acyclicity; leaf delta checked literally including singleton->2vertices. Exact all-subset tree oracle bounds quality.",
+          "unconfirmed": "Official ten output files were not retrieved/solved. This growth method has no full-score guarantee; no invented optimum or 100-point claim."
+        },
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed-with-unconfirmed-full-detail",
+        "solution": "retrieved-partially-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "output-only",
+          "title": "出力のみの問題",
+          "file": "src/content/docs/techniques/output-only.mdx",
+          "sha256": "e0a27c46e2e406c818b5a3e7b1839e400f364012405f28d0055faa78b6eb3a6e",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "save_if_better (Python)",
+          "cppFenceSha256": null,
+          "scopeMismatch": "出力保存と得点改善の管理だけ。誘導木・葉を構築しない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "heuristic-path-tail-rollback",
+          "title": "タイルを一度だけ使う経路は、末尾だけ外して再構築し、失敗したら戻す",
+          "file": "src/content/docs/techniques/heuristic-path-tail-rollback.mdx",
+          "sha256": "627bea3bf001afb2479a8e5e680d5a6cf02d7caf991cea36ae01785bd3072434",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-heuristic.json",
+              "sha256": "ec897654ff74a50b074dab75f4d043dd2fe0f074e7eb1a285c01d1a54dd0da69"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "TilePath",
+          "cppFenceSha256": "63c702e5427cda7ea7a1d3cf8c525597311a501ac17ed875d4cdbcf313fe3c20",
+          "scopeMismatch": "同じtileを二度使わない一本の経路。次数3以上の誘導木や葉最大化を扱わない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 0,
+        "stepsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ]
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2017_wiring",
+      "officialTaskId": "wiring",
+      "day": 1,
+      "date": "2017-07-30",
+      "datePrecision": "day",
+      "title": "配線",
+      "englishTitle": "Wiring",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/wiring.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 1,
+        "date": "2017-07-30",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "直線上の赤点/青点を、各点が少なくとも一本の異色間の線に接続するように結ぶ。",
+        "一つの点を何本にも使えて、全配線長の合計を最小にする。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "redPoints": "1..100000",
+          "bluePoints": "1..100000",
+          "coordinates": "0..1000000000",
+          "allCoordinatesDistinct": true,
+          "eachColorSorted": true,
+          "coverage": "every point degree>=1; no upper degree bound",
+          "returnType": "long long"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf \"100000\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "quantity-goals",
+        "costs",
+        "yes"
+      ],
+      "steps": [
+        {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "quantity-goals",
+          "answerLabel": "割当数量・行列の合計・費用・受取個数を制限する"
+        },
+        {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "costs",
+          "answerLabel": "数量を満たし、割当の費用合計を最小にする"
+        },
+        {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "cost",
+          "question": "流す量を満たした上で、辺の費用の合計を最小にしますか？",
+          "answer": "yes",
+          "answerLabel": "はい"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "min-cost-flow"
+      ],
+      "initialReached": {
+        "graphId": "assignment-quantity-goals",
+        "nodeId": "mincost",
+        "type": "result",
+        "title": "最小費用流",
+        "options": [],
+        "techniques": [
+          "min-cost-flow"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "assignment-quantity-goals",
+        "nodeId": "mincost",
+        "type": "result",
+        "title": "最小費用流",
+        "options": [],
+        "techniques": [
+          "min-cost-flow"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "min-cost-flow"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "assignment-quantity-goals",
+        "nodeId": "mincost",
+        "type": "result",
+        "title": "最小費用流",
+        "options": [],
+        "techniques": [
+          "min-cost-flow"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+        "features": [
+          "直線上の赤点/青点を、各点が少なくとも一本の異色間の線に接続するように結ぶ。",
+          "一つの点を何本にも使えて、全配線長の合計を最小にする。"
+        ],
+        "firstMissingGraphId": "assignment-quantity-goals",
+        "firstMissingNodeId": "mincost",
+        "stopNodeType": "result",
+        "reason": "一般の最小費用流へは到達するが、全点の次数下限を扱うモデル、20万点を密な異色辺なしで処理する同色block DPと線形最小値更新がない。端点を一度だけ使うmatchingの条件も異なる。",
+        "neededTechniqueIds": [
+          "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "matching",
+          "min-cost-flow"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "最小費用流",
+        "proposedFeatureAnswer": "直線上の赤点/青点を、各点が少なくとも一本の異色間の線に接続するように結ぶ。",
+        "proposedBranchAt": {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "currentOptions": [
+            {
+              "id": "pair-goals",
+              "label": "対象を重複して使わずに組を選び、個数・利益・必須の組を求める"
+            },
+            {
+              "id": "place-time-goals",
+              "label": "場所・時刻・商品の条件に従い、行先・担当・割引券を割り当てる"
+            },
+            {
+              "id": "quantity-goals",
+              "label": "割当数量・行列の合計・費用・受取個数を制限する"
+            },
+            {
+              "id": "choice-division-goals",
+              "label": "依存する対象を選ぶ、二つの側に分ける、その他の割当条件"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "異色の隣接同色blockに辺を限り、左へ結ぶprefix/右へ結ぶsuffixの高々一重複でDPする。二つの群のedge-cover費用をprefix/suffix最小へ分けて線形化する。",
+        "complexity": "整列済み赤青列のmerge込みO(n+m)時間・O(n+m)領域。各点の座標は1e9、合計20万で積/費用を64bitにする。これは証明した実装方針で、研究Pythonから完成C++20へは未移設。",
+        "independentProofSupplement": [
+          "三つ以上のblock境界を飛ぶ辺xyは、間の異色点b,aを使うxb+ayへ替えるとa−b>0短くなり全点被覆を保つ。",
+          "同色block内u<vでu右接続/v左接続なら、二辺交換により2(v−u)短縮できる。左右へ結ぶ点の重複は高々一つ。",
+          "左suffix k点/右prefix j点の費用Cは、k>=jならSB−SA+(k−j)b、k<=jならSB−SA+(k−j)a。各点offset一度とmax(k,j)本の隙間が下界で、余剰点を境界最近点へつなぐ星で達成。",
+          "右block始点qについてD[q+j]=min_k(min(D[q−k],D[q−k+1])+C(k,j))。前の解との一重複を二つのDで表す。",
+          "P[k]=min(D[q−k],D[q−k+1])として、k>=jはP[k]+k*b−SA[k]のsuffix最小、k<=jはP[k]+k*a−SA[k]のprefix最小。各blockは高々二境界へ登場する。"
+        ],
+        "implementationRequirements": [
+          "全数値を含むint64 C++20 API・全引数検査・同座標/ソート契約/空配列の扱いを確定する。",
+          "実掲載fenceをliteral全辺部分集合、最大赤青各10万、ASan/UBSanと独立reviewで比較する。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf"
+        ],
+        "statementPageCount": 2,
+        "editorialPageCount": 1,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "全数値を含むint64 C++20 API・全引数検査・同座標/ソート契約/空配列の扱いを確定する。",
+          "実掲載fenceをliteral全辺部分集合、最大赤青各10万、ASan/UBSanと独立reviewで比較する。"
+        ],
+        "probeEvidence": {
+          "allTwoColorSequencesLength2to7TwoCoordinateProfiles": 480,
+          "allBipartiteEdgeSubsets": 701112,
+          "randomLinearVsQuadraticN2to49": 1000,
+          "maximumCombinedN200000Cases": 3,
+          "verified": "Independent literal all-edge-set minimum equals quadratic prefix DP AND new fully-derived linear monochromatic-block prefix/suffix minima DP. Adjacent-block exclusion and one-overlap split prove recurrence; separated-group edge-cover closed form is attained by stars. Three maximum-size exact closed-form families checked.",
+          "unconfirmed": "Production reusable C++20/API/overflow/exception/sanitizer validation has not been performed. The official editorial supplies only the high-level linear DP; explicit recurrence/proof here is an independent supplement."
+        },
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "matching",
+          "title": "二部マッチング",
+          "file": "src/content/docs/techniques/matching.mdx",
+          "sha256": "25d266d7cc24298a888ba8f5ed236d938c8c10c1a442d68d4abf3d431527bf07",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-advanced.json",
+              "sha256": "719e20c22252bd1a8900c3f2b0396a0b289a8ccd0015c517793b86814b78771f"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "bipartite_match",
+          "cppFenceSha256": "0bc93da9f5cb4211bf52d03d7f405f3373f9d4e9319940521fe60a8a0d83b6ad",
+          "scopeMismatch": "端点を共有しない最大本数。原典は各点を何本にも使い、全点次数>=1/長さ最小である。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": true,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "min-cost-flow",
+          "title": "最小費用流",
+          "file": "src/content/docs/techniques/min-cost-flow.mdx",
+          "sha256": "9c541e2d860f9b53cacb8b3e20be1a4696427a637e8d91e964d43218874df42e",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-advanced.json",
+              "sha256": "719e20c22252bd1a8900c3f2b0396a0b289a8ccd0015c517793b86814b78771f"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "MinCostFlow",
+          "cppFenceSha256": "6283480e9820622c2e032b0f3b19de05bf20b93fb964c6735775d834115b5469",
+          "scopeMismatch": "指定流量の明示辺グラフ。原典の次数下限還元/同色block線形化がなく、全赤青組は最大10^10辺になる。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 3,
+        "stepsSha256": "3d70b9ee90f5fbb624aa3a311184c50a28ecd069ad8de97a5aeee7c287b7bcf7",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [
+          {
+            "fromGraphId": "flow-matching",
+            "fromNodeId": "quantity-goals-route",
+            "toGraphId": "assignment-quantity-goals"
+          }
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+          "statementPages": 2,
+          "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+          "editorialPages": 1,
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+          "noticePages": 2,
+          "archiveIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/",
+          "officialDateIndexUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+          "contestDate": "2017-07-30",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "difficulty": null,
+          "originalNumericBoundsVerified": true,
+          "numericEvidenceUrls": [
+            "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf"
+          ],
+          "reproducibleSearchQueries": [
+            "site:ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf \"100000\"",
+            "site:www2.ioi-jp.org/ioi/2017 \"vector\" \"long long\""
+          ],
+          "numericRetrieval": "Read actual official English/JPN/Notice web text, with indexed primary JPN search text restoring bounds missing from English extraction. No PDF image sight claim.",
+          "originalConstraints": {
+            "redPoints": [
+              1,
+              100000
+            ],
+            "bluePoints": [
+              1,
+              100000
+            ],
+            "coordinate": [
+              0,
+              1000000000
+            ],
+            "eachColorSorted": true,
+            "allCoordinatesDistinct": true,
+            "eachPointDegree": ">=1 with no upper bound",
+            "wiringCost": "absolute coordinate difference",
+            "originalReturnType": "int64",
+            "originalGenericApi": "int64 min_total_length(int[] r,int[] b)",
+            "originalSampleAnswer": 10,
+            "officialNoticeTimeSeconds": 1,
+            "officialNoticeMemoryMB": 256
+          },
+          "cppSignatureEvidence": {
+            "primaryStatementGenericSignature": "int64 min_total_length(int[] r,int[] b)",
+            "primaryNoticeMapping": {
+              "int64": "long long",
+              "int[]": "std::vector<int>"
+            },
+            "derivedExactCppSignature": "long long min_total_length(std::vector<int> r,std::vector<int> b)",
+            "primaryCppHeaderRetrieved": false,
+            "primaryHeaderStatus": "official wiring.zip web retrieval timed out; no header bytes claimed",
+            "judgeMirrorPublishedSignatureCorroboration": {
+              "url": "https://dmoj.ca/problem/ioi17p2",
+              "method": "search indexed problem specification shows complete C++ value-vector signature; direct page returned403. Used only as corroboration, not an IOI official statement/solution."
+            },
+            "actualJudgeAttachmentUrl": "https://static.oj.uz/problem/3427a722bc216b49c90cb33529fa01e/attachment/4ecc35fa34a3f6c01577c7b4c37631d02efe498179908df4dab6576cc59af87f/public.zip",
+            "actualJudgeAttachmentStatus": "real link read from judge problem page; web cannot decode application/zip, not downloaded/read",
+            "aoiDistributionRepositoryHas2017": false
+          },
+          "editorialProvenance": "IOI official contest archive links the one-page English(ISC) Editorial. It states adjacent monochromatic clusters and linear prefix DP at high level. The exact one-overlap recurrence/C formulas/two directional minima are independent proof supplements, not quotes from missing source formulas. No personal editorial byline inferred from task author.",
+          "apiContainsEntireOriginalRange": true,
+          "initialAuditResearchPositivePreserved": true,
+          "unconfirmedTechniqueLemmas": []
+        },
+        "notes": "初回6recordsと研究positive4/6・API0/coverage0・旧mincostへの停止と全technicalFindingsを保存し、Wiring行にresolutionのみ追加。隣接block交換・高々一点共有・二群の閉式・二方向最小の線形DP、全原典範囲の完全C++20・adapter・64bit・例外と呼出し独立性を作者/root/別review者で確認。全小辺集合/指数cover/二次DP・最大/通常ASan、独立の最大利得matching還元・全割当失敗と問題特徴の根経路を検証。署名は原典genericと公式Noticeから導出し、headerzip未取得は保持。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2017_train",
+      "officialTaskId": "train",
+      "day": 1,
+      "date": "2017-07-30",
+      "datePrecision": "day",
+      "title": "電車のおもちゃ",
+      "englishTitle": "Toy Train",
+      "statementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 1,
+        "date": "2017-07-30",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。",
+        "無限に充電駅を訪れる側と、やがて電池切れにする側の勝敗を全開始点で求める。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..5000",
+          "M": "N..20000",
+          "outdegree": ">=1",
+          "chargingVertices": ">=1",
+          "selfLoopsAllowed": true,
+          "parallelOrderedArcsAllowed": false,
+          "switch": "chosen only on first visit, then permanent",
+          "battery": "full charge permits N edges; stops on the following edge without charge"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf \"20\" \"5000\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "game-probability",
+      "choices": [
+        "win",
+        "other",
+        "no"
+      ],
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "win",
+          "answerLabel": "二人が最善を選んだときの勝敗"
+        },
+        {
+          "graphId": "game-rules",
+          "nodeId": "ending",
+          "question": "どのように対戦が終わりますか？",
+          "answer": "other",
+          "answerLabel": "その他の終了ルール・合法手"
+        },
+        {
+          "graphId": "game-general",
+          "nodeId": "game",
+          "question": "二人が交互に操作し、勝敗を決めますか？",
+          "answer": "no",
+          "answerLabel": "いいえ"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "state-design"
+      ],
+      "initialReached": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "state-design"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+        "features": [
+          "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。",
+          "無限に充電駅を訪れる側と、やがて電池切れにする側の勝敗を全開始点で求める。"
+        ],
+        "firstMissingGraphId": "game-general",
+        "firstMissingNodeId": "fallback",
+        "stopNodeType": "result",
+        "reason": "所有者が任意に続くので「二人が交互」の問いはnoとなり一般状態設計へ止まる。無限継続を引分にする後退解析やSCCだけでは、充電の反復と永久固定スイッチの勝敗を扱えない。",
+        "neededTechniqueIds": [
+          "buchi-owned-graph-repeated-target-attractor-elimination"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "game-theory",
+          "retrograde-winning-draw",
+          "scc"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "確率と手番の状態を定義する",
+        "proposedFeatureAnswer": "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。",
+        "proposedBranchAt": {
+          "graphId": "game-rules",
+          "nodeId": "ending",
+          "question": "どのように対戦が終わりますか？",
+          "currentOptions": [
+            {
+              "id": "no-move",
+              "label": "必ず有限回で終わり、二者交互で合法手のない側が負ける"
+            },
+            {
+              "id": "immediate-board",
+              "label": "盤面の並びが揃うと即時勝利、埋まったときだけ得点比較"
+            },
+            {
+              "id": "cycle-draw",
+              "label": "合法手がない側が負け、永続する対戦は引分"
+            },
+            {
+              "id": "other",
+              "label": "その他の終了ルール・合法手"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "充電集合へのA-attractorの外側Xと、XへのB-attractorを反復除去する。残存側/除去側それぞれ頂点ごとの固定辺戦略を構成してfirst-visit契約へ戻す。",
+        "complexity": "逆辺/counterで一attractor O(N+M)、高々N回の除去。M>=NよりO(NM)時間・O(N+M)領域。研究probeは集合反復であり、満点速度のqueue/counter APIは未作成。",
+        "independentProofSupplement": [
+          "固定スイッチの走行は有限prefixと単純周期となる。周期に充電駅があれば間隔<=Nで走り続け、なければ停止する。",
+          "A-attractorはA所有の存在条件/B所有の全称条件で充電集合へ到達を強制する。外側XではBがその回の充電を永久回避できる。",
+          "B-attractor(X)を除くと、残存A頂点は一辺以上残り、残存B頂点の全対象辺は残るためtotal graphの不変量を保つ。",
+          "終了時のA側はR外でattractor rankを下げる一辺を固定し、Rからも残存辺を選ぶことで充電を反復する。",
+          "除去側Bは除去回とattractor rankを下げ、最後はその回のX内で充電を避ける。頂点ごとの選択で済むので再訪時の切替は要らない。"
+        ],
+        "implementationRequirements": [
+          "所有者固定/出次数/充電/loop/重複arcを検査する再利用C++20をqueue/counterで実装する。",
+          "全小固定スイッチ/初訪問minimax、N5000/M20000、反復除去最大例、ASan/UBSanと独立reviewを行う。"
+        ],
+        "sourceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 1,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "所有者固定/出次数/充電/loop/重複arcを検査する再利用C++20をqueue/counterで実装する。",
+          "全小固定スイッチ/初訪問minimax、N5000/M20000、反復除去最大例、ASan/UBSanと独立reviewを行う。"
+        ],
+        "probeEvidence": {
+          "allTotalDirectedGraphsN1to3LoopsAllowed": 353,
+          "allOwnerAndNonemptyChargerAssignments": 19318,
+          "randomGraphsN4to8": 400,
+          "literalInitialPositions": 60233,
+          "maximumObservedDeletionRounds": 3,
+          "verified": "Alternating reachability-attractor deletion equals literal extensive first-visit minimax including permanent switches and repeated vertices. Queue/counter implementation would be O(NM), not implemented as a production API here."
+        },
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "game-theory",
+          "title": "Grundy数",
+          "file": "src/content/docs/techniques/game-theory.mdx",
+          "sha256": "a658499d44c87a1a8a1b426b40b329731ab89dbd3d6a7e4af986494307585c7c",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "grundy_dag",
+          "cppFenceSha256": "91889d57f29651b81eaedb8f2511d7d5d16aa864973f2b5a42afdbcbffcda9b5",
+          "scopeMismatch": "公平な有限DAGのnormal play。頂点所有/充電反復/永久固定switchを扱わない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "retrograde-winning-draw",
+          "title": "終了しない対戦は、負け状態から逆向きに勝敗を確定する",
+          "file": "src/content/docs/techniques/retrograde-winning-draw.mdx",
+          "sha256": "c4a68ac2b606580f6e72a475b496a8b269203064118dbef7d0d5609d3ff881f3",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "classify_normal_graph_game",
+          "cppFenceSha256": "9ddf018ea18594eba841f8d1094fc39d0d0f75c2b02c32a63e8a07110e41cd39",
+          "scopeMismatch": "出辺なしを負けとし無限継続をdrawにする。充電反復をA勝ちとする原典と異なる。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": true,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "scc",
+          "title": "強連結成分分解",
+          "file": "src/content/docs/techniques/scc.mdx",
+          "sha256": "6627365000924fe2b24af7d9e9ad4e86b7efb9b7d0f7a0baeebadf8dfa765ca9",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "scc_ids",
+          "cppFenceSha256": "6dfcf6489a538a950556980535c48bba7f749b02691e8495dd2f491787e787c9",
+          "scopeMismatch": "通常の有向到達可能性で、敵対者の全称選択や所有者戦略を表さない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 3,
+        "stepsSha256": "ee01d2e45cc489bd88394f52f71c9b273c80ffe54b863fd9463de013e803f507",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [
+          {
+            "fromGraphId": "game-probability",
+            "fromNodeId": "game-rule-route",
+            "toGraphId": "game-rules"
+          },
+          {
+            "fromGraphId": "game-rules",
+            "fromNodeId": "general-route",
+            "toGraphId": "game-general"
+          }
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "buchi-owned-graph-repeated-target-attractor-elimination"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+          "statementPages": [
+            1,
+            2,
+            3
+          ],
+          "statementReadMethod": "web full PDF text plus official translations indexed search text;visual inspection not claimed",
+          "officialEditorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+          "officialEditorialPages": [
+            1
+          ],
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "officialEditorialProvenance": {
+            "taskIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+            "taskIndexLinkId": 265,
+            "editorialHeader": "IOI2017 Editorials,train,English(ISC)",
+            "problemAuthorNotAssumedToBeEditorialAuthor": true
+          },
+          "solutionVerification": "independent-analysis",
+          "numericBoundsVerified": true,
+          "fullOriginalContractVerified": true,
+          "originalBounds": {
+            "N": [
+              1,
+              5000
+            ],
+            "M": [
+              "N",
+              20000
+            ],
+            "ownerAndChargingValues": [
+              0,
+              1
+            ],
+            "chargingVerticesMin": 1,
+            "outdegreeMin": 1,
+            "selfLoopsAllowed": true,
+            "parallelOrderedArcsAllowed": false,
+            "antiparallelArcsAllowed": true,
+            "endpointRange": "0..N-1",
+            "initialBattery": "fully charged",
+            "fullChargeAllowsEdges": "N",
+            "stopsOnUnchargedNextEdge": "N+1",
+            "switches": "first visit fixes one outgoing arc permanently",
+            "output": "N binary values;1 if A can force infinite running from each start"
+          },
+          "numericEvidence": {
+            "primaryUrls": [
+              "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf",
+              "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf"
+            ],
+            "successfulQueries": [
+              "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf \"20\" \"5000\"",
+              "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf \"1\" \"5000\" \"20000\""
+            ],
+            "retrievedPrimaryText": true,
+            "englishNumericGlyphsPartlyMissing": true,
+            "visualConfirmationClaimed": false,
+            "discardedSupplement": "Prior LUX URL refetch was cache miss;it is not retained as final evidence. Retrieved official TWN text verifies the full conditions."
+          },
+          "callback": {
+            "genericStatementSignature": "int[] who_wins(int[] a,int[] r,int[] u,int[] v)",
+            "cppSignature": "std::vector<int> who_wins(std::vector<int> a,std::vector<int> r,std::vector<int> u,std::vector<int> v)",
+            "cppMappingPrimaryUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+            "cppMapping": "Notice p2:int[] corresponds to std::vector<int>",
+            "signatureEvidenceKind": "statement signature plus official implementation notice type mapping",
+            "officialCppStubBytesRetrieved": false,
+            "callbackTypeVerifiedAtCompileTime": true,
+            "standardInputOutput": "none;return vector"
+          },
+          "sourceLimits": {
+            "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+            "page": 2,
+            "seconds": 2,
+            "memoryMB": 256
+          },
+          "contestDate": "2017-07-30",
+          "datePrecision": "day",
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+          "difficulty": null,
+          "unconfirmedRequiredSourceFacts": [],
+          "unconfirmedRequiredLemmas": []
+        },
+        "notes": "初回6records/statusと研究positive4/6・API0/coverage0・Train停止位置とtechnicalFindings、既存Wiringresolutionを保持し、Trainへresolutionだけ追加。反復到達集合除去、残存total不変量と過去削除辺、両勝者の削除回/順位による固定戦略、永久初訪問と充電N辺の同値を作者/root/独立review者で証明。原典全域C++20とadapterを全小firstvisit・全固定policy・SCC証明器・最大2500回・通常ASan、別の有限充電安全ゲームと全163割当失敗で確認。公式Noticeからの署名導出とstubbytes未取得は区別し、研究reviewの二重加算はしない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2017_prize",
+      "officialTaskId": "prize",
+      "day": 2,
+      "date": "2017-08-01",
+      "datePrecision": "day",
+      "title": "The Big Prize",
+      "englishTitle": "The Big Prize",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/prize.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 2,
+        "date": "2017-08-01",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "位置を質問すると、その箱より高価な箱の左右の個数が返る。種類ごとの個数は前の種類の二乗より多い。",
+        "返答列に整合する配列を適応的に選ぶgraderを相手に、唯一の最上位の箱を満点質問数で探す。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "3..200000",
+          "bestTypeCount": 1,
+          "typeGrowth": "count(type t)>count(type t−1)^2 for t>=2",
+          "askIndex": "0..N−1",
+          "response": "numbers of strictly better prizes on left/right",
+          "adaptiveGrader": true,
+          "hardQueryLimit": 10000,
+          "fullScoreQueries": 5000,
+          "80PointSubtaskScores": [
+            "q<=5000:80",
+            "5000<q<=6000:80−(q−5000)/100",
+            "6000<q<=10000:70"
+          ]
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf \"Constraints\"",
+          "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf \"Questions\" \"5000\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "verification": "official-editorial-partial-with-unconfirmed-detail",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "researchSolutionConfirmed": false,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "rank-count-oracle-equal-level-interval-pruning",
+        "features": [
+          "位置を質問すると、その箱より高価な箱の左右の個数が返る。種類ごとの個数は前の種類の二乗より多い。",
+          "返答列に整合する配列を適応的に選ぶgraderを相手に、唯一の最上位の箱を満点質問数で探す。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "reason": "一般の対話記事まで到達するが、順序のない箱の左右高価数と適応graderに対する探索/最悪5000回の保証はない。単峰評価APIや自由な集合への一対象有無質問と異なる。",
+        "neededTechniqueIds": [
+          "rank-count-oracle-equal-level-interval-pruning"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-fibonacci-maximum",
+          "interactive-bit-group-testing"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "proposedFeatureAnswer": "位置を質問すると、その箱より高価な箱の左右の個数が返る。種類ごとの個数は前の種類の二乗より多い。",
+        "proposedBranchAt": {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "currentOptions": [
+            {
+              "id": "tree-distance",
+              "label": "辺は未知だが、指定した二頂点の木距離"
+            },
+            {
+              "id": "unimodal-value",
+              "label": "隠れた単峰列の、指定位置の値"
+            },
+            {
+              "id": "rectangle-count",
+              "label": "各行列に高々一個の配置の、長方形内の個数"
+            },
+            {
+              "id": "batch-subsets",
+              "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+            },
+            {
+              "id": "navigation",
+              "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+            },
+            {
+              "id": "other",
+              "label": "その他の返答形式・通信条件"
+            },
+            {
+              "id": "changing-color-count",
+              "label": "任意集合の会合で、参加者によって変わる色の種類数"
+            },
+            {
+              "id": "transition-count",
+              "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+            },
+            {
+              "id": "prefix-in-substring",
+              "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+            },
+            {
+              "id": "binary-edge-distances",
+              "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "chosenFullSolutionVerified": false,
+        "method": "返答和で価値を分類する。同価値のi<jでleft[j]−left[i]は内部の厳密に高価な数で、既知分を引いた残数0なら枝を捨てられる。ただし全体の満点質問数は未確認。",
+        "complexity": "局所差分の正当性とN<=20万で最安以外が高々472個であることを確認した。公式効率実装の4759回/必要5000回の探索全体と償却上界は未確認。",
+        "independentProofSupplement": [
+          "価値が上がるごとに正の個数を累積するため、左右和が等しいことと同価値が同値。",
+          "同価値端点i<jでは二つのleftの差が開区間のより高価な数に一致する。",
+          "同じ返答列に整合する全配列でこの等式は不変で、既知の高価な位置を引いて0なら未調査内部にdiamondはない。",
+          "合法な個数列の整数列挙で最安type以外の最大472を得るが、その値だけから5000回を結論しない。"
+        ],
+        "implementationRequirements": [
+          "主な探索順序/分岐を具体化し、全整合補完への正しさと5000回以内を先に証明する。",
+          "証明できるまで完成記事やcoveredにしない。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf"
+        ],
+        "statementPageCount": 4,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "公式4759回という実装の全分岐と最悪回数の独立証明は未完成。",
+          "適応graderの全整合補完を維持する完成callback/API・不正返答契約・全探索は未作成。"
+        ],
+        "remainingImplementationValidation": [
+          "主な探索順序/分岐を具体化し、全整合補完への正しさと5000回以内を先に証明する。",
+          "証明できるまで完成記事やcoveredにしない。"
+        ],
+        "probeEvidence": {
+          "allLegalPrizeSequencesLength3to10": 832,
+          "allPositionPairsCompared": 31294,
+          "allFeasibleMoreExpensiveCountChains": 13098,
+          "maximumNonCheapestPrizesForN200000": 472,
+          "countWitness": [
+            1,
+            4,
+            21,
+            446,
+            198917
+          ],
+          "verified": "Response sum identifies prize level. Equal-level boundary left-count difference is exact number of strictly better prizes in between; zero remaining count safely prunes for every transcript-consistent fixed completion. Count growth is checked with exact integer recursion.",
+          "unconfirmed": "No implementation or independent worst-case proof of the official efficient 4759/required5000-query strategy. Fixed-sequence gap tests do not establish adaptive-grader full-score correctness/budget."
+        },
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed-with-unconfirmed-full-detail",
+        "solution": "retrieved-partially-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "title": "対話問題の質問設計",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "ask_interval example",
+          "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+          "scopeMismatch": "整数通信の一般例。二成分順位返答や全域木共通辺の具体戦略/予算保証はない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "interactive-fibonacci-maximum",
+          "title": "狭義単峰な列を質問するなら、評価点を使い回す間隔で区間を縮める",
+          "file": "src/content/docs/techniques/interactive-fibonacci-maximum.mdx",
+          "sha256": "b3d079b2120e9ce28cc01dd63c81f3e81b43e27da0f52c9e4d734c3029e0599c",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "fibonacci_peak_value",
+          "cppFenceSha256": "a8845dfc0aa16a287ead12a167f56fdd4e824fd769bc172e38af7206c276ae39",
+          "scopeMismatch": "n<=1500の狭義単峰な非負評価値。無秩序の箱列の左右順位数に適用できない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "interactive-bit-group-testing",
+          "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+          "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+          "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "binary_test_groups",
+          "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+          "scopeMismatch": "n<=100、一つの秘密対象へ任意部分集合のyes/noが可能。Prize/Simurghの合法質問とは異なる。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 1,
+        "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "reviewedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "evidenceUrls": [
+            "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+            "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf",
+            "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf",
+            "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+            "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+            "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+            "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+          ],
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "statement": "retrieved-and-reviewed",
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "notes": "2026-10-15に公式原典4頁/公式解説2頁/主催配布SWE・MAC検索本文/Day2NoticeとJP日別一覧を再確認。N3..200000/c1=1/c[t+1]>c[t]^2/適応grader/全履歴に少なくとも一つの合法completion/hard10000・満点5000/二種類subtask1も10000を確認。実header bytes未取得は保持し、generic署名+Notice型対応とsynthetic prize.hによるadapter検査を区別。公式の省略された4759実装は検証済みとせず、独立した中央走査手順を完全証明。D_H(k)の全分岐、最下位以外の返答和26、prefix吸収、二種類fastpath19を合わせ最悪4779問。単一可視実MDX C++20を抽出し通常/ASan+UBSanともgeneric9804568checks/26286API/checksum12118485734290438769、別sourceadapter285071checks/370API/checksum12874631007238081852成功。全合法N3..16配列23807、N3..12の全1966非空adaptive回答分岐/939終端、N200000の72合法completion族から3適応transcript、全13098個数鎖/全524286marked配置、106最大境界/乱択生成を検証。初回unknown/status/全fieldは未変更、後続positiveはroot独立review後のみ、登録前coverage加算なし。 作者/rootとは別の独立reviewで全証明と実fence再現、追加の全容量分割DP・合法補完族の適応transcript・callback/割当faultを確認してから後続positiveを追加。初回unknownや公式省略4759法未確認は書き換えない。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "rank-count-oracle-equal-level-interval-pruning"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+          "statementPages": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "statementReadMethod": "Full primary PDF web text plus official-distributed SWE/MAC indexed numeric/scoring text; no image inspection claimed.",
+          "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/prize.pdf",
+          "numericBoundsVerified": true,
+          "fullOriginalContractVerified": true,
+          "apiContainsEntireOriginalRange": true,
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": false,
+          "officialEditorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+          "officialEditorialPages": [
+            1,
+            2
+          ],
+          "editorialProvenance": {
+            "taskIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+            "header": "IOI2017 Editorials prize English ISC",
+            "authorBylineInferred": false,
+            "verifiedDirection": "Same-level answer sums, rank-count differences and interval pruning.",
+            "omitted4759ImplementationReconstructed": false,
+            "selectedIndependentMethod": "Certain-cheapest threshold26, prefix scan, count-preserving midpoint right scan, D_H(k) induction and optional two-level fast path; upper4779, deterministic.",
+            "independentFullScoreProofDoesNotRelyOnEditorial4759Assertion": true
+          },
+          "originalBounds": {
+            "N": [
+              3,
+              200000
+            ],
+            "bestTypeCount": 1,
+            "typeGrowth": "c[t+1]>c[t]^2",
+            "askIndex": "0..N-1",
+            "reply": "two exact counts of strictly better positions on left and right",
+            "grader": "adaptive;after each answer at least one legal whole sequence remains consistent with every prior answer",
+            "fixedArrayRequired": false,
+            "originalCallbackCalls": "find_best called once",
+            "hardQueryLimit": 10000,
+            "fullScoreQueries": 5000,
+            "subtask1": {
+              "points": 20,
+              "types": 2,
+              "bestCount": 1,
+              "otherCount": "N-1",
+              "queryLimit": 10000
+            },
+            "subtask2": {
+              "points": 80,
+              "additionalConstraints": null,
+              "scoreTable": [
+                {
+                  "questions": "q>10000",
+                  "score": 0,
+                  "verdict": "Wrong Answer"
+                },
+                {
+                  "questions": "6000<q<=10000",
+                  "score": 70
+                },
+                {
+                  "questions": "5000<q<=6000",
+                  "score": "80-(q-5000)/100"
+                },
+                {
+                  "questions": "q<=5000",
+                  "score": 80
+                }
+              ]
+            },
+            "sourceSeconds": 1,
+            "sourceMemoryMB": 1024
+          },
+          "numericEvidence": {
+            "primaryUrls": [
+              "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf",
+              "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf"
+            ],
+            "successfulQueries": [
+              "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf \"Constraints\" \"v\"",
+              "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf \"10000\" \"adaptive\"",
+              "site:ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf \"5000\" \"10000\""
+            ],
+            "recoveredAllFourScoringRows": true,
+            "retrievedPrimaryIndexedText": true,
+            "visualInspectionClaimed": false
+          },
+          "sourceErrata": {
+            "checkedSubtask1QueryLimit": 10000,
+            "initialAuditHardQueryLimit": 10000,
+            "initialAuditNeedsCorrection": false,
+            "initialAuditUnchanged": true,
+            "clarification": "Earlier informal recollection of a30-question subtask1 cap was discarded after directly retrieving SWE/MAC;that value was not in the initial audit. Both original subtasks permit up to10000 calls;full score for the unrestricted80-point subtask requires<=5000."
+          },
+          "callback": {
+            "genericFindBest": "int find_best(int n)",
+            "genericAsk": "int[] ask(int i)",
+            "cppFindBest": "int find_best(int n)",
+            "cppAsk": "std::vector<int> ask(int i)",
+            "primaryTypeMappingUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+            "mapping": "int[] -> std::vector<int>",
+            "officialHeaderBytesRetrieved": false,
+            "signatureDerivedFromGenericStatementAndNotice": true,
+            "syntheticHeaderExplicitlyNotOfficial": true,
+            "adapterUsesDistributedHeaderWhenEnabled": true,
+            "adapterMacro": "PRIZE_ORIGINAL_GRADER",
+            "adapterReplySizeValidated": true,
+            "standaloneGenericLinksWithoutHeader": true,
+            "noStandardInputOutput": true
+          },
+          "sourceLimits": {
+            "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+            "page": 1,
+            "seconds": 1,
+            "memoryMB": 1024
+          },
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+          "sourceDate": "2017-08-01",
+          "datePrecision": "day",
+          "difficulty": null,
+          "unconfirmedRequiredSourceFacts": [],
+          "unconfirmedRequiredLemmas": [],
+          "unconfirmedOptionalSourceDetails": [
+            "Official Solution3 exact4759 implementation/proof remains unreconstructed;the independent4779 method meets the original5000 full-score requirement and does not use that assertion."
+          ]
+        },
+        "notes": "初回6records/status・研究4/6・API0/coverage0・Prize unknownと全停止位置、既存4resolutionsを保持し、後続独立positive1件とresolutionを追加。適応graderの全整合列に対する不変量、個数上界472/26、区間走査の全分岐D_H(k)とprefix吸収、最悪4779質問を完全証明。原典全域C++20・synthetic header adapter、全小合法列/全小適応回答分岐/最大域適応補完族・全個数鎖/marked配置・予算/例外/通常ASanと独立追加検証で解消。実header未取得と公式省略4759法未確認は維持する。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2017_simurgh",
+      "officialTaskId": "simurgh",
+      "day": 2,
+      "date": "2017-08-01",
+      "datePrecision": "day",
+      "title": "Simurgh",
+      "englishTitle": "Simurgh",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 2,
+        "date": "2017-08-01",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "既知の単純連結無向グラフで、隠れた全域木を特定する。",
+        "質問も全域木に限られ、隠れた木との共通辺数が返る。満点は8000回以内。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..500",
+          "M": "N−1..N(N−1)/2",
+          "graph": "connected simple undirected",
+          "hidden": "fixed spanning tree with N−1 edges",
+          "everyQuery": "actual spanning tree, N−1 distinct edge IDs",
+          "response": "number of hidden edges in queried tree",
+          "queryLimits": {
+            "firstThreeSubtasks": 30000,
+            "completeGraphSubtask": 12000,
+            "fullScoreFinalSubtask": 8000
+          }
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf \"8000\"",
+          "site:ioi.te.lv/locations/ioi17/contest \"Simurgh\" \"q\" \"500\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。",
+        "additionalEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-CUB.pdf"
+        ]
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+        "features": [
+          "既知の単純連結無向グラフで、隠れた全域木を特定する。",
+          "質問も全域木に限られ、隠れた木との共通辺数が返る。満点は8000回以内。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "reason": "一般対話へ到達するが、合法な全域木質問で基準辺を分類しforest個数へ変換する手順/葉二分/5990回保証がない。集合yes/noや二重み最短距離への質問とはoracleが異なる。",
+        "neededTechniqueIds": [
+          "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-bit-group-testing",
+          "binary-weight-distance-oracle-edge-split-endpoint-search"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "proposedFeatureAnswer": "既知の単純連結無向グラフで、隠れた全域木を特定する。",
+        "proposedBranchAt": {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "currentOptions": [
+            {
+              "id": "tree-distance",
+              "label": "辺は未知だが、指定した二頂点の木距離"
+            },
+            {
+              "id": "unimodal-value",
+              "label": "隠れた単峰列の、指定位置の値"
+            },
+            {
+              "id": "rectangle-count",
+              "label": "各行列に高々一個の配置の、長方形内の個数"
+            },
+            {
+              "id": "batch-subsets",
+              "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+            },
+            {
+              "id": "navigation",
+              "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+            },
+            {
+              "id": "other",
+              "label": "その他の返答形式・通信条件"
+            },
+            {
+              "id": "changing-color-count",
+              "label": "任意集合の会合で、参加者によって変わる色の種類数"
+            },
+            {
+              "id": "transition-count",
+              "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+            },
+            {
+              "id": "prefix-in-substring",
+              "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+            },
+            {
+              "id": "binary-edge-distances",
+              "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "基準木のfundamental cycle交換差分で基準辺membershipを分類。forestを既知基準辺で全域木へ補完して正解個数を得る。全頂点の星で次数を調べ、残存葉の星部分集合を二分して隠れ木を復元する。",
+        "complexity": "質問<=1+2(N−1)+N+(N−1)ceil(log2(N−1))<=5990<8000。素直なfundamental path走査/DSU補完で局所O(MN+N² logN alpha(N))時間・O(N+M)領域。oracle内部処理を含む完成API測定は未実施。",
+        "independentProofSupplement": [
+          "基準木Tの返答bに対し、非木辺eで作るcycleからfを外すと常に全域木で、返答差=w(e)−w(f)。",
+          "未確定T辺を含むcycleだけ処理。既知anchorがあればw(e)を一回で求め各未知辺を一回ずつ分類する。全未知なら全差分を聞き、非0があれば分類、全部0ならcycle全1が不可能なので全部0。",
+          "各未知T辺の質問は一回、処理cycleは高々N−1、anchorも各cycle一回以下。最後までcycleにないT辺は橋で隠れ木に含まれる。",
+          "任意forest FはT辺の追加で全域木へ拡張でき、追加した既知membershipを引けば一回の合法質問でF内の個数が分かる。",
+          "全incident starはforestなので次数が分かる。残存隠れ木の葉では全候補の正解は一つ、部分星質問の二分を高々ceil(log2(N−1))回行う。",
+          "全N<=500に5990回上界を適用でき、サンプルgraderの30000回へ依存しない。"
+        ],
+        "implementationRequirements": [
+          "forest completionと質問budgetを含む完全C++20 callback/APIを作り、全入力/不整合応答/例外/再呼出しを検証する。",
+          "全小グラフ×全隠れ木、N500/M124750、全actual query合法性、ASan/UBSanと独立reviewを行う。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "forest completionと質問budgetを含む完全C++20 callback/APIを作り、全入力/不整合応答/例外/再呼出しを検証する。",
+          "全小グラフ×全隠れ木、N500/M124750、全actual query合法性、ASan/UBSanと独立reviewを行う。"
+        ],
+        "probeEvidence": {
+          "allConnectedSimpleGraphsN2to5": 771,
+          "everyHiddenSpanningTreeForEveryGraph": 8135,
+          "literalValidSpanningTreeQueries": 108860,
+          "maximumObservedSmallQueries": 17,
+          "N500Cases": [
+            {
+              "kind": "path",
+              "N": 500,
+              "M": 499,
+              "queries": 501,
+              "referenceQueries": 1
+            },
+            {
+              "kind": "complete-star",
+              "N": 500,
+              "M": 124750,
+              "queries": 4987,
+              "referenceQueries": 997
+            },
+            {
+              "kind": "complete-path",
+              "N": 500,
+              "M": 124750,
+              "queries": 5228,
+              "referenceQueries": 997
+            },
+            {
+              "kind": "complete-random",
+              "N": 500,
+              "M": 124750,
+              "queries": 5284,
+              "referenceQueries": 997
+            }
+          ],
+          "allN500UpperBound": 5990,
+          "verified": "Independent reference-tree fundamental-cycle differences classify every reference edge in <=1+2(N-1) queries. A forest can be completed with known reference edges; subtract known contribution to get exact forest count. Star counts give hidden degrees; leaf-star subset bisection recovers the hidden tree. EVERY oracle question explicitly DSU-validated as a spanning tree.",
+          "productionApiValidated": false,
+          "officialEarDecompositionProofClaimed": false
+        },
+        "unconfirmedOptionalSourceDetails": [
+          "公式ear-decomposition圧縮節の詳細証明は未確認。選定したfundamental-cycle手順には使わない。"
+        ],
+        "officialEarDecompositionVerified": false,
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed-with-unconfirmed-full-detail",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "title": "対話問題の質問設計",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "ask_interval example",
+          "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+          "scopeMismatch": "整数通信の一般例。二成分順位返答や全域木共通辺の具体戦略/予算保証はない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "interactive-bit-group-testing",
+          "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+          "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+          "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "binary_test_groups",
+          "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+          "scopeMismatch": "n<=100、一つの秘密対象へ任意部分集合のyes/noが可能。Prize/Simurghの合法質問とは異なる。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "binary-weight-distance-oracle-edge-split-endpoint-search",
+          "title": "辺の重みを変えた最短距離への質問から、未知の二頂点を見つける",
+          "file": "src/content/docs/techniques/binary-weight-distance-oracle-edge-split-endpoint-search.mdx",
+          "sha256": "7209d07782ac116496a224b32d3d6515b77eb0d2271279d6fcb44bb79bc441a0",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-construction.json",
+              "sha256": "9c3e92bab5a9dab85eeae6817f436644d816722caa78294dbcc7e853dc17936f"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "find_binary_weight_hidden_pair",
+          "cppFenceSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715",
+          "scopeMismatch": "二重み辺設定の距離を返す固定二端点oracle。隠れ全域木の共通辺数oracleへ置き換えられない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 1,
+        "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+          "statementPages": [
+            1,
+            2,
+            3
+          ],
+          "statementReadMethod": "web full primary PDF text,official EST indexed search for missing numeric glyphs;no visual inspection claimed",
+          "originalHostUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh.pdf",
+          "originalHostOpenResult": "web cache miss initially;official JP-host English copy read in full and primary-host text returned by targeted search",
+          "originalContractVerified": true,
+          "numericBoundsVerified": true,
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": false,
+          "officialEditorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+          "officialEditorialPages": [
+            1,
+            2
+          ],
+          "editorialProvenance": {
+            "taskIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+            "problemAuthorNotAssumedEditorialAuthor": true,
+            "selectedMethod": "forest completion/degree/leaf peeling from official discussion;general-graph reference classification independently proved with fundamental cycles",
+            "optionalEarDecompositionVerified": false
+          },
+          "originalBounds": {
+            "N": [
+              2,
+              500
+            ],
+            "M": [
+              "N-1",
+              "N(N-1)/2"
+            ],
+            "graph": "connected simple undirected,no loops/no parallel undirected pairs",
+            "edgeIds": "input order0..M-1",
+            "hidden": "fixed spanning tree,N-1 edges",
+            "query": "actual spanning tree,N-1 distinct valid edge IDs",
+            "response": "exact hidden-edge intersection count0..N-1",
+            "queryLimits": {
+              "firstThreeSubtasks": 30000,
+              "completeGraphSubtask": 12000,
+              "fullScoreFinalSubtask": 8000
+            },
+            "sourceSeconds": 3,
+            "sourceMemoryMB": 1024
+          },
+          "numericEvidence": {
+            "url": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+            "successfulQuery": "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf \"500\" \"find_roads\"",
+            "returnedFullConstraintsAndSubtasks": true,
+            "notUsingSampleGrader30000AsFullScoreLimit": true
+          },
+          "callback": {
+            "statementFindRoads": "int[] find_roads(int n,int[] u,int[] v)",
+            "cppFindRoads": "std::vector<int> find_roads(int n,std::vector<int> u,std::vector<int> v)",
+            "statementOracle": "int count_common_roads(int[] r)",
+            "technicalNotePage": 3,
+            "technicalNote": "C++ and Pascal pass r by reference for efficiency;grader does not change r",
+            "cppArrayMappingUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+            "cppArrayMapping": "int[] -> std::vector<int>",
+            "officialHeaderBytesRetrieved": false,
+            "oracleConstQualificationVerified": false,
+            "headerUsingAdapterDoesNotRequireAssumingConstQualification": true,
+            "adapter": "SIMURGH_ORIGINAL_GRADER includes distributed simurgh.h,then passes mutable local vector lvalue",
+            "syntheticTestHeaders": [
+              "int count_common_roads(const vector<int>&)",
+              "int count_common_roads(vector<int>&)"
+            ],
+            "syntheticHeadersNotClaimedOfficial": true,
+            "noStandardInputOutput": true
+          },
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+          "sourceDate": "2017-08-01",
+          "datePrecision": "day",
+          "difficulty": null,
+          "unconfirmedRequiredSourceFacts": [],
+          "unconfirmedRequiredLemmas": [],
+          "unconfirmedOptionalSourceDetails": [
+            "公式ear-decomposition圧縮節の詳細証明は未確認。選定したfundamental-cycle手順には使わない。"
+          ]
+        },
+        "notes": "初回6records/statusと研究positive4/6・API0/coverage0・Simurgh旧停止位置とtechnicalFindings、既存Wiring/Train/Books resolutionsを保持し、Simurghへresolutionだけ追加。基準木の基本閉路交換、全零なら閉路全辺0、残存未知橋1、森補完と次数/葉復元、最悪5990回を作者/root/独立review者で証明。原典全域C++20を全小グラフ全秘密木・全actual合法質問・最大N500/M124750・通常ASanと、別leafstrip/coherent transcript/全予算・callback例外・割当失敗で確認。元header未取得とsynthetic2参照署名、公式ear分解の任意未確認は区別して維持、研究reviewを二重加算しない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2017_books",
+      "officialTaskId": "books",
+      "day": 2,
+      "date": "2017-08-01",
+      "datePrecision": "day",
+      "title": "古文書",
+      "englishTitle": "Ancient Books",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/books.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 2,
+        "date": "2017-08-01",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "一冊だけ持って直線棚の本を置換し、開始位置へ戻るまでの歩行距離を最小にする。",
+        "順列cycleの運搬下界と、実際に触れたcycleの区間閉包を利用する。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..1000000",
+          "s": "0..N−1",
+          "p": "permutation of0..N−1",
+          "heldCapacity": 1,
+          "operations": "pick up, swap held/current book, put down into empty slot",
+          "chargedCost": "adjacent walking only; return to initial s",
+          "finalApi": "long long minimum_walk(int[] p,int s)",
+          "finalSubtaskScores": [
+            12,
+            10,
+            28,
+            20,
+            30
+          ]
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day2/books \"Constraints\" \"000\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "sequence-changes",
+        "reorder-cost"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "sequence-changes",
+          "answerLabel": "列の並び・各値・巡回位置を変えて目標の形にする"
+        },
+        {
+          "graphId": "range-sequence-changes",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "reorder-cost",
+          "answerLabel": "列の要素を移動して並べ替える費用の最小値"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "range-sequence-changes",
+        "nodeId": "reorder-operation",
+        "type": "question",
+        "title": "列を変えるとき、どの操作を使えますか？",
+        "options": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "originalRootReached": {
+        "graphId": "range-sequence-changes",
+        "nodeId": "reorder-operation",
+        "type": "question",
+        "title": "列を変えるとき、どの操作を使えますか？",
+        "options": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "range-sequence-changes",
+        "nodeId": "reorder-operation",
+        "type": "question",
+        "title": "列を変えるとき、どの操作を使えますか？",
+        "options": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+        "features": [
+          "一冊だけ持って直線棚の本を置換し、開始位置へ戻るまでの歩行距離を最小にする。",
+          "順列cycleの運搬下界と、実際に触れたcycleの区間閉包を利用する。"
+        ],
+        "firstMissingGraphId": "range-sequence-changes",
+        "firstMissingNodeId": "reorder-operation",
+        "stopNodeType": "question",
+        "reason": "並べ替え費用の質問に一冊の運搬と開始点へ戻る歩行の選択肢がない。任意交換回数や木辺交換の構築は原典の操作/費用を保存しない。",
+        "neededTechniqueIds": [
+          "permutation-cycle-interval-closure-two-sided-walk-greedy"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "permutation-cycle-minimum-swaps",
+          "permutation-tree-leaf-fix"
+        ],
+        "currentOptions": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "列を変えるとき、どの操作を使えますか？",
+        "proposedFeatureAnswer": "一冊だけ持って直線棚の本を置換し、開始位置へ戻るまでの歩行距離を最小にする。",
+        "proposedBranchAt": {
+          "graphId": "range-sequence-changes",
+          "nodeId": "reorder-operation",
+          "question": "列を変えるとき、どの操作を使えますか？",
+          "currentOptions": [
+            {
+              "id": "move-position",
+              "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+            },
+            {
+              "id": "swap-and-adjust",
+              "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "運搬下界D=sum|i−p[i]|に、実際のcycle頂点を含む区間閉包の外へ出る往復費用を加える。両側で最初の反対側拡張cycleまでの費用を比べ、安い側から同じ閉包へ合流する。",
+        "complexity": "cycle分解と新規境界位置だけの走査によりO(N)時間・O(N)領域。D/答えはTheta(N²)になり得るので64bit。probeの明示小閉包/区間DPは原典100万の完成線形APIではない。",
+        "independentProofSupplement": [
+          "各本の移動距離和Dは下界で、cycleを持ち回りすればそのcycleの下界を達成する。通過した他cycleの実頂点で一時的に処理を挟める。",
+          "閉包は現在区間内に実際の頂点を持つcycleを取り込む。単に外接区間が重なるだけでは無効で、p=[2,1,0],s=1の答えは4でなく6。",
+          "閉包外へ一歩広げて戻る非本質的歩行は2必要。左右選択を区間DPで表せる。",
+          "左右で初めて反対側へ拡張するcycleは片側だけ存在することはなく、どちらから触れても両cycleを同じ閉包へ取り込める。費用min(cL,cR)を選ぶ交換が安全。",
+          "両側でそのcycleが無ければ外側の左右費用は両方必要。新規境界のみ走査すれば各位置は定数回で償却線形。"
+        ],
+        "implementationRequirements": [
+          "最終minimum_walkへ適合する線形C++20 APIと不正順列/開始点/64bit/再呼出し契約を作る。",
+          "実fenceを一冊物理状態0-1BFS、N100万の境界/最大答え、ASan/UBSanと独立reviewで照合する。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 15,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "最終minimum_walkへ適合する線形C++20 APIと不正順列/開始点/64bit/再呼出し契約を作る。",
+          "実fenceを一冊物理状態0-1BFS、N100万の境界/最大答え、ASan/UBSanと独立reviewで照合する。"
+        ],
+        "probeEvidence": {
+          "allPermutationsN1to6AllStarts": 5039,
+          "literalPickupSwapPutdownAdjacentMoveStates": 201602,
+          "verified": "Full reversible 0-1 state shortest paths equal interval-cycle closure DP and author greedy comparing first cross-boundary cycle reach costs. Probe uses explicit small closures, not a linear-time production implementation.",
+          "productionApiValidated": false,
+          "numericBoundsSource": "Final contest KOR statement n<=1000000, NOT old Library editorial draft subtask table/API."
+        },
+        "editorialProvenance": "公式アーカイブがEditorialとして実リンクするDaniel Graf署名のLibrary旧稿15頁。booksort(N,S,order)、旧6小課題/旧上限と本選minimum_walk(p,s)/5小課題を区別。同一一冊運搬モデルの証明/掲載実装を独立補足と照合し、原典数値は最終KOR/ISCだけから確認。",
+        "oldDraftApi": "booksort(N,S,order)",
+        "finalApi": "minimum_walk(p,s)"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "permutation-cycle-minimum-swaps",
+          "title": "任意の二箇所を交換できる順列は、値の現在位置を持って直す",
+          "file": "src/content/docs/techniques/permutation-cycle-minimum-swaps.mdx",
+          "sha256": "6e9b243e06e4abce90cae9e058eebcebdf7e3c949c94a6b45754b1b23188ad7e",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-construction.json",
+              "sha256": "9c3e92bab5a9dab85eeae6817f436644d816722caa78294dbcc7e853dc17936f"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "sort_permutation_swaps",
+          "cppFenceSha256": "7b44bb1108173e6b6f4e04b406b52b5061b04b4a61f68092ad804b1e7c7092c8",
+          "scopeMismatch": "任意二位置の交換回数を最小化。一冊を持つ歩行距離と開始位置への帰還を扱わない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": true,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "permutation-tree-leaf-fix",
+          "title": "交換できる位置対が限られるなら、木の葉から目的の値を固定する",
+          "file": "src/content/docs/techniques/permutation-tree-leaf-fix.mdx",
+          "sha256": "91a62c8961cd8e73c3d05112e35f500940602c898f216c85ce68bd867a72e5a9",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-construction.json",
+              "sha256": "9c3e92bab5a9dab85eeae6817f436644d816722caa78294dbcc7e853dc17936f"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "sort_permutation_on_edges",
+          "cppFenceSha256": "bc1dbd242346c525df0f8b7d256cf38a1506116eb85ab15eab44bf08a973f494",
+          "scopeMismatch": "許可辺での交換列の構築。元の一冊運搬操作でもその距離の最適化でもない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 2,
+        "stepsSha256": "5921b1b3868a8b4667a6293b4f419c38ab6395660f7c19f8e643d90788b32f74",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [
+          {
+            "fromGraphId": "ranges",
+            "fromNodeId": "sequence-changes-route",
+            "toGraphId": "range-sequence-changes"
+          }
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "permutation-cycle-interval-closure-two-sided-walk-greedy"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回6records/status、研究positive4/6・API0/coverage0、Books停止位置とtechnicalFindings、既存Wiring/Train resolutionsを保持し、Booksへresolutionだけ追加。最終原典と旧Library稿のAPI/制約を区別。実頂点によるサイクル閉包、切れ目ごとの追加費用下界、左右の最初の橋の共通閉包と線形償却を作者/root/別review者で証明。全小の物理0-1BFS・別指数/全intervalDP、独立有向全域木oracle、原典100万・通常ASan+UBSanと割当失敗で検証。実配布header未取得は維持し研究reviewの二重加算をしない。",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+          "statementPages": 3,
+          "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+          "editorialPages": 15,
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+          "noticePages": 1,
+          "archiveIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/",
+          "officialDateIndexUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+          "contestDate": "2017-08-01",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "difficulty": null,
+          "originalNumericBoundsVerified": true,
+          "numericEvidenceUrls": [
+            "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+            "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-MNG.pdf"
+          ],
+          "reproducibleSearchQueries": [
+            "site:ioi.te.lv/locations/ioi17/contest/day2/books \"Constraints\" \"000\""
+          ],
+          "numericRetrieval": "Read official ISC/Notice text and primary archive KOR/MNG indexed search text restoring numeric extraction loss. No unread PDF image sight claim.",
+          "originalConstraints": {
+            "N": [
+              1,
+              1000000
+            ],
+            "start": "0..N−1",
+            "p": "permutation of0..N−1, p[i] is initial book label and its destination position",
+            "heldCapacity": 1,
+            "freeOperations": [
+              "pick up when empty-handed",
+              "swap held/current books",
+              "put down into empty position"
+            ],
+            "cost": "absolute difference of positions walked; finish at same initial position",
+            "originalGenericApi": "int64 minimum_walk(int[] p,int s)",
+            "sample": {
+              "p": [
+                0,
+                2,
+                3,
+                1
+              ],
+              "s": 0,
+              "answer": 6
+            },
+            "finalSubtaskScores": [
+              12,
+              10,
+              28,
+              20,
+              30
+            ],
+            "officialNoticeTimeSeconds": 2,
+            "officialNoticeMemoryMB": 1024
+          },
+          "cppSignatureEvidence": {
+            "primaryStatementGenericSignature": "int64 minimum_walk(int[] p,int s)",
+            "primaryNoticeMapping": {
+              "int64": "long long",
+              "int[]": "std::vector<int>",
+              "int": "int"
+            },
+            "derivedExactCppSignature": "long long minimum_walk(std::vector<int> p,int s)",
+            "primaryCppHeaderRetrieved": false,
+            "primaryHeaderStatus": "No official books.zip/header bytes retrieved or claimed. Exact C++ adapter is derived from final generic statement and primary Day2 Notice, not guessed from old draft."
+          },
+          "editorialProvenance": {
+            "distribution": "Official IOI2017 contest archive links this 15-page PDF as Editorial.",
+            "signedAuthor": "Daniel Graf",
+            "documentTitle": "Library",
+            "oldApi": "booksort(N,S,order)",
+            "oldCppApi": "long long int booksort(int N,int S,vector<int> order)",
+            "oldSubtaskCount": 6,
+            "oldBoundsNotUsedForFinalCoverage": true,
+            "finalTaskApi": "minimum_walk(p,s)",
+            "finalSubtaskCount": 5,
+            "relevantPages": "12–14 describe interval closure and give the linear two-sided first-cross reference implementation.",
+            "independentSupplements": [
+              "Use actual cycle vertices, not hull-overlap, for initial/free activation.",
+              "Per-cut extra-crossing lower bound and insertion construction give equivalence to paid interval steps.",
+              "Closest left/right bridge vertices give the same idempotent closure, justifying min; absent bridges require both side costs.",
+              "Trial union closes over every scanned vertex, so newly scanned boundary positions are never revisited in later rounds."
+            ]
+          },
+          "apiContainsEntireOriginalRange": true,
+          "initialAuditResearchPositivePreserved": true,
+          "unconfirmedTechniqueLemmas": []
+        }
+      }
+    }
+  ],
+  "status": {
+    "fixedProblemListComplete": true,
+    "firstPassAuditComplete": true,
+    "fixedCorpusResearchComplete": false,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "numericBoundsVerifiedCount": 6,
+    "numericBoundsUnconfirmedCount": 0,
+    "officialEditorialRetrievedCount": 6,
+    "officialEditorialVerifiedCount": 3,
+    "solutionReviewedCount": 4,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 4,
+    "unconfirmedCount": 2,
+    "unavailableCount": 0,
+    "unconfirmedPrincipalDetailsCount": 2,
+    "fullImplementationValidatedCount": 0,
+    "articleResolutionComplete": false,
+    "firstPassAuditCompleteDefinition": "選定済み全6題の原典/数値/資料取得/主要補題の確認状況/初回停止位置を記録。未確認2題を残す。",
+    "fixedCorpusResearchCompleteDefinition": "固定6題の原典全域の選定手順と主要補題が全て確認できた時だけtrue。Nowruz満点出力とPrize満点質問数が未確認なのでfalse。",
+    "articleResolutionNotes": "研究確認4/6、完成記事/API/原典walk/coverage0/6。既存汎用記事をcoveredへ数えない。"
+  },
+  "classificationDefinitions": {
+    "covered": "原典全域を含む完成記事/API/検証と特徴経路がある。今回0件。",
+    "missing-technique": "選定した全解法の主要補題は確認したが、細かな技巧記事と完成再利用APIがない。",
+    "unconfirmed": "満点に必要な主要補題/成果物/予算が未確認。局所補題を検証しても解消しない。",
+    "missing-route": "完成技巧はあるが原典の特徴で到達できない。今回0件。"
+  },
+  "materials": {
+    "problemIndexUrls": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "https://ioi.te.lv/locations/ioi17/contest/"
+    ],
+    "allPrimaryStatementsReadBeforeTechniqueMapping": true,
+    "allEditorialsRetrievedBeforeTechniqueMapping": true,
+    "difficultyPolicy": "unknown numeric difficulty null; IOI main competition division stored separately",
+    "sourceProvenance": "主催/国委員会/IOI公式履歴配布のみ。Books旧稿と最終原典を区別。数値検索の具体URL/queryは各recordへ保存。",
+    "problemTextReproduced": false
+  },
+  "limits": [
+    "全世界/他年度の網羅を主張しない。対象は技巧照合前に固定した6題だけ。",
+    "Nowruzの満点10出力とPrizeの5000回戦略は未確認。",
+    "Simurgh公式ear-decompositionの未確認は、別の全域手順の確認と区別する。",
+    "研究Python/checkerの成功を完成API/ASan実績へ読み替えない。",
+    "後時点vendor/public拡張を初回coreの同一時点取得とは呼ばない。"
+  ],
+  "validation": {
+    "manualCommand": "python3 research/probes/ioi-2017-research-checks.py [optional-new-output.json]",
+    "probeFile": "research/probes/ioi-2017-research-checks.py",
+    "probeSha256": "9377be37621997f5c06c996cab3c1c6fc54b06da72bea58ea27fa50bbdf5eefa",
+    "probeOutputFile": "research/probes/ioi-2017-initial-probe-results.json",
+    "probeOutputSha256": "0dd485bd81d30093e810a17dc582fec023eed2b537ca21716b39db4fe26ed41a",
+    "checks": {
+      "scope": "fixed IOI2017 six competition tasks; limited independent research checks, not completed article/API tests",
+      "productionImplementationValidated": false,
+      "baseline": {
+        "rawFilesVerified": 1492,
+        "allMdx": 498,
+        "graphs": 465,
+        "walks": 519,
+        "entryDomains": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ]
+      },
+      "routes": {
+        "nowruz": {
+          "entryGraphId": "fixed-output",
+          "choices": [],
+          "steps": [],
+          "initialReached": {
+            "graphId": "fixed-output",
+            "nodeId": "output-result",
+            "type": "result",
+            "title": "固定入力の出力を改善する",
+            "options": [],
+            "techniques": [
+              "output-only"
+            ]
+          },
+          "routeTransitions": [],
+          "stepsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wiring": {
+          "entryGraphId": "flow-matching",
+          "choices": [
+            "quantity-goals",
+            "costs",
+            "yes"
+          ],
+          "steps": [
+            {
+              "graphId": "flow-matching",
+              "nodeId": "purpose",
+              "question": "対応や割当について、どの条件の答えを求めますか？",
+              "answer": "quantity-goals",
+              "answerLabel": "割当数量・行列の合計・費用・受取個数を制限する"
+            },
+            {
+              "graphId": "assignment-quantity-goals",
+              "nodeId": "purpose",
+              "question": "対応や割当について、どの条件の答えを求めますか？",
+              "answer": "costs",
+              "answerLabel": "数量を満たし、割当の費用合計を最小にする"
+            },
+            {
+              "graphId": "assignment-quantity-goals",
+              "nodeId": "cost",
+              "question": "流す量を満たした上で、辺の費用の合計を最小にしますか？",
+              "answer": "yes",
+              "answerLabel": "はい"
+            }
+          ],
+          "initialReached": {
+            "graphId": "assignment-quantity-goals",
+            "nodeId": "mincost",
+            "type": "result",
+            "title": "最小費用流",
+            "options": [],
+            "techniques": [
+              "min-cost-flow"
+            ]
+          },
+          "routeTransitions": [
+            {
+              "fromGraphId": "flow-matching",
+              "fromNodeId": "quantity-goals-route",
+              "toGraphId": "assignment-quantity-goals"
+            }
+          ],
+          "stepsSha256": "3d70b9ee90f5fbb624aa3a311184c50a28ecd069ad8de97a5aeee7c287b7bcf7"
+        },
+        "train": {
+          "entryGraphId": "game-probability",
+          "choices": [
+            "win",
+            "other",
+            "no"
+          ],
+          "steps": [
+            {
+              "graphId": "game-probability",
+              "nodeId": "game-objective",
+              "question": "手番や確率について何を求めますか？",
+              "answer": "win",
+              "answerLabel": "二人が最善を選んだときの勝敗"
+            },
+            {
+              "graphId": "game-rules",
+              "nodeId": "ending",
+              "question": "どのように対戦が終わりますか？",
+              "answer": "other",
+              "answerLabel": "その他の終了ルール・合法手"
+            },
+            {
+              "graphId": "game-general",
+              "nodeId": "game",
+              "question": "二人が交互に操作し、勝敗を決めますか？",
+              "answer": "no",
+              "answerLabel": "いいえ"
+            }
+          ],
+          "initialReached": {
+            "graphId": "game-general",
+            "nodeId": "fallback",
+            "type": "result",
+            "title": "確率と手番の状態を定義する",
+            "options": [],
+            "techniques": [
+              "state-design"
+            ]
+          },
+          "routeTransitions": [
+            {
+              "fromGraphId": "game-probability",
+              "fromNodeId": "game-rule-route",
+              "toGraphId": "game-rules"
+            },
+            {
+              "fromGraphId": "game-rules",
+              "fromNodeId": "general-route",
+              "toGraphId": "game-general"
+            }
+          ],
+          "stepsSha256": "ee01d2e45cc489bd88394f52f71c9b273c80ffe54b863fd9463de013e803f507"
+        },
+        "prize": {
+          "entryGraphId": "interactive-oracles",
+          "choices": [
+            "other"
+          ],
+          "steps": [
+            {
+              "graphId": "interactive-oracles",
+              "nodeId": "response",
+              "question": "質問すると何が返ってきますか？",
+              "answer": "other",
+              "answerLabel": "その他の返答形式・通信条件"
+            }
+          ],
+          "initialReached": {
+            "graphId": "interactive-oracles",
+            "nodeId": "general-result",
+            "type": "result",
+            "title": "返答から次の合法な質問・移動を決める",
+            "options": [],
+            "techniques": [
+              "interactive"
+            ]
+          },
+          "routeTransitions": [],
+          "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7"
+        },
+        "simurgh": {
+          "entryGraphId": "interactive-oracles",
+          "choices": [
+            "other"
+          ],
+          "steps": [
+            {
+              "graphId": "interactive-oracles",
+              "nodeId": "response",
+              "question": "質問すると何が返ってきますか？",
+              "answer": "other",
+              "answerLabel": "その他の返答形式・通信条件"
+            }
+          ],
+          "initialReached": {
+            "graphId": "interactive-oracles",
+            "nodeId": "general-result",
+            "type": "result",
+            "title": "返答から次の合法な質問・移動を決める",
+            "options": [],
+            "techniques": [
+              "interactive"
+            ]
+          },
+          "routeTransitions": [],
+          "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7"
+        },
+        "books": {
+          "entryGraphId": "ranges",
+          "choices": [
+            "sequence-changes",
+            "reorder-cost"
+          ],
+          "steps": [
+            {
+              "graphId": "ranges",
+              "nodeId": "updates",
+              "question": "数列について、何を求めますか？",
+              "answer": "sequence-changes",
+              "answerLabel": "列の並び・各値・巡回位置を変えて目標の形にする"
+            },
+            {
+              "graphId": "range-sequence-changes",
+              "nodeId": "updates",
+              "question": "数列について、何を求めますか？",
+              "answer": "reorder-cost",
+              "answerLabel": "列の要素を移動して並べ替える費用の最小値"
+            }
+          ],
+          "initialReached": {
+            "graphId": "range-sequence-changes",
+            "nodeId": "reorder-operation",
+            "type": "question",
+            "title": "列を変えるとき、どの操作を使えますか？",
+            "options": [
+              {
+                "id": "move-position",
+                "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+              },
+              {
+                "id": "swap-and-adjust",
+                "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+              },
+              {
+                "id": "unknown",
+                "label": "わからない"
+              }
+            ],
+            "techniques": []
+          },
+          "routeTransitions": [
+            {
+              "fromGraphId": "ranges",
+              "fromNodeId": "sequence-changes-route",
+              "toGraphId": "range-sequence-changes"
+            }
+          ],
+          "stepsSha256": "5921b1b3868a8b4667a6293b4f419c38ab6395660f7c19f8e643d90788b32f74"
+        }
+      },
+      "productRuntimeCrosscheck": {
+        "allSixRoutesMatchIndependentRawWalker": true,
+        "compiler": "frozen vendor/typescript.cjs through frozen scripts/local-modules.mjs",
+        "includesExactQuestionsAnswerLabelsAndTerminal": true
+      },
+      "existingApiScopeChecks": {
+        "compiledActualFrozenCppFences": {
+          "matching": "0bc93da9f5cb4211bf52d03d7f405f3373f9d4e9319940521fe60a8a0d83b6ad",
+          "retrograde-winning-draw": "9ddf018ea18594eba841f8d1094fc39d0d0f75c2b02c32a63e8a07110e41cd39",
+          "permutation-cycle-minimum-swaps": "7b44bb1108173e6b6f4e04b406b52b5061b04b4a61f68092ad804b1e7c7092c8"
+        },
+        "observed": {
+          "matchingMaximumDisjointPairs": 1,
+          "normalCyclicGame": [
+            0,
+            0
+          ],
+          "unrestrictedPermutationSwaps": 1
+        },
+        "originalTargets": {
+          "wiring": "red0,1 andblue2 need TWO incident-cover wires, total3; disjoint matching returns only one pair",
+          "train": "a0,1/r1,0 with both selfloops+crossarcs is Arezou-win at both starts; normal-endpoint-game classifier returns draws",
+          "books": "p2,1,0 S1 takes6 walk distance even though arbitrary-position swap count1"
+        },
+        "meaning": "These are explicit scope counterexamples, not bugs in the existing APIs or full-range IOI2017 production validations."
+      },
+      "nowruz": {
+        "allNonemptyFreeBoardsH_W1to3": 673,
+        "growthRuns": 673,
+        "exactlyOneNeighborInsertionsChecked": 1254,
+        "nonOptimalFixedOrderRuns": 160,
+        "counterexample": {
+          "h": 2,
+          "w": 3,
+          "freeMask": 28,
+          "greedyMask": 4,
+          "greedyLeaves": 0,
+          "optimalLeaves": 2
+        },
+        "connectedFullGridCounterexample": {
+          "h": 2,
+          "w": 3,
+          "freeMask": 63,
+          "greedyMask": 47,
+          "greedyLeaves": 2,
+          "optimalLeaves": 3
+        },
+        "verified": "Adding a free cell with exactly one existing marked neighbor preserves induced connected acyclicity; leaf delta checked literally including singleton->2vertices. Exact all-subset tree oracle bounds quality.",
+        "unconfirmed": "Official ten output files were not retrieved/solved. This growth method has no full-score guarantee; no invented optimum or 100-point claim."
+      },
+      "wiring": {
+        "allTwoColorSequencesLength2to7TwoCoordinateProfiles": 480,
+        "allBipartiteEdgeSubsets": 701112,
+        "randomLinearVsQuadraticN2to49": 1000,
+        "maximumCombinedN200000Cases": 3,
+        "verified": "Independent literal all-edge-set minimum equals quadratic prefix DP AND new fully-derived linear monochromatic-block prefix/suffix minima DP. Adjacent-block exclusion and one-overlap split prove recurrence; separated-group edge-cover closed form is attained by stars. Three maximum-size exact closed-form families checked.",
+        "unconfirmed": "Production reusable C++20/API/overflow/exception/sanitizer validation has not been performed. The official editorial supplies only the high-level linear DP; explicit recurrence/proof here is an independent supplement."
+      },
+      "train": {
+        "allTotalDirectedGraphsN1to3LoopsAllowed": 353,
+        "allOwnerAndNonemptyChargerAssignments": 19318,
+        "randomGraphsN4to8": 400,
+        "literalInitialPositions": 60233,
+        "maximumObservedDeletionRounds": 3,
+        "verified": "Alternating reachability-attractor deletion equals literal extensive first-visit minimax including permanent switches and repeated vertices. Queue/counter implementation would be O(NM), not implemented as a production API here."
+      },
+      "prize": {
+        "allLegalPrizeSequencesLength3to10": 832,
+        "allPositionPairsCompared": 31294,
+        "allFeasibleMoreExpensiveCountChains": 13098,
+        "maximumNonCheapestPrizesForN200000": 472,
+        "countWitness": [
+          1,
+          4,
+          21,
+          446,
+          198917
+        ],
+        "verified": "Response sum identifies prize level. Equal-level boundary left-count difference is exact number of strictly better prizes in between; zero remaining count safely prunes for every transcript-consistent fixed completion. Count growth is checked with exact integer recursion.",
+        "unconfirmed": "No implementation or independent worst-case proof of the official efficient 4759/required5000-query strategy. Fixed-sequence gap tests do not establish adaptive-grader full-score correctness/budget."
+      },
+      "simurgh": {
+        "allConnectedSimpleGraphsN2to5": 771,
+        "everyHiddenSpanningTreeForEveryGraph": 8135,
+        "literalValidSpanningTreeQueries": 108860,
+        "maximumObservedSmallQueries": 17,
+        "N500Cases": [
+          {
+            "kind": "path",
+            "N": 500,
+            "M": 499,
+            "queries": 501,
+            "referenceQueries": 1
+          },
+          {
+            "kind": "complete-star",
+            "N": 500,
+            "M": 124750,
+            "queries": 4987,
+            "referenceQueries": 997
+          },
+          {
+            "kind": "complete-path",
+            "N": 500,
+            "M": 124750,
+            "queries": 5228,
+            "referenceQueries": 997
+          },
+          {
+            "kind": "complete-random",
+            "N": 500,
+            "M": 124750,
+            "queries": 5284,
+            "referenceQueries": 997
+          }
+        ],
+        "allN500UpperBound": 5990,
+        "verified": "Independent reference-tree fundamental-cycle differences classify every reference edge in <=1+2(N-1) queries. A forest can be completed with known reference edges; subtract known contribution to get exact forest count. Star counts give hidden degrees; leaf-star subset bisection recovers the hidden tree. EVERY oracle question explicitly DSU-validated as a spanning tree.",
+        "productionApiValidated": false,
+        "officialEarDecompositionProofClaimed": false
+      },
+      "books": {
+        "allPermutationsN1to6AllStarts": 5039,
+        "literalPickupSwapPutdownAdjacentMoveStates": 201602,
+        "verified": "Full reversible 0-1 state shortest paths equal interval-cycle closure DP and author greedy comparing first cross-boundary cycle reach costs. Probe uses explicit small closures, not a linear-time production implementation.",
+        "productionApiValidated": false,
+        "numericBoundsSource": "Final contest KOR statement n<=1000000, NOT old Library editorial draft subtask table/API."
+      },
+      "elapsedSeconds": 15.913243
+    },
+    "nativeExistingScopeChecksOnly": true,
+    "productionImplementationValidated": false,
+    "sanitizerNotClaimed": true,
+    "originalProbeSha256": "18a76ae16bc2ab3ca68dfa3e74672acb57099a9ad6dbb78679735e387a906993",
+    "normalizedProbeOutputFile": "research/probes/ioi-2017-research-checks-results.json"
+  },
+  "preservation": {
+    "sharedFilesModified": false,
+    "initialRecordProjectionImmutableOnFutureResolution": true,
+    "futureResolutionOnlyAfterIndependentReview": true,
+    "automaticCollectorOrScheduleAdded": false,
+    "deniedEnvironmentFilesRead": false,
+    "knownFailedNetworkPathsRetried": false,
+    "cutoffRetainedDespiteAuditDate": true,
+    "originalAuditFile": "research/snapshots/ioi-2017-original-audit.json.gz",
+    "originalAuditRawSha256": "112606343ee4912aac10132d0a0e0aea1c062635aa6642acb14a03396379f78e",
+    "initialProbeResults": "research/probes/ioi-2017-initial-probe-results.json",
+    "normalizedProbeResults": "research/probes/ioi-2017-research-checks-results.json",
+    "researchCheckScript": "research/probes/ioi-2017-research-checks.py",
+    "notesFile": "research/ioi-2017-audit-notes.md",
+    "allHistoricalRawFilesPermanentlyStored": false,
+    "allHistoricalMdxPermanentlyStored": false,
+    "retainedFullMdxCount": 13,
+    "permanentSnapshotPlan": "ledger plus exact flow/metadata/walk/reference/source,13 full nearby articles,7 runtime TS/helper and8 old audits; compiler must match frozen dependency SHA"
+  }
+}

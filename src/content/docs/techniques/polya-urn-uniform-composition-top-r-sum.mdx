@@ -1,0 +1,170 @@
+---
+title: "多く持つ人ほど増えやすい過程で、上位の合計期待値を求める"
+description: "初期重み1の比例増殖を、一様な弱合成へ変える。全員から1を引き、0になった人を除く計数DPで、相関する値の上位合計を安定して求める。"
+techniqueId: polya-urn-uniform-composition-top-r-sum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+最初は全員が品物を一個ずつ持つ。全ての品物から一個を一様に選び、その所有者の品物の個数を一つ増やす操作を繰り返す。決まった回数の後、品物の個数が大きい上位 $r$ 人の合計期待値を求めたい。
+
+所有者を一様に選ぶのではない。現在 $g_i$ 個を持つ人が次に増える確率は $g_i/\sum_j g_j$ である。また、品物の総数が固定されるので各人の品物の個数は独立ではない。独立値の順位を二項分布で調べる方法を、そのまま当てはめることはできない。
+
+## 考え方
+
+人数を $N$、操作回数を $D$ とし、各人の増加量を $x_i=g_i-1$ とする。この過程の終状態は、
+
+$$x_i\ge0,\qquad \sum_{i=1}^N x_i=D$$
+
+を満たす全てのラベル付き整数列で等確率になる。状態数は弱合成の個数 $C(N,D)=\binom{N+D-1}{D}$。従って、各状態の上位合計を全て足して、最後に状態数で割ればよい。
+
+上位人数 $r$ を固定し、$n$ 人・増加量合計 $d$ の全状態にわたる「上位 $\min(r,n)$ 人の品物の個数の総和」を $S_r(n,d)$ とする。$n\le r$ なら全員を数えるので、
+
+$$S_r(n,d)=(n+d)\binom{n+d-1}{d}.$$
+
+$n>r$ では、全員の最初の一個から上位 $r$ 人へ合計 $r$ を加える。その後、増加量が正だった $k$ 人を選び、それぞれからさらに一個を取り除く。残りは $k$ 人・増加量合計 $d-k$ の同じ種類の状態なので、
+
+$$
+S_r(n,d)=r\binom{n+d-1}{d}
+ +\sum_{k=1}^{\min(n,d)}\binom nk S_r(k,d-k).
+$$
+
+右辺の残り回数は必ず小さい。$d$ の昇順に計算し、$S_r(N,D)/C(N,D)$ を返す。全て非負の項だけを加えるため、大きい交代和の差し引きを行わずに済む。
+
+## 適用条件
+
+全員の初期重みが正確に1で、各操作では全ての品物から一様に一個選び、その所有者の重みを正確に1増やす。初期重みが異なる場合や、所有者そのものを一様に選ぶ場合は、終状態の一様性を改めて調べる必要がある。
+
+人数と操作回数は500以下、順位人数は $1\le r\le N$ とする。掲載APIは原典全域に加えて、操作0回と上位0人も扱う。前者の答えは $r$、後者は0になる。一人なら答えは $1+D$、全員を数えるなら $N+D$ と、いずれも確定値である。
+
+数値計算にはIEEE 754のbinary64、最近接丸めを使う。コードは処理系の型の性質と実行時の丸めモードを確認する。下記の誤差評価は、通常の浮動小数点規則を無効にするコンパイル設定を使わないことを前提とする。
+
+## なぜ正しいか
+
+まず、一様性を示す。$D=0$ では全員1の一状態だけである。$D-1$ 回後の全状態の確率が共通の $p$ だとする。終状態 $g$ の直前には、ある所有者 $i$ の品物の個数だけが $g_i-1$ だった。そこから増える確率を合計すると、
+
+$$
+\Pr[g]=\frac{p}{N+D-1}\sum_i(g_i-1)=\frac{pD}{N+D-1}
+$$
+
+となり、終状態によらない。$g_i=1$ の項は0で、直前の不正な状態を加えることにもならない。全状態の確率和が1なので、一状態の確率は $1/\binom{N+D-1}{D}$ である。
+
+次に、総和DPの分割を示す。$n\le r$ では各状態の上位合計が品物の総数 $n+d$ そのものなので、状態数を掛ける。$n>r$ では全員から1を引くと、上位合計は正確に $r$ 減る。同じ量を引く操作は順位を変えず、境界で同数の人がいても合計に影響しない。
+
+残る正の値を持つ人の集合を $A$、人数を $k$ とする。$A$ は $\binom nk$ 通り。その $k$ 人の値から1ずつ引いた非負整数列の合計は $d-k$ であり、この変換は可逆である。$k<r$ なら正の値を全て足し、他の人の0を補うだけなので、小問題でも上位 $\min(r,k)$ 人の合計を使えばよい。$d=0$ の場合だけ $k=0$ になり、追加分は0。これで全状態を重複なく分けた遷移が得られる。
+
+最後に、丸め誤差を評価する。単位丸め誤差を $u=2^{-53}$、$\gamma_m=mu/(1-mu)$ とする。Pascalの加算で作る二項係数の各依存経路は999段以下なので、相対誤差は $\gamma_{999}$ 以下である。
+
+DPも非負項の加算と乗算だけである。誤差を含む二つの値の積では、それぞれの誤差経路と乗算一回を足し、非負和では最大の経路長に加算回数を足して評価できる。基底の経路を1001、遷移一段の増分を1001で上から押さえられる。実際、係数 $\binom nk$ の経路は500以下、乗算は一回、項の加算は高々500回である。遷移では $d$ が少なくとも1減るので、$S_r(n,d)$ の相対誤差は
+
+$$\gamma_{1001(d+1)}\le\gamma_{501501}$$
+
+以下となる。分母の誤差と最後の除算も含めると、正の答えの相対誤差は
+
+$$
+\frac{(1+\gamma_{501501})(1+u)}{1-\gamma_{1000}}-1
+ < 5.59\times10^{-11}.
+$$
+
+真の答えは1000以下なので、絶対誤差は $5.59\times10^{-8}$ 未満。小数点以下12桁の出力で加わる誤差を含めても $10^{-6}$ 未満である。0を返す場合と確定値の早期返却は正確に計算できる。
+
+途中の正確な二項係数は $2^{999}$ 以下、総和と各遷移項は $1000\cdot2^{999}<2^{1009}$。上の誤差を含めても $2^{1010}$ 未満であり、binary64の範囲に収まる。正の中間値は整数として少なくとも1なので、途中のアンダーフローも起こらない。
+
+## 計算量
+
+二項係数表は $O((N+D)(D+1))$、総和DPは $O(N^2D+N)$ 時間で作る。全体の時間はその和 $O((N+D)(D+1)+N^2D+N)$。空間は二つの表を合わせて $O((N+D)(D+1))$。掲載範囲で二表の要素数は高々752001個、要素の保存領域は6,016,008バイトである。配列の管理領域や出力用文字列は別に必要となる。
+
+全員を数える場合、一人の場合、操作0回、上位0人では表を作らず $O(1)$ 時間・空間で返す。添字と整数の積は掲載上限で32ビット符号付き整数に収まり、状態をたどる再帰は使わない。計数値そのものを通常の整数型へ収めようとはしない。
+
+## 実装
+
+`expected_top_r_unit_polya(n, steps, r)` は上位合計の期待値を `double` で返す。`write_expected_top_r` は同じ値を小数点以下12桁で一行へ出力する。人数1〜500、操作回数0〜500、順位人数0〜人数の範囲外と、最近接丸め以外の実行モードは `invalid_argument` とする。
+
+呼び出し間で表を共有せず、入力も変更しない。出力用関数は検査と計算を終えてから書き始め、呼び出し側の表示形式を変更しない。割り当てと出力ストリームの例外はそのまま伝播する。
+
+```cpp
+#include <algorithm>
+#include <cfenv>
+#include <iomanip>
+#include <limits>
+#include <locale>
+#include <ostream>
+#include <sstream>
+#include <stdexcept>
+#include <vector>
+
+static_assert(std::numeric_limits<double>::is_iec559 &&
+              std::numeric_limits<double>::radix == 2 &&
+              std::numeric_limits<double>::digits == 53 &&
+              std::numeric_limits<double>::max_exponent >= 1024);
+
+namespace unit_polya {
+double expected_top_r_unit_polya(int n, int steps, int r) {
+    if (n < 1 || n > 500 || steps < 0 || steps > 500 || r < 0 || r > n) {
+        throw std::invalid_argument("urn parameters");
+    }
+    if (std::fegetround() != FE_TONEAREST) {
+        throw std::invalid_argument("rounding mode must be nearest");
+    }
+    if (r == 0) return 0.0;
+    if (steps == 0) return static_cast<double>(r);
+    if (r == n) return static_cast<double>(n + steps);
+
+    const int width = steps + 1;
+    std::vector<double> binomial((n + steps) * width, 0.0);
+    auto choose = [&](int a, int b) -> double& {
+        return binomial[a * width + b];
+    };
+    for (int a = 0; a < n + steps; ++a) {
+        choose(a, 0) = 1.0;
+        for (int b = 1; b <= std::min(a, steps); ++b) {
+            choose(a, b) = choose(a - 1, b - 1) + choose(a - 1, b);
+        }
+    }
+
+    std::vector<double> sum((n + 1) * width, 0.0);
+    auto state = [&](int people, int extra) -> double& {
+        return sum[people * width + extra];
+    };
+    for (int extra = 0; extra <= steps; ++extra) {
+        for (int people = 1; people <= n; ++people) {
+            const double count = choose(people + extra - 1, extra);
+            if (people <= r) {
+                state(people, extra) = (people + extra) * count;
+            } else {
+                double total = r * count;
+                for (int k = 1; k <= std::min(people, extra); ++k) {
+                    total += choose(people, k) * state(k, extra - k);
+                }
+                state(people, extra) = total;
+            }
+        }
+    }
+    return state(n, steps) / choose(n + steps - 1, steps);
+}
+
+void write_expected_top_r(std::ostream& output, int n, int steps, int r) {
+    const double answer = expected_top_r_unit_polya(n, steps, r);
+    std::ostringstream line;
+    line.imbue(std::locale::classic());
+    line << std::fixed << std::setprecision(12) << answer << '\n';
+    const auto text = line.str();
+    output.write(text.data(), static_cast<std::streamsize>(text.size()));
+}
+} // namespace unit_polya
+```
+
+## 関連する手法
+
+[指示変数による期待値](/flowchartcp/techniques/expectation-indicators/)では、独立性を仮定せずに寄与を足せる。今回も期待値の線形性は使えるが、誰が上位へ入るかを含めた依存分布の計数が必要になる。
+
+[順位期待値の裾和](/flowchartcp/techniques/expectation-order-statistic-tail/)は、閾値以上の人数から上位の寄与を調べる。独立な値でその人数を二項分布にする部分は、ここでの総和固定の値には適用できない。
+
+## 参考資料
+
+- [ICPC World Finals 2018 問題冊子・Problem D、7頁](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7)。比例増殖過程、上位合計、人数と操作回数500以下という適用根拠。
+- [Per Austrin・Jakub Onufry Wojtaszczyk, Solution sketches・Problem D、5〜6頁](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5)。ICPC公式ドメイン掲載の非公式分析。一様組成と最初の一個を取り除く分割を参照した。本文では総和の基底に状態数を掛け、遷移と数値誤差を独立に示した。
+- [ICPC公式ニュース・World Finals 2018](https://news.icpc.global/wf2018/)。競技日2018年4月19日の確認資料。
+
+<TechniqueReferences techniqueId="polya-urn-uniform-composition-top-r-sum" />

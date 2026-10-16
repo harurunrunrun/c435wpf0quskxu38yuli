@@ -1,0 +1,80 @@
+---
+title: "セグメント木"
+description: "区間の集計を二分木に保存し、点の更新と区間への問い合わせを処理する。"
+techniqueId: segment-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+区間の集計を二分木に保存し、点の更新と区間への問い合わせを処理する。
+
+## 使う場面
+
+値が更新される配列について、区間の最小値・最大値・和などを求めるときに使う。二つの隣り合う区間の結果を合成して全体の結果を作れるなら、行列積や関数の合成などにも使える。
+
+## 考え方
+
+各要素を木の葉に置き、親には左の子と右の子の集計結果を保存する。点を更新すると、その葉から根までの値だけを再計算する。問い合わせ区間は、木が持つ少数の区間に分解して集計する。
+
+合成演算と、空区間を表す単位元を指定する。和なら加算と0、最小値なら最小を取る演算と無限大を使う。区間への更新も必要な場合は、遅延伝播セグメント木などを使う。
+
+## 適用条件
+
+合成には結合則が必要になる。どこに括弧を付けても結果が同じでなければ、区間の分解で答えが変わってしまう。減算はこの条件を満たさない。
+
+交換則は不要なので、文字列の連結や行列積も扱える。ただし、元の配列の左右の順序を保って合成する。空区間の結果として使える単位元も必要になる。
+
+## なぜ正しいか
+
+葉の値を子から親へ合成することで、各ノードは担当区間の集計を持つ。問い合わせで選ぶ区間は互いに重ならず、指定区間を左右の順に覆う。結合則により、分解した区間ごとに集計してから合成しても、全要素を順に集計した結果と一致する。
+
+## 計算量
+
+構築に $O(N)$ 時間、点更新と区間の取得に各 $O(\log N)$ 時間、空間に $O(N)$ が必要になる。合成1回に $T$ 時間かかる場合は、時間計算量に $T$ を掛ける。
+
+## 実装
+
+`set(p, x)` で点の値を代入し、`prod(l, r)` で区間 $[l,r)$ の集計を返す。空区間では単位元を返す。和の例なら、演算に `[](long long a, long long b) { return a + b; }`、単位元に `0LL` を渡す。
+
+```cpp
+#include <vector>
+#include <cassert>
+using namespace std;
+template<class T,class Op>
+struct SegmentTree {
+    int n,size=1;
+    T identity;
+    Op op;
+    vector<T> data;
+    SegmentTree(const vector<T>& a,T identity,Op op)
+        :n(a.size()),identity(identity),op(op) {
+        while(size<n) size*=2;
+        data.assign(2*size,identity);
+        for(int i=0;i<n;++i) data[size+i]=a[i];
+        for(int i=size-1;i>0;--i) data[i]=op(data[i*2],data[i*2+1]);
+    }
+    void set(int p,T x) {
+        assert(0<=p && p<n);
+        data[p+=size]=x;
+        while(p>1) { p/=2;data[p]=op(data[p*2],data[p*2+1]); }
+    }
+    T prod(int l,int r) const {
+        assert(0<=l && l<=r && r<=n);
+        T left=identity,right=identity;
+        for(l+=size,r+=size;l<r;l/=2,r/=2) {
+            if(l&1) left=op(left,data[l++]);
+            if(r&1) right=op(data[--r],right);
+        }
+        return op(left,right);
+    }
+};
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [AtCoder Library: Segment Tree](https://atcoder.github.io/ac-library/production/document_en/segtree.html)
+
+<TechniqueReferences techniqueId="segment-tree" />

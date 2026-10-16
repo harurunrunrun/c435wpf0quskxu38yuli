@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "buchi-owned-graph-repeated-target-attractor-elimination",
+  "problemId": "ioi2017_train",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialIssues": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allFrozenCppRead": true,
+    "allCheckerRead": true,
+    "allSidecarRead": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1"
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2017-train-article.mdx",
+      "sha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2017-train-checker.py",
+      "sha256": "450058a255309b88387ab37e2c106b82abb2e5689daba3d74f0becc624f24b13"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2017-train-sidecar.json",
+      "sha256": "b94785067308460aab7b538ac5aa8344a5a12ff25987dacb87bda1fe7544d5d3"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2017-train-independent-normal.json",
+      "sha256": "9e72bf5205c8a701ec5d324734087dcaee8dc52ba6f4241df294665362c70c0b"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-ioi2017-train-independent-asan.json",
+      "sha256": "fa889b31b38e47d82489af72071f6cdcaf59bcc5fc3dcd67281862156e43b3da"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2017-train-independent-probe.py",
+      "sha256": "7299e3fff9a3e51726a53b75948927e1de4e5fc63fc0904b0b10fa32a4f4c3bf"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2017-train-independent-probe.json",
+      "sha256": "5e102d989369bc85a6e28898b6a50f1b91da06679526265e1cc56d43e9620d0b"
+    },
+    "independent-probe-asan.json": {
+      "path": "/tmp/flowchartcp-ioi2017-train-independent-probe-asan.json",
+      "sha256": "f8feef212663dc4109a330281da7a449af37cc0c4031a91d21526ac921929bc6"
+    }
+  },
+  "primarySourceReview": {
+    "statement": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "pages": 3,
+      "method": "Independently read all English web PDF text. Missing mathematical numeric glyphs recovered from primary official-distributed TWN search text and the Japanese committee translation. No image inspection claimed.",
+      "model": "Ownership fixes the outgoing switch on the first visit permanently; initially fully charged; A wants infinite movement and B battery exhaustion. Loops and disconnected total graphs are legal. All N starts must be classified.",
+      "genericSignature": "int[] who_wins(int[] a,int[] r,int[] u,int[] v)"
+    },
+    "numeric": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf",
+      "query": "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf \"1\" \"5000\" \"20000\"",
+      "N": [
+        1,
+        5000
+      ],
+      "M": [
+        "N",
+        20000
+      ],
+      "flags": [
+        0,
+        1
+      ],
+      "chargersMin": 1,
+      "outdegreeMin": 1,
+      "selfLoopsAllowed": true,
+      "orderedParallelArcsAllowed": false,
+      "endpointRange": "0..N-1",
+      "independentCorroboration": "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-ITA.pdf"
+    },
+    "battery": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-train-JPN.pdf",
+      "query": "site:www2.ioi-jp.org/ioi/2017/tasks/day1-train-JPN.pdf \"n\" \"本\" \"充電\"",
+      "verified": "Exactly N edges are traversable after full charge; entering the next edge without recharging stops the train. Arrival at a charger first replenishes the battery. The initial station starts with full charge."
+    },
+    "editorial": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+      "pages": 1,
+      "provenance": "Actual IOI archive Editorial; header IOI2017 Editorials train English ISC. No byline inferred.",
+      "verifiedContent": "Linear attractor construction, target attractor complement, opponent attractor deletion and O(NM) iteration.",
+      "independentSupplements": "Residual-totality and all-original-outgoing-edges invariant for B vertices; complete fixed policies for both sides; deletion-epoch/rank argument; first-visit compatibility and API validation. The article explicitly marks these as supplemented proofs rather than transcribed primary formulas.",
+      "articleVerification": "independent-analysis",
+      "attributionAccurate": true
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "pages": 2,
+      "mapping": "int[] maps to std::vector<int>; integer maps to int.",
+      "timeSeconds": 2,
+      "memoryMB": 256,
+      "submission": "One procedure file; no standard I/O or file interaction."
+    },
+    "adapterEvidence": {
+      "derivedCppSignature": "std::vector<int> who_wins(std::vector<int> a,std::vector<int> r,std::vector<int> u,std::vector<int> v)",
+      "derivedFrom": "Generic statement signature combined with the official implementation Notice. The visible adapter compiles without unresolved grader callbacks.",
+      "actualOfficialCppStubBytesRetrieved": false,
+      "stubByteInspectionClaimed": false
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "contestDate": "2017-07-30",
+      "datePrecision": "day",
+      "difficulty": null
+    }
+  },
+  "independentMathematicalReview": {
+    "attractorExactness": "Seeds have rank0. The owner of the attracting player has a recorded predecessor to lower rank; the opposing owner enters only when every remaining successor has lower rank. Outside the fixed point the first owner has no inside edge and the other has an outside edge. Thus the ranks prove forced finite reachability and a positional avoidance strategy, respectively.",
+    "residualInvariant": "Every residual vertex has an outgoing residual edge, and every original edge of a residual B vertex remains in the residual graph. Removing B-attractor Y preserves an outside edge at residual A vertices and all currently residual edges at residual B vertices; induction handles earlier deletion sets. This avoids treating edges to earlier removed components as if they did not exist.",
+    "removedSideFixedStrategy": "For X outside the A-attractor of chargers, X contains no charger; A has only X residual successors and B can select an X successor. In Y\\X, B chooses a decreasing B-attractor rank. Under arbitrary adaptive A moves, an original edge either stays in the same deletion epoch with decreasing rank until X, stays in X, or reaches a strictly earlier deletion epoch. Epochs can decrease only finitely often; after the final such exit, the rank reaches X and no charger is visited again.",
+    "remainingSideFixedStrategy": "Final W equals its A-attractor of chargers. At noncharging A vertices choose the recorded lower rank; at charging A vertices choose any W edge. Every original B edge stays in W. Any charger-free segment has decreasing rank, so charging repeats even against adaptive B.",
+    "firstVisitAndBatteryEquivalence": "These are one global positional policy for each player, not a separate strategy for each start, and remain valid against an adaptive opponent. Restricting the opponent to permanent first-visit decisions cannot invalidate them. With both policies permanent, a deterministic path has a simple transient and simple cycle. A reachable charger-bearing cycle gives first/recurring charging gaps <=N; a target-free cycle eventually exhausts the battery. Therefore the source permanent-switch game and repeated-target classification agree. The independent finite-energy safety oracle also tests the stronger adaptive-opponent battery statement.",
+    "queueAndSelfLoops": "Only marked vertices are popped, once each; reverse-arc decrements correspond exactly to already included outgoing destinations. A self-loop on an unmarked universally quantified vertex correctly prevents accidental attraction until another rule or seed marks it. The totality invariant rules out vacuous zero-degree opponent additions.",
+    "terminationAnd2500Rounds": "Each destructive pass removes a nonempty Y. If a nonempty residual graph survives, the final successful pass adds one to the number of destructive passes but still keeps total passes <=N. The constructed N5000/M20000 case really takes2500 destructive rounds. This is a linear-round lower-bound example, not a claimed universal upper bound of2500; the proved general bound remains N."
+  },
+  "apiAndNumericReview": {
+    "fullOriginalRangeIncluded": true,
+    "genericContract": "N1..5000; M>=N, M<=20000 and M<=N²; binary same-size owner/target arrays; endpoints0..N-1; no ordered duplicates; every outdegree positive. Empty target set is an explicit generic extension and is rejected by the original who_wins adapter.",
+    "overflow": "Vertex-size cap is checked before int casts and N². N²<=25000000, edge count<=20000, degrees/queue offsets/deletion counters fit int. No signed weight arithmetic occurs; binary outputs and moves are checked. Repeated traversal is iterative and does not recurse on graph depth.",
+    "strategyReturnContract": "Every move is an original outgoing destination. It is a winning fixed policy exactly on vertices whose owner matches the winning side. Choosing arbitrary legal values at the opposite side does not promise a strategy there.",
+    "stateAndExceptions": "Inputs are const spans, not retained or modified; all persistent state is local and return arrays own their storage. The global adapter owns four parameter copies and constructs an arc list. Returned values can be copied/moved/mutated without altering future calls. Standard allocation failures propagate and unwind temporary state.",
+    "time": "One attractor O(N+M); at most N passes. One initial O(Mlog(M+1)) duplicate check is within O(NM) because N<=5000, N<=M<=N². Total O(NM), space O(N+M), including the by-value source adapter.",
+    "measuredRequestedPayloadBytes": {
+      "construction": "N5000/M20000/2500-round family",
+      "body": 754600,
+      "adapter": 1114600,
+      "scope": "Live requested allocation payload only, excluding allocator/header/ASan overhead, caller preexisting arguments, compiler, oracle graphs. Only API-created storage is allocated in the measurement window; expected answers are constructed beforehand. Only the tested N5000/M20000/2500-deletion-round construction is measured, not a universal maximum-byte claim."
+    },
+    "allocationFailureChecks": {
+      "total": 163,
+      "body": 79,
+      "adapter": 84,
+      "allTrackedApiPayloadReleasedOnFailure": true,
+      "callerInputsUnchangedAndFreshCallSuccessfulAfterEveryFailure": true
+    }
+  },
+  "suppliedCheckerIndependentReproduction": {
+    "classification": "Independent rerun of the author actual-MDX checker; the12032358checks are not presented as a newly designed independent oracle.",
+    "commandNormal": "python3 /tmp/flowchartcp-ioi2017-train-checker.py",
+    "commandAsanUbsan": "python3 /tmp/flowchartcp-ioi2017-train-checker.py --sanitize",
+    "normal": {
+      "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 12032358,
+      "apiCalls": 454155,
+      "exhaustiveGraphs": 2145,
+      "exhaustiveAssignments": 449398,
+      "firstVisitInitialPositions": 1781207,
+      "firstVisitSearchNodes": 7419964,
+      "fixedPolicyPairs": 954684,
+      "fixedPolicyInitialPositions": 3916282,
+      "randomSmallGraphs": 500,
+      "randomLargeGraphs": 1000,
+      "strategyCertificates": 3008,
+      "metamorphicChecks": 3000,
+      "invalidCases": 30,
+      "checksum": "5543748192885197194",
+      "seconds": 0.77329,
+      "peakRSSKiB": 21600,
+      "maximumCases": [
+        {
+          "name": "5000 vertices,20000 arcs,all targets",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-cycle,exact charging gap5000",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-chain to charging sink,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "all B,noncharging selfloops,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 1
+        },
+        {
+          "name": "long chain,transient charge then noncharging sink",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "5000 vertices,empty-target generic extension",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "disconnected selfloops,mixed winners",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 2500
+        },
+        {
+          "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 2500,
+          "AWinningVertices": 0
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 12032358,
+      "apiCalls": 454155,
+      "exhaustiveGraphs": 2145,
+      "exhaustiveAssignments": 449398,
+      "firstVisitInitialPositions": 1781207,
+      "firstVisitSearchNodes": 7419964,
+      "fixedPolicyPairs": 954684,
+      "fixedPolicyInitialPositions": 3916282,
+      "randomSmallGraphs": 500,
+      "randomLargeGraphs": 1000,
+      "strategyCertificates": 3008,
+      "metamorphicChecks": 3000,
+      "invalidCases": 30,
+      "checksum": "5543748192885197194",
+      "seconds": 11.214,
+      "peakRSSKiB": 866716,
+      "maximumCases": [
+        {
+          "name": "5000 vertices,20000 arcs,all targets",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-cycle,exact charging gap5000",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-chain to charging sink,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "all B,noncharging selfloops,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 1
+        },
+        {
+          "name": "long chain,transient charge then noncharging sink",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "5000 vertices,empty-target generic extension",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "disconnected selfloops,mixed winners",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 2500
+        },
+        {
+          "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 2500,
+          "AWinningVertices": 0
+        }
+      ]
+    },
+    "finalBibliographyVerification": "The author stored native runs precede a bibliography-only update from67a74d0...to35fe632...with identical C++. Our two reruns read the final35fe632...MDX directly, so final article and code hashes are independently covered.",
+    "exhaustiveScope": "All total directed graphs N1..3; N4 only functional graphs and graphs with one branching vertex of degree2. Not all N4 directed graphs. All owner/nonempty-charger assignments for those2145 graphs are enumerated.",
+    "largeStrategyScope": "The supplied SCC certifier restricts only winner-owned moves, so it certifies arbitrary adaptive opposing choices, including original edges across removed epochs. Every maximum construction is also source-adapter checked where a charger exists."
+  },
+  "newIndependentProbe": {
+    "classification": "New reviewer-designed tests, separate from author native reproduction.",
+    "normal": {
+      "checks": 6023018,
+      "inputs": 23600,
+      "exhaustiveTotalGraphs": 353,
+      "exhaustiveOwnerAndTargetAssignmentsIncludingEmpty": 22100,
+      "randomInputs": 1500,
+      "finiteBatterySafetyGames": 70926,
+      "finiteSafetyIterations": 336427,
+      "energyStateInspections": 185998013,
+      "returnedPolicyAdaptiveOpponentInitialPositions": 232866,
+      "exactCapacityBoundaryControls": 63,
+      "allocationFailureExceptions": 163,
+      "bodyAllocationFailures": 79,
+      "adapterAllocationFailures": 84,
+      "maximum2500RoundBodyRequestedPayloadBytes": 754600,
+      "maximum2500RoundAdapterRequestedPayloadBytes": 1114600,
+      "checksum": "617204148435879420",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "secondsIncludingCompilation": 2.277657717000693,
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-misleading-indentation",
+        "-Wno-mismatched-new-delete"
+      ],
+      "sanitizerEnvironment": {},
+      "oracle": "Literal finite battery states (v,e),0<=e<=N; chargers reset immediately to N, noncharger energy0 dies before attempting the next edge. A state loses if every next state loses at an A-owned vertex, or any next state loses at a B-owned vertex. A synchronous finite safety fixed point is computed on the expanded graph. This uses neither repeated Buchi-region elimination, SCC cycle certificates, nor first-visit/fixed-policy enumeration. Run unrestricted, then with just returned A moves fixed, then just returned B moves fixed; both opponents remain adaptive and may depend on remaining energy.",
+      "sourceVsExpandedProof": "The independently reviewed positional A strategy has no reachable target-free cycle even against adaptive B, so any charge gap is <=N. The independently reviewed positional B strategy forces only finitely many charges even against adaptive A, and thus eventually battery exhaustion. Therefore the capacity-N finite safety classifications must equal the original first-visit source classifications. The independent oracle also explicitly distinguishes capacity N from N-1 on every single-charger N-cycle for N=2..64.",
+      "memoryScope": "Live requested allocation payload only, excluding allocator/header/ASan overhead, caller preexisting arguments, compiler, oracle graphs. Only API-created storage is allocated in the measurement window; expected answers are constructed beforehand. Only the tested N5000/M20000/2500-deletion-round construction is measured, not a universal maximum-byte claim.",
+      "sharedOrAuthorArtifactsModified": false
+    },
+    "asanUbsan": {
+      "checks": 6023018,
+      "inputs": 23600,
+      "exhaustiveTotalGraphs": 353,
+      "exhaustiveOwnerAndTargetAssignmentsIncludingEmpty": 22100,
+      "randomInputs": 1500,
+      "finiteBatterySafetyGames": 70926,
+      "finiteSafetyIterations": 336427,
+      "energyStateInspections": 185998013,
+      "returnedPolicyAdaptiveOpponentInitialPositions": 232866,
+      "exactCapacityBoundaryControls": 63,
+      "allocationFailureExceptions": 163,
+      "bodyAllocationFailures": 79,
+      "adapterAllocationFailures": 84,
+      "maximum2500RoundBodyRequestedPayloadBytes": 754600,
+      "maximum2500RoundAdapterRequestedPayloadBytes": 1114600,
+      "checksum": "617204148435879420",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "secondsIncludingCompilation": 11.018450247996952,
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-misleading-indentation",
+        "-Wno-mismatched-new-delete",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "sanitizerEnvironment": {
+        "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "oracle": "Literal finite battery states (v,e),0<=e<=N; chargers reset immediately to N, noncharger energy0 dies before attempting the next edge. A state loses if every next state loses at an A-owned vertex, or any next state loses at a B-owned vertex. A synchronous finite safety fixed point is computed on the expanded graph. This uses neither repeated Buchi-region elimination, SCC cycle certificates, nor first-visit/fixed-policy enumeration. Run unrestricted, then with just returned A moves fixed, then just returned B moves fixed; both opponents remain adaptive and may depend on remaining energy.",
+      "sourceVsExpandedProof": "The independently reviewed positional A strategy has no reachable target-free cycle even against adaptive B, so any charge gap is <=N. The independently reviewed positional B strategy forces only finitely many charges even against adaptive A, and thus eventually battery exhaustion. Therefore the capacity-N finite safety classifications must equal the original first-visit source classifications. The independent oracle also explicitly distinguishes capacity N from N-1 on every single-charger N-cycle for N=2..64.",
+      "memoryScope": "Live requested allocation payload only, excluding allocator/header/ASan overhead, caller preexisting arguments, compiler, oracle graphs. Only API-created storage is allocated in the measurement window; expected answers are constructed beforehand. Only the tested N5000/M20000/2500-deletion-round construction is measured, not a universal maximum-byte claim.",
+      "sharedOrAuthorArtifactsModified": false
+    },
+    "mathematicalIndependence": "An N+1-level battery expansion is a finite safety game, with ordinary monotone losing-state iteration. It does not recompute a Büchi attractor or delete original-graph regions, does not use SCC, and does not enumerate permanent policies. It therefore independently checks battery boundary semantics and both returned global policies against adaptive opposing choices.",
+    "noLargeExpandedClaim": "Expansion is used for exhaustive N<=3 and1500random N4..64; N5000 is tested by actual production API and payload/round constructions, not an N²-state safety expansion."
+  },
+  "executionNotes": [
+    {
+      "tool": "Additional probe first sanitizer attempt",
+      "result": "Program reached LeakSanitizer shutdown, which failed because LeakSanitizer cannot run under the platform ptrace environment. This was not counted as a successful sanitizer test.",
+      "resolution": "Like the supplied checker, explicitly set ASAN_OPTIONS=detect_leaks=0:halt_on_error=1 and UBSAN_OPTIONS=halt_on_error=1. The complete additional probe was rerun successfully with matching semantic results. No LeakSanitizer success is claimed."
+    }
+  ],
+  "initialAuditPreservation": {
+    "initialTrainRecordEqualsFrozenAuthorInitialRow": true,
+    "initialResearchPositive": true,
+    "initialProductionApiValidatedStillFalse": true,
+    "initialResearchReviewedCount": 4,
+    "initialCoverageCount": 0,
+    "newPositiveReviewRequired": false,
+    "futureIntegration": "Resolution only, after shared article/reference/feature/flow/walk and native registration. Keep initial rows/status/selection/snapshot and existing Wiring resolution unchanged. No shared artifact has been edited by this review."
+  },
+  "publicationAssessment": {
+    "fullRangeApiAndSelectedProofValidated": true,
+    "independentReviewComplete": true,
+    "registeredCoverageClaimedByThisReview": false,
+    "blockingIssues": [],
+    "nonblockingNotes": []
+  },
+  "originalReviewSha256": "e58aceee1a9f484fc120d07b543fa5ec537532f96fcd0348966c864f2d6f5d0f",
+  "publishedArticle": "src/content/docs/techniques/buchi-owned-graph-repeated-target-attractor-elimination.mdx",
+  "permanentProbe": {
+    "script": "research/probes/owned-repeated-target-independent.py",
+    "normalizedSha256": "0a4520584078695bfe6ab032a6c044c5180bf3cf5ddfdae9f34e95dbd4b94118",
+    "normalization": "Only MDX path and removal of implicit tmp result writes; finite battery oracle, policy checks, capacity boundaries, allocation faults and payload measurement unchanged."
+  }
+}

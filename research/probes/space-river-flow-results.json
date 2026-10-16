@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/tmp/flowchartcp-space-river-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 4.665513706990168,
+  "testFile": "/tmp/flowchartcp-space-river-flow.test.mjs",
+  "testSha256": "bfc8e427d5b0574f19184fb5942e69453dbafa6058500978705f59e9a593d3ef",
+  "tapFile": "/tmp/flowchartcp-space-river-flow-results.tap",
+  "tapSha256": "2202d9c1c28b0da76559f7e62fe4146bf00af5332c8f850253e829d50cda676f",
+  "caseFile": "/tmp/flowchartcp-space-river-flow-case.json",
+  "caseSha256": "5389c762a43b7076e783a5cdf9a21758cc6e0a9ccde7ac91d133702b5fafd558",
+  "frozenBaseline": {
+    "articles": 502,
+    "graphs": 469,
+    "nodes": 3685,
+    "walks": 523,
+    "corpora": 9,
+    "rawSha256": {
+      "flows": "98c6a02f250daeee4713736b59675abe037b7448237c8461e50850c1800bf072",
+      "walks": "40dbc19ee387ebaebc93dcbfe334b524e54e6ca05ef8015afef041775448f3c2",
+      "icpc2018-audit": "d45e0c0ab9b8f2ba07c799633ed81902bae8985e150e2db1a6d067a039dd97aa",
+      "audits": "9f2622b39b9a2cb35d6b50c4f37e13ac7468d1a6d6516b8a46091f446f484e6b"
+    }
+  },
+  "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+  "sharedFilesModified": false,
+  "coveragePolicy": "Initial ICPC research9/11 and all9 prior initial audits preserved; live coverage>=5, deleting targetF evidence reduces coverage by1; an invalid actual MDX fence fails real preflight and makes preflight-dependent corpus coverage0. Additional later corpora and legal same-corpus resolutions are permitted.",
+  "permanentTest": "tests/space-river-flow.test.mjs"
+}

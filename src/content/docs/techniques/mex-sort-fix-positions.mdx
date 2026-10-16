@@ -1,0 +1,91 @@
+---
+title: "配列のmexを代入できるなら、値と添字が一致する位置を増やす"
+description: "mexが長さ未満ならその位置を直し、長さと等しいときは未完成の位置へその値を置く。"
+techniqueId: mex-sort-fix-positions
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+長さ $N$ の配列の要素を一つ選び、**操作直前の配列全体のmex**へ置き換えられる。非減少列などの目標を、最小回数ではなく $2N$ 回程度の上限内で作りたい。値の重複があってもよい。
+
+mexは、配列に含まれない最小の非負整数。添字を0始まりにし、完成形を $a_i=i$ に決めると、何を増やせば完成へ近づくかが明確になる。
+
+## 考え方
+
+現在のmexを $m$ とする。
+
+- $m<N$ なら、位置 $m$ に $m$ を代入する。値 $m$ は配列内にないため、この位置はまだ完成していない。
+- $m=N$ で未完成の位置があるなら、その一つに $N$ を代入する。消えた値が次のmexになるので、次は上の操作ができる。
+
+完成した位置には以後触れない。出現回数と欠けている値の順序付き集合を持てばmexを取り出せる。別に未完成の位置の集合も持ち、$m=N$ の場合に使う。
+
+例えば `[1,0,2]` はmexが3。未完成の位置0へ3を入れると `[3,0,2]`、mexは1になる。位置1へ1を入れ、続いて位置0へ0を入れると完成する。
+
+## 適用条件
+
+- 置換先は、毎回の**配列全体**のmexである。
+- 任意の位置を選べ、途中で $N$ を置くことも許される。
+- 完成形 $[0,1,\ldots,N-1]$ が要求を満たし、操作回数の最小化は不要。
+
+掲載実装は初期値を $0\ldots N$ に限定する。区間のmexを使う操作、置換位置に制限がある操作、最小回数を要求する問題には、そのまま使えない。既に非減少でも恒等列とは限らないため、非減少になった時点で止めたい場合とは返す操作列が異なる。
+
+## なぜ正しいか
+
+$m<N$ なら値 $m$ が欠けており、$a_m=m$ ではない。そこへ $m$ を代入すると完成位置が一つ増える。既に完成した位置の値は配列内に存在するためmexにはならず、この操作で選ばれない。
+
+$m=N$ なら、長さ $N$ の配列に $0,\ldots,N-1$ が全てある。従って各値はちょうど一回ずつ現れる。未完成位置 $i$ の値 $x$ を $N$ に置き換えると、値 $x<N$ だけが欠け、次のmexは $x$ になる。既に完成した位置は選ばないので、この操作でも完成位置数は減らない。
+
+完成位置を増やす操作は高々 $N$ 回。$m=N$ の操作の直後には、必ず完成位置を増やす操作があるため、その回数も高々 $N$ 回。合計 $2N$ 回以内に全位置が完成する。
+
+## 計算量
+
+各操作でmexと未完成位置を全走査すると、最大 $O(N^2)$ 時間。順序付き集合を使う掲載実装は、初期化と操作列の生成を合わせて $O(N\log(N+1))$ 時間、操作列を含めて $O(N)$ 空間。操作数の上限は $2N$ で、計算時間の上限とは区別する。
+
+## 実装
+
+`mex_sort_operations(a)` は、各操作で置き換える位置を0始まりで返す。各位置には、その操作直前のmexを代入する。引数はコピーして処理する。空配列は空の操作列を返し、$0\ldots N$ の範囲外の値は `invalid_argument` にする。配列長は `INT_MAX` 未満とし、それ以上は `length_error` にする。重複値や値 $N$ を含む配列も扱える。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> mex_sort_operations(vector<int> a) {
+    if (a.size() >= static_cast<size_t>(INT_MAX))
+        throw length_error("array too long");
+    const int n = static_cast<int>(a.size());
+    vector<int> count(n + 1, 0);
+    set<int> missing, unfinished;
+    for (int i = 0; i < n; ++i) {
+        if (a[i] < 0 || a[i] > n)
+            throw invalid_argument("value outside [0,n]");
+        ++count[a[i]];
+        if (a[i] != i) unfinished.insert(i);
+    }
+    for (int x = 0; x <= n; ++x)
+        if (count[x] == 0) missing.insert(x);
+
+    vector<int> operations;
+    while (!unfinished.empty()) {
+        const int m = *missing.begin();
+        const int i = (m < n ? m : *unfinished.begin());
+        const int old = a[i];
+        if (--count[old] == 0) missing.insert(old);
+        if (count[m]++ == 0) missing.erase(m);
+        a[i] = m;
+        if (a[i] == i) unfinished.erase(i);
+        operations.push_back(i);
+    }
+    return operations;
+}
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/) ・ [任意の二位置の交換で順列を直す](/flowchartcp/techniques/permutation-cycle-minimum-swaps/) ・ [固定長区間のmexの最小値](/flowchartcp/techniques/fixed-window-min-mex-gaps/)
+
+## 参考資料
+
+- [Codeforces 1375D：Replace by MEX](https://codeforces.com/problemset/problem/1375/D)。配列全体のmexを代入し、非減少列を $2N$ 回以内で作る操作の原典。
+
+<TechniqueReferences techniqueId="mex-sort-fix-positions" />

@@ -1,0 +1,190 @@
+---
+title: "指定サイズの三集合へ分け、二つを連結にする"
+description: "DFS部分木と真の祖先への後退辺を使い、指定サイズの三分割を構築する。作れない場合も同じ条件で判定する。"
+techniqueId: dfs-lowlink-three-size-two-connected-partition
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+連結な無向グラフの全頂点を、指定された正のサイズの三集合へ分ける。各集合の内部の辺だけを使う連結性を考え、三集合のうち**少なくとも二つ**が連結ならよい。要求サイズどおりの分割を出力するか、不可能と判定したい。
+
+任意の全域木の辺を一つ切るだけでは、必要な大きさの連結な両側が得られるとは限らない。DFS木で小さい子部分木を集め、木にない辺がどこへ戻れるかを使うと、連結な側を壊さずに子部分木を反対側へ移せる。失敗時にも、その操作で見つかる頂点が不可能性の証拠になる。
+
+## 考え方
+
+要求サイズと元の出力ラベルを組にして、小さい順に $a\le b\le c$ と並べる。合法解があることと、サイズ $a,b$ の二つを連結にできることは同値である。従って、残りの $c$ 頂点には連結性を要求しない。
+
+任意の頂点からDFSし、発見時刻 $\mathrm{tin}[v]$、部分木サイズ $\mathrm{sz}[v]$、lowlink $\mathrm{low}[v]$ を求める。$\mathrm{sz}[v]\ge a$ だが、全ての子 $u$ で $\mathrm{sz}[u]<a$ となる頂点 $v$ を取る。根から、部分木サイズが $a$ 以上の子へ降り続ければ見つかる。
+
+最初は $v$ の部分木を $P$、外側を $Q$ とする。$P$ は木の辺で連結、$Q$ も空でなければ木の辺で連結である。$Q$ が $a$ 頂点に満たない間、子 $u$ の部分木を丸ごと $P$ から $Q$ へ移す。ただし次の両方を要求する。
+
+- $\mathrm{low}[u]<\mathrm{tin}[v]$。子部分木から、$v$ の**真の祖先**へ後退辺がある。
+- 移した後も $|P|-\mathrm{sz}[u]\ge a$。
+
+移動後も $v$ を含む $P$ と、祖先を含む $Q$ の連結性が保たれる。両側に $a$ 頂点以上あれば、小側から連結な $a$ 頂点、大側から連結な $b$ 頂点を探索順の先頭として取る。残りを $c$ の集合へ入れる。元のサイズ順のラベルへ戻して出力する。
+
+例えば6頂点の星をサイズ $(2,2,2)$ に分けることはできない。中心を使わない連結集合は葉一つだけなので、互いに素な二つのサイズ2集合は作れない。一方、鎖なら探索順に切り取るだけで作れる。どちらも同じ処理で扱える。
+
+## 適用条件
+
+三サイズは全て正で、その和が頂点数 $N$ と等しい。グラフは無向で連結であり、自己ループを使わない。連結性は集合の外を経由してよいという意味ではない。三集合全てを連結にする問題には、この構築の最後の余りをそのまま使えない。
+
+掲載API `partition_three_two_connected(n, sizes, p, q)` は、頂点番号を `0..n-1`、要求サイズを `int` の三要素とし、辺の両端を同じ長さの配列 `p,q` で受ける。`n>=3`、正のサイズ、和、配列長、全端点、自己ループ、グラフ全体の連結性を検査する。不正入力は `std::invalid_argument`。合法入力で分割が不可能な場合だけ、長さ $n$ の全0配列を返す。成功時は元の三サイズ順のラベル1,2,3を返す。平行辺は許し、同じ辺の二方向だけを辺IDで識別する。呼出しをまたぐ状態は持たない。
+
+頂点数や辺数に原典固有の上限は設けない。頂点とサイズを `int`、辺IDと走査位置を `size_t`、三サイズの和を `int64_t` で扱い、配列を確保できる範囲で動く。`find_split` はIOI形式の呼出し口で、最大10万頂点・20万辺も反復探索で処理できる。
+
+## なぜ正しいか
+
+**小さい二集合への帰着。** 任意の連結グラフで、探索で初めて訪れた頂点の先頭 $k$ 個は連結である。新しい頂点には、それ以前の頂点へつながる探索木の親があるからである。合法解の二つの連結集合のサイズを $s\le t$ とすると、$s\ge a,t\ge b$。それぞれから連結な $a,b$ 頂点を取り、使わなかった頂点を全て第三集合へ回せる。逆向きは定義から明らかである。従ってサイズ $a,b$ を連結にすることだけを考えてよい。
+
+**子部分木の移動。** 無向グラフのDFSで、木でない辺は祖先と子孫を結ぶ。別々の子部分木を直接結ぶ辺があれば、先に探索した側からもう一方にも到達するので、別の子にはならない。$\mathrm{low}[u]<\mathrm{tin}[v]$ なら、$u$ の部分木内から $v$ の真の祖先へ辺があり、その祖先は $Q$ にある。この辺と子部分木の木の辺により、移動後の $Q$ は連結である。$P$ は $v$ と残った子部分木を木の辺で結べる。$\mathrm{low}[u]=\mathrm{tin}[v]$ では辺の行き先が $v$ でしかない場合があり、$Q$ との接続は保証されないため、等号を含めない。根 $v$ の場合は真の祖先がなく、移動できる子もない。
+
+**成功時の大きさ。** 両側が $a$ 以上なら、小側から $a$ 頂点を連結に取れる。大側は $N/2$ 以上で、$b\le c$ より $N=a+b+c\ge2b$ だから、大側から $b$ 頂点も連結に取れる。両側は互いに素なので、この二集合は重ならない。残りの頂点数はちょうど $c$ である。
+
+**失敗の必要性。** 処理後も $|Q|<a$ だったとする。このとき、真の祖先へ戻れるのに $P$ に残った子 $u$ があると、その子を調べた時点で $|P|-\mathrm{sz}[u]<a$ だったはずである。全ての子で $\mathrm{sz}[u]<a$ だから、その時点の $|P|<2a$。しかしその時点でも $|Q|<a$ であり、
+
+$$
+|Q|=N-|P|>N-2a=b+c-a\ge a
+$$
+
+となって矛盾する。従って、祖先へ戻れる子は全て既に $Q$ に入っている。
+
+頂点 $v$ を取り除く。残る子部分木は、別の子部分木にも、$Q$ の元の祖先側にも辺を持たない。その各部分木は $a$ 未満である。移動済みの子と元の外側を含む $Q$ も $a$ 未満である。よって $G-v$ の全ての連結成分が $a$ 未満になる。根の場合は $Q$ が空で、同じ結論になる。
+
+サイズが $a$ 以上の連結集合は、$v$ を含まなければ $G-v$ の一成分に収まるので存在できない。従って、そのような連結集合二つは共に $v$ を必要とし、互いに素にはできない。帰着したサイズ $a,b$ の構築も、元の問題も不可能である。これで、成功の十分性と失敗の必要性の両方が示された。
+
+## 計算量
+
+三ラベルへの全割当は $3^N$ 通りある。連結性を毎回調べる直接全探索は、小さい入力の検証に使う。
+
+掲載実装は $O(N+M)$ 時間、$O(N+M)$ 補助空間である。DFSで各無向辺を両方向に一回ずつ走査する。分割頂点へ降りる途中の子リストは重ならない。移す子部分木は互いに素なので、DFS順の区間を書き換える頂点数の合計は $N$ 以下。最後の二回の探索も両側で頂点が重ならず、各隣接リストを高々一回走査する。
+
+DFSも連結な先頭集合の抽出も、明示的なスタックまたはキューを使う。長い鎖で関数呼出しの深さが $N$ になることはない。三サイズの和を `int64_t` にしてから比較し、部分木サイズ・発見時刻・区間端は $N$ 以下に保つ。`int` 三値の最大和でも `int64_t` に収まる。辺数を `int` に狭めず、隣接走査位置も `size_t` で保持する。
+
+## 実装
+
+再帰DFSを、現在の頂点の「次に調べる辺の位置」を持つ反復DFSへ置き換える。頂点をスタックから取り除くときに、そのlowlinkと部分木サイズを親へ渡す。子リストは発見時に一度だけ追加するので、平行辺があっても子を重複して扱わない。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+std::vector<int> partition_three_two_connected(
+        int n, std::array<int, 3> sizes,
+        const std::vector<int>& p, const std::vector<int>& q) {
+    if (n < 3 || sizes[0] <= 0 || sizes[1] <= 0 || sizes[2] <= 0 ||
+        static_cast<std::int64_t>(sizes[0]) + sizes[1] + sizes[2] != n ||
+        p.size() != q.size())
+        throw std::invalid_argument("positive three sizes summing to n and equal edge arrays required");
+    std::array<std::pair<int, int>, 3> request{};
+    for (int i = 0; i < 3; ++i) request[i] = {sizes[i], i + 1};
+    std::sort(request.begin(), request.end());
+    const int a = request[0].first, b = request[1].first;
+    struct Arc { int to; std::size_t edge; };
+    std::vector<std::vector<Arc>> adj(n);
+    for (std::size_t e = 0; e < p.size(); ++e) {
+        if (p[e] < 0 || p[e] >= n || q[e] < 0 || q[e] >= n || p[e] == q[e])
+            throw std::invalid_argument("distinct endpoints in 0..n-1 required");
+        adj[p[e]].push_back({q[e], e});
+        adj[q[e]].push_back({p[e], e});
+    }
+    std::vector<int> tin(n, -1), low(n), parent(n, -1), sub(n, 1), order;
+    std::vector<std::vector<int>> children(n);
+    std::vector<std::size_t> next(n, 0), parent_edge(n, p.size());
+    std::vector<int> stack;
+    order.reserve(n); stack.reserve(n);
+    tin[0] = low[0] = 0;
+    order.push_back(0); stack.push_back(0);
+    while (!stack.empty()) {
+        const int v = stack.back();
+        if (next[v] == adj[v].size()) {
+            stack.pop_back();
+            if (parent[v] != -1) {
+                const int u = parent[v];
+                sub[u] += sub[v];
+                low[u] = std::min(low[u], low[v]);
+            }
+            continue;
+        }
+        const Arc edge = adj[v][next[v]++];
+        if (edge.edge == parent_edge[v]) continue;
+        const int u = edge.to;
+        if (tin[u] == -1) {
+            parent[u] = v; parent_edge[u] = edge.edge;
+            children[v].push_back(u);
+            tin[u] = low[u] = static_cast<int>(order.size());
+            order.push_back(u); stack.push_back(u);
+        } else {
+            low[v] = std::min(low[v], tin[u]);
+        }
+    }
+    if (order.size() != static_cast<std::size_t>(n))
+        throw std::invalid_argument("connected graph required");
+    int pivot = 0;
+    while (true) {
+        int descend = -1;
+        for (const int u : children[pivot]) if (sub[u] >= a) { descend = u; break; }
+        if (descend == -1) break;
+        pivot = descend;
+    }
+    std::vector<unsigned char> in_p(n, 0);
+    for (int i = tin[pivot]; i < tin[pivot] + sub[pivot]; ++i) in_p[order[i]] = 1;
+    int p_size = sub[pivot], q_size = n - p_size;
+    for (const int u : children[pivot]) {
+        if (q_size >= a) break;
+        if (low[u] < tin[pivot] && p_size - sub[u] >= a) {
+            for (int i = tin[u]; i < tin[u] + sub[u]; ++i) in_p[order[i]] = 0;
+            p_size -= sub[u]; q_size += sub[u];
+        }
+    }
+    if (q_size < a) return std::vector<int>(n, 0);
+    const unsigned char small_side = p_size <= q_size ? 1 : 0;
+    std::vector<int> answer(n, request[2].second);
+    std::vector<unsigned char> seen(n, 0);
+    auto take = [&](unsigned char side, int count, int label) {
+        int start = 0;
+        while (start < n && in_p[start] != side) ++start;
+        std::vector<int> todo;
+        todo.push_back(start); seen[start] = 1;
+        for (int selected = 0; selected < count; ++selected) {
+            const int v = todo[static_cast<std::size_t>(selected)];
+            answer[v] = label;
+            for (const Arc edge : adj[v]) {
+                const int u = edge.to;
+                if (!seen[u] && in_p[u] == side) { seen[u] = 1; todo.push_back(u); }
+            }
+        }
+    };
+    take(small_side, a, request[0].second);
+    take(static_cast<unsigned char>(1 - small_side), b, request[1].second);
+    return answer;
+}
+
+// IOI 2019 interface: labels 1, 2, 3 retain the original a, b, c order.
+std::vector<int> find_split(int n, int a, int b, int c,
+                            std::vector<int> p, std::vector<int> q) {
+    return partition_three_two_connected(n, {a, b, c}, p, q);
+}
+```
+
+## 関連する手法
+
+[橋と辺の故障](/flowchartcp/techniques/bridge-edge-failure/)でもlowlinkを使う。本技巧で必要なのは、子から分割頂点 $v$ の真の祖先へ戻れるかという厳密な比較であり、$v$ 自身への接続だけでは反対側へ移せない。
+
+[部分木を区間にするDFS順](/flowchartcp/techniques/subtree-euler-interval/)により、移す子部分木を一つの連続区間として扱える。[グラフの帰着](/flowchartcp/techniques/graph-reduction/)と同様に、最初に小さい二サイズだけを連結にする同値性を確立することが、構築と不可能性判定を同じ条件で扱う鍵になる。
+
+## 参考資料
+
+- [Split the Attractions — IOI公式本部の原典](https://ioinformatics.org/files/ioi2019problem2.pdf)。三集合のうち少なくとも二つの内部連結性を要求し、不可能時には全0を返す。
+- [Split (Review) — 公式配布アーカイブのHSC解説](https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf)。小さい二サイズへの整理、最小十分部分木、祖先への後退辺による移動を参照した。移動後の連結性と、失敗した場合の不可能性を本文で証明した。
+- [ISC英語原典の公開ミラー](https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf)。三サイズとグラフの制約は3ページ目にある。
+- [IOI 2019公式配布アーカイブ](https://ioi.te.lv/locations/ioi19/contest/)と[日本委員会の課題一覧](https://www2.ioi-jp.org/ioi/2019/tasks/index.html)。Splitは競技日1の2019年8月6日。難度値は設定しない。
+
+<TechniqueReferences techniqueId="dfs-lowlink-three-size-two-connected-partition" />

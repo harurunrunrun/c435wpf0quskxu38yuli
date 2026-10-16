@@ -1,0 +1,332 @@
+[
+  {
+    "id": "subset-sum-inverse-update",
+    "title": "部分和の個数から要素を削除するなら、追加と逆の順に引き戻す",
+    "summary": "正の重さの0/1選択を係数列として持ち、追加は降順、削除は昇順の三角形の式で更新する。",
+    "aliases": [
+      "Dynamic subset sum inverse update",
+      "knapsack add erase generating polynomial",
+      "部分和DPの逆更新"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "knapsack",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc321/tasks/abc321_f",
+      "https://atcoder.jp/contests/abc321/editorial/7281"
+    ]
+  },
+  {
+    "id": "all-segment-subset-sum",
+    "title": "全区間の部分和の個数は、左端の開始を足し、各右端で一度ずつ集計する",
+    "summary": "区間ごとのDPをまとめ、右端を伸ばす前に新しい左端の空選択を一つ追加する。",
+    "aliases": [
+      "Knapsack for all segments boundary DP",
+      "sum of subset sum counts over subarrays",
+      "全区間部分和の開始状態"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "knapsack",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc159/tasks/abc159_f",
+      "https://img.atcoder.jp/abc159/editorial.pdf"
+    ]
+  },
+  {
+    "id": "knapsack-first-color-bonus",
+    "title": "種類ごとに一度のボーナスは、その種類を初めて選ぶ遷移だけへ足す",
+    "summary": "種類をまとめて処理し、未使用の前の層と、一個以上使った現在の層を分ける。",
+    "aliases": [
+      "Grouped knapsack first item bonus",
+      "Diversity color bonus DP",
+      "種類別ボーナスの初回遷移"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "knapsack",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc383/tasks/abc383_f",
+      "https://atcoder.jp/contests/abc383/editorial/11840"
+    ]
+  },
+  {
+    "id": "interval-hit-last-selected",
+    "title": "一つでも選ぶと区間得点が付くなら、最後の選択位置だけで満たした条件を判定する",
+    "summary": "区間の右端で評価し、最後に選んだ位置が区間内にある状態へ得点を一括加算する。",
+    "aliases": [
+      "Weighted interval hit last selected DP",
+      "Educational DP W Intervals",
+      "区間命中の最後の選択位置"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "lazy-segment-tree",
+      "dp-state-dominance"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_w"
+    ]
+  },
+  {
+    "id": "partition-distinct-range-add",
+    "title": "区間の種類数で分割するDPは、直前の同値位置から増える候補だけへ加算する",
+    "summary": "各切れ目の前層の値と最後の区間の種類数を持ち、新しい値の直前出現で更新範囲を決める。",
+    "aliases": [
+      "The Bakery distinct segment partition DP",
+      "last occurrence range add partition",
+      "種類数分割DPの範囲加算"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "lazy-segment-tree",
+      "offline-rightmost-occurrence"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/833/B"
+    ]
+  },
+  {
+    "id": "partition-equal-pairs-moving-window",
+    "title": "同値対の費用で区間分割するなら、切れ目の単調性と窓の頻度更新を組み合わせる",
+    "summary": "離れた二範囲の同値対が非負であることからMonge性を示し、遷移の探索と費用評価を同時に減らす。",
+    "aliases": [
+      "Yet Another Minimization Problem equal pair DP",
+      "divide conquer DP moving frequency window",
+      "同値対費用の分割統治DP"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "dp-monotone-split",
+      "mo-frequency-quadratic"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/868/F"
+    ]
+  },
+  {
+    "id": "palindrome-erasure-boundary",
+    "title": "連続回文を消す最少回数は、同色の両端を内側の最後の削除に加える",
+    "summary": "左端を一個で消す場合と、同色の相手と一緒に消す場合に分け、内側と右側の区間へ帰着する。",
+    "aliases": [
+      "Zuma palindrome erasure interval DP",
+      "attach matching endpoints to final inner deletion",
+      "回文削除の端点併合"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "interval-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/607/B",
+      "https://codeforces.com/blog/entry/22256"
+    ]
+  },
+  {
+    "id": "optional-booster-subset-speed",
+    "title": "任意の加速点がある巡回は、訪問集合から今の速度を決め、必須点だけの完了を認める",
+    "summary": "速度の軸を追加せず、取得済みの加速点のビット数で移動費用を計算する。",
+    "aliases": [
+      "Optional booster subset tour DP",
+      "Booster traveling salesman mandatory vertices",
+      "必須点と加速点の集合DP"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "prerequisites": [
+      "bitmask-dp",
+      "grid-waypoint-subset"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc274/tasks/abc274_e",
+      "https://atcoder.jp/contests/abc274/editorial/5082"
+    ]
+  },
+  {
+    "id": "cartesian-prefix-meeting-cost-single-cross-envelope",
+    "title": "区間内の会場を選び、道中の最大高さの合計を最小にする",
+    "summary": "区間の最大位置で会場の左右を分け、左端から各位置までの最適費用をまとめる。二候補が一度だけ交差する性質と、小さい側の併合で多数の区間質問に答える。",
+    "aliases": [
+      "IOI2018 Meetings cartesian prefix single crossing envelope",
+      "maximum along meeting path interval optimal venue small to large offsets",
+      "区間最大高さ和 会場最小化 接頭辞DP 一交差 包絡 破壊的併合"
+    ],
+    "family": "最大位置で分割する区間最適化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "small-to-large",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/LVA-meetings.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  {
+    "id": "orthogonally-convex-row-interval-phase-prefix-dp",
+    "title": "行と列が途切れない連結なマス集合を、両端の動きと累積和で数える",
+    "summary": "各行の選択を一区間で表し、左端が内向きになったか、右端が内向きになったかを記録する。隣接行の重なりと厳密な転換を矩形和にまとめ、同じ集合を重複せず数える。",
+    "aliases": [
+      "USACO2021 Balanced Subsets orthogonal convex polyomino count",
+      "row interval two strict inward phases 2D prefix sum DP",
+      "行列凸 4連結部分集合 左右境界一転換 累積和DP"
+    ],
+    "family": "行区間と境界の向きを使う格子DP",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "state-design",
+      "prefix-sum",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+      "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ]
+  },
+  {
+    "id": "word-wrap-sparse-space-river-dp",
+    "title": "行幅を変えて、空白の連なりを最長にする",
+    "summary": "単語間の空白だけを前行の空白と照合し、列差1以内の最長鎖を伸ばす。折返しが変わる次の幅へ進み、行数の上界で探索を止める。",
+    "aliases": [
+      "ICPC2018 World Finals F Go with the Flow longest river word wrap",
+      "word wrap sparse interword spaces river DP event widths",
+      "単語の折返し 左詰め 単語間空白 最長river 最小幅"
+    ],
+    "family": "折返しで定まる空白の疎な行間DP",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "two-pointers",
+      "state-design"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+      "https://news.icpc.global/wf2018/"
+    ]
+  },
+  {
+    "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+    "title": "黒い連続区間の長さから、全ての塗り方で共通する色を求める",
+    "summary": "前後の配置可否をつなぎ、白にできる位置と黒い区間を置ける範囲を集めて各マスの色を確定する。",
+    "aliases": [
+      "Fixed run row prefix suffix feasibility forced colors",
+      "IOI2016 Paint By Numbers solve_puzzle",
+      "Nonogram row all solutions forced black white",
+      "お絵かきパズル 黒区間長 既知色 前後DP 必須色"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "state-design",
+      "difference-array"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  }
+]

@@ -1,0 +1,72 @@
+---
+title: "桁DP"
+description: "整数を上の桁から決めながら、条件を満たす数の個数を求める。"
+techniqueId: digit-dp
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+整数を上の桁から決めながら、条件を満たす数の個数を求める。
+
+## 使う場面
+
+大きな整数 $X$ 以下で、桁和や隣り合う桁、ある数で割った余りなどの条件を満たす整数を数えるときに使う。整数を一つずつ調べる代わりに、数十程度の桁を順に処理できる。
+
+## 考え方
+
+上の桁から数字を選ぶ。状態には、桁の位置、ここまでが上限 $X$ と一致しているか、条件を判定するための情報を保存する。
+
+上限と一致している間は、その桁に $X$ の対応する数字以下しか置けない。一度上限より小さくなれば、残りの桁は0から9まで自由に選べる。$F(X)$ を $X$ 以下の個数とすれば、区間 $[L,R]$ の個数は $F(R)-F(L-1)$ で求められる。
+
+## 適用条件
+
+これまでの桁から、今後の判定に必要な情報を小さい状態で表せることが必要になる。例えば隣り合う数字が等しいかだけなら、直前の数字を保存すればよい。
+
+短い整数を上限と同じ桁数にそろえるための先頭の0は、実際の桁と区別する。そうしないと、1を001として生成したときの先頭の00を、等しい数字の連続として扱ってしまう。整数0を数えるかも決めておく。
+
+## なぜ正しいか
+
+各整数は、上限と同じ桁数の0埋め表現に一意に対応する。上限と一致しているかを管理することで、上限を超える表現を除ける。同じ状態に到達した桁列は、それ以降に置ける数字が共通するため、個数を合算できる。条件を満たす遷移だけを通せば、必要な整数を一度ずつ数えられる。
+
+## 計算量
+
+桁数を $D$、桁条件の状態数を $S$、基数を $B$ とすると、時間は $O(DSB)$。直前の桁の配列だけを保存すれば、空間は $O(S)$。
+
+## 実装
+
+`count_no_equal_neighbors(upper)` は、0以上 `upper` 以下で、隣り合う数字が等しくない整数の個数を返す。0も数え、負の上限には0を返す。状態10は、先頭の0だけを置いていて、まだ実際の数字を置いていないことを表す。
+
+```cpp
+#include <string>
+using namespace std;
+long long count_no_equal_neighbors(long long upper) {
+    if(upper<0) return 0;
+    long long dp[2][11]={};
+    dp[1][10]=1;
+    for(char c:to_string(upper)) {
+        long long next[2][11]={};
+        int digit=c-'0';
+        for(int tight=0;tight<2;++tight)
+            for(int prev=0;prev<=10;++prev)
+                for(int x=0;x<=(tight?digit:9);++x) {
+                    if(prev!=10 && prev==x) continue;
+                    int p=(prev==10 && x==0)?10:x;
+                    next[tight && x==digit][p]+=dp[tight][prev];
+                }
+        for(int t=0;t<2;++t) for(int p=0;p<=10;++p) dp[t][p]=next[t][p];
+    }
+    long long ans=0;
+    for(auto& row:dp) for(long long x:row) ans+=x;
+    return ans;
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [USACO Guide: Digit DP](https://usaco.guide/gold/digit-dp)
+- [USACO Guide: Counting Numbers solution](https://usaco.guide/problems/cses-2220-counting-numbers/solution)
+
+<TechniqueReferences techniqueId="digit-dp" />

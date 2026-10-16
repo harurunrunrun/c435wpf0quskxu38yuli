@@ -1,0 +1,182 @@
+{
+  "status": "complete-no-substantive-findings",
+  "auditFile": "data/corpus-audits/ioi-2018.json",
+  "auditSha256": "1a5278aa3d548df4a8ded8f86e033a36c41c26e4519409622766bb2ca1ea897e",
+  "auditSha256Scope": "audit bytes at this review; later appended reviews do not rewrite the fixed initial record/status/selection projections",
+  "originalRecordsSha256": "ee06a9394e994d941e27a5b820bdd7f6eafbe0d54561f1b3216d2a7a950a0523",
+  "originalAuditRawSha256": "c497743e29f92ac8e8d9604b1e34dd85ee99a6c24cf610423aa05dabda1c3b5d",
+  "sharedDataModified": false,
+  "authorArtifactsModified": false,
+  "snapshot": {
+    "historicalRawFilesVerifiedAtInitialReview": 607,
+    "permanentRawSnapshotsRehashed": 2,
+    "articles": 482,
+    "specific": 404,
+    "graphs": 449,
+    "walks": 503
+  },
+  "preservation": {
+    "allHistoricalRawBytesAvailable": false,
+    "allHistoricalMdxAvailable": false,
+    "originalManifestRawSha256": "bc97c90a87d59f384a931ca5e315799372169b8ac5a78fbb4b3bced5d9a600bf",
+    "permanentManifestRawSha256": "5f4e3a6d77568ffdd1fbd25f6632c6520bc06b09ec5713b5fcf82385c8cca104",
+    "originalManifestEntriesUnchanged": true,
+    "originalRecordsAndStatusUnchanged": true
+  },
+  "routesReplayedWithoutProductWalker": [
+    {
+      "problemId": "ioi2018_combo",
+      "stop": [
+        "interactive-oracles",
+        "general-result"
+      ],
+      "choices": [
+        "other"
+      ]
+    },
+    {
+      "problemId": "ioi2018_seats",
+      "stop": [
+        "grid-color-numbers",
+        "goal"
+      ],
+      "choices": [
+        "color-numbers"
+      ]
+    },
+    {
+      "problemId": "ioi2018_werewolf",
+      "stop": [
+        "connectivity-static-or-add",
+        "components"
+      ],
+      "choices": [
+        "network-connection",
+        "connectivity",
+        "static-or-add",
+        "static"
+      ]
+    },
+    {
+      "problemId": "ioi2018_doll",
+      "stop": [
+        "thinking-operation-goals",
+        "reason-task"
+      ],
+      "choices": [
+        "operation-goals"
+      ]
+    },
+    {
+      "problemId": "ioi2018_highway",
+      "stop": [
+        "interactive-oracles",
+        "general-result"
+      ],
+      "choices": [
+        "other"
+      ]
+    },
+    {
+      "problemId": "ioi2018_meetings",
+      "stop": [
+        "range-static-aggregate-forms",
+        "kind"
+      ],
+      "choices": [
+        "aggregate-goals",
+        "static",
+        "aggregate-forms"
+      ]
+    }
+  ],
+  "officialSelectionAndDatesIndependentlyRetrievedAtInitialReview": true,
+  "numericEvidence": "All six organizer-hosted translation search texts independently reproduced at the initial review; no PDF visual inspection claimed.",
+  "officialReviewProvenance": "All six Reviews are direct links from organizer and Japan committee task lists. Missing mathematical extraction is explicitly supplemented by author primary HTML and independent analysis, rather than claimed visually read.",
+  "researchVsCoverage": {
+    "solutionsReviewed": 6,
+    "principalUnconfirmed": 0,
+    "missingConcreteTechniques": 6,
+    "covered": 0,
+    "fullImplementationValidated": 0,
+    "globalComplete": false
+  },
+  "probes": {
+    "combo": {
+      "allLegalStringsLength1to8": 13120,
+      "largestQueries": 10,
+      "oracle": "literal longest secret prefix that occurs as substring"
+    },
+    "seats": {
+      "allNonemptyBitmapsUpTo4x4": 74938,
+      "permutations": 1481,
+      "everySwap": 21784,
+      "oracle": "bbox area == cardinality for each label prefix; no corner criterion used by oracle"
+    },
+    "werewolf": {
+      "allConnectedSimpleGraphsN2to5": 771,
+      "allValidQueries": 115398,
+      "oracle": "direct two-form BFS versus two activation trees + Euler rectangles + independent Fenwick sweep"
+    },
+    "doll": {
+      "allTwoTriggerSequencesLength1to8": 510,
+      "maximumN": 200000,
+      "maximumM": 100000,
+      "switchesAtMaximum": 200012,
+      "changesAtMaximum": 3836286,
+      "oracle": "literal toggle state machine until first origin return; exact trigger sequence and every final switch checked"
+    },
+    "highway": {
+      "allConnectedSimpleGraphsN2to5": 771,
+      "allPairsTimesThreeTollSettings": 22563,
+      "maximumQueriesSmall": 7,
+      "maximumSplitCeilLogsAtN90000": 32,
+      "fullQueryBound": 50,
+      "oracle": "Dijkstra on each actual queried A/B weighting; answer pair checked, no shortest-path-tree assumption in oracle"
+    },
+    "meetings": {
+      "allHeightArraysN1to7Values1to3": 3279,
+      "allIntervalQueries": 81192,
+      "allCartesianPrefixEntries": 63084,
+      "equalHeightsIncluded": true,
+      "oracle": "enumerate every meeting site and every participant, take literal intervening maximum; vector DP and one-cross inequality checked"
+    },
+    "seconds": 2.5467938459987636
+  },
+  "additionalChecks": {
+    "meetingsEqualMaximum": {
+      "array": [
+        2,
+        1,
+        2
+      ],
+      "sameOriginalMaximumId": 5,
+      "wrongReverseLocalTieRule": 6,
+      "literalMeetingSiteOracle": 5
+    },
+    "dollSwitchAndInversionBoundsForAllN": 200000,
+    "dollFullSimulationAdditionalBoundaryLengths": 99,
+    "highwayAllPossibleWeightVectors": 1938,
+    "highwayLiteralSimplePathVsDijkstraPairs": 11418,
+    "highwayConnectedGraphsN2To4": 43
+  },
+  "proofReview": {
+    "combo": "Unique first symbol restricts every candidate occurrence to one of the four P starts; queried length4|P|+7<=4N-1; middle answer is classified >=|P|+2, not assumed exact. First2+middle(N-2)+last2<=N+2; N=1 separate.",
+    "seats": "C1>=4; absence of C3 makes every four-neighbor component a rectangle; triangle-free planar diagonal-contact graph forces C1=4 to have one component. Four labels contribute exactly odd-population intervals[a,b),[c,d); only eight deduplicated vertices change.",
+    "werewolf": "Human and wolf feasible vertex components intersect iff a legal one-way transformation exists. Separate activation-tree leaf orders require a two-dimensional point set, not one-dimensional interval overlap; inclusive thresholds and half-open sweep match BFS.",
+    "doll": "Pruning only complete dead spatial subtrees skips their internal toggles but preserves retained-switch events in the original bit-reversal cycle. Last spatial leafP-1 is retained and assigned0, so first return occurs only at cycle end; retained switches all toggle evenly. BoundS=N-popcount(N)+bit_length(N)<=N+floorlog2N.",
+    "highway": "Threshold pivot lies on some original hop-shortest path. Its two endpoints give disjoint strict-distance Voronoi sets closed under rooted shortest paths. The two BFS trees+pivot alone are A; every other edge B. Any B-containing route exceeds D because its hop count is at least the original optimum and B>A. A path is unique, so suffix-parent-edge response tests identify the maximum vertex order on that path, including a root endpoint. All replies use one fixed hidden pair.",
+    "meetings": "Recurrence separates sites left/right of fixed maximum. The F-G difference is monotone since adding one participant raises optimal right-prefix cost by at most Hv. Fixed original-index tie priority preserves the same split in both directions. Global-position map uses O(1) iterator beta updates; charging surviving fragments to birth vertices and choosing smaller original subtree mass proves O(NlogN) offset work despite fragment deletion. Full compressed C++20 and worst-case runtime remain explicitly unvalidated."
+  },
+  "sourceUrls": [
+    "https://ioi2018.jp/competition/tasks/",
+    "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "https://ioi2018.jp/tasks/contest1/IND-combo.pdf",
+    "https://ioi2018.jp/tasks/contest1/TWN-seats.pdf",
+    "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf",
+    "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf",
+    "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+    "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf",
+    "https://ioi2018.jp/tasks/contest2/TWN-meetings.pdf"
+  ]
+}

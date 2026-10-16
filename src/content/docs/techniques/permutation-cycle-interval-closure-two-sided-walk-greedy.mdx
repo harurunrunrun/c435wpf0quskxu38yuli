@@ -1,0 +1,178 @@
+---
+title: "一冊だけ持って並べ替える歩行距離を、サイクルの閉包で求める"
+description: "本を一冊だけ持って直線上を歩き、置換を完成して開始位置へ戻る。運搬距離の下界に、サイクルを取り込むための往復距離を足し、左右の探索を線形時間で比較する。"
+techniqueId: permutation-cycle-interval-closure-two-sided-walk-greedy
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+等間隔に並ぶ位置 $0,1,\ldots,N-1$ に一つずつ物があり、位置 $i$ の物を位置 $p[i]$ へ届けたい。$p$ は順列である。作業者は一つだけ物を持てる。今いる位置で拾う、手持ちの物と交換する、空いた位置へ置く操作は無料で、位置の間を歩く距離だけを払う。作業は位置 $s$ で始まり、並べ替え後も $s$ へ戻る。
+
+移動先へ直接交換する回数を数えても、歩行距離は求まらない。例えば `p=[2,1,0], s=1` では、二つの物の必要運搬距離は合計4だが、中央から実際に物を拾える端へ歩いて戻る分も必要で、答えは6になる。
+
+## 考え方
+
+各物が最低限移動する距離を合計する。
+
+$$D=\sum_{i=0}^{N-1}|i-p[i]|.$$
+
+順列の一つのサイクルへ入れば、物を目的位置へ持ち回ることで、そのサイクルの必要距離だけで処理できる。途中で別のサイクルの位置を通れば、その処理を差し込める。そこで、処理可能になった位置の区間 $[l,r]$ を持つ。
+
+区間内に**実際の頂点を持つサイクル**を取り込み、その最左・最右の位置まで区間を広げる。これを繰り返した区間を閉包と呼ぶ。区間が閉じた後、さらに左か右へ一歩広げるには、追加の往復費用2が必要になる。
+
+左右をそれぞれ試し、初めて反対側まで無料拡張するサイクルに触れるまでの費用を調べる。そのようなサイクルがあれば、どちら側から入っても同じ閉包へ進めるため、安い側の費用だけを払う。無ければ、左右を独立に処理する費用を両方払う。
+
+## 適用条件
+
+全位置に物が一つずつあり、移動先は同じ位置集合の順列である。一度に持てるのは一つで、拾う・交換・置くこと自体は無料。位置 $i,j$ の歩行距離は $|i-j|$ で、開始位置へ戻る必要がある。
+
+掲載関数 `minimum_single_book_sort_walk(destination, start)` は、長さ1〜100万の `std::vector<int>` と、範囲内の開始位置を受け取る。位置も値も0始まりで、返り値は最小歩行距離の `std::int64_t`。移動手順そのものは返さない。この範囲は原典の全入力を含む。
+
+空列、長さ超過、範囲外の開始位置、範囲外の移動先、値の重複は `std::invalid_argument`。入力は変更せず、呼出し間に状態を残さない。割当失敗などの標準例外はそのまま伝わる。既に整列していれば、開始位置によらず0を返す。
+
+原典用の `long long minimum_walk(std::vector<int> p, int s)` も末尾に載せる。補助資料にある旧API `booksort(N,S,order)` とは区別し、現行の二引数を本体へ渡す。
+
+## なぜ正しいか
+
+**運搬距離の下界は、サイクルごとに達成できる。** 各物は初期位置から目的位置まで少なくとも $|i-p[i]|$ 移動する。一冊しか持てないため、合計 $D$ は歩行距離の下界である。一つのサイクルでは、一冊を拾い、目的位置で次の本と交換することを繰り返し、最初の空位置へ戻れば、そのサイクルの距離和だけで並べ替えられる。
+
+処理中に別サイクルの頂点へ着いたら、持っていた物をその位置に一時的に交換して置く。別サイクルを一周処理し、同じ位置で元の手持ちを取り戻せば、元の運搬を続けられる。従って、既に通れる区間内に頂点を持つサイクルは、追加の接続歩行なしで取り込める。
+
+**外接区間が重なるだけでは足りない。** `p=[2,1,0], s=1` の外側サイクルは頂点0・2だけからなる。外接区間は開始位置1を含むが、位置1にそのサイクルの本はない。最初から0・2を無料で取り込むことはできない。閉包は、現在区間の各位置について、その位置が属するサイクルの端点を取り込む操作で定義する。
+
+**閉包の外への一歩には、追加費用2が必要十分である。** 上界は、既に処理可能な端から一歩外へ出て、新たなサイクルの処理を差し込み、同じ辺を戻る構成で得られる。この往復だけが $D$ への追加費用である。
+
+下界には、隣り合う位置の間の切れ目を考える。順列なので、その切れ目を左から右へ運ぶ必要がある本の数と、右から左へ運ぶ本の数は等しい。開始位置へ戻る歩行も、各方向の通過数が等しい。
+
+それまでに拾った本の初期位置は訪問範囲にあり、そのサイクル全体も閉包に含まれる。閉じた区間から初めて外へ出るとき、手持ちの本の移動先はその閉包の中にある。従ってその一歩は、その本に必要な運搬距離を減らすための通過には数えられない。片方向に最低一本の余分な通過があるので、方向ごとの均衡から合計でも最低2の追加歩行が必要である。閉包を広げた後は同じ切れ目を再び有料で選ばないため、これらの下界を加算できる。
+
+任意の作業について、実際に訪れた範囲の閉包を無料で与えても、この外への最初の通過の下界は保たれる。逆に閉包と有料の一歩から実際の作業を構成できる。よって、$D$ に足す最小費用は、この区間拡張の最小費用と一致する。
+
+**左右の最初の橋は、同じ閉包へ合流する。** 閉区間 $I=[l,r]$ をまたぐ未処理サイクルは、実際の頂点を $l$ より左と $r$ より右に持ち、$I$ 内には持たない。このようなサイクルを橋と呼ぶ。それ以外の未処理サイクルは、片側だけにある。
+
+左側で最も近い橋の頂点を $v_L$、右側で最も近い橋の頂点を $v_R$ とする。どちらかが存在すれば、同じ橋が反対側にも頂点を持つため、両方とも存在する。左から最初の橋へ入ると、その右端は $v_R$ 以上なので、閉包は右側の最初の橋も取り込む。右から入る場合も対称である。従って、片方から得た閉包はもう片方の開始頂点を含む。閉包の単調性と冪等性により、二つの閉包は等しい。
+
+橋へ初めて入るまでは、左にしかないサイクルが右の探索を助けることも、その逆もない。左側を最大限無料で閉じながら進んだ費用を $c_L$、右側を $c_R$ とすると、任意の作業は最初の橋までに少なくとも一方の費用を払う。両側を先に少しずつ進めても、その訪問範囲は、どちらの最初の橋からも得られる共通閉包に含まれる。従って $\min(c_L,c_R)$ だけを払い、その共通閉包から続ける交換が安全である。
+
+橋が無ければ、片側の処理は反対側を一切広げない。左右それぞれの必要区間まで進む費用が両方必要なので、$c_L+c_R$ を払う。全ての非自明なサイクルと開始位置を含むまで繰り返すと最適になる。
+
+## 計算量
+
+順列の検査、サイクルごとの最左・最右の位置の計算は $O(N)$。閉包を広げる際には、区間内を走査し直さず、新たに加わった端の位置だけを調べる。
+
+一回の左右の試行では、それぞれの区間は広がるだけなので、新しい位置を各方向の試行で高々一度ずつ調べる。二つの閉区間は元の区間で重なるため、その和集合も閉じている。試行で調べた位置は全て今回の確定区間へ吸収され、次の回では内部を調べない。有料の一歩も新しい位置を一つ加える。従って、端点の定数回の再確認を含めて全体で **$O(N)$ 時間、$O(N)$ 空間**。再帰は使わない。
+
+$D\le N(N-1)$ であり、追加歩行は高々 $2(N-1)$。100万位置では32bitを超えるため、基礎距離・左右の費用・答えを符号付き64bitで持つ。位置と添字は範囲検査後に `int` へ変換する。原典用の値渡しadapterによるコピーも $O(N)$ 時間・空間に収まる。
+
+## 実装
+
+`leftmost[v]` と `rightmost[v]` は、位置 $v$ が属するサイクルの端点である。`extend(l,r)` は、区間の内部は既に調査済みで、新たに確認すべきものが端点だけであることを前提にする。最初は区間が一つの位置なので、この前提を満たす。
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+
+std::int64_t minimum_single_book_sort_walk(
+    const std::vector<int>& destination, int start) {
+    static_assert(std::numeric_limits<int>::max() >= 1000000);
+    static_assert(std::numeric_limits<long long>::digits >= 63);
+    if (destination.empty() || destination.size() > 1000000 ||
+        start < 0 || static_cast<std::size_t>(start) >= destination.size())
+        throw std::invalid_argument("invalid size or start");
+    const int n = static_cast<int>(destination.size());
+    std::vector<unsigned char> seen(n, 0);
+    std::int64_t base = 0;
+    int target_left = start, target_right = start;
+    for (int i = 0; i < n; ++i) {
+        const int value = destination[i];
+        if (value < 0 || value >= n || seen[value])
+            throw std::invalid_argument("destination must be a permutation");
+        seen[value] = 1;
+        base += value >= i ? std::int64_t(value) - i : std::int64_t(i) - value;
+        if (value != i) {
+            target_left = std::min(target_left, i);
+            target_right = std::max(target_right, i);
+        }
+    }
+    if (base == 0) return 0;
+    std::fill(seen.begin(), seen.end(), 0);
+    std::vector<int> leftmost(n), rightmost(n);
+    for (int first = 0; first < n; ++first) {
+        if (seen[first]) continue;
+        int low = first, high = first, v = first;
+        do {
+            seen[v] = 1;
+            low = std::min(low, v);
+            high = std::max(high, v);
+            v = destination[v];
+        } while (v != first);
+        v = first;
+        do {
+            leftmost[v] = low;
+            rightmost[v] = high;
+            v = destination[v];
+        } while (v != first);
+    }
+    const auto extend = [&](int& l, int& r) {
+        int wanted_left = std::min({l, leftmost[l], leftmost[r]});
+        int wanted_right = std::max({r, rightmost[l], rightmost[r]});
+        while (wanted_left < l || r < wanted_right) {
+            const int next = wanted_left < l ? --l : ++r;
+            wanted_left = std::min(wanted_left, leftmost[next]);
+            wanted_right = std::max(wanted_right, rightmost[next]);
+        }
+    };
+    int l = start, r = start;
+    extend(l, r);
+    std::int64_t extra = 0;
+    while (target_left < l || r < target_right) {
+        int left_l = l, left_r = r;
+        std::int64_t left_cost = 0;
+        while (target_left < left_l) {
+            --left_l;
+            left_cost += 2;
+            extend(left_l, left_r);
+            if (left_r > r) break;
+        }
+        int right_l = l, right_r = r;
+        std::int64_t right_cost = 0;
+        while (right_r < target_right) {
+            ++right_r;
+            right_cost += 2;
+            extend(right_l, right_r);
+            if (right_l < l) break;
+        }
+        if (left_r > r) extra += std::min(left_cost, right_cost);
+        else extra += left_cost + right_cost;
+        l = std::min(left_l, right_l);
+        r = std::max(left_r, right_r);
+    }
+    return base + extra;
+}
+
+long long minimum_walk(std::vector<int> p, int s) {
+    return static_cast<long long>(minimum_single_book_sort_walk(p, s));
+}
+```
+
+## 関連する手法
+
+[順列のサイクルと最小交換回数](/flowchartcp/techniques/permutation-cycle-minimum-swaps/)は、任意の二位置を一回で交換できる場合を扱う。一冊を持って歩く費用には、サイクル間の接続と開始位置への帰還を加える必要がある。
+
+[木の葉から順列を直す構築](/flowchartcp/techniques/permutation-tree-leaf-fix/)は、許可された位置対での交換手順を作る。この技巧では、持ち運べる数と直線距離を使って最小費用だけを求める。
+
+## 参考資料
+
+- [IOI 2017 Ancient Books 最終原典](https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf)
+- [公式配布の最終原典・韓国語版](https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf)
+- [公式アーカイブがEditorialとして配布するDaniel GrafのLibrary資料](https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf)：一冊運搬の下界、区間閉包、左右の最初のサイクルを使う線形手順。旧題名・旧API・旧小課題表は、最終原典の制約やAPIの根拠には使わない。上の実頂点条件と切れ目の下界は、手順を明確にする独立補足である。
+- [Day2実装上の注意](https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf)：整数・配列型と関数形式。
+- [日本委員会の公式課題一覧](https://www2.ioi-jp.org/ioi/2017/tasks/index.html)：本競技Day2は2017-08-01。
+
+<TechniqueReferences techniqueId="permutation-cycle-interval-closure-two-sided-walk-greedy" />

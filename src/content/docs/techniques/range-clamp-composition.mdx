@@ -1,0 +1,97 @@
+---
+title: "区間の上限・下限更新で最後の各値だけ欲しいなら、切り詰める写像を合成する"
+description: "値の分布を集計せず、各区間に残る更新を二つの境界で持ちます。"
+techniqueId: range-clamp-composition
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+上下のしきい値で値を切り詰める更新があり、最後に各位置の値を一度ずつ出す場面です。区間和や最大値を途中で求める必要がなければ、区間内の値の分布を保存せず、未反映の写像だけをまとめられます。
+
+## 考え方
+
+一位置にかかる更新列を、
+
+$$F_{L,U}(x)=\min(\max(x,L),U),\qquad L\le U$$
+
+という一つの写像へまとめます。既存の写像の後に新しい $F_{l,u}$ を行うなら、
+
+$$L'=F_{l,u}(L),\qquad U'=F_{l,u}(U).$$
+
+上限更新は $l=-\infty$、下限更新は $u=+\infty$ とした写像です。境界が交差する更新列も、$L'=U'$ の定数写像として扱えます。
+
+一部の子区間へ次の更新を入れる前に、親の未反映写像を子へ渡します。子の古い写像の後に親の新しい写像を合成する順序です。最後は木を一回下り、葉の初期値に残った写像を適用します。
+
+## 適用条件
+
+欲しいものは最終の各値で、更新の種類は上限・下限の切り詰めだけです。途中の区間和は、これら二つの境界から更新できません。その場合は第二最大値など、別の情報が必要です。
+
+実装は任意の64ビット初期値としきい値を扱います。半開区間 $[l,r)$、空区間も受け付けます。数値の加算をしないため、64ビットの両端値も境界として使えます。木の再帰の深さは $O(\log N)$ です。
+
+## なぜ正しいか
+
+切り詰め写像は単調で、$L$ と $U$ の間では恒等、外側では定数です。別の切り詰め写像を後ろへ合成すると、変わり始める境界と変わり終わる境界は、それぞれ元の両境界の像になります。これが二境界の合成式です。
+
+全区間への更新は一つの写像として保存できます。一部を更新するときに親の更新を先に渡せば、子には元の時系列と同じ順序で写像が合成されます。最後の葉の写像は、その位置にかかった全更新と一致します。
+
+## 計算量
+
+一更新ごとに各位置を変えると $O(NQ)$ 時間。改善後は更新 $O(\log N)$、全位置の出力 $O(N)$、全体 $O(Q\log N+N)$ 時間、空間 $O(N)$。途中の集計を持たないことが、この単純な更新を可能にします。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class RangeClamps {
+    int n, size = 1;
+    vector<long long> initial, lower, upper;
+    static constexpr long long MIN = numeric_limits<long long>::lowest();
+    static constexpr long long MAX = numeric_limits<long long>::max();
+    void compose(int v, long long lo, long long hi) {
+        lower[v] = clamp(lower[v],lo,hi);
+        upper[v] = clamp(upper[v],lo,hi);
+    }
+    void push(int v) {
+        compose(2*v,lower[v],upper[v]); compose(2*v+1,lower[v],upper[v]);
+        lower[v] = MIN; upper[v] = MAX;
+    }
+    void update(int v,int l,int r,int ql,int qr,long long lo,long long hi) {
+        if (qr <= l || r <= ql) return;
+        if (ql <= l && r <= qr) { compose(v,lo,hi); return; }
+        push(v); int m = (l+r)/2;
+        update(2*v,l,m,ql,qr,lo,hi); update(2*v+1,m,r,ql,qr,lo,hi);
+    }
+    void collect(int v,int l,int r,vector<long long>& out) {
+        if (l >= n) return;
+        if (r-l == 1) { out[l] = clamp(initial[l],lower[v],upper[v]); return; }
+        push(v); int m = (l+r)/2;
+        collect(2*v,l,m,out); collect(2*v+1,m,r,out);
+    }
+    void bounds(int l,int r) const {
+        if (l < 0 || l > r || r > n) throw invalid_argument("range");
+    }
+public:
+    explicit RangeClamps(vector<long long> a):n(int(a.size())),initial(move(a)) {
+        if (n > 2000000) throw invalid_argument("size");
+        while (size < n) size *= 2;
+        lower.assign(2*size,MIN); upper.assign(2*size,MAX);
+    }
+    void chmin(int l,int r,long long h) { bounds(l,r); update(1,0,size,l,r,MIN,h); }
+    void chmax(int l,int r,long long h) { bounds(l,r); update(1,0,size,l,r,h,MAX); }
+    vector<long long> values() { vector<long long> out(n); collect(1,0,size,out); return out; }
+};
+```
+
+## 関連する手法
+
+- [区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/)
+
+## 参考資料
+
+- [IOI 公式問題](https://www.ioi2014.org/competition/images/tasks/day1/wall/wall.pdf)
+- [IOI 公式解説](https://www.ioi2014.org/competition/images/tasks/day1/wall/wall-solution.pdf)
+
+<TechniqueReferences techniqueId="range-clamp-composition" />

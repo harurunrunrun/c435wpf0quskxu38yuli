@@ -1,0 +1,63 @@
+---
+title: "二数のANDと和を指定するなら、共通の1を二回引いて残りとの重なりを調べる"
+description: "和から共通ビットの二倍を除き、残りを片方へ置けるかを判定する。"
+techniqueId: and-sum-disjoint-remainder
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+$x\mathbin{\mathrm{AND}}y=a$、$x+y=s$ を満たす非負整数が存在するかを調べる。二数や繰り上がりの列を全て試す代わりに、指定されたANDの部分を先に取り除ける。
+
+## 考え方
+
+二数の同じ桁を四通りに分けると、整数として
+
+$$x+y=(x\mathbin{\mathrm{XOR}}y)+2(x\mathbin{\mathrm{AND}}y)$$
+
+が成り立つ。したがってXORになるべき残りは $r=s-2a$。
+
+ANDが1の桁では二数とも1なので、XORは0でなければならない。必要な条件は $r\ge0$ と $r\mathbin{\mathrm{AND}}a=0$。この条件が成立すれば、$x=a$、$y=a\mathbin{\mathrm{OR}}r$ とすればよい。
+
+## 適用条件
+
+二数は非負で、個別の上限・正整数条件・大小関係は指定されない。構築値を任意に一つ返す場合にも使える。各値が正である必要があるなら、0になる構築をそのまま採用できない。個別のビット数やpopcount指定がある場合も追加検査が必要。
+
+掲載実装は $a,s$ を符号なし64ビット全域で受け取り、同じ範囲に収まる二数を返す。$2a$ の計算でオーバーフローさせないため、先に $a>s/2$ を検査し、残りを `s-a-a` で求める。$a=s=0$ なら $(0,0)$。負数は扱わない。
+
+## なぜ正しいか
+
+各桁で1が二個ある分は $2a$ に、一個だけある分はXORに寄与する。桁ごとの重みを整数として足すと上の恒等式になる。XORとANDが同じ桁で1になることはないので、二条件は必要。
+
+逆に二条件が成立すると、$a$ と $r$ に共通の1がないため $a\mathbin{\mathrm{OR}}r=a+r$。構築値の和は $a+(a+r)=s$ で、ANDは $a$ になる。両方とも $s$ 以下なので、$s$ の型に収まる。この構築が十分性も示す。
+
+## 計算量
+
+$x=0,\ldots,s$ を試して $y=s-x$ を調べると時間 $O(s+1)$、追加空間 $O(1)$。恒等式で判定・構築すれば、固定64ビットの機械整数では時間・追加空間とも $O(1)$。任意精度整数ならビット数に応じた減算・ANDの計算量を別に数える。
+
+## 実装
+
+```cpp
+#include <cstdint>
+#include <optional>
+#include <utility>
+std::optional<std::pair<std::uint64_t,std::uint64_t>> construct_and_sum(
+    std::uint64_t common, std::uint64_t sum) {
+    if(common>sum/2) return std::nullopt;
+    std::uint64_t remainder=sum-common-common;
+    if((remainder&common)!=0) return std::nullopt;
+    return std::pair{common,common|remainder};
+}
+```
+
+## 関連する手法
+
+- [XORと二数の1の個数を指定した構築は、異なる桁と共通の1へ分ける](/flowchartcp/techniques/xor-popcount-construction/)
+- [和とXORが等しい二数は、繰り上がりを禁止して和の上限だけを追う](/flowchartcp/techniques/carryfree-sum-xor-bound/)
+
+## 参考資料
+
+- [AtCoder — AND and SUM](https://atcoder.jp/contests/abc238/tasks/abc238_d)
+
+<TechniqueReferences techniqueId="and-sum-disjoint-remainder" />

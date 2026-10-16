@@ -1,0 +1,84 @@
+---
+title: "メビウス反転"
+description: "約数ごとに数えた量の重複を打ち消し、正確な最大公約数などの条件を復元します。"
+techniqueId: mobius-inversion
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+約数ごとに数えた量の重複を打ち消し、正確な最大公約数などの条件を復元します。
+
+別名：Möbius Inversion / Mobius Inversion / Möbius Function / 約数包除
+
+## 使う場面
+
+最大公約数が1の組を数える場合や、最大公約数ごとの個数を求める場合に使います。組をすべて列挙する代わりに、各 $d$ の倍数をいくつ含むかを集計します。約数の関係に沿って数えた重複を、メビウス関数で打ち消します。
+
+## 考え方
+
+メビウス関数 $\mu(d)$ は、素数の2乗を因数に持つなら0、それ以外は異なる素因数が偶数個なら1、奇数個なら $-1$ です。$\mu(1)=1$ とします。
+
+$\sum_{d\mid g}\mu(d)$ は $g=1$ のときだけ1になります。$d$ の倍数の入力数を $t_d$ とすると、最大公約数が1のペア数は
+
+$$\sum_d\mu(d)\binom{t_d}{2}$$
+
+です。一般には、$F(n)=\sum_{d\mid n}f(d)$ を $f(n)=\sum_{d\mid n}\mu(d)F(n/d)$ に反転できます。
+
+## 適用条件
+
+以下のペア数の実装は正の整数を扱います。0や負数は別に処理します。最大値 $M$ までの配列を確保できる場合に、倍数を順に走査する方法が有効です。
+
+値が非常に大きい場合は、約数の列挙や別の数論的な集計方法を検討します。法の下で計算する場合は、$-1$ の寄与も正しく正規化してください。
+
+## なぜ正しいか
+
+$g$ の異なる素因数が $t$ 個なら、メビウス関数の約数和は $(1-1)^t$ です。$g=1$ の場合は空積として1、それ以外は0になります。
+
+各ペアの最大公約数にこの和を掛け、ペアの総和と約数の総和の順序を交換すると、$d$ の倍数同士のペア数を集計する式になります。条件を満たすペアだけが1回残ります。
+
+## 計算量
+
+線形篩によるメビウス関数の準備は $O(M)$、倍数の頻度集計は $O(M\log M)$、最後の総和は $O(M)$ です。空間は $O(M)$ です。ペア数は $O(N^2)$ まで増えるため、64ビット整数で数えます。
+
+## 実装
+
+以下は、正整数の列から、添字が異なる無順序ペアを数えます。同じ値が複数あれば、別の要素として数えます。0を含む入力では、この関数へ渡す前に分け、0とのペアを別に数えてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> mobius_sieve(int n) {
+    assert(n>=1); vector<int> mu(n+1),primes; vector<bool> composite(n+1); mu[1]=1;
+    for(int i=2;i<=n;++i) {
+        if(!composite[i]) { primes.push_back(i); mu[i]=-1; }
+        for(int p:primes) {
+            long long x=1LL*i*p; if(x>n) break; composite[x]=true;
+            if(i%p==0) { mu[x]=0; break; }
+            mu[x]=-mu[i];
+        }
+    }
+    return mu;
+}
+long long coprime_pairs(const vector<int>& a) {
+    if(a.empty()) return 0;
+    int m=*max_element(a.begin(),a.end());
+    auto mu=mobius_sieve(m); vector<int> frequency(m+1);
+    for(int x:a) { assert(x>0); ++frequency[x]; }
+    long long answer=0;
+    for(int d=1;d<=m;++d) { long long count=0;
+        for(long long x=d;x<=m;x+=d) count+=frequency[x];
+        answer+=mu[d]*(count*(count-1)/2);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[寄与の数え上げ](/flowchartcp/techniques/contribution/) ・ [部分集合ゼータ変換](/flowchartcp/techniques/subset-transform/)
+
+## 参考資料
+
+- [emthrm: メビウス関数と反転公式（作者資料）](https://emthrm.github.io/cp-library/include/emthrm/math/mobius_mu.hpp)
+- [cp-algorithms: Linear Sieve](https://cp-algorithms.com/algebra/prime-sieve-linear.html)
+
+<TechniqueReferences techniqueId="mobius-inversion" />

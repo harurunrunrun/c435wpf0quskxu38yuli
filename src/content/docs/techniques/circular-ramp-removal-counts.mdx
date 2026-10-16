@@ -1,0 +1,76 @@
+---
+title: "環に1からNを引く操作は、総和と隣接差分から各開始点の回数を復元する"
+description: "操作総数を総和で固定し、一周の差分で特別な一境界だけ変わることから非負整数の回数を求める。"
+techniqueId: circular-ramp-removal-counts
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+環の全位置へ一周で $1,2,\ldots,N$ を引く操作を回転して使い、全て0へできるかを判定したい。操作順を探索する前に、総回数と回転ごとの回数を量の保存から復元する。
+
+## 考え方
+
+一操作の減少総量は $Q=N(N+1)/2$ なので、総操作回数は $T=\sum_i a_i/Q$ に固定される。割り切れなければ不可能。
+
+循環差分を $\Delta_i=a_{i+1}-a_i$ とする。選択箱を $i$ とする操作では、箱 $i$ から $N$、その次から1を引く。取り除くベクトルの差分は、その境界だけ $1-N$、他は1。
+
+箱 $i$ を選ぶ回数を $c_i$ とすると、初期配列の差分は
+
+$$\Delta_i=T-Nc_i,\qquad c_i=\frac{T-\Delta_i}{N}.$$
+
+全 $c_i$ が非負整数か確認すればよい。回数の列を返せば、非常に長い操作列も圧縮して表せる。
+
+## 適用条件
+
+一操作の減少は環を一周する連続量 $1,2,\ldots,N$ で、全ての回転を使える。終点は全0。任意の部分区間だけ減らす操作や、負数を含む減少ベクトルでは同じ差分式にならない。
+
+実装は $1\le N\le2\times10^5$、$0\le a_i\le10^{12}$。総和と積は128ビットで計算する。$N=1$、全0、割り切れない総和、負の回数候補を扱う。返り値の `count[i]` は0始まりの箱 $i$ を選ぶ回数。
+
+## なぜ正しいか
+
+総和と差分の式は、実際の操作ベクトルの和から得られるので必要である。
+
+逆に全 $c_i$ が非負整数なら、差分を一周足した値が0なので $\sum_i c_i=T$。その回数だけ各回転ベクトルを足した配列は、元の $a$ と全隣接差分が同じで、総和も同じである。二配列の差は全位置で同じ定数となり、総和からその定数は0になる。
+
+従って $a$ はこれら正の操作ベクトルの和である。どの順番で一つずつ引いても、残る配列は未実行の非負ベクトルの和なので負にならない。非負整数の回数を得られたことが、途中の合法性まで保証する。
+
+## 計算量
+
+操作列を直接探すと、最大 $T$ 段で各段 $N$ 候補になり得る。総和と差分の走査は $O(N)$ 時間、回数の出力に $O(N)$ 空間。可否だけなら補助空間を $O(1)$ にできる。回数を実際の全操作へ展開する費用は別に $O(T)$。
+
+## 実装
+
+`circular_ramp_removal_counts(a)` は各選択箱の回数を返し、実現不能なら `nullopt`。配列を減らしながら模擬する必要はない。
+
+```cpp
+#include <optional>
+#include <stdexcept>
+#include <vector>
+std::optional<std::vector<long long>> circular_ramp_removal_counts(const std::vector<long long>& a) {
+    int n=int(a.size());
+    if(n<1 || n>200000) throw std::invalid_argument("size");
+    __int128 total=0;
+    for(long long x:a) {if(x<0 || x>1000000000000LL)throw std::invalid_argument("value");total+=x;}
+    __int128 one=(__int128)n*(n+1)/2;
+    if(total%one) return std::nullopt;
+    __int128 operations=total/one;std::vector<long long> count(n);
+    for(int i=0;i<n;++i) {
+        __int128 difference=(__int128)a[(i+1)%n]-a[i];
+        __int128 numerator=operations-difference;
+        if(numerator<0 || numerator%n) return std::nullopt;
+        count[i]=static_cast<long long>(numerator/n);
+    }
+    return count;
+}
+```
+
+## 関連する手法
+
+[いもす法](/flowchartcp/techniques/difference-array/) ・ [不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder：B - Boxes（原典）](https://atcoder.jp/contests/agc010/tasks/agc010_b)。
+
+<TechniqueReferences techniqueId="circular-ramp-removal-counts" />

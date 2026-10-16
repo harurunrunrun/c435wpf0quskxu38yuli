@@ -1,0 +1,64 @@
+---
+title: "部分集合XORの異なる値を、基底の係数順に並べる"
+description: "各基底行の最上位の1を他の行から消し、順位のビットを係数として使う。"
+techniqueId: xor-basis-kth
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+部分集合のXORを重複排除して昇順に並べ、その一部の順位だけが欲しい。要素数が大きく全部分集合を列挙できず、独立なビット数も多い。
+
+## 考え方
+
+各整数を64個の0/1成分のベクトルと見る。上位ビットから消去して、最上位の1の位置が異なる基底を作る。各行の最上位の1の位置を、その行の基準位置とする。低い基準位置から順に、そのビットを他の基底行から消す。
+
+最上位の1の位置が低い順に基底 $b_0,\ldots,b_{d-1}$ を並べる。0始まりの順位 $k$ のビットを係数にし、$k_i=1$ の $b_i$ をXORすると、異なる値の昇順のk番目になる。単に消去しただけの基底を係数順に列挙すると、昇順とは限らない。
+
+## 適用条件
+
+空集合を含め、異なるXOR値を数える。部分集合の重複数も含めた順位とは異なる。値は符号なし整数として比較する。階数dで値は $2^d$ 個だが、d=64のとき64ビットの整数に個数を格納したり `1ULL<<64` としたりしない。入力0や従属要素は基底を増やさない。
+
+## なぜ正しいか
+
+各基底行の基準位置では他の行が0であるため、XOR結果のそのビットは対応する係数に等しい。二つの係数列を比べ、最も高い異なる係数位置をjとする。より高い行の係数は同じなので寄与が相殺され、より低い行はその基準位置より下のビットしか持たない。したがって二つのXOR結果で最も高い異なるビットも行jの基準位置になり、その大小は係数jで決まる。係数列の整数順とXOR値の整数順は一致する。
+
+## 計算量
+
+ビット数W=64、入力数N、出力数Q。全列挙の $O(2^N)$ に対し、構築 $O(NW+W^2)$、一順位 $O(W)$、空間 $O(W)$。連続順位区間の出力は $O(QW)$。
+
+## 実装
+
+`SortedXorValues(values).kth(k)` は0始まり。範囲外は `nullopt`。階数64では全ての64ビット順位が有効である。原典の1始まり順位L..Rは、L-1..R-1へ変換する。
+
+```cpp
+#include <array>
+#include <vector>
+#include <cstdint>
+#include <optional>
+struct SortedXorValues {
+    std::vector<std::uint64_t> basis;
+    explicit SortedXorValues(const std::vector<std::uint64_t>& values) {
+        std::array<std::uint64_t,64> pivot{};
+        for(auto x:values) for(int b=63;b>=0;--b) if((x>>b)&1) {if(pivot[b]) x^=pivot[b];else {pivot[b]=x;break;}}
+        for(int b=0;b<64;++b) if(pivot[b]) {
+            for(int upper=b+1;upper<64;++upper) if((pivot[upper]>>b)&1) pivot[upper]^=pivot[b];
+            basis.push_back(pivot[b]);
+        }
+    }
+    std::optional<std::uint64_t> kth(std::uint64_t k) const {
+        if(basis.size()<64&&k>=(std::uint64_t(1)<<basis.size())) return std::nullopt;
+        std::uint64_t answer=0;for(int i=0;i<int(basis.size());++i) if((k>>i)&1) answer^=basis[i];return answer;
+    }
+};
+```
+
+## 関連する手法
+
+[XOR基底](/flowchartcp/techniques/xor-basis/) ・ [追加した数のXOR基底を、行の記録で巻き戻す](/flowchartcp/techniques/linear-basis-rollback/) ・ [全ての組の XOR の和をビットごとに数える](/flowchartcp/techniques/bitwise-contribution/)
+
+## 参考資料
+
+- [AtCoder：Partial Xor Enumeration（原典の条件）](https://atcoder.jp/contests/abc283/tasks/abc283_g)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="xor-basis-kth" />

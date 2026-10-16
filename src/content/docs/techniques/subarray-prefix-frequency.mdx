@@ -1,0 +1,61 @@
+---
+title: "和が指定値になる区間を累積和の頻度で数える"
+description: "右端を固定し、必要な過去の累積和を辞書で数える。"
+techniqueId: subarray-prefix-frequency
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+右端を固定し、必要な過去の累積和を辞書で数える。
+
+## 使う場面
+
+負数を含む配列で、和が $K$ になる非空の連続区間の個数を求める。和は区間を延ばすと増えるとは限らないため、尺取り法の単調性は使えない。
+
+## 考え方
+
+累積和を $P_0=0$、$P_r=\sum_{i<r}a_i$ とする。区間 $[l,r)$ の和が $K$ である条件は、$P_l=P_r-K$ に変形できる。
+
+右端 $r$ を左から順に見て、これまでの $P_l$ の出現回数を辞書に保存する。$P_r-K$ の出現回数を答えに加えてから、$P_r$ を登録する。最初に $P_0=0$ を一回登録する。
+
+## 適用条件
+
+現在の累積和を、問い合わせより前に登録してはいけない。$K=0$ で空区間 $[r,r)$ を数えてしまう。負数や同じ累積和の重複も、そのまま扱える。累積和と $P_r-K$ が保存する型に収まる必要がある。
+
+## なぜ正しいか
+
+各右端に対し、条件を満たす過去の累積和の位置が、そのまま合法な左端に対応する。頻度でまとめても位置の個数は失わない。問い合わせ後に現在位置を登録するので、非空区間だけを一度ずつ数える。
+
+## 計算量
+
+累積和で全区間を試す場合は $O(N^2)$。平衡木の辞書を使うと時間 $O(N\log N)$、空間 $O(N)$。ハッシュ表なら期待時間 $O(N)$ にできる。
+
+## 実装
+
+`count_exact_sum` は和が `target` になる非空区間の個数を返す。最初の0を忘れると、配列の先頭から始まる区間を数えられない。
+
+```cpp
+#include <vector>
+#include <map>
+long long count_exact_sum(const std::vector<long long>& a,long long target) {
+    std::map<long long,long long> frequency;
+    frequency[0]=1;
+    long long prefix=0,answer=0;
+    for(long long x:a) {
+        prefix+=x;
+        auto it=frequency.find(prefix-target);
+        if(it!=frequency.end()) answer+=it->second;
+        ++frequency[prefix];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC233 D](https://atcoder.jp/contests/abc233/editorial/3163)
+
+<TechniqueReferences techniqueId="subarray-prefix-frequency" />

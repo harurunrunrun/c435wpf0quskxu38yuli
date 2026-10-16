@@ -1,0 +1,25 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_b",
+    "title": "Get a Clue!",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=3",
+    "techniqueIds": [
+      "disjoint-candidate-sets-complement-lookup"
+    ],
+    "features": [
+      "既知の一人の手札と応答履歴から、他の各人が持つカード集合に禁止・必須・少なくとも一つ含む条件が付く。",
+      "各人の手札数は固定で、互いに素な集合へ分け、残りの秘密を三分類から一つずつ選ぶ。",
+      "対象21枚、分類6/6/9、手札数5/5/4/4、履歴50turn以下。秘密の分類ごとの候補を全て集め、一意なら特定する。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=3",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYear": 2017,
+    "notes": "一人の既知の手札と応答履歴により、各人の手札に禁止・必須・少なくとも一つ保有の局所条件が付く。各手札の候補を別々に絞り、秘密を三分類から一つずつ仮定した後、互いに素な二手札を選べば残る手札は補集合に一意に決まり、合法候補の直接参照表で存在を判定できる。全ての合法な秘密集合の和集合から、分類ごとの一意性が分かる。 公開sketchはunofficial analysisと明記している。",
+    "discoveredBy": "icpc-2017-world-finals"
+  }
+]

@@ -1,0 +1,76 @@
+---
+title: "一方の和が他方の最大値以下になる部分集合は、最大値の担当を決めて数える"
+description: "最大値側で整列し、最後の要素を追加する前の部分和を数えることで、最大値の状態と等値の重複を消す。"
+techniqueId: subset-sum-max-threshold
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一つの要素に「上限の候補 $A_i$」と「足す量 $B_i$」があり、選択した集合で $\sum B_i\le\max A_i$ を満たす個数を数えたい。和と最大値の両方を状態にすると、値域二つ分の表が必要になる。
+
+## 考え方
+
+$(A_i,i)$ の昇順に並べる。各非空集合の最後の要素を、その集合の最大値を担当する要素と決める。同じ $A$ が複数あっても、この順序の最後は一意である。
+
+現在の要素を $i$ とし、前の要素だけから作った和 $s$ の個数を $dp[s]$ とする。現在の要素が担当する集合の個数は
+
+$$\sum_{s=0}^{A_i-B_i}dp[s].$$
+
+これを答えに足してから、現在の $B_i$ を使う部分和を表へ加える。照会を先に行うことで、同じ要素を二度使わない。和の状態は $L=\max A_i$ まででよい。
+
+## 適用条件
+
+要素は添字を区別し、任意の部分集合を選べる。$B_i\ge0$ が必要である。負の $B$ があると、一度上限を超えた和が後で戻るため $L$ で打ち切れない。最大値ではなく最小値を上限にする場合は、担当する順序を逆にする。
+
+実装は $N,L\le5000$、$0\le B_i\le10^9$、法 $998244353$。$B_i=0$ も一要素として区別し、表の各値を一回だけ二倍にする。空集合は部分和の初期値として使うが、答えには単独で加えない。空入力の答えは0。
+
+## なぜ正しいか
+
+各非空集合には整列後の最後の要素が一つだけある。前の要素から作る集合へこの担当を足すことは、担当を持つ集合との一対一対応であり、条件は $s+B_i\le A_i$ へ変わる。全ての担当を足すと各集合を一回ずつ数える。
+
+非負の量は選択を増やしても和を減らさない。従って $L$ を超えた状態は、将来のどの担当の上限にも収まらず捨ててよい。等しい $A$ をまとめて更新する必要はなく、順序を固定して逐次処理することが重複除去になる。
+
+## 計算量
+
+全部分集合の列挙は $O(N2^N)$ 時間。和と最大値をそのまま持つ表は $O(NL^2)$ 時間程度になる。担当を決める実装は整列を含めて $O(N\log N+NL)$ 時間、補助空間 $O(N+L)$。和の表自体は $O(L)$。
+
+## 実装
+
+`count_sum_bounded_by_selected_maximum(a,b)` は非空集合の個数の剰余を返す。答えへの照会の後、0/1 の和を降順に更新する。
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <stdexcept>
+#include <vector>
+int count_sum_bounded_by_selected_maximum(const std::vector<int>& a,const std::vector<int>& b) {
+    constexpr int MOD=998244353;
+    int n=int(a.size()),limit=0;
+    if(a.size()!=b.size() || n>5000) throw std::invalid_argument("size");
+    for(int i=0;i<n;++i) {
+        if(a[i]<0 || a[i]>5000 || b[i]<0 || b[i]>1000000000) throw std::invalid_argument("value");
+        limit=std::max(limit,a[i]);
+    }
+    std::vector<int> order(n),dp(limit+1);std::iota(order.begin(),order.end(),0);dp[0]=1;
+    std::sort(order.begin(),order.end(),[&](int i,int j){return a[i]!=a[j]?a[i]<a[j]:i<j;});
+    int answer=0;
+    for(int id:order) {
+        for(int s=0;s<=a[id]-b[id];++s) {answer+=dp[s];if(answer>=MOD)answer-=MOD;}
+        if(b[id]>limit) continue;
+        for(int s=limit;s>=b[id];--s) {dp[s]+=dp[s-b[id]];if(dp[s]>=MOD)dp[s]-=MOD;}
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[直前の層しか使わないDPは配列を使い回す](/flowchartcp/techniques/dp-dimension-rolling/) ・ [厳密な大小条件のDPは同じ値をまとめて更新する](/flowchartcp/techniques/dp-batch-equal-keys/) ・ [部分和の可否だけならビット列をずらしてまとめて更新する](/flowchartcp/techniques/knapsack-bitset-shift/)
+
+## 参考資料
+
+- [AtCoder：F - Max Sum Counting（原典）](https://atcoder.jp/contests/abc216/tasks/abc216_f)。
+- [AtCoder：F - Max Sum Counting（公式解説）](https://atcoder.jp/contests/abc216/editorial/3125)。
+
+<TechniqueReferences techniqueId="subset-sum-max-threshold" />

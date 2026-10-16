@@ -1,0 +1,83 @@
+---
+title: "同じ凸多角形を何度も平行移動した共通部分は、辺ごとの最も厳しい条件だけ残す"
+description: "移動先ごとの内外判定をまとめ、辺の法線方向への射影の最大値を前計算する。"
+techniqueId: translated-convex-halfplane-max
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+一つの凸多角形を多数の方向へ平行移動し、各質問点が全ての移動後の多角形に含まれるか調べる。多角形ごとに内外判定を繰り返すと、質問数と移動数の積が重い。
+
+## 考え方
+
+頂点が反時計回りの凸多角形では、各有向辺の左側にある半平面の共通部分が多角形になる。辺の始点を $p_i$、辺ベクトルを $e_i$、移動量を $t_j$ とすると、質問点 $q$ の条件は
+
+$$e_i\times q\ge e_i\times(p_i+t_j)\quad(\text{全ての }i,j).$$
+
+左辺は移動量 $j$ に依存しない。辺ごとに右辺の最大値
+
+$$b_i=\max_j e_i\times(p_i+t_j)$$
+
+を保存すれば、各質問では $e_i\times q\ge b_i$ を全辺について調べるだけでよい。共通部分の頂点や辺の交点を、明示的に計算する必要はない。
+
+## 適用条件
+
+全ての多角形が同じ凸多角形の平行移動であること。回転や変形を含むと辺の向きが共通にならず、この集約はできない。凹多角形は辺の半平面の共通部分では表せない。
+
+掲載実装は反時計回りの凸多角形、移動量が1個以上、整数座標の絶対値 $10^9$ 以下を想定する。境界は含む。時計回りなら頂点列を反転してから渡す。頂点列の凸性と順序は呼び出し側で保証する。外積は全て `__int128` にする。
+
+## なぜ正しいか
+
+各辺に関して $e_i\times q$ が全ての閾値以上であることは、その最大値以上であることと同値である。これは実数の大小比較の性質であり、移動量の最大値を取る点が辺ごとに違っていても問題はない。
+
+辺全ての条件を満たすことは、凸多角形の内部または境界にあることと同値。全ての辺と全ての移動量に対する条件の順序を入れ替えただけなので、共通部分が空になった場合も、誤って点を受理することはない。
+
+## 計算量
+
+辺数を $N$、移動数を $M$、質問数を $Q$ とする。全多角形の辺を毎回調べると $O(NMQ)$ 時間。辺ごとの閾値は $O(NM)$ 時間で作れ、各質問は $O(N)$、合計 $O(N(M+Q))$ 時間、入力を除く追加空間 $O(N)$。明示的な半平面交差の構築を省いている。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+class TranslatedConvexIntersection {
+    struct Constraint {long long x,y;__int128 lower;};
+    std::vector<Constraint> constraints;
+    static __int128 cross(long long x,long long y,long long u,long long v) {
+        return (__int128)x*v-(__int128)y*u;
+    }
+public:
+    using Point=std::pair<long long,long long>;
+    TranslatedConvexIntersection(const std::vector<Point>& ccw_polygon,const std::vector<Point>& shifts) {
+        if(ccw_polygon.size()<3 || shifts.empty()) throw std::invalid_argument("polygon and shifts required");
+        for(std::size_t i=0;i<ccw_polygon.size();++i) {
+            auto [x,y]=ccw_polygon[i];auto [u,v]=ccw_polygon[(i+1)%ccw_polygon.size()];
+            long long dx=u-x,dy=v-y;
+            auto [a,b]=shifts.front();__int128 lower=cross(dx,dy,x+a,y+b);
+            for(auto [tx,ty]:shifts) lower=std::max(lower,cross(dx,dy,x+tx,y+ty));
+            constraints.push_back({dx,dy,lower});
+        }
+    }
+    bool contains(Point q) const {
+        for(auto [x,y,lower]:constraints) if(cross(x,y,q.first,q.second)<lower) return false;
+        return true;
+    }
+};
+```
+
+## 関連する手法
+
+- [凸多角形の扇形二分探索](/flowchartcp/techniques/convex-point-membership/)
+- [凸領域の和を辺順に併合する](/flowchartcp/techniques/convex-minkowski-sum/)
+
+## 参考資料
+
+- [AtCoder — Intersection of Polygons](https://atcoder.jp/contests/abc251/tasks/abc251_g)
+- [公式解説](https://atcoder.jp/contests/abc251/editorial/3961)
+
+<TechniqueReferences techniqueId="translated-convex-halfplane-max" />

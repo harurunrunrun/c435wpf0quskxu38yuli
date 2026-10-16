@@ -1,0 +1,268 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "432D",
+    "title": "Prefixes and Suffixes",
+    "url": "https://codeforces.com/problemset/problem/432/D",
+    "techniqueId": "prefix-border-occurrences",
+    "reviewStatus": "verified",
+    "featureEvidence": "公式解説は prefix function の一致先を親にした木で出現回数を集約し、全体の接尾辞にもなる接頭辞を列挙している。",
+    "verification": "editorial",
+    "difficulty": "2000",
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": true,
+    "dateEvidence": "AtCoder 原典の開催日 / Codeforces 公式アーカイブの過去開催回を確認。",
+    "observedFeatures": [
+      "英大文字からなる静的な列、長さ1以上10^5以下。",
+      "接頭辞と接尾辞の両方になる各非空文字列の長さと出現回数を求める。",
+      "全体も候補に含み、出現の重なりを許す。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "1733",
+    "title": "Finding Periods",
+    "url": "https://cses.fi/problemset/task/1733/",
+    "techniqueId": "period-from-border",
+    "reviewStatus": "verified",
+    "featureEvidence": "原典は最後の反復が途中で切れることを許す周期を全て列挙する。長さ N-p の接頭辞と接尾辞の一致へ変換し、全ての p を直接検査するモデルと比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上10^6以下。",
+      "先頭のブロックの反復で全体を作れる長さを全て求める。",
+      "最後の反復は途中で切れてよく、全長で割り切れることを要求しない。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "1753",
+    "title": "String Matching",
+    "url": "https://cses.fi/problemset/task/1753/",
+    "techniqueId": "z-concatenate-boundary",
+    "reviewStatus": "verified",
+    "featureEvidence": "一つのパターンの全出現位置を数える原典を確認。パターン・専用区切り・本文を連結した Z 配列を使い、直接比較による全開始位置の判定と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "本文と一つのパターンは英小文字で、それぞれの長さは1以上10^6以下。",
+      "本文にパターンが現れる全開始位置の個数を求める。",
+      "重なった出現を別々に数える。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "2105",
+    "title": "Distinct Substrings",
+    "url": "https://cses.fi/problemset/task/2105/",
+    "techniqueId": "lcp-distinct-substrings",
+    "reviewStatus": "verified",
+    "featureEvidence": "異なる非空部分文字列の個数という原典の条件を確認。辞書順の各接尾辞で前の接尾辞との LCP 分を除く式を導出し、全部分文字列の集合と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上10^5以下。",
+      "異なる内容の非空連続部分列の個数を求める。",
+      "同じ内容が別の位置に現れても一種類として数える。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "2106",
+    "title": "Repeating Substring",
+    "url": "https://cses.fi/problemset/task/2106/",
+    "techniqueId": "lcp-repeated-substring",
+    "reviewStatus": "verified",
+    "featureEvidence": "2 箇所以上に現れる最長部分文字列という原典を確認。重なった出現も許される。隣接接尾辞の LCP 最大値を使う K=2 の場合を全探索と比較し、K 回への一般化も検証した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上10^5以下。",
+      "二箇所以上に出現する連続部分列のうち最長のものを一つ求める。",
+      "出現が重なっていてもよい。"
+    ]
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "835D",
+    "title": "Palindromic characteristics",
+    "url": "https://codeforces.com/problemset/problem/835/D",
+    "techniqueId": "palindrome-radius-range",
+    "reviewStatus": "verified",
+    "featureEvidence": "全区間の回文次数を数える原典を確認。次数の土台となる静的な回文判定を、区間の中心と Manacher 半径の比較に置き換えられる。全区間の文字比較と照合した。次数の計算は別途必要。",
+    "verification": "independent-analysis",
+    "difficulty": "1900",
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": true,
+    "dateEvidence": "AtCoder 原典の開催日 / Codeforces 公式アーカイブの過去開催回を確認。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上5000以下。",
+      "全区間について、回文であることを土台とした再帰的な回文次数を集計する。",
+      "この技巧は静的な区間の通常の回文判定部分に対応する。"
+    ]
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "835D",
+    "title": "Palindromic characteristics",
+    "url": "https://codeforces.com/problemset/problem/835/D",
+    "techniqueId": "palindrome-center-contribution",
+    "reviewStatus": "verified",
+    "featureEvidence": "原典の k=1 は非空回文の出現位置ごとの総数で、同内容でも出現が異なれば別に数える。各中心の半径の和でこの部分を数えられることを、全区間の列挙と比較した。k>1 の次数計算は別途必要。",
+    "verification": "independent-analysis",
+    "difficulty": "1900",
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": true,
+    "dateEvidence": "AtCoder 原典の開催日 / Codeforces 公式アーカイブの過去開催回を確認。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上5000以下。",
+      "回文次数kごとの出現数を求め、k=1の成分は非空回文の全出現数である。",
+      "同じ内容でも異なる区間なら別の出現として数える。この技巧はk=1の集計部分に対応する。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "1112",
+    "title": "Required Substring",
+    "url": "https://cses.fi/problemset/task/1112/",
+    "techniqueId": "automaton-forbidden-dp",
+    "reviewStatus": "verified",
+    "featureEvidence": "指定語を部分文字列として含む長さ N の A-Z 列を数える原典を確認。全体から禁止語を避ける列を引く方針で、末尾とパターンの最長接頭辞一致を状態とする計数を小さいアルファベットの全列挙と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "最終列の長さNは1以上1000以下で、各文字はA-Z。",
+      "長さ1以上100以下の指定語を、連続部分列として一度以上含む列の数を法10^9+7で求める。",
+      "避ける列の個数を全体26^Nから引くことで対応する。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "2103",
+    "title": "Counting Patterns",
+    "url": "https://cses.fi/problemset/task/2103/",
+    "techniqueId": "aho-failure-aggregation",
+    "reviewStatus": "verified",
+    "featureEvidence": "本文と総長の大きい多数のパターンについて各出現回数を求める原典を確認。各文字で全ての末尾一致を列挙せず、訪問回数を failure link の逆順で集約する実装を独立に導出し、各パターンの直接照合と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "本文は英小文字で長さ1以上10^5以下。",
+      "多数の英小文字パターンごとに出現回数を求める。",
+      "パターン総長は5*10^5以下で、重なった出現を数える。"
+    ]
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "wildcard_pattern_matching",
+    "title": "Wildcard Pattern Matching",
+    "url": "https://judge.yosupo.jp/problem/wildcard_pattern_matching",
+    "techniqueId": "wildcard-convolution",
+    "reviewStatus": "verified",
+    "featureEvidence": "原典は両文字列に 1 文字と一致する * を許し、全ての開始位置で一致を判定する。ABC307 の公式解説にある xy(x-y)^2 の展開を適用し、2 法で零を判定する実装を直接照合と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "英小文字と*からなる本文とパターンが与えられる。",
+      "*は任意の一文字と一致し、両側に現れてよい。",
+      "パターンをずらした全開始位置で一致するかを求める。"
+    ]
+  },
+  {
+    "source": "CSES",
+    "problemId": "1110",
+    "title": "Minimal Rotation",
+    "url": "https://cses.fi/problemset/task/1110/",
+    "techniqueId": "rotation-minimum",
+    "reviewStatus": "verified",
+    "featureEvidence": "辞書順最小の巡回シフトを求める原典を確認。二つの候補の最初の不一致から負ける開始位置の範囲をまとめて除く実装を、全回転の直接比較と照合した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": null,
+    "dateEvidence": "原典の特徴は確認済み。初出日までは確認できていない。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上10^6以下。",
+      "先頭の文字を末尾へ移す回転の全候補から、辞書順最小を求める。"
+    ]
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc138_e",
+    "title": "Strings of Impurity",
+    "url": "https://atcoder.jp/contests/abc138/tasks/abc138_e",
+    "techniqueId": "substring-subsequence-next",
+    "reviewStatus": "verified",
+    "featureEvidence": "原典は s の繰り返し列の最短接頭辞に t を部分列として含む条件。各文字を最早位置に合わせ、末尾を超えたら次の反復へ移る方法を、短い反復列を直接読むモデルと比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": true,
+    "dateEvidence": "AtCoder 原典の開催日 / Codeforces 公式アーカイブの過去開催回を確認。",
+    "observedFeatures": [
+      "英小文字の本文sと指定列tの長さはそれぞれ1以上10^5以下。",
+      "sを非常に多数回連結した列の最短接頭辞に、tを部分列として含めたい。",
+      "読み飛ばしを許し、文字がsにないときは不可能。回答が32bitを超える場合がある。"
+    ]
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc307_h",
+    "title": "Marquee",
+    "url": "https://atcoder.jp/contests/abc307/tasks/abc307_h",
+    "techniqueId": "wildcard-convolution",
+    "reviewStatus": "verified",
+    "featureEvidence": "公式解説で一致時だけ 0 になる多項式を展開し、ずらしたパターンの一致を三つの畳み込みで求めている。本文にワイルドカードがない制約では、より小さい非負の式も使える。",
+    "verification": "editorial",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": true,
+    "dateEvidence": "原典に 2023-06-24 の開催日を確認。",
+    "observedFeatures": [
+      "幅Wの掲示板に文字列Sが周期的に流れ、Wは3*10^5以下。",
+      "パターンの_は任意の一文字で、本文側にはワイルドカードがない。",
+      "全ての周期状態のうちパターンに一致する状態の個数を求める。"
+    ]
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "835D",
+    "title": "Palindromic characteristics",
+    "url": "https://codeforces.com/problemset/problem/835/D",
+    "techniqueId": "palindrome-recursive-degree",
+    "reviewStatus": "verified",
+    "featureEvidence": "原典は左右の非空な floor(L/2) 文字が同じ k-1 次回文であるという再帰条件を持つ。通常回文なら左半分の次数に1を足す式へ変形し、次数を通常回文の判定にも使う長さ順DPを再帰的な定義の全区間計数と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": "1900",
+    "cutoff": "2026-10-14",
+    "publicationBeforeCutoff": true,
+    "dateEvidence": "Codeforces の過去開催回 Round 427 の原典を確認。",
+    "observedFeatures": [
+      "英小文字からなる静的な列、長さ1以上5000以下。",
+      "通常の回文が1次。k>1では左右の非空なfloor(L/2)文字が等しく、双方がk-1次の回文である。",
+      "奇数長の中央文字は半分に含めない。",
+      "各kについて少なくともk次の区間の個数を数え、同内容の別の区間を区別する。"
+    ]
+  }
+]

@@ -1,0 +1,98 @@
+---
+title: "平行四辺形の四点選択を、対角線の中点が一致する二組にする"
+description: "四点を選ぶ代わりに点対の座標和を数え、共線による退化だけを分ける。"
+techniqueId: parallelogram-diagonal-midpoints
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+点集合から平行四辺形を数えたい。四点を選ぶと $O(N^4)$ になるが、点対なら列挙できる。辺の向きだけをそろえると、四点の位置関係や同じ図形の重複処理が残る。
+
+## 考え方
+
+平行四辺形では、二本の対角線が互いの中点で交わる。点対 $(p_i,p_j)$ を、その中点の2倍である $p_i+p_j$ で分類する。同じ分類の二点対を選べば、候補の四点が決まる。割り算をしないので、半整数の中点も正確に扱える。
+
+ただし四点が同一直線上に並ぶ場合は面積が0。同じ中点の中で、対角線の向きも同じ組を除く。点対の差を GCD で割り、最初の非零成分が正になるよう符号をそろえる。
+
+中点の分類の大きさが $c$、その中で向き $d$ の本数が $c_d$ なら、寄与は
+
+$$\binom c2-\sum_d\binom{c_d}2.$$
+
+三点共線がない入力では後半が常に0になり、中点だけの分類で済む。
+
+## 適用条件
+
+点の座標は整数で、重複する点がないこと。重複点を別の頂点として選ぶ数え方には、そのまま使わない。掲載実装は共線点があっても正の面積だけを数える。
+
+$N\le2000$、各座標の絶対値 $10^9$ 以下を想定する。座標和・差は `long long`、答えも `long long` に収まる。入力点の相異性は呼び出し側の条件とする。
+
+## なぜ正しいか
+
+同じ中点の異なる二点対は端点を共有しない。例えば $a+b=a+c$ なら $b=c$ となり、同じ点対だからである。従って必ず相異なる四点が得られる。
+
+その中点を原点へ移すと、端点は $u,-u,v,-v$ と表せる。$u,v$ が平行でなければ、$u,v,-u,-v$ の順で結んだ四角形は向かい合う辺が平行で、面積が正になる。平行なら全端点が一直線上にあり、面積は0。向きによる除外はこの場合だけを除いている。
+
+逆に正の面積の平行四辺形の対角線は一意で、中点が一致する。この二点対は同じ分類から一度だけ選ばれるため、過不足なく数えられる。
+
+## 計算量
+
+四点を列挙して判定する方法は $O(N^4)$ 時間、追加空間 $O(1)$。点対数を $P=\binom N2$、座標の最大絶対値を $C$ とすると、向きの正規化と整列で $O(P\log(C+1)+P\log P)$ 時間、追加空間 $O(P)$。共線を除外しなくてよい場合は GCD の計算も不要。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <cstdlib>
+#include <numeric>
+#include <stdexcept>
+#include <tuple>
+#include <utility>
+#include <vector>
+long long count_positive_parallelograms(
+    const std::vector<std::pair<long long,long long>>& p) {
+    if(p.size()>2000) throw std::invalid_argument("too many points");
+    for(auto [x,y]:p) if(x < -1000000000LL || x > 1000000000LL || y < -1000000000LL || y > 1000000000LL)
+        throw std::invalid_argument("coordinate range");
+    using Record=std::tuple<long long,long long,long long,long long>;
+    std::vector<Record> a;
+    for(int i=0;i<(int)p.size();++i) for(int j=0;j<i;++j) {
+        auto [x,y]=p[i];auto [u,v]=p[j];
+        long long dx=x-u,dy=y-v,g=std::gcd(std::abs(dx),std::abs(dy));
+        if(g==0) throw std::invalid_argument("duplicate point");
+        dx/=g;dy/=g;
+        if(dx<0 || (dx==0 && dy<0)) {dx=-dx;dy=-dy;}
+        a.emplace_back(x+u,y+v,dx,dy);
+    }
+    std::sort(a.begin(),a.end());
+    auto choose2=[](long long n){return n*(n-1)/2;};
+    long long answer=0;
+    for(std::size_t l=0;l<a.size();) {
+        std::size_t r=l+1;
+        while(r<a.size() && std::get<0>(a[r])==std::get<0>(a[l]) &&
+              std::get<1>(a[r])==std::get<1>(a[l])) ++r;
+        answer+=choose2((long long)(r-l));
+        for(std::size_t i=l;i<r;) {
+            std::size_t j=i+1;
+            while(j<r && std::get<2>(a[j])==std::get<2>(a[i]) &&
+                  std::get<3>(a[j])==std::get<3>(a[i])) ++j;
+            answer-=choose2((long long)(j-i));i=j;
+        }
+        l=r;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [同一直線の向きの正規化](/flowchartcp/techniques/collinear-direction-gcd/)
+- [等脚台形の垂直二等分線による分類](/flowchartcp/techniques/isosceles-trapezoid-bisector-groups/)
+
+## 参考資料
+
+- [Codeforces — Number of Parallelograms](https://codeforces.com/problemset/problem/660/D)
+- [公式解説](https://codeforces.com/blog/entry/44259)
+
+<TechniqueReferences techniqueId="parallelogram-diagonal-midpoints" />

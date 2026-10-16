@@ -1,0 +1,87 @@
+---
+title: "区間の質問を、端点と更新時刻の三方向へ並べ替える"
+description: "更新前の値も保存し、区間の移動と代入の巻き戻しで頻度の欠番を求める。"
+techniqueId: mo-with-updates
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一点代入と区間質問が混ざり、区間内の値ごとの出現回数に現れない最小の正整数を求めたい。通常の区間移動だけでは、質問が参照する配列の時刻が一致しない。
+
+## 考え方
+
+各代入を `(位置, 更新前, 更新後)`、各質問を `(左端, 右端, それまでの代入数)` とする。左端・右端のブロック、時刻の順に質問を並べ、時刻を進めるときは代入を適用し、戻るときは更新前へ戻す。
+
+変更位置が現在の区間内なら古い値を頻度表から取り除き、新しい値を加える。区間外でも配列上の値は必ず変更する。
+
+`count[x]` に加え、「出現回数が $c$ である値の個数」`has[c]` を持つ。頻度が変わるたびに古い正頻度の個数を減らし、新しい正頻度の個数を増やす。値域には区間内に現れない整数があるためMEXは常に1以上となり、走査は1から始める。
+
+## 適用条件
+
+全操作を先に読め、代入を取り消せることが必要。追加される値もまとめて圧縮する。繰り返し同じ位置へ代入した場合も、直前の値を記録する。欠番が $m$ なら頻度1から $m-1$ の値が少なくとも一つずつあり、区間長は少なくとも $m(m-1)/2$。したがってMEX走査は区間長の平方根程度で済む。
+
+## なぜ正しいか
+
+時刻を一つ進める・戻す操作は互いに逆であり、配列は常に現在の時刻の値を持つ。区間内の変更は旧値削除・新値追加として扱うので頻度表も一致する。`has[c]` は正頻度ごとの個数を保ち、最初の0が求める欠番になる。圧縮後の全値が区間内に現れても、原典の値域には区間外の整数がある。頻度0の存在を圧縮後の値だけで判定しない。
+
+## 計算量
+
+操作ごとに区間を数えると $O(NQ)$。質問数 $Q$、代入数 $U$、ブロック幅 $B$ で移動は $O(QB+N^2/B+UN^2/B^2+N+U)$。質問ごとの欠番走査は $O(\sqrt N)$。$Q,U=O(N)$、$B\approx N^{2/3}$ なら $O(N^{5/3}+Q\sqrt N)$ 時間。圧縮とソートの対数時間を別に加え、空間は $O(N+Q+U)$。
+
+## 実装
+
+`type=0` は `[l,r)` の質問、`type=1` は `a[l]=value`。答えは質問の元の順序。空区間の欠番は1。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+struct FrequencyOperation {int type,l,r;long long value;}; // type=0: query [l,r), type=1: a[l]=value
+std::vector<int> frequency_mex_with_updates(std::vector<long long> initial,
+    const std::vector<FrequencyOperation>& operations) {
+    int n=int(initial.size());std::vector<long long> values=initial;
+    for(auto o:operations) if(o.type==1) values.push_back(o.value);
+    std::sort(values.begin(),values.end());values.erase(std::unique(values.begin(),values.end()),values.end());
+    auto encode=[&](long long x){return int(std::lower_bound(values.begin(),values.end(),x)-values.begin());};
+    std::vector<int> a(n);for(int i=0;i<n;++i) a[i]=encode(initial[i]);auto future=a;
+    struct Update {int p,before,after;};struct Query {int l,r,t,id;};
+    std::vector<Update> changes;std::vector<Query> queries;
+    for(auto o:operations) {
+        if(o.type==1) {assert(0<=o.l&&o.l<n);int v=encode(o.value);changes.push_back({o.l,future[o.l],v});future[o.l]=v;}
+        else {assert(0<=o.l&&o.l<=o.r&&o.r<=n);queries.push_back({o.l,o.r,int(changes.size()),int(queries.size())});}
+    }
+    int block=std::max(1,int(std::pow(std::max(1,n),2.0/3.0)));
+    std::sort(queries.begin(),queries.end(),[&](auto x,auto y) {
+        if(x.l/block!=y.l/block) return x.l/block<y.l/block;
+        if(x.r/block!=y.r/block) return (x.l/block&1)?x.r/block>y.r/block:x.r/block<y.r/block;
+        return (x.r/block&1)?x.t>y.t:x.t<y.t;
+    });
+    std::vector<int> count(values.size()),has(n+2),answer(queries.size());int l=0,r=0,t=0;
+    auto change_count=[&](int x,int delta) {if(count[x]>0) --has[count[x]];count[x]+=delta;if(count[x]>0) ++has[count[x]];};
+    auto change_time=[&](int index,bool forward) {
+        auto u=changes[index];int next=forward?u.after:u.before;
+        if(l<=u.p&&u.p<r) {change_count(a[u.p],-1);change_count(next,1);}a[u.p]=next;
+    };
+    for(auto query:queries) {
+        while(t<query.t) {change_time(t,true);++t;}while(t>query.t) {--t;change_time(t,false);}
+        while(l>query.l) {change_count(a[--l],1);}
+        while(r<query.r) {change_count(a[r++],1);}
+        while(l<query.l) {change_count(a[l++],-1);}
+        while(r>query.r) {change_count(a[--r],-1);}
+        int mex=1;while(has[mex]>0) ++mex;answer[query.id]=mex;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[区間の頻度二乗和を、要素の出し入れの差分で求める](/flowchartcp/techniques/mo-frequency-quadratic/) ・ [更新付きの区間順位を、答えの値でまとめて二分する](/flowchartcp/techniques/offline-kth-divide-values/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [Codeforces：Machine Learning（原典の条件）](https://codeforces.com/problemset/problem/940/F)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="mo-with-updates" />

@@ -1,0 +1,76 @@
+---
+title: "Zアルゴリズム"
+description: "文字列の各位置について、全体の接頭辞と何文字一致するかを線形時間で求めます。"
+techniqueId: z-algorithm
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+文字列の各位置について、全体の接頭辞と何文字一致するかを線形時間で求めます。
+
+別名：Z Algorithm / Z Function / Z配列
+
+## 使う場面
+
+パターンが本文のどこに現れるかを探す場合や、文字列の周期、接頭辞と接尾辞の一致を調べる場合に使います。各位置から接頭辞と一文字ずつ比較すると $O(N^2)$ ですが、すでに分かった一致区間を利用すれば、同じ比較を繰り返さずに済みます。
+
+## 考え方
+
+$Z[i]$ を、文字列全体と位置 $i$ からの接尾辞の最長共通接頭辞の長さとします。これまで見つけた、最も右まで届く一致区間 $[l,r)$ を保存します。
+
+位置 $i$ がこの区間内なら、$Z[i-l]$ を使って既知の一致を移せます。ただし、区間の外はまだ分からないので、初期値は $\min(Z[i-l],r-i)$ にします。その先だけを直接比較して伸ばし、必要なら一致区間を更新します。
+
+## 適用条件
+
+要素の等値比較だけを使うため、文字列だけでなく整数列にも適用できます。パターン $P$ を本文 $T$ から探すなら、$P$、区切り、$T$ を連結した列に適用します。区切りは元の列に現れない値を使います。
+
+以下では $Z[0]=N$ とし、空列では空配列を返します。この配列だけで任意の2位置間の共通接頭辞を取得できるわけではありません。
+
+## なぜ正しいか
+
+一致区間 $[l,r)$ は接頭辞のコピーなので、その中の位置 $i$ からの一致は、接頭辞内の位置 $i-l$ からの一致と同じです。既知の区間を越えない部分は再比較せずに使えます。
+
+直接比較で一致を伸ばすたびに、最も右の境界が進みます。その境界は全体で高々 $N$ 回しか進まないため、一致が長い文字列でも線形時間です。
+
+## 計算量
+
+時間は $O(N)$、返す配列の空間は $O(N)$、それ以外の作業空間は $O(1)$ です。長さ $M$ のパターンを長さ $N$ の本文から検索する場合は、全体で $O(N+M)$ です。
+
+## 実装
+
+汎用列のZ配列と、非空パターンの検索を示します。文字列検索では各文字をバイト値の整数へ変換し、区切りに $-1$ を使います。本文側のZ値がパターン長以上になる位置が、一致する始点です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+template<class Sequence>
+vector<int> z_algorithm(const Sequence& s) {
+    int n=s.size(); vector<int> z(n); if(!n) return z; z[0]=n;
+    int l=0,r=0;
+    for(int i=1;i<n;++i) {
+        if(i<r) z[i]=min(r-i,z[i-l]);
+        while(i+z[i]<n && s[z[i]]==s[i+z[i]]) ++z[i];
+        if(i+z[i]>r) { l=i; r=i+z[i]; }
+    }
+    return z;
+}
+vector<int> pattern_positions(const string& p,const string& text) {
+    assert(!p.empty()); vector<int> s;
+    for(unsigned char c:p) s.push_back(c);
+    s.push_back(-1);
+    for(unsigned char c:text) s.push_back(c);
+    auto z=z_algorithm(s); vector<int> positions;
+    for(int i=int(p.size())+1;i<int(s.size());++i)
+        if(z[i]>=int(p.size())) positions.push_back(i-int(p.size())-1);
+    return positions;
+}
+```
+
+## 関連する手法
+
+[尺取り法](/flowchartcp/techniques/two-pointers/) ・ [ローリングハッシュ](/flowchartcp/techniques/rolling-hash/)
+
+## 参考資料
+
+- [AtCoder Library: Z Algorithm（公式仕様）](https://atcoder.github.io/ac-library/production/document_ja/string.html)
+
+<TechniqueReferences techniqueId="z-algorithm" />

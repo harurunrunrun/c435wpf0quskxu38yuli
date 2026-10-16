@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2018 Seatsの番号交換後の形の集計とWerewolfの二閾値到達成分の交差を不足解消",
+  "counts": {
+    "specificTechniques": 410,
+    "foundationArticles": 78,
+    "allArticles": 488,
+    "exampleMappings": 509,
+    "originalUrls": 471,
+    "graphs": 455,
+    "nodes": 3601,
+    "questions": 1636,
+    "answerEdges": 5332,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 505,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+      "articleSha256": "292b773eb17bf48404181db53040042f640cfe7549a797e308f61a24840229ea",
+      "codeSha256": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89",
+      "checks": 16930653,
+      "normalAndAsanUbsanAuthorAndRootPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    },
+    {
+      "id": "two-threshold-component-merge-trees-rectangle-intersection",
+      "articleSha256": "03051bd61595d602255fcfc64e1f34c822f247ba0e20350a9eaf6d8da8d8df7d",
+      "codeSha256": "dd1013768b7f8549b0afb09680850b0c46bc92993533156a2c05d520955b3974",
+      "checks": 33949663,
+      "normalAndAsanUbsanAuthorAndRootPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    }
+  ],
+  "verified": [
+    "Seatsは主催公式原典3頁/Review2頁と主催配布POL/IDN（root追加確認IDN/TWN）の検索本文で、全数値HW100万/Q5万・座標/番号/相異性を確認。画像目視や欠落した式の完全な文字転記とは主張しない。後年のTomasz Idziaszek補足は公式Reviewと区別。",
+    "SeatsのC1>=4、C3=0から4近傍成分の矩形性、対角接触グラフの単純平面性/三角形なし、C1=4B−2Dでの等号条件を作者/独立review者/rootで確認。局所四番号の半開二区間、外側sentinel、八頂点unique、差分初期化O(P)、区間加算min/count、lazyの交換回数非依存int境界を確認。",
+    "Seats公開C++抽出は全小形HW<=8の174569置換/4773592swap対、74938bitmap、400乱択240000累積swap、P100万の5形各50000swapとAPI/copy/moveを独立bbox面積oracleに照合。16930653checks/checksum3501807229918974063、作者/独立review者/rootの通常とASan+UBSanで再現した。根深さ0の最大20・同時frame21という補足を本文に反映し、掲載コードSHAは不変。",
+    "Seats別独立probeは5×5全33554431非空bitmapでF4と225矩形の同値、912730局所interval式で反例0。copy構築5箇所/代入5箇所の割当失敗注入でsource/targetと後続swapを保持。正常swap30000/getter10000の追加割当0。恒久cpp/pyをresearch/probesへ保存しpublic fenceで再実行成功。",
+    "Werewolfは公式原典3頁/Review2頁とCUB翻訳検索の制約全文、JP公式日別からN20万/M40万/Q20万・全閾値/端点/単純連結/競技日2018-09-03を作者/rootで確認。画像目視ではない。元原典のS!=Eに加え、APIは同添字/N1/Q0を明示拡張。",
+    "Werewolfの一度切替と二成分共通頂点の必要十分性、各閾値で全辺処理後に保存するinclusive境界、DSU親とは別のimmutable併合木、葉だけのEuler区間、二つの葉順を座標対応で結ぶこと、点追加前の半開イベントを独立確認。union-by-size/経路圧縮・ソート不要bucketで厳密計算量と整数範囲、全再帰なしを確認。",
+    "Werewolf公開C++抽出をN2..6の全27475連結単純グラフ/8527158原典有効query（N1/S=E込み全10048867query）で直接二形態BFSと二つの制限BFS集合個数へ照合。300乱択/辺向き・辺順・query順の不変性、最大N20万5構成各Q20万/M40万、invalid62呼出し、状態分離まで33949663checks/checksum16549868984224916885を作者/rootの通常とASan+UBSanで再現。最大乱択番号pathのRMQ別oracle自身も全小queryをBFSと照合。",
+    "独立flow9検査は新2入口と全6guard/no/unknown12経路・両表示・SVG全labelと記事href・share/Back・原典/null/date/numericを確認。prebatch507全記録/手順/終端/質問回答ラベル、453図3589旧nodeの全field/旧option順とtarget/旧resultをraw由来hashで保持。初回IOI2018全6行/status/snapshotとComboresolutionを保持し、新resolution2件のみ追加。既確認研究への重複reviewは付加していない。",
+    "公開MDX抽出native wrapper4/4成功。全分岐/配置/折返し/共有/図ビュー/ホイール/固定群/収集器/台帳の50テスト群が全て成功。",
+    "最終npm run build:localは488記事509対応455図で成功。直近18記事の日英/全角検索73件、数式エラー無し、コード・使用例根拠・原典/参考資料・カタログを確認。455SVG pairs・図専用ページ・5332回答ラベル・404旧共有URLを照合。新2詳細図を実画像で確認し、文字/矢印/カードの重なりなし。",
+    "最終local link検査は1407 HTML/SVGの28674リンク/資産を検証。研究表25/25行の観測identity数・解法確認の和集合・公開対応数が正しい列に一致。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 59,
+    "fixedCorpusSolutionsReviewed": 50,
+    "publishedExamplesSolutionsReviewed": 469,
+    "allDistinctSolutionsReviewed": 481,
+    "corpora": [
+      {
+        "id": "usaco-2020-dec-2021-jan-platinum",
+        "research": "6/6",
+        "covered": "6/6",
+        "coverageComplete": true
+      },
+      {
+        "id": "icpc-2017-world-finals",
+        "research": "11/12",
+        "covered": "9/12",
+        "coverageComplete": false
+      },
+      {
+        "id": "joi-2020-spring",
+        "research": "9/12",
+        "covered": "9/12",
+        "coverageComplete": false
+      },
+      {
+        "id": "ioi-2020",
+        "research": "6/6",
+        "covered": "6/6",
+        "coverageComplete": true
+      },
+      {
+        "id": "ioi-2019",
+        "research": "3/6",
+        "covered": "3/6",
+        "coverageComplete": false
+      },
+      {
+        "id": "icpc-2018-world-finals",
+        "research": "9/11",
+        "covered": "2/11",
+        "coverageComplete": false
+      },
+      {
+        "id": "ioi-2018",
+        "research": "6/6",
+        "covered": "3/6",
+        "coverageComplete": false
+      }
+    ],
+    "remainingKnownGaps": 22,
+    "note": "Seats/Werewolfは既に固定群で解法確認済みだったため、掲載対応と記事完成を増やしてもdistinct review unionは481のまま。"
+  },
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。固定群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは以前の環境上の失敗後に再試行しておらず未検証。",
+    "外部リンク全件の生存確認は未実施。",
+    "push・アップロード・公開は未実施。"
+  ],
+  "inProgress": [
+    "IOI2018 Dollの交互スイッチによる列生成とHighwayの二重み距離oracleによる未知端点探索。初回研究確認済みでも完成APIと最大範囲の独立検証/分岐が揃うまで未解消。"
+  ]
+}

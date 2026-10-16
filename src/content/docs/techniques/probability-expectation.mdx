@@ -1,0 +1,63 @@
+---
+title: "期待値の線形性"
+description: "確率分布をすべて求めず、各要素の期待値を足して全体の期待値を求める。"
+techniqueId: probability-expectation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+確率分布をすべて求めず、各要素の期待値を足して全体の期待値を求める。
+
+## 使う場面
+
+ランダムな得点の合計や、終了までの操作回数・費用の期待値を求めるときに使う。すべての結果の確率を求める前に、期待値だけで計算できないかを考える。
+
+## 考え方
+
+確率変数 $X_i$ の和では、独立でなくても $E[\sum_i X_i]=\sum_i E[X_i]$ が成り立つ。ある事象が起きたら1、起きなければ0になる変数を使うと、その期待値は事象の確率になる。
+
+状態 $s$ からの残り費用の期待値を $E_s$ とするDPも使える。最初の操作の費用を $c_s$、状態 $t$ へ進む確率を $p_{s,t}$ とすると、$E_s=c_s+\sum_t p_{s,t}E_t$ になる。自分自身への遷移があれば、その項を左辺に移す。
+
+## 適用条件
+
+期待値が有限であることと、遷移確率や終了条件が正しいことを確認する。自分自身へ確率1で戻る状態は、自己ループの式を除算して解けない。複数の状態を循環する場合は、連立方程式などの処理が必要になる。
+
+一般には $E[f(X)]$ と $f(E[X])$ は異なる。法を取って期待値を計算する場合は、分母の逆元が存在することも必要になる。
+
+## なぜ正しいか
+
+最初の操作の行き先ごとに条件付けして、残りの期待費用を足し合わせる。自己ループ確率を $p$ とすると、$E_s$ の項を移して $(1-p)E_s=c_s+\sum_{t\ne s}p_{s,t}E_t$ を得る。他の状態の期待値が分かり、$p<1$ なら、この式から $E_s$ を計算できる。
+
+## 計算量
+
+自己ループ以外が先に計算できる状態へ向かう場合、DPは時間・空間ともに $O(V+E)$。一般の連立方程式を素朴に解く場合は、時間 $O(V^3)$、空間 $O(V^2)$。
+
+## 実装
+
+`expectation_with_self_loop` は、一回の費用、自己ループ確率、各行き先への確率と残り期待費用から、現在の期待費用を返す。確率は非負で、自己ループと行き先の確率の和が1となり、渡す期待値が有限であることを呼び出し側で確かめる。
+
+```cpp
+#include <utility>
+#include <vector>
+#include <stdexcept>
+long double expectation_with_self_loop(
+    long double cost, long double self_probability,
+    const std::vector<std::pair<long double, long double>>& exits) {
+    if (self_probability < 0 || self_probability >= 1)
+        throw std::invalid_argument("positive escape probability required");
+    long double numerator = cost;
+    for (auto [probability, next_expectation] : exits)
+        numerator += probability * next_expectation;
+    return numerator / (1 - self_probability);
+}
+```
+
+## 関連する手法
+
+[寄与の数え上げ](../contribution/) ・ [状態の設計](../state-design/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC350 E](https://atcoder.jp/contests/abc350/editorial/9871)
+- [AtCoder公式解説：ABC332 F](https://atcoder.jp/contests/abc332/editorial/7926?lang=en)
+
+<TechniqueReferences techniqueId="probability-expectation" />

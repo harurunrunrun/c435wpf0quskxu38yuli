@@ -1,0 +1,75 @@
+---
+title: "二つの接頭辞の頻度差から、区間のk番目へ降りる"
+description: "前から一要素ずつ加えた木を共有し、二つの版の差だけで区間の順位を求める。"
+techniqueId: persistent-prefix-kth
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+配列が変わらず、任意の区間内のk番目の値を繰り返し求めたい。位置区間の木にソート列を持って値を二分探索すると、順位質問のたびに複数の対数が掛かる。
+
+## 考え方
+
+値を圧縮し、接頭辞 $[0,t)$ に現れる値の頻度を、値域の木の根 $root_t$ へ保存する。新しい値を加える経路上の節点だけを複製し、他の節点は前の版と共有する。
+
+区間 $[l,r)$ の頻度は $root_r-root_l$。左半分の個数を二つの左子の個数差から得て、その中へ順位が入るなら左へ、入らなければ個数を引いて右へ降りる。全頻度表を引き算して作る必要はない。
+
+## 適用条件
+
+版が「同じ配列の入れ子の接頭辞」であることが重要。任意の二版の差は負の頻度になり得るため、そのままk番目を取れない。重複は個数で保持する。オンラインの質問にも回答できるが、配列への代入はこの版の作り方では扱わない。
+
+## なぜ正しいか
+
+木の各節点は、その値域へ属する接頭辞の要素数を持つ。入れ子の接頭辞の差は区間内の非負の個数になる。左右の値域は順に並び、左の全値は右より小さいため、左個数との比較でk番目が属する側を一意に決められる。葉まで降りれば該当する元の値になる。
+
+## 計算量
+
+異なる値数 $V$。構築は圧縮を含め $O(N\log N+N\log(V+1))$ 時間、質問は $O(\log(V+1))$ 時間。節点共有により空間は $O(N\log(V+1)+V)$。各版に木全体を複製する $O(NV)$ 空間を避ける。
+
+## 実装
+
+`PrefixKth(a).kth(l,r,k)` は半開区間の0始まりの順位。節点番号0を空の木として共有する。再帰中にvectorが拡張されるので、節点への参照を持ち続けず番号で更新する。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+struct PrefixKth {
+    struct Node {int left=0,right=0,count=0;};
+    std::vector<Node> tree{{}};std::vector<int> roots{0};std::vector<long long> values;
+    explicit PrefixKth(const std::vector<long long>& a):values(a) {
+        std::sort(values.begin(),values.end());values.erase(std::unique(values.begin(),values.end()),values.end());
+        for(long long x:a) {int p=int(std::lower_bound(values.begin(),values.end(),x)-values.begin());roots.push_back(insert(roots.back(),0,int(values.size()),p));}
+    }
+    int insert(int old,int l,int r,int p) {
+        int now=int(tree.size());tree.push_back(tree[old]);++tree[now].count;
+        if(r-l>1) {int mid=(l+r)/2;if(p<mid) {int child=insert(tree[old].left,l,mid,p);tree[now].left=child;}
+            else {int child=insert(tree[old].right,mid,r,p);tree[now].right=child;}}
+        return now;
+    }
+    long long kth(int l,int r,int k) const {
+        assert(0<=l&&l<r&&r<int(roots.size())&&0<=k&&k<r-l);
+        int a=roots[l],b=roots[r],low=0,high=int(values.size());
+        while(high-low>1) {
+            int count=tree[tree[b].left].count-tree[tree[a].left].count,mid=(low+high)/2;
+            if(k<count) {a=tree[a].left;b=tree[b].left;high=mid;}
+            else {k-=count;a=tree[a].right;b=tree[b].right;low=mid;}
+        }
+        return values[low];
+    }
+};
+```
+
+## 関連する手法
+
+[値の桁で安定に二分し、区間の順位を写し替える](/flowchartcp/techniques/wavelet-range-kth/) ・ [更新付きの区間順位を、答えの値でまとめて二分する](/flowchartcp/techniques/offline-kth-divide-values/) ・ [累積個数が目標へ届く位置を、木の内部で探す](/flowchartcp/techniques/fenwick-prefix-lower-bound/)
+
+## 参考資料
+
+- [SPOJ：K-th Number の原典](https://www.spoj.com/problems/MKTHNUM/)
+- [SPOJ 公式サーバーの問題本文](https://new3.spoj.com/problems/MKTHNUM/)
+
+- [Library Checker：Range Kth Smallest（原典の条件）](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/data_structure/range_kth_smallest/task.md)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="persistent-prefix-kth" />

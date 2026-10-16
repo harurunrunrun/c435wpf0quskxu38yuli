@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2019 Shoes/Split/Vision、ICPC2017G、ICPC2018Aの既知不足解消",
+  "counts": {
+    "specificTechniques": 404,
+    "foundationArticles": 78,
+    "allArticles": 482,
+    "exampleMappings": 503,
+    "originalUrls": 465,
+    "graphs": 449,
+    "nodes": 3565,
+    "questions": 1618,
+    "answerEdges": 5272,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 499,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "oriented-equal-pair-adjacent-swaps-fenwick",
+      "articleSha256": "3fddfb55842ba19be5153424c6b9d861142eeb5ec3b2487bdc15c26db11ca45a",
+      "codeSha256": "ff28c759e97b7060ba2e44a5026b476e1a748b4cfdab59164575a614b39137df",
+      "checks": 475661,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true,
+      "originalNumericBoundsVerified": true,
+      "apiContainsEntireOriginalRange": true
+    },
+    {
+      "id": "rotated-manhattan-two-mark-boolean-circuit",
+      "articleSha256": "aaa5ee8b9df7c97f8e93157219954dd2adddc032f43d1c8a59e9f76e983a0c57",
+      "codeSha256": "50eae8df8ece76c7df4925ee99de4f637bdb5b9b3699644c3e62dd3ceac00f39",
+      "checks": 55810190,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true,
+      "originalNumericBoundsVerified": true,
+      "apiContainsEntireOriginalRange": true
+    },
+    {
+      "id": "dfs-lowlink-three-size-two-connected-partition",
+      "articleSha256": "1a1d81b44ce946328ccdf44aa5d2ce78a80d2cc249699e6b3ec0b80af8d3abe2",
+      "codeSha256": "55fb4346b32476ffb768cbb5ef70a2af0f752d52870110395d5a1b0871fceca9",
+      "checks": 4278886,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true,
+      "originalNumericBoundsVerified": true,
+      "apiContainsEntireOriginalRange": true
+    },
+    {
+      "id": "xor-grid-predecessor-boundary-single-error",
+      "articleSha256": "5e67e5fc534ac35655bdbba0aff622d63a57d1302f85c3f859f545aef84d44ba",
+      "codeSha256": "f0b0356a21f596c45df38e489132752e1a9a253610ae8bd45880237c39eb9f0e",
+      "checks": 948236,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true,
+      "originalNumericBoundsVerified": true,
+      "apiContainsEntireOriginalRange": true
+    },
+    {
+      "id": "stochastic-timetable-reverse-event-dp",
+      "articleSha256": "733b1bde79b54ee3463ab27a8333d9cc3d8c079f0fa5a38c2cfbac27e303eb32",
+      "codeSha256": "85c2adfcb6d1a5ffa0daffd9c59c31c7c35bb2d181ae9adbfa52d1f6b129d1ea",
+      "checks": 62915,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true,
+      "originalNumericBoundsVerified": true,
+      "apiContainsEntireOriginalRange": true
+    }
+  ],
+  "codeHashDefinition": "UTF-8 bytes of the single complete C++ fence, using the same extraction as the native checker, including final newline.",
+  "verified": [
+    "Shoes: 155850 balanced words across 55 multisets were compared with exact multi-source adjacent-swap BFS (1059098 directed swaps); all475661 checks passed, including source maximum100000 pairs with answer10^10. Author and root independently reviewed the projection/exchange proof and normal/ASan/UBSan results.",
+    "Vision: actual generated circuits were simulated on all small two-pixel images and full slender grids, plus all original maximal K values and boundary/random images at200x200.55810190 checks,1858 circuits,297360 scalar/8485484 batched images; maximum3190 gates/86368 terminals. Two independent reviewers acquired and visually read the AOI-distributed primary PDF and checked grader semantics.",
+    "Split: all27474 connected simple graphs of orders3..6, all271526 ordered positive triples and16208532 literal partitions were checked.4278886 checks also cover parallel edges,100000 vertices/200000 edges,100003-vertex API extension and1MiB process stacks. Root independently read/proved the strict-ancestor and failed-pivot lemmas and reran normal/ASan/UBSan.",
+    "Replicate: arbitrary observed grids74938 and13634516 literal predecessor assignments,33505 forward error cases,240 histories and300x300/149 reverse steps agree.948236 checks and separate independent normal/ASan/UBSan review establish the weight-four uniqueness, nonvanishing boundary, syndrome completeness, arbitrary outlier and minimum-seed proofs.",
+    "Timetable:19448 small timetables were compared with112146 complete policies and512294 nonzero independent running worlds simulated forward.62915 checks include four million-scale calls, strict transfer, simultaneous departure batching, time0/10^18 and invalid inputs. Author and independent reviewer prove the3Mu binary64 error bound and API containment.",
+    "Published C++ fences are byte-identical to the independently reviewed author implementations. All five published checker commands passed after prose editing and integration. Native wrappers are tests/ioi-2019-three-cpp.test.mjs and tests/inverse-grid-timetable-cpp.test.mjs.",
+    "IOI2019 independent regression tests preserve the pre-addition498 records, every step/outcome/label, the old non-root reorder-operation, initial all-six audit projections and472/439 frozen snapshots. All nine guard questions reject no/unknown without asserting the technique.",
+    "ICPC independent regression tests preserve pre-addition501 records, all972 result nodes, all1612 former question titles/options, the complete four-option grid root and both first-pass audit headers/records. New six guards,14 histories, diagram links and source date/difficulty provenance pass.",
+    "The legacy continuation test now permits exactly the documented Vision answer at the category root, with all original fields/options/order/targets otherwise equal to its frozen node. It does not ignore arbitrary added or changed branches. The first broad run caught this strict historical expectation; after the specific correction all44 regression groups passed.",
+    "Corpus research completion is derived from the fixed completed first pass and every positively reviewed record, so later explicit proofs can complete current research while historical fixedCorpusResearchComplete=false remains intact. Later materialStatus.solution=unconfirmed and explicit denial of official-editorial verification cannot be overwritten during classification. Positive and rejection regressions pass.",
+    "The unfinished-article marker check recognizes uppercase TODO/TBD words and Japanese unfinished markers without falsely rejecting a lower-case C++ queue identifier todo.",
+    "Final local build:482 articles/503 mappings/449 diagrams.49 Japanese, English and full-width searches across the12 most recent articles pass; formulas, reference evidence, links and catalog entries agree. Verification notes remain outside product prose.",
+    "Final built artifacts:449 SVG pairs and diagram-only pages,5272 full answer labels and404 old problem URLs agree. All five new detailed diagrams were rendered through installed librsvg/cairo and visually inspected without node/text/edge overlap. No browser or server was launched.",
+    "Built research table25/25 rows exactly matches observed identities, reviewed-identity union and published mapping columns.",
+    "Final npm run verify:local checked28374 local links/assets across1389 HTML/SVG files and449 diagrams. External requests were disabled.",
+    "After the final classifier refinement, six targeted corpus/history/flow groups were rerun and passed; validate still reports482/503/449. An explicit firstPassAuditComplete=false cannot be overridden by a stale research-complete flag."
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 53,
+    "fixedCorpusSolutionsReviewed": 42,
+    "publishedExamplesSolutionsReviewed": 463,
+    "allDistinctSolutionsReviewed": 473,
+    "usacoCovered": "6/6",
+    "icpc2017Covered": "9/12",
+    "joiCovered": "9/12",
+    "ioi2020Research": "4/6",
+    "ioi2020Covered": "4/6",
+    "ioi2019Research": "3/6",
+    "ioi2019Covered": "3/6",
+    "icpc2018Research": "9/11",
+    "icpc2018Covered": "1/11",
+    "remainingKnownGaps": 22
+  },
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。固定群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは以前の環境上の失敗後に再試行しておらず未検証。",
+    "外部リンクの全件生存確認は未実施。",
+    "push・アップロード・公開は実施していない。"
+  ],
+  "inProgress": [
+    "IOI2020 Mushroomsの原典満点226問・総問長100000の決定木と質問回数の厳密な証明・独立oracle",
+    "ICPC2018Bの前後条件伝播・句読点を保持する完全API",
+    "IOI2018公式全6題の先行固定・凍結監査（482記事/449図/503歩行時点、未登録）"
+  ],
+  "localLinkVerification": {
+    "files": 1389,
+    "linksAndAssets": 28374,
+    "diagrams": 449,
+    "passed": true,
+    "externalRequests": false
+  }
+}

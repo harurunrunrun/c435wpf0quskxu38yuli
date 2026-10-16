@@ -1,0 +1,596 @@
+{
+  "techniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+  "auditGapId": "parity-walk-profile-layer-inclusion-exclusion-count",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-countgraphs-article.mdx",
+    "checker": "/tmp/flowchartcp-countgraphs-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/parity-walk-profile-layer-inclusion-exclusion-count.mdx",
+    "checker": "scripts/check_parity_walk_graph_count_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "metadataFile": "data/techniques-specific-graph-extensions.json",
+    "referenceFile": "data/references-specific-graph-extensions.json",
+    "feature": "data/parity-walk-count-problem-features.json"
+  },
+  "metadata": {
+    "id": "parity-walk-profile-layer-inclusion-exclusion-count",
+    "title": "偶奇別の最短歩数を保つグラフを、層ごとの辺選択と包除原理で数える",
+    "summary": "各頂点の二つの距離を前駆の条件に変え、まだ前駆が足りない頂点数だけを状態にする。二集合間の辺と自己ループを含む内部辺を、包除原理で重複なく数える。",
+    "aliases": [
+      "USACO 2021 February Counting Graphs Platinum",
+      "parity walk profile layer inclusion exclusion count",
+      "all root walk lengths graph realization count",
+      "偶奇最短距離 未充足頂点 包除 行列 ループ"
+    ],
+    "family": "偶奇付き到達性を保つグラフの数え上げ",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "inclusion-exclusion-forbidden"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+      "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ]
+  },
+  "reference": {
+    "techniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+    "source": "USACO",
+    "problemId": "1118",
+    "title": "Counting Graphs",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+    "evidence": "連結無向グラフの固定始点から各ラベル付き頂点へ到達できる全歩数を保つ、別のグラフの個数を法1e9+7で数える。自己ループ可、多重辺不可、元にない辺も選べる。偶奇別最短距離のA/B/C前駆条件を層に分け、未充足頂点数DP、B辺行列の指定行/列非空を包除する二段遷移、末端C辺の指定頂点非孤立を包除する式で原典全域をO(N^3+M)に扱う。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "division": "Platinum",
+    "sourceDate": "2021-02",
+    "datePrecision": "month",
+    "exactDateVerified": false,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "原典1118/公式resultsPlatinum第3問/公式解説Danny Mittal・Benjamin Qiを再読し、N2..100、T<=25000、総N²<=100000、法1e9+7を確認。全walk言語と二距離の同値、A/B/Cの前駆必要十分性、指定未充足集合の対称性、B/A二段PIE、root例外、空bucket、C終端PIEを独立証明。原典のC式は本文exerciseであり、独立導出と公式掲載C++の同じ式を区別して確認。実MDX完全C++20を抽出した新checkerは通常/ASan+UBSanとも457134checks/checksum14785516314595030999。N2..5全23940連結loopgraph/932完全無限言語群の全入力、N6全1709056連結graph/10263群の全代表、literal行列74963/終端graph2131019、任意root/7法/N100最大119call/T25000を比較。初回Python研究probeを完成APIに読み替えない。2021-02月精度、日未確認、難度null、同名CFやJanuary別問題と区別。"
+  },
+  "problemFeature": {
+    "source": "USACO",
+    "problemId": "1118",
+    "title": "Counting Graphs",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+    "techniqueIds": [
+      "parity-walk-profile-layer-inclusion-exclusion-count"
+    ],
+    "features": [
+      "連結無向・単位長のグラフで、固定始点から各ラベル付き頂点へ到達できる全ての歩数の真偽を保つ。辺・頂点の再訪を許す。",
+      "自己ループ可・多重辺不可、新しい辺を自由に選べる。同じ頂点ラベルのまま、辺集合の違う全実現の個数を剰余で求める。最小辺数や元の辺の部分集合だけの数ではない。",
+      "原典N2..100、T1..25000、総N²<=100000、法1000000007。掲載APIは任意始点・任意の正の32bit法へ拡張し、合成数/法1も扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYearMonth": "2021-02",
+    "publicationDate": "2021-02",
+    "publicationDatePrecision": "month",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "notes": "1117の最小辺数APIとは別に、余分な許容辺も含む全graphを数える専用DP。原典1118を、同名CF1857GやUSACOJanuary別課題へ取り替えない。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "officialEditorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=feb21results",
+    "statementFullTextAndNumericBoundsVerified": true,
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "officialEditorialAuthors": [
+      "Danny Mittal",
+      "Benjamin Qi"
+    ],
+    "officialEditorialProvenance": "USACO公式February2021resultsのPlatinum第3問Counting GraphsのSolution直接リンク。本文Analysis著者名と二段DPの式、C終端exercise記述および掲載C++を確認。",
+    "sourceBounds": {
+      "N": "2..100",
+      "M": "N-1..N(N+1)/2",
+      "T": "1..25000",
+      "sumN2": "<=100000",
+      "modulus": 1000000007,
+      "graph": "connected undirected labeled vertices1..N; optional selfloops; noparalleledges",
+      "walk": "root1 to eachvertex, ALL integerlengthb>=0, edge andvertexrevisits count",
+      "target": "numberofallrealizinggraphs on SAME labels, arbitrarynewedgesallowed, modulo1e9+7"
+    },
+    "date": "2021-02",
+    "datePrecision": "month",
+    "exactDateVerified": false,
+    "dateEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "dateLimitation": "Officialheaders/results confirm2021February only. Noexactdayinferred frommemory/sidebar/crawltime.",
+    "terminalFormulaProvenance": "Officialprose leaves exactCformula asanexercise. Independentlyderive byisolatingrequiredvertices; actualofficialC++lines149..160 implements samealternatingsum. Do notclaim proseexplicitlystatesformula.",
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedRequiredLemmas": [],
+    "visualInspectionClaimed": false
+  },
+  "api": {
+    "signature": "int count_graphs_preserving_root_walk_lengths(int n,const std::vector<std::pair<int,int>>& edges,int root=0,int modulus=1000000007)",
+    "input": "N2..100, oneundirectededgeperunorderedpair, selfloopallowedonce, connected; root0..N-1; positive32bitintmodulus",
+    "result": "Canonicalresidue0<=answer<modulus ofnumberofdistinctlabelededge-setswithsameexactrootwalklanguages. Noedge-listconstruction. Actualcount>=1 sinceinputitselfvalid, butresidue0canbevalid.",
+    "originalAdapter": "For eachoriginalcase subtract1fromedgeendpoints andcallwithroot0/defaultmod1000000007. MultiplecaseconstraintsT<=25000/sumN²<=100000 arefullycontained byindependentstatelesscalls.",
+    "extensions": [
+      "arbitrary supplied root",
+      "eitheredgeendpointorientation/arbitrarylistorder",
+      "positivecomposite/prime/1modulusup to2147483647, nofieldassumption"
+    ],
+    "modulus": "Fixeddefault1e9+7includesoriginal. IntegercombinatorialPIEidentitiesuseonly+,-,*andPascalbinomials, no division/factorialinverse; primalityunnecessary. 0^0 countsoneemptychoice andisrepresentedby1%modulus, whichis0ifmodulus1.",
+    "invalid": "invalid_argument forN<2/N>100, rootoutofrange, modulus<=0, edgecount>N(N+1)/2, invalidendpoints, duplicateunorderedpairs/reversedcopies/repeatedloops, disconnectedgraphincludingemptyedges. Range/role-independent endpoint/duplicate validation before BFS; connectivity checked after BFS and before tables/DP counting.",
+    "allocationErrors": "standardallocationexceptionspropagate; allmutablebufferslocal/RAII, constcallerinputunchanged; nofaultinjectionclaimed",
+    "helperContract": "walk_profile_count_detail::Ring/Tablesareinternalimplementationdetails, calledonlywithvalidatedpositive32bitmodulus,N<=100,andnonnegativein-rangecountarguments. NotaseparatelyvalidatedpublicAPI.",
+    "state": "AllRing/tables/DP/graph/distancevectorslocal percall. No cache dependingonpreviousN/root/modulus; sourceinputnotreorderedormutated.",
+    "integerSafety": [
+      "N/root validated beforeN²/product/vertexindex arithmetic. N(N+1)/2<=5050, usedmatrixN²<=10000, CSR-likeadjacencystores<=2M<=10100 entries. Directmatrixduplicatecheck O(N²+M), noMlogMsort.",
+      "ParityBFSstates<=2N<=200, distances<=2N-1<=199, infinity2N+1<=201. Nonbipconnectedgraphhasbothfiniteforallverticesbeforefrequencyindexing.",
+      "Profiletable side2N<=200, coordlookupreturns0foroutofbounds. Sumloops1..4N-3, a/blookupguarded; DPsizealwaysp+1forpreviousbucket, requiredy<=p,emptyx<=m.",
+      "Allpow/binomialindices<=N orN(N+1)/2. 0^0explicitidentity. Pairbetweenusesprevious-k>=0 andcurrent-empty>=0; finishusesremain>=0.",
+      "For32bitpositive modulus<=2147483647, residues<=2147483646; addition/subtractionuseexplicitint64, eachpairproduct<2^62<INT64_MAX. ReduceafterEACHpairmultiplication, neverrawthreefactorproduct.",
+      "Publishedalgorithmcomputesonlyresidues, not2^5050orexactintegercounts; nofloat/noinverse. C++staticassertintmax>=2147483647matchesverified32bitinttoolchain."
+    ],
+    "time": "O(N^3+M), includesallvalidation andprecomputedpowers/Pascal; nohiddenlogpowerfactor",
+    "space": "O(N²+M)additional; outputoneint",
+    "recursion": "none"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "walkLanguage": "Abacktrackextendsanyreachablewalkby2includingroot0becauseN>=2connected. Two parityminimathereforedetermineALL exactlengths. Sortedmin/maxretainparityfromintegervalues.",
+    "edgeTypes": "Fourcross-parityendpointinequalitiesforceA/B/C: ifsmallminparityflips, bothcorrespondingdifferencesare±1; ifsmallminparitysame, crossboundsforceidenticalterminal(a,a+1)profile. Loopsallowedonlyterminal. Positiveminimumrequiresminus-onepredecessor; allsuchpredecessorsplusallowededgeinequalitiesarenecessaryandsufficient. Root0distanceexempt.",
+    "bipartite": "Onlyedgesbetweenconsecutiveordinarydistancelayersallowed. Eachvertexindependentlychoosesnonemptyadjacencysubsettopreviouslayer, yieldingproduct(2^fprev-1)^fcur. Everyunorderededgeassignedtohigherdistanceonce.",
+    "layerIndependence": "Aisassignedtohighera+blayerandcannothelplowerendpointpredecessors. B/Cstaywithinlayer. Thusedgevariablespartitionintolayerswithoutsharedconstraints.",
+    "stateSymmetry": "D(y)aggregatesALLpriorlabelededgechoiceswithsomeyspecificunfulfilledvertices. Everygivensubsetofsizeyhasidenticalcompletioncountbecauseinter-bucketallowedpairscomplete; noextraC(p,y)factor. Newempty-columnsubsetselectedoncebyC(m,x).",
+    "B": "Forprevioussizep,currentm,requiredyoldrows,exactxemptynewcolumns: chooseC(m,x), requireeveryothercolumnnonzero, thenPIEoverrequiredrowsexcluded. B=C(m,x)sumk(-1)^kC(y,k)(2^(p-k)-1)^(m-x).",
+    "A": "B-emptyzverticesmustgetAnonemptyset. Newunfulfilledxverticeschosenonlyfromm-zB-presentvertices; allotherm-xverticeschooseAnonemptysubsetoflowersizeell. ThisuniquelyclassifieseachB/Aedgeset, next[x]=sumz I[z]C(m-z,x)(2^ell-1)^(m-x).",
+    "C": "Onlyyrequiredverticesneednonisolatedincidenceincompleteinternalgraphwithloops. Forcingkofthoseisolatedforbidsallincidentedges/loops, leaves2^((m-k)(m-k+1)/2)choices. PIEgivesfinish. NoC(m,y)multiplierbecauseD(y)alreadycountsactualrequiredsets.",
+    "root": "a0containsrootonly, noA/leftBstage; startD[rootcount]=1. RootnonterminalneedsrightBforoddpositivepredecessor; rootterminal(0,1)needsCselfloop. MissingrootbucketstartsD0=1.",
+    "emptyBuckets": "Emptycurrentm0enforcespreviousrequiredy0byalternating(1-1)^y; emptygapcannotbejumpedbyB. Missinglowerell0and0^0correctlyforceallB-emptyverticestobeabsentunlessAavailable. Emptylayeransweridentity.",
+    "complexity": "Bcostsum overadjacentbuckets(m+1)(p+1)^2; nonemptycounts sumN, so cubicterms<=O(N³), quadraticterms<=O(N²), emptycoordinatepairs O(N²). Astages/terminals sumsize²<=N². Power/binomialprecomputeO(N²),BFS/duplicatecheckO(N²+M).",
+    "unconfirmedLemmas": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "initialChoices": [
+      "network-connection"
+    ],
+    "parentGraphId": "graphs-network-connection",
+    "parentNodeId": "shortest",
+    "initialMissingGraphId": "graphs-network-connection",
+    "initialMissingNodeId": "shortest",
+    "proposedAnswerId": "walk-profile-count",
+    "proposedAnswerLabel": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える",
+    "guardGraphId": "parity-walk-graph-count-conditions",
+    "guards": [
+      {
+        "id": "undirected-loops",
+        "question": "連結な無向グラフで、自己ループを許し、多重辺を禁止しますか？",
+        "description": "単位長の辺・頂点の再訪を許す。N>=2。"
+      },
+      {
+        "id": "all-walk-realizations",
+        "question": "同じラベルの各頂点への全歩数を保ち、新しい辺も含めた全グラフを数えますか？",
+        "description": "固定始点から全b>=0のwalk真偽を保存する。最小辺数や元の辺の部分集合数ではない。"
+      },
+      {
+        "id": "bounds-modulus",
+        "question": "頂点は100以下で、正の32bit法による個数をO(N^3+M)で求められますか？",
+        "description": "原典法1000000007を含み、逆元を使わず合成数/法1も扱う。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "parity-walk-profile-layer-inclusion-exclusion-count"
+    ],
+    "canonicalNotYetRegistered": true,
+    "notes": "Parentfinalizesbranchlabels/idsandnewdetailgraph; preserveexistingMinEdgesbranchandallinitialfixedauditpaths."
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-countgraphs-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-countgraphs-checker.py --sanitize",
+    "normal": {
+      "checks": 457134,
+      "apiCalls": 151370,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "languageGroupsN2to5": 932,
+      "allConnectedLoopGraphsN6": 1709056,
+      "languageGroupsN6": 10263,
+      "nonzeroRootRelabelCases": 23940,
+      "literalBipartiteMatrices": 74963,
+      "literalTerminalLoopGraphs": 2131019,
+      "primitiveChecks": 2996,
+      "maximumN100Calls": 119,
+      "maximumBatchCalls": 25000,
+      "invalidCalls": 20,
+      "checksum": "14785516314595030999",
+      "seconds": 0.73396,
+      "peakRSSKiB": 5304,
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 457134,
+      "apiCalls": 151370,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "languageGroupsN2to5": 932,
+      "allConnectedLoopGraphsN6": 1709056,
+      "languageGroupsN6": 10263,
+      "nonzeroRootRelabelCases": 23940,
+      "literalBipartiteMatrices": 74963,
+      "literalTerminalLoopGraphs": 2131019,
+      "primitiveChecks": 2996,
+      "maximumN100Calls": 119,
+      "maximumBatchCalls": 25000,
+      "invalidCalls": 20,
+      "checksum": "14785516314595030999",
+      "seconds": 6.51623,
+      "peakRSSKiB": 901708,
+      "sanitized": true
+    },
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "leakSanitizerEnabled": false,
+    "completeLanguageOracle": "NEWnativechecker independentlyenumeratesloopoptionalgraphsN2..6. For eachgraph evolveexactreachablevertexsetsuntilfirstrepeatedset, yieldingcanonicalfullpreperiod/periodwordwithnofinitehorizonorparity-profileassumption. Grouplabeledconnectedgraphsbythatword; exactgroupsizeisgroundtruthcount.",
+    "allGraphScope": "N2..5all23940connectedgraphs/932groups: invokeactualpublishedfunctionforEVERYgraphdefaultmodandroot/labelpermutation. N6enumeratesALL2^21graphs,1709056connected/10263groups; invokesactualAPIforEVERYgrouprepresentative,notEVERYgraph. All11195groupsalsocheckall7moduli.",
+    "moduli": [
+      1,
+      2,
+      4,
+      6,
+      97,
+      1000000007,
+      2147483647
+    ],
+    "primitiveOracle": "All74963literalbinarymatricesforaxes0..4; exactrow/columnnonzerohistogramscheckBformulaandrequiredArows/exactemptyrowscheckAformula. All2131019loopoptionalgraphsforinternalm0..6; directlysetcoveredvertexbitsandcountfirstyrequiredverticesnonisolatedforeachy. Compareallformulasunderall7moduli,2996primitiveassertions. NoPIEenterstheseliteraloracles.",
+    "maximumCases": [
+      {
+        "index": 0,
+        "N": 100,
+        "pattern": "bipartite path",
+        "exactFormula": "1",
+        "moduliTested": 7
+      },
+      {
+        "index": 1,
+        "N": 100,
+        "pattern": "bipartite star",
+        "exactFormula": "1",
+        "moduliTested": 7
+      },
+      {
+        "index": 2,
+        "N": 100,
+        "pattern": "complete bipartite50x50 root in first part",
+        "exactFormula": "(2^50-1)^49",
+        "moduliTested": 7
+      },
+      {
+        "index": 3,
+        "N": 100,
+        "pattern": "completegraph with all5050edges/loops",
+        "exactFormula": "2^4950",
+        "moduliTested": 7
+      },
+      {
+        "index": 4,
+        "N": 100,
+        "pattern": "rootloop plusstar",
+        "exactFormula": "2^4950",
+        "moduliTested": 7
+      },
+      {
+        "index": 5,
+        "N": 100,
+        "pattern": "star with all99leafloops",
+        "exactFormula": "D(99)",
+        "moduliTested": 7
+      },
+      {
+        "index": 6,
+        "N": 100,
+        "pattern": "path withrootloop",
+        "exactFormula": "2^99",
+        "moduliTested": 7
+      },
+      {
+        "index": 7,
+        "N": 100,
+        "pattern": "path withfarleafloop root0",
+        "exactFormula": "1",
+        "moduliTested": 7
+      },
+      {
+        "index": 8,
+        "N": 100,
+        "pattern": "samepath withrootatloop",
+        "exactFormula": "2^99",
+        "moduliTested": 7
+      },
+      {
+        "index": 9,
+        "N": 100,
+        "pattern": "oddcycle99 pluspendant",
+        "exactFormula": "5*7^48",
+        "moduliTested": 7
+      },
+      {
+        "index": 10,
+        "N": 100,
+        "pattern": "completebipartite2x98 rootin2part",
+        "exactFormula": "2^98-1",
+        "moduliTested": 7
+      },
+      {
+        "index": 11,
+        "N": 100,
+        "pattern": "samegraph rootin98part",
+        "exactFormula": "3^97",
+        "moduliTested": 7
+      },
+      {
+        "index": 12,
+        "N": 100,
+        "pattern": "root +49first-layer +50loopedsecond-layer, denseB",
+        "exactFormula": "F(49,50)*D(50)",
+        "moduliTested": 7
+      },
+      {
+        "index": 13,
+        "N": 100,
+        "pattern": "sameprofile withsparseB edgecover",
+        "exactFormula": "F(49,50)*D(50)",
+        "moduliTested": 7
+      },
+      {
+        "index": 14,
+        "N": 100,
+        "pattern": "root +50first-layer +49loopedsecond-layer",
+        "exactFormula": "F(50,49)*D(49)",
+        "moduliTested": 7
+      },
+      {
+        "index": 15,
+        "N": 100,
+        "pattern": "rootloop +49first-layer +50second-layer",
+        "exactFormula": "(2^49-1)^50*2^2500",
+        "moduliTested": 7
+      },
+      {
+        "index": 16,
+        "N": 100,
+        "pattern": "root +3loopedcenters +48leaves +48targets",
+        "exactFormula": "D(3)*sum_d C(48,d)D(d)a^(48-d)(a+b)^d, a=(2^3-1)2^48,b=2^48-1",
+        "moduliTested": 7
+      }
+    ],
+    "maximumIndependentIntegerOracle": "Pythonexactintegersgenerateall119expectedresidues. D(0)=1,D(n)=2^(n(n+1)/2)-sumk<n C(n,k)D(k), byclassifyingEXACTnonisolatedvertexset. F(0,m) andF(p,m)=(2^p-1)^m-sumk<p C(p,k)F(k,m), byclassifyingEXACTnonzerorowsetwithallcolumnsnonzero. Thesearepositivecombinatorialdecompositionrecurrences, notproductionalternatingPIE. MixedA/B/CcaseclassifiesCnonisolatedsetsize d, givingweightedD(d)sum.",
+    "maxMixedDerivation": "InN100mixedcase root+3loopedcenters+48ordinaryleaves+48targets, firstcenterCgraphmusthavenoisolates:D(3). FortargetwithCincidence, A-nonempty/B-anygivesa=(2^3-1)2^48orA-empty/B-nonemptygivesb=2^48-1; withoutCmustchoosea. ExactCnonisolateddsetcountC(48,d)D(d), soformulaabove. ThisindependentweighteddecompositionchecksA/B/Cinteraction, notonlypurecases.",
+    "maximumBatch": "25000independentN2calls,totalN²=100000,alternatingrootloop/no-loopinputsunderoriginaldefaultmod. Previouscasesinterleaveall7modulianddifferentroots/sizes.",
+    "apiBoundaryCases": [
+      "Originalsample3, fivecycle35,rootloopstar10answer371842544.",
+      "NINT_MIN/0/1/101/INT_MAX; invalidroot/endpointsincludingINT_MIN/MAX; modulus0/-1/INT_MIN; duplicate/reversededges/repeatedloops; empty/disconnected; MaboveN(N+1)/2incl5051atN100.",
+      "Count2mod2returns0asavalidresidue; modulus1returns0; subsequentdefaultcallreturns1.",
+      "ConstinputequalitycheckedatEVERY151370successfulcall, includingmax119."
+    ],
+    "counterScope": "checks counts assertions; apiCalls151370includesnativefunctioncallsnotnumberofenumeratedgraphs. Smallgraphs23940ANDN6graphs1709056 areexactoracleenumerations; N6only10263representativesareAPI-testedpermod. literalTerminalLoopGraphs sumsm0..6allgraphs includingdisconnected; requiredsetsfirstybylabelsymmetry.",
+    "separationFromInitialResearchProbe": "ThefrozeninitialPythonprobe23940/932countsisnotrenamedorclaimedtobeproduction. ThisnewcheckerextractstheactualcompleteC++fenceandrerunsindependentnativegraphenumeration,mod/primitive/max/invalid/sanitizerchecks.",
+    "timingScope": "WholecheckerincludingnativeoraclesandallAPIcases; Pythonexactexpectedgeneration/compilationexcluded. RSSincludeschecker/ASanquarantine,notonlyAPI.",
+    "allocationFailureInjection": false,
+    "sharedFilesModified": false,
+    "initialAuditModified": false,
+    "independentReview": "pending parent-assignedread-onlyreview",
+    "unconfirmedLemmas": []
+  },
+  "initialAuditPolicy": {
+    "file": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+    "problemId": "1118",
+    "allSixResearchPositiveAlreadyRegistered": true,
+    "appendNewResearchReview": false,
+    "preserveInitialSixRecords": true,
+    "originalClassification": "missing-technique",
+    "originalProductionImplementationValidated": false,
+    "notes": "No newresearchreview/stagecount incrementrequested. Parentwilladdonlyfutureimplementationresolutionafterindependentreview/sharedflow/walkvalidation."
+  },
+  "resolutionSuggestion": {
+    "techniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+    "articleImplementationValidated": true,
+    "originalFullRangeContained": true,
+    "independentReviewPending": true,
+    "navigationConnectionPending": true,
+    "registerNow": false,
+    "notes": "候補3成果物の著者検証完了。Parentによる独立reviewとfeature3guard/原典walk/回帰後に、初回researchpositive6/6を重複追加せずresolutionとして解消する。"
+  },
+  "editorNotes": [
+    "NaturalJapanese8commonsectionsandonealwaysvisiblecompleteC++20function. Noindividualproblemexplanationpage.",
+    "Bodycontainsmodel/conditions/proof/countingformulas/complexity/implementation/relatedsources; retrievalhistory/testcounters/benchmarkssidecaronly.",
+    "Original1118CountingGraphsisneither1117minimumedgesnorCF1857GuniqueMSTnorJanuarysame-titleproblem.",
+    "ExactCterminalformulaindependentlyderived, officialproseexercise/officialcodeoccurrencerecordedhonestly.",
+    "Date2021-02monthprecision/exactfalse/numericratingnull,Platinumdivisionseparate. No sharedsource/flow/audit/ledger/server/commit/install/publishactions."
+  ],
+  "artifactSha256": {
+    "article": "47f4e70fe47673344e2e82fbc2881e66558f4d854a05507890872c9e956ebfdf",
+    "checker": "f8194744d434c1203e39ef779bf5a61c2b0ec6eed252dc0a094c9e663d10dd49",
+    "publishedArticle": "47f4e70fe47673344e2e82fbc2881e66558f4d854a05507890872c9e956ebfdf",
+    "publishedChecker": "2b4167416e7c688de3dae3d37bb3ad63e6d20bef4a21a6b176d8fca5010cf5e9"
+  },
+  "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/parity-walk-profile-layer-inclusion-exclusion-count.mdx",
+    "checker": "scripts/check_parity_walk_graph_count_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "network-connection",
+      "walk-profile-count",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "proseNormalization": "Entry points use standard advanced/complexity/reasoning. Balanced prose uses Japanese flag/state/payload labels and explicitly gives O(A) zero-width validation; C++ unchanged.",
+    "verificationRecord": "research/verification-2026-10-15-countgraphs-balanced.json"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "techniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+      "reviewer": "root",
+      "reviewedAt": "2026-10-15",
+      "status": "root-review-passed-awaiting-separate-review",
+      "allEightSectionsAndCompleteCppRead": true,
+      "primaryFullBoundsAndChosenEditorialReread": true,
+      "fullSourceRangeIncluded": true,
+      "codeSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "normal": {
+        "checks": 457134,
+        "apiCalls": 151370,
+        "allConnectedLoopGraphsN2to5": 23940,
+        "languageGroupsN2to5": 932,
+        "allConnectedLoopGraphsN6": 1709056,
+        "languageGroupsN6": 10263,
+        "nonzeroRootRelabelCases": 23940,
+        "literalBipartiteMatrices": 74963,
+        "literalTerminalLoopGraphs": 2131019,
+        "primitiveChecks": 2996,
+        "maximumN100Calls": 119,
+        "maximumBatchCalls": 25000,
+        "invalidCalls": 20,
+        "checksum": "14785516314595030999",
+        "seconds": 0.727889,
+        "peakRSSKiB": 5368,
+        "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+        "sanitized": false
+      },
+      "asanUbsan": {
+        "checks": 457134,
+        "apiCalls": 151370,
+        "allConnectedLoopGraphsN2to5": 23940,
+        "languageGroupsN2to5": 932,
+        "allConnectedLoopGraphsN6": 1709056,
+        "languageGroupsN6": 10263,
+        "nonzeroRootRelabelCases": 23940,
+        "literalBipartiteMatrices": 74963,
+        "literalTerminalLoopGraphs": 2131019,
+        "primitiveChecks": 2996,
+        "maximumN100Calls": 119,
+        "maximumBatchCalls": 25000,
+        "invalidCalls": 20,
+        "checksum": "14785516314595030999",
+        "seconds": 6.26919,
+        "peakRSSKiB": 954932,
+        "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+        "sanitized": true
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "proofReview": [
+        "For connectedN>=2, any attainable parity minimum extends by2 via a backtrack. Equal complete walk language iff both parity minima agree; root0backtrack included.",
+        "In bipartite case allowed edges connect consecutive ordinary distance layers, each higher vertex requires a nonempty lower neighbor set; this guarantees connectedness and parity-distance preservation.",
+        "Nonbipartite allowed edges A/B/C exhaust four endpoint inequalities. Every positive parity minimum must have a predecessor, sufficient by induction. A helps only its higher-sum endpoint, B/C stay in one sum layer.",
+        "DP already counts actual subsets of unfinished labeled vertices. Future count depends only on their number by permutation symmetry; do not multiply choose(p,y) again.",
+        "B stage chooses exactly empty current columns, nonempty remaining columns, and inclusion-excludes required previous rows. A stage forces nonempty A for all B-empty vertices and chooses unfilled vertices only among B-present ones. Each edge set belongs to exactly one pair of these subsets.",
+        "Terminal inclusion-exclusion isolates only required vertices. Remaining loop-inclusive complete graph has exponent (m-k)(m-k+1)/2. Root starts with one unfilled positive distance and no predecessor for0; rootloop forced if oddminimum1.",
+        "Empty buckets processed instead of skipped, so any unmet predecessor at a gap cancels to0. All permitted edges appear in exactly one stage; layer products neither omit optional edges nor double-count.",
+        "Terminal formula is left as an exercise in official prose, but root independently derives it and official visible C++ implements this exact sum."
+      ],
+      "apiReview": [
+        "Sizes/root/modulus validated before allocation/narrowing. Complete optional-loop edge maximum5050, duplicate unordered pairs rejected by symmetric byte table, endpoints checked before indexing, disconnected graphs rejected before bipartite return. Const input, local state, fresh calls including after exceptions.",
+        "All table args:0<=required<=previous<=N,0<=empty<=current<=N. dp length always previous+1, including root/no-root initial sizes. count() guards out-of-range profile indexes and all finite minima<2N.",
+        "Composite positive32bit moduli and1 need no inverse. Each Ring sum/difference/product widens first, reductions after each pairwise operation. Max product(INT_MAX-1)^2 fits int64, all exponents<=5050. 0^0=ring.one handles empty choices.",
+        "PrecomputeO(N²), sparse occupancy totalN and at mostO(N²) coordinate scans give summed B transition O(N³); validation/BFSO(N²+M), totalO(N³+M)/O(N²+M). Exact source T/sumN² included via repeated independent calls."
+      ],
+      "sourceDate": "2021-02",
+      "datePrecision": "month",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "remaining": [
+        "Separate independent review/probe pending.",
+        "No shared registration yet; append resolution only to already positive spring record, preserving initial6 rows."
+      ]
+    },
+    "normal": {
+      "checks": 457134,
+      "apiCalls": 151370,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "languageGroupsN2to5": 932,
+      "allConnectedLoopGraphsN6": 1709056,
+      "languageGroupsN6": 10263,
+      "nonzeroRootRelabelCases": 23940,
+      "literalBipartiteMatrices": 74963,
+      "literalTerminalLoopGraphs": 2131019,
+      "primitiveChecks": 2996,
+      "maximumN100Calls": 119,
+      "maximumBatchCalls": 25000,
+      "invalidCalls": 20,
+      "checksum": "14785516314595030999",
+      "seconds": 0.727889,
+      "peakRSSKiB": 5368,
+      "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 457134,
+      "apiCalls": 151370,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "languageGroupsN2to5": 932,
+      "allConnectedLoopGraphsN6": 1709056,
+      "languageGroupsN6": 10263,
+      "nonzeroRootRelabelCases": 23940,
+      "literalBipartiteMatrices": 74963,
+      "literalTerminalLoopGraphs": 2131019,
+      "primitiveChecks": 2996,
+      "maximumN100Calls": 119,
+      "maximumBatchCalls": 25000,
+      "invalidCalls": 20,
+      "checksum": "14785516314595030999",
+      "seconds": 6.26919,
+      "peakRSSKiB": 954932,
+      "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "sanitized": true
+    },
+    "additionalReviewFile": "research/probes/parity-walk-count-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

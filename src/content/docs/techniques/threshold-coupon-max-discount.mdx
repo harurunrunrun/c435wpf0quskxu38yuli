@@ -1,0 +1,66 @@
+---
+title: "下限以上の対象へ一度だけ使える割引は、対象を小さい順に見て最大割引を使う"
+description: "利用できる対象が入れ子なら、使える割引を増やしながら最大のものを割り当てられます。"
+techniqueId: threshold-coupon-max-discount
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+一対一の割り当てに見えるが、各道具を使える対象が「値がある下限以上」の形になっている。対象を値順に並べると利用可能集合が入れ子になるため、一般の重み付き対応より簡単に扱える。
+
+## 考え方
+
+対象の価格を昇順に並べる。価格 $p$ までの下限を持つクーポンを最大ヒープに追加し、割引額が最大の一枚を使う。使えるものがなければ割引なしにする。定価の総和から、選んだ割引の総和を引く。
+
+価格を高い方から調べると、どこへ使うかという自由度を無用に失う。使える選択肢が少ない対象から確定するのが手掛かりになる。
+
+## 適用条件
+
+割引は対象に依存しない固定額で、各対象とクーポンの容量は1。条件は価格の下限だけ。上限、種類制限、相性、割引率があると利用集合や利益が変わり、この交換は保証されない。実装は原典に合わせて $0\le D_i\le L_i\le10^9$、価格も $10^9$ 以下、双方20万件までとする。
+
+## なぜ正しいか
+
+現在の最も安い商品に使える最大割引を $c$ とする。最適解がこの商品へ別のクーポン $d$ を使い、後の商品へ $c$ を使うなら交換する。後の商品は現在以上の価格なので $d$ も使え、総割引は変わらない。$c$ を使わない解なら $d$ を $c$ へ置き換えて悪化しない。現在にクーポンを使わず後で $c$ を使う解も、$c$ を前へ移せる。このため一枚ずつ安全に確定できる。
+
+## 計算量
+
+一般の割り当ての全探索では最大 $O((M+1)^N N)$ 時間、使用済み記録など $O(N+M)$ 空間。両列の整列とヒープで時間 $O(N\log N+M\log M+(N+M)\log(M+1))$、追加空間 $O(N+M)$。既に整列済みなら整列項は不要。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <queue>
+#include <stdexcept>
+#include <vector>
+struct ThresholdCoupon { long long lower,discount; };
+long long minimum_coupon_cost(std::vector<long long> prices,std::vector<ThresholdCoupon> coupons) {
+    if (prices.size()>200000 || coupons.size()>200000) throw std::invalid_argument("too many objects");
+    for (auto p:prices) if (p<0 || p>1000000000LL) throw std::invalid_argument("price bounds");
+    for (auto c:coupons) if (c.discount<0 || c.discount>c.lower || c.lower>1000000000LL)
+        throw std::invalid_argument("coupon bounds");
+    std::sort(prices.begin(),prices.end());
+    std::sort(coupons.begin(),coupons.end(),[](auto a,auto b){return a.lower<b.lower;});
+    long long answer=std::accumulate(prices.begin(),prices.end(),0LL);
+    std::priority_queue<long long> usable; std::size_t next=0;
+    for (auto p:prices) {
+        while (next<coupons.size() && coupons[next].lower<=p) usable.push(coupons[next++].discount);
+        if (!usable.empty()) { answer-=usable.top(); usable.pop(); }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder — Vouchers](https://atcoder.jp/contests/abc308/tasks/abc308_f)
+- [公式解説](https://atcoder.jp/contests/abc308/editorial/6715)
+
+<TechniqueReferences techniqueId="threshold-coupon-max-discount" />

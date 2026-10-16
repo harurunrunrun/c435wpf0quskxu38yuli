@@ -1,0 +1,52 @@
+---
+title: "距離 2 の頂点対を指定するなら、星から葉どうしの辺を足す"
+description: "最大数を作ってから、一辺につき一組ずつ距離 2 の組を減らします。"
+techniqueId: "construct-star-distance-two"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+連結な単純無向グラフを自由に作り、最短距離が 2 の頂点対をちょうど $K$ 個にしたいとき。まず調整できる範囲が最大の形を作ります。
+
+## 考え方
+
+一頂点を中心にした星では、全ての葉どうしの距離が 2 で、組数は $\binom{N-1}{2}$。葉どうしを一辺で結ぶと、その一組だけが距離 1 に変わります。他の葉どうしは元々距離 2 なので変わりません。$\binom{N-1}{2}-K$ 本を足せば完成です。
+
+## 適用条件
+
+辺に重みがなく、頂点対・辺数・次数の追加制限がないこと。連結な単純無向グラフを作る場合に限ります。$K$ が負、または $\binom{N-1}{2}$ より大きければ不可能です。
+
+## なぜ正しいか
+
+連結なら少なくとも $N-1$ 組が辺で直接つながり、距離 2 ではありません。従って距離 2 の組数は $\binom N2-(N-1)=\binom{N-1}{2}$ 以下です。星はこの上限を達成します。葉間の辺を足す各段階で、追加した一組だけを距離 2 の集合から除くため、範囲内の全ての $K$ が作れます。
+
+## 計算量
+
+時間・出力空間 $O(N^2)$。グラフ候補の全列挙 $2^{\binom N2}$ を避けます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<vector<pair<int,int>>> graph_with_distance_two_pairs(int n,long long k){
+    assert(n>=1);long long maximum=1LL*(n-1)*(n-2)/2;
+    if(k<0 || k>maximum)return nullopt;
+    vector<pair<int,int>> edges;
+    for(int v=1;v<n;++v)edges.push_back({0,v});
+    long long add=maximum-k;
+    for(int v=1;v<n && add;++v)for(int u=v+1;u<n && add;++u){edges.push_back({v,u});--add;}
+    return edges;
+}
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [出典の問題文](https://atcoder.jp/contests/abc131/tasks/abc131_e)
+
+<TechniqueReferences techniqueId="construct-star-distance-two" />

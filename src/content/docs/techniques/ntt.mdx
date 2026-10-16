@@ -1,0 +1,92 @@
+---
+title: "NTT・畳み込み"
+description: "添字の和ごとの積の総和を、多項式の積として高速に計算します。"
+techniqueId: ntt
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+添字の和ごとの積の総和を、多項式の積として高速に計算します。
+
+別名：Number Theoretic Transform / NTT / Convolution / 数論変換
+
+## 使う場面
+
+2つの列から $a_i b_j$ を作り、$i+j=k$ ごとに足し合わせる場合に使います。たとえば、値の頻度配列を2つ用意すると、2要素の和ごとの組数が畳み込みになります。添字の関係が和にならない二重ループには、そのまま適用できません。
+
+## 考え方
+
+列を係数に持つ多項式 $A(x)$ と $B(x)$ を考えると、積の $x^k$ の係数は
+
+$$c_k=\sum_{i+j=k}a_i b_j$$
+
+です。NTTは有限体上の根で多項式を評価し、評価値同士を掛けてから逆変換することで、この積を求めます。浮動小数点を使わないため、法の下で正確に計算できます。
+
+## 適用条件
+
+変換長 $L$ は通常2の冪とし、$L$ が法 $p$ の $p-1$ を割り切る必要があります。法998244353では、$L\le2^{23}$ を使えます。通常の畳み込みでは、$L$ を結果の長さ以上にし、足りない係数を0で埋めます。
+
+返り値は法の下での値です。整数そのものの結果が必要なら、係数の上界を求め、その上界を越える法の積と中国剰余定理などを使います。
+
+## なぜ正しいか
+
+評価点での多項式の積は、2つの評価値の積に一致します。有限体上の根の直交性によって逆変換できるため、係数を復元できます。
+
+変換長を結果の長さ以上にすれば、高い次数の係数が低い次数へ回り込まず、通常の畳み込みが得られます。長さが足りない場合に得られる循環畳み込みとは区別します。
+
+## 計算量
+
+結果の長さ以上の最小の2冪を $L$ とすると、時間は $O(L\log L)$、空間は $O(L)$ です。2つの入力長を $N,M$ とすれば、結果の長さは $N+M-1$ です。片方が空なら結果も空です。
+
+## 実装
+
+`ntt998::convolution` は法998244353の畳み込みを返します。負の係数も法の範囲へ正規化して扱います。`transform` を直接呼ぶ場合は、係数を0以上 `MOD` 未満にして、変換長の条件も満たしてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+```
+
+## 関連する手法
+
+[寄与の数え上げ](/flowchartcp/techniques/contribution/) ・ [形式的冪級数](/flowchartcp/techniques/formal-power-series/)
+
+## 参考資料
+
+- [AtCoder Library: Convolution（法と変換長の公式仕様）](https://atcoder.github.io/ac-library/production/document_ja/convolution.html)
+
+<TechniqueReferences techniqueId="ntt" />

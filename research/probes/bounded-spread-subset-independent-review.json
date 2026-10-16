@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "bounded-spread-subset-sum-sorted-window-witness",
+  "problemId": "ioi2016_molecules",
+  "reviewer": "independent agent /root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allPublishedCppRead": true,
+    "completeSuppliedCheckerRead": true,
+    "completeSidecarRead": true,
+    "primarySourcesReadIndependently": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "noNewSubagents": true
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-article.mdx",
+      "sha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "unchanged": true
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-checker.py",
+      "sha256": "6b4bff7d2a630691a5f15fcbe438b92f9bf3653fd8953f85b549f69c08f4134b",
+      "unchanged": true
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-sidecar.json",
+      "sha256": "88707e2da0a6e4c84e39c4db83d242eb3ebd72aca3e5139734611b7f21335a03",
+      "unchanged": true
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-independent-normal.json",
+      "sha256": "f538766a8df7b3673de703d1e1e7fc36aba417edf1d19febaaf18cddda9eb122"
+    },
+    "independent-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-independent-sanitize.json",
+      "sha256": "f5df0bb4002e9e0d22e8ae20e8b12c210d9f6740244e24cdbb17bd17a12ef4c1"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-independent-probe.py",
+      "sha256": "0eb81341f9f4541ae925dc7014b70b5877ceac1030dc14229713a4f0a692b69a"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-independent-probe.json",
+      "sha256": "817ac3968e9e7c55ddeaec17e9ad1eb3884046ea36294dacc5e87e11cd8dc775"
+    },
+    "independent-probe-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-molecules-independent-probe-sanitize.json",
+      "sha256": "972379bbf8bfe0330a62c382b4c4ac2b2a26c6274805df739b2a07c9359021dc"
+    }
+  },
+  "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+  "sourceReview": {
+    "originalStatement": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "pages": 3,
+      "retrieval": "Full primary PDF web text with detached numeric formulas at page2 lines97/98; no image-reading claim",
+      "confirmed": {
+        "N": [
+          1,
+          200000
+        ],
+        "l": [
+          1,
+          2147483647
+        ],
+        "u": [
+          1,
+          2147483647
+        ],
+        "w_i": [
+          1,
+          2147483647
+        ],
+        "rangeOrder": "l<=u",
+        "width": "u-l>=max(w)-min(w)",
+        "answer": "distinct original0-based indices,any order,any one witness;empty if impossible",
+        "positiveWeights": true
+      },
+      "genericSignature": "int[] solve(int l,int u,int[] w)"
+    },
+    "archiveApiEdition": {
+      "url": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+      "retrieval": "Primary indexed search full text; direct open timed out, not treated as direct retrieval",
+      "queries": [
+        "site:ioi.te.lv/locations/ioi16 \"find_subset\"",
+        "site:ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf \"int[]\" \"find_subset\""
+      ],
+      "confirmedPrintedHeader": "Country: api - ISC",
+      "confirmedGenericSignature": "int[] find_subset(int l,int u,int[] w)",
+      "printedPages": 2,
+      "relativePublicationChronologyVerified": false,
+      "apiIscNotInventedUrlComponent": true
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "pages": 1,
+      "arrayMapping": "int[] -> std::vector<int>",
+      "timeSeconds": 1,
+      "memoryGB": 2,
+      "standardInputOutputProhibited": true
+    },
+    "solutions": {
+      "archiveUrl": "https://ioi.te.lv/locations/ioi16/contest/",
+      "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "totalPages": 17,
+      "relevantPages": [
+        1,
+        2
+      ],
+      "printedAuthor": "Shi-Chun Tsai",
+      "selectedMethod": "Greedy2,sorted contiguous segments and two pointers",
+      "officialEditorialVerifiedWithIndependentSupplements": true,
+      "typoNotAssumed": "Greedy1 printed maxSum[k]<=l is not a correct suffix endpoint existence condition; this proof independently uses maximum-k-sum>=l. Unused alternate greedy methods are not approved here.",
+      "supplement": "Detailed cardinality window crossing and positive two-pointer completeness justified independently below."
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+      "contestDate": "2016-08-14",
+      "day": 1,
+      "precision": "day",
+      "exactDateVerified": true,
+      "difficulty": null
+    },
+    "cppHeader": {
+      "actualBytesRetrieved": false,
+      "bothAdapterSignaturesDerivedFromGenericAndNotice": true,
+      "actualGraderHeaderCompilationClaimed": false
+    },
+    "copyrightScope": "Source facts/signatures and independent reasoning recorded; statement body not reproduced."
+  },
+  "mathematicalReview": [
+    {
+      "obligation": "arbitrary subset to fixed-cardinality sorted window",
+      "verdict": "verified",
+      "reason": "If an arbitrary k-element solution exists, minimum k-sum S0<=u and maximum k-sum S_last>=l. Consecutive k-window sums are nondecreasing and grow by at most global spread<=u-l. Either S0 already meets the range or the first window crossing l cannot jump above u. For spread0 all k-window sums coincide, so the same conclusion holds."
+    },
+    {
+      "obligation": "two-pointer completeness without knowing k",
+      "verdict": "verified",
+      "reason": "Discard a start only when its sum through the current right endpoint exceeds u. Positive future elements can never make that start valid again. After shrinking, any shorter suffix has no greater sum; when retained sum<l none of these suffixes can be valid. Thus every contiguous solution is retained until found."
+    },
+    {
+      "obligation": "original-index witness and no-solution meaning",
+      "verdict": "verified",
+      "reason": "The sorted entries pair each weight with its unique original index. A contiguous slice therefore returns distinct original positions whose actual sum is the tracked sum. Absence of every contiguous solution excludes arbitrary solutions by the fixed-cardinality lemma. With l>=1 the empty vector is unambiguously no solution."
+    },
+    {
+      "obligation": "scope of required guards",
+      "verdict": "verified",
+      "reason": "Width is essential for this normal-form claim. Positive counterexamples [1,2,4] target5,[2,3,7] target9,[3,4,9] target12,[4,7,13] target17 have an arbitrary first+last subset but no sorted contiguous solution; all correctly reject at the API width validation. The monotone discard proof relies on positive weights, which are all checked before sorting."
+    }
+  ],
+  "implementationReview": {
+    "genericApi": "template signed integral Weight of size<=int64, optional<vector<int>> find_subset_in_range(int64,int64,span<const Weight>)",
+    "sourceAdapters": [
+      "std::vector<int> solve(int,int,std::vector<int>)",
+      "std::vector<int> find_subset(int,int,std::vector<int>)"
+    ],
+    "originalEntireRangeIncluded": true,
+    "emptyExtension": "N0 accepted for valid lower/upper,returns nullopt;source N>=1 subset preserved",
+    "validation": "N<=200000,1<=lower<=upper<=INT32_MAX,all weights1..INT32_MAX,and width>=spread checked before sort/search allocations. Invalid trailing values are not skipped by an early successful search. Empty successful answer impossible.",
+    "types": "int64 sum and signed64 range values; signed char/short/int/int64 span overloads tested; unsigned and floating element types rejected at compile time. Original input signed-int type follows the source language mapping.",
+    "numericBounds": {
+      "maximumGeneralSum": 429496729400000,
+      "maximumScanTransient": 4294967294,
+      "maximumOriginalIndex": 199999
+    },
+    "numericProof": "After each right iteration sum<=upper. Adding one legal weight gives sum<=2*INT32_MAX; it may overflow int32 but fits int64. Lower/upper validation precedes subtraction, so width and max-min fit int64. left can become right+1 only when current sum=0,which cannot pass the positive-lower success branch; right-left+1 is formed only for a nonempty found slice.",
+    "state": "No mutable global/static state in production. Const input span and by-value original adapters preserve caller inputs. Results own their storage. Sort order pairs weight with original index for deterministic equal values. All allocations use RAII and exceptions propagate.",
+    "complexity": "O(N log(N+1)) total time,O(N) auxiliary/output storage plus sort O(log N) call stack; no search depends on the ~2.1e9 bound. Empty case O(1). Input scans and window moves are linear; each endpoint moves forward at most N times.",
+    "resourceInterpretation": "Recorded timings/RSS include driver oracles and sanitizer overhead and are observed,not universal1second guarantees. Original1s/2GB facts and asymptotic/64bit proofs are separately checked."
+  },
+  "reproducedAuthorChecker": {
+    "command": "python3 /tmp/flowchartcp-ioi2016-molecules-checker.py [--sanitize]",
+    "normal": {
+      "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 34096437,
+      "apiCalls": 3129167,
+      "orderedWeightArrays": 21844,
+      "literalSubsetAssignments": 13228154,
+      "allValidSmallRangeCases": 3088644,
+      "adapterCalls": 36074,
+      "randomInputs": 1200,
+      "metamorphicChecks": 3200,
+      "invalidCalls": 25,
+      "checksum": "2569540640142451667",
+      "seconds": 0.692332,
+      "peakRSSKiB": 21492,
+      "maximumCases": [
+        {
+          "name": "all one,all indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.00414112
+        },
+        {
+          "name": "all one,unreachable upper value",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0027469
+        },
+        {
+          "name": "all maximal weight,one witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0028115
+        },
+        {
+          "name": "all maximal minus one,32bit intermediate overflow trap",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.00308385
+        },
+        {
+          "name": "all10000,all200000 indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.00320739
+        },
+        {
+          "name": "descending arithmetic progression,known20000item witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 20000,
+          "coreSeconds": 0.00240037
+        },
+        {
+          "name": "full integer domain,loose range",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0126384
+        },
+        {
+          "name": "near half intmax,no cardinality can fit",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0134679
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 34096437,
+      "apiCalls": 3129167,
+      "orderedWeightArrays": 21844,
+      "literalSubsetAssignments": 13228154,
+      "allValidSmallRangeCases": 3088644,
+      "adapterCalls": 36074,
+      "randomInputs": 1200,
+      "metamorphicChecks": 3200,
+      "invalidCalls": 25,
+      "checksum": "2569540640142451667",
+      "seconds": 4.09497,
+      "peakRSSKiB": 851036,
+      "maximumCases": [
+        {
+          "name": "all one,all indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.0266789
+        },
+        {
+          "name": "all one,unreachable upper value",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0250659
+        },
+        {
+          "name": "all maximal weight,one witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0260235
+        },
+        {
+          "name": "all maximal minus one,32bit intermediate overflow trap",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0270925
+        },
+        {
+          "name": "all10000,all200000 indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.0276704
+        },
+        {
+          "name": "descending arithmetic progression,known20000item witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 20000,
+          "coreSeconds": 0.0175219
+        },
+        {
+          "name": "full integer domain,loose range",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0455422
+        },
+        {
+          "name": "near half intmax,no cardinality can fit",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0388925
+        }
+      ]
+    },
+    "deterministicResultsMatchAuthorFreeze": true,
+    "counterSemantics": "3129167 API calls include both source adapter calls and all invalid calls; adapter36074 includes final8 invalid adapter calls. Assertion totals are not element-iteration counts. Normal and ASan execute the same cases,not twice the distinct cases.",
+    "oracleReview": "Author all ordered small arrays/each subset are direct subset-assignment checks,independent of sorting. All admissible ranges are checked. Large structurally known cases cover maxN and near INT32_MAX overflow/no-solution. Same checksum reproduction is not described as a newly designed oracle."
+  },
+  "additionalIndependentVerification": {
+    "script": "/tmp/flowchartcp-ioi2016-molecules-independent-probe.py",
+    "command": "python3 /tmp/flowchartcp-ioi2016-molecules-independent-probe.py [--sanitize]",
+    "normal": {
+      "checks": 19763636,
+      "apiCalls": 925746,
+      "sortedMultisetsWeights1to8Length1to9": 24309,
+      "cardinalityMinimalWidthRangeComparisons": 7565272,
+      "minimumWidthApiCases": 923778,
+      "largeOffsetFixedCardinalityCases": 1683,
+      "reverseIndexCases": 250,
+      "allocationFailureExceptions": 16,
+      "widthViolationCounterexamples": 4,
+      "checksum": "15452486297988215716",
+      "seconds": 0.122762,
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": false,
+      "peakRSSKiB": 13996
+    },
+    "asanUbsan": {
+      "checks": 19763636,
+      "apiCalls": 925746,
+      "sortedMultisetsWeights1to8Length1to9": 24309,
+      "cardinalityMinimalWidthRangeComparisons": 7565272,
+      "minimumWidthApiCases": 923778,
+      "largeOffsetFixedCardinalityCases": 1683,
+      "reverseIndexCases": 250,
+      "allocationFailureExceptions": 16,
+      "widthViolationCounterexamples": 4,
+      "checksum": "15452486297988215716",
+      "seconds": 1.41497,
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": true,
+      "peakRSSKiB": 362872
+    },
+    "deterministicResultsIdentical": true,
+    "cardinalityOracle": "Enumerate every nondecreasing positive multiset of length1..9 over weights1..8. Coefficients of product_i(1+y*z^w_i) are evaluated in the Boolean semiring,retaining cardinality y with descending-k bitset updates. For every positive lower through total+2 at the smallest allowed width spread,compare arbitrary k-subset coefficient existence with all sorted k-window sums. Independently compare the actual public API against the OR over all cardinalities.",
+    "largeOffset": "Add C=200000000 to each weight and k*C to both interval endpoints. Since C exceeds every original small sum/range bound,only cardinality k can fit;selected tests remain inside originalINT32_MAX and force the theorem to work for a known k at large values. Reverse source order to check original-index witnesses.",
+    "allocationFailures": "At both generic allocations(sort vector and witness vector) and all three allocations of each by-value adapter(input copy plus those two),inject an exact custom bad_alloc subtype. Sample and N200000 cases give16 exceptions. Inputs remain unchanged,exception dynamic type is preserved,and subsequent calls plus independent returned-value mutation show isolation. Empty generic call succeeds without allocation even with zero allocation budget.",
+    "guardCounterexamples": "Four actual positive subset instances missing the width guarantee are rejected;the explicit nonconsecutive witness and absence of all contiguous windows are checked directly.",
+    "limits": "The new polynomial oracle is exhaustive only on the stated multiset/value/width domain. It is distinct from,but does not replace,the author all-ordered-array literal subset oracle. The large-offset tests are structured transformations,not independent enumeration at maximum values. The general proof supports all valid widths,not just sampled or minimal-width tests."
+  },
+  "preservation": {
+    "auditFile": "/home/admin2/flowchartcp/site/data/corpus-audits/ioi-2016.json",
+    "auditRawSha256AtIndependentReview": "6acf36d22f9fad9afaa5fefd1561d64364bb441ce55c790d72d669d83560b029",
+    "initialRowCanonicalSha256": "6fc5b9fc93cd5d8868084a162a9e4f5fbdbd1d441123b41a1da44fd0bc0f1a82",
+    "initialStatusCanonicalSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialRowEqualsAuthorStoredInitialRow": true,
+    "initialStatusEqualsAuthorStoredInitialStatus": true,
+    "initialResearchReviewedCount": 6,
+    "initialCoveredCount": 0,
+    "initialFullImplementationCount": 0,
+    "initialResearchPositive": true,
+    "initialCompletedApiCoverage": false,
+    "initialRowHadNoResolutionAtReview": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "resolutionPolicy": "Initial six rows/status/snapshot/selection remain unchanged. No subsequent positive research review is needed for an already researched-positive row;only parent may append resolution after actual article/reference/root-walk registration."
+  },
+  "limitations": [
+    "Real grader header bytes not retrieved;both standalone adapters are checked as generic-statement/Notice-derived signatures.",
+    "Relative publication chronology of solve and find_subset editions remains unconfirmed.",
+    "Other greedy variants are unused and not approved by this review.",
+    "No LeakSanitizer claim;address/undefined checks use detect_leaks=0 per platform."
+  ],
+  "executionNotes": {
+    "asanCoordination": "Parent authorized peer first;normal/source author final freeze verified. Main and independent supplemental sanitizer jobs ran sequentially. Parent notified immediately once both finished,so root sanitizer may proceed.",
+    "ownProbePreparation": "An initial strict compiler diagnostic for a same-line if/counter in the new harness was corrected before execution;author code unchanged."
+  },
+  "conclusion": "No material implementation/proof/source-range issue found. Complete source-range API and necessary mathematical steps are independently supported. Raw author3 artifacts stay frozen;initial research6/0/API0 unchanged. Integration and coverage registration remain parent work.",
+  "originalReviewSha256": "70dafc6c927e7c718a77ba432573dbd205fdc8ebea694daf8506700ed38d4d60",
+  "publishedArticle": "src/content/docs/techniques/bounded-spread-subset-sum-sorted-window-witness.mdx",
+  "permanentProbe": {
+    "script": "research/probes/bounded-spread-subset-independent.py",
+    "normalizedSha256": "984319c3830df248a7bf1ce664092ae8a605e03182de104c7fcfff312d85c80e",
+    "normalization": "Only MDX path; cardinality-generating polynomial, all multiset/window comparisons, large offsets, reversed indices, width counterexamples and allocation-fault logic unchanged."
+  }
+}

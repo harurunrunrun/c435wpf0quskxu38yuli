@@ -1,0 +1,37 @@
+name: Validate and build private artifact
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
+      - run: npm run check
+      - run: npm run audit:coverage
+      - run: npm test
+      - run: npm run test:cpp
+      - run: npm run build
+      - run: npm run verify:links
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flowchartcp-static-site
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error

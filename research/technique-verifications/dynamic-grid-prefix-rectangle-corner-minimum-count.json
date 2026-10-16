@@ -1,0 +1,443 @@
+{
+  "techniqueId": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+  "auditGapId": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-seats-article.mdx",
+    "checker": "/tmp/flowchartcp-seats-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/dynamic-grid-prefix-rectangle-corner-minimum-count.mdx",
+    "checker": "scripts/check_prefix_rectangle_grid_cpp.py",
+    "metadataGroup": "specific-planar-patterns",
+    "feature": "data/grid-prefix-rectangle-problem-features.json"
+  },
+  "metadata": {
+    "id": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+    "title": "番号を小さい順に集めたマスが長方形になる段階を、交換後も数える",
+    "summary": "格子の各頂点を囲む四マスから形を評価し、長方形となる条件を最小値4で表す。二マスの交換を少数の区間加算に直し、全ての段階の答えを更新する。",
+    "aliases": [
+      "IOI 2018 Seats",
+      "dynamic grid prefix rectangle corner minimum count",
+      "2x2 odd black corner potential",
+      "格子 番号交換 接頭集合 長方形 個数"
+    ],
+    "family": "動的な格子の形と局所不変量",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "lazy-segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/POL-seats.pdf",
+      "https://ioi2018.jp/tasks/contest1/IDN-seats.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/#seats"
+    ]
+  },
+  "reference": {
+    "techniqueId": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+    "source": "IOI",
+    "problemId": "ioi2018_seats",
+    "title": "座席 (Seats)",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+    "evidence": "長方形格子の全マスに0..HW−1を一つずつ置き、二番号の交換後に長方形を埋める非空番号prefixの個数を返す。外側を白とした2×2窓の黒1個・3個の個数の合計は常に4以上で、4と長方形が同値。四番号のソートから寄与する二区間を求め、影響する高々八頂点の古い寄与を除去して新しい寄与を加え、range add/min/countで全prefixを同時に管理できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-09-03",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に主催公式原典と公式Reviewを再読し、主催者配布POL/IDN翻訳の検索本文でH,W正、HW<=1000000、Q1..50000、全座標相異/範囲、0<=a,b<HWかつa!=bを確認。原典画像を読んだとは主張しない。Reviewの黒1個窓4個/黒3個窓なし条件は通常web抽出で読めるが、他の数式の完全な転記は未確認。後年のTomasz Idziaszek本人による詳細解説を公式Reviewと区別した。C1>=4、C3=0から各4近傍成分が矩形、対角接触グラフの平面性/三角形なしとC1=4B−2Dによる等号条件、四番号の半開二区間、重複除去した局所swap、min/count不変条件を独立に証明。実MDX単一可視完全C++20を抽出し、全形HW<=8の174569置換・4773592 swap対、74938 bitmap、400乱択の240000累積swap、100万マス5形それぞれ原典最大50000swapと不正API/copy/moveを照合。通常/ASan+UBSanとも16930653 checks、checksum3501807229918974063。通常8.28754秒/70540KiB、san36.051秒/642472KiB。競技日2018-09-03はJP委員会公式日別一覧、難度null。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2018_seats",
+    "title": "座席 (Seats)",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+    "techniqueIds": [
+      "dynamic-grid-prefix-rectangle-corner-minimum-count"
+    ],
+    "features": [
+      "H×Wの全マスへ0〜HW−1を一つずつ置く。番号0からtまでの集合が、穴のない一つの軸平行長方形を埋めるtの個数を数える。",
+      "操作は二番号の位置の交換で、その直後の個数を多数回返す。外側は常に空で、境界や一行・一列も扱う。",
+      "H,W>=1、HW<=1000000、交換1..50000回、番号0..HW−1。原典a!=bを包含し、掲載APIは同番号交換も明示的に扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-03",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "discoveredBy": "ioi-2018",
+    "notes": "長方形格子の全マスに0..HW−1を一つずつ置き、二番号の交換後に長方形を埋める非空番号prefixの個数を返す。外側を白とした2×2窓の黒1個・3個の個数の合計は常に4以上で、4と長方形が同値。四番号のソートから寄与する二区間を求め、影響する高々八頂点の古い寄与を除去して新しい寄与を加え、range add/min/countで全prefixを同時に管理できる。",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest1/POL-seats.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "statementPages": [
+      1,
+      2,
+      3
+    ],
+    "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-seats.pdf",
+    "officialReviewUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+    "officialReviewPages": [
+      1,
+      2
+    ],
+    "officialReviewProvenance": "JP委員会公式課題一覧がSeatsの解説(英語版)として直接リンクする当時の公式Review。",
+    "officialIndexUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "officialReviewRetrieved": true,
+    "officialReviewCornerCriterionReadable": true,
+    "officialReviewFullFormulaTranscriptionVerified": false,
+    "officialReviewLimitation": "通常web抽出では一部数値・数式が欠ける。第2頁の黒1個窓が四つ、黒3個窓が零、外部は白、lazy segment treeの方針は読める。欠けた式や主要補題は完全転記を主張せず、明示した独立証明で補った。",
+    "numericBoundsVerified": true,
+    "numericVerificationMethod": "organizer-hosted official translations, actual search-result text; no local PDF/image inspection claimed",
+    "numericEvidenceUrls": [
+      "https://ioi2018.jp/tasks/contest1/POL-seats.pdf",
+      "https://ioi2018.jp/tasks/contest1/IDN-seats.pdf"
+    ],
+    "reproducibleSearchQueries": [
+      "site:ioi2018.jp/tasks/contest1/POL-seats.pdf \"Ograniczenia\" \"1 000 000\" \"50 000\"",
+      "site:ioi2018.jp/tasks/contest1/IDN-seats.pdf \"Batasan\" \"1 000 000\""
+    ],
+    "sourceBounds": {
+      "H": ">=1",
+      "W": ">=1",
+      "HW": "<=1000000",
+      "Q": "1..50000",
+      "coordinates": "0<=R_i<H and0<=C_i<W for each i0..HW−1; every pair of cells distinct",
+      "swap": "0<=a,b<HW and a!=b",
+      "prefix": "nonempty contestant prefix0..t inclusive, t0..HW−1"
+    },
+    "date": "2018-09-03",
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "laterAuthorSupplement": {
+      "url": "https://www.algonotes.com/en/solutions-ioi2018/#seats",
+      "author": "Tomasz Idziaszek",
+      "provenance": "本人によるIOI2018六題の詳細解説。本文はInternational Committee of IOIの部分的資金援助を明記し、本人の実装repoにリンクする。",
+      "distinctFromOfficialReview": true,
+      "role": "後年の著者補足。最小corner potentialの発想と実装上の考察を参照。公式Reviewそのものとは呼ばず、補題と掲載実装は独立に確認。"
+    },
+    "unconfirmedOriginalNumericBounds": [],
+    "visualInspectionClaimed": false
+  },
+  "subsequentSourceVerification": {
+    "reviewedAt": "2026-10-15",
+    "numericBoundsVerified": true,
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "numericEvidenceUrls": [
+      "https://ioi2018.jp/tasks/contest1/POL-seats.pdf",
+      "https://ioi2018.jp/tasks/contest1/IDN-seats.pdf"
+    ],
+    "notes": "初回auditの値・数値確認方法を変更せず、別の主催者翻訳検索本文で再確認した。追加API/実装はその全範囲を含む。"
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed-with-organizer-translation-numerics",
+      "officialEditorialRetrieved": true,
+      "officialEditorialVerified": true,
+      "officialEditorial": "official-review-readable-corner-criterion-with-explicit-independent-proofs",
+      "publicAuthorSolution": "later-author-supplement-distinguished-from-official-review",
+      "solution": "independently-proved-and-validated"
+    },
+    "evidenceUrls": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/POL-seats.pdf",
+      "https://ioi2018.jp/tasks/contest1/IDN-seats.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/#seats"
+    ],
+    "notes": "局所2×2のC1+C3最小値4の必要十分性を多成分/穴/対角接触まで独立に証明し、四番号ソートによる半開二区間、外部sentinel、影響頂点のunique化、min/count/lazy、O(P)初期化とO(logP)swapを完全C++20/API化した。実MDXから抽出した掲載コードが独立bbox oracleと通常/ASan+UBSanで16930653 checks、checksum3501807229918974063に一致。初回固定auditのclassificationや初回未実装fieldsを書き換えず、登録後のresolutionとして追加可能。"
+  },
+  "api": {
+    "constructor": "PrefixRectangleGrid(int height,int width,const std::vector<int>& row,const std::vector<int>& column)",
+    "current": "int rectangle_prefixes() const",
+    "update": "int swap_labels(int a,int b)",
+    "input": "height,width positive, product1..1000000; coordinate arrays indexed by label0..P−1, exact lengthP, in range and pairwise distinct; checked fully",
+    "swapRange": "each label0..P−1; arbitrary order; a==b is a no-op extension validated only after BOTH indices",
+    "result": "number of nonempty label prefixes0..t that equal a filled axis-parallel rectangle; single cells, rows, columns included",
+    "queryCount": "No count state/cap. OriginalQ<=50000 covered by O(P+QlogP); get-current is O(1).",
+    "initializationErrors": "std::invalid_argument on invalid dimensions/product/array lengths/coordinates/duplicates",
+    "updateErrors": "std::invalid_argument before mutation on either invalid label, including equal invalid labels",
+    "stateErrors": "std::logic_error from current/update on moved-from objects before other validation",
+    "copyMove": "deep-copy construction; noexcept move resets source size to0; pass-by-value copy-swap assignment preserves target on parameter-copy failure; self-copy/self-move preserve data",
+    "allocationErrors": "standard allocation exceptions propagate from construction/copy; no allocation during valid swap; failed constructor yields no object",
+    "inputUnchanged": true,
+    "persistentGlobalState": false,
+    "integerSafety": [
+      "Reject dimensions outside1..1000000 before signed multiplication; int64 product<=10^12 then reject product>10^6 before int conversion.",
+      "All row-major cell indices and labels are0..P−1; vertex coordinates0..H/0..W; each<=10^6. Tree storage4P and node indices<4P.",
+      "V=(H+1)(W+1)<=4P. Each local odd-black window contributes0/1. Unique-window removal followed by unique-window addition leaves every actual intermediate score in[0,V].",
+      "Every stored tree minimum was last refreshed with all ancestor lazy values pushed, so it is an actual past/current subinterval minimum in[0,V]. For an internal node lazy=min(node)−min(stale child minima); a leaf lazy=min(node)−initial score. Thus all lazy magnitudes<=V, independent of Q, and adding bounded operands stays<=2V<=8P.",
+      "Initial diff endpoints sum at most2V interval events, hence magnitude<=2V<=8P. min counts<=P. static_assert int max>=100000000 covers every required intermediate<=8000000.",
+      "Each swap uses exactly eight fixed-array slots before sort+unique; vertex endpoints fit. Midpoints use left+(right−left)/2. No recursive grid traversal or machine-sized bit shifts."
+    ],
+    "time": "O(P) preprocessing, O(logP) per swap, O(1) current; O(P+QlogP) overall",
+    "space": "O(P); three tree int arrays of4P plus grid/position ofP; diffP+1 only during initialization",
+    "ownedBytesAtP1000000With32BitInt": 56000000,
+    "constructionScratchBytesAtP1000000With32BitInt": 4000004,
+    "memoryScope": "payload sizes exclude caller-owned row/column, allocator metadata, object overhead and sanitizer bookkeeping; no original memory-limit value invented",
+    "maximumRecursionDepth": 20
+  },
+  "proof": {
+    "status": "independently-complete",
+    "lowerBound": "At the topmost black row, its leftmost/rightmost cells give two distinct one-black windows above; bottommost row gives two distinct ones below, even a singleton. Hence C1>=4 and C1+C3=4 forces C3=0.",
+    "componentRectangles": "When no3-black window exists, overlapping maximal black runs of adjacent rows must have identical endpoints; any differing endpoint gives a3-black window. Propagation over a4-connected component yields one fixed interval over consecutive rows, hence one filled rectangle.",
+    "diagonalContacts": "Different rectangle components only touch diagonally at isolated grid vertices. Each pair touches at most once. At a contact two individual one-black corners disappear into a two-black window, so C1=4B−2D.",
+    "planarTriangleFree": "Connecting interior points of the disjoint rectangles through contacts yields a simple planar contact graph. Three pairwise-touching axis-parallel closed rectangles have a common point by interval Helly in each coordinate; three distinct components meeting there force side adjacency, contradiction. Thus no triangle.",
+    "equality": "B2 givesD<=1 henceC1>=6; B>=3 givesD<=2B−4 henceC1>=8. ThereforeC1=4/C3=0 forcesB1 and a rectangle. A rectangle conversely has exactly four1-black windows and no3-black windows.",
+    "intervals": "For sorted local labels a<=b<=c<=d, odd black cardinality at thresholdt occurs precisely on[a,b) or[c,d). Exterior sentinelP never turns black; duplicate sentinels create empty ranges.",
+    "localSwap": "Only grid vertices incident to either swapped cell can change; collect their eight occurrences, sort+unique, remove each old contribution once, swap grid and label-position arrays, add each new contribution once.",
+    "minimumCount": "Each segment stores minimum and number of leaves attaining it, with uniform pending addition. Lower-bound4 and full-grid-prefix4 fix global minimum at4; the root count is exactly the answer after the whole transaction.",
+    "initialization": "Add local half-open intervals to a difference array inO(V), prefix sum for allP scores, then recursively build tree inO(P). Avoid O(PlogP) repeated range initialization.",
+    "unconfirmedLemmas": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "grid-arrangements",
+    "existingChoices": [
+      "color-numbers"
+    ],
+    "firstMissingGraphId": "grid-color-numbers",
+    "firstMissingNodeId": "goal",
+    "proposedAnswerId": "prefix-rectangles",
+    "proposedAnswerLabel": "二番号の交換後に、番号0からのprefixが長方形になる個数を求める",
+    "guardGraphId": "grid-prefix-rectangle-conditions",
+    "guards": [
+      {
+        "id": "permutation-prefix",
+        "feature": "長方形格子の全マスへ0..HW−1を一つずつ置き、非空番号prefixが一つの軸平行長方形をちょうど埋めるかを数える。"
+      },
+      {
+        "id": "local-swaps",
+        "feature": "各操作は二番号の位置の交換であり、交換のたびに全prefixの該当個数を求める。"
+      },
+      {
+        "id": "bounds",
+        "feature": "H,W>=1、HW<=1000000。全体O(HW+Qlog(HW))時間・O(HW)空間を使える。原典Q<=50000を含む。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "dynamic-grid-prefix-rectangle-corner-minimum-count"
+    ]
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "checks": 16930653,
+    "allSmallShapes": "all positive H,W withHW<=8",
+    "exhaustivePermutations": 174569,
+    "exhaustiveSwapPairs": 4773592,
+    "bitmapShapes": "all positive H,W<=4, every nonempty bitmap",
+    "bitmaps": 74938,
+    "randomInstances": 400,
+    "randomSwaps": 240000,
+    "maximumSwaps": 250000,
+    "maximumCells": 1000000,
+    "maximumHeight": 1000000,
+    "maximumWidth": 1000000,
+    "checksum": "3501807229918974063",
+    "normalCommand": "python3 /tmp/flowchartcp-seats-checker.py /tmp/flowchartcp-seats-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-seats-checker.py /tmp/flowchartcp-seats-article.mdx --sanitize",
+    "normalSeconds": 8.28754,
+    "normalPeakRSSKiB": 70540,
+    "normalMaximumConstructionSeconds": 0.0381482,
+    "normalMaximum50000SwapBatchSeconds": 0.159025,
+    "asanUbsan": {
+      "passed": true,
+      "flags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer"
+      ],
+      "checks": 16930653,
+      "checksum": "3501807229918974063",
+      "seconds": 36.051,
+      "peakRSSKiB": 642472,
+      "maximumConstructionSeconds": 0.217455,
+      "maximum50000SwapBatchSeconds": 0.510491,
+      "leakSanitizer": false
+    },
+    "oracle": "For each arrangement scan label0..P−1 literally, maintain min/max row/column, and accept a prefix iff bounding-box area equals prefix cardinality. It uses no local corner formula, interval contribution, lazy tree or range-add logic. Every accepted set fills its bbox because all cell coordinates are distinct.",
+    "exhaustiveProcedure": "For every placement in every HW<=8 shape, check construction, every same-label no-op, EVERY unordered pair swap against independent bbox oracle, getter, then reversed swap to restore the same instance. No corner implementation shared by oracle.",
+    "extraCriterionCheck": "Direct1-/3-black window counts versus literal bboxarea==popcount for all74938 nonempty bitmaps withH,W<=4, separately from the answer oracle. Covers holes, multiple components and arbitrary diagonal contacts.",
+    "randomOracle": "Seed20180903,400 arbitrary permutations withH,W1..13;600 cumulative swaps per instance. Every answer equals literal bbox scan. Separate transposed/reflected owned models receive the identical swaps and must match too.",
+    "maximumCases": [
+      {
+        "H": 1,
+        "W": 1000000,
+        "Q": 50000,
+        "placement": "row-major",
+        "swaps": "varied adjacent/far/endpoints, each then reversed",
+        "oracle": "Fora<b only prefixesendinga..b−1 change. In a line the count isP−(b−a)+(a==0?(b==1?1:2):0), independently derived from contiguous positions."
+      },
+      {
+        "H": 1000000,
+        "W": 1,
+        "Q": 50000,
+        "placement": "row-major",
+        "swaps": "same varied line swaps",
+        "oracle": "same independent1D bbox formula; catches row/column asymmetry"
+      },
+      {
+        "H": 1000,
+        "W": 1000,
+        "Q": 50000,
+        "placement": "row-major",
+        "swaps": "varied adjacent labels including row boundaries and first two, each then reversed",
+        "oracle": "Only prefixendinga changes foradjacentlabelsa/a+1. Independently compute bbox ofrow-majorcells0..a−1 pluscell a+1 and adjust originalH+W−1."
+      },
+      {
+        "H": 2,
+        "W": 500000,
+        "Q": 50000,
+        "placement": "row-major",
+        "swaps": "varied adjacent labels and row boundaries, each then reversed",
+        "oracle": "same independent row-major bbox formula"
+      },
+      {
+        "H": 500000,
+        "W": 2,
+        "Q": 50000,
+        "placement": "row-major",
+        "swaps": "varied adjacent labels and row boundaries, each then reversed",
+        "oracle": "same independent row-major bbox formula; transpose ofthin case"
+      }
+    ],
+    "maximumTimingScope": "Observed timings for the listed deterministic maximum-size placements/operations, not a claim of measured worst-case time over every legal instance. Worst-case asymptotic bound is independently proved.",
+    "otherCases": [
+      "Original example initial4,swap0/5=>3,reverse=>4; singleton1x1 API extension.",
+      "Invalid0/negative/INT_MAX dimensions,product1001000,incorrectarraylengths,negative/outsidecoordinates,duplicatecells.",
+      "Invalidboth/equalindices before no-op; state unchanged and later valid swaps still work.",
+      "Deep copy/move ofalready updated tree, checked moved-from getter/swap, copy assignment to moved source, self-copy/self-move, move assignment replacing initialized state, interleaved independent instances and caller inputs unchanged."
+    ],
+    "sharedFilesModified": false,
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "Eight natural Japanese technique sections and one always-visible complete C++20 reusable class; no per-problem page.",
+    "Proof/model/API/complexity/code belong in article; retrieval history/test counts/timings are sidecar-only.",
+    "OfficialReview and later Tomasz Idziaszek supplement are distinct. Reference/feature/subsequent verification independent-analysis, difficulty null, exact sourceDate2018-09-03.",
+    "Initial shared IOI2018 audit and research probe untouched. Parent may add later review/resolution after integration without changing initial classification or steps.",
+    "Only the three requested /tmp artifacts are deliverables; no shared article/flow/metadata/ledger files changed."
+  ],
+  "artifactSha256": {
+    "article": "0f679cd9caf17bd049f737323ab0a4772f2d3e00a42b86fa67cd4e4321f7c9a0",
+    "checker": "146e547dbf91254529fe2c44d6a17c7a7152f14609284d3bbe3d20fbde3d5ef7",
+    "publishedArticle": "292b773eb17bf48404181db53040042f640cfe7549a797e308f61a24840229ea"
+  },
+  "cppSha256": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/dynamic-grid-prefix-rectangle-corner-minimum-count.mdx",
+    "checker": "scripts/check_prefix_rectangle_grid_cpp.py",
+    "metadataGroup": "range-patterns",
+    "entryGraphId": "grid-arrangements",
+    "choices": [
+      "color-numbers",
+      "prefix-rectangles",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "normal": {
+      "checks": 16930653,
+      "exhaustivePermutations": 174569,
+      "exhaustiveSwapPairs": 4773592,
+      "bitmaps": 74938,
+      "randomInstances": 400,
+      "randomSwaps": 240000,
+      "maximumSwaps": 250000,
+      "maximumCells": 1000000,
+      "maximumHeight": 1000000,
+      "maximumWidth": 1000000,
+      "maximumConstructionSeconds": 0.0389567,
+      "maximumSwapBatchSeconds": 0.157479,
+      "checksum": "3501807229918974063",
+      "seconds": 8.30475,
+      "peakRSSKiB": 70620,
+      "article": "/tmp/flowchartcp-seats-article.mdx",
+      "sanitized": false,
+      "cppSha256": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89"
+    },
+    "asanUbsan": {
+      "checks": 16930653,
+      "exhaustivePermutations": 174569,
+      "exhaustiveSwapPairs": 4773592,
+      "bitmaps": 74938,
+      "randomInstances": 400,
+      "randomSwaps": 240000,
+      "maximumSwaps": 250000,
+      "maximumCells": 1000000,
+      "maximumHeight": 1000000,
+      "maximumWidth": 1000000,
+      "maximumConstructionSeconds": 0.167939,
+      "maximumSwapBatchSeconds": 0.490363,
+      "checksum": "3501807229918974063",
+      "seconds": 34.571,
+      "peakRSSKiB": 642744,
+      "article": "/tmp/flowchartcp-seats-article.mdx",
+      "sanitized": true,
+      "cppSha256": "53bfff9aa968b7b8876aa153a0b5315984a269063f065511168ced62d0ce0b89"
+    },
+    "notes": "主催原典と公式Review、配布翻訳の検索本文を区別して原典全域を確認。全掲載APIと補題を独立精読し、通常/ASan+UBSanで全件数・checksum・コードSHAを再現。新しい実装・証明レビューは研究記録とresolutionに保持し、初回の既確認研究へ重複するreviewを付加しない。",
+    "additionalReviewer": "ioi_2020_fixed_corpus_audit",
+    "additionalReviewFile": "research/probes/grid-prefix-rectangle-independent-review.json",
+    "additionalCounterexampleSearch": {
+      "nonempty5x5Bitmaps": 33554431,
+      "literalRectangles": 225,
+      "intervalChecks": 912730,
+      "counterexamples": 0,
+      "checksum": "7828622978098135040"
+    },
+    "allocationFailureChecks": {
+      "copy": 5,
+      "assignment": 5,
+      "validSwapsWithoutAllocation": 30000,
+      "gettersWithoutAllocation": 10000
+    }
+  }
+}

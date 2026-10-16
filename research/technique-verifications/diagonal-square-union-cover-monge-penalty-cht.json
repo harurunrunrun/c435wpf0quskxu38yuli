@@ -1,0 +1,556 @@
+{
+  "techniqueId": "diagonal-square-union-cover-monge-penalty-cht",
+  "auditGapId": "diagonal-square-union-cover-monge-penalty-cht",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2016-aliens-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2016-aliens-checker.py",
+    "normalResult": "/tmp/flowchartcp-ioi2016-aliens-normal.json",
+    "asanUbsanResult": "/tmp/flowchartcp-ioi2016-aliens-asan.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/diagonal-square-union-cover-monge-penalty-cht.mdx",
+    "checker": "scripts/check_diagonal_square_union_cpp.py",
+    "metadataGroup": "dp-structures",
+    "metadataFile": "data/techniques-specific-dp-structures.json",
+    "referenceFile": "data/references-specific-dp-structures.json",
+    "feature": "data/diagonal-square-union-problem-features.json"
+  },
+  "metadata": {
+    "id": "diagonal-square-union-cover-monge-penalty-cht",
+    "title": "対角線に沿う正方形の被覆を、重なり補正と枚数の罰金で最小にする",
+    "summary": "包含される要求を除き、撮影範囲を連続した群へ分ける。重複面積を引くDPの離散凸性を示し、整数の罰金と単調な直線群で枚数の次元を除く。",
+    "aliases": [
+      "IOI 2016 Aliens",
+      "対角正方形の和集合被覆",
+      "overlap corrected photo partition WQS CHT",
+      "Monge枚数離散凸と整数罰金"
+    ],
+    "family": "重なりを持つ区間被覆と枚数制約の最適化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "aliens-trick",
+      "convex-hull-trick"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "diagonal-square-union-cover-monge-penalty-cht",
+    "source": "IOI",
+    "problemId": "ioi2016_aliens",
+    "title": "宇宙人 (Aliens)",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "contest": {
+      "name": "IOI 2016",
+      "division": "Main competition",
+      "year": 2016,
+      "day": 2,
+      "date": "2016-08-16"
+    },
+    "cutoffVerification": "contest-before-cutoff",
+    "evidence": "全指定セルを、主対角線上に向かい合う角を持つ正方形の高々K枚で覆い、重複セルを一度だけ数えた面積を最小にする。要求を[min(r,c),max(r,c)]へ移して包含を除去し、連続群の面積から直前写真の重複二乗を引く。Mongeの入れ子辺交換から枚数別費用の離散凸性を示し、少数枚tieを整数encodeした罰金DPを単調CHTで計算する。原典N10万/M100万/K全域をO(NlogN+NlogM)時間・O(N)空間で扱う。",
+    "verificationNotes": "最終ISC原典3頁/公式Solutions集17頁中Aliens14〜17頁/Day2Notice/JP日程を確認。公式の区間化・重複補正・CHT・罰金方針へ、写真の連続群化/全unionと隣接重複の同値・Mongeからq−1/q+1経路のq/q均衡交換・整数境界と少数枚tie・128bit比較上界を独立補足する。全小literal square-cell union→別pairwise containment/partition DP→実fence hull cost/countと最終API、最大30構成・不正・反復・14 allocation faultsを検証。実headerzip未取得を明示し、原典genericとNotice型対応からadapterを導出する。凍結初回研究6/coverage0/API0は不変で、独立reviewと実接続後のresolutionだけを追加する。"
+  },
+  "problemFeatureProposal": {
+    "source": "IOI",
+    "problemId": "ioi2016_aliens",
+    "title": "宇宙人 (Aliens)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "対角線上に角を持つマス目の正方形で全指定セルを覆う",
+      "高々K枚、重複セルは一度だけ数える面積の最小化",
+      "指定セル1〜10万/盤面一辺1〜100万/座標0始まり、点重複可"
+    ],
+    "entryGraphId": "geometry",
+    "choices": [
+      "enclosing-regions",
+      "point-set-shapes",
+      "diagonal-square-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "diagonal-square-union-cover-monge-penalty-cht"
+    ],
+    "conditions": [
+      "diagonal-cell-squares",
+      "union-at-most-k",
+      "bounds"
+    ],
+    "date": "2016-08-16",
+    "difficulty": null,
+    "publicationDate": "2016-08-16",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "flowProposal": {
+    "entryGraphId": "geometry",
+    "parentGraphId": "point-set-shape-features",
+    "parentNodeId": "goal",
+    "parentChoiceId": "diagonal-square-cover",
+    "parentChoiceLabel": "主対角線上に角を持つ正方形を高々K個選び、全点を覆う面積を最小にする",
+    "canonicalChoices": [
+      "enclosing-regions",
+      "point-set-shapes",
+      "diagonal-square-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "detailGraphId": "diagonal-square-union-cover-conditions",
+    "guards": [
+      {
+        "id": "diagonal-cell-squares",
+        "question": "マス目に沿った正方形を選び、向かい合う二つの角が同じ主対角線上にありますか？",
+        "explanation": "指定セルを全て覆います。二つの角を主対角線上に持つので、各範囲は同じ区間[a,b]を行と列へ使う[a,b]²です。"
+      },
+      {
+        "id": "union-at-most-k",
+        "question": "高々K個で全指定セルを覆い、重なったマスは一度だけ数えて面積を最小にしますか？",
+        "explanation": "指定セルの重複は許されます。K枚を必ず異なる範囲で使う制約ではなく、写真の単純な面積和も目的としません。"
+      },
+      {
+        "id": "bounds",
+        "question": "指定セルは1〜10万個、盤面の一辺は1〜100万で、Kは1〜指定セル数ですか？",
+        "explanation": "座標は盤面内の0始まり整数です。面積は64bit、直線の交点比較は128bitで計算します。"
+      }
+    ],
+    "yesTarget": "diagonal-square-union-cover-monge-penalty-cht",
+    "eachNoOrUnknownTarget": "condition-check",
+    "oldCanonicalInitialRoutePreserved": {
+      "entryGraphId": "geometry",
+      "choices": [
+        "enclosing-regions",
+        "point-set-shapes"
+      ],
+      "stopGraphId": "point-set-shape-features",
+      "stopNodeId": "goal",
+      "stopType": "question"
+    },
+    "proposalOnly": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+    "statementPages": 3,
+    "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "editorialPages": 17,
+    "relevantOneBasedPages": [
+      14,
+      15,
+      16,
+      17
+    ],
+    "printedAuthor": "Chethiya Abeysinghe",
+    "editorialProvenance": "Official IOI archive actual Solutions link1012; same source as frozen audit. High-level proof and formulas read as primary text, independent supplements identified separately.",
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+    "noticePages": 1,
+    "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "contestDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "originalConstraints": {
+      "N": [
+        1,
+        100000
+      ],
+      "M": [
+        1,
+        1000000
+      ],
+      "K": "1..N",
+      "r_i": "0..M−1",
+      "c_i": "0..M−1",
+      "duplicatesAllowed": true,
+      "photoShape": "axis-aligned complete integer cells with opposite corners on main diagonal",
+      "objective": "covered-cell union cardinality",
+      "photoLimit": "at most K",
+      "timeSeconds": 2,
+      "memoryGB": 2,
+      "originalGenericApi": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+      "originalExamples": [
+        {
+          "N": 5,
+          "M": 7,
+          "K": 2,
+          "answer": 25
+        },
+        {
+          "N": 2,
+          "M": 6,
+          "K": 2,
+          "answer": 16
+        }
+      ]
+    },
+    "cppSignatureEvidence": {
+      "statementGeneric": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+      "noticeMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>"
+      },
+      "derivedSignature": "long long take_photos(int n,int m,int k,std::vector<int> r,std::vector<int> c)",
+      "actualCppHeaderRetrieved": false,
+      "headerReadNotClaimed": true
+    },
+    "originalFullRangeIncludedByApi": true,
+    "unconfirmedPrincipalLemmas": [],
+    "unconfirmedAlternatives": [
+      "Editorial smaller-subtask Knuth optimization is neither used nor claimed verified."
+    ]
+  },
+  "api": {
+    "signature": "std::int64_t minimum_diagonal_square_union(const std::vector<std::pair<int,int>>& points,int grid_size,int max_photos)",
+    "originalAdapterSignature": "long long take_photos(int n,int m,int k,std::vector<int> r,std::vector<int> c)",
+    "input": "N1..100000, grid_size1..1000000, K1..N, each0<=r,c<grid_size. Duplicates and symmetric cells allowed.",
+    "output": "Minimum union cell count; no photo list. At mostK, count clamped only AFTER duplicate/containment removal.",
+    "empty": "invalid_argument for zero points, original requiresN>=1.",
+    "errors": "invalid_argument for core N/M/K/range bounds and adapter explicitN or vector-size mismatch. All public validation scans precede internal scratch allocation; adapter by-value argument copies may allocate before function entry. bad_alloc and other standard allocation exceptions propagate.",
+    "inputUnchanged": true,
+    "persistentState": false,
+    "reentrant": true,
+    "internalHelper": "diagonal_square_union_detail::penalized is not public API; assumes nonempty containment-free strict endpoints and workspace large enough. Workspace head/tail reset at every penalty call.",
+    "time": "O(NlogN+NlogM), all validation O(N); by-value adapter additional O(N) copies and pair conversion.",
+    "auxiliarySpace": "O(N), interval vector up to8N bytes plus hull16B bytes on32bit int/64bit int64; one reserve and one hull allocation reused across penalties, standard sort stack O(logN).",
+    "maximumCoreVectorPayloadBytes": 2400000,
+    "adapterExtraPairVectorBytes": 800000,
+    "adapterArgumentCopiesBytes": 800000,
+    "integerSafety": {
+      "answerUpperBound": 1000000000000,
+      "scaleUpperBound": 100001,
+      "penaltyRange": "0..M²",
+      "everyPrefixPenalizedMinimumUpperBound": "2M² via one full-prefix bounding photo",
+      "encodedPrefixUpperBound": "2M²*(B+1)+B <2.00003e17",
+      "lineInterceptAbsoluteBound": "<5e17",
+      "lineSlopeAbsoluteBound": "<3e11",
+      "crossProductAbsoluteBound": "<1e30 <2^127",
+      "storedFields": "int64 intercept/slope/encodedDP/penalty/result; cast before integer difference or product for crossing comparison/evaluation.",
+      "coordinateSafety": "Validate sizes before int casts; right+1<=M; L−1 promoted to int64, may equal−1."
+    },
+    "fullOriginalScopeIncluded": true
+  },
+  "proof": {
+    "intervalEquivalence": "Square[a,b]² contains cell(r,c) iff it contains[min(r,c),max(r,c)]. Remove contained requirements by leftasc/rightdesc and increasingright scan; duplicate/equalleft intervals drop correctly, both remaining endpoints strictlyincrease.",
+    "consecutiveAssignment": "Remove contained photos, sort both endpoints. Assign each requirement to first covering photo; earlier/later reversal contradicts ordered endpoints, so assigned indices are consecutive. Shrink each photo to group firstL/lastR without increasing union.",
+    "unionCorrection": "Intersection of new photo with all earlier union equals its intersection with previous photo, since earlier right endpoints<=previousright and newleft>=all earlierleft. Inclusive overlap side=max(0,R_t−L_{t+1}+1); subtract its square exactly once.",
+    "monge": "For a<=b<c<=d: W(a,c)+W(b,d)−W(a,d)−W(b,c)=−2(L_{b+1}−L_{a+1})(R_d−R_c)<=0. Source-dependent overlap row constants cancel.",
+    "discreteConvexity": "Optimal(q−1)- and(q+1)-edge paths; first prefix where Q internalcuts exceed P by2 gives nested edgesa→c,b→d witha<=b<d<=c and prefix-edge count difference1. Swap suffixes via crossinga→d,b→c; both getq edges and Monge makes combinedcost no larger. Common cut uses suffix swap with unchangedcost. Thus2Fq<=Fq−1+Fq+1.",
+    "atMostReduction": "Splitting a group into2 smaller photos inside original cannot increase union. F nonincreasing, so atmostK equals exact min(K,B) nonemptygroups.",
+    "integerPenalty": "SavingsDelta_q=F(q−1)−F(q) nonincreasing nonnegative integers. Among min(F(q)+lambda*q), choose smallerq. First integerlambda with chosenq<=K supportsK too, even a countjump; thereforeG−lambda*K=F(K). Iflambda0 already hascount<=K, G0=F(K). lambdaM² uniquely chooses1 because all nonemptyphoto unions positive andF1<=M².",
+    "encodedTies": "H=B+1; DPvalue=H*(penalizedcost)+count with1<=count<=B. Primary/secondary ordering exact, noEPS. Perphoto addsH*lambda+1; divide/modH restorescost/count.",
+    "monotoneHull": "After filtering L/R strictincrease, slopes−2H(L−1) strictdecrease and queryR increases. Three-line intersection test removes useless middle; front comparison removes lines that cannot win at laterx. Each line added/popped once perpenalty. Scratch preallocated once."
+  },
+  "validation": {
+    "normal": {
+      "checks": 5427033,
+      "apiCalls": 696640,
+      "originalAdapterCalls": 589343,
+      "allInterestSubsetsM1to5": 33861,
+      "literalAllPhotoSubsets": 33940,
+      "literalRequestedPhotoLimits": 251085,
+      "penaltyCostAndFewerCountComparisons": 884000,
+      "convexityAndMonotonicityChecks": 86212,
+      "allOrderedCellArraysM1to3N1to5": 67798,
+      "randomAllKCases": 3500,
+      "literalUnionPartitionCases": 444,
+      "literalUnionPartitionAssignments": 65176,
+      "metamorphicChecks": 40637,
+      "maximumOriginalCases": 30,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 36,
+      "allocationFailuresInjected": 14,
+      "checksum": "8361293455850997735",
+      "seconds": 1.49675,
+      "peakRSSKiB": 19116,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 5427033,
+      "apiCalls": 696640,
+      "originalAdapterCalls": 589343,
+      "allInterestSubsetsM1to5": 33861,
+      "literalAllPhotoSubsets": 33940,
+      "literalRequestedPhotoLimits": 251085,
+      "penaltyCostAndFewerCountComparisons": 884000,
+      "convexityAndMonotonicityChecks": 86212,
+      "allOrderedCellArraysM1to3N1to5": 67798,
+      "randomAllKCases": 3500,
+      "literalUnionPartitionCases": 444,
+      "literalUnionPartitionAssignments": 65176,
+      "metamorphicChecks": 40637,
+      "maximumOriginalCases": 30,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 36,
+      "allocationFailuresInjected": 14,
+      "checksum": "8361293455850997735",
+      "seconds": 12.5873,
+      "peakRSSKiB": 812328,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": true
+    },
+    "normalCommand": "python3 /tmp/flowchartcp-ioi2016-aliens-checker.py --output /tmp/flowchartcp-ioi2016-aliens-normal.json",
+    "asanUbsanCommand": "python3 /tmp/flowchartcp-ioi2016-aliens-checker.py --sanitize --output /tmp/flowchartcp-ioi2016-aliens-asan.json",
+    "actualPublishedFenceExtracted": true,
+    "literalOracle": "ALL possible integer diagonal-square subsets onM1..5; union of actual M² cell bitmaps and required-cell coverage. Superset-min across requiredsets and atmostphoto count. No production containment scan/overlap/Monge/penalty/hull used.",
+    "uniquePhotoSubsetsM1to5": 33866,
+    "counterLiteralPhotoSubsets": {
+      "observed": 33940,
+      "meaning": "33866 distinct grid/photo-subset pairs M1..5, plus74 repeated table entries when constructing separate M1..3 ordered-array oracle. Not33940 distinct photo sets."
+    },
+    "allInterestSubsets": 33861,
+    "allKInterestQueries": 251085,
+    "duplicateOrientationArrays": 67798,
+    "independentContainment": "Pairwise O(N²) dominance over every input interval; strict or earlier-index tie removal. Does not reuse sorting scan.",
+    "partitionOracle": "All exactq cubic DP after independent pairwise filter; crossed with literal squares. Verifies nonincrease/convexity, real internal hullcost AND count for all smalllambda0..M² plus randompenalties.",
+    "literalPartitionUnion": "For444 random/structured cases, enumerate every cutmask (65176 assignments) and use generic square-union sweep over coordinatebands. No neighbor-overlap subtraction; cross-check every exactq DP value.",
+    "maximumCases": [
+      "All100000 points duplicated at cell999999,999999; K1/N.",
+      "100000 diagonal consecutive points, K1/2/3/49999/99999/100000, exactbalanced group squares.",
+      "100000 diagonal step10 points and translation9 to boundary999999, fiveK plustranslatedK2/99999, exactbalanced side lengths.",
+      "100000 antichain intervals[i,i+900000] with wide overlap, sixK, cost900000²+2*900000*N+balanced(N,K).",
+      "100000 repeated intervals from1000 distinct[i,i+999000], fourK includingoriginalK=N clampedafterfilter.",
+      "One fullgrid-forcing interval plus99999 containedcenter cells, K1/N.",
+      "Two extreme diagonal cells repeated, K1/N.",
+      "100000 random cells atK=N against independent generic rectangle-union event sweep with covercount segment tree."
+    ],
+    "countJumpBoundary": "Consecutive diagonal/wide-overlap maxfamilies atK=N−1 force interpolation across large equal-slope penalty ties; maxK andK1 handled too.",
+    "invalidCoverage": "36 invalid size/grid/count/coordinate/INT_MIN/INT_MAX/oversize/adapter mismatch cases. Original arrays and core input unchanged; valid call after errors.",
+    "allocationFailures": "14 deterministic bad_alloc injections across small official andmaximumantichain fixtures: two core allocations and five adapter allocations including by-value copies under tested GCC/libstdc++. Each failure preserves input and later calls. Exact allocation count is observed implementation evidence, not a portable allocator API promise.",
+    "reentrantCalls": 20000,
+    "counterScope": "apiCalls counts successful direct wrappercore calls, originalAdapterCalls counted separately and also internally invoke core. Invalid and budget-injected calls counted in separate scopes, not falsely added to apiCalls. penaltyComparisons count distinctcase/lambda calls plusdirtyworkspace repeat assertions.",
+    "timingScope": "Native full checker with all independent oracles/max/faults, compilation excluded. PeakRSS includes oracle tables/genericunion data/caller inputs, and sanitizer quarantine when enabled.",
+    "asanOptions": "detect_leaks=0:halt_on_error=1; UBSANhalt_on_error=1:print_stacktrace=1; -fno-pie -no-pie",
+    "independentReviewPending": true,
+    "researchProbeNotReclassifiedAsProductionValidation": true,
+    "unconfirmedPrincipalLemmas": [],
+    "sameCppShaBothNativeRuns": true,
+    "sanitizerCoordination": "Notified root before start, waited for Prize sanitizer completion as requested, then ran ASan+UBSan and notified completion."
+  },
+  "initialAuditPreservation": {
+    "corpusId": "ioi-2016",
+    "problemId": "ioi2016_aliens",
+    "initialClassification": "missing-technique",
+    "initialResearchPositive": true,
+    "initialResearch6Of6Unchanged": true,
+    "initialCoverage0Of6Unchanged": true,
+    "initialCompletedApi0Of6Unchanged": true,
+    "initialRowsAndArtifactsModified": false,
+    "newResearchReviewNeeded": false,
+    "nextAction": "After separate independent review and real article/ref/rootwalk registration, parent appends resolution only. Frozen initial audit/notes/sidecar/probe/proposal/manifest remain unchanged."
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "diagonal-square-union-cover-monge-penalty-cht"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回の研究positiveと0coverage/0APIを保持。包含除去/全union/隣接重複控除、Mongeのnested-edge交換による枚数凸性、整数罰金と少数枚tie/128bit単調CHT、原典全域take_photos adapter、実fenceとliteral squareunion/別DP/罰金cost-count/最大/例外/連続/ASan、独立reviewと特徴rootwalk/refを揃えた後だけresolutionを追加する。",
+    "notRegistered": true
+  },
+  "editorNotes": [
+    "自然日本語共通8節、単一常時表示C++20fence、title/descriptionをmetadataへ厳密一致。",
+    "本文へ調査経緯/テスト件数/時間/RSSを混ぜず、sidecarへ分離。",
+    "本番2016-08-16/dayprecision/exacttrue、difficulty null、IOI main competitionは別field。",
+    "元のIOI2016凍結監査やBooks3成果物、共有data/MDX/tests/flow/ledgerは未編集。公開/commit/server/install/定期収集設定なし。"
+  ],
+  "artifactSha256": {
+    "article": "9ffeea2f648567b08d27e64cb97dfc4b73f9542f0079c2a5e09a3183261fdc1c",
+    "checker": "320830946144e78c33c0d047aa503f00545bdd0cfadcb9b3c5bcbddf09099028",
+    "normalResult": "0ece779a3d079f37096cc936ebd2bed226528f4075625a35196c9d18eb14ef09",
+    "asanUbsanResult": "968e2772abb55e9b71884719249692ac0170e489c8c2e37d29a04f8f56731207",
+    "authorArticle": "9ffeea2f648567b08d27e64cb97dfc4b73f9542f0079c2a5e09a3183261fdc1c",
+    "authorChecker": "320830946144e78c33c0d047aa503f00545bdd0cfadcb9b3c5bcbddf09099028",
+    "authorSidecar": "d2345c2cbcd3701232388605371420a94a5702db5f523bb4ea67f9f45e371562",
+    "publishedArticle": "125f6f3ed64644954ff9e35805d6191c65794f6491e7cb0245b31c6673a639a4",
+    "publishedChecker": "5706a4969e563bbf75f508fff8d925731e1c51c7e2b856b2f70204022e41248c"
+  },
+  "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+  "sharedFilesModified": false,
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/diagonal-square-union-cover-monge-penalty-cht.mdx",
+    "checker": "scripts/check_diagonal_square_union_cpp.py",
+    "metadataGroup": "dp-structures",
+    "entryGraphId": "geometry",
+    "choices": [
+      "enclosing-regions",
+      "point-set-shapes",
+      "diagonal-square-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Qualify the shared-cut suffix-exchange alternative with Q-prefix edge count exactly one greater than P. This clarification changes no C++ and was independently approved.",
+      "Normalize checker and independent-probe MDX paths to repository paths; remove only implicit temp result writes."
+    ],
+    "articleProseNormalization": {
+      "old": "共有する切れ目では、そこから後半を交換するだけでよい。",
+      "new": "また、共有する切れ目で、そこまでの $Q$ の辺数が $P$ より一つ多い場合は、その位置から後半を交換するだけでもよい。"
+    },
+    "verificationRecord": "research/verification-2026-10-15-ioi2016-aliens.json"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "date": "2026-10-15",
+      "reviewer": "/root",
+      "status": "passed",
+      "techniqueId": "diagonal-square-union-cover-monge-penalty-cht",
+      "allEightSectionsAndEntireCppRead": true,
+      "completePublishedFenceCheckerRead": true,
+      "independentReportAndCompleteAdditionalProbeRead": true,
+      "sourceReview": "All six original IOI2016 primary PDFs/17pageSolutions/bothNotice/index/date plus primary find_subset API edition read in fixed-corpus review; Aliens3pages/officialAliens14–17pages/Day2Notice contract independently cross-checked.",
+      "proofReviewed": [
+        "interval-containment and consecutive grouping completeness",
+        "full square union equals adjacent overlap-corrected DP",
+        "Monge identity and constructive q−1/q+1 to q/q path balancing",
+        "integer supporting penalty, fewer-count encoded ties and count jumps",
+        "strict slopes/query order, linear monotone hull and128-bit numeric bounds"
+      ],
+      "normal": {
+        "checks": 5427033,
+        "apiCalls": 696640,
+        "originalAdapterCalls": 589343,
+        "allInterestSubsetsM1to5": 33861,
+        "literalAllPhotoSubsets": 33940,
+        "literalRequestedPhotoLimits": 251085,
+        "penaltyCostAndFewerCountComparisons": 884000,
+        "convexityAndMonotonicityChecks": 86212,
+        "allOrderedCellArraysM1to3N1to5": 67798,
+        "randomAllKCases": 3500,
+        "literalUnionPartitionCases": 444,
+        "literalUnionPartitionAssignments": 65176,
+        "metamorphicChecks": 40637,
+        "maximumOriginalCases": 30,
+        "reentrantBatchCalls": 20000,
+        "invalidCases": 36,
+        "allocationFailuresInjected": 14,
+        "checksum": "8361293455850997735",
+        "seconds": 1.54493,
+        "peakRSSKiB": 19064,
+        "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+        "sanitized": false
+      },
+      "asanUbsan": {
+        "checks": 5427033,
+        "apiCalls": 696640,
+        "originalAdapterCalls": 589343,
+        "allInterestSubsetsM1to5": 33861,
+        "literalAllPhotoSubsets": 33940,
+        "literalRequestedPhotoLimits": 251085,
+        "penaltyCostAndFewerCountComparisons": 884000,
+        "convexityAndMonotonicityChecks": 86212,
+        "allOrderedCellArraysM1to3N1to5": 67798,
+        "randomAllKCases": 3500,
+        "literalUnionPartitionCases": 444,
+        "literalUnionPartitionAssignments": 65176,
+        "metamorphicChecks": 40637,
+        "maximumOriginalCases": 30,
+        "reentrantBatchCalls": 20000,
+        "invalidCases": 36,
+        "allocationFailuresInjected": 14,
+        "checksum": "8361293455850997735",
+        "seconds": 13.3096,
+        "peakRSSKiB": 777412,
+        "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+        "sanitized": true
+      },
+      "allDeterministicAuthorFieldsIncludingMaximumCasesMatched": true,
+      "independentReviewSha256": "2d980621b401973ba9213a50cc16917bedd908abf92866767bbe26ceeffb3317",
+      "additionalOracleExecutionAttributedToPeer": true,
+      "normalizationAtIntegration": [
+        "Qualify the shared-cut suffix-exchange alternative with Q-prefix edge count exactly one greater than P. This clarification changes no C++ and was independently approved.",
+        "Normalize checker and independent-probe MDX paths to repository paths; remove only implicit temp result writes."
+      ],
+      "cppUnchangedAtIntegrationRequired": true,
+      "materialIssues": [],
+      "unconfirmedRequiredLemmas": [],
+      "unconfirmedRequiredSourceFacts": [],
+      "headerBytesRetrieved": false,
+      "initialAuditFieldsAndResearchCoveragePreservedRequired": true,
+      "registrationPerformed": false
+    },
+    "normal": {
+      "checks": 5427033,
+      "apiCalls": 696640,
+      "originalAdapterCalls": 589343,
+      "allInterestSubsetsM1to5": 33861,
+      "literalAllPhotoSubsets": 33940,
+      "literalRequestedPhotoLimits": 251085,
+      "penaltyCostAndFewerCountComparisons": 884000,
+      "convexityAndMonotonicityChecks": 86212,
+      "allOrderedCellArraysM1to3N1to5": 67798,
+      "randomAllKCases": 3500,
+      "literalUnionPartitionCases": 444,
+      "literalUnionPartitionAssignments": 65176,
+      "metamorphicChecks": 40637,
+      "maximumOriginalCases": 30,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 36,
+      "allocationFailuresInjected": 14,
+      "checksum": "8361293455850997735",
+      "seconds": 1.54493,
+      "peakRSSKiB": 19064,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 5427033,
+      "apiCalls": 696640,
+      "originalAdapterCalls": 589343,
+      "allInterestSubsetsM1to5": 33861,
+      "literalAllPhotoSubsets": 33940,
+      "literalRequestedPhotoLimits": 251085,
+      "penaltyCostAndFewerCountComparisons": 884000,
+      "convexityAndMonotonicityChecks": 86212,
+      "allOrderedCellArraysM1to3N1to5": 67798,
+      "randomAllKCases": 3500,
+      "literalUnionPartitionCases": 444,
+      "literalUnionPartitionAssignments": 65176,
+      "metamorphicChecks": 40637,
+      "maximumOriginalCases": 30,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 36,
+      "allocationFailuresInjected": 14,
+      "checksum": "8361293455850997735",
+      "seconds": 13.3096,
+      "peakRSSKiB": 777412,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": true
+    },
+    "additionalReviewFile": "research/probes/diagonal-square-union-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2016_shortcut",
+    "title": "近道 (Shortcut)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "主線は一本道で、各主駅に高々一本の行き止まりの枝が付き、長さ0は枝がない",
+      "異なる二つの主駅へ長さ固定の近道をちょうど一本追加し、駅同士の最大最短距離を最小にする",
+      "主駅2〜100万、主線と近道は長さ1〜10億、枝は長さ0〜10億の整数"
+    ],
+    "entryGraphId": "graphs",
+    "choices": [
+      "network-connection",
+      "path-shortcut-diameter",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+    ],
+    "conditions": [
+      "path-one-branch",
+      "one-main-shortcut",
+      "bounds"
+    ],
+    "date": "2016-08-14",
+    "difficulty": null,
+    "publicationDate": "2016-08-14",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true,
+    "techniqueIds": [
+      "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+    ],
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "verification": "independent-analysis",
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff"
+  }
+]

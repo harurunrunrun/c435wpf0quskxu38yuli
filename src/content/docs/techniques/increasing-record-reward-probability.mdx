@@ -1,0 +1,60 @@
+---
+title: "添字が増える間だけ報酬を得るなら、各添字へ到達する確率を足す"
+description: "報酬の総和を訪問の指示変数へ分け、直前の添字の候補を確率の累積和にまとめる。"
+techniqueId: "increasing-record-reward-probability"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+一様に引いた添字が現在の添字より大きい間だけ続き、訪れた添字の報酬を足すとき。どこで止まるかを全て列挙する代わりに、各添字の報酬を受け取る確率を求めます。
+
+## 考え方
+
+添字 $i$ を訪れる確率を $p_i$、初期状態を $p_0=1$ とします。$i$ の直前は $0,\ldots,i-1$ のいずれかなので
+$$p_i=\frac{p_0+\cdots+p_{i-1}}{N},\qquad \mathbb E[\text{報酬}]=\sum_{i=1}^N A_i p_i.$$
+確率の累積和を一つ持ち、求めた $p_i$ を足して次へ進めば十分です。
+
+## 適用条件
+
+毎回同じ $1,\ldots,N$ から独立一様に引き、添字が増えなければ直ちに終了すること。添字ごとの報酬は固定で、各添字を高々一度しか訪れません。法で期待値を表す実装では $N$ の逆元が必要です。下の実装は $1\le N\le300000$、法 $998244353$ を使います。
+
+## なぜ正しいか
+
+$i$ の直前の状態が異なる事象は互いに排反です。各 $j<i$ を訪れた直後に $i$ を引く確率が $p_j/N$ なので、これを足すと再帰が得られます。報酬和は「$i$ を訪れたら $A_i$」の和であり、期待値の線形性で合計できます。異なる添字の訪問が独立である必要はありません。
+
+## 計算量
+
+時間 $O(N+\log P)$、入力を除く空間 $O(1)$。$P=998244353$ で、$\log P$ は逆元の累乗です。全ての直前候補を個別に足す $O(N^2)$ を避けます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int increasing_record_reward(const vector<long long>& reward){
+    constexpr long long mod=998244353;
+    int n=reward.size();if(n<1||n>300000)throw invalid_argument("reward count");
+    auto power=[&](long long a,long long e){long long r=1;for(;e;e>>=1,a=a*a%mod)if(e&1)r=r*a%mod;return r;};
+    long long inverse=power(n,mod-2),prefix=1,answer=0;
+    for(long long value:reward){
+        long long probability=prefix*inverse%mod;
+        value=(value%mod+mod)%mod;
+        answer=(answer+value*probability)%mod;
+        prefix=(prefix+probability)%mod;
+    }
+    return int(answer);
+}
+```
+
+## 関連する手法
+
+- [総数の期待値を、各組が成立する確率に分ける](/flowchartcp/techniques/expectation-indicators/)
+- [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/abc326/tasks/abc326_e)
+- [出典の解説](https://atcoder.jp/contests/abc326/editorial/7547)
+
+<TechniqueReferences techniqueId="increasing-record-reward-probability" />

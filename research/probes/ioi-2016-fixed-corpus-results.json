@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "scope": "IOI2016 initial fixed-corpus and permanent snapshot regression",
+  "command": [
+    "node",
+    "tests/ioi-2016-fixed-corpus.test.mjs"
+  ],
+  "testSha256": "545b4820b8d9af756081a7e53ded3b6962ff7852d968276986be0ba291971949",
+  "exitCode": 0,
+  "seconds": 16.53446349200385,
+  "tests": 10,
+  "pass": 10,
+  "fail": 0,
+  "skipped": 0,
+  "stdout": "TAP version 13\n# Subtest: all1431 initial raw bytes,504 full articles and separate105 vendor bytes are permanently recoverable\nok 1 - all1431 initial raw bytes,504 full articles and separate105 vendor bytes are permanently recoverable\n  ---\n  duration_ms: 353.056871\n  type: 'test'\n  ...\n# Subtest: every original gzip is fixed and the normalized audit changes only disclosed paths and retention fields\nok 2 - every original gzip is fixed and the normalized audit changes only disclosed paths and retention fields\n  ---\n  duration_ms: 27.169571\n  type: 'test'\n  ...\n# Subtest: the selection predates matching and fixes all six identities,exact dates,null difficulty,numeric bounds and research-only flags\nok 3 - the selection predates matching and fixes all six identities,exact dates,null difficulty,numeric bounds and research-only flags\n  ---\n  duration_ms: 1.206742\n  type: 'test'\n  ...\n# Subtest: all15 roots,six frozen traces/eight full answer labels and525 previous walks retain actual stops and labels\nok 4 - all15 roots,six frozen traces/eight full answer labels and525 previous walks retain actual stops and labels\n  ---\n  duration_ms: 102.407659\n  type: 'test'\n  ...\n# Subtest: nineteen complete frozen articles and fences retain their exact scope and normalized algorithm bodies\nok 5 - nineteen complete frozen articles and fences retain their exact scope and normalized algorithm bodies\n  ---\n  duration_ms: 55.424923\n  type: 'test'\n  ...\n# Subtest: permanent manual probes restore every raw byte and reproduce math,raw routes,actual runtime and19 component scopes\nok 6 - permanent manual probes restore every raw byte and reproduce math,raw routes,actual runtime and19 component scopes\n  ---\n  duration_ms: 14435.135918\n  type: 'test'\n  ...\n# Subtest: independent reviews and the accepted schema keep research6 distinct from zero completed APIs and initial coverage\nok 7 - independent reviews and the accepted schema keep research6 distinct from zero completed APIs and initial coverage\n  ---\n  duration_ms: 894.431118\n  type: 'test'\n  ...\n# Subtest: all old fields of nine earlier audits survive while genuinely new resolution/review fields remain allowed\nok 8 - all old fields of nine earlier audits survive while genuinely new resolution/review fields remain allowed\n  ---\n  duration_ms: 19.159721\n  type: 'test'\n  ...\n# Subtest: the actual content preflight rejects an empty visible fence and gates real corpus production coverage\nok 9 - the actual content preflight rejects an empty visible fence and gates real corpus production coverage\n  ---\n  duration_ms: 423.964058\n  type: 'test'\n  ...\n# Subtest: production adds the tenth fixed corpus with six pending precise gaps and accepts only actual future resolution evidence\nok 10 - production adds the tenth fixed corpus with six pending precise gaps and accepts only actual future resolution evidence\n  ---\n  duration_ms: 11.063157\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 16426.263048\n",
+  "stderr": "",
+  "snapshot": {
+    "initialRaw": 1431,
+    "coreRaw": 959,
+    "sameEpochPublic": 472,
+    "allFullMdx": 504,
+    "laterVendorRaw": 105,
+    "graphs": 471,
+    "walks": 525,
+    "oldFixedCorpora": 9
+  },
+  "initialResearch": 6,
+  "initialCompletedApis": 0,
+  "initialCoverage": 0,
+  "productionCorporaAtLeast": 10,
+  "fullProductionSolverValidationClaimed": false,
+  "authorArtifactsModified": false,
+  "sharedDataModified": false,
+  "testFile": "tests/ioi-2016-fixed-corpus.test.mjs",
+  "sharedFilesWritten": [
+    "tests/ioi-2016-fixed-corpus.test.mjs",
+    "research/probes/ioi-2016-fixed-corpus-results.json"
+  ]
+}

@@ -1,0 +1,67 @@
+---
+title: "操作で一方の個数が増えるなら、保存される量から状態範囲を決める"
+description: "増える青石を初期個数で打ち切らず、白石から増える最大量を含めます。"
+techniqueId: "grundy-conserved-state-bound"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+状態 $(w,b)$ で、$w$ を1減らすと $b$ が $w$ 増えるような操作があるとき。初期の $b$ の最大値だけで配列を確保すると、合法な遷移先が配列の外に出ます。
+
+## 考え方
+
+$P(w,b)=b+w(w+1)/2$ を考えます。白石の操作 $(w,b)\to(w-1,b+w)$ で $P$ は保存され、青石を減らす操作で $P$ は減ります。初期状態の最大の $P$ を $M$ とすれば、調べる範囲は $0\le b\le M-w(w+1)/2$ です。
+
+白石数を昇順、その中で青石数を昇順に評価すると、白石操作は前の行、青石操作は同じ行の前の位置を参照します。その遷移先の Grundy 数の mex を求め、各山の値を XOR します。
+
+## 適用条件
+
+一手で一つの山だけを変更し、山どうしの合法手が独立で、操作不能になった側が負ける通常ルールです。白石の操作で加える青石数は操作前の $w$、青石操作は $1$ から $\lfloor b/2\rfloor$ 個の除去です。この式は別の増加規則へそのまま使えません。白石数の初期最大を $W$ とし、全山の状態が非負整数であることを確認します。
+
+## なぜ正しいか
+
+$P$ は増えないので、上の範囲から外へ遷移することはありません。白石操作では白石数が減り、青石操作では白石数を変えず青石数が減るため、辞書式順序 $(w,b)$ は必ず小さくなります。よって昇順の表で全ての遷移先を参照できます。元の合法手を一つも除外せず mex を計算し、独立な山を XOR して勝敗を得ます。
+
+## 計算量
+
+状態数は $O((W+1)(M+1))$、一状態の青石の遷移は $O(M)$。時間 $O((W+1)(M+1)^2+n)$、空間 $O((W+1)(M+1))$。増加後の個数を無制限に探索する必要がなく、原典の $W,B\le50$ では $M\le1325$ です。
+
+## 実装
+
+行ごとに到達可能な上限まで確保し、増えた青石数を正しく参照します。`stone_pair_grundies` は各山の値を返すので、XOR 以外に個別の値の確認にも使えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> stone_pair_grundies(const vector<pair<int,int>>& heaps){
+    int W=0;long long maximum=0;
+    for(auto [w,b]:heaps){assert(w>=0 && b>=0);W=max(W,w);
+        maximum=max(maximum,(long long)b+1LL*w*(1LL+w)/2);}
+    assert(maximum<=INT_MAX/2);int M=maximum;
+    vector<vector<int>> g(W+1);
+    for(int w=0;w<=W;++w){
+        int bound=M-1LL*w*(1LL+w)/2;g[w].resize(bound+1);
+        for(int b=0;b<=bound;++b){
+            int degree=b/2+(w>0);vector<bool> seen(degree+1);
+            auto mark=[&](int x){if(x<=degree)seen[x]=true;};
+            if(w)mark(g[w-1][b+w]);
+            for(int k=1;k<=b/2;++k)mark(g[w][b-k]);
+            int value=0;while(value<=degree && seen[value])++value;
+            g[w][b]=value;
+        }
+    }
+    vector<int> answer;for(auto [w,b]:heaps)answer.push_back(g[w][b]);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[Grundy数](/flowchartcp/techniques/game-theory/)、[不変量](/flowchartcp/techniques/invariant/)、[状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [出題者の公開実装](https://raw.githubusercontent.com/E869120/kyopro_educational_90/main/sol/031.cpp)
+
+<TechniqueReferences techniqueId="grundy-conserved-state-bound" />

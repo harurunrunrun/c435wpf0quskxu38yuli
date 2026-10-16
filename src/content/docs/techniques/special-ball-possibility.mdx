@@ -1,0 +1,67 @@
+---
+title: "どの玉を移したか不明なら、箱の確定個数と特別な玉の可能位置を分ける"
+description: "特別な玉の可能性を移動先へ広げ、移動元が空になったときだけ元の可能性を消す。"
+techniqueId: special-ball-possibility
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一個だけ特別な玉があり、箱から箱へ「適当な一個」を移す操作だけが分かる。各箱の中身の全配置を追う代わりに、必ず決まる総個数と、特別な玉があり得るかを分けて持つ。
+
+## 考え方
+
+箱 $v$ の総個数を $c_v$、特別な玉が入っている可能性を $p_v$ とする。$x\to y$ の移動では、移動前の $p_x$ が真なら $p_y$ を真にする。$c_x$ を一減らし、$c_y$ を一増やした後、$c_x=0$ なら $p_x$ を偽にする。
+
+移動元に玉が二個以上あれば、特別な玉を残して普通の玉を動かす可能性もある。一個だけなら、移動元が候補だったときその一個は特別な玉で、元の箱には残れない。
+
+## 適用条件
+
+特別な玉は全体で一個、箱間の操作は一個の移動だけである。総個数は移した玉の種類によらず同じなので確定できる。各操作で移動元には一個以上ある必要がある。
+
+実装は箱数・総玉数・操作数がそれぞれ20万以下。初期の箱ごとの個数と特別な玉の箱を受け取る。原典は初期に各箱一個で、特別な玉は最初の箱にある。複数の特別な玉の配置の相関や、特別な玉を動かす確率を求める場合には、この真偽値だけでは足りない。
+
+## なぜ正しいか
+
+移動前に特別な玉が $x$ にあり得るなら、その玉を選ぶ合法な配置と選択があるので $y$ が新しい候補になる。$x$ にあり得なければ、移した玉は普通の玉であり、既存の候補以外には広がらない。
+
+$x$ の移動前の総個数が二以上なら、特別な玉がある配置でも別の普通の玉を選んで元へ残せる。一なら、移動後の $x$ は必ず空になり、候補から消える。それ以外の箱にある配置では、この操作は特別な玉の位置を変えない。全候補の和集合が、次の合法な配置での全可能位置と一致する。
+
+## 計算量
+
+玉を区別した全配置は、箱数 $N$、玉数 $B$ に対して最大 $N^B$ 状態。個数と候補を分けると $M$ 操作の処理は $O(N+M)$ 時間、$O(N)$ 補助空間。各操作は定数個の値を変えるだけ。
+
+## 実装
+
+`possible_special_ball_boxes` の返り値は箱ごとの真偽値。自分の箱へ戻す移動も個数を減らして増やした後に判定するため、可能性を失わない。
+
+```cpp
+#include <stdexcept>
+#include <utility>
+#include <vector>
+std::vector<bool> possible_special_ball_boxes(std::vector<int> count,int special,
+                                              const std::vector<std::pair<int,int>>& moves) {
+    int n=int(count.size());long long total=0;
+    if(n<1 || n>200000 || special<0 || special>=n || moves.size()>200000) throw std::invalid_argument("range");
+    for(int c:count) {if(c<0)throw std::invalid_argument("count");total+=c;}
+    if(total>200000 || count[special]==0) throw std::invalid_argument("initial balls");
+    std::vector<bool> possible(n);possible[special]=true;
+    for(auto [from,to]:moves) {
+        if(from<0 || from>=n || to<0 || to>=n || count[from]==0) throw std::invalid_argument("move");
+        if(possible[from]) possible[to]=true;
+        --count[from];++count[to];
+        if(count[from]==0) possible[from]=false;
+    }
+    return possible;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) ・ [不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder：B - Box and Ball（原典）](https://atcoder.jp/contests/agc002/tasks/agc002_b)。
+
+<TechniqueReferences techniqueId="special-ball-possibility" />

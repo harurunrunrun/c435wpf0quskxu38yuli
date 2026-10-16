@@ -1,0 +1,185 @@
+---
+title: "始点から到達できる全歩数を保ち、無向グラフの辺を最少にする"
+description: "偶奇ごとの最短歩数を二つの前駆条件に変え、同じ距離和の層で次の集合を助ける辺を優先する。根の0歩と末端の自己ループを分け、任意の新しい辺を許す最小実現を求める。"
+techniqueId: parity-walk-profile-layer-greedy-realization
+---
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+無向グラフの始点を固定し、各頂点へ「ちょうど何歩で到達できるか」を全て保ったまま、辺数を最少にしたい。頂点や辺の再訪は許す。頂点のラベルは保つが、元の辺を消すだけでなく、別の頂点対を結んでもよい。
+
+普通の最短距離だけでは足りない。例えば始点と他の二頂点を直接結んだ木に、その二頂点間の辺を加えても通常の距離は変わらないが、奇数歩で始点へ戻れるようになる。保存する情報に歩数の偶奇を含める。
+
+## 考え方
+
+偶数歩の最短値を $e(v)$、奇数歩の最短値を $o(v)$ とする。頂点と偶奇を組にした二層のBFSで求められる。連結で二頂点以上なら、一辺の往復を追加できるので、各偶奇で可能な歩数はその最短値から二歩刻みの全てである。
+
+二部グラフなら、始点からのBFS木で全てを保存でき、答えは $N-1$。非二部なら両距離が有限なので、小さい順に $h(v)=(a,b)$ と並べ、同じ組の頂点を $S(a,b)$ にまとめる。二つの値の偶奇は異なるため、並べ替えても元の偶奇は値自身から分かる。
+
+必要な辺を次の三種類に分ける。
+
+|種類|結ぶ集合|役割|
+|---|---|---|
+|A|$S(a,b)$ と $S(a-1,b-1)$|大きい側の二距離の前駆を一本で用意する|
+|B|$S(a,b)$ と $S(a+1,b-1)$|和 $a+b$ が同じ層の隣へつなぐ|
+|C|$S(a,a+1)$ の内部|層の末端で大きい距離の前駆を用意する。自己ループも許す|
+
+各層を $a$ の昇順で処理する。現在の集合の人数を $f$、左から既にあるB辺を $p$ 本とし、その端を可能な限り別頂点へ分ける。左Bを持てる人数は $x=\min(f,p)$。
+
+Aの行き先がある場合、左Bを持つ $x$ 人は右Bを一本ずつ、残りはAを一本ずつ選ぶ。同じ一本なら次の集合も助ける右Bが有利である。Aがなければ、足りない左Bを $f-x$ 本補い、右Bを $f$ 本用意する。
+
+## 適用条件
+
+辺は無向・単位長で、自己ループを許し、多重辺を許さない。全頂点が始点から到達可能で、$N\ge2$ とする。歩数は通った辺の本数であり、往復や自己ループを繰り返してよい。単純路の長さや有向グラフには同じ帰着を適用しない。
+
+掲載APIは $2\le N\le100000$、$M\le200000$、任意の始点を扱う。原典の一件の入力はこの範囲に入り、複数件は独立に呼び出せる。原典全体の件数は50000以下、総頂点数100000以下、総辺数200000以下である。
+
+元のグラフの部分グラフに限定すると別の最適化になる。例えば始点0と頂点1・2を結び、1・2に自己ループを置いた四辺のグラフは、三角形の三辺で同じ全歩数を実現できるが、元の辺を消すだけでは四辺全てが必要である。以下は、同じラベルの頂点に許容される新しい辺も使う最小辺数を返す。
+
+## なぜ正しいか
+
+まず、有限の偶奇距離 $d$ で到達できれば、その到達先で一辺を往復して $d+2$ 歩でも到達できる。始点の0歩からも、連結性と $N\ge2$ により往復できる。従って二距離を保存することと、全ての到達可能な歩数を保存することは同値である。
+
+非二部の場合、辺 $uv$ を追加して距離を短くしないための条件は、各偶奇 $q$ について
+
+$$
+d_q(v)\le d_{1-q}(u)+1,\qquad d_q(u)\le d_{1-q}(v)+1
+$$
+
+である。二距離を小さい順に並べ、値の偶奇も考慮すると、これを満たす頂点対は表のA・B・Cだけになる。自己ループは $b=a+1$ のときだけ許される。
+
+さらに各頂点の各正の距離には、「その距離より一つ小さい距離を持つ隣」が必要になる。許容辺だけを使い、この前駆を全て用意すれば、距離の小さい順の帰納により必要な長さの歩行を作れる。逆に辺の不等式を歩行に沿って適用すると、指定より短い距離は作れない。始点の距離0だけは前駆不要である。
+
+非始点 $S(a,b)$ では、A一本が両方の前駆を満たす。Aを使わないなら、$a$ 側のための左Bと、$b$ 側のための右Bが両方必要となる。末端 $b=a+1$ では右Bの代わりにCを使う。始点は $a=0$ の唯一の頂点で、$b>1$ なら右B一本、$b=1$ なら自己ループ一本だけでよい。
+
+Aの小さい側では距離を減らす前駆にならず、制約を満たすのは大きい側だけである。従ってAの選択は大きい側の層だけで決められる。BとCは同じ $a+b$ の層に閉じるため、層ごとの最適値を足せる。
+
+一層の途中では、同じ集合の頂点は前駆条件が等しい。既存の左Bを別々の頂点へ分散しても過去の集合の条件は壊れず、現在の充足人数を $x=\min(f,p)$ に最大化できる。Aがあるとき、左Bを持つ頂点にAを選ぶ解は、同費用の右Bへ交換しても現在の条件を満たし、次の集合の条件を助ける。左Bを持たない頂点に左右Bを二本選ぶ解は、まずA一本へ置き換えられる。後で右Bが必要になっても一本を加えるだけなので、先に二本使うより悪くならない。この交換で上のgreedyと同じ選択を持つ最適解が存在する。
+
+Aがない場合は全員に左右Bが必須で、追加費用は $(f-x)+f$。新しい左Bは、まだ左Bを持たない現在頂点へ接続するため、既存辺と重ならない。右Bは各現在頂点に高々一本ずつ作り、次の集合でなるべく別頂点へ割り当てられる。各集合間は全頂点対が許容されるので、多重辺を作らず実現できる。右の集合が存在しない非末端では、全員にAが必要で追加費用は $f$ となる。
+
+末端では次の式で層を閉じる。
+
+- Aがある場合、左Bを持つ頂点同士をCで二人ずつ満たす。左Bのない頂点はAで、左Bを持って一人余った頂点はAまたは自己ループで満たす。追加費用は $f-\lfloor x/2\rfloor$。
+- Aがない場合、まず左Bを $f-x$ 本補い、全員をCで覆う。C一本で高々二人を満たすため、追加費用は $(f-x)+\lceil f/2\rceil$。
+
+前者では左Bのない頂点はA一本、または左BとCの二本が必要であり、Cだけで節約できるのは左Bを持つ二人の組だけである。後者でも二人ずつの辺と、余った一人の自己ループが下限を達成する。これで各段の最小性と実現可能性が両方示される。
+
+二部の場合は各頂点で一方の偶奇だけが有限で、通常の最短距離を保つBFS木が同じ全歩数を実現する。連結なグラフの辺数は少なくとも $N-1$ なので、これも最適である。
+
+## 計算量
+
+辺の向きを正規化して重複を検査する整列に $O(M\log(M+1))$、二層BFSに $O(N+M)$、距離組の平衡木への集計とgreedyに $O(N\log(N+1))$ 時間を使う。全体はその和、追加空間は $O(N+M)$。掲載コードは多重辺の検査も行うため、辺整列の項を含む。
+
+二層BFSの有限距離は $2N-1$ 以下。各正の距離の前駆を一つずつ選べば高々 $2N-1$ 本で実現でき、最小値は入力辺数以下でもある。距離・人数・答えは掲載上限で32ビット符号付き整数に収まる。深いグラフでも再帰探索を使わない。
+
+## 実装
+
+`minimum_edges_preserving_root_walk_lengths(n, edges, root)` は最小辺数を返す。頂点番号は0始まり。無向辺は一回だけ与え、端点の順序は自由とする。自己ループは一本の辺として数える。
+
+頂点数・辺数の上限違反、範囲外の始点や端点、重複辺、非連結は `invalid_argument`。空の辺集合も非連結として拒否する。入力は変更せず、呼び出し間で状態を共有しない。距離組を保つ最小グラフの辺集合そのものは返さない。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <map>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+int minimum_edges_preserving_root_walk_lengths(
+        int n, const std::vector<std::pair<int,int>>& edges, int root = 0) {
+    if (n < 2 || n > 100000 || edges.size() > 200000)
+        throw std::invalid_argument("graph size");
+    if (root < 0 || root >= n) throw std::invalid_argument("root");
+    auto normalized = edges;
+    for (auto& [u, v] : normalized) {
+        if (u < 0 || u >= n || v < 0 || v >= n)
+            throw std::invalid_argument("edge endpoint");
+        if (u > v) std::swap(u, v);
+    }
+    std::sort(normalized.begin(), normalized.end());
+    if (std::adjacent_find(normalized.begin(), normalized.end()) != normalized.end())
+        throw std::invalid_argument("parallel edge");
+
+    std::vector<int> offset(n + 1);
+    for (auto [u, v] : normalized) {
+        ++offset[u + 1];
+        if (u != v) ++offset[v + 1];
+    }
+    for (int v = 0; v < n; ++v) offset[v + 1] += offset[v];
+    auto cursor = offset;
+    std::vector<int> neighbor(offset.back());
+    for (auto [u, v] : normalized) {
+        neighbor[cursor[u]++] = v;
+        if (u != v) neighbor[cursor[v]++] = u;
+    }
+    const int infinity = 2 * n + 1;
+    std::vector<std::array<int, 2>> distance(n, {infinity, infinity});
+    std::vector<int> queue;
+    queue.reserve(2 * n);
+    distance[root][0] = 0;
+    queue.push_back(2 * root);
+    for (std::size_t head = 0; head < queue.size(); ++head) {
+        const int v = queue[head] / 2, parity = queue[head] % 2;
+        for (int i = offset[v]; i < offset[v + 1]; ++i) {
+            const int w = neighbor[i], next = 1 - parity;
+            if (distance[w][next] == infinity) {
+                distance[w][next] = distance[v][parity] + 1;
+                queue.push_back(2 * w + next);
+            }
+        }
+    }
+    for (const auto& d : distance)
+        if (d[0] == infinity && d[1] == infinity)
+            throw std::invalid_argument("disconnected graph");
+    if (distance[root][1] == infinity) return n - 1;
+
+    struct Bucket { int count = 0, incoming = 0; };
+    std::map<std::pair<int,int>, Bucket> groups;
+    for (auto d : distance) {
+        if (d[0] > d[1]) std::swap(d[0], d[1]);
+        ++groups[{d[0], d[1]}].count;
+    }
+    int answer = 0;
+    // Lexicographic order processes every (a-1,b+1) before (a,b).
+    for (auto& [key, bucket] : groups) {
+        const auto [a, b] = key;
+        const int f = bucket.count, x = std::min(f, bucket.incoming);
+        if (a == 0) {
+            ++answer;  // Only the root: one odd-distance predecessor.
+            if (b > 1) groups.find({1, b - 1})->second.incoming = 1;
+            continue;
+        }
+        const bool has_a = groups.contains({a - 1, b - 1});
+        if (b == a + 1) {
+            answer += has_a ? f - x / 2 : f - x + (f + 1) / 2;
+            continue;
+        }
+        auto right = groups.find({a + 1, b - 1});
+        if (right == groups.end()) {
+            answer += f;  // A exists: otherwise the input profile is impossible.
+        } else if (has_a) {
+            answer += f;
+            right->second.incoming = x;
+        } else {
+            answer += 2 * f - x;
+            right->second.incoming = f;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全成分を同時に一歩ずつ進む距離の総和は、偶奇別の最短距離と最大値の集計に分ける](/flowchartcp/techniques/synchronous-product-parity-distance-sum/) は、偶奇ごとの最短値から全歩数を表す同じ性質を利用する。[全二点間の最短距離表から必要な道路だけを復元する](/flowchartcp/techniques/distance-matrix-essential-edges/) は保存する情報が異なり、ここでは固定始点の歩数言語を保存する。
+
+## 参考資料
+
+- [USACO公式原典: Minimizing Edges](https://usaco.org/index.php?page=viewproblem2&cpid=1117)
+- [Benjamin Qi・Danny MittalによるUSACO公式解説](https://usaco.org/current/data/sol_prob2_platinum_feb21.html)
+- [USACO 2021 February公式結果一覧](https://usaco.org/index.php?page=feb21results)
+
+<TechniqueReferences techniqueId="parity-walk-profile-layer-greedy-realization" />

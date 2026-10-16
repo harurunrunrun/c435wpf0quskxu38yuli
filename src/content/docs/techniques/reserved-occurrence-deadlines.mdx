@@ -1,0 +1,86 @@
+---
+title: "指定した第i出現の位置は、前のコピーを締切順に置き、後ろを逆順に埋める"
+description: "予約した出現を先に固定し、その前後に必要な個数を最も早い空きと最も遅い空きへ割り当てる。"
+techniqueId: reserved-occurrence-deadlines
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+同じ値を複数回置く列で、ある値の何番目の出現か、その位置だけが指定される。予約位置を置くだけでは、その前後の個数が足りるか分からない。前側の締切と後側の開始条件に分ける。
+
+## 考え方
+
+値 $i=1,\ldots,N$ を各 $N$ 回置き、$i$ 番目の出現位置を $x_i$ とする。先に全ての $x_i$ へ $i$ を置く。残るコピーは、$x_i$ より前に $i-1$ 個、後ろに $N-i$ 個。
+
+予約位置が早い順に、前に必要なコピーを最も左の空き位置へ置く。予約位置までに入りきらなければ不可能。次に予約位置が遅い順に、後ろに必要なコピーを最も右の空き位置へ置く。予約より後ろに入りきらなければ不可能。
+
+一方向へ進む二本の空き位置のポインタだけで、全コピーを置ける。
+
+## 適用条件
+
+各値の総出現数と一つの出現順位が固定され、他の位置制約はない。ここでは総出現数が全て $N$、指定順位が値 $i$ 自身である。異なる値の予約位置は重ならない。
+
+実装は $1\le N\le500$、予約位置を0始まりで受け取り、出力値は1始まり。重複予約や実現不能の場合は `nullopt`、範囲外の位置は例外。予約位置の前後は厳密に分け、予約自身をコピー用の空きとして使わない。
+
+## なぜ正しいか
+
+前側のコピーは締切の早い順に、最も早い空きへ置いてよい。ある合法な完成列でその空きに別のコピーがあれば、今置くコピーが実際に置かれている後の場所と交換する。
+
+交換相手が別の前側コピーなら、その締切は今の締切以降なので、後の場所へ動かしても間に合う。後側コピーなら、元の空きより後へ動かすことは開始位置の条件を壊さない。予約位置は空きから除外している。この交換を繰り返せば、合法解を保って前側の貪欲配置へ変えられる。
+
+後側も、開始位置の遅い順に最も遅い空きへ置く対称な交換で正当化できる。途中で置けない場合は、必要な個数を満たす空きがないため合法解もない。成功時は値 $i$ が予約前にちょうど $i-1$ 個あり、その位置が正確に $i$ 番目になる。
+
+## 計算量
+
+全ての多重集合の並べ方は $(N^2)!/(N!)^N$ 通り。構成は予約の整列に $O(N\log N)$、全コピーと二本のポインタの走査に $O(N^2)$ 時間。出力を含む空間は $O(N^2)$、順序の保存に $O(N)$。
+
+## 実装
+
+`construct_ranked_occurrences(position)` は値 $i+1$ の第 $i+1$ 出現の予約を `position[i]` とする。出力は長さ $N^2$ の列。
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <optional>
+#include <stdexcept>
+#include <vector>
+std::optional<std::vector<int>> construct_ranked_occurrences(const std::vector<int>& position) {
+    int n=int(position.size());
+    if(n<1 || n>500) throw std::invalid_argument("size");
+    int length=n*n;std::vector<int> answer(length,0),order(n);
+    for(int i=0;i<n;++i) {
+        if(position[i]<0 || position[i]>=length) throw std::invalid_argument("position");
+        if(answer[position[i]]) return std::nullopt;
+        answer[position[i]]=i+1;
+    }
+    std::iota(order.begin(),order.end(),0);
+    std::sort(order.begin(),order.end(),[&](int a,int b){return position[a]<position[b];});
+    int left=0;
+    for(int id:order) for(int copies=0;copies<id;++copies) {
+        while(left<length && answer[left]) ++left;
+        if(left>=position[id]) return std::nullopt;
+        answer[left++]=id+1;
+    }
+    int right=length-1;
+    for(auto it=order.rbegin();it!=order.rend();++it) {
+        int id=*it;
+        for(int copies=0;copies<n-id-1;++copies) {
+            while(right>=0 && answer[right]) --right;
+            if(right<=position[id]) return std::nullopt;
+            answer[right--]=id+1;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[交換法](/flowchartcp/techniques/exchange-argument/) ・ [逆順処理](/flowchartcp/techniques/reverse-thinking/)
+
+## 参考資料
+
+- [AtCoder：D - K-th K（原典）](https://atcoder.jp/contests/agc008/tasks/agc008_d)。
+
+<TechniqueReferences techniqueId="reserved-occurrence-deadlines" />

@@ -1,0 +1,59 @@
+---
+title: "約数ごとの集計を倍数側から配る"
+description: "各整数の約数を列挙する代わりに、d, 2d, 3d, … へ同じ寄与を配ります。"
+techniqueId: "divisor-multiple-reversal"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+値域が $1\le x\le K$ で、全ての $x$ について「$x$ を割り切る $d$ の重みの和」を計算したいとき。各 $x$ で $1$ から $x$ まで割り切れるか試すと二乗になります。
+
+## 考え方
+
+$F[x]=\sum_{d\mid x}w[d]$ で、$d$ を外側のループにします。$x=d,2d,3d,\ldots$ に $w[d]$ を足せばよいので、割り算による判定も不要です。
+
+逆向きに $G[d]=\sum_{d\mid x}a[x]$ を作るときも同じ倍数の列を走査します。GCD が $d$ の列を数える処理では、この後で大きい倍数を引きます。
+
+## 適用条件
+
+全ての整数を走査できる程度の値域 $K$ が必要です。入力が疎で最大値が巨大なら、値域全部の配列を作る方法は使えません。添字 0 は倍数列挙に入れません。
+
+## なぜ正しいか
+
+各組 $(d,x)$ が $d\mid x$ を満たすときだけ、ちょうど一度訪問されます。走査順を変えても足される組は同じです。
+
+## 計算量
+
+改善前は時間 $O(K^2)$、改善後は $\sum_{d=1}^K\lfloor K/d\rfloor=O(K\log K)$。空間は $O(K)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> divisor_sums(const vector<long long>& weight) {
+    int k = (int)weight.size() - 1;
+    vector<long long> f(k + 1);
+    for (int d = 1; d <= k; ++d)
+        for (int x = d; x <= k; x += d) f[x] += weight[d];
+    return f;
+}
+vector<long long> multiple_sums(const vector<long long>& a) {
+    int k = (int)a.size() - 1;
+    vector<long long> g(k + 1);
+    for (int d = 1; d <= k; ++d)
+        for (int x = d; x <= k; x += d) g[d] += a[x];
+    return g;
+}
+```
+
+## 関連する手法
+
+[GCD が d の倍数から、ちょうど d の個数を求める](/flowchartcp/techniques/gcd-divisibility-count/)
+
+## 参考資料
+
+- [AtCoder：Sum of gcd of Tuples (Hard) の問題文](https://atcoder.jp/contests/abc162/tasks/abc162_e)
+
+<TechniqueReferences techniqueId="divisor-multiple-reversal" />

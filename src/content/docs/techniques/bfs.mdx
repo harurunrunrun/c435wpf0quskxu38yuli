@@ -1,0 +1,70 @@
+---
+title: "幅優先探索"
+description: "近い頂点から順に探索して、辺数が最小の経路を求める。"
+techniqueId: bfs
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+近い頂点から順に探索して、辺数が最小の経路を求める。
+
+## 使う場面
+
+迷路での最短手数や、操作回数の最小値を求めるときに使う。すべての移動・操作の費用が等しい場合、辺の本数を最小にすればよい。
+
+頂点は場所だけとは限らない。位置と持ち物、位置とスイッチの状態などを組にすれば、その状態間の最短手数も求められる。
+
+## 考え方
+
+始点を距離0としてキューに入れる。先頭から取り出した頂点の未訪問な隣へ、距離を1増やして進む。新しく見つけた頂点はキューの末尾に入れる。
+
+始点が複数ある場合は、すべてを距離0で入れると、最寄りの始点からの距離が求まる。経路も必要なら、各頂点を最初に発見した直前の頂点を保存する。
+
+## 適用条件
+
+すべての辺の重みが1、または共通の正の値である場合に最短距離を求められる。重みが0と1なら0-1 BFS、一般の非負の重みならダイクストラ法を使う。
+
+同じ位置でも持ち物や状態によって次の移動が変わるなら、それらも訪問済み判定に含める。位置だけで訪問済みにすると必要な経路を捨ててしまう。
+
+## なぜ正しいか
+
+キューでは距離の小さい頂点から処理される。距離 $d$ の頂点から新しく見つかった隣には、距離 $d+1$ を付ける。それより短い経路があれば、前の距離の層から先に見つかっているはずなので、最初に到達した距離が最短になる。
+
+## 計算量
+
+頂点数 $V$、辺数 $E$ に対して時間は $O(V+E)$。距離とキューの空間は $O(V)$、グラフを含めた空間は $O(V+E)$。状態をその場で生成する場合は、実際に生成する状態数と遷移数で見積もる。
+
+## 実装
+
+`bfs(g, starts)` は、始点の集合から各頂点への最小辺数を返す。到達できない頂点には `-1` が入る。同じ始点を複数回指定しても、キューには一度だけ追加する。
+
+```cpp
+#include <vector>
+#include <queue>
+#include <cassert>
+using namespace std;
+vector<int> bfs(const vector<vector<int>>& g,const vector<int>& starts) {
+    vector<int> dist(g.size(),-1);
+    queue<int> q;
+    for(int s:starts) {
+        assert(0<=s && s<int(g.size()));
+        if(dist[s]==-1) { dist[s]=0; q.push(s); }
+    }
+    while(!q.empty()) {
+        int v=q.front(); q.pop();
+        for(int u:g[v]) if(dist[u]==-1) {
+            dist[u]=dist[v]+1; q.push(u);
+        }
+    }
+    return dist;
+}
+```
+
+## 関連する手法
+
+[0-1 BFS](/flowchartcp/techniques/zero-one-bfs/) ・ [ダイクストラ法](/flowchartcp/techniques/dijkstra/)
+
+## 参考資料
+
+- [AtCoder公式解説: ABC420 D](https://atcoder.jp/contests/abc420/editorial/13751)
+
+<TechniqueReferences techniqueId="bfs" />

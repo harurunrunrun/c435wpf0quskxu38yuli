@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "command": "node tests/skywalk-flow.test.mjs",
+  "executedAtUTC": "2026-10-15 09:37:41 UTC",
+  "testFile": "tests/skywalk-flow.test.mjs",
+  "testSha256": "2b8c66adb8a9f665b83211090a3c0fa340040464c9e1170b3f1192a87cbf97de",
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 4303.36038,
+  "subtests": [
+    "ioi2019_walk: all premises gate the sole concrete result and no/unknown stays unresolved",
+    "ioi2019_walk: both displays, complete SVG labels, shared URLs and Back retain all premise histories",
+    "ioi2019_walk: dated original, complete article, grouped metadata and one canonical example agree",
+    "all 516 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged",
+    "every field of all 462 old graphs and 3643 nodes survives, including every old option order and result",
+    "all historical local and completed shared URLs retain their candidates, domains and Back histories",
+    "Back preserves the full history of all404 completed historical share URLs",
+    "all six initial IOI2019 records, false flags and four prior resolutions remain historical facts",
+    "one later independent proof review and a concrete resolution record full source/API coverage",
+    "actual target evidence separates initial4/4, later research5/6 and article coverage5/6"
+  ],
+  "baseline": {
+    "articles": 495,
+    "graphs": 462,
+    "nodes": 3643,
+    "walks": 516,
+    "verifiedWalks": 512,
+    "rawSha256": {
+      "flows": "44e46d1d0a25fe2c4191959d535c9bc41b12297415170f2947a6b64e288cfc94",
+      "walks": "bcada8d20ab08f00fd32fc66970cbdb70f1c3ae5fb568a9fcff900bdb25f0d57",
+      "audit": "102e117a76f57792c4156cfaa41cc80a0c98e09f611b325cf25acf8e843d0bd5"
+    },
+    "preservedRecordProjectionSha256": "afcc53795f0cf0bc64717a9a53a725f303503417c06378ce4371831d0d4d404b",
+    "preservedWalkStepsSha256": "c3b57e82bebae5dbcbf817f35bd450ddf7f507e96191cff01200de0232ddb306",
+    "preservedWalkTextAndLabelsSha256": "07a8539b8b65b4bcbe5d476e6a08bad6ca526dae6690f33e3773817e13c249e1",
+    "preservedOldGraphAllFieldsSha256": "5c1514d0a76953a5e0913052c97a18bf0af270ccf1c4e6946ed6ab22ff41b661",
+    "historicalAuditProjectionSha256": "ca3a5838a4e702af424a88f31f011b976b54fd5e293cfc8eda7ed5311334743c",
+    "initialWalkRecordSha256": "a3498cfffcc48f3c44b9aa7ffc1db42ebcf0456563df5165764a87f9e8608bb2",
+    "preservedPriorResolutions": 4
+  },
+  "registered": {
+    "articles": 496,
+    "graphs": 463,
+    "nodes": 3649,
+    "questions": 1660,
+    "edges": 5412,
+    "walks": 517,
+    "verifiedWalks": 513,
+    "flowRawSha256": "2ce2676bf826099b4acbd526e9cefa79f3d99f578e49f827ba303eab71ad1834",
+    "walkRawSha256": "89b483f2c65ea6af9a17330917d0f59477952d91d6b0b95fa365ba03ba8b28a6",
+    "auditRawSha256": "d3f75c60af792837d579c1ff14ec9fee73d243fae7204b69a4172129b41dbad5"
+  },
+  "newRoute": {
+    "problemId": "ioi2019_walk",
+    "techniqueId": "skywalk-endpoint-sparse-shortest-path",
+    "domain": "graphs",
+    "choices": [
+      "walk-goals",
+      "distance",
+      "many-connections",
+      "skywalks",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guardGraph": "skywalk-shortest-path-conditions",
+    "guardIds": [
+      "grounded-buildings",
+      "endpoint-contacts",
+      "bounds"
+    ],
+    "parentLabel": "地面から伸びるビルと空中通路を伝う最短距離",
+    "guardText": [
+      [
+        "地面から伸びる鉛直ビルと水平通路の上だけを歩き、地上の横移動は禁止されていますか？",
+        "通路の途中でも、そこまで届くビルとの交点で乗り換えられます。通路は正の高さにあり、両端のビルはその高さまで届きます。"
+      ],
+      [
+        "通路同士は端点でだけ接し、指定二ビルの根元間の最短距離を求めますか？",
+        "同じ高さの通路は内部で重なりません。始点・終点は中央のビルでもよく、到達できない場合も判定します。"
+      ],
+      [
+        "ビル・通路は各10万以下で、座標と高さは10億以下ですか？",
+        "ビルは一本以上あり、横位置は0以上で真に増加し、高さは正です。全ての線分と始点・終点が最初から分かり、距離は64ビット整数で扱います。"
+      ]
+    ],
+    "sourceDate": "2019-08-08",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6"
+  },
+  "coverageProof": {
+    "fixedProblems": 6,
+    "initialAuditResearchReviewed": 3,
+    "initialAuditCovered": 0,
+    "preRegistrationResearchReviewed": 4,
+    "preRegistrationCovered": 4,
+    "registrationStageResearchReviewed": 5,
+    "registrationStageCovered": 5,
+    "withoutLaterProofReviewResearchReviewed": 4,
+    "withoutLaterProofReviewCovered": 4,
+    "withoutNewResolutionResearchReviewed": 5,
+    "withoutNewResolutionCovered": 4,
+    "withoutValidatedNewRootWalkTargetResearchReviewed": 5,
+    "withoutValidatedNewRootWalkTargetCovered": 4,
+    "withoutNewReferenceCovered": 4,
+    "withoutNewArticleCovered": 4,
+    "withUnconfirmedLaterProofReviewResearchReviewed": 4,
+    "withUnconfirmedLaterProofReviewCovered": 4,
+    "laterValidCoverageAdditionsAllowed": true,
+    "initialSixRecordsAllFieldsStatusSelectionSnapshotPreserved": true,
+    "allFourPriorResolutionsAllFieldsPreserved": true,
+    "initialFalseNumericProofAndEditorialFlagsPreserved": true,
+    "laterPositiveReviewCount": 1,
+    "laterResolutionCount": 1,
+    "proofVerificationKind": "independent-analysis",
+    "officialEditorialVerified": false
+  },
+  "uiChecks": {
+    "guardQuestions": 3,
+    "noUnknownFallbackPaths": 6,
+    "positiveCanonicalPaths": 1,
+    "questionsAndDiagramDisplays": true,
+    "svgCompleteLabelsAndArticleHref": true,
+    "allNewPositiveAndNegativeSharedHistoryAndBack": true,
+    "legacyLocalPrefixes": 593,
+    "legacyCompletedSharedUrls": 404,
+    "allLegacyLocalBackHistories": true,
+    "allCompletedLegacyBackHistories": true
+  },
+  "sharedEdits": [
+    "tests/skywalk-flow.test.mjs",
+    "research/probes/skywalk-flow-results.json"
+  ],
+  "tap": "TAP version 13\n# Subtest: ioi2019_walk: all premises gate the sole concrete result and no/unknown stays unresolved\nok 1 - ioi2019_walk: all premises gate the sole concrete result and no/unknown stays unresolved\n  ---\n  duration_ms: 434.90605\n  type: 'test'\n  ...\n# Subtest: ioi2019_walk: both displays, complete SVG labels, shared URLs and Back retain all premise histories\nok 2 - ioi2019_walk: both displays, complete SVG labels, shared URLs and Back retain all premise histories\n  ---\n  duration_ms: 3621.429986\n  type: 'test'\n  ...\n# Subtest: ioi2019_walk: dated original, complete article, grouped metadata and one canonical example agree\nok 3 - ioi2019_walk: dated original, complete article, grouped metadata and one canonical example agree\n  ---\n  duration_ms: 27.971988\n  type: 'test'\n  ...\n# Subtest: all 516 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged\nok 4 - all 516 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged\n  ---\n  duration_ms: 14.59378\n  type: 'test'\n  ...\n# Subtest: every field of all 462 old graphs and 3643 nodes survives, including every old option order and result\nok 5 - every field of all 462 old graphs and 3643 nodes survives, including every old option order and result\n  ---\n  duration_ms: 29.6364\n  type: 'test'\n  ...\n# Subtest: all historical local and completed shared URLs retain their candidates, domains and Back histories\nok 6 - all historical local and completed shared URLs retain their candidates, domains and Back histories\n  ---\n  duration_ms: 77.713758\n  type: 'test'\n  ...\n# Subtest: Back preserves the full history of all404 completed historical share URLs\nok 7 - Back preserves the full history of all404 completed historical share URLs\n  ---\n  duration_ms: 61.25635\n  type: 'test'\n  ...\n# Subtest: all six initial IOI2019 records, false flags and four prior resolutions remain historical facts\nok 8 - all six initial IOI2019 records, false flags and four prior resolutions remain historical facts\n  ---\n  duration_ms: 2.577624\n  type: 'test'\n  ...\n# Subtest: one later independent proof review and a concrete resolution record full source/API coverage\nok 9 - one later independent proof review and a concrete resolution record full source/API coverage\n  ---\n  duration_ms: 2.595579\n  type: 'test'\n  ...\n# Subtest: actual target evidence separates initial4/4, later research5/6 and article coverage5/6\nok 10 - actual target evidence separates initial4/4, later research5/6 and article coverage5/6\n  ---\n  duration_ms: 22.291673\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 4303.36038\n"
+}

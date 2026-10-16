@@ -1,0 +1,226 @@
+---
+title: "一セルの誤りがあるXOR格子更新を逆算する"
+description: "行と列の三周期の剰余で反転位置を特定し、二方向の逆算から最小の初期図形を求める。"
+techniqueId: xor-grid-predecessor-boundary-single-error
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+外側は全て0の無限二次元格子で、各セルを自身と周囲八セルのXORへ同時に更新する。更新の直後には、任意の場所で高々一セルの反転を許す。有限で非空の観測図形から、あり得る一段前の図形を復元し、さらに外接長方形の面積が最小になる初期図形まで戻したい。
+
+誤りは元の図形の近くにあるとは限らない。孤立した1が遠方に現れる場合も、観測した外接長方形の外側が全て0であることを使う。各段に二セル以上の誤りを認める場合や、0を無限に埋めた外側を観測していない切り抜き画像には、この手順の一意性は保証されない。
+
+## 考え方
+
+$\mathrm{GF}(2)$ 上で $q(t)=1+t+t^2$ と置く。図形を二変数の係数配列と見れば、3×3更新は縦横それぞれに $q$ を畳み込む操作である。対称な近傍から添字をずらした分は、復元図形の原点へ戻す。
+
+一次元で $q$ による畳み込みを逆算すると、既知の出力 $y_j$ と、既に求めた二要素から
+
+$$a_j=y_j\mathbin\oplus a_{j-1}\mathbin\oplus a_{j-2},\qquad a_{-1}=a_{-2}=0$$
+
+が決まる。出力の長さが $L$ なら、有限の前状態に戻る条件は、最後に計算した $a_{L-2},a_{L-1}$ が両方0になることである。一セルだけを間違えると、逆算値の差はその位置から `1,1,0,1,1,0,...` と伝わる。これが境界外の二セルに現れる剰余の特徴である。
+
+末尾まで毎回逆算する代わりに、各行・列を $q$ で割った剰余を直接集計する。剰余 $a+bt$ を二ビットで表すと
+
+$$t^j\bmod q(t)=1,\ t,\ 1+t,\ 1,\ t,\ 1+t,\ldots$$
+
+なので、1が立つ位置について `1,2,3` の周期列をXORすればよい。無誤りの更新結果では、全ての行と列の剰余が0。一セル $(r,c)$ が反転すると、非零剰余は行 $r$ と列 $c$ にだけ現れる。
+
+そこで非零の行・列が各一つなら、その交点を誤り候補にする。剰余がそれぞれ $t^c,t^r$ と一致することも確認して反転を戻す。両方とも非零がなければ誤りなしを候補とする。それ以外なら一段前は存在しない。候補を修正した後、横・縦の順に上の逆算をやり直し、末尾の二列・二行が0であること、復元が非空であること、実際の再更新が修正後の図形に等しいことを確かめる。
+
+## 適用条件
+
+更新は必ず九セル全てのXORで、各段の誤りは更新後に高々一セルである。初期図形は有限で非空、目的はその外接長方形の面積。更新回数は0でもよい。この最後の条件により、逆算できない観測図形自身も有効な初期解になる。
+
+掲載APIは1〜300行・1〜300列、同じ長さの `.` / `#` 文字列、少なくとも一つの `#` を受け取る。これは原典の幅・高さ1〜300を全て含む。APIは外周の空行・空列も受け取り、最初に除く。原典入力のように既に最小の外接長方形なら除去量は0である。空配列、空文字列、全空、長さ違い、別の文字、範囲外は `std::invalid_argument`。
+
+`xor_grid_predecessor` は一段前が存在しなければ `std::nullopt`。存在すれば最小外接長方形の図形、その左上座標、および修正したセルを返す。座標は渡した配列の左上を $(0,0)$ とした無限格子上の位置である。誤りなしなら `flipped` は空。`smallest_xor_grid_seed` は初期図形と逆算回数、入力に対する左上位置を返す。位置を出力する必要がない用途では `pattern` だけを使える。
+
+## なぜ正しいか
+
+**一段前の有効窓。** 非零の一次元列を $q$ と畳み込むと、左端と右端より2先の出力が必ず1なので、少なくとも二つの1が残る。二次元の更新結果の最上行は、前状態の最上行を横に畳み込んだものだから二つ以上の1を持つ。最下行、最左列、最右列も同様である。従って一セルの反転では、四つの外接辺をどれも消せない。
+
+無誤り結果の外接長方形は、前状態の四辺をちょうど一セルずつ広げたもの。その長方形は、誤りを含む観測図形の長方形にも含まれる。よって前状態は観測範囲の内側一セル以深に収まり、幅も高さも少なくとも2小さい。もし誤り位置が観測長方形の外なら、そのセルは無誤り結果の唯一の最外セルを消したことになるが、各辺の二つ以上という性質に反する。したがって探索する誤り位置も観測長方形内だけでよい。遠方の誤りが新たな辺を作る場合もこの議論に含まれる。
+
+**一誤りでも一意。** 横畳み込みの結果は、非零行の一つだけを見ても二つ以上の非零列を持つ。それぞれの列を縦に畳み込むと、各列に二つ以上の1が残る。従って、非零の有限配列の更新結果の重みは少なくとも4である。
+
+異なる二つの前状態 $A,B$ が高々一誤りで同じ観測 $Y$ になったとすると、線形性により更新 $F(A\oplus B)$ は二つの誤りのXORとなり重み2以下。しかし $A\oplus B\ne0$ なので重み4以上となり矛盾する。従って前状態と誤りは高々一組である。
+
+**行列スキャンの完全性。** 正しい更新結果の各行は横の $q$ の倍数、各列は縦の $q$ の倍数なので剰余は0。一誤りによる剰余の差は、誤り行で $t^c\bmod q$、誤り列で $t^r\bmod q$。この三周期のどの値も非零だから、誤りがあるのに全剰余が0になることはない。従って合法な一段前があるなら、行・列の交点として必ず正しい候補を選べる。
+
+候補の修正後には、二方向の除算と末尾検査を行い、さらに九セルを直接XORする再更新で一致を確認する。受理した候補は実際に合法であり、合法な候補は除算の逐次式で元通りになるため棄却されない。空の前状態だけは初期非空の条件により受理しない。
+
+**最小まで戻す。** 各段の一段前は高々一つだから、どの初期状態への履歴も、この逆算の鎖をたどる。成功するたびに両辺長が少なくとも2減り、面積も厳密に減る。もう一段戻れない所で止めれば、その非空図形が最小面積である。途中で空にはならず、0段の解を含めて常に答えがある。
+
+## 計算量
+
+現在の長方形が $h\times w$ の一段は、トリミング、行列の剰余、二回の除算、直接再更新を定数回走査するため **$O(hw)$ 時間、$O(hw)$ 空間**。誤り位置ごとの全探索はしない。
+
+最初の大きさを $H\times W$、$d=\min(H,W)$ とすると、成功回数は高々 $\lfloor(d-1)/2\rfloor$。失敗する最後の一回も含めて高々 $\lfloor(d+1)/2\rfloor$ 回試す。合計時間は
+
+$$O\!\left(\sum_{k=0}^{\lfloor(d-1)/2\rfloor}(H-2k)(W-2k)\right)=O(HW\min(H,W)).$$
+
+空間は古い図形・修正後・二つの除算配列・再更新結果など定数個の配列を同時に持っても $O(HW)$。全履歴は保存しない。上限300×300では試行は最大150回で、上の面積和は4,545,100セル。添字と座標の和は300程度、配列の一要素は文字または `unsigned char` であり、整数の大きな積や再帰は使わない。
+
+## 実装
+
+二ビット剰余を集計した後でも、必ず修正済み図形を一から逆算する。末尾二行・二列の検査と直接再更新は、一セルで説明できない入力を受理しないための検査である。返す座標には初期の空周囲の除去量も含める。入力は変更しない。
+
+```cpp
+#include <algorithm>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
+struct XorGridCell { int row, column; };
+struct XorGridPredecessor {
+    std::vector<std::string> pattern;
+    int top, left;
+    std::optional<XorGridCell> flipped;
+};
+struct XorGridMinimum {
+    std::vector<std::string> pattern;
+    int reverse_steps, top, left;
+};
+
+namespace xor_grid_detail {
+using Grid = std::vector<std::string>;
+struct Crop { Grid cells; int top, left; };
+
+Crop crop(const Grid& input) {
+    const int h = static_cast<int>(input.size());
+    const int w = static_cast<int>(input[0].size());
+    int top = h, bottom = -1, left = w, right = -1;
+    for (int r = 0; r < h; ++r) for (int c = 0; c < w; ++c)
+        if (input[r][c] == '#') {
+            top = std::min(top, r); bottom = std::max(bottom, r);
+            left = std::min(left, c); right = std::max(right, c);
+        }
+    if (bottom < 0) return {{}, 0, 0};
+    Grid result;
+    for (int r = top; r <= bottom; ++r)
+        result.push_back(input[r].substr(left, right - left + 1));
+    return {std::move(result), top, left};
+}
+
+Crop checked_crop(const Grid& input) {
+    if (input.empty() || input.size() > 300 || input[0].empty() ||
+        input[0].size() > 300) throw std::invalid_argument("grid dimensions");
+    for (const auto& row : input) {
+        if (row.size() != input[0].size()) throw std::invalid_argument("ragged grid");
+        for (char ch : row) if (ch != '.' && ch != '#')
+            throw std::invalid_argument("grid alphabet");
+    }
+    Crop result = crop(input);
+    if (result.cells.empty()) throw std::invalid_argument("empty pattern");
+    return result;
+}
+
+std::optional<XorGridPredecessor> step(const Grid& observed) {
+    const int h = static_cast<int>(observed.size());
+    const int w = static_cast<int>(observed[0].size());
+    if (h < 3 || w < 3) return std::nullopt;
+    constexpr int remainder[3] = {1, 2, 3};
+    std::vector<int> rows(h), columns(w);
+    for (int r = 0; r < h; ++r) for (int c = 0; c < w; ++c)
+        if (observed[r][c] == '#') {
+            rows[r] ^= remainder[c % 3];
+            columns[c] ^= remainder[r % 3];
+        }
+    int bad_row = -1, bad_column = -1;
+    for (int r = 0; r < h; ++r) if (rows[r] != 0) {
+        if (bad_row != -1) return std::nullopt;
+        bad_row = r;
+    }
+    for (int c = 0; c < w; ++c) if (columns[c] != 0) {
+        if (bad_column != -1) return std::nullopt;
+        bad_column = c;
+    }
+    if ((bad_row == -1) != (bad_column == -1)) return std::nullopt;
+    Grid corrected = observed;
+    std::optional<XorGridCell> flip;
+    if (bad_row != -1) {
+        if (rows[bad_row] != remainder[bad_column % 3] ||
+            columns[bad_column] != remainder[bad_row % 3]) return std::nullopt;
+        char& ch = corrected[bad_row][bad_column];
+        ch = (ch == '#' ? '.' : '#');
+        flip = XorGridCell{bad_row, bad_column};
+    }
+    using Bytes = std::vector<std::vector<unsigned char>>;
+    Bytes horizontal(h, std::vector<unsigned char>(w));
+    for (int r = 0; r < h; ++r) for (int c = 0; c < w; ++c) {
+        horizontal[r][c] = static_cast<unsigned char>(
+            (corrected[r][c] == '#') ^
+            (c >= 1 ? horizontal[r][c - 1] : 0) ^
+            (c >= 2 ? horizontal[r][c - 2] : 0));
+    }
+    for (int r = 0; r < h; ++r)
+        if (horizontal[r][w - 2] || horizontal[r][w - 1]) return std::nullopt;
+    Bytes previous(h, std::vector<unsigned char>(w - 2));
+    for (int r = 0; r < h; ++r) for (int c = 0; c < w - 2; ++c) {
+        previous[r][c] = static_cast<unsigned char>(horizontal[r][c] ^
+            (r >= 1 ? previous[r - 1][c] : 0) ^
+            (r >= 2 ? previous[r - 2][c] : 0));
+    }
+    for (int c = 0; c < w - 2; ++c)
+        if (previous[h - 2][c] || previous[h - 1][c]) return std::nullopt;
+    Grid full(h - 2, std::string(w - 2, '.'));
+    Grid rebuilt(h, std::string(w, '.'));
+    for (int r = 0; r < h - 2; ++r) for (int c = 0; c < w - 2; ++c)
+        if (previous[r][c]) {
+            full[r][c] = '#';
+            for (int dr = 0; dr < 3; ++dr) for (int dc = 0; dc < 3; ++dc) {
+                char& ch = rebuilt[r + dr][c + dc];
+                ch = (ch == '#' ? '.' : '#');
+            }
+        }
+    if (rebuilt != corrected) return std::nullopt;
+    Crop result = crop(full);
+    if (result.cells.empty()) return std::nullopt;
+    return XorGridPredecessor{std::move(result.cells), result.top + 1,
+                              result.left + 1, flip};
+}
+} // namespace xor_grid_detail
+
+std::optional<XorGridPredecessor>
+xor_grid_predecessor(const std::vector<std::string>& observed) {
+    auto input = xor_grid_detail::checked_crop(observed);
+    auto result = xor_grid_detail::step(input.cells);
+    if (result) {
+        result->top += input.top; result->left += input.left;
+        if (result->flipped) {
+            result->flipped->row += input.top;
+            result->flipped->column += input.left;
+        }
+    }
+    return result;
+}
+
+XorGridMinimum smallest_xor_grid_seed(const std::vector<std::string>& observed) {
+    auto input = xor_grid_detail::checked_crop(observed);
+    XorGridMinimum answer{std::move(input.cells), 0, input.top, input.left};
+    while (auto previous = xor_grid_detail::step(answer.pattern)) {
+        answer.top += previous->top; answer.left += previous->left;
+        answer.pattern = std::move(previous->pattern);
+        ++answer.reverse_steps;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+誤り訂正符号の最小距離は、近い観測から前状態が一意になることを証明する道具になる。ここでは一般の符号復号を持ち込まず、畳み込みを二方向へ分離し、三周期の剰余という具体的な剰余の特徴を使った。
+
+XOR基底は線形関係の整理に使えるが、全セルを変数とした消去では、無限外部の0、誤り位置の特定、反復する縮小の計算量が見えにくい。局所更新の端からの逆算と、境界の余りだけを共有する形にすると、一段を線形時間で実装できる。
+
+## 参考資料
+
+- [ACM-ICPC World Finals 2017 公式問題冊子、Problem G、13〜14ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13)：九セルの同時更新、更新後の高々一反転、非空初期図形、最小外接長方形面積、幅・高さ1〜300、出力仕様を確認した。
+- [Per Austrin・Jakub Onufry Wojtaszczyk, Solution sketches、6ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6)：境界からの逐次逆算、`1,1,0` の誤り伝播、行列の走査と修正後の再実行を参照した。公式サイトで配布されているが、資料自身は非公式分析と明記する。本記事の最小重み4、一誤り一意性、二ビット剰余による特定と完全性は独立に証明した。
+
+<TechniqueReferences techniqueId="xor-grid-predecessor-boundary-single-error" />

@@ -1,0 +1,117 @@
+---
+title: "遠い項だけを求める漸化式で、偶数番目と奇数番目を分ける"
+description: "固定係数の漸化式を有理式にし、必要な係数の添字を一回ごとに半分へ減らします。"
+techniqueId: linear-recurrence-bostan-mori
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$a_i=c_1a_{i-1}+\cdots+c_da_{i-d}$ のように、毎回同じ係数で直前の $d$ 項から次の項が決まります。$d$ も大きく、欲しい $k$ 番目まで順に計算できないときに使います。
+
+途中の全項が必要なら、遠い一項だけを抽出する方法の利点はありません。また、添字で係数が変わる漸化式をそのまま当てはめることはできません。
+
+## 考え方
+
+$A(x)=\sum_{i\ge0}a_ix^i$ とし、
+
+$$Q(x)=1-c_1x-\cdots-c_dx^d,\qquad P(x)=A(x)Q(x)\pmod{x^d}$$
+
+を作ると、$A=P/Q$ です。分母と分子に $Q(-x)$ を掛けます。
+
+$$\frac{P(x)}{Q(x)}=\frac{P(x)Q(-x)}{Q(x)Q(-x)}.$$
+
+分母には偶数次しか残りません。求める $k$ が偶数なら分子の偶数次、奇数なら奇数次だけを取り、添字を半分へ縮めます。同じ操作を $k=0$ まで繰り返します。
+
+## 適用条件
+
+漸化式の係数と最初の $d$ 項が正しく与えられている必要があります。少数の初項に合う漸化式を見つけただけでは、その後も成立する保証にはなりません。
+
+掲載実装は法 998244353、係数と初期値は $[0,p)$、$1\le d\le2^{21}$ です。$k$ は符号なし 64 bit の範囲で指定できます。分母の定数項は常に 1 なので、逆数が存在します。
+
+## なぜ正しいか
+
+$i\ge d$ の係数は漸化式により $AQ$ の中で相殺されるため、$AQ=P$ は次数 $d-1$ 以下になります。
+
+$Q(x)Q(-x)$ は $x$ を $-x$ に変えても同じです。法は 2 でない素数なので、奇数次の係数は 0 です。分母が $R(x^2)$ の形なら、偶数番目の係数を求めるときは分子の偶数次だけ、奇数番目では奇数次だけが寄与します。これで $[x^k]P/Q$ は、縮めた列の $[x^{\lfloor k/2\rfloor}]$ に一致します。
+
+## 計算量
+
+順番に計算すると時間 $O(dk)$、空間 $O(d)$ です。一般の $d$ 次行列の累乗は $O(d^3\log k)$、漸化式の剰余による二分累乗でも素朴な積なら $O(d^2\log k)$ です。
+
+各縮小段階は次数 $O(d)$ の積二回なので、NTT を使うと時間 $O(d\log(d+1)\log(k+2))$、空間 $O(d)$ になります。
+
+## 実装
+
+`coefficient[j-1]` が $a_{i-j}$ の係数です。`recurrence_term(initial,coefficient,k)` は、初期値の範囲にある $k$ も含めて同じ処理で答えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+int recurrence_term(const vector<int>& initial,const vector<int>& coefficient,
+                    unsigned long long k) {
+    int d=initial.size();
+    assert(d>0 && d<=(1<<21) && int(coefficient.size())==d);
+    vector<int> q(d+1); q[0]=1;
+    for(int j=0;j<d;++j) q[j+1]=(ntt998::MOD-coefficient[j])%ntt998::MOD;
+    auto p=ntt998::convolution(initial,q); p.resize(d);
+    while(k>0) {
+        vector<int> minus=q;
+        for(int j=1;j<int(minus.size());j+=2)
+            minus[j]=(ntt998::MOD-minus[j])%ntt998::MOD;
+        auto numerator=ntt998::convolution(p,minus);
+        auto denominator=ntt998::convolution(q,minus);
+        vector<int> next_p,next_q;
+        for(int j=int(k&1);j<int(numerator.size());j+=2) next_p.push_back(numerator[j]);
+        for(int j=0;j<int(denominator.size());j+=2) next_q.push_back(denominator[j]);
+        p=move(next_p);q=move(next_q);k>>=1;
+    }
+    return 1LL*p[0]*ntt998::power(q[0],ntt998::MOD-2)%ntt998::MOD;
+}
+```
+
+## 関連する手法
+
+[NTT・畳み込み](/flowchartcp/techniques/ntt/) ・ [形式的冪級数](/flowchartcp/techniques/formal-power-series/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/other/kth_term_of_linearly_recurrent_sequence/task.md)
+
+<TechniqueReferences techniqueId="linear-recurrence-bostan-mori" />

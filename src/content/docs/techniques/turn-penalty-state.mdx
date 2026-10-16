@@ -1,0 +1,69 @@
+---
+title: "曲がる回数を最小にするため、直前の向きを状態に持つ"
+description: "同じマスでも到着方向を分け、直進を 0、方向変更を 1 の辺にします。"
+techniqueId: "turn-penalty-state"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+格子の各移動の長さではなく、直進から方向が変わる回数を最小にしたいとき。同じマスに着いても、直前の方向によって次の一手の費用が変わります。
+
+## 考え方
+
+状態を $(y,x,d)$ に増やします。次に方向 $d'$ へ進む辺の重みは、$d=d'$ なら 0、違えば 1。重みが 0/1 なので deque で最短路を計算します。
+
+最初の一手に曲がる費用を掛けないなら、始点の四方向を全て距離 0 にします。終点では方向ごとの距離の最小値を取ります。
+
+## 適用条件
+
+費用が直前と次の方向だけで決まること。方向転換の種類ごとに費用が違う場合、辺の重みに反映します。重みが 0/1 以外なら通常のダイクストラ法などが必要です。
+
+## なぜ正しいか
+
+元の経路を到着方向付きの状態列に置き換えると、各辺の費用の和が曲がる回数に一致します。逆に状態グラフの経路も実際の移動へ戻せるため、最小値が一致します。
+
+## 計算量
+
+マスだけを状態にした BFS はこの費用を正しく表せません。状態グラフを全探索する代わりに 0-1 BFS を使うと、$H\times W$ 格子で時間・空間とも $O(HW)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int min_turns(const vector<string>& grid,int sy,int sx,int ty,int tx){
+    int h=grid.size(), w=grid[0].size(), inf=1000000000;
+    int dy[4]={-1,0,1,0}, dx[4]={0,1,0,-1};
+    vector<int> dist(h*w*4,inf);
+    deque<pair<int,int>> q;
+    auto id=[&](int y,int x,int d){return (y*w+x)*4+d;};
+    for(int d=0;d<4;++d){dist[id(sy,sx,d)]=0;q.emplace_back(id(sy,sx,d),0);}
+    while(!q.empty()){
+        auto [v,old]=q.front();q.pop_front();
+        if(dist[v]!=old)continue;
+        int d=v%4,x=(v/4)%w,y=(v/4)/w;
+        for(int nd=0;nd<4;++nd){
+            int ny=y+dy[nd], nx=x+dx[nd], cost=(d!=nd);
+            if(ny<0||ny>=h||nx<0||nx>=w||grid[ny][nx]=='#')continue;
+            int u=id(ny,nx,nd);
+            if(dist[u]<=old+cost)continue;
+            dist[u]=old+cost;
+            if(cost)q.emplace_back(u,dist[u]);else q.emplace_front(u,dist[u]);
+        }
+    }
+    int answer=inf;
+    for(int d=0;d<4;++d)answer=min(answer,dist[id(ty,tx,d)]);
+    return answer==inf ? -1 : answer;
+}
+```
+
+## 関連する手法
+
+[多数の始点からの最短距離を一度に求める](/flowchartcp/techniques/multi-source-distance/)
+
+## 参考資料
+
+- [AtCoder：Maze Challenge with Lack of Sleep の問題文](https://atcoder.jp/contests/typical90/tasks/typical90_aq)
+
+<TechniqueReferences techniqueId="turn-penalty-state" />

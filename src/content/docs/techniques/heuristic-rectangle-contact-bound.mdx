@@ -1,0 +1,79 @@
+---
+title: "長方形の一辺を動かすとき、接触限界と希望面積の前後だけ試す"
+description: "他の長方形を固定し、一辺の合法範囲を求めてから整数候補を絞ります。"
+techniqueId: "heuristic-rectangle-contact-bound"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+互いに重ならない長方形の配置を探索し、一辺だけ動かす候補を多数試すとき。他の三辺と他社の配置は固定したまま、どこまで伸ばせるかを求めます。
+
+## 考え方
+
+たとえば左辺を動かすなら、縦方向の区間が重なる他社だけを見ます。現在の長方形より左側にある他社の右辺の最大値が、左へ伸ばせる限界です。右側・上下側も同様です。縮める側は指定点を失わない位置までに制限します。
+固定した高さを $h$ とすると、横幅 $w$ による面積は $hw$。満足度は面積が希望値 $r$ まで増加し、そこから減少します。合法な幅の区間へ $\lfloor r/h\rfloor$ と $\lceil r/h\rceil$ を丸めた二候補だけを試します。
+
+## 適用条件
+
+現在の配置が合法で、辺の接触を許し、変更が一辺だけであること。指定点を含む正面積を維持します。原典の指定点は $(x+0.5,y+0.5)$ です。辺が整数なので、左・上は $x,y$ 以下、右・下は $x+1,y+1$ 以上という条件で包含を判定できます。位置の同時移動、二辺を一度に変える操作、別の評価式にはこの候補数の保証をそのまま使えません。
+
+## なぜ正しいか
+
+直交方向の区間が交わらない相手とは、一辺を動かしても重なりません。交わる相手は合法な現在位置の左右いずれかにあり、その最初の接触が拡張限界です。面積だけの単峰な評価では、目標面積を挟む整数幅か合法範囲の端のどれかが最良です。これは一辺近傍内の最良候補であり、配置全体の最適解ではありません。
+
+## 計算量
+
+辺位置を全て列挙して毎回衝突を調べると、盤面幅 $B$ に対し $O(BN)$。接触限界を一度調べる方法は四辺合わせて時間 $O(N)$、追加空間 $O(1)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct AdRectangle {int left,top,right,bottom;};
+struct AdRequest {int x,y;long long area;};
+long double ad_satisfaction(const AdRectangle& r,const AdRequest& q){
+    assert(r.left<r.right && r.top<r.bottom && q.area>0);
+    if(!(r.left<=q.x && q.x<r.right && r.top<=q.y && q.y<r.bottom))return 0;
+    long long area=1LL*(r.right-r.left)*(r.bottom-r.top);
+    long double ratio=(long double)min(area,q.area)/max(area,q.area);
+    return 1-(1-ratio)*(1-ratio);
+}
+
+AdRectangle best_single_edge(const vector<AdRectangle>& rectangles,int index,const AdRequest& q,int bound=10000){
+    assert(bound>=1 && bound<=10000 && 0<=index && index<(int)rectangles.size());
+    auto old=rectangles[index];assert(0<=old.left && old.left<old.right && old.right<=bound && 0<=old.top && old.top<old.bottom && old.bottom<=bound);
+    assert(old.left<=q.x && q.x<old.right && old.top<=q.y && q.y<old.bottom && q.area>0);
+    int left=0,right=bound,top=0,bottom=bound;
+    for(int j=0;j<(int)rectangles.size();++j)if(j!=index){auto r=rectangles[j];
+        bool vertical=max(old.top,r.top)<min(old.bottom,r.bottom),horizontal=max(old.left,r.left)<min(old.right,r.right);
+        assert(!(vertical && horizontal));
+        if(vertical){if(r.right<=old.left)left=max(left,r.right);if(old.right<=r.left)right=min(right,r.left);}
+        if(horizontal){if(r.bottom<=old.top)top=max(top,r.bottom);if(old.bottom<=r.top)bottom=min(bottom,r.top);}
+    }
+    AdRectangle best=old;long double value=ad_satisfaction(best,q);
+    for(int side=0;side<4;++side){int fixed=side<2 ? old.bottom-old.top : old.right-old.left;
+        int low,high;
+        if(side==0){low=old.right-q.x;high=old.right-left;}
+        else if(side==1){low=q.x-old.left+1;high=right-old.left;}
+        else if(side==2){low=old.bottom-q.y;high=old.bottom-top;}
+        else {low=q.y-old.top+1;high=bottom-old.top;}
+        for(long long raw:{q.area/fixed,q.area/fixed+(q.area%fixed!=0)}){int width=clamp(raw,(long long)low,(long long)high);auto r=old;
+            if(side==0)r.left=r.right-width;else if(side==1)r.right=r.left+width;
+            else if(side==2)r.top=r.bottom-width;else r.bottom=r.top+width;
+            long double score=ad_satisfaction(r,q);if(score>value){value=score;best=r;}}
+    }
+    return best;
+}
+```
+
+## 関連する手法
+
+[一つの長方形を変える評価は、面積比の一項だけ更新する](/flowchartcp/techniques/heuristic-rectangle-score-delta/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc001/tasks/ahc001_a)
+
+<TechniqueReferences techniqueId="heuristic-rectangle-contact-bound" />

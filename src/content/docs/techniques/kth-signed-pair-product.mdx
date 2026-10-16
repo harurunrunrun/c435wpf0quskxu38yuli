@@ -1,0 +1,132 @@
+---
+title: "負数を含む積のK番目は、符号ごとにしきい値以下の組を数える"
+description: "負・0・正の積を分け、二つのポインタによる計数を値の二分探索に使う。"
+techniqueId: kth-signed-pair-product
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+整数列から異なる添字 $i<j$ を選び、積 $a_i a_j$ を小さい順に並べたときの $K$ 番目を求めたい。負数・0・同じ値を含んでもよい。全ての積を作ると $O(N^2)$ 個になる。
+
+正数だけなら片方を大きくしたとき積も増えるが、負数が混ざると不等号の向きが変わる。符号を先に分ければ、計数に使う単調性を取り戻せる。
+
+## 考え方
+
+$C(x)=\#\{(i,j):i<j,\ a_i a_j\le x\}$ を計算し、$C(x)\ge K$ となる最小の整数 $x$ を二分探索する。
+
+負数の絶対値を昇順の列 $U$、正数を昇順の列 $V$ にし、0の個数を $Z$ とする。
+
+- $x<0$ のとき、負数と正数の組だけを見る。$-uv\le x$ は $uv\ge -x$ と同値。$u$ を小さい順に見ると、条件を満たす $v$ の最小位置は左へしか動かない。
+- $x\ge0$ のとき、負数と正数の組は全て数える。0を含む組も全て数え、残りは $U$ 内と $V$ 内の積が $x$ 以下になる組を数える。
+
+正数の昇順列内では、左の添字を増やすにつれ、積が $x$ 以下になる右端は右へ動かない。各列を二つのポインタで一度ずつ走査すればよい。
+
+## 適用条件
+
+- 対象は異なる**添字**の無順序対 $i<j$。同じ値が複数あれば、添字の組数だけ重複して数える。
+- $K$ は1始まりで、$1\le K\le N(N-1)/2$。
+- 積の大小を正確に比較できる整数演算を使う。浮動小数点の除算で境界を判定しない。
+
+掲載実装は符号付き64ビット整数の全域に対応する。`abs(LLONG_MIN)` は64ビットに収まらないため、128ビットへ変換してから符号を反転する。配列が二本あり、それぞれから一つずつ選ぶ問題では、自分自身の除外や重複の数え方が異なる。
+
+## なぜ正しいか
+
+$x<0$ なら、積がしきい値以下になるには符号が異なる必要がある。絶対値 $u$ を固定すると、条件 $uv\ge -x$ を満たす正数は昇順列の末尾の連続範囲になる。$u$ が大きくなるほど必要な $v$ は小さくなるので、その範囲の左端を左へ動かすだけで全組を一度ずつ数えられる。
+
+$x\ge0$ なら、異符号の組と0を含む組は全て条件を満たす。0を含む組数は
+
+$$
+Z(N-Z)+\frac{Z(Z-1)}2
+$$
+
+で、0と非0の組、0同士の組に重複はない。同符号の積は絶対値の積に等しい。左端 $i$ に対し、条件を満たす右端が $j$ までなら、添字を $i$ より大きくする組数は $j-i$。これにより同じ要素を二度選ばず、各無順序対を一度だけ数える。
+
+従って $C(x)$ は正確で、$x$ に関して単調非減少。条件を満たす最小の $x$ は、重複を含めて小さい順に並べた積の $K$ 番目になる。
+
+## 計算量
+
+整列に $O(N\log N)$ 時間、一回の計数に $O(N)$ 時間。最大絶対値を $B$ とすると、探索する値の幅は $2B^2+1$ なので、全体は $O(N\log N+N\log(B+2))$ 時間、$O(N)$ 空間。符号付き64ビットの全域でも、計数は高々128回で終わる。
+
+各要素について相手を二分探索する方法だと、一回の計数にさらに $\log N$ がかかる。掲載実装では、境界の位置を引き継ぐことでこの因子を除く。
+
+## 実装
+
+`kth_signed_pair_product(a, k)` は積の昇順 $K$ 番目を `__int128` で返す。$2\le N\le200000$ とし、長さの上限超過は `length_error`、長さ不足や範囲外の $K$ は `invalid_argument` にする。引数の配列はコピーして整列する。
+
+二分探索の下端は $-B^2-1$、上端は $B^2$。端点それぞれは符号付き128ビットに収まるが、その差は収まらないことがある。差分だけを符号なし128ビットで取り、中点を求める。ペア数は64ビット、積と比較用のしきい値は128ビットで保持する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+__int128 kth_signed_pair_product(vector<long long> a, long long k) {
+    if (a.size() > 200000) throw length_error("array too long");
+    const int n = static_cast<int>(a.size());
+    if (n < 2 || k < 1 || k > 1LL * n * (n - 1) / 2)
+        throw invalid_argument("invalid length or rank");
+    sort(a.begin(), a.end());
+    vector<__int128> negative_abs, positive;
+    long long zeros = 0;
+    __int128 max_abs = 0;
+    for (long long x : a) {
+        const __int128 value = x;
+        const __int128 magnitude = value < 0 ? -value : value;
+        max_abs = max(max_abs, magnitude);
+        if (x < 0) negative_abs.push_back(-value);
+        else if (x > 0) positive.push_back(value);
+        else ++zeros;
+    }
+    reverse(negative_abs.begin(), negative_abs.end());
+    auto positive_pairs_at_most = [](
+        const vector<__int128>& v, __int128 x) {
+        long long count = 0;
+        int right = static_cast<int>(v.size()) - 1;
+        for (int left = 0; left < right; ++left) {
+            while (left < right && v[left] * v[right] > x) --right;
+            if (left >= right) break;
+            count += right - left;
+        }
+        return count;
+    };
+    auto count_at_most = [&](const __int128 x) {
+        long long count = 0;
+        if (x < 0) {
+            int first = static_cast<int>(positive.size());
+            for (__int128 u : negative_abs) {
+                while (first > 0 && u * positive[first - 1] >= -x)
+                    --first;
+                count += static_cast<long long>(positive.size()) - first;
+            }
+        } else {
+            count = static_cast<long long>(negative_abs.size()) *
+                    static_cast<long long>(positive.size());
+            count += zeros * (n - zeros) + zeros * (zeros - 1) / 2;
+            count += positive_pairs_at_most(negative_abs, x);
+            count += positive_pairs_at_most(positive, x);
+        }
+        return count;
+    };
+    const __int128 bound = max_abs * max_abs;
+    __int128 lo = -bound - 1, hi = bound;
+    while (lo + 1 < hi) {
+        const __uint128_t width = static_cast<__uint128_t>(hi) -
+                                  static_cast<__uint128_t>(lo);
+        const __int128 mid = lo + static_cast<__int128>(width / 2);
+        if (count_at_most(mid) >= k) hi = mid;
+        else lo = mid;
+    }
+    return hi;
+}
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/) ・ [尺取り法](/flowchartcp/techniques/two-pointers/)
+
+## 参考資料
+
+- [AtCoder ABC155 D：Pairs](https://atcoder.jp/contests/abc155/tasks/abc155_d)。負数と0を含む配列から、異なる二要素の積の $K$ 番目を求める原典。
+- [ABC155公式解説（D）](https://img.atcoder.jp/abc155/editorial.pdf)。積の符号による分類と、尺取り法による計数を使った二分探索。
+
+<TechniqueReferences techniqueId="kth-signed-pair-product" />

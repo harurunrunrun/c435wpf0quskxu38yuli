@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+  "problemId": "ioi2017_wiring",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialIssues": [],
+  "unconfirmedRequiredLemmas": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allFrozenCppRead": true,
+    "allCheckerRead": true,
+    "allSidecarRead": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76"
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-article.mdx",
+      "sha256": "cb5a36092fafe7e70c057537a9ac23ead426a7eaba27b9dc43a6da447d1bbf13"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-checker.py",
+      "sha256": "88e1c568acbf8d99683df6fe0dda11a88289dc14a0dd40eb00066e5c3b4c81dc"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-sidecar.json",
+      "sha256": "a2eb2b40c7847b2444375b3dfd4ba1f550c984d85ceb81cf50a87d248e28540d"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-independent-normal.json",
+      "sha256": "6c1bb1785b3c0aba493f7c25459c7d20037dbfb65ab318899f865d0d717e7399"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-independent-asan.json",
+      "sha256": "c50b484a45be7cb31343315362e483f1bbff45224285fcd7ce8f7e82bd2c78ce"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-independent-probe.py",
+      "sha256": "7f93ea8bbc9087874d34df6fd2ece552622783448eee3c234d639b9d32dbe52a"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-independent-probe.json",
+      "sha256": "7648ea205b5db67543dd932082a24eb6cd54525c901e5957aaaa8be4986b7ec6"
+    }
+  },
+  "primarySourceReview": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+      "pages": 2,
+      "method": "Independently read official English web PDF text; missing bound formulas recovered by an official archive-distributed translation search. No PDF image inspection claimed.",
+      "verifiedModel": "Every red/blue point needs at least one opposite-color incident wire; the same point may be used repeatedly. Minimize absolute-coordinate-distance total, not endpoint-disjoint matching.",
+      "genericApi": "int64 min_total_length(int[] r,int[] b)"
+    },
+    "numeric": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf",
+      "query": "site:ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf \"100000\" \"10\"",
+      "redCount": [
+        1,
+        100000
+      ],
+      "blueCount": [
+        1,
+        100000
+      ],
+      "coordinates": [
+        0,
+        1000000000
+      ],
+      "allCoordinatesDistinct": true,
+      "eachColorSorted": true,
+      "sampleAnswer": 10
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "pages": 2,
+      "mapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>"
+      },
+      "limits": {
+        "seconds": 1,
+        "memoryMB": 256
+      },
+      "interface": "Function submission; no standard input/output/file interaction. The complete visible adapter directly delegates and has no grader callback or unresolved external symbol."
+    },
+    "adapterEvidence": {
+      "derivedCppSignature": "long long min_total_length(std::vector<int> r,std::vector<int> b)",
+      "derivedFrom": "Statement generic parameter signature combined with the official Notice type mapping.",
+      "realOfficialHeaderZipRetrieved": false,
+      "notClaimed": "No header bytes or actual distribution header were inspected. Judge mirror corroboration is distinguished from primary evidence; no download was needed for this review."
+    },
+    "editorial": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+      "pages": 1,
+      "provenance": "The actual IOI archive Editorial link. No personal byline inferred. It supplies adjacent monochromatic blocks and a linear prefix-DP direction; the detailed one-overlap recurrence, separated-group cost and two-minima proof are independently completed supplements.",
+      "articleVerificationKind": "independent-analysis",
+      "attributionAccurate": true
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "contestDate": "2017-07-30",
+      "datePrecision": "day",
+      "difficulty": null
+    }
+  },
+  "independentMathematicalReview": {
+    "adjacentBlocks": "A wire x-y skipping at least three color-block boundaries has interior opposite-color b and same-color a with x<b<a<y. Replacing it by x-b and a-y preserves all required old endpoints and strictly saves a-b. Duplicate new wires can be omitted, preserving the improvement.",
+    "singleOverlap": "If u<v in one block have u connected right and v connected left, the z-v/u-w to z-u/v-w swap saves2(v-u). Thus left-connected vertices are a prefix and right-connected vertices a suffix, with at most one common vertex. In particular two right-end vertices shared across both neighboring blocks would contain the forbidden inversion.",
+    "separatedCover": "Every endpoint pays its distance to the nearest block boundary at least once, and max(k,j) wires must cross the positive interblock gap. Assign each point on the larger side one wire and attach surplus wires to the nearest-boundary vertex on the smaller side to attain the bound. This proves both C(k,j) branches, including equal sizes.",
+    "prefixDecomposition": "In the self-contained prefix ending within a right block, its points only connect left. Let k be the suffix of the prior block used by those wires. Earlier wires cover either q-k points, or q-k+1 if the first suffix point is also connected left. There is no other overlap by the inversion lemma. Restricting an optimum gives one of these two prefix covers plus a separated-group cover; combining independently optimal covers for either option is always feasible. Hence min(D[q-k],D[q-k+1])+C(k,j) is both a lower-bound decomposition and an attainable transition.",
+    "initialAndFinal": "D0=0 and the nonempty first monochromatic prefixes are impossible. At the first boundary k=A uses D0, making every right prefix finite. Later boundaries can use an already finite prefix, so the selected best is always finite before sum_b is added. q-k+1<=q avoids feedback into the current right-block updates. j>A correctly omits the suffix-min branch while keeping all prefix-min candidates; D[N] includes the last right-block endpoint.",
+    "linearMinima": "For k<=j minimize P[k]+k*a-SA[k] over the clamped prefix; for k>=j minimize P[k]+k*b-SA[k] over the suffix. k=j agrees in both formulas. Prefix/suffix state is reset over every used index at each boundary. The total boundary work is sum(A+B), with each maximal block charged at most twice.",
+    "sortingAndFullComplexity": "Input validation and a two-pointer merge are linear; no sort of the full coordinates is introduced. One max-block allocation is reused for both directional minima. The public body and by-value source adapter remain O(R+B) time/O(R+B) space, including adapter copies."
+  },
+  "apiAndNumericReview": {
+    "originalRangeIncluded": true,
+    "contract": "Both colors1..100000; strict sorted int coordinates0..1e9, all distinct across colors. Empty, oversized, nonincreasing, invalid coordinates and cross-color equality are rejected; returned int64 is the exact minimum cost only, with no wire-list claim.",
+    "overflow": "Sizes are checked before casts. Finite prefix optima have an N-1-edge two-star cover and are at most199999*1e9. Coordinate products/sums are at most1e14; transformed candidates and all executed finite arithmetic stay below4e14 in absolute value. Both multiplication operands involving a coordinate are promoted to int64. INF2^60 participates only in comparisons or unreachable initialization; valid transitions always have a finite candidate before adding sum_b.",
+    "stateAndExceptions": "No input references are retained or mutated and no global DP exists. The original adapter takes and owns its parameter copies as specified; those copies may allocate before function entry. Both bodies propagate allocation exceptions normally, with no external side effects to roll back.",
+    "extraMeasuredMaximumPayloadBytes": 5000036,
+    "memoryScope": "Measured requested vector-element payload for N200000 and max block100000, not total process RSS. Formula17N+16*maxBlock+36 agrees with the merged x/color/start, dp and two minima arrays. Caller arrays, allocation headers and runtime overhead are additional; adapter adds two input copies.",
+    "noInputDepthRecursion": true
+  },
+  "suppliedCheckerIndependentReproduction": {
+    "classification": "Independent rerun of the author actual-MDX checker; same counts not relabeled as a newly designed oracle.",
+    "normal": {
+      "checks": 579529,
+      "apiCalls": 147985,
+      "originalAdapterCalls": 37985,
+      "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+      "literalAllEdgeSubsetsN2to8": 35358064,
+      "independentExponentialOracleCalls": 59139,
+      "independentQuadraticCells": 106517092,
+      "everySmallCompletedPrefix": 24672,
+      "randomExactCoverCases": 1800,
+      "randomQuadraticCases": 3500,
+      "maximumCases": 10,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 17,
+      "checksum": "14068181790685886015",
+      "seconds": 0.576457,
+      "peakRSSKiB": 10504,
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 579529,
+      "apiCalls": 147985,
+      "originalAdapterCalls": 37985,
+      "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+      "literalAllEdgeSubsetsN2to8": 35358064,
+      "independentExponentialOracleCalls": 59139,
+      "independentQuadraticCells": 106517092,
+      "everySmallCompletedPrefix": 24672,
+      "randomExactCoverCases": 1800,
+      "randomQuadraticCases": 3500,
+      "maximumCases": 10,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 17,
+      "checksum": "14068181790685886015",
+      "seconds": 3.6619,
+      "peakRSSKiB": 986680,
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "sanitized": true
+    },
+    "allSemanticFieldsMatchFinalFreeze": true,
+    "oldUnfrozenArtifactsNotApproved": true,
+    "sanitizerScheduling": "Parent explicitly reported no root ASan process before this peer run; completion was sent before the parent started its short own run. Leak detection is disabled per the environment; address/undefined behavior checks enabled."
+  },
+  "additionalIndependentProbe": {
+    "script": {
+      "path": "/tmp/flowchartcp-ioi2017-wiring-independent-probe.py",
+      "sha256": "7f93ea8bbc9087874d34df6fd2ece552622783448eee3c234d639b9d32dbe52a"
+    },
+    "result": {
+      "checks": 21885,
+      "weightedMatchingEdgeCoverInputs": 5672,
+      "hungarianVersusLiteralSubsetAssignmentSelfChecks": 4834,
+      "allocationFailureExceptions": 14,
+      "maxApiRequestedVectorBytes": 5000036,
+      "maxApiLiveVectorBytesAfterCall": 0,
+      "checksum": "9075146730217315746",
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "articleSha256": "cb5a36092fafe7e70c057537a9ac23ead426a7eaba27b9dc43a6da447d1bbf13",
+      "seconds": 1.0661491690116236,
+      "oracle": "Weighted edge cover reduces to sum_v cheapest_incident(v) minus maximum-weight partial bipartite matching with gain(v,w)=max(0,cheapest(v)+cheapest(w)-cost(v,w)). Square padded Hungarian assignment computes maximum gain; an independent subset-assignment DP self-checks every case with a color size<=10. Neither uses coordinate sorting/block decomposition/one-overlap recurrence, nor the author coverage-mask/all-edge-subset/two-dimensional-prefix oracles.",
+      "allocationFailureScope": "Every allocation in the public const-reference API and the original value-vector adapter is failed in turn; check input constness and fresh valid call after each exception. Adapter copies account for two extra allocations.",
+      "sanitizerForThisAdditionalProbe": false,
+      "sharedOrAuthorArtifactsModified": false
+    },
+    "differentOracleProof": "Let m(v) be the cheapest incident wire and B=sum m(v). Every inclusion-minimal edge cover is a disjoint union of stars: an edge with both endpoints degree>=2 could be deleted. Choose one edge per star as a matching. The remaining leaves pay at least m(v), so cover cost is at least B minus the matching gain sum(m(u)+m(v)-c(u,v)). Conversely any matching plus one cheapest wire for every unmatched vertex is a cover of cost at most that expression; duplicate wires can only reduce cost. Therefore optimum equals B minus maximum-gain partial matching. Clip negative gains to0 and pad a square assignment with zero gains; a partial positive-gain matching extends to a full assignment, while ignoring zero assignments recovers a partial matching.",
+    "independentImplementation": "General Hungarian assignment on complete bipartite gain matrices, with separate subset-assignment DP self-checks on4834 small-color cases. It does not use coordinate blocks, one-overlap prefix states, production minima, author coverage masks, all-edge-subset enumeration or the author two-dimensional point-prefix recurrence.",
+    "counts": {
+      "weightedMatchingInputs": 5672,
+      "matchingOracleSelfChecks": 4834,
+      "totalAssertions": 21885,
+      "allocationFailures": 14,
+      "checksum": "9075146730217315746"
+    },
+    "allocationFailureDetails": "Fail every successive new in both public bodies, verify unchanged input and fresh correct call after each bad_alloc. Six body allocations plus eight adapter-including-copy allocations give14 exceptions; cleanup succeeds and a maximum tracked call leaves0 live requested bytes.",
+    "additionalProbeSanitized": false
+  },
+  "initialAuditPreservation": {
+    "sourceFile": "data/corpus-audits/ioi-2017.json",
+    "rowStillMissingTechnique": true,
+    "researchConfirmed": true,
+    "initialProductionApiValidated": false,
+    "initialCorpusResearchCount": 4,
+    "initialCorpusCoverageCount": 0,
+    "initialRowCanonicalSha256": "239da2b2c701cef317ecb568bad11450c3ca3c4d18dd208cf85b6fd24aba637c",
+    "initialFullRecordUnmodifiedByReviewer": true,
+    "resolutionOnlyAppropriate": true,
+    "newPositiveResearchReviewNeeded": false,
+    "unconfirmedNowruzAndPrizeNotPromoted": true
+  },
+  "integrationReadiness": {
+    "mathApiOriginalBoundsAndNativePassed": true,
+    "metadataPrerequisitesExist": true,
+    "frontmatterDescriptionEqualsSummary": true,
+    "parentPlannedPublicTitle": "直線上の全点を異色の点につなぐ最小費用を求める",
+    "sharedArticleOrFlowResolutionRegisteredByReviewer": false
+  },
+  "originalReviewSha256": "279a395743727b738f4ea987743a85efad3e6d52d4ad30d64a45466db8e2bbe8",
+  "publishedArticle": "src/content/docs/techniques/line-bipartite-edge-cover-monochromatic-block-prefix-dp.mdx",
+  "permanentProbe": {
+    "script": "research/probes/line-bichromatic-cover-independent.py",
+    "normalizedSha256": "e50b3eed6933db494287a52060bafc08c906c03658bea63ca0f062acb26b9d12",
+    "normalization": "Only MDX path and removal of implicit tmp result writes; Hungarian/subset matching oracle, memory and allocation-failure checks unchanged."
+  }
+}

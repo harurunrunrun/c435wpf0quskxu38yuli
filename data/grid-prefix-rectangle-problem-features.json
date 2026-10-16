@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2018_seats",
+    "title": "座席 (Seats)",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+    "techniqueIds": [
+      "dynamic-grid-prefix-rectangle-corner-minimum-count"
+    ],
+    "features": [
+      "H×Wの全マスへ0〜HW−1を一つずつ置く。番号0からtまでの集合が、穴のない一つの軸平行長方形を埋めるtの個数を数える。",
+      "操作は二番号の位置の交換で、その直後の個数を多数回返す。外側は常に空で、境界や一行・一列も扱う。",
+      "H,W>=1、HW<=1000000、交換1..50000回、番号0..HW−1。原典a!=bを包含し、掲載APIは同番号交換も明示的に扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-03",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "discoveredBy": "ioi-2018",
+    "notes": "長方形格子の全マスに0..HW−1を一つずつ置き、二番号の交換後に長方形を埋める非空番号prefixの個数を返す。外側を白とした2×2窓の黒1個・3個の個数の合計は常に4以上で、4と長方形が同値。四番号のソートから寄与する二区間を求め、影響する高々八頂点の古い寄与を除去して新しい寄与を加え、range add/min/countで全prefixを同時に管理できる。",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest1/POL-seats.pdf"
+  }
+]

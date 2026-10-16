@@ -1,0 +1,16 @@
+{
+  "checks": 21885,
+  "weightedMatchingEdgeCoverInputs": 5672,
+  "hungarianVersusLiteralSubsetAssignmentSelfChecks": 4834,
+  "allocationFailureExceptions": 14,
+  "maxApiRequestedVectorBytes": 5000036,
+  "maxApiLiveVectorBytesAfterCall": 0,
+  "checksum": "9075146730217315746",
+  "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+  "articleSha256": "cb5a36092fafe7e70c057537a9ac23ead426a7eaba27b9dc43a6da447d1bbf13",
+  "seconds": 1.0661491690116236,
+  "oracle": "Weighted edge cover reduces to sum_v cheapest_incident(v) minus maximum-weight partial bipartite matching with gain(v,w)=max(0,cheapest(v)+cheapest(w)-cost(v,w)). Square padded Hungarian assignment computes maximum gain; an independent subset-assignment DP self-checks every case with a color size<=10. Neither uses coordinate sorting/block decomposition/one-overlap recurrence, nor the author coverage-mask/all-edge-subset/two-dimensional-prefix oracles.",
+  "allocationFailureScope": "Every allocation in the public const-reference API and the original value-vector adapter is failed in turn; check input constness and fresh valid call after each exception. Adapter copies account for two extra allocations.",
+  "sanitizerForThisAdditionalProbe": false,
+  "sharedOrAuthorArtifactsModified": false
+}

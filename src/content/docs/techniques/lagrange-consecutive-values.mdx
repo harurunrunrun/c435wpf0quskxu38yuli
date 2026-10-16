@@ -1,0 +1,130 @@
+---
+title: "連続する整数での値から、前後の積で遠い一点を求める"
+description: "次数の上限が分かる多項式を、係数へ戻さずに評価します。分母を階乗へ分けると、各項を定数時間で足せます。"
+techniqueId: lagrange-consecutive-values
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$f(0),f(1),\ldots,f(d)$ は計算できる一方、添字が大きい $f(N)$ を直接求められません。$f$ が次数 $d$ 以下の多項式だと証明できれば、既知の $d+1$ 個の値から $f(N)$ を求められます。
+
+例えば、$k$ 乗の和は添字に関する次数 $k+1$ の多項式です。累積和を何度も取る場合も、必要な次数の範囲で割り算ができれば、累積和一回につき次数の上限が一つ増えます。大きな添字まで DP を回す前に、先頭の必要な値だけを作って補間できないか調べます。
+
+## 考え方
+
+$y_i=f(i)$ と置くと、ラグランジュ補間は
+
+$$
+f(N)=\sum_{i=0}^{d} y_i
+\frac{\prod_{0\le j\le d,\ j\ne i}(N-j)}{(-1)^{d-i}i!(d-i)!}
+$$
+
+です。点が連続する整数なので、分母の積が二つの階乗へ分かれます。
+
+分子は、$N-j$ の左からの累積積 `prefix` と右からの累積積 `suffix` を作れば、`prefix[i] * suffix[i+1]` で求まります。各 $N-i$ で割る必要がないため、途中の因子が 0 でも処理できます。
+
+既知の値と階乗の逆元を保存しておき、評価点が来るたびに前後の積を作ります。求めるものが一点なら、多項式の全係数を復元する必要はありません。
+
+## 適用条件
+
+素数 $p$ を法として計算するときは $d<p$ とし、$0,1,\ldots,d$ が体の中でも異なることを確認します。$d\ge p$ では階乗が 0 になり、この式の分母を割れません。
+
+**次数の上限の証明が必要です。** 先頭の値がそれらしく並ぶだけでは適用できません。多項式でない数列や、実際の次数が $d$ を超える多項式は、先頭 $d+1$ 個の値だけでは決まりません。
+
+累積和で次数が一つ増えるという議論を有限体で使う場合も、必要になる次数が $p$ 未満であることを確認します。大きな整数添字 $N$ を $N\bmod p$ に置き換えるのは、対象をその体上の多項式として表せると証明した後です。
+
+掲載実装は素数の法を引数に取り、値は $[0,p)$、評価点は符号付き 64 bit 整数とします。評価点を法で正規化した結果が $i\in[0,d]$ なら、保存済みの $y_i$ をそのまま返します。
+
+## なぜ正しいか
+
+第 $i$ 項の基底多項式は、点 $i$ で 1、他の既知の点で 0 になります。したがって右辺は全ての既知の値に一致し、次数は高々 $d$ です。次数 $d$ 以下の二つの多項式が $d+1$ 点で一致すれば、その差は零多項式なので、求める $f$ と一致します。
+
+分母は $j<i$ の部分が $i!$、$j>i$ の部分が $(-1)^{d-i}(d-i)!$ です。前後の累積積は分子に必要な因子だけを一度ずつ含みます。この二つの変形で補間式の値は変わりません。
+
+## 計算量
+
+既知の値を作る時間は、その計算方法に依存します。それを除く前処理は $O(d+\log p)$ 時間、補助空間 $O(d)$ です。逆階乗は一回の逆元計算と後ろ向きの走査で作ります。
+
+一点の評価は $O(d)$ 時間、作業領域 $O(d)$ です。多数の点を一つずつ評価すると点数倍かかるため、多数点の一括評価が必要なら別の方法と比較します。
+
+## 実装
+
+`ConsecutiveLagrange(y, p)` に `y[i] = f(i)` を渡し、`evaluate(N)` で値を求めます。空列は渡せません。値が一つなら定数多項式として扱います。法が素数であることは呼び出し側の条件です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class ConsecutiveLagrange {
+    int mod;
+    vector<int> y, inverse_factorial;
+
+    int multiply(int a, int b) const {
+        return int(1LL * a * b % mod);
+    }
+    int power(int a, int exponent) const {
+        int result = 1;
+        for (; exponent; exponent >>= 1, a = multiply(a, a)) {
+            if (exponent & 1) result = multiply(result, a);
+        }
+        return result;
+    }
+
+public:
+    explicit ConsecutiveLagrange(const vector<int>& values,
+                                 int prime_modulus = 1000000007)
+        : mod(prime_modulus), y(values) {
+        assert(mod >= 2 && !y.empty());
+        assert(y.size() <= size_t(mod));
+        for (int value : y) assert(0 <= value && value < mod);
+        int d = int(y.size()) - 1;
+        int factorial = 1;
+        for (int i = 1; i <= d; ++i) factorial = multiply(factorial, i);
+        inverse_factorial.resize(d + 1);
+        inverse_factorial[d] = power(factorial, mod - 2);
+        for (int i = d; i > 0; --i) {
+            inverse_factorial[i - 1] = multiply(inverse_factorial[i], i);
+        }
+    }
+
+    int evaluate(long long point) const {
+        point %= mod;
+        if (point < 0) point += mod;
+        int x = int(point), d = int(y.size()) - 1;
+        if (x <= d) return y[x];
+
+        vector<int> prefix(size_t(d) + 2, 1), suffix(size_t(d) + 2, 1);
+        for (int i = 0; i <= d; ++i) {
+            int factor = int((1LL * x - i + mod) % mod);
+            prefix[i + 1] = multiply(prefix[i], factor);
+        }
+        for (int i = d; i >= 0; --i) {
+            int factor = int((1LL * x - i + mod) % mod);
+            suffix[i] = multiply(suffix[i + 1], factor);
+        }
+        int result = 0;
+        for (int i = 0; i <= d; ++i) {
+            int term = multiply(y[i], multiply(prefix[i], suffix[i + 1]));
+            term = multiply(term, inverse_factorial[i]);
+            term = multiply(term, inverse_factorial[d - i]);
+            if ((d - i) & 1) term = term == 0 ? 0 : mod - term;
+            result = int((1LL * result + term) % mod);
+        }
+        return result;
+    }
+};
+```
+
+## 関連する手法
+
+- [任意の点と値から多項式の全係数を復元する](/flowchartcp/techniques/polynomial-interpolation-product-tree/)
+- [一つの多項式を多数の点で評価する](/flowchartcp/techniques/multipoint-product-tree/)
+- [遠い項を漸化式から求める](/flowchartcp/techniques/linear-recurrence-bostan-mori/)
+
+## 参考資料
+
+- [Codeforces: Educational Round 7 公式解説の F](https://codeforces.com/blog/entry/23442)
+- [AtCoder: ABC208 F 公式解説、次数と一点評価](https://atcoder.jp/contests/abc208/editorial/2219)
+
+<TechniqueReferences techniqueId="lagrange-consecutive-values" />

@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2019_split",
+    "title": "アトラクションの分割 (Split the Attractions)",
+    "url": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+    "techniqueIds": [
+      "dfs-lowlink-three-size-two-connected-partition"
+    ],
+    "features": [
+      "連結な無向グラフの全頂点を、指定された正の三サイズへ分ける。サイズの和は頂点数に等しい。",
+      "三集合のうち少なくとも二つだけが内部の辺で連結ならよい。全三集合の連結性や、外側を通る連結性を要求しない。",
+      "原典は3<=N<=100000、2<=M<=200000、正のa,b,cで和=N、0始まりの相異なる端点を持つ単純連結グラフ。掲載APIはこの全域を含み、平行辺も許す。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-06",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "sourceBoundsEvidenceUrl": "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+    "originalNumericBoundsVerified": true,
+    "notes": "正の三サイズa<=b<=cについて、小さい二つを連結にしてよい同値性を使う。子が全てa未満の最小十分DFS部分木Pを取り、low[child]<tin[v]で真の祖先へ戻れる子を連結なQへ移す。両側a以上なら連結prefixでa,bを抽出し、失敗時はG-vの全成分<aが不可能性の証拠になる。",
+    "discoveredBy": "ioi-2019"
+  }
+]

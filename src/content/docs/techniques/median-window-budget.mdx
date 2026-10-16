@@ -1,0 +1,75 @@
+---
+title: "一次元で同じ重さの対象を集めるなら、中央値への費用を区間和で求めて窓を動かす"
+description: "選択を連続区間に絞り、中央値の両側の距離和を定数時間で計算します。"
+techniqueId: median-window-budget
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一次元の対象を一つの場所へ集め、距離の和が予算以内になる最大個数を求める場面です。一対象ごとの重さが共通で、集積場所の座標を自由に決められるなら、選ぶ集合と最適な場所をどちらも絞れます。
+
+## 考え方
+
+座標 $x_i$ を昇順に並べます。区間 $[l,r)$ を集める最小費用は、中央値 $x_m$、$m=\lfloor(l+r)/2\rfloor$ を使った距離和です。累積和 $P_i=\sum_{j<i}x_j$ から、
+
+$$\mathrm{cost}(l,r)=x_m(m-l)-(P_m-P_l)+(P_r-P_{m+1})-x_m(r-m-1).$$
+
+右端を一つずつ増やし、費用が予算を越える間は左端を増やします。毎回、現在の長さを答え候補にします。中央値が動いても、費用は累積和から $O(1)$ で再計算できます。
+
+## 適用条件
+
+一対象ごとの運送量・重要度が等しく、集積場所は選んだ座標の範囲内に自由に置けます。対象ごとに重さが異なる場合は加重中央値と選ぶ集合の議論が必要です。集積場所が固定されている場合や、使える座標が別に指定される場合も、中央値へ移せるとは限りません。
+
+実装は昇順の座標、20万対象以下、座標の絶対値 $10^{12}$ 以下、非負の64ビット予算に対応します。重複座標・予算0・空入力も扱います。
+
+## なぜ正しいか
+
+固定した集積場所について、同じ個数を選ぶなら近い対象から選ぶのが最小費用です。一次元の絶対距離は集積場所から左右へ離れるほど増えるため、そのような最小費用の選択には昇順座標の連続区間を選べるものがあります。
+
+固定区間の距離和を最小にする場所は中央値です。場所を右へ動かしたとき、左の対象の費用が増え、右の対象の費用が減るため、左右の個数が釣り合う位置で最小になります。
+
+対象を一つ加えても、任意の集積場所での費用は減りません。従って最小費用も減らず、予算を越えた左端を、右端がさらに進んだ後に復活させる必要はありません。両端を一方向に動かす走査で全ての最適候補を扱えます。
+
+## 計算量
+
+全区間で距離を個別に足すと $O(N^3)$、中央値と累積和でも全区間なら $O(N^2)$ 時間。改善後は入力が昇順なら時間 $O(N)$、空間 $O(N)$。未整列なら前に $O(N\log N)$ のソートが必要です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int maximum_gathered_points(const vector<long long>& x,long long budget) {
+    int n = int(x.size());
+    if (n > 200000 || budget < 0 || !is_sorted(x.begin(),x.end())) throw invalid_argument("parameters");
+    vector<long long> prefix(n+1);
+    for (int i = 0; i < n; ++i) {
+        if (x[i] < -1000000000000LL || x[i] > 1000000000000LL) throw invalid_argument("coordinate");
+        prefix[i+1] = prefix[i]+x[i];
+    }
+    auto cost = [&](int l,int r) {
+        if (l == r) return 0LL;
+        int m = (l+r)/2;
+        return x[m]*(m-l)-(prefix[m]-prefix[l])+(prefix[r]-prefix[m+1])-x[m]*(r-m-1);
+    };
+    int left = 0, answer = 0;
+    for (int right = 1; right <= n; ++right) {
+        while (cost(left,right) > budget) ++left;
+        answer = max(answer,right-left);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [累積和](/flowchartcp/techniques/prefix-sum/)
+- [尺取り法](/flowchartcp/techniques/two-pointers/)
+
+## 参考資料
+
+- [IOI 公式問題](https://ioinformatics.org/files/ioi2011problem3.pdf)
+
+<TechniqueReferences techniqueId="median-window-budget" />

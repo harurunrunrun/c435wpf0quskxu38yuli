@@ -1,0 +1,111 @@
+---
+title: "重ならない二つの奇数長回文を、端点ごとの最長長と切れ目で組み合わせる"
+description: "奇数長回文の最大半径を端点へ置き、両端を一文字ずつ縮めて各接頭辞・接尾辞の最長長を作る。"
+techniqueId: palindrome-two-disjoint-product
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一つの文字列から、重ならない二つの奇数長回文の部分文字列を選び、長さの積を最大にしたい。回文の総数は二次個になり得るので、回文を全て列挙して組み合わせる方法は避けたい。
+
+二つの区間が重ならないなら、その間には必ず切れ目がある。左側で選べる最長長と右側で選べる最長長を、全ての切れ目で用意する形へ変える。
+
+## 考え方
+
+まず Manacher 法で、各位置を中心とする最長の奇数長回文を求める。中心 $c$、半径 $d_c$ の最大回文は
+
+$$[c-d_c+1,c+d_c)$$
+
+であり、長さは $2d_c-1$ である。この長さを、右端の位置 $c+d_c-1$ と左端の位置 $c-d_c+1$ に記録する。
+
+最大の回文だけでは不十分である。例えば `aabaa` を `aaba | a` で分けると、左側から `aba`、右側から `a` を選んで積を3にできる。`aba` は同じ中心の最大回文 `aabaa` を縮めたものであり、各中心の最大回文だけを組み合わせても、この答えを拾えない。
+
+右端が $r$、長さが $L\ge3$ の回文の両端を一文字ずつ落とせば、右端が $r-1$、長さが $L-2$ の回文になる。そこで、右端ごとの配列を右から左へ
+
+$$end[r-1]\leftarrow\max(end[r-1],end[r]-2)$$
+
+と伝える。左端ごとの配列も、左から右へ同様に伝える。これで、指定した位置をちょうど右端・左端とする回文の最長長が得られる。
+
+次に `end` の接頭辞最大値を $left$、左端の配列の接尾辞最大値を $right$ とする。位置 $i$ の直後で切る候補の積は
+
+$$left[i]\times right[i+1]$$
+
+であり、$0\le i<N-1$ の全てで最大を取る。
+
+## 適用条件
+
+文字列が固定され、選ぶのは連続する二つの非空区間であること。二つの間に空きがあってもよく、全体を二分して使い切る必要はない。目的関数は長さが増えて悪化しない積なので、各側では最長のものだけ残せる。長さの差や、一方の長さの指定が目的に入る場合は、この代表値では足りない。
+
+掲載実装が選ぶのは奇数長回文のみである。偶数長を許すなら、偶数の中心についても最大回文を端点へ記録する必要がある。個数を数えたり、三つ以上の区間を選んだりする場合も、最大長一つずつの組み合わせでは解けない。
+
+文字は1バイト単位で比較する。長さが0または1なら二つ選べないので0を返す。添字の計算を `int` に収めるため $N\le(\mathrm{INT\_MAX}-1)/2$ とし、積は `long long` で計算する。
+
+## なぜ正しいか
+
+全ての奇数長回文は、同じ中心の最大回文の両端を何回か縮めたものである。右端を一つ戻して長さを2減らす伝播は、その全てを表す。右端が同じ二つの回文のうち長いものだけを残しても、同じ回数縮める限り長短の順は変わらないため、最長長の候補は失わない。左端についても同様である。
+
+接頭辞最大値 $left[i]$ は位置 $i$ までに収まる回文の最長長、接尾辞最大値 $right[i+1]$ は位置 $i+1$ 以降に収まる回文の最長長である。したがって、その積は実際に重ならない二つを選ぶことで達成できる。
+
+逆に、任意の重ならない二つの回文の間には、位置 $i$ の直後の切れ目を置ける。その二つの長さはそれぞれ $left[i]$ と $right[i+1]$ 以下なので、積もその切れ目の候補以下になる。全ての切れ目を調べれば、最適な二つの積が得られる。
+
+## 計算量
+
+Manacher 法は、既知の回文の対称位置を再利用し、既知の右端の外側だけを新たに比較する。右端が進む回数は合計 $O(N)$ なので、半径の計算は $O(N)$ 時間。
+
+端点への記録、縮小の伝播、接頭辞・接尾辞最大値、切れ目の走査はいずれも $O(N)$ 時間。全体で $O(N)$ 時間、補助空間 $O(N)$。回文を二次個列挙する必要はない。
+
+## 実装
+
+`ending` と `starting` は、縮小を伝えた後に累積の最大値へ上書きする。積を取る前に64ビットへ変換する。
+
+```cpp
+#include <algorithm>
+#include <cassert>
+#include <climits>
+#include <string>
+#include <vector>
+
+long long maximum_disjoint_odd_palindrome_product(const std::string& s) {
+    assert(s.size() <= std::size_t((INT_MAX - 1) / 2));
+    const int n = int(s.size());
+    if (n < 2) return 0;
+    std::vector<int> radius(n), ending(n), starting(n);
+    for (int i = 0, left = 0, right = -1; i < n; ++i) {
+        int d = i > right ? 1 : std::min(radius[left + right - i], right - i + 1);
+        while (i - d >= 0 && i + d < n && s[i - d] == s[i + d]) ++d;
+        radius[i] = d;
+        if (i + d - 1 > right) {
+            left = i - d + 1;
+            right = i + d - 1;
+        }
+        const int length = 2 * d - 1;
+        ending[i + d - 1] = std::max(ending[i + d - 1], length);
+        starting[i - d + 1] = std::max(starting[i - d + 1], length);
+    }
+    for (int i = n - 1; i > 0; --i) {
+        ending[i - 1] = std::max(ending[i - 1], ending[i] - 2);
+    }
+    for (int i = 0; i + 1 < n; ++i) {
+        starting[i + 1] = std::max(starting[i + 1], starting[i] - 2);
+    }
+    for (int i = 1; i < n; ++i) ending[i] = std::max(ending[i], ending[i - 1]);
+    for (int i = n - 2; i >= 0; --i) starting[i] = std::max(starting[i], starting[i + 1]);
+
+    long long answer = 0;
+    for (int i = 0; i + 1 < n; ++i) {
+        answer = std::max(answer, 1LL * ending[i] * starting[i + 1]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[静的な区間の回文判定](/flowchartcp/techniques/palindrome-radius-range/) ・ [回文を中心の半径にまとめて数える](/flowchartcp/techniques/palindrome-center-contribution/) ・ [残す部分列を前後に分け、間を消す](/flowchartcp/techniques/subsequence-delete-gap/)
+
+## 参考資料
+
+- [LeetCode 1960：Maximum Product of the Length of Two Palindromic Substrings（原典）](https://leetcode.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/)。重ならない二つの奇数長回文を選び、長さの積を最大にする問題。
+
+<TechniqueReferences techniqueId="palindrome-two-disjoint-product" />

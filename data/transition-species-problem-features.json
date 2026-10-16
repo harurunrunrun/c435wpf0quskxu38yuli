@@ -1,0 +1,29 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2020_mushrooms",
+    "title": "キノコを数えよう (Counting Mushrooms)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+    "techniqueIds": [
+      "interactive-transition-count-species-decision-trees"
+    ],
+    "features": [
+      "A/Bの二種類があり、0番だけがAと既知。相異なる番号の列を質問すると、隣接する種類の変化回数が返る。",
+      "履歴と整合する配置を選び続ける適応的graderにも、Aの総数が全整合配置で共通と保証して返す。",
+      "原典N2..20000、各質問長2..N・全番号相異、総質問長100000以下、満点は全入力で226問以下。掲載実装は最悪226問・総長40306以下。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "sourceBoundsEvidenceUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+    "originalNumericBoundsVerified": true,
+    "notes": "同種既知と未知を交互に並べると返答は端の逆種bit+内部の逆種数の2倍となり、個数と次の既知一個を同時に得られる。5未知の二つの識別木で多数派110まで訓練し、残りを多数派で一括計数する。全整合配置で不変な個数/既知を保ち、原典全域で226問・総長40306以下を保証する。"
+  }
+]

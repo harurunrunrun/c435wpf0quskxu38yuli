@@ -1,0 +1,696 @@
+{
+  "techniqueId": "orthogonally-convex-row-interval-phase-prefix-dp",
+  "status": "verified-and-integrated",
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+    "statementFullTextVerified": true,
+    "numericBoundsVerified": true,
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "officialEditorialAuthors": [
+      "Spencer Compton"
+    ],
+    "officialReferenceCodeAuthor": "Danny Mittal",
+    "problemCredits": [
+      "Benjamin Qi"
+    ],
+    "sourceBounds": {
+      "N": "1..150",
+      "grid": "N×N, characters G/.",
+      "subset": "nonempty, G cells only,4-connected, each occupied row and column is a contiguous interval",
+      "modulus": 1000000007
+    },
+    "sourceDate": "2021",
+    "datePrecision": "year",
+    "exactContestMonthVerified": false,
+    "exactContestDayVerified": false,
+    "dateEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "provenance": "Official open21results Platinum problem3 View problem/Solution links; Analysis by Spencer Compton and embedded Danny Mittal Java code read on official host. Initial editorial request accidentally opened problem1 (UCFJ) before using the exact audited problem3 URL; problem1 is not used as Balanced evidence.",
+    "apiContainsEntireSourceRange": true,
+    "chosenFullSolutionVerified": true,
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedRequiredLemmas": [],
+    "visualInspectionClaimed": false
+  },
+  "initialAuditPolicy": "Initial six-row research audit, original year-only precision/flags and classifications remain unchanged; only a future resolution is permitted after article/API/flow validation.",
+  "auditGapId": "orthogonally-convex-row-interval-phase-prefix-dp",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-balanced-article.mdx",
+    "checker": "/tmp/flowchartcp-balanced-checker.py",
+    "sidecar": "/tmp/flowchartcp-balanced-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/orthogonally-convex-row-interval-phase-prefix-dp.mdx",
+    "checker": "scripts/check_row_column_convex_subsets_cpp.py",
+    "metadata": "data/techniques-specific-dp-patterns.json",
+    "reference": "data/references-specific-dp-patterns.json",
+    "feature": "data/row-column-convex-subsets-problem-features.json"
+  },
+  "metadata": {
+    "id": "orthogonally-convex-row-interval-phase-prefix-dp",
+    "title": "行と列が途切れない連結なマス集合を、両端の動きと累積和で数える",
+    "summary": "各行の選択を一区間で表し、左端が内向きになったか、右端が内向きになったかを記録する。隣接行の重なりと厳密な転換を矩形和にまとめ、同じ集合を重複せず数える。",
+    "aliases": [
+      "USACO2021 Balanced Subsets orthogonal convex polyomino count",
+      "row interval two strict inward phases 2D prefix sum DP",
+      "行列凸 4連結部分集合 左右境界一転換 累積和DP"
+    ],
+    "family": "行区間と境界の向きを使う格子DP",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "state-design",
+      "prefix-sum",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+      "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ]
+  },
+  "reference": {
+    "techniqueId": "orthogonally-convex-row-interval-phase-prefix-dp",
+    "source": "USACO",
+    "problemId": "1142",
+    "title": "Balanced Subsets",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+    "evidence": "使用可能マスの非空4連結部分集合で、各行列の選択が一区間となるものを数える。行区間の隣接overlapとleft非増加→非減少/right非減少→非増加が必要十分。最初の厳密内向き変化だけを二flagへ記録し、前行の旧二端点に対する9個の長方形和で一意に遷移、全底行を足す。四枚の2Dprefixとrollingで原典N150をO(N^3)時間/O(N^2)空間で処理する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2021",
+    "sourceDatePrecision": "year",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "原典/公式resultsのPlatinum第3問Solution直リンクから、Spencer Comptonの公式解説とDanny Mittal Java referenceを再読。原典N1..150/G./非空/4近傍連結/各行列のinterval/mod1e9+7を確認。年2021のみ確実で、月日精度は未確認のまま補わない、難度null。行区間の隣接overlapと連結性の同値、left谷/right山と列連続性の必要十分性を閾値列の再出現で独立証明。最初の厳密L増加/R減少だけでflag切替して平坦部を重複計数しない。旧端点の9個の長方形和遷移と単一行開始00/底行で一度加算を明示し、原典全域完全C++20/APIを実MDX単一fence抽出で検証。全H,W1..4の74954使用可能盤を、全74938非空bitmapのliteral行列穴検査+4BFSによるindicatorのsubset zeta和と比較。600乱択/固定境界/閉形式検査で実subset909914候補を直接列挙。240別直接旧区間遷移、5400反転/転置/空padding、不正10・例外後再呼出し/非変更・公式例13/642を確認。最大150x150は全G/全./市松/隔行stripe/十字/2行band/外枠/乱択の8構成、加えて150x1/1x150拡張の計10構成。全Gと乱択の最大は旧rightを全列挙する別O(HW^3)の1Dprefix referenceで比較（掲載APIの2D矩形和を使わない）。他最大は閉形式を使用し、十字/2行/外枠式は小さい実subsetでも確認。通常/ASan+UBSanとも83403 checks/checksum5989455240367906907、通常1.06284s/RSS21296KiB、san3.99878s/RSS171324KiB。主要未確認補題0、初回既確認research6/6/分類/status/source精度は全保持、完成記事/API/分岐検証後にresolutionのみ追加。"
+  },
+  "api": {
+    "function": "int count_row_column_convex_subsets(const std::vector<std::string>& grid)",
+    "originalInput": "N1..150,N×N G/.; output mod1000000007; source stdin/stdout problem, reusable API returns the count directly. No grader callbacks or unresolved external symbols.",
+    "bounds": "0<=rows,columns<=150;allrows same length;onlyG/.",
+    "extensions": [
+      "Rectangular grids with independent row/column bounds0..150",
+      "Empty outer vector and rectangular zero-width rows return0"
+    ],
+    "result": "0..1000000006, count of nonempty allowed4connected subsets with everyrow/everycolumncontiguous; empty subset excluded",
+    "errors": "invalid_argument for rows>150,columns>150,ragged rows,anycharacter other thanG/.. All rows/characters checked before empty/zero-width/allblocked shortcuts; allocation exceptions propagate.",
+    "state": "All mutable DP/prefix local, input const unchanged, no persistent state/caches, fresh calls after invalid input or another shape.",
+    "orientation": "Choose width=min(rows,columns),height=max via a char lookup rather than copied transpose. Count invariant under exchanging axes.",
+    "integerSafety": [
+      "Dimension sizes checked before int casts, width<=150,stride<=151;index arithmetic begins in size_t;tablecapacity<=22801 each.",
+      "Every stored count normalized in0..MOD-1. Prefix sum uses int64 for current+above+left-diagonal; rectangle difference uses int64; up to4prior-state contributions and answer accumulation converted to int64 before addition.",
+      "normalized takes signed int64 modulo positive1000000007 then addsMOD only ifnegative; no negative array indices.",
+      "All fixed arithmetic has magnitude well belowint64max; int statically required to representmodulus."
+    ],
+    "stackSafety": "No recursion or input-depth stack; fixed4state objects, vectors hold tables."
+  },
+  "proof": {
+    "status": "independently-complete",
+    "rowConnectivity": "Each occupiedrow is one nonempty interval. Four-connectivity implies no missing occupiedrow and overlap of neighboringrowintervals; conversely the horizontal chains and sharedcolumn vertical edges connect everyrow chain into one component.",
+    "necessityOfOneTurn": "If left endpoints are not nonincreasing-then-nondecreasing, choose a thresholdcolumnc crossed upward inL then downward later. The row immediately before the upwardcrossing containsc because it overlaps the next interval whoseleft>c. The row immediately afterdownwardcrossing containsc because it overlaps the previousintervalwhoseleft>c. Inbetween a rowwithleft>c lacks c, violatingcolumncontiguity. Rightendpointcase is the reflected version.",
+    "sufficiencyOfOneTurn": "For a valleyL, the rows satisfyingL<=c form an interval; for a peakR, rows satisfyingR>=c form an interval. Their intersection gives exactlythe occupiedrows ofcolumnc, hence noholes. Togetherwithrowoverlap this is equivalent to the full geometry.",
+    "uniquePhases": "Leftflag0 means no strictL increase hasoccurred;0→1 iffnewL>oldl,1→1 requiresnewL>=oldl. Rightflag0→1 iffnewR<oldr;1→1requiresnewR<=oldr. Equalityneverstartsaphase, so each intervalhistory has oneflaghistory.",
+    "rectangleTransitions": {
+      "overlap": "oldl<=newR andoldr>=newL",
+      "left_0to0": "oldl in[L,R]",
+      "left_0to1": "oldl in[0,L-1]",
+      "left_1to1": "oldl in[0,L]",
+      "right_0to0": "oldr in[L,R]",
+      "right_0to1": "oldr in[R+1,W-1]",
+      "right_1to1": "oldr in[R,W-1]",
+      "state00": "new single-row1 + old00 rectangle[L,R]x[L,R]",
+      "state01": "old00[L,R]x[R+1,W-1] +old01[L,R]x[R,W-1]",
+      "state10": "old00[0,L-1]x[L,R] +old10[0,L]x[L,R]",
+      "state11": "old00[0,L-1]x[R+1,W-1]+old01[0,L-1]x[R,W-1]+old10[0,L]x[R+1,W-1]+old11[0,L]x[R,W-1]",
+      "invalidOldIntervals": "All l>r states remain0. Halfopen empty rectangles yield0, including strict transitions atL0/RW-1."
+    },
+    "startEnd": "Start exactlyone interval inphase00 pervalidgrassinterval. Onlypreviousrow transferred, so emptyrows cannot be skipped. Sum eachcurrentstate at its bottomrow exactlyonce. Emptyset hasno startinginterval and never counted.",
+    "grassValidity": "For each left, scanright untilfirstblockedcell andbreak;allandonlyfullyGintervals are considered, remainderstates zeroed.",
+    "rolling": "Prefix stores exactlythepreviousrow untilallnewstatescomplete;afterwards overwrite allprefix tables from the completecurrentrow. No mixed-row updates.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "time": "O(rows*columns+max(rows,columns)*min(rows,columns)^2); sourceN×N givesO(N^3)",
+    "space": "O(min(rows,columns)^2)",
+    "arrayElements": "4W^2+4(W+1)^2 ints",
+    "maximumAuxiliaryArrayPayloadBytesOnInt32": 724816,
+    "payloadExclusions": "callerinput/vector metadata/allocator/constantlocalobjects separate; no inputtransposecopy; not allrowstates stored"
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-balanced-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-balanced-checker.py --sanitize",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "normal": {
+      "checks": 83403,
+      "allSmallGrassBoards": 74954,
+      "literalNonemptyShapes": 74938,
+      "randomLiteralSubsetBoards": 600,
+      "literalEnumeratedSubsetCandidates": 909914,
+      "metamorphicChecks": 5400,
+      "directTransitionBoards": 240,
+      "invalidCalls": 10,
+      "checksum": "5989455240367906907",
+      "seconds": 1.06284,
+      "peakRSSKiB": 21296,
+      "maximumCases": [
+        {
+          "name": "all grass",
+          "count": 498249215
+        },
+        {
+          "name": "all blocked",
+          "count": 0
+        },
+        {
+          "name": "checkerboard",
+          "count": 11250
+        },
+        {
+          "name": "separated row stripes",
+          "count": 849375
+        },
+        {
+          "name": "four-arm cross",
+          "count": 32501250
+        },
+        {
+          "name": "two-row band",
+          "count": 85530175
+        },
+        {
+          "name": "one-cell outer frame",
+          "count": 134100
+        },
+        {
+          "name": "thin column extension",
+          "count": 11325
+        },
+        {
+          "name": "thin row extension",
+          "count": 11325
+        },
+        {
+          "name": "random maximum",
+          "count": 393302941
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "article": "/tmp/flowchartcp-balanced-article.mdx"
+    },
+    "asanUbsan": {
+      "checks": 83403,
+      "allSmallGrassBoards": 74954,
+      "literalNonemptyShapes": 74938,
+      "randomLiteralSubsetBoards": 600,
+      "literalEnumeratedSubsetCandidates": 909914,
+      "metamorphicChecks": 5400,
+      "directTransitionBoards": 240,
+      "invalidCalls": 10,
+      "checksum": "5989455240367906907",
+      "seconds": 3.99878,
+      "peakRSSKiB": 171324,
+      "maximumCases": [
+        {
+          "name": "all grass",
+          "count": 498249215
+        },
+        {
+          "name": "all blocked",
+          "count": 0
+        },
+        {
+          "name": "checkerboard",
+          "count": 11250
+        },
+        {
+          "name": "separated row stripes",
+          "count": 849375
+        },
+        {
+          "name": "four-arm cross",
+          "count": 32501250
+        },
+        {
+          "name": "two-row band",
+          "count": 85530175
+        },
+        {
+          "name": "one-cell outer frame",
+          "count": 134100
+        },
+        {
+          "name": "thin column extension",
+          "count": 11325
+        },
+        {
+          "name": "thin row extension",
+          "count": 11325
+        },
+        {
+          "name": "random maximum",
+          "count": 393302941
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "article": "/tmp/flowchartcp-balanced-article.mdx"
+    },
+    "leakSanitizer": {
+      "enabled": false,
+      "reason": "LeakSanitizer disabled in ptrace environment only; ASan/UBSan remain enabled"
+    },
+    "literalOracle": "For eachnonemptyactualcellbitmap, directlytesteachrow andcolumn usingmin/max/count and4-neighborBFS connectivity. Enumerate all actualbitmaps for eachH,W1..4, thensubsetzeta sum ofvalidbitmapindicators obtains everygrassboard answer. This doesnotuseintervalphase/unimodality/prefixDP.",
+    "exhaustiveScope": "All74938nonemptyactualshapebitmaps over everyH,W1..4;all74954grassboards,includingall65536 4×4boards. Exactcounts <=2^16-1 so nooracle modularambiguity. Rectanglesextend source square.",
+    "randomLiteralScope": "600deterministicboards H/W1..5 withatmost18Gcells. Directenumerate everyactualnonemptygrasssubset;fixedboundaryandclosedformsmallshapes alsoincluded in total909914literalEnumeratedSubsetCandidates.",
+    "directTransitionReference": "240randomboards dimensions1..18 and600literalrandomboards: explicitlyloop overEVERYpreviousinterval+phase foreachnewvalidinterval andcomputeoverlap/strictflag transitions. No2Dprefixoptimization.",
+    "maximumReference": "A separateO(HW^3) implementationprefixes onlyoldleft endpoints andexplicitlyiteratesEVERYoldright endpoint. It usesno2Drectanglequery andis independentlychecked by bothliteral smallsubsetoracle and explicitpreviousintervaltransition reference. It is a referenceDP sharing the provedphasecharacterization, not a literal150×150subsetoracle. Usedforallgrass150count498249215 andrandom150count393302941.",
+    "closedFormMaximums": {
+      "allBlocked": "0",
+      "checkerboard": "Everyallowedcellisolated,onlysingletons:N^2/2=11250",
+      "separatedRowStripes": "75independentfullrows,75*150*151/2=849375",
+      "fourArmCross": "Ifcenterchosen,fourarmextensionsindependent:(L+1)^2(R+1)^2. Ifnotcenter,subsetisoneintervalinonearm:L(L+1)+R(R+1). L75/R74 yields32501250.",
+      "twoRowBand": "T=W(W+1)/2intervals ononefullrow. Single-row2T plusoverlappingorderedintervalpairsT^2-2*binom(W+2,4), yields85530175.",
+      "outerFrame": "A validconnectedconvexsubset must lie ononeborderedge or be anL acrossonecorner. Straightintervals4*N*(N+1)/2-4 cornerduplicate singletons, plus4*(N-1)^2 genuineLs=134100. Formula checked literalN3/4.",
+      "thinExtensions": "150*151/2=11325 for150×1or1×150"
+    },
+    "maximumOriginalSquareCases": 8,
+    "maximumExtensionCases": 2,
+    "maximumDimensions": 150,
+    "metamorphicScope": "5400 checks: four row/column reflection combinations plus theirtransposes (8per600boards), and oneallblockedpaddingperboard. Inputnonmutation checked separately.",
+    "apiChecks": [
+      "originalexamples13/642",
+      "singleG/.; emptyouter/zerowidth; row-columnhole anddiagonal-onlycontact;equalboundaryplateaus",
+      "10invalid shapes/oversize/badchars includingNUL/0xFF andbadlatercell evenearlierrowblocked;validcallafterexception",
+      "50alternatingfreshvalid/emptycalls;allrandom/maxinputsvectorsunchanged"
+    ],
+    "counterScope": "checks=83403requireassertions;literalshape andsubsetcandidatecounts areenumerationwork, not extraAPIchecks. Maximums areoneAPIcall each; whole runtime/RSS includeschecker/oracles/1Dprefixreference andcallergrids, not onlytheproductionAPI.",
+    "sharedFilesModified": false,
+    "initialAuditModified": false
+  },
+  "flowSuggestion": {
+    "entryGraphId": "grid-arrangements",
+    "existingChoices": [
+      "color-numbers"
+    ],
+    "parentGraphId": "grid-color-numbers",
+    "parentNodeId": "goal",
+    "newAnswerId": "convex-subsets",
+    "newAnswerLabel": "行と列が途切れない、連結なマスの選び方を数える",
+    "guardGraphId": "row-column-convex-subset-conditions",
+    "guards": [
+      {
+        "id": "row-column-intervals",
+        "question": "選ぶマスは、どの行・列でも空か一つの区間になりますか？",
+        "explanation": "途中で途切れる行や列を許しません。選ぶ形は長方形に限りません。"
+      },
+      {
+        "id": "connected-allowed-cells",
+        "question": "使用可能マスから、4近傍で連結な非空部分集合を重複なく数えますか？",
+        "explanation": "斜めだけの接触は連結とみなしません。使えないマスは選べず、空集合は除きます。"
+      },
+      {
+        "id": "bounds",
+        "question": "行数・列数は各150以下で、答えを1000000007で割った余りを求めますか？",
+        "explanation": "格子は固定で、各マスを使えるかどうかが最初から分かっています。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "orthogonally-convex-row-interval-phase-prefix-dp"
+    ],
+    "groupSuggestion": "dp-patterns",
+    "note": "Parentaloneintegratesafterindependentreview/flowvalidation. Existinginitialresearchalready6/6positive: futureauditappendresolutiononly, no newsolutionreview/sourceoverwrite."
+  },
+  "editorNotes": [
+    "本文は共通技巧の8節で、USACO固有の物語/取得メタ/テスト件数を展開しない。",
+    "frontmatterdescriptionとmetadata.summaryは同一文字列をパースして作成。prerequisites3IDsは現行metadataで存在確認。",
+    "原典月日未確認はyear精度2021のまま。新しい正確日付や難度値を推測しない。",
+    "初回all6records/status/snapshot/selection/sourceprecisionを保持し、外部reviewと根分岐確認後にresolutionのみ追加。"
+  ],
+  "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+  "problemFeature": {
+    "source": "USACO",
+    "problemId": "1142",
+    "title": "Balanced Subsets",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+    "techniqueIds": [
+      "orthogonally-convex-row-interval-phase-prefix-dp"
+    ],
+    "features": [
+      "使用可能マスから非空の4近傍連結部分集合を選び、各行・各列の選択が途切れないものを数える。",
+      "長方形以外も許し、斜めだけの接触や空集合は除く。左右端の最初の厳密な内向き変化だけでphaseを切り替える。",
+      "原典N1..150のG/.正方形、答mod1000000007。掲載APIは縦横各0..150の長方形と空盤を拡張許容。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021",
+    "publicationDatePrecision": "year",
+    "exactDateVerified": false,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "notes": "使用可能マスの非空4連結部分集合で、各行列の選択が一区間となるものを数える。行区間の隣接overlapとleft非増加→非減少/right非減少→非増加が必要十分。最初の厳密内向き変化だけを二flagへ記録し、前行の旧二端点に対する9個の長方形和で一意に遷移、全底行を足す。四枚の2Dprefixとrollingで原典N150をO(N^3)時間/O(N^2)空間で処理する。"
+  },
+  "artifactSha256": {
+    "article": "38e17c60926ed565ba7d21994fca8e1090cfc5d6cff32b1cc975bb5daf899e26",
+    "checker": "278e7a65b569ac6a674ae5af6383be6a4a2a0d71b9270c87b7769e18a26e44ce",
+    "publishedArticle": "2ac9ae4a7671ef962961d9c3e2dbb6d63f2043e3e773e010f4c98256ce7347db",
+    "publishedChecker": "d0097569966278127f3f82423c1e4c2f0e3ab50f5b9265d43fd10b6183647121"
+  },
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/orthogonally-convex-row-interval-phase-prefix-dp.mdx",
+    "checker": "scripts/check_row_column_convex_subsets_cpp.py",
+    "metadataGroup": "dp-patterns",
+    "entryGraphId": "grid-arrangements",
+    "choices": [
+      "color-numbers",
+      "convex-subsets",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "proseNormalization": "Entry points use standard advanced/complexity/reasoning. Balanced prose uses Japanese flag/state/payload labels and explicitly gives O(A) zero-width validation; C++ unchanged.",
+    "verificationRecord": "research/verification-2026-10-15-countgraphs-balanced.json"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "techniqueId": "orthogonally-convex-row-interval-phase-prefix-dp",
+      "reviewer": "root",
+      "reviewedAt": "2026-10-15",
+      "status": "root-review-passed-awaiting-separate-review",
+      "allEightSectionsAndCompleteCppRead": true,
+      "primaryFullBoundsAndChosenEditorialReread": true,
+      "fullSourceRangeIncluded": true,
+      "codeSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "normal": {
+        "checks": 83403,
+        "allSmallGrassBoards": 74954,
+        "literalNonemptyShapes": 74938,
+        "randomLiteralSubsetBoards": 600,
+        "literalEnumeratedSubsetCandidates": 909914,
+        "metamorphicChecks": 5400,
+        "directTransitionBoards": 240,
+        "invalidCalls": 10,
+        "checksum": "5989455240367906907",
+        "seconds": 1.06926,
+        "peakRSSKiB": 21224,
+        "maximumCases": [
+          {
+            "name": "all grass",
+            "count": 498249215
+          },
+          {
+            "name": "all blocked",
+            "count": 0
+          },
+          {
+            "name": "checkerboard",
+            "count": 11250
+          },
+          {
+            "name": "separated row stripes",
+            "count": 849375
+          },
+          {
+            "name": "four-arm cross",
+            "count": 32501250
+          },
+          {
+            "name": "two-row band",
+            "count": 85530175
+          },
+          {
+            "name": "one-cell outer frame",
+            "count": 134100
+          },
+          {
+            "name": "thin column extension",
+            "count": 11325
+          },
+          {
+            "name": "thin row extension",
+            "count": 11325
+          },
+          {
+            "name": "random maximum",
+            "count": 393302941
+          }
+        ],
+        "sanitized": false,
+        "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+        "article": "/tmp/flowchartcp-balanced-article.mdx"
+      },
+      "asanUbsan": {
+        "checks": 83403,
+        "allSmallGrassBoards": 74954,
+        "literalNonemptyShapes": 74938,
+        "randomLiteralSubsetBoards": 600,
+        "literalEnumeratedSubsetCandidates": 909914,
+        "metamorphicChecks": 5400,
+        "directTransitionBoards": 240,
+        "invalidCalls": 10,
+        "checksum": "5989455240367906907",
+        "seconds": 3.99571,
+        "peakRSSKiB": 171332,
+        "maximumCases": [
+          {
+            "name": "all grass",
+            "count": 498249215
+          },
+          {
+            "name": "all blocked",
+            "count": 0
+          },
+          {
+            "name": "checkerboard",
+            "count": 11250
+          },
+          {
+            "name": "separated row stripes",
+            "count": 849375
+          },
+          {
+            "name": "four-arm cross",
+            "count": 32501250
+          },
+          {
+            "name": "two-row band",
+            "count": 85530175
+          },
+          {
+            "name": "one-cell outer frame",
+            "count": 134100
+          },
+          {
+            "name": "thin column extension",
+            "count": 11325
+          },
+          {
+            "name": "thin row extension",
+            "count": 11325
+          },
+          {
+            "name": "random maximum",
+            "count": 393302941
+          }
+        ],
+        "sanitized": true,
+        "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+        "article": "/tmp/flowchartcp-balanced-article.mdx"
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "documentationAdjustmentBeforeIntegration": "Empty-width extension validates A row lengths in O(A); add explicit O(1) empty-grid/O(A) zero-width cases before claiming O(AB+HW²) on positive dimensions. No code change needed.",
+      "proofReview": [
+        "Row convexity makes each occupied row one interval.4-connectivity iff occupied rows are consecutive and adjacent intervals overlap.",
+        "A left endpoint increase followed later by decrease makes some column sublevel set disconnected. At both threshold crossings, adjacent interval overlap forces the right endpoint past that column, yielding an actual column hole. Right endpoint follows the reflected argument. Conversely valley L and hill R give interval sublevel/superlevel row sets whose intersection is each occupied column.",
+        "Flags record first STRICT inward move, preserving them on equality. Each actual interval sequence gets exactly one flag sequence, including all plateaus and already-inward equal steps.",
+        "Combine overlap l<=R and r>=L with each old→new flag condition to get exactly the printed left/right ranges. Old invalid l>r states stay0, so rectangular sums count no invalid interval.",
+        "The four implementation state formulas exactly sum all nine allowable old/new flag combinations. Strict0→1 bounds and weak1→1 bounds are correct at width1 and one-cell overlaps.",
+        "Only current all-G intervals get states; a blocked cell ends the inner extension. New one-row shapes start in00, previous row only prevents skipping empty rows, and accumulation across bottom rows counts every nonempty shape once."
+      ],
+      "apiReview": [
+        "Validates outer size, first width, every row length and every character before empty shortcuts. Supports rectangular and zero-width extensions, fresh calls after exception, const input/no global caches.",
+        "If rows<cols, traverse original columns and use original rows as state width via grid[right][row]. Otherwise ordinary indexing. No copied transpose. Width=min(A,B),height=max(A,B).",
+        "Half-open rect indexes remain0..W and use size_t products. Every potentially negative prefix/rectangle sum and four-term transition sum starts widened to int64; normalized corrects negative modulo. Answer also widened before add.",
+        "DP buffers cleared each row and prefix rebuilt only after all current states, so no mixing old/new rows. Eight arrays total4W²+4(W+1)² ints=724816bytes atW150, plus fixed vector metadata. No recursion.",
+        "Positive dimensions O(AB+HW²)time/O(W²)extra space; original squareN<=150 isO(N³)/O(N²). Empty cases documented separately before integration."
+      ],
+      "sourceDate": "2021",
+      "datePrecision": "year",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "remaining": [
+        "Separate independent review/probe pending.",
+        "No shared registration yet; append resolution only to already positive spring record, preserving initial6 rows and existing3resolutions."
+      ]
+    },
+    "normal": {
+      "checks": 83403,
+      "allSmallGrassBoards": 74954,
+      "literalNonemptyShapes": 74938,
+      "randomLiteralSubsetBoards": 600,
+      "literalEnumeratedSubsetCandidates": 909914,
+      "metamorphicChecks": 5400,
+      "directTransitionBoards": 240,
+      "invalidCalls": 10,
+      "checksum": "5989455240367906907",
+      "seconds": 1.06926,
+      "peakRSSKiB": 21224,
+      "maximumCases": [
+        {
+          "name": "all grass",
+          "count": 498249215
+        },
+        {
+          "name": "all blocked",
+          "count": 0
+        },
+        {
+          "name": "checkerboard",
+          "count": 11250
+        },
+        {
+          "name": "separated row stripes",
+          "count": 849375
+        },
+        {
+          "name": "four-arm cross",
+          "count": 32501250
+        },
+        {
+          "name": "two-row band",
+          "count": 85530175
+        },
+        {
+          "name": "one-cell outer frame",
+          "count": 134100
+        },
+        {
+          "name": "thin column extension",
+          "count": 11325
+        },
+        {
+          "name": "thin row extension",
+          "count": 11325
+        },
+        {
+          "name": "random maximum",
+          "count": 393302941
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "article": "/tmp/flowchartcp-balanced-article.mdx"
+    },
+    "asanUbsan": {
+      "checks": 83403,
+      "allSmallGrassBoards": 74954,
+      "literalNonemptyShapes": 74938,
+      "randomLiteralSubsetBoards": 600,
+      "literalEnumeratedSubsetCandidates": 909914,
+      "metamorphicChecks": 5400,
+      "directTransitionBoards": 240,
+      "invalidCalls": 10,
+      "checksum": "5989455240367906907",
+      "seconds": 3.99571,
+      "peakRSSKiB": 171332,
+      "maximumCases": [
+        {
+          "name": "all grass",
+          "count": 498249215
+        },
+        {
+          "name": "all blocked",
+          "count": 0
+        },
+        {
+          "name": "checkerboard",
+          "count": 11250
+        },
+        {
+          "name": "separated row stripes",
+          "count": 849375
+        },
+        {
+          "name": "four-arm cross",
+          "count": 32501250
+        },
+        {
+          "name": "two-row band",
+          "count": 85530175
+        },
+        {
+          "name": "one-cell outer frame",
+          "count": 134100
+        },
+        {
+          "name": "thin column extension",
+          "count": 11325
+        },
+        {
+          "name": "thin row extension",
+          "count": 11325
+        },
+        {
+          "name": "random maximum",
+          "count": 393302941
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "article": "/tmp/flowchartcp-balanced-article.mdx"
+    },
+    "additionalReviewFile": "research/probes/row-column-convex-subsets-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

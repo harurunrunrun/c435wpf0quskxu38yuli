@@ -1,0 +1,65 @@
+---
+title: "一つの長方形を変える評価は、面積比の一項だけ更新する"
+description: "希望面積との比で決まる満足度を保存し、候補ごとの全広告の再計算を省きます。"
+techniqueId: "heuristic-rectangle-score-delta"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+長方形ごとに希望位置と面積があり、満足度の和を大きくする配置を探すとき。一つの長方形だけ変える近傍なら、評価もその一項しか変わりません。
+
+## 考え方
+
+希望面積 $r$、実面積 $s$ の満足度は $1-(1-\min(r,s)/\max(r,s))^2$。指定点を含まなければ 0 です。各項 $p_i$ とその和を保存し、変更した一社についてだけ $p_i^{new}-p_i^{old}$ を計算します。
+原典の指定点は $(x+0.5,y+0.5)$、辺は整数なので、包含は $left\le x<right$、$top\le y<bottom$ で厳密に判定できます。探索中は丸め前の満足度和を比較し、最後に得点へ換算します。
+
+## 適用条件
+
+評価が長方形ごとの和で、一社だけを変える場合です。重なりや盤面外への逸脱の検査は別に必要です。掲載部品は得点だけを管理し、合法な配置を保証する衝突判定器ではありません。希望面積は正、座標は0以上10000以下です。
+
+## なぜ正しいか
+
+変更しなかった項は差を取ると全て消えます。含む条件を半開の整数区間にした判定は、半整数の指定点を元の長方形に含むことと同値です。更新で総和から古い項を引き新しい項を足せば、不変条件が保たれます。評価差分の正しさが成り立っても、探索全体の最適性は保証しません。
+
+## 計算量
+
+全再計算は候補ごとに $O(N)$。前処理 $O(N)$、一候補の差分・反映 $O(1)$、空間 $O(N)$。浮動小数点の丸め誤差が蓄積するため、長い探索では `recompute()` で総和を作り直せます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct AdRectangle {int left,top,right,bottom;};
+struct AdRequest {int x,y;long long area;};
+long double ad_satisfaction(const AdRectangle& r,const AdRequest& q){
+    assert(r.left<r.right && r.top<r.bottom && q.area>0);
+    if(!(r.left<=q.x && q.x<r.right && r.top<=q.y && q.y<r.bottom))return 0;
+    long long area=1LL*(r.right-r.left)*(r.bottom-r.top);
+    long double ratio=(long double)min(area,q.area)/max(area,q.area);
+    return 1-(1-ratio)*(1-ratio);
+}
+
+class AdScoreCache {
+    vector<AdRectangle> rectangles;vector<AdRequest> requests;vector<long double> terms;long double sum=0;
+    static void valid(const AdRectangle& r){assert(0<=r.left && r.left<r.right && r.right<=10000 && 0<=r.top && r.top<r.bottom && r.bottom<=10000);}
+public:
+    AdScoreCache(vector<AdRectangle> r,vector<AdRequest> q):rectangles(move(r)),requests(move(q)),terms(rectangles.size()){
+        assert(rectangles.size()==requests.size());for(const auto& x:rectangles)valid(x);recompute();}
+    long double delta(int i,const AdRectangle& r)const{assert(0<=i && i<(int)terms.size());valid(r);return ad_satisfaction(r,requests[i])-terms[i];}
+    long double replace(int i,const AdRectangle& r){long double diff=delta(i,r);rectangles[i]=r;terms[i]=ad_satisfaction(r,requests[i]);sum+=diff;return diff;}
+    long double value()const{return sum;}
+    void recompute(){sum=0;for(size_t i=0;i<terms.size();++i){terms[i]=ad_satisfaction(rectangles[i],requests[i]);sum+=terms[i];}}
+};
+```
+
+## 関連する手法
+
+[局所探索](/flowchartcp/techniques/local-search/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc001/tasks/ahc001_a)
+
+<TechniqueReferences techniqueId="heuristic-rectangle-score-delta" />

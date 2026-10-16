@@ -1,0 +1,109 @@
+---
+title: "候補を出し入れしながら上位k個の和を求めるなら、個数と値の和を同時に持つ"
+description: "値順の累積個数で境界を探し、境界より大きい値の総和と残りの個数を足します。"
+techniqueId: active-top-k-count-sum
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+選べる候補の集合が少しずつ変わり、その中から大きい値を $k$ 個選んだ和を何度も求める場面です。候補の変更ごとにソートし直す代わりに、値ごとの個数と総和を更新します。
+
+## 考え方
+
+全候補の値を先に集め、昇順に座標圧縮します。現在の個数を $C$、値の総和を $S$ とすると、上位 $k$ 個の和は下位 $C-k$ 個の和を $S$ から引いて求められます。
+
+下位 $t$ 個について、累積個数が初めて $t$ に届く値 $v$ を探します。$v$ 未満の個数と和を $c,s$ とすれば、
+
+$$\mathrm{smallest}(t)=s+(t-c)v.$$
+
+同じ値が複数あるときも、境界の値だけ必要な個数を使います。候補IDごとに有効かを持つため、同じ候補の追加を二回数えません。
+
+移動と訪問が別々の日を消費する場合、候補区間と移動日数を固定した後の評価を、この問い合わせへ変換できます。区間の選び方や移動日数の最適化は、別途行います。
+
+## 適用条件
+
+全候補の値が前もって分かり、操作は候補IDの有効・無効の切り替えです。値を変更するなら、新しい値も先に圧縮するか別の構造が必要です。個数は常に非負なので、累積個数を二分できます。
+
+実装は20万候補以下、各値の絶対値 $10^{12}$ 以下。$k$ が候補数を越えたら全候補の和を返します。負の値も含む「ちょうど $k$ 個」の集計には使えますが、「高々 $k$ 個を選んだ最大和」では負の候補を除くなどの処理が必要です。価値が非負なら両者は一致します。
+
+## なぜ正しいか
+
+値順に並べたとき、下位 $t$ 個は境界より小さい全要素と、境界値の必要数だけです。個数の累積和で境界を探すと、その二つの量を正確に分けられます。同値要素のどれを使っても和は変わりません。
+
+上位 $k$ 個以外がちょうど下位 $C-k$ 個なので、総和から引いた値は上位の和になります。個数と和を同じ更新で変えれば、候補の出し入れ後もこの対応が保たれます。
+
+## 計算量
+
+候補を毎回ソートすると、候補数 $N$、操作数 $Q$ に対し $O(QN\log N)$ 時間。改善後は前計算 $O(N\log N)$、切り替えと上位和の取得が各 $O(\log N)$、空間 $O(N)$。圧縮時のソートは一回だけです。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class ActiveTopK {
+    vector<long long> value, sorted, sum;
+    vector<int> rank, count;
+    vector<bool> active;
+    int total_count = 0;
+    long long total_sum = 0;
+    pair<int,long long> prefix(int length) const {
+        int c = 0; long long s = 0;
+        for (int p = length; p > 0; p -= p & -p) { c += count[p]; s += sum[p]; }
+        return {c,s};
+    }
+    int threshold(int target) const {
+        int at = 0, seen = 0, step = 1;
+        while (step < int(sorted.size())) step *= 2;
+        for (; step; step /= 2) {
+            int next = at + step;
+            if (next <= int(sorted.size()) && seen + count[next] < target) {
+                at = next; seen += count[next];
+            }
+        }
+        return at; // zero-based value index containing the target-th item
+    }
+    long long smallest(int amount) const {
+        if (amount == 0) return 0;
+        int at = threshold(amount);
+        auto [before_count,before_sum] = prefix(at);
+        return before_sum + (long long)(amount-before_count)*sorted[at];
+    }
+public:
+    explicit ActiveTopK(vector<long long> values):value(move(values)),sorted(value),rank(value.size()),active(value.size()) {
+        if (value.size() > 200000) throw invalid_argument("size");
+        for (long long x : value) if (x < -1000000000000LL || x > 1000000000000LL) throw invalid_argument("value");
+        sort(sorted.begin(),sorted.end()); sorted.erase(unique(sorted.begin(),sorted.end()),sorted.end());
+        count.assign(sorted.size()+1,0); sum.assign(sorted.size()+1,0);
+        for (int id = 0; id < int(value.size()); ++id)
+            rank[id] = int(lower_bound(sorted.begin(),sorted.end(),value[id])-sorted.begin());
+    }
+    void set_active(int id,bool enabled) {
+        if (id < 0 || id >= int(value.size())) throw invalid_argument("id");
+        if (active[id] == enabled) return;
+        int change = enabled ? 1 : -1; active[id] = enabled;
+        total_count += change; total_sum += change*value[id];
+        for (int p = rank[id]+1; p < int(count.size()); p += p & -p) {
+            count[p] += change; sum[p] += change*value[id];
+        }
+    }
+    long long largest_sum(long long k) const {
+        if (k < 0) throw invalid_argument("k");
+        int take = int(min<long long>(k,total_count));
+        return total_sum-smallest(total_count-take);
+    }
+};
+```
+
+## 関連する手法
+
+- [累積個数が目標へ届く位置を、木の内部で探す](/flowchartcp/techniques/fenwick-prefix-lower-bound/)
+
+## 参考資料
+
+- [IOI 公式問題](https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday.pdf)
+- [IOI 公式解説](https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday-solution.pdf)
+
+<TechniqueReferences techniqueId="active-top-k-count-sum" />

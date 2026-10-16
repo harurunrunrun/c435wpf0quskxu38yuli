@@ -1,0 +1,75 @@
+---
+title: "十進部分文字列の可除性は、10と互いに素なら右揃えの余りを照合する"
+description: "桁の重みをそろえた二つの接尾辞の余りを比較し、法が2・5のときは末尾の一桁へ分けます。"
+techniqueId: decimal-substring-divisibility
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+桁数の大きい整数列ではなく、長い数字文字列の全ての部分区間を整数として評価する。普通の累積和の差のように扱いたいが、区間の桁の位置による $10$ の重みをそろえる必要がある。
+
+## 考え方
+
+0始まりの位置 $i$ から末尾までの整数を $U_i$ とし、空の接尾辞は $U_N=0$ とする。区間 $[l,r)$ の整数を $V_{l,r}$ とすると
+
+$$U_l-U_r=V_{l,r}\,10^{N-r}.$$
+
+$\gcd(P,10)=1$ なら $10^{N-r}$ は法 $P$ で可逆なので、区間の可除性は $U_l\equiv U_r\pmod P$ と同値になる。右から接尾辞の余りを作り、これまでの同じ余りの個数を足す。空の接尾辞の余り0も一個入れる。
+
+$P=2,5$ では可逆性を使えないが、末尾の一桁だけで可除性が決まる。位置 $i$ の数字が割り切れるなら、そこを右端とする $i+1$ 個の非空区間を足す。
+
+## 適用条件
+
+原典では $P$ は素数なので、2・5以外は必ず10と互いに素。掲載実装は互いに素な合成数も扱うが、4・10・20などは受け付けない。その場合、接尾余りの一致から区間が割り切れるとは言えない。例えば文字列20、法4では区間2は割り切れないのに、右揃えした接尾余りは全て0になる。
+
+部分文字列は位置で区別し、先頭0を許す。数値の種類数や先頭0禁止の問題では追加条件が必要。実装は長さ20万以下、$1\le P\le10000$。空列の答えは0で、$P=1$ は全ての非空区間を数える。
+
+## なぜ正しいか
+
+二つの接尾辞の差には、区間内の数字だけが残り、その後ろに $N-r$ 個の0が付く。10が法と互いに素なら、この桁の移動は0かどうかを変えない。余りが等しい二位置を一組ずつ数えると、一つの非空区間に一対一で対応する。
+
+右から走査して以前の頻度を足してから現在を登録するため、同じ位置を二度使って空区間を数えない。2・5の分岐では $10\equiv0$ なので、区間の末尾以外の桁は余りへ寄与しない。
+
+## 計算量
+
+各左端から右へ余りを更新すると $O(N^2)$ 時間、追加空間 $O(1)$。右揃えの頻度表なら時間 $O(N+P)$、追加空間 $O(P)$。2・5の分岐は時間 $O(N)$、追加空間 $O(1)$。答えは最大 $N(N+1)/2$ なので64bit整数を使う。
+
+## 実装
+
+```cpp
+#include <numeric>
+#include <stdexcept>
+#include <string>
+#include <vector>
+long long count_divisible_decimal_substrings(const std::string& s,int mod) {
+    if(s.size()>200000 || mod<1 || mod>10000) throw std::invalid_argument("range");
+    for(char c:s) if(c<'0' || c>'9') throw std::invalid_argument("digit required");
+    long long answer=0;
+    if(mod==2 || mod==5) {
+        for(std::size_t i=0;i<s.size();++i) if((s[i]-'0')%mod==0) answer+=i+1;
+        return answer;
+    }
+    if(std::gcd(mod,10)!=1) throw std::invalid_argument("coprime to ten required");
+    std::vector<long long> count(mod);count[0]=1;
+    int residue=0,power=1%mod;
+    for(int i=static_cast<int>(s.size())-1;i>=0;--i) {
+        residue=(residue+(s[i]-'0')*power)%mod;
+        answer+=count[residue];++count[residue];power=power*10%mod;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [和が指定値になる区間を累積和の頻度で数える](/flowchartcp/techniques/subarray-prefix-frequency/)
+- [一次合同式は GCD で解の有無を判定してから割る](/flowchartcp/techniques/linear-congruence-gcd/)
+
+## 参考資料
+
+- [AtCoder — Divisible Substring](https://atcoder.jp/contests/abc158/tasks/abc158_e)
+- [公式解説](https://img.atcoder.jp/abc158/editorial.pdf)
+
+<TechniqueReferences techniqueId="decimal-substring-divisibility" />

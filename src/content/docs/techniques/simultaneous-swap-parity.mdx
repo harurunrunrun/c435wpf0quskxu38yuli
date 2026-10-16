@@ -1,0 +1,74 @@
+---
+title: "三添字を使う同時交換は、同値の有無と対応順の偶奇で判定する"
+description: "二列の交換を一回ずつ行う操作の符号を調べ、同じ値の札を交換できる場合だけ偶奇の障害を消す。"
+techniqueId: simultaneous-swap-parity
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+異なる三添字 $i,j,k$ を選び、一方の列で $(i,j)$、もう一方で $(i,k)$ を同時に交換する。二列を一致させられるか知りたい。各列を自由に並べ替えられると考えるだけでは、同時に変わる偶奇を見落とす。
+
+## 考え方
+
+まず二列の値の多重集合が同じか調べる。違えば交換だけでは一致しない。
+
+値が全て異なるなら、$B$ の各値を元の $A$ の添字へ写し、相対的な順列 $p$ を作る。一操作では両列が一回ずつ交換されるため、相対順列の符号は変わらない。一致させられるのは $p$ が偶置換の場合だけ。
+
+重複値があれば、同じ値を持つ二枚の札の対応を入れ替えても、見た目の列は変わらず符号だけが反転する。従って多重集合の一致だけで十分になる。順列の符号は巡回の個数 $c$ から $(-1)^{N-c}$ として求められる。
+
+## 適用条件
+
+$N\ge3$ で、三添字は互いに異なり、どの三添字も選べる。一方の交換だけを独立に一回行う操作ではない。交換できる添字が限定される場合や、二列で全く同じ組だけを交換する場合には、この十分性を使えない。
+
+実装は $3\le N\le2\times10^5$。値は64ビット整数で、加減算せず比較だけを行う。返り値は一致可能性で、操作列は生成しない。重複を検出する前に多重集合の一致を確認する。
+
+## なぜ正しいか
+
+多重集合の保存と、二列の符号の積の保存が必要性を与える。
+
+十分性には、同じ操作を二回選ぶのではなく、三添字 $x,y,z$ で二回を組にする。一回目は $A(x,y),B(x,z)$、二回目は $A(z,y),B(z,x)$ と交換する。$B$ の同じ二要素は元へ戻り、$A$ だけに三要素の巡回が残る。両列の役割を逆にした構成もできる。
+
+全ての偶置換は三要素の巡回の積で表せるため、相対順列が偶なら一方だけを必要な偶置換へ変えられる。重複がある場合は、同じ値の札の対応を選び直して相対順列を偶にし、同じ構成を使える。$N=3$ でも上の二操作は三添字を全て使えて合法である。
+
+## 計算量
+
+二列の並びを探索すると、全て異なる場合に $(N!)^2$ 個の状態がある。判定は多重集合の整列と値から添字への辞書を含めて $O(N\log N)$ 時間、$O(N)$ 空間。巡回の数え上げ自体は $O(N)$。
+
+## 実装
+
+`can_match_by_shared_index_swaps(a,b)` は原典通りの三添字の操作を想定する。等値がなければ、元の添字の巡回を一度ずつ辿る。
+
+```cpp
+#include <algorithm>
+#include <map>
+#include <stdexcept>
+#include <vector>
+bool can_match_by_shared_index_swaps(const std::vector<long long>& a,const std::vector<long long>& b) {
+    int n=int(a.size());
+    if(a.size()!=b.size() || n<3 || n>200000) throw std::invalid_argument("requires equal sizes and n >= 3");
+    auto sorted_a=a,sorted_b=b;std::sort(sorted_a.begin(),sorted_a.end());std::sort(sorted_b.begin(),sorted_b.end());
+    if(sorted_a!=sorted_b) return false;
+    if(std::adjacent_find(sorted_a.begin(),sorted_a.end())!=sorted_a.end()) return true;
+    std::map<long long,int> original;
+    for(int i=0;i<n;++i) original[a[i]]=i;
+    std::vector<int> permutation(n);std::vector<bool> seen(n);
+    for(int i=0;i<n;++i) permutation[i]=original.at(b[i]);
+    int cycles=0;
+    for(int i=0;i<n;++i) if(!seen[i]) {
+        ++cycles;
+        for(int v=i;!seen[v];v=permutation[v]) seen[v]=true;
+    }
+    return (n-cycles)%2==0;
+}
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/) ・ [任意の二箇所を交換できる順列は、値の現在位置を持って直す](/flowchartcp/techniques/permutation-cycle-minimum-swaps/)
+
+## 参考資料
+
+- [AtCoder：F - Simultaneous Swap（原典）](https://atcoder.jp/contests/abc296/tasks/abc296_f)。
+
+<TechniqueReferences techniqueId="simultaneous-swap-parity" />

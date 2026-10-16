@@ -1,0 +1,60 @@
+---
+title: "全ての組の XOR の和をビットごとに数える"
+description: "各ビットで 0 と 1 の個数を数え、値を持つ組の数を掛け合わせます。"
+techniqueId: "bitwise-contribution"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+非負整数列の全ての $i<j$ について $a_i\mathbin{\mathrm{xor}}a_j$ を足したいとき。組を列挙すると $O(N^2)$ になります。
+
+## 考え方
+
+ビット $b$ が立つ要素は $c_b$ 個、立たない要素は $N-c_b$ 個。XOR がこのビットで 1 になるのは異なる側から選ぶときなので、寄与は
+
+$$2^b c_b(N-c_b).$$
+
+同じ組を二回数えないよう、0 側と 1 側で区別して一度だけ数えます。AND なら $\binom{c_b}{2}$、OR なら $\binom N2-\binom{N-c_b}{2}$ です。
+
+## 適用条件
+
+求めるものがビット演算の結果の総和であること。XOR 結果の最大値や個数は、ビット間の条件を無視して同じ式では計算できません。符号付きの負数はビット幅と値の解釈を固定します。
+
+## なぜ正しいか
+
+整数値はビットの重みの和です。組とビットの和の順序を交換し、そのビットが立つ組を正確に数えることで式が得られます。
+
+## 計算量
+
+改善前は時間 $O(N^2)$、改善後はビット幅を $B$ として $O(NB)$。追加空間 $O(1)$。下の実装では $B=64$、積は 128 bit を経由します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long sum_pair_xor(const vector<unsigned long long>& a,
+                       long long mod=1000000007) {
+    assert(mod > 0);
+    long long ans=0, weight=1;
+    for(int bit=0;bit<64;++bit){
+        long long ones=0;
+        for(auto x:a) ones+=(x>>bit)&1ULL;
+        long long zeros=(long long)a.size()-ones;
+        ans=(ans+(__int128)(ones%mod)*(zeros%mod)%mod*weight)%mod;
+        weight=(__int128)weight*2%mod;
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[区間 XOR が K となる個数を接頭 XOR の頻度で数える](/flowchartcp/techniques/xor-prefix-count/)
+
+## 参考資料
+
+- [AtCoder：Xor Sum の問題文](https://atcoder.jp/contests/abc147/tasks/abc147_d)
+
+<TechniqueReferences techniqueId="bitwise-contribution" />

@@ -1,0 +1,69 @@
+---
+title: "遷移元が値の小さい側なら接頭辞最小値を持つ"
+description: "遷移元の条件が値の大小だけで決まるとき、過去のDP値を接頭辞の最小値として管理します。"
+techniqueId: dp-prefix-min
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+遷移元の条件が値の大小だけで決まるとき、過去のDP値を接頭辞の最小値として管理します。
+
+## 使う場面
+
+$i$ より前の状態のうち、キー $p_j<p_i$ を満たす状態から遷移するDPを考えます。$dp_i=\min(s_i,a_i+\min_{j<i,\,p_j<p_i}(dp_j+b_j))$ の形なら、内側の最小値はキーに対する接頭辞の最小値です。$s_i$ は状態 $i$ から開始する費用、$a_i,b_i$ は到着側と出発側の費用です。
+
+## 考え方
+
+キーを座標圧縮し、その位置に $dp_j+b_j$ を保存します。状態 $i$ を計算するときは、$p_i$ より小さい位置の最小値を問い合わせ、$a_i$ を加えて $s_i$ と比較します。計算後に $dp_i+b_i$ を登録します。
+
+以下ではFenwick木の各区間に最小値を持ちます。固定した前の層だけを参照するなら、データ構造を使わず左からの累積最小値でも計算できます。
+
+## 適用条件
+
+候補の値は追加されるだけで、保存済みの最小値を大きく戻さないことが必要です。削除や値の増加も行うならセグメント木を使います。$p_j<p_i$ と $p_j\le p_i$ では問い合わせの端点が違います。状態を登録してから問い合わせると、自分自身から遷移する誤りが生じます。
+
+## なぜ正しいか
+
+登録済みの状態はちょうど $j<i$ です。その中から $p_j<p_i$ の位置だけを問い合わせるので、有効な遷移元を過不足なく調べた最小値になります。同じキーの候補は最小の費用だけ残してよいため、最小値での更新も正しい処理です。
+
+## 計算量
+
+全候補を毎回走査する $O(N^2)$ 時間を、座標圧縮と合わせて $O(N\log N)$ にします。空間は両方とも $O(N)$ です。前の層が固定された $M$ 状態のDPなら、累積最小値で1層 $O(M)$ にできます。
+
+## 実装
+
+`ordered_chain_cost(key, start, enter, leave)` は上の漸化式のすべての $dp_i$ を返します。有限の開始費用を渡し、費用の絶対値と加算結果は $10^{15}$ 以下の範囲に収めます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> ordered_chain_cost(const vector<int>& key,
+    const vector<long long>& start,const vector<long long>& enter,
+    const vector<long long>& leave) {
+    const long long INF=1LL<<60;
+    int n=key.size(); assert(start.size()==key.size());
+    assert(enter.size()==key.size() && leave.size()==key.size());
+    vector<int> xs=key; sort(xs.begin(),xs.end());
+    xs.erase(unique(xs.begin(),xs.end()),xs.end());
+    vector<long long> bit(xs.size()+1,INF),dp(n);
+    for(int i=0;i<n;++i) {
+        int rank=lower_bound(xs.begin(),xs.end(),key[i])-xs.begin()+1;
+        long long best=INF;
+        for(int p=rank-1;p>0;p-=p&-p) best=min(best,bit[p]);
+        dp[i]=start[i];
+        if(best!=INF) dp[i]=min(dp[i],enter[i]+best);
+        for(int p=rank;p<int(bit.size());p+=p&-p)
+            bit[p]=min(bit[p],dp[i]+leave[i]);
+    }
+    return dp;
+}
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [AtCoder：F - Insertion Sortの解説・実装](https://atcoder.jp/contests/abc201/editorial/1838)
+
+<TechniqueReferences techniqueId="dp-prefix-min" />

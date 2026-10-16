@@ -1,0 +1,133 @@
+---
+title: "積が平方になる部分集合は、素因数の指数の偶奇と同じ値の選択数をまとめる"
+description: "値ごとの出現数から偶数個・奇数個を選ぶ重みを求め、指数の偶奇だけをXORで更新する。"
+techniqueId: square-product-subsets-parity-mask
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+小さな正整数からなる配列で、選んだ要素の積が完全平方数になる非空の選び方を数えたい。同じ値でも、選んだ添字が違えば別の選び方として数える。
+
+積をそのまま持つ必要はない。完全平方数である条件は、**全ての素因数の指数が偶数であること**だけで決まる。さらに、同じ値を何個選んだかも、その偶奇だけが指数に影響する。
+
+## 考え方
+
+使う素数を $p_0,\ldots,p_{P-1}$ とし、値 $v$ の素因数分解で $p_j$ の指数が奇数ならビット $j$ を1にする。このマスクを $m_v$ と書く。積に含まれる指数の偶奇は、選んだ値のマスクのXORに等しい。
+
+例えば $6,10,15$ の積は $900$ で、平方になる。素数2・3・5の指数の偶奇をXORすると、全て0になる。
+
+値 $v$ が $c>0$ 個あるとする。その中から偶数個選ぶ方法と奇数個選ぶ方法は、どちらも
+
+$$
+w=2^{c-1}
+$$
+
+通りある。従って、全要素を一つずつ処理する代わりに、同じ値をまとめて一回で処理できる。
+
+`dp[s]` を、処理済みの値から選んだ積の偶奇マスクが $s$ となる選び方の数とする。最初は空集合一つだけなので `dp[0]=1`。値 $v$ のグループを加えた後は、
+
+$$
+\operatorname{next}[s]
+=w\bigl(\operatorname{dp}[s]+\operatorname{dp}[s\mathbin{\oplus}m_v]\bigr)
+$$
+
+となる。前半は $v$ を偶数個選ぶ場合、後半は奇数個選ぶ場合である。
+
+出現数が0の値は更新しない。この場合は偶数個を選ぶ方法が1通り、奇数個を選ぶ方法が0通りであり、$2^{c-1}$ の式は使わない。最後に `dp[0]` から空集合の1通りを引く。
+
+## 適用条件
+
+- 全ての値が正で、積が平方になるかを素因数の指数の偶奇で判定できる。
+- 出現する素数の種類数 $P$ が小さく、$2^P$ 個の状態を持てる。
+- 同じ値の各要素は添字で区別するが、選択に個別の重みや追加の制約はない。
+- 選ぶ個数の指定や、隣り合う要素を同時に選べないといった条件がない。
+
+値が1から70なら、必要な素数は19種類になる。1や平方数のマスクは0だが、選ぶ・選ばないを区別する必要があるため、そのグループの更新を省いてはいけない。
+
+0を含む選択は常に積が0になるため、正整数とは分けて扱う必要がある。負の値を許すなら符号の偶奇も必要になる。以下の実装はどちらも受け付けない。
+
+## なぜ正しいか
+
+正整数の素因数分解は一意であり、積を取ると各指数が加算される。指数を2で割った余りの加算はXORなので、積が平方になることと、選んだ全マスクのXORが0になることは同値である。
+
+同じ値の $c>0$ 個から一つの添字を固定し、その添字を選ぶかどうかを反転させる。この操作は、偶数個を選ぶ添字集合と奇数個を選ぶ添字集合の間の一対一対応になる。合わせて $2^c$ 通りなので、両方とも $2^{c-1}$ 通りである。
+
+各選択を値ごとの添字集合に分けると、その分け方は一意に決まる。各グループで偶数個ならマスクを変えず、奇数個なら $m_v$ をXORし、対応する添字集合の数を掛ける遷移は、全ての選択を重複なく数える。最後のマスク0には空集合がちょうど一つ含まれるため、それを引けば非空の選択だけが残る。
+
+## 計算量
+
+要素を一つずつ処理する偶奇DPは $O(N2^P)$ 時間かかる。同じ値をまとめると、値の種類数を $D$ として $O(N+D2^P)$ 時間になる。以下では値域が1から70に固定されているため、マスクの前計算は定数時間として扱える。重み $2^{c-1}$ を求める繰り返し回数も、全グループで合計 $O(N)$ に収まる。
+
+空間は、現在と次のDPを持つ $O(2^P)$。この実装では $P=19$、$D\le70$ なので、時間は $O(N+70\cdot2^{19})$、空間は $O(2^{19})$ となる。
+
+## 実装
+
+`count_square_product_subsets(values)` は、積が平方になる非空の添字集合の数を $10^9+7$ で割った余りを返す。要素数は100000以下、各値は1以上70以下とし、違反は `invalid_argument` とする。空配列なら0を返す。
+
+同じ値の個数から重みを一度だけ求め、全マスクで使い回す。遷移前と遷移後の配列を分けることで、一つのグループを同じ更新中に重ねて選ぶことを防ぐ。二つの個数を足して重みを掛ける箇所は `long long` で計算する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_square_product_subsets(const vector<int>& values) {
+    constexpr int MOD = 1000000007;
+    constexpr int PRIME_COUNT = 19;
+    constexpr int STATES = 1 << PRIME_COUNT;
+    constexpr array<int, PRIME_COUNT> primes = {
+        2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+        31, 37, 41, 43, 47, 53, 59, 61, 67
+    };
+    if (values.size() > 100000)
+        throw invalid_argument("require at most 100000 values");
+    array<int, 71> frequency{};
+    for (int value : values) {
+        if (value < 1 || value > 70)
+            throw invalid_argument("require values in [1, 70]");
+        ++frequency[value];
+    }
+    if (values.empty()) return 0;
+
+    array<int, 71> mask{};
+    for (int value = 1; value <= 70; ++value) {
+        int remaining = value;
+        for (int bit = 0; bit < PRIME_COUNT; ++bit) {
+            while (remaining % primes[bit] == 0) {
+                mask[value] ^= 1 << bit;
+                remaining /= primes[bit];
+            }
+        }
+    }
+
+    vector<int> current(STATES), next(STATES);
+    current[0] = 1;
+    for (int value = 1; value <= 70; ++value) {
+        const int count = frequency[value];
+        if (count == 0) continue;
+        long long weight = 1;
+        for (int taken = 1; taken < count; ++taken)
+            weight = weight * 2 % MOD;
+        for (int state = 0; state < STATES; ++state) {
+            const long long ways =
+                (long long)current[state] + current[state ^ mask[value]];
+            next[state] = int(ways * weight % MOD);
+        }
+        current.swap(next);
+    }
+    return current[0] == 0 ? MOD - 1 : current[0] - 1;
+}
+```
+
+## 関連する手法
+
+- [二数の積が平方になる組を数える](/flowchartcp/techniques/squarefree-product-pairs/)：二つだけ選ぶなら、平方因子を除いた代表の一致を数えればよい。
+- [ビット集合を状態にするDP](/flowchartcp/techniques/bitmask-dp/)：指数の偶奇を一つの状態にまとめる基本形。
+- [XOR基底](/flowchartcp/techniques/xor-basis/)：追加制約がなければ、マスクの線形独立な本数からXORが0になる選択数を求める方法もある。
+
+## 参考資料
+
+- [Codeforces 895C：Square Subsets](https://codeforces.com/problemset/problem/895/C) — 小さい正整数から、積が平方になる非空の添字集合を数える原典。
+- [Codeforces Round 448公式解説](https://codeforces.com/blog/entry/56028) — 19種類の素数の指数を偶奇に縮め、同じ値の選択数をまとめるDP。
+
+<TechniqueReferences techniqueId="square-product-subsets-parity-mask" />

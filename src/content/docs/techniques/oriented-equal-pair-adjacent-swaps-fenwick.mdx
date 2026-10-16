@@ -1,0 +1,157 @@
+---
+title: "隣接交換で同サイズの左右を対にする最小回数"
+description: "最初の未処理要素と最も近い相手を対にし、間に残る要素数と左右の向きから交換回数を求める。"
+techniqueId: oriented-equal-pair-adjacent-swaps-fenwick
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+同サイズの左要素と右要素が一列に並び、隣接する二要素の交換だけで、列全体を「左・右の同サイズ対」の連結へ変えたい。同じサイズが複数対あってよく、対どうしの順序は自由とする。求めるのは交換回数の最小値である。
+
+入力では左を負、右を正で表す。例えば `[-3,3,-1,1]` は完成している。`[3,-3]` は同サイズが隣でも左右が逆なので一回必要である。全ての左要素を前へ集める条件でも、同サイズを両端へ置く回文の条件でもない。
+
+## 考え方
+
+現在残っている列の最初を $A$ とする。その逆符号・同サイズの要素のうち、最も左にある $B$ を選ぶ。二要素の間に残っている個数を $d$ とすると、この対を先頭で完成させる費用は
+
+$$d+[A>0]$$
+
+となる。$A$ が左なら $B$ をその右隣まで動かす。$A$ が右なら、さらに $A,B$ を一回交換して左・右にする。二要素を除いた残りの相対順序は変わらないので、同じ操作を繰り返す。
+
+実際に列をずらすと二乗時間になる。元の位置は固定し、各符号付きサイズの出現位置を昇順の配列と先頭ポインタで持つ。各位置が未処理なら1、処理済みなら0をFenwickに入れる。元の位置 $i<j$ を組にするとき、$[i+1,j)$ の和が現在の間の個数である。答えへ加えた後、その二位置を0にする。
+
+重複サイズでも出現ごとに別の位置を持つ。例えば `[-1,1,1,-1]` では最初の右要素を選べば費用0で先頭を確定し、残りの逆向き対に一回だけ必要である。後ろの同型相手を先に使うと余分な交換が生じる。
+
+## 適用条件
+
+各正のサイズについて左と右の個数が等しいことが必要十分である。必要性は交換で個数が変わらないことから従い、十分性は同サイズを一対ずつ並べればよい。異なるサイズの要素を組にする、値を変更する、任意位置の交換を一回と数える場合には、この費用式を使えない。
+
+掲載コードは32ビットの `int` を要求する。API `minimum_oriented_pair_swaps(sequence)` は非0の `int` を受け取り、負が左、正が右である。列長は偶数かつ `INT_MAX` 以下とし、空列の答えは0とする。サイズ値は連番でなくてもよく、`INT_MAX` も許す。対応する正値を `int` で表せない `INT_MIN`、0、奇数長、サイズごとの左右個数の不一致は `std::invalid_argument`。長さの範囲も計算前に検査する。割当失敗などの標準ライブラリ例外はそのまま伝わる。
+
+例えば[IOI 2019の使用例](https://ioinformatics.org/files/ioi2019problem1.pdf)は最大10万対・20万要素であり、64ビットの答えが必要になる。掲載APIはこの範囲も扱える。
+
+## なぜ正しいか
+
+### 選んだ相手との対を先頭へ移してよい
+
+最左要素 $A$ が、ある最適解で現在の0始まり位置 $k\ge1$ の $B$ と組になるとする。その交換列を、$A$ または $B$ に触れる交換と、どちらにも触れない交換へ分ける。
+
+最初に間にある $k-1$ 要素は、完成した対の間から全て出る必要がある。一回の隣接交換で二要素の間から出せるのは高々一要素なので、前者は少なくとも $k-1$ 回必要である。$A$ が右なら、二要素の左右順を逆転させる交換がさらに一回必要であり、間の他要素を出す交換とは重ならない。
+
+後者の交換だけを、$A,B$ を消した列へ射影すると、残りを合法な対列へ変える交換列になる。従って元の費用は、$k-1+[A>0]$ と、残りの列の最適費用の和以上である。逆に最初に $B$ を左へ動かして先頭の対を作れば、ちょうどこの局所費用で済み、他の相対順序は保たれる。その後に残りを最適に並べることでこの下界を達成する。よって、ある最適解では先頭の対を最初に確定できる。
+
+### 相手は最左の同型要素を選べる
+
+手前にも同型相手 $C$ があるのに、後ろの $B$ を先頭へ持ってくる正規化した解を考える。初期の部分列を `A X C Y B Z` と書く。$B$ を $C$ の直後まで動かし、続いて $C$ を先頭の相手位置へ動かすと、残りは `X B Y Z` になる。元の方法で $B$ を取り出した残りは `X C Y Z` であり、$B,C$ は同符号・同サイズなので値の列として等しい。
+
+この変更では $B$ と $C$ の間の交換一回を省ける。$A$ が右の場合の最後の向き補正はどちらでも同じである。従って遠い相手を使う必要はなく、最左の相手を選べる。先頭の対を除いて帰納すれば、全ての貪欲な選択が最適となる。
+
+### Fenwickが表すのは現在の距離
+
+処理前の未処理位置だけが1で、残る値の相対順序は元の列と同じ、という不変条件を保つ。最左の未処理位置 $i$ の相手 $j$ は必ず $i$ より右にあり、$[i+1,j)$ の1の個数が現在の間の要素数と等しい。両位置を消した後も不変条件は保たれる。
+
+符号別の出現位置は昇順で、処理する二位置はそれぞれの先頭にある。両側の先頭ポインタを一つずつ進めることで、次も最左の未処理同型相手を得られる。既に消した位置の距離を数えたり、全ての対に無条件で向きの一回を足したりしない。
+
+## 計算量
+
+要素数を $M$ とする。物理的に要素を左へ移す方法は $O(M^2)$ 時間になる。掲載コードは出現位置の辞書を `std::map` で構築し、各要素を一回ずつ取り出す。Fenwickの初期化は $O(M)$、一対につき定数回の区間和と削除は $O(\log(M+1))$。全体で最悪 $O(M\log(M+1))$ 時間、$O(M)$ 補助空間である。
+
+答えは64ビット整数で返す。任意の完成列を一つ固定して安定に対応付ければ、隣接交換数は高々 $\binom M2$。掲載範囲 $M\le\mathrm{INT\_MAX}$ では符号付き64ビットに収まる。Fenwickの個数は最大 $M$ なので `int`、位置の添字演算は `size_t` を使う。絶対値や逆符号を取る前に0と `INT_MIN` を除くため、符号反転で桁あふれしない。
+
+原典最大の10万対で、`[1,2,…,n,-n,…,-2,-1]` の最小値は $n^2=10^{10}$。32ビットの答えでは足りない。
+
+## 実装
+
+入力は変更せず、呼出しごとに出現配列・削除印・Fenwickを作る。`prefix(end)` は元の半開区間 $[0,end)$ の生存個数を返す。
+
+```cpp
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <map>
+#include <stdexcept>
+#include <vector>
+
+static_assert(std::numeric_limits<int>::digits == 31, "32-bit int required");
+
+namespace oriented_pairs_detail {
+struct Occurrences {
+    std::vector<std::size_t> positions;
+    std::size_t head = 0;
+};
+
+class AliveFenwick {
+    std::vector<int> bit;
+public:
+    explicit AliveFenwick(std::size_t length) : bit(length + 1, 0) {
+        for (std::size_t p = 1; p <= length; ++p)
+            bit[p] = static_cast<int>(p & -p);
+    }
+    void remove(std::size_t index) {
+        for (std::size_t p = index + 1; p < bit.size(); p += p & -p)
+            --bit[p];
+    }
+    int prefix(std::size_t end) const {
+        int sum = 0;
+        for (std::size_t p = end; p > 0; p &= p - 1)
+            sum += bit[p];
+        return sum;
+    }
+};
+} // namespace oriented_pairs_detail
+
+std::int64_t minimum_oriented_pair_swaps(const std::vector<int>& sequence) {
+    if (sequence.size() > static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
+        sequence.size() % 2 != 0)
+        throw std::invalid_argument("even length representable by int required");
+    std::map<int, oriented_pairs_detail::Occurrences> occurrences;
+    for (std::size_t i = 0; i < sequence.size(); ++i) {
+        const int value = sequence[i];
+        if (value == 0 || value == std::numeric_limits<int>::min())
+            throw std::invalid_argument("nonzero label with representable opposite required");
+        occurrences[value].positions.push_back(i);
+    }
+    for (const auto& [value, group] : occurrences) {
+        const auto opposite = occurrences.find(-value);
+        if (opposite == occurrences.end() ||
+            opposite->second.positions.size() != group.positions.size())
+            throw std::invalid_argument("left and right counts must match for every size");
+    }
+
+    oriented_pairs_detail::AliveFenwick alive(sequence.size());
+    std::vector<unsigned char> removed(sequence.size(), 0);
+    std::int64_t answer = 0;
+    for (std::size_t i = 0; i < sequence.size(); ++i) {
+        if (removed[i]) continue;
+        const int value = sequence[i];
+        auto& own = occurrences.at(value);
+        auto& opposite = occurrences.at(-value);
+        ++own.head; // Its first remaining position is i.
+        const std::size_t j = opposite.positions[opposite.head++];
+        const int between = alive.prefix(j) - alive.prefix(i + 1);
+        answer += static_cast<std::int64_t>(between) + (value > 0 ? 1 : 0);
+        alive.remove(i);
+        alive.remove(j);
+        removed[i] = removed[j] = 1;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [Fenwick tree](/flowchartcp/techniques/fenwick-tree/)：元の位置を固定した生存個数の集計。
+- [交換法](/flowchartcp/techniques/exchange-argument/)：先頭の選択を置き換えても、残りの問題を悪くしないことを示す。
+- [回文の隣接交換](/flowchartcp/techniques/palindrome-adjacent-pair-inversions/)：同じ値を左右端へ対応させる場合。ここでは同サイズの異符号を隣り合わせ、負・正の向きを固定する。
+
+## 参考資料
+
+- [公式アーカイブのPSE版原典](https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/PSE.pdf)。左右の個数と、サイズ・列長の制約を確認できる。
+
+- [Arranging Shoes — IOI公式原典](https://ioinformatics.org/files/ioi2019problem1.pdf)と[公式配布日本語版](https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/JPN.pdf)。問題の左右・同サイズ・隣接交換条件を確認した。
+- [Arranging Shoes Review — 公式解説](https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf)。先頭の対の固定、最左の相手への交換、Fenwickによる高速化を確認した。公式アーカイブがReviewとして直接配布する資料である。
+- [JOI委員会の2019年課題一覧](https://www2.ioi-jp.org/ioi/2019/tasks/index.html)。競技日1は2019年8月6日。難度の数値資料は不明のため設定しない。
+
+<TechniqueReferences techniqueId="oriented-equal-pair-adjacent-swaps-fenwick" />

@@ -1,0 +1,88 @@
+---
+title: "二つの選択肢の禁止組を含意に直す"
+description: "二者の選択が両立しない条件を二本の含意に変え、全選択を同時に決める。"
+techniqueId: two-sat-forbidden-pairs
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各要素に選択肢が二つあり、二者の特定の選択を同時に使うと衝突する。例は、二候補の位置のうち距離が近すぎる組、時間帯が重なる組、同じ設備を使えない組である。
+
+## 考え方
+
+選択を $x_i\in\{0,1\}$ とし、「$x_i=a$ と $x_j=b$ を同時に選べない」を
+
+$$ (x_i\ne a)\lor(x_j\ne b) $$
+
+へ直す。さらに、$x_i=a\Rightarrow x_j=1-b$ と $x_j=b\Rightarrow x_i=1-a$ の二本の辺を張る。各変数の0と1を別頂点にして、含意グラフを強連結成分へ分ける。
+
+同じ変数の0と1が同じ成分なら、どちらを選んでも反対の選択が強制されて不可能。異なるなら、成分のトポロジカル順序を使って割当てを作れる。この形式が2-SATである。
+
+## 適用条件
+
+各変数の選択肢が二つで、条件が高々二つの選択を禁止する節へ書けることが必要。三変数のうち少なくとも一つを選ぶ条件を、そのままこのグラフへ載せることはできない。また、禁止組の列挙が $O(N^2)$ かかる場合、SATを線形時間で解けてもその前処理は残る。
+
+## なぜ正しいか
+
+禁止組の節と二本の含意は真理値表が一致する。逆向きの含意は対偶も同時に含むので、一つの変数の両選択が相互到達する場合は必ず矛盾する。そうでなければ、成分をトポロジカル順に並べて各変数で後ろ側の選択を採用すると、真となった頂点から偽の頂点へ向かう含意がない割当てが得られる。
+
+## 計算量
+
+禁止組が $K$ 個なら、全割当て検査の $O(2^N K)$ 時間を $O(N+K)$ 時間・空間にできる。全二者四組を検査して禁止組を作る場合は、全体で $O(N^2)$ 時間。
+
+## 実装
+
+`forbid(i,a,j,b)` で禁止組を追加する。値を固定するには反対値の自己対を禁止する。`solve()` は割当てまたは `std::nullopt` を返す。強連結成分の両探索は反復処理で行う。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <optional>
+struct ForbiddenPairs {
+    int n;std::vector<std::vector<int>> g,rg;
+    explicit ForbiddenPairs(int count):n(count),g(2*count),rg(2*count) {}
+    void implication(int a,int b) {g[a].push_back(b);rg[b].push_back(a);}
+    void forbid(int i,int a,int j,int b) {
+        implication(2*i+a,2*j+(b^1));implication(2*j+b,2*i+(a^1));
+    }
+    std::optional<std::vector<int>> solve() const {
+        int size=2*n;std::vector<int> used(size),order,component(size,-1);
+        for(int s=0;s<size;++s) if(!used[s]) {
+            std::vector<std::pair<int,int>> stack{{s,0}};used[s]=1;
+            while(!stack.empty()) {
+                int v=stack.back().first;int& at=stack.back().second;
+                if(at<int(g[v].size())) {
+                    int u=g[v][at++];if(!used[u]) {used[u]=1;stack.push_back({u,0});}
+                } else {order.push_back(v);stack.pop_back();}
+            }
+        }
+        int id=0;
+        for(int k=size-1;k>=0;--k) {
+            int s=order[k];if(component[s]>=0) continue;
+            std::vector<int> stack{s};component[s]=id;
+            while(!stack.empty()) {
+                int v=stack.back();stack.pop_back();
+                for(int u:rg[v]) if(component[u]<0) {component[u]=id;stack.push_back(u);}
+            }
+            ++id;
+        }
+        std::vector<int> answer(n);
+        for(int i=0;i<n;++i) {
+            if(component[2*i]==component[2*i+1]) return std::nullopt;
+            answer[i]=component[2*i+1]>component[2*i];
+        }
+        return answer;
+    }
+};
+```
+
+## 関連する手法
+
+[強連結成分分解](/flowchartcp/techniques/scc/) ・ [同じ・異なるという二値制約を偶奇として伝播する](/flowchartcp/techniques/bipartite-parity-constraints/)
+
+## 参考資料
+
+- [ACL公式：2-SATと二候補の配置への実装例](https://atcoder.github.io/ac-library/production/document_en/twosat.html)
+
+<TechniqueReferences techniqueId="two-sat-forbidden-pairs" />

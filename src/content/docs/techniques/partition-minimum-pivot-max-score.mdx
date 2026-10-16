@@ -1,0 +1,115 @@
+---
+title: "区間最小値の担当ごとに、分割DPの最大値をまとめる"
+description: "区間の得点が最小要素の位置だけで決まるなら、始点の候補を併合し、各まとまりの最大値を保ちます。"
+techniqueId: partition-minimum-pivot-max-score
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+区間の得点が最小要素の位置だけで決まるなら、始点の候補を併合し、各まとまりの最大値を保ちます。
+
+## 使う場面
+
+各要素に比較用の値 $h_i$ と得点 $b_i$ がある。列全体を連続した非空区間へ分割し、各区間で $h_i$ が最小になる要素の得点 $b_i$ を加算して、総得点を最大にしたい。
+
+最後の区間の始点をすべて試すと $O(N^2)$。一方、右端を伸ばしたときに最小値の担当が変わる始点は、連続したまとまりになる。まとまりごとの「切れ目より前のDPの最大値」を持てば、線形時間で遷移できる。得点が負でも使える。
+
+## 考え方
+
+$d_i$ を先頭 $i$ 要素をすべて分割したときの最大得点とし、$d_0=0$ とする。区間 $[j,i]$ の最小値の担当を $p(j,i)$ と書くと、
+
+$$
+d_{i+1}=\max_{0\le j\le i}\left(d_j+b_{p(j,i)}\right).
+$$
+
+最小値が複数ある場合は、最も右の要素を担当にする。右端 $i$ を固定し、担当が同じになる始点を一つのまとまりにする。各まとまりには次を保存する。
+
+- 担当の比較用の値 $h_p$。
+- まとまり内の $\max d_j$。
+- スタックの底からこのまとまりまでの、遷移候補 $\max d_j+b_p$ の最大値。
+
+担当の $h_p$ が下から上へ狭義単調増加するようにスタックへ積む。
+
+要素 $i$ を加えると、新しい始点 $j=i$ の候補は $d_i$。末尾のまとまりで $h_p\ge h_i$ となるものを取り出し、その $\max d_j$ を新しい候補へ併合する。これらの始点では最小値の担当が $i$ になる。
+
+併合した始点の最大値を $W$ とすると、新しいまとまりの遷移候補は $W+b_i$。残ったスタックの末尾が持つ最大値との大きい方を、新しい「底からの最大値」として保存する。この値がそのまま $d_{i+1}$ になる。
+
+取り出したまとまりに保存されていた「底からの最大値」は併合しない。古い担当の得点が含まれているため、そのまま残すと、担当が変わった後も古い得点を使ってしまう。併合するのは $d_j$ だけである。
+
+## 適用条件
+
+- すべての要素を、ちょうど一つの非空区間に含める。
+- 区間の得点は、最小値を担当する一要素の $b_i$ だけで決まる。長さや他の要素の得点に依存する場合は、同じ情報だけでは遷移できない。
+- 分割の区間数には制約がない。区間数を固定するなら、その個数の状態を別に持つ必要がある。
+- 同じ比較値がある場合には、どの要素を担当にするかを先に決める。以下は最右の担当。最左を担当にする場合は、取り出す条件を `>` に変える。
+
+得点がすべて負でも、空の分割に置き換えてはいけない。例えば二要素の比較値が $[2,1]$、得点が $[-2,-3]$ なら、最大得点は一つの区間にまとめた $-3$ である。非空の先頭部分に対するDPを $0$ で下から抑えると、誤った答えになる。
+
+## なぜ正しいか
+
+最後の区間の始点 $j$ を決めると、その前は先頭 $j$ 要素の最適な分割にしてよい。最後の区間はその前の分け方に依存しないため、これで漸化式が得られる。
+
+同じ担当 $p$ を持つ始点では、加える得点 $b_p$ が共通である。したがって $d_j$ が最大のものだけ残せば、そのまとまりからの最良の遷移は変わらない。得点の正負はこの比較に影響しない。
+
+既存の担当の比較値が $h_p<h_i$ なら、そのまとまりの担当は変わらない。$h_p\ge h_i$ となる末尾のまとまりでは、新しい要素が最小値の担当になる。等しい場合も最右担当という規則により新しい要素へ移る。この併合によって、全始点が新しい最小値の担当ごとに再び一度ずつ表現される。
+
+残ったまとまりの遷移候補は変わらない。取り出されなかった末尾が保存する「底からの最大値」と、新しいまとまりの候補を比較すれば、全始点の候補の最大値になる。したがって各段階で求まる値は漸化式と一致する。
+
+## 計算量
+
+各要素はスタックへ一度入り、一度だけ取り出される。各まとまりの併合・最大値の更新は $O(1)$ なので、全体で時間 $O(N)$、追加空間 $O(N)$。各回の操作が最悪 $O(1)$ という意味ではなく、列全体での評価である。
+
+## 実装
+
+`partition_minimum_pivot_max_score` は最大得点を返す。二つの入力は同じ長さで、長さは $2^{31}-1$ 以下とする。比較用の値・得点は符号付き64ビット整数、比較値の重複は最右担当で扱う。空列の答えは $0$。
+
+得点の加算にはGNU C++の `__int128` を使う。上の長さ制限なら、任意の分割の得点の絶対値は $N\cdot 2^{63}<2^{94}$ で、この型に収まる。負の無限大の番兵は使わず、実在する非空区間の候補から最大値を作る。
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <stdexcept>
+#include <vector>
+
+__int128 partition_minimum_pivot_max_score(
+    const std::vector<long long>& height,
+    const std::vector<long long>& score) {
+    if (height.size() != score.size()) {
+        throw std::invalid_argument("height and score sizes differ");
+    }
+    if (height.size() > 2147483647ULL) {
+        throw std::length_error("too many elements");
+    }
+    struct Group {
+        long long height;
+        __int128 best_before;
+        __int128 best_in_prefix;
+    };
+    std::vector<Group> stack;
+    stack.reserve(height.size());
+    __int128 dp = 0;
+    for (std::size_t i = 0; i < height.size(); ++i) {
+        __int128 best_before = dp;
+        while (!stack.empty() && stack.back().height >= height[i]) {
+            best_before = std::max(best_before, stack.back().best_before);
+            stack.pop_back();
+        }
+        const __int128 candidate = best_before + static_cast<__int128>(score[i]);
+        const __int128 best_in_prefix = stack.empty()
+            ? candidate : std::max(candidate, stack.back().best_in_prefix);
+        stack.push_back({height[i], best_before, best_in_prefix});
+        dp = best_in_prefix;
+    }
+    return dp;
+}
+```
+
+## 関連する手法
+
+- [分割の重みに区間の最大値・最小値が掛かるなら、同じ極値の遷移をまとめる](/flowchartcp/techniques/partition-extrema-weighted-sum/)：同じ担当になる始点のDPを、最大値の代わりに総和で併合する。
+- [全区間の最大値を各要素の寄与に分ける](/flowchartcp/techniques/subarray-extremum-contribution/)：極値を担当する範囲を使う別の集計。
+
+## 参考資料
+
+- [Codeforces：1482E - Skyline Photo](https://codeforces.com/problemset/problem/1482/E)：高さがすべて異なり、区間の得点が最も低い要素の得点になる設定。上の遷移と実装は、この条件から導いている。
+
+<TechniqueReferences techniqueId="partition-minimum-pivot-max-score" />

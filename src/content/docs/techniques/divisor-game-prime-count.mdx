@@ -1,0 +1,54 @@
+---
+title: "真の約数へ変えるゲームは、重複込みの素因数の個数に置き換える"
+description: "値そのものを状態にせず、取り除ける素因数の個数で山を表します。"
+techniqueId: "divisor-game-prime-count"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+複数の整数から一つを選び、その整数を自分自身でない正の約数に変更できるゲーム。$1$ への変更も許されると、値の大小より「取り除ける素因数」が重要になります。
+
+## 考え方
+
+$x=\prod_p p^{e_p}$ に対して $\Omega(x)=\sum_p e_p$ と置きます。$24=2^3\cdot3$ なら $\Omega(24)=4$ です。真の約数への変更は素因数を一個以上取り除く操作なので、一つの山から任意の正の個数を取る Nim と同じです。全整数の $\Omega$ を XOR します。
+
+## 適用条件
+
+毎手一つの整数だけを変更し、操作不能になった側が負ける通常ルールです。全ての真の正の約数へ自由に変更できること。素数でしか割れない、約数1を禁止する、複数の整数を同時に変更する場合は同じ遷移集合になりません。重複する素因数を別々に数え、異なる素数の種類数と混同しません。
+
+## なぜ正しいか
+
+$\Omega(x)=t$ なら、真の約数の $\Omega$ は $0,\ldots,t-1$ の全てを取ります。実際、素因数を任意の個数だけ残して積を取ればよく、$t$ 個全てを残したものは元の整数なので遷移できません。従って mex は $t$。整数ごとの操作は独立なので XOR で全体を判定できます。
+
+## 計算量
+
+最大値を $M$ とします。約数の遷移を全て列挙する代わりに、最小素因数と $\Omega(x)=\Omega(x/\operatorname{spf}(x))+1$ を前計算すると、時間 $O(M\log\log M+n)$、空間 $O(M)$。大きな値が少数だけなら、試し割りで時間 $O(n\sqrt M)$、追加空間 $O(1)$ も選べます。
+
+## 実装
+
+篩の配列を作れる値域で使います。$1$ の値は0なので、既に操作不能になった山も同じ関数へ渡せます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+bool divisor_game_first_wins(const vector<int>& numbers){
+    int maximum=1;for(int x:numbers){assert(x>=1);maximum=max(maximum,x);}
+    vector<int> smallest(maximum+1),omega(maximum+1);
+    for(int p=2;p<=maximum;++p)if(smallest[p]==0)
+        for(long long x=p;x<=maximum;x+=p)if(smallest[x]==0)smallest[x]=p;
+    for(int x=2;x<=maximum;++x)omega[x]=omega[x/smallest[x]]+1;
+    int value=0;for(int x:numbers)value^=omega[x];
+    return value!=0;
+}
+```
+
+## 関連する手法
+
+[Grundy数](/flowchartcp/techniques/game-theory/)、[小さい入力で全探索する](/flowchartcp/techniques/brute-force-observation/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc368/editorial/10829)
+
+<TechniqueReferences techniqueId="divisor-game-prime-count" />

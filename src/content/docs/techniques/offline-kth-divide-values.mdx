@@ -1,0 +1,84 @@
+---
+title: "更新付きの区間順位を、答えの値でまとめて二分する"
+description: "値以下の個数を時系列で判定し、質問と更新を左右へ振り分ける。"
+techniqueId: offline-kth-divide-values
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一点代入と区間のk番目の値を多数処理したい。すべての操作を先に読める。順位を求めるたびに区間を並べ替えると、同じ値の比較を何度も繰り返す。
+
+## 考え方
+
+初期配列の各値を追加イベント、代入を「旧値を削除」「新値を追加」の二イベントにする。全値を圧縮し、答えの候補値区間を中点 $m$ で分ける。
+
+時系列順にイベントを走査する。$m$ 以下の値の追加・削除だけを位置のFenwick木へ反映し、各順位質問の区間内にある個数 $c$ を調べる。$k\le c$ なら答えは左側、そうでなければ右側で順位を $k-c$ へ変える。
+
+更新は値が属する側へ、質問は判定された側へ分ける。両列では元の時系列順を保つ。木への更新を取り消してから、左右を再帰する。
+
+## 適用条件
+
+全値・全操作が先に分かることが必要。質問の順位は有効な範囲にあることを確認する。重複値も個数へ含める。削除イベントだけを先に並べたり、左右への振り分けで時系列順を崩したりすると、存在しない時刻の配列を数えてしまう。
+
+## なぜ正しいか
+
+ある再帰段階では、質問の残り順位は候補値区間内だけの順位を表す。木はその時刻で候補左半分に属する値の個数を正確に持つ。左の個数より順位が大きい場合にその個数を引くことは、左半分を除いた順位への変換と一致する。候補が一点になるまでこの不変条件を保つため、元のk番目の値が得られる。
+
+## 計算量
+
+初期長 $N$、代入数 $U$、質問数 $Q$、異なる値数 $V$。区間を毎回ソートする $O(QN\log N)$ に対し、$O((N+U+Q)\log N\log(V+1))$ 時間。イベントの振り分けを含め $O(N+U+Q+V)$ 空間。
+
+## 実装
+
+`RankingOperation` の `type=0` は `[l,r)` の0始まりの順位 `k`、`type=1` は `a[l]=value`。本文中の判定式は1始まりの順位を使い、関数内で変換している。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <functional>
+#include <cassert>
+struct RankingOperation {int type,l,r,k;long long value;}; // type=0 query, k is zero-based; type=1 assignment
+std::vector<long long> dynamic_range_kth(std::vector<long long> a,
+    const std::vector<RankingOperation>& operations) {
+    int n=int(a.size());std::vector<long long> values=a;
+    for(auto o:operations) if(o.type==1) values.push_back(o.value);
+    std::sort(values.begin(),values.end());values.erase(std::unique(values.begin(),values.end()),values.end());
+    auto rank=[&](long long v){return int(std::lower_bound(values.begin(),values.end(),v)-values.begin());};
+    struct Event {int type,p,value,delta,l,r,k,id;};std::vector<Event> events;int q=0;
+    for(int i=0;i<n;++i) events.push_back({0,i,rank(a[i]),1,0,0,0,0});
+    for(auto o:operations) {
+        if(o.type==1) {assert(0<=o.l&&o.l<n);events.push_back({0,o.l,rank(a[o.l]),-1,0,0,0,0});events.push_back({0,o.l,rank(o.value),1,0,0,0,0});a[o.l]=o.value;}
+        else {assert(0<=o.l&&o.l<o.r&&o.r<=n&&0<=o.k&&o.k<o.r-o.l);events.push_back({1,0,0,0,o.l,o.r,o.k+1,q++});}
+    }
+    std::vector<long long> answer(q);std::vector<int> bit(n+1);
+    auto add=[&](int p,int d){for(++p;p<=n;p+=p&-p) bit[p]+=d;};
+    auto prefix=[&](int r){int s=0;for(;r;r-=r&-r) s+=bit[r];return s;};
+    std::function<void(int,int,std::vector<Event>)> solve=[&](int low,int high,std::vector<Event> e) {
+        if(e.empty()) return;
+        if(low==high) {for(auto x:e) if(x.type==1) answer[x.id]=values[low];return;}
+        int mid=(low+high)/2;std::vector<Event> left,right;
+        for(auto x:e) {
+            if(x.type==0) {if(x.value<=mid) {add(x.p,x.delta);left.push_back(x);}else right.push_back(x);}
+            else {int count=prefix(x.r)-prefix(x.l);if(x.k<=count) left.push_back(x);else {x.k-=count;right.push_back(x);}}
+        }
+        for(auto x:e) if(x.type==0&&x.value<=mid) add(x.p,-x.delta);
+        std::vector<Event>().swap(e);solve(low,mid,std::move(left));solve(mid+1,high,std::move(right));
+    };
+    if(!values.empty()) {solve(0,int(values.size())-1,std::move(events));}
+    return answer;
+}
+```
+
+## 関連する手法
+
+[二つの接頭辞の頻度差から、区間のk番目へ降りる](/flowchartcp/techniques/persistent-prefix-kth/) ・ [値の桁で安定に二分し、区間の順位を写し替える](/flowchartcp/techniques/wavelet-range-kth/) ・ [区間の質問を、端点と更新時刻の三方向へ並べ替える](/flowchartcp/techniques/mo-with-updates/)
+
+## 参考資料
+
+- [SPOJ：K-th Number の原典](https://www.spoj.com/problems/MKTHNUM/)
+- [SPOJ 公式サーバーの問題本文](https://new3.spoj.com/problems/MKTHNUM/)
+
+- [洛谷：Dynamic Rankings（原典の条件）](https://www.luogu.com.cn/problem/P2617)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="offline-kth-divide-values" />

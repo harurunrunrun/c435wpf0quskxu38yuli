@@ -1,0 +1,96 @@
+---
+title: "K個を選ぶ最大値と最小値の総和は、並べた順位ごとの二項係数にする"
+description: "同じ値でも添字を区別し、最後に選んだ順位と最初に選んだ順位へ極値の寄与を割り当てる。"
+techniqueId: subset-extrema-rank
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+配列からちょうど $K$ 個を選び、全ての選択の最大値・最小値やその差を合計したい。各部分集合で極値を求める代わりに、各要素が極値を担当する選択数を数える。
+
+## 考え方
+
+値を昇順に並べ、0始まりの順位 $i$ の値を $a_i$ とする。選んだ順位の中で最後の順位が $i$ となるには、残りの $K-1$ 個を前の $i$ 箇所から選ぶ。最大値の総和は
+
+$$\sum_{i=0}^{N-1}a_i\binom i{K-1}.$$
+
+最初の順位が $i$ となる選び方は $\binom{N-1-i}{K-1}$ 個なので、最大値と最小値の差の総和は
+
+$$\sum_{i=0}^{N-1}a_i\left(\binom i{K-1}-\binom{N-1-i}{K-1}\right).$$
+
+同じ値を持つ要素も順位を別にする。最後の順位を代表に決めれば、最大値が複数あっても寄与の重複を防げる。
+
+## 適用条件
+
+各添字を区別する無制約の $K$ 要素選択で、選択順は区別しない。値が同じ要素をまとめて一個とする選択や、連続区間だけを選ぶ問題では選択数が異なる。
+
+掲載実装は $1\le K\le N<P=10^9+7$。値は符号付き64ビット整数で、剰余へ正規化してから掛けるので負数も扱える。$K=1$ の差の総和は0。二つの総和を別々に返すため、重み付きの組合せにも再利用できる。
+
+## なぜ正しいか
+
+各選択集合には最初と最後の順位が一意にある。その最大値は最後の順位の値であり、最小値は最初の順位の値である。各順位の担当する集合数を二項係数で数えると、全ての集合の最大値と最小値がそれぞれ一回だけ加算される。
+
+等値を並べる順序を変えても、担当する要素の値は同じなので総和は変わらない。添字の異なる等値要素を区別する条件とも一致する。
+
+## 計算量
+
+全選択の列挙は $O(K\binom NK)$ 時間。整列と階乗表の作成を含めて $O(N\log N+\log P)$ 時間、配列のコピーと階乗表に $O(N)$ 空間。順位ごとの寄与は $O(1)$ で計算する。
+
+## 実装
+
+`subset_extrema_sums` は `(最大値の総和, 最小値の総和)` の剰余を返す。差を求める場合は二つを引いて法を足す。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+#include <utility>
+constexpr long long EXTREMA_MOD=1000000007;
+std::pair<long long,long long> subset_extrema_sums(std::vector<long long> values,int k) {
+    int n=int(values.size());
+    if(k<1 || k>n) throw std::invalid_argument("selection size");
+    std::sort(values.begin(),values.end());
+    BinomialTable<EXTREMA_MOD> combinations(n);
+    long long maxima=0,minima=0;
+    for(int i=0;i<n;++i) {
+        long long value=values[i]%EXTREMA_MOD;
+        if(value<0) value+=EXTREMA_MOD;
+        maxima=(maxima+value*combinations.choose(i,k-1))%EXTREMA_MOD;
+        minima=(minima+value*combinations.choose(n-1-i,k-1))%EXTREMA_MOD;
+    }
+    return {maxima,minima};
+}
+```
+
+## 関連する手法
+
+[全区間の最大値を各要素の寄与に分ける](/flowchartcp/techniques/subarray-extremum-contribution/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [AtCoder：E - Max-Min Sums（原典）](https://atcoder.jp/contests/abc151/tasks/abc151_e)。
+
+<TechniqueReferences techniqueId="subset-extrema-rank" />

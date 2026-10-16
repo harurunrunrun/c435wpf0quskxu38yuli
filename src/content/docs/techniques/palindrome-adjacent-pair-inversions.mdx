@@ -1,0 +1,120 @@
+---
+title: "隣接交換で回文にする最少回数は、同じ文字を両端から組にして転倒数へ直す"
+description: "同じ文字の対応を外側から決め、残った組の左端順に回文の位置を割り当てる。"
+techniqueId: palindrome-adjacent-pair-inversions
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+文字列の隣り合う二文字を何度でも交換できる。作る回文は指定されておらず、どれかの回文にする最少交換回数を求めたい。
+
+左右の端をそろえるため、対応する文字を一文字ずつ動かす方法は $O(N^2)$ 時間になり得る。実際に交換する代わりに、**各文字が最終的に置かれる位置を決め、そこへ並べ替える転倒数を数える**。
+
+## 考え方
+
+まず各文字の出現回数を数える。奇数回現れる文字が二種類以上なら回文にはできない。奇数回の文字が一種類なら、その中央の一個を回文の中央に置く。
+
+同じ文字の出現位置を昇順に並べ、先頭と末尾、次の先頭と次の末尾、という順に組にする。例えば、同じ文字の位置が $p_0<p_1<p_2<p_3$ なら、組は $(p_0,p_3),(p_1,p_2)$ になる。
+
+次に、まだ割り当てていない元の位置を左から見る。そこが組の左端なら、その組を、回文のまだ空いている最も外側の左右二位置へ置く。一個だけ残る文字は中央へ置く。こうして、元の各位置 $i$ に行き先 $t_i$ を割り当てる。
+
+答えは行き先列 $t$ の転倒数である。Fenwick Treeで、既に現れた行き先のうち $t_i$ より大きい個数を数えて足す。
+
+例えば `mamad` には、文字mの組 $(0,2)$、aの組 $(1,3)$、中央に置くdがある。行き先は $[0,1,4,3,2]$ となり、転倒数は3になる。
+
+## 適用条件
+
+- 任意の隣接二文字を、同じ費用1で交換できる。
+- 文字の追加・削除・変更は行わず、文字の個数を保つ。
+- 作る回文そのものは自由であり、中央や各位置の文字に追加条件がない。
+
+離れた二位置を一回で交換できる場合は転倒数にならない。場所によって交換費用が異なる場合や、特定の回文へ変換する場合も、ここでの組の順序の決め方をそのまま使わない。
+
+## なぜ正しいか
+
+同じ文字同士の順序を入れ替える必要はない。目標文字列で、ある文字の左から第 $k$ 番目を元の左から第 $k$ 番目に対応させれば、同じ文字の交差を除ける。回文では同じ文字の左右対称の位置を組にするので、元の同じ文字も両端から組になる。
+
+この組を回文のどの深さへ置くかだけが残る。二組の元の位置を $l_1<r_1,l_2<r_2$、$l_1<l_2$ とする。
+
+- $r_1<l_2$ なら、どちらを外側にしても二組間の交差は2個。
+- $l_2<r_1<r_2$ なら、どちらを外側にしても交差は1個。
+- $l_2<r_2<r_1$ なら、一組目を外側にすれば交差は0個、逆なら2個。
+
+従って、左端順に外側から置けば、包含する組を必ず外側にでき、全ての二組間で最少の交差数を同時に達成する。中央の一文字との交差数は、その元の位置が組の内側なら0、外側なら1であり、組の深さに依存しない。同じ組の左右二文字の順序も保たれる。
+
+割り当て後は異なる行き先の順列になる。隣接交換一回で転倒数は高々1しか減らず、逆転した隣接対を交換し続ければ毎回1ずつ減らせる。よって転倒数が、その割り当てへの最少交換回数であり、回文全体でも最少になる。
+
+## 計算量
+
+対応する文字を実際に隣接交換する方法は $O(N^2)$ 時間。出現位置と行き先の作成は $O(N)$、転倒数の計算は $O(N\log(N+1))$ 時間、全体の空間は $O(N)$ になる。
+
+## 実装
+
+`minimum_adjacent_swaps_to_palindrome(s)` は最少回数を `long long` で返し、回文にできなければ $-1$ を返す。文字は英小文字、長さは200000以下。空文字列の答えは0。文字や長さの条件違反は `invalid_argument`。
+
+元の問題には回文にできる保証があるが、掲載実装では出現回数の確認も行う。交換回数は32ビットに収まるとは限らない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long minimum_adjacent_swaps_to_palindrome(const string& s) {
+    if (s.size() > 200000) throw invalid_argument("string too long");
+    int n = static_cast<int>(s.size());
+    array<vector<int>, 26> positions;
+    for (int i = 0; i < n; ++i) {
+        if (s[i] < 'a' || s[i] > 'z') throw invalid_argument("invalid character");
+        positions[s[i] - 'a'].push_back(i);
+    }
+    int odd = 0;
+    vector<int> partner(n, -1);
+    for (const auto& list : positions) {
+        int count = static_cast<int>(list.size());
+        odd += count % 2;
+        for (int k = 0; k < count / 2; ++k) {
+            int left = list[k], right = list[count - 1 - k];
+            partner[left] = right;
+            partner[right] = left;
+        }
+        if (count % 2) partner[list[count / 2]] = list[count / 2];
+    }
+    if (odd > 1) return -1;
+    vector<int> target(n, -1);
+    int next_left = 0;
+    for (int i = 0; i < n; ++i) {
+        if (target[i] != -1) continue;
+        int j = partner[i];
+        if (i == j) {
+            target[i] = n / 2;
+        } else {
+            target[i] = next_left;
+            target[j] = n - 1 - next_left;
+            ++next_left;
+        }
+    }
+    vector<int> bit(n + 1, 0);
+    long long answer = 0;
+    for (int i = 0; i < n; ++i) {
+        int at_most = 0;
+        for (int p = target[i] + 1; p > 0; p -= p & -p) at_most += bit[p];
+        answer += i - at_most;
+        for (int p = target[i] + 1; p <= n; p += p & -p) ++bit[p];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [転倒数を数えるFenwick Tree](/flowchartcp/techniques/fenwick-tree/)：行き先の大小を集計する。
+- [編集と隣接交換の対応DP](/flowchartcp/techniques/assignment-adjacent-swap-mask/)：編集も許す場合は、対応を決めながら交換費用を足す。
+- [位置の入れ替えによる順列の整列](/flowchartcp/techniques/permutation-cycle-minimum-swaps/)：任意二位置の交換では、隣接交換とは必要回数が異なる。
+
+## 参考資料
+
+- [LeetCode 2193：Minimum Number of Moves to Make Palindrome](https://leetcode.com/problems/minimum-number-of-moves-to-make-palindrome/) — 隣接交換で任意の回文を作る最少回数を求める原典。
+
+組の包含関係による最適性と転倒数への変換は、原典の操作から導出した。
+
+<TechniqueReferences techniqueId="palindrome-adjacent-pair-inversions" />

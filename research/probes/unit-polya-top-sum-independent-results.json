@@ -1,0 +1,30 @@
+{
+  "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+  "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+  "method": "Nonincreasing integer partitions weighted by N!/(N-k)! / product(multiplicity!) over positive parts; literal top-r sums. No labeled weak-composition enumeration, owner-history enumeration, peeling recurrence, or inclusion-exclusion/marked-subset inversion.",
+  "integerPartitions": 62497,
+  "parameterPairs": 200,
+  "expectedValueComparisons": 1085,
+  "additionalPositiveMinimumTailCases": 60,
+  "maximumExactRationalError": 6.821210263296962e-13,
+  "worstParameters": [
+    499,
+    500,
+    498
+  ],
+  "checksum": "9209358677489316410",
+  "apiMemoryAndWriter": {
+    "memoryWriterChecks": 13,
+    "apiOnlyPeakRequestedAllocationBytes": 6016008,
+    "doubleBytes": 8,
+    "liveRequestedBytesAfterCall": 0
+  },
+  "decimalErrorBoundRecalculation": {
+    "relativeUpper": "5.57889290351252704453690151927575339981238121251876859548409800113583420406599183636769839361932164E-11",
+    "relativeLowerMagnitude": "5.578892903511287045170806859318707472147621497315545462928457356247217172763071798040975211980928672E-11",
+    "absoluteWithSerializationUpper": "5.57899290351252704453690151927575339981238121251876859548409800113583420406599183636769839361932164000E-8"
+  },
+  "seconds": 0.8495603299961658,
+  "sanitizerForThisAdditionalProbe": false,
+  "sharedOrAuthorArtifactsModified": false
+}

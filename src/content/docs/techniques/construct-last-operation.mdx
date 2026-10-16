@@ -1,0 +1,56 @@
+---
+title: "挿入の構築を、最後に取り除ける要素から逆算する"
+description: "位置 j に値 j を入れる操作は、完成形の位置と値が一致する要素を消す操作へ反転します。"
+techniqueId: "construct-last-operation"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+空の列から、現在の位置 $j$ に値 $j$ を挿入する操作で、指定された列を作りたいとき。前から作ると、挿入で後ろの位置が変わります。
+
+## 考え方
+
+完成形から逆に考えます。最後に挿入した要素は、1 始まりの位置と値が一致するはずです。該当する位置のうち最も右を消し、残りにも同じ操作を繰り返します。
+
+一致する位置がなければ構築できません。記録した削除値を逆順にすると、実際の挿入手順になります。
+
+## 適用条件
+
+値 $j$ を位置 $j$ に挿入する、この操作に限った判断です。任意の値を挿入できる問題へ同じ規則を流用できません。添字を 0 始まりで実装するなら一致条件は $b[i]=i+1$。
+
+## なぜ正しいか
+
+一致する位置を左から消すと、それより右の一致要素は値が位置より大きくなります。以後の削除で位置は増えないので、その要素を消せず、最後まで残ってしまいます。したがって成功する手順では最も右の一致要素を次に消す必要があります。逆順に挿入すると削除前の列を逐次復元できます。
+
+## 計算量
+
+前向きに全ての挿入手順を列挙すると最大 $N!$ 通り。改善後は一致要素の探索と削除を繰り返して時間 $O(N^2)$、空間 $O(N)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<vector<int>> insertion_plan(vector<int> b){
+    vector<int> removed;
+    while(!b.empty()){
+        int chosen=-1;
+        for(int i=(int)b.size()-1;i>=0;--i)
+            if(b[i]==i+1){chosen=i;break;}
+        if(chosen<0)return nullopt;
+        removed.push_back(b[chosen]);b.erase(b.begin()+chosen);
+    }
+    reverse(removed.begin(),removed.end());return removed;
+}
+```
+
+## 関連する手法
+
+[逆順処理](/flowchartcp/techniques/reverse-thinking/)
+
+## 参考資料
+
+- [AtCoder：Limited Insertion の問題文](https://atcoder.jp/contests/agc032/tasks/agc032_a)
+
+<TechniqueReferences techniqueId="construct-last-operation" />

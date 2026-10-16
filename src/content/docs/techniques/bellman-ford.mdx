@@ -1,0 +1,79 @@
+---
+title: "ベルマン–フォード法"
+description: "すべての辺による距離の更新を繰り返し、負の辺や負閉路を扱う。"
+techniqueId: bellman-ford
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+すべての辺による距離の更新を繰り返し、負の辺や負閉路を扱う。
+
+## 使う場面
+
+負の費用を持つ辺があるグラフで最短距離を求めるときに使う。利益の最大化を費用の最小化に直した場合や、二つの変数の差に対する制約を調べる場合にも現れる。
+
+## 考え方
+
+始点の距離を0、それ以外を無限大にする。すべての辺について、その辺を通る方が短ければ距離を更新する。この全辺の走査を繰り返す。
+
+負閉路がなければ、$V-1$ 回の走査で最短距離が求まる。$V$ 回目にも改善する頂点があるなら、始点から到達できる負閉路の影響がある。その頂点から到達できる先も、費用をいくらでも小さくできる。
+
+## 適用条件
+
+始点から到達できない頂点を、無限大から緩和してはいけない。負閉路が存在しても、その閉路から到達できない頂点の距離まで無効になるわけではない。
+
+グラフのどこかに負閉路があるかを調べる場合は、すべての頂点の距離を0にして始める方法がある。SPFAで高速になる入力もあるが、一般の最悪時間は改善されない。
+
+## なぜ正しいか
+
+$k$ 回の全辺走査を終えれば、辺数が $k$ 以下の経路はすべて距離の候補に反映されている。負閉路がなければ、最短経路から閉路を除いて単純路にでき、その辺数は高々 $V-1$ である。さらに改善が続く場合は、費用を下げる閉路を通っている。この閉路を繰り返すことで、その先の距離をいくらでも減らせる。
+
+## 計算量
+
+距離更新に $O(VE)$ 時間、負閉路の影響を広げる探索に $O(V+E)$ 時間がかかる。空間は $O(V+E)$。一度の走査で更新がなければ、その時点で終了できる。
+
+## 実装
+
+`bellman_ford` は距離と負閉路の影響を返す。`negative[v]` が `true` の頂点では、`distance[v]` を有限の最短距離として使わない。すべての更新途中の値と加算結果の絶対値が $2^{60}$ 未満となる入力を扱う。
+
+```cpp
+#include <vector>
+#include <queue>
+#include <cassert>
+using namespace std;
+struct BFEdge { int from,to; long long weight; };
+struct BFResult { vector<long long> distance; vector<bool> negative; };
+BFResult bellman_ford(int n,const vector<BFEdge>& edges,int s) {
+    const long long INF=1LL<<60;
+    assert(0<=s && s<n);
+    vector<long long> d(n,INF);
+    vector<bool> bad(n,false);
+    vector<vector<int>> g(n);
+    for(auto e:edges) g[e.from].push_back(e.to);
+    queue<int> q;
+    d[s]=0;
+    for(int step=0;step<n;++step) {
+        bool changed=false;
+        for(auto e:edges) if(d[e.from]!=INF && d[e.to]>d[e.from]+e.weight) {
+            d[e.to]=d[e.from]+e.weight;
+            changed=true;
+            if(step==n-1 && !bad[e.to]) { bad[e.to]=true; q.push(e.to); }
+        }
+        if(!changed) break;
+    }
+    while(!q.empty()) {
+        int v=q.front();q.pop();
+        for(int u:g[v]) if(!bad[u]) { bad[u]=true;q.push(u); }
+    }
+    return {d,bad};
+}
+```
+
+## 関連する手法
+
+[ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [強連結成分分解](/flowchartcp/techniques/scc/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [USACO Guide: Negative Shortest Paths](https://usaco.guide/adv/sp-neg)
+
+<TechniqueReferences techniqueId="bellman-ford" />

@@ -1,0 +1,184 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc354_f",
+    "title": "F - Useless for LIS",
+    "url": "https://atcoder.jp/contests/abc354/tasks/abc354_f",
+    "techniqueIds": [
+      "lis-through-each-position"
+    ],
+    "features": [
+      "添字の順序を保ち、値が厳密に増加する最長の部分列を考える",
+      "各位置を含む最長の部分列が存在するかを全位置で判定する",
+      "列の更新はなく、全ケースの要素数合計は200000以下"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc354/editorial/10037",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "notes": "前後の最長の長さを足して現在位置の重複1を引き、全体の最長の長さと比べる。狭義増加なので値が等しい遷移元を含めない。開催日2024年5月18日を原典で確認。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2024-05-18"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "486E",
+    "title": "E - LIS of Sequence",
+    "url": "https://codeforces.com/problemset/problem/486/E",
+    "techniqueIds": [
+      "lis-through-each-position"
+    ],
+    "features": [
+      "添字の順序を保ち、値が厳密に増加する最長の部分列を考える",
+      "各位置を不使用・一部で使用・全てで使用に分類する",
+      "同じ値の異なる位置も別々に扱い、要素数は100000以下"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/486/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "前後の長さで使用できる位置を抽出し、その位置で終わる長さごとに候補を数える。使用できない位置を段の候補数へ混ぜない。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "673",
+    "title": "Number of Longest Increasing Subsequence",
+    "url": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/",
+    "techniqueIds": [
+      "lis-length-count-monoid"
+    ],
+    "features": [
+      "添字の順序を保ち、値が厳密に増加する最長の部分列を考える",
+      "最長の長さを実現する添字の選び方の個数を求める",
+      "同じ値の別位置を区別し、答えは32ビット整数に収まる"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "値の異なる部分列だけを重複なく数える問題ではない。長さ最大と同率の個数加算を組にして問い合わせ、遷移元が空のときだけ1通りを作る。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc234_g",
+    "title": "Divide a Sequence",
+    "url": "https://atcoder.jp/contests/abc234/tasks/abc234_g",
+    "techniqueIds": [
+      "partition-extrema-weighted-sum"
+    ],
+    "features": [
+      "長さ300000以下の整数列を、連続した非空区間へ分割する",
+      "分割ごとに区間の(max-min)を掛け、その値をすべての分割について足す",
+      "答えは998244353による剰余",
+      "同じ値の要素があってもよい"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc234/editorial/3227?lang=ja",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "notes": "公式問題文のN≤300000・正整数列と、公式解説3227のdp重み付き極値スタックを確認。開催日は原典に2022-01-08と明記。独自実装は負のsigned64入力にも拡張し、max-minを生の64bitで計算しない。 掲載C++20を抽出し、独立した部分列・区間分割の全列挙と比較して一致。重複・剰余0・負数・64ビット端点を確認した。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2022-01-08"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "1482E",
+    "title": "Skyline Photo",
+    "url": "https://codeforces.com/problemset/problem/1482/E",
+    "techniqueIds": [
+      "partition-minimum-pivot-max-score"
+    ],
+    "features": [
+      "比較用の高さはすべて異なる",
+      "全要素を連続した非空区間へ分割する",
+      "区間の得点は高さが最小の要素の得点",
+      "得点は負の場合もある",
+      "区間数の指定はない"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/1482/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "notes": "原典本文でN≤300000、高さは1..Nの相異なる整数、得点は-10^9..10^9を確認。同ページの公式レーティング2100を確認。公式tutorial88963は本文がTutorial is loading...のみで取得不能のため、当対応は問題条件から独立に導出したものとして記録。公開日が原典本文から確認できないため基準日以前の厳密な日付確認は未完。独自実装は等高さの最右担当にも拡張。 掲載C++20を抽出し、独立した部分列・区間分割の全列挙と比較して一致。重複・剰余0・負数・64ビット端点を確認した。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "546",
+    "title": "Remove Boxes",
+    "url": "https://leetcode.com/problems/remove-boxes/",
+    "techniqueIds": [
+      "interval-removal-carried-group"
+    ],
+    "features": [
+      "現在の列の同色連続区間を削除できる",
+      "削除個数の二乗を得点とし、全削除の得点を最大化する",
+      "間の要素を消すと、離れていた同色が隣り合う",
+      "元の長さは100以下"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/remove-boxes/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "notes": "公式問題文の条件から独立に状態と漸化式を導出し、掲載C++20を問題設定を直接表す全探索と比較した。 原典のN最大100・二乗得点・Hardを確認。全3色列で各手の同色連続区間の全削除を比較し、任意得点関数へ一般化しない条件も明記。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "dp_t",
+    "title": "Permutation",
+    "url": "https://atcoder.jp/contests/dp/tasks/dp_t",
+    "techniqueIds": [
+      "permutation-inequality-last-rank"
+    ],
+    "features": [
+      "全要素が異なる値の固定集合を、一度ずつ使う順列",
+      "条件は隣接要素の厳密な大小だけ",
+      "条件を満たす順列数を法1000000007で求める",
+      "要素数は3000以下"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/dp/tasks/dp_t",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "notes": "公式問題文の条件から独立に状態と漸化式を導出し、掲載C++20を問題設定を直接表す全探索と比較した。 公式原典の2019-01-06開催・N最大3000・法10^9+7を確認。隣接不等号の全順列と比較した。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-01-06"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "903",
+    "title": "Valid Permutations for DI Sequence",
+    "url": "https://leetcode.com/problems/valid-permutations-for-di-sequence/",
+    "techniqueIds": [
+      "permutation-inequality-last-rank"
+    ],
+    "features": [
+      "全要素が異なる値の固定集合を、一度ずつ使う順列",
+      "条件は隣接要素の厳密な大小だけ",
+      "条件を満たす順列数を法1000000007で求める",
+      "I/Dの増減指定、要素数は201以下"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/valid-permutations-for-di-sequence/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "notes": "公式問題文の条件から独立に状態と漸化式を導出し、掲載C++20を問題設定を直接表す全探索と比較した。 公式原典のN最大200・法10^9+7・Hardを確認。I/Dだけの入力と、記事で追加した条件なしの拡張も実際の順列列挙と比較した。",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "cutoffVerification": "undated-archive"
+  }
+]

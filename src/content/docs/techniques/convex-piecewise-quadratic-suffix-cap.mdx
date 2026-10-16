@@ -1,0 +1,203 @@
+---
+title: "行数が巨大な格子の最小費用を、区分二次式で保つ"
+description: "二乗の追加を区分の生成列で遅延し、下移動による末尾の直線化をスタックの削除と整数二分探索で処理する。"
+techniqueId: convex-piecewise-quadratic-suffix-cap
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+行数が非常に大きい格子で、共通の始点から各地点までの最小費用を求めます。列を一つ進む費用が現在の行番号 $x$ の二乗、行を一つ進む費用が現在の列に決められた定数 $c$ です。行・列の番号は1から始まり、どちらも増える方向にしか進めません。
+
+行ごとに DP を持つと間に合わない一方、列数と問い合わせ数なら走査できる場合に使います。一つの列の答えを、行番号を引数とする関数としてまとめます。必要なのは、二次関数を足す操作と、末尾の増分を一定値で打ち切る操作です。
+
+## 考え方
+
+現在の列の最小費用を $f(x)$ とします。最初の列は $f(x)=(x-1)c_1$ です。次の列の行 $t$ へ進んでから下へ移動すると、次の列の費用は
+
+$$
+g(x)=f(x)+x^2,\qquad
+f_{\mathrm{new}}(x)=\min_{1\le t\le x}\{g(t)+c(x-t)\}
+$$
+
+になります。ここで $c$ は**移動先の列**の下移動費用です。
+
+離散的な増分を $\Delta g(x)=g(x+1)-g(x)$ とします。これが単調に増えるなら、$\Delta g(x)>c$ となる最初の行 $t$ まで $g$ を残し、それより下を $g(t)+c(x-t)$ に置き換えるだけでよくなります。超える場所がなければ $t=N$ とし、変更しません。等号なら元の部分を残す約束です。
+
+関数を二次式の区分として保存します。零始まりで現在の列を $j$ とすると、列 $k$ で作った直線 $bx+d$ は、その後の二乗追加によって
+
+$$p(x)=(j-k)x^2+bx+d$$
+
+になります。生成列 $k$ を記録すれば、二乗の追加のたびに全区分を書き換えずに済みます。
+
+各区分は右端を持ち、右端が増える順にスタックへ積みます。行1は必ず残る番兵として独立させます。末尾の区分が始まる直前の行を $l$ とし、その二次式を $p$ とします。$p(l+1)-p(l)>c$ なら、この区分全体が不要なので削除します。削除できなくなった区分の中で打切り位置を二分探索し、新しい末尾の直線を一つ追加します。
+
+## 適用条件
+
+始点は $(1,1)$、行・列とも番号を増やす移動だけを許します。障害物はなく、列を進む費用は行番号の二乗、下へ進む費用はその列で一定です。自由な辺費用や、別の始点・逆方向の移動には、この更新をそのまま使いません。
+
+掲載 API は $1\le N\le10^9$、列数 $1\le M\le200000$、各列費用 $1\ldots10^9$、問い合わせ数 $0\ldots200000$ に対応します。問い合わせの行・列はともに1始まりです。範囲外の値、空の列費用、個数上限超過は `invalid_argument` にします。公式原典の $N,M\ge2$ を、一行・一列の場合にも拡張しています。
+
+まとめて問い合わせる API は列順に処理し、返す配列は入力順に戻します。逐次 API が持つのは現在の列の関数だけです。前の列へ戻って質問したい場合は、まとめて問い合わせる API を使います。
+
+公式原典は $2\le N\le10^9$、$2\le M\le200000$、$1\le Q\le200000$、$1\le c_y\le10^9$ です。列番号を増やす移動と行番号を増やす移動が指定されているので、図の左右の向きに依存せずこの二操作をモデル化します。[USACO 公式原典](https://usaco.org/index.php?page=viewproblem2&cpid=1093)
+
+## なぜ正しいか
+
+各経路は、移動先の列に初めて入る行 $t$ を一意に持ちます。それ以降は同じ列を下へ進むだけなので、先ほどの最小化は全経路を過不足なく含みます。
+
+初期関数の増分は一定です。増分が非減少な $f$ に二乗を足すと、$\Delta g(x)=\Delta f(x)+2x+1$ は狭義に増加します。$h(x)=g(x)-cx$ と置くと、$h$ は $\Delta g(x)\le c$ の間は非増加、それを超えた後は増加します。従って行 $x$ までの最小値は、打切り行に達するまでは $h(x)$、達した後は $h(t)$ です。これを $cx$ に戻すと、残す部分と末尾の直線という式になります。
+
+更新後の増分は $\min(\Delta g(x),c)$ です。これは非減少なので、次の列にも同じ議論を使えます。最初に超える位置を使うため、等号の増分を残しても答えは変わりません。
+
+スタックでは、隣り合う区分の境界行 $l$ で、両方の式が同じ値を持つことを保ちます。新しい末尾を $g(t)+c(x-t)$ として作れば、境界 $t$ で確かに一致します。後から両方へ同じ $x^2$ を足しても、この性質は保たれます。したがって、次の区分の式を境界行まで延長して求めた $p(l+1)-p(l)$ は、実際の関数の増分と一致します。
+
+この増分が $c$ を超えるなら、単調性から打切り位置は $l$ 以下です。末尾の区分を全部捨てて構いません。超えなければ、それより前の増分も超えないので、打切り位置はこの区分内、またはその右端です。さらに右の区分を既に捨てた場合、その右端の直後は必ず打切りの対象です。捨てていない場合の右端は盤面の最終行です。このため、区分の右端を「区分内には超える場所がない」という二分探索の返り値として使えます。
+
+行1の値は常にそこまでの列移動回数です。下への移動では変わらないので、番兵は削除しません。こうして各更新が正しい関数を保ち、右端を二分探索して選んだ式を評価すれば、一点の最小費用が得られます。
+
+## 計算量
+
+一列につき追加する区分は高々一つです。一度削除した区分は復活しないため、全列での削除回数は $O(M)$ です。削除を終えた区分内では一列につき高々一度、整数の行番号を二分探索するので、全更新は $O(M\log(N+1))$ 時間です。
+
+区分数は $O(M)$、一点評価は $O(\log(M+1))$ 時間です。まとめて問い合わせる API は、列ごとの振り分けを含めて $O(M\log(N+1)+Q\log(M+1))$ 時間、$O(M+Q)$ 補助空間です。逐次 API の保持空間は $O(M)$ です。
+
+行1で目的の列まで進んでから下へ降りれば、答えは $(M-1)+(N-1)10^9<10^{18}$ 以下です。ただし、二次式の係数は最大で列数程度になり、式の各項を無条件に評価すると $2\cdot10^{23}$ 程度まで増え得ます。掲載コードは最初の乗算前から `__int128_t` に広げ、最終結果だけ符号付き64ビットへ戻します。定数項も128ビットで保持します。各定数項は、打切り時点の $g(t)-ct$ から作るため、上の経路費用上界と $t^2\le10^{18}$ を使えば絶対値 $2\cdot10^{18}$ 以下に収まります。
+
+## 実装
+
+`QuadraticGridProfile(rows, first_cost)` は最初の列を作ります。`next_column(cost)` が次列への更新、`value(row)` が現在の列の一点評価です。`next_column` は最初の列も含めて200000列まで許し、不正な費用や列数超過の例外では状態を変えません。
+
+`minimum_quadratic_grid_costs(rows, down_cost, queries)` は任意の順序・重複を許す問い合わせをまとめて返します。空の問い合わせでも入力の費用と大きさは検査します。C++20 と、GCC・Clang の128ビット整数拡張を使用します。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+class QuadraticGridProfile {
+    using Wide = __int128_t;
+    struct Piece {
+        int end, born;
+        std::int64_t slope;
+        Wide constant;
+    };
+    int rows_, column_ = 0;
+    std::vector<Piece> pieces_;
+
+    static void check_cost(std::int64_t cost) {
+        if (cost < 1 || cost > 1000000000)
+            throw std::invalid_argument("down cost must be in 1..1e9");
+    }
+    Wide evaluate(const Piece& p, std::int64_t row) const {
+        return Wide(column_ - p.born) * row * row
+             + Wide(p.slope) * row + p.constant;
+    }
+    Wide difference(const Piece& p, std::int64_t row) const {
+        return Wide(column_ - p.born) * (2 * Wide(row) + 1) + p.slope;
+    }
+
+public:
+    // Initially represents column 1: f(row) = (row-1)*first_down_cost.
+    QuadraticGridProfile(std::int64_t rows, std::int64_t first_down_cost) {
+        if (rows < 1 || rows > 1000000000)
+            throw std::invalid_argument("row count must be in 1..1e9");
+        check_cost(first_down_cost);
+        rows_ = int(rows);
+        pieces_.push_back({1, 0, first_down_cost, -Wide(first_down_cost)});
+        if (rows_ > 1)
+            pieces_.push_back({rows_, 0, first_down_cost, -Wide(first_down_cost)});
+    }
+
+    // Add row^2, then replace each value by min_{t<=row}(g(t)+(row-t)*cost).
+    // This advances one column; at most 200000 columns are supported.
+    void next_column(std::int64_t cost) {
+        check_cost(cost);
+        if (column_ + 1 >= 200000)
+            throw std::invalid_argument("too many columns");
+        ++column_; // Implicitly add row^2 to every old piece.
+        while (pieces_.size() > 1) {
+            int left = pieces_[pieces_.size() - 2].end;
+            Piece& last = pieces_.back();
+            // The last polynomial also equals the preceding one at 'left'.
+            if (difference(last, left) > cost) {
+                pieces_.pop_back();
+                continue;
+            }
+            int lo = left + 1, hi = last.end;
+            while (lo < hi) {
+                int mid = lo + (hi - lo) / 2;
+                if (difference(last, mid) > cost) hi = mid;
+                else lo = mid + 1;
+            }
+            last.end = lo;
+            break;
+        }
+        int cut = pieces_.back().end;
+        if (cut < rows_) {
+            Wide constant = evaluate(pieces_.back(), cut) - Wide(cut) * cost;
+            pieces_.push_back({rows_, column_, cost, constant});
+        }
+    }
+
+    // Row numbers are one-based. The current column is the only stored version.
+    std::int64_t value(std::int64_t row) const {
+        if (row < 1 || row > rows_)
+            throw std::invalid_argument("row out of range");
+        auto it = std::lower_bound(pieces_.begin(), pieces_.end(), row,
+            [](const Piece& p, std::int64_t x) { return p.end < x; });
+        return static_cast<std::int64_t>(evaluate(*it, row));
+    }
+};
+
+struct QuadraticGridQuery {
+    std::int64_t row;
+    int column; // One-based.
+};
+
+std::vector<std::int64_t> minimum_quadratic_grid_costs(
+    std::int64_t rows,
+    const std::vector<std::int64_t>& down_cost,
+    const std::vector<QuadraticGridQuery>& queries) {
+    if (rows < 1 || rows > 1000000000 || down_cost.empty()
+        || down_cost.size() > 200000 || queries.size() > 200000)
+        throw std::invalid_argument("unsupported dimensions or query count");
+    for (std::int64_t cost : down_cost)
+        if (cost < 1 || cost > 1000000000)
+            throw std::invalid_argument("down cost must be in 1..1e9");
+    int columns = int(down_cost.size());
+    for (const auto& q : queries)
+        if (q.row < 1 || q.row > rows || q.column < 1 || q.column > columns)
+            throw std::invalid_argument("query out of range");
+
+    std::vector<std::int64_t> answer(queries.size());
+    if (queries.empty()) return answer;
+    std::vector<std::vector<std::pair<int, int>>> by_column(columns);
+    for (int id = 0; id < int(queries.size()); ++id) {
+        const auto& q = queries[id];
+        by_column[q.column - 1].push_back({int(q.row), id});
+    }
+    QuadraticGridProfile profile(rows, down_cost[0]);
+    for (int col = 0; col < columns; ++col) {
+        if (col > 0) profile.next_column(down_cost[col]);
+        for (auto [row, id] : by_column[col]) answer[id] = profile.value(row);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[凸な折れ線の費用を保つ](/flowchartcp/techniques/dp-piecewise-linear-cost/) と同じく、行ごとの値を列挙せず、関数の形を保存します。ここでは二乗を足すので、傾き一定の折れ線だけでは表せません。
+
+[Convex Hull Trick](/flowchartcp/techniques/convex-hull-trick/) も不要な候補を取り除きますが、ここでは全候補の下包絡線を一般に作る必要はありません。離散凸性から変更範囲が末尾に限られ、境界を持つ二次式のスタックで処理できます。
+
+## 参考資料
+
+- [USACO 2021 January Platinum — 公式結果一覧](https://usaco.org/index.php?page=jan21results)
+- [Minimum Cost Paths — 公式原典](https://usaco.org/index.php?page=viewproblem2&cpid=1093)
+- [Benjamin Qi による公式解説](https://usaco.org/current/data/sol_prob2_platinum_jan21.html) — 離散凸性、二乗追加、末尾の直線への置換、区分を持つスタック。
+
+<TechniqueReferences techniqueId="convex-piecewise-quadratic-suffix-cap" />

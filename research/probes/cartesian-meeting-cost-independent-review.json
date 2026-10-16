@@ -1,0 +1,142 @@
+{
+  "status": "complete-no-material-findings",
+  "reviewer": "ioi_2020_fixed_corpus_audit",
+  "techniqueId": "cartesian-prefix-meeting-cost-single-cross-envelope",
+  "sharedDataModified": false,
+  "initialAuditModified": false,
+  "authorArtifactsModified": false,
+  "artifactSha256": {
+    "article": "448064230077f318bab1e4b74473139f509294c57e5f3ef4162b27e0e9ac371f",
+    "checker": "f14460f2027511e0e23ace3848d1d9f725bd17db93fc675f580f264432c141dc",
+    "sidecar": "0910215b11aefc23a6acabf4f3d361afa9dcb84a1ab3a5c85cd6c38f8914ea55",
+    "cpp": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1"
+  },
+  "primarySourcesReviewed": {
+    "statement": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+    "officialReview": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+    "laterAuthorSupplement": "https://www.algonotes.com/en/solutions-ioi2018/",
+    "independentNumericEvidence": "https://ioi2018.jp/tasks/contest2/TWN-meetings.pdf",
+    "reproducibleNumericSearch": "site:ioi2018.jp/tasks/contest2/TWN-meetings.pdf \"750000\" \"1000000000\"",
+    "sourceBounds": {
+      "N": [
+        1,
+        750000
+      ],
+      "Q": [
+        1,
+        750000
+      ],
+      "H": [
+        1,
+        1000000000
+      ],
+      "queries": "0<=L<=R<N; all endpoint pairs distinct"
+    },
+    "costBound": {
+      "value": 750000000000000,
+      "derivation": "Every participant cost<=Hmax; at mostN participants. Derived bound, not asserted as separately printed original constraint."
+    },
+    "provenance": "Three-page original and four-page official Review are organizer/Japanese committee distributions. December2019/March2020 author supplement is separate. Parsed official formulas are incomplete; neither visual inspection nor full official formula transcription is claimed. independent-analysis is appropriate."
+  },
+  "proofReview": {
+    "prefixState": "For subtree interval[lo,hi), S_v(t)=opt(lo,t). Prefixes before root keep the left state; at root cost=fullLeftOpt+h. For t>v, choosing left givesF=fullLeftOpt+(t-v+1)h and choosing right givesG=(v-lo+1)h+rightPrefixOpt(t). If left empty,F is root venue; otherwise root venue cost>=F. These cover all venues even with ties/empty children.",
+    "singleCross": "Extending a right prefix can add one participant at its old optimal venue at cost<=h. Thus rightOpt(t+1)-rightOpt(t)<=h and F-G is globally nondecreasing, including piece boundaries. An entire piece withF<=G at its last integer is removable; in the first piece withF>G at the end, binary search first strict-positive difference, retaining a nonempty suffix.",
+    "globalMapInvariant": "Processed frontier subtrees have disjoint coordinate intervals. Each live subtree has nonempty, disjoint, gap-free pieces over its own interval, all interpreted with the same cohort offset. Evaluations are inside an existing child prefix. Erase/cut/normalization loops stay within current child bounds; center key is unprocessed and unique. node_handle shifts a partial suffix key strictly before its next key, preserving ordering without const_cast.",
+    "queryLifetimeAndTie": "Original RMQ uses(height,originalIndex) once. Both Cartesian orientations compare original indices on equal heights, so mapped original peak is identical. A query suffix[v+1,R] is inside the right child and starts at its left boundary. Query is attached to that child and evaluated before its parent destroys its state. Root venue is covered by empty-side case or dominated by a side optimum. [2,1,2] returns5, not6.",
+    "amortization": "At most two pieces are born per vertex (center and F), each associated with that vertex. Full erasure kills a piece forever; at most one surviving suffix key cut per merge. Center/newF belong conceptually to leftSubtree+root. Normalize pieces of the smaller ORIGINAL vertex mass, regardless surviving fragment count. A surviving birth vertex joins mass at least twice the prior smaller mass, so each birth is adjustedO(logN) times. Contiguous map scans cost traversed pieces plus logarithmic range lookup; cuts/inserts/binary crossings costO(logN) per node. Together with RMQ/query reads, both passes totalO((N+Q)log(N+1)).",
+    "integerSafety": "After size/endpoint checks all indices/base products fit32bit int (2base<=2097152). Every cost<=NHmax<=7.5e14. Offset induction: choose oldleft offset or oldright offset+(leftMass+root)*h, hence<=newOriginalMass*Hmax. Stored start value is actual cost minus cohort offset; slope0..Hmax. Evaluations and normalizations fit the claimed conservative absolute3NHmax<=2.25e15 bound. LLmax is only minimized and never added.",
+    "spaceAndDepth": "Map has<=N nonempty disjoint live fragments. Per pass:6N ints andN long longs,2Q ints andQ long longs, plus map nodes; public peak/answer and input are additional linear storage. Original RMQ is scoped and freed before passes; passes are sequential. Cartesian construction and reverse parent-before-child processing are vector-based, including750000-deep chains. std::map has logarithmic internal height. OverallO(N+Q) storage.",
+    "api": "All original inputs included. Explicit extensions:Q0 and repeated pairs. Validates every height even forQ0, sizes before int casts, all endpoints before endpoint+1/indexing. Inputs are const and unchanged; no external grader symbol dependency. All temporary state is local and allocation exceptions unwind; independent calls after invalid calls/repeated calls have no stale map/query/cohort state."
+  },
+  "reproducedActualFenceChecker": {
+    "checks": 10223222,
+    "smallArrays": 51367,
+    "smallQueries": 1766247,
+    "orientedQueries": 1288632,
+    "randomArrays": 500,
+    "randomQueries": 100000,
+    "maximumCases": 7,
+    "maximumQueries": 5250000,
+    "maximumN": 750000,
+    "maximumQ": 750000,
+    "maximumCost": 750000000000000,
+    "invalidCalls": 15,
+    "checksum": "14312679095217143898",
+    "normal": {
+      "passed": true,
+      "seconds": 3.35821,
+      "peakRSSKiB": 123568
+    },
+    "asanUbsan": {
+      "passed": true,
+      "seconds": 15.7733,
+      "peakRSSKiB": 895520,
+      "leakSanitizer": false
+    },
+    "smallOracle": "Every venue, every participant, every intervening height literally scanned; independent running-max outward scan crosschecked.",
+    "orientedScope": "Each direction checked separately forN<=7 so min cannot mask one incorrect direction.",
+    "maximumScope": "Each of seven750000-query cases has unique R, hence original distinct-query condition. Constant/monotone/alternating/hierarchical/arbitrary-random/binary-random cases. Constant case attains7.5e14. Complete-checker RSS includes independent oracles/expected arrays, not a claim of portable API byte payload."
+  },
+  "independentAdditionalProbes": {
+    "metamorphic": {
+      "script": "research/probes/cartesian-meeting-cost-metamorphic.py",
+      "scriptSha256": "790047f21b82eff72ff0792a494484935cf4b8546d5d0b29520f1b8b83f6f78b",
+      "resultsFile": "research/probes/cartesian-meeting-cost-metamorphic-results.json",
+      "results": {
+        "status": "passed",
+        "checks": 1255051,
+        "cases": 6513,
+        "literalQueries": 167685,
+        "affineQueries": 339523,
+        "reflectionQueries": 339523,
+        "outsidePaddingQueries": 339523,
+        "subarrayIsolationQueries": 55770,
+        "checksum": "14795718582425382993",
+        "sanitized": false,
+        "secondsIncludingCompile": 1.2236359800008358,
+        "cppSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+        "articleSha256": "4d1f93c685d95098ca4967b13e8006c392788f8f25892900c8c811dd0522a4a2"
+      },
+      "originalSourceSha256": "0fe69a0713f032d6326defa3e38fff3aac910e7dbd4554f57bfddbda02b4773b"
+    },
+    "large": {
+      "script": "research/probes/cartesian-meeting-cost-large.py",
+      "scriptSha256": "160e17577a330677725d211cd2d14e0f242fd644d79d3af5da00fbf519eaa080",
+      "resultsFile": "research/probes/cartesian-meeting-cost-large-results.json",
+      "results": {
+        "status": "passed",
+        "checks": 15038,
+        "smallLiteralCrosschecks": 14846,
+        "maximumN": 750000,
+        "largeCases": 3,
+        "largeQueries": 192,
+        "checksum": "8452447248660873667",
+        "peakRSSKiB": 88636,
+        "cppSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+        "sanitized": false,
+        "secondsIncludingCompile": 2.912793301002239
+      },
+      "originalSourceSha256": "d5c8f4c254a1db01551b75d84e35048e50b43f7b69655bf1b8900d25e4ebc3b8"
+    }
+  },
+  "sidecarReview": {
+    "allArtifactHashesMatch": true,
+    "eightSectionsSingleVisibleFence": true,
+    "allSourceUrlsAppearInArticle": true,
+    "date": "2018-09-05",
+    "difficulty": null,
+    "fullOriginalApiContainment": true,
+    "numericProvenanceAndFormulaExtractionLimitationsExplicit": true,
+    "mathCodeShaUnchangedAfterProseClarifications": true
+  },
+  "reproductionCommands": [
+    "python3 scripts/check_cartesian_meeting_cost_cpp.py",
+    "python3 scripts/check_cartesian_meeting_cost_cpp.py --sanitize",
+    "python3 research/probes/cartesian-meeting-cost-metamorphic.py",
+    "python3 research/probes/cartesian-meeting-cost-large.py"
+  ],
+  "materialFindings": [],
+  "unconfirmedLemmas": [],
+  "originalReviewSha256": "f235a5b3bec8df7a4f71363c513c9871bc96b11ac75943c9030ee4579e8ab50a",
+  "scope": "元author成果物への独立レビュー。恒久scriptの参照先を公開記事にし、結果はstdoutのみへ変更。記事見出し等の日本語は統合時に調整したがC++SHAは同一。元review/hashと追加probeの実行当時の記事hashを保持。"
+}

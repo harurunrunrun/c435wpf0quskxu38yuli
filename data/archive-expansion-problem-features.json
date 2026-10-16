@@ -1,0 +1,144 @@
+[
+  {
+    "source": "Luogu",
+    "problemId": "P2371",
+    "title": "[国家集训队] 墨墨的等式",
+    "url": "https://www.luogu.com.cn/problem/P2371",
+    "techniqueIds": [
+      "residue-shortest-representable-count"
+    ],
+    "features": [
+      "非負の数が12種類以下あり、各種類を何回でも足せる",
+      "足し方ではなく、区間内で作れる異なる合計額の個数を求める",
+      "合計額の上限は10^12だが、使える各数は500000以下",
+      "0の数も与えられ、全て0の場合があり得る"
+    ],
+    "evidenceUrl": "https://www.luogu.com.cn/problem/P2371",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典でn<=12、0<=a_i<=500000、1<=l<=r<=10^12、非負整数解の存在を数えることを確認。公式解説は取得できなかったため、対応は記事内の独立証明による。掲載C++は全小コイン集合の到達可能性DP・0・最大公約数による未到達・符号付き64bit端点・法上限500000との比較を通過。正確な公開日は今回確認できていない。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "sum_of_totient_function",
+    "title": "Sum of Totient Function",
+    "url": "https://judge.yosupo.jp/problem/sum_of_totient_function",
+    "techniqueIds": [
+      "summatory-totient-quotient-memo"
+    ],
+    "features": [
+      "1からNまでのオイラーのトーティエント関数の和を求める",
+      "Nは10^10以下であり、全ての値を列挙する配列は使えない",
+      "答えは998244353で割った余りで、一つの上限に答える"
+    ],
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/sol/correct.cpp",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "公式task.mdで対象の和と法、info.tomlでN_MAX=10000000000、実行時間5秒を確認。公式correct.cpp全文はGitHubのfetch_fileで確認。掲載実装は公式実装の逐次表ではなく、phi*1=idから独立に説明した再帰とメモ化、線形篩を使用。掲載C++を独立の素数篩による200万までの累積和、最大上限10^10と直前値の差分などで確認。正確な公開日は今回確認できていない。",
+    "cutoffVerification": "undated-archive",
+    "statementEvidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/task.md"
+  },
+  {
+    "source": "SPOJ",
+    "problemId": "LCS2",
+    "title": "Longest Common Substring II",
+    "url": "https://www.spoj.com/problems/LCS2/",
+    "techniqueIds": [
+      "sam-common-all-strings"
+    ],
+    "features": [
+      "入力は最大10個の固定文字列",
+      "各長さは100000以下の英小文字列",
+      "選ぶ文字は連続していなければならない",
+      "共通する対象は入力の全て",
+      "最長の長さのみを出力する"
+    ],
+    "evidenceUrl": "https://www.spoj.com/problems/LCS2/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の公開検索インデックス https://www.spoj.com/SPOJ/problems/LCS2/ で問題全文・最大10行・各100000文字以下・全ての文字列に共通する条件と追加日2007-09-24を確認した。原典直接取得は403だが公式ドメインのインデックスは全文を返した。解法は問題設定から独立に導出。掲載C++を二進文字列の全ての長さ5以下の組・長さ3以下の三つ組・任意バイトの乱数で、部分文字列の全列挙と比較し、最適長と復元文字列の全入力への出現を確認した。",
+    "publicationDate": "2007-09-24",
+    "publicationDateKind": "archive-added"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "1960",
+    "title": "Maximum Product of the Length of Two Palindromic Substrings",
+    "url": "https://leetcode.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/",
+    "techniqueIds": [
+      "palindrome-two-disjoint-product"
+    ],
+    "features": [
+      "長さ2以上100000以下の固定文字列",
+      "選ぶのは連続する非空区間を二つ",
+      "両方とも奇数長の回文",
+      "二つの区間は重ならないが間に空きがあってよい",
+      "長さの積を最大にする"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典でHard・長さ2以上100000以下・英小文字・奇数長の二つの非交差区間を確認した。取得ページに公開日の明記はない。解法は問題設定から独立に導出。掲載C++を長さ12以下の二進文字列の全列挙と長さ41までの乱数で、奇数長回文の全区間・非交差ペアの全列挙と比較した。32ビットに収まらない積も確認した。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "567E",
+    "title": "President and Roads",
+    "url": "https://codeforces.com/problemset/problem/567/E",
+    "techniqueIds": [
+      "shortest-edge-mandatory-tight-bridges"
+    ],
+    "features": [
+      "正の整数重みを持つ有向グラフ",
+      "固定した始点から終点への最短路が存在する",
+      "各辺が全最短路に必要かを調べる",
+      "必須でなければ一本だけ独立に軽くし、重みを1以上に保つ",
+      "同じ頂点対の多重辺があり得る"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/567/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典で正の整数重み・多重辺・始点から終点への到達保証・変更後の重み1以上・難度2200を確認。公式解説による確認とはせず、正の最短路DAGの切断から独立に導出した。掲載C++20を有向単純経路と各減少量の全列挙で比較し、自己ループ・多重辺・64ビット端点・10万頂点の鎖も確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "920E",
+    "title": "Connected Components?",
+    "url": "https://codeforces.com/problemset/problem/920/E",
+    "techniqueIds": [
+      "complement-graph-unvisited-bfs"
+    ],
+    "features": [
+      "存在しない無向の辺だけが入力される",
+      "列挙されない異なる頂点対には必ず辺がある",
+      "連結成分の個数と各サイズを求める",
+      "頂点数は200000以下"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/920/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典でN最大200000・禁止頂点対は無向で重複なし・成分数とサイズの昇順出力・難度2100を確認。公式タグによる推測ではなく、問題設定から独立に導出した。掲載C++20を明示的な補グラフBFSと全6頂点グラフで比較し、重複入力・自己ループ無視・10万頂点も確認。",
+    "cutoffVerification": "undated-archive"
+  }
+]

@@ -1,0 +1,87 @@
+---
+title: "差の二乗が遷移費用なら展開して凸包トリックを使う"
+description: "二乗費用を現在の項と直線の項へ分け、全遷移元の比較を省きます。"
+techniqueId: dp-quadratic-transition
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+二乗費用を現在の項と直線の項へ分け、全遷移元の比較を省きます。
+
+## 使う場面
+
+$dp_i=\min_{j<i}\{dp_j+(h_i-h_j)^2+C\}$ のように、遷移元との高さや座標の差の二乗を費用にするDPです。状態数は $N$ 個でも、遷移元をすべて試すと $O(N^2)$ かかります。
+
+## 考え方
+
+二乗を展開すると、
+
+$$dp_i=h_i^2+C+\min_{j<i}\{-2h_jh_i+dp_j+h_j^2\}$$
+
+です。$x=h_i$、直線の傾きが $-2h_j$、切片が $dp_j+h_j^2$ と読めます。$dp_i$ を問い合わせた後、その状態の直線を追加します。$h_i$ が狭義増加なら、傾きは減少し、問い合わせ座標は増加するためdeque版を使えます。
+
+## 適用条件
+
+以下の実装は狭義増加の非負整数 $h_i\le10^9$ と、非負の定数 $C\le10^{15}$ を扱います。高さが任意の順序ならLi Chao木へ変えます。二乗を計算してから型を広げるとオーバーフローするため、掛ける前に128ビットへ変換します。
+
+## なぜ正しいか
+
+展開は恒等変形なので、すべての遷移元について費用は同じです。凸包への問い合わせには、すでに確定した $j<i$ の直線だけが入っています。したがって、帰納的に元のDPと同じ最小値が得られます。
+
+## 計算量
+
+単調な高さなら時間は $O(N^2)$ から $O(N)$、空間はどちらも $O(N)$ です。任意順の高さを圧縮Li Chao木で扱うなら $O(N\log N)$ 時間です。
+
+## 実装
+
+`squared_jump_cost(h, C)` は最初の位置から最後まで進む最小費用を返します。状態の直線を追加する処理まで含めた実装です。空入力と1要素では0を返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std; using i128=__int128_t;
+struct MonotoneCHT {
+    struct Line { long long a,b; i128 at(long long x) const { return i128(a)*x+b; } };
+    deque<Line> h; optional<long long> last_x,last_a;
+    void add(long long a,long long b) {
+        assert(!last_a || a<*last_a); last_a=a; Line z{a,b};
+        while(h.size()>=2) {
+            auto x=h[h.size()-2],y=h.back();
+            if((i128(y.b)-x.b)*(i128(y.a)-z.a)
+                < (i128(z.b)-y.b)*(i128(x.a)-y.a)) break;
+            h.pop_back();
+        }
+        h.push_back(z);
+    }
+    i128 get(long long x) {
+        assert(!h.empty() && (!last_x || *last_x<=x)); last_x=x;
+        while(h.size()>1 && h[0].at(x)>=h[1].at(x)) h.pop_front();
+        return h.front().at(x);
+    }
+};
+i128 squared_jump_cost(const vector<long long>& h,long long C) {
+    assert(0<=C && C<=1000000000000000LL);
+    if(h.empty()) return 0;
+    for(int i=0;i<int(h.size());++i) {
+        assert(0<=h[i] && h[i]<=1000000000LL);
+        if(i) assert(h[i-1]<h[i]);
+    }
+    MonotoneCHT hull; i128 result=0;
+    hull.add(-2*h[0],static_cast<long long>(i128(h[0])*h[0]));
+    for(int i=1;i<int(h.size());++i) {
+        result=hull.get(h[i])+i128(h[i])*h[i]+C;
+        i128 intercept=result+i128(h[i])*h[i];
+        assert(intercept<=LLONG_MAX);
+        hull.add(-2*h[i],static_cast<long long>(intercept));
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[凸包トリック](/flowchartcp/techniques/convex-hull-trick/) ・ [Li Chao木](/flowchartcp/techniques/li-chao-tree/)
+
+## 参考資料
+
+- [AtCoder：Z - Frog 3の解説・実装](https://atcoder.jp/contests/dp/editorial/9418)
+
+<TechniqueReferences techniqueId="dp-quadratic-transition" />

@@ -1,0 +1,82 @@
+---
+title: "交互の独立な競争は、先着時刻の分布と相手の生存確率を掛ける"
+description: "二人の位置を同時に持たず、一人ずつの初到着分布から勝率を合成します。"
+techniqueId: independent-race-first-hit
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+二人の動きが互いに影響しない競争です。勝敗がつくまでの同時位置を状態にする代わりに、それぞれが何回目の自分の手番で初めて到着するかを独立に求めます。
+
+## 考え方
+
+先手・後手の初到着回数を $T_A,T_B$ とします。先手が先に振るので、勝つ条件は $T_A\le T_B$ です。
+
+$$\Pr(A\text{の勝ち})=\sum_{t\ge1}\Pr(T_A=t)\Pr(T_B\ge t).$$
+
+後手の生存確率は、$t-1$ 回終了時点でまだ到着していない確率です。一人分の計算では、未到着位置の分布だけを残します。次の未到着位置へ来る範囲は連続しているので、累積和で配れます。消えた確率質量が、その手番の初到着確率です。
+
+## 適用条件
+
+出目は毎回独立で、相手の位置や行動に依存しません。移動量は $1\ldots P$ の一様分布で、正の移動により有限回で到着します。後手が先に振るなら同着回数の扱いが変わります。実装は $1\le A,B<N$ と $1\le P,Q<998244353$ を受け、法998244353で確率を計算します。
+
+## なぜ正しいか
+
+独立な無限の出目列を二人について先に用意しても、元のゲームと同じ確率になります。その列から決まる $T_A,T_B$ も独立です。先手が自分の $t$ 回目に初到着したとき、直前に後手が行ったのは $t-1$ 回であり、そこで未到着なら勝ちです。各 $t$ は互いに排他的なので積を足せます。一人分のDPでは到着した質量を次層へ戻さないため、同じ初到着を何度も数えません。
+
+## 計算量
+
+二人の位置と手番を持つDPでは時間 $O(N^2(P+Q))$、空間 $O(N^2)$。分布を分離し連続遷移を累積和にすると、時間 $O(N^2+\log\mathrm{MOD})$、空間 $O(N)$。各周回で長さ $N$ の二つの分布を更新し、高々 $N$ 周回で終わります。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int first_player_race_probability(int goal, int a, int b, int p, int q) {
+    constexpr long long MOD = 998244353;
+    if (goal < 2 || a < 1 || a >= goal || b < 1 || b >= goal || p < 1 || q < 1 || p >= MOD || q >= MOD)
+        throw invalid_argument("parameters");
+    auto power = [](long long x, long long exponent) {
+        long long result = 1;
+        for (; exponent; exponent >>= 1, x = x * x % MOD) if (exponent & 1) result = result * x % MOD;
+        return result;
+    };
+    long long ip = power(p, MOD - 2), iq = power(q, MOD - 2);
+    vector<long long> da(goal), db(goal);
+    da[a] = 1; db[b] = 1;
+    auto advance = [&](vector<long long>& distribution, int die, long long inverse) {
+        vector<long long> prefix(goal + 1), next(goal);
+        for (int x = 0; x < goal; ++x) prefix[x + 1] = (prefix[x] + distribution[x]) % MOD;
+        long long remaining = 0;
+        for (int y = 1; y < goal; ++y) {
+            int l = max(0, y - die);
+            next[y] = (prefix[y] - prefix[l] + MOD) % MOD * inverse % MOD;
+            remaining = (remaining + next[y]) % MOD;
+        }
+        long long first_hit = (prefix[goal] - remaining + MOD) % MOD;
+        distribution.swap(next);
+        return pair{first_hit, remaining};
+    };
+    long long answer = 0, survival_b = 1;
+    for (int t = 1; t < goal; ++t) {
+        auto [hit_a, survival_a] = advance(da, p, ip);
+        (void)survival_a;
+        answer = (answer + hit_a * survival_b) % MOD;
+        survival_b = advance(db, q, iq).second;
+    }
+    return int(answer);
+}
+```
+
+## 関連する手法
+
+- [遷移元が連続範囲の和なら累積和を使う](/flowchartcp/techniques/dp-range-sum/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/abc298/tasks/abc298_e)
+
+<TechniqueReferences techniqueId="independent-race-first-hit" />

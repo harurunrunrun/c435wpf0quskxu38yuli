@@ -1,0 +1,13 @@
+{
+  "checks": 21790,
+  "newDegreeInputs": 1800,
+  "literalPositiveDegreeCompositions": 6619600,
+  "allocationFailures": 17,
+  "checksum": "14600543257379776778",
+  "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+  "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+  "sanitize": false,
+  "seconds": 0.02743042200745549,
+  "leakSanitizerEnabled": false,
+  "method": "Literal enumeration of every positive target-degree composition; no sorting, budget selection, Prüfer oracle, or degree-assignment DP. Global allocation failure injection covers each allocation in both public APIs."
+}

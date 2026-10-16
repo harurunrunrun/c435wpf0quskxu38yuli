@@ -1,0 +1,60 @@
+---
+title: "連結順の優劣を隣接交換の交差積で決める"
+description: "二つの要素を交換した差を計算し、浮動小数点の比を使わず並べ替えます。"
+techniqueId: "exchange-crossproduct"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+各要素が非負の二量 $(x_i,y_i)$ を持ち、先に置いた要素の $x$ が後の要素の $y$ と掛け合わされる総得点 $\sum_{i<j}x_i y_j$ を最大にしたいとき。
+
+## 考え方
+
+隣接する $a,b$ の順序を変えても、他の要素との寄与は同じです。変わるのは $x_a y_b$ と $x_b y_a$ だけ。前者が大きい順に並べます。
+
+比 $x/y$ を計算せず交差積を比較すれば、$y=0$ も扱えます。ただし $(0,0)$ を普通の等価比較に混ぜると比較の推移性が壊れるので、無得点の要素として一方へまとめます。
+
+## 適用条件
+
+$x_i,y_i\ge0$ で、得点がこの形に分解されること。負数がある場合、交差積の順序が全体で推移的になるとは限りません。積のオーバーフローにも注意します。
+
+## なぜ正しいか
+
+非零の $(x,y)$ は比の順に並べられ、交差積はその順序と一致します。逆順の隣接組を交換すれば得点は減らず、整列まで繰り返せるのでこの順序が最適です。
+
+## 計算量
+
+順列全探索は $O(N!N^2)$。改善後はソート $O(N\log N)$、得点集計 $O(N)$、空間 $O(N)$。下の実装は積と総和に 128 bit 整数を使います。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+pair<vector<int>,__int128> best_cross_order(
+    const vector<pair<long long,long long>>& items){
+    vector<int> order(items.size());iota(order.begin(),order.end(),0);
+    sort(order.begin(),order.end(),[&](int i,int j){
+        auto [x,y]=items[i];auto [u,v]=items[j];
+        assert(x>=0 && y>=0 && u>=0 && v>=0);
+        bool zi=(x==0 && y==0), zj=(u==0 && v==0);
+        if(zi!=zj)return zi;
+        __int128 left=(__int128)x*v,right=(__int128)u*y;
+        return left==right ? i<j : left>right;
+    });
+    __int128 score=0, prefix=0;
+    for(int i:order){score+=prefix*items[i].second;prefix+=items[i].first;}
+    return {order,score};
+}
+```
+
+## 関連する手法
+
+[交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder：Best Concatenation の公式解説](https://atcoder.jp/contests/abc268/editorial/4788)
+
+<TechniqueReferences techniqueId="exchange-crossproduct" />

@@ -1,0 +1,268 @@
+---
+title: "隣接する種類の変化回数から、二種類の個数を少ない質問で数える"
+description: "少数を決定木で識別して既知の対象を増やし、その後は個々の種類を確定せず一括して数える。適応的な返答にも最悪226問を保証する。"
+techniqueId: interactive-transition-count-species-decision-trees
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+対象にはAとBの二種類があり、0番だけがAと分かっている。相異なる番号を一列に並べて質問すると、隣接する種類が変わる回数が返る。Aの総数を求めたいが、各対象を一つずつ識別するには質問回数が足りない。
+
+必要なのは平均的に少ない質問ではなく、過去の返答と整合する配置を選び続ける適応的な相手にも通用する最悪保証である。最初は少数を正確に識別して既知対象を増やし、その後は個々の種類を確定しない一括計数へ切り替える。
+
+## 考え方
+
+種類を0,1で表し、既知の同種 $z$ を $k$ 個用意する。未知対象 $u_0,\ldots,u_{k-1}$ と交互に
+
+$$[u_0,z_0,u_1,z_1,\ldots,u_{k-1},z_{k-1}]$$
+
+と並べる。$d_i=[u_i\ne z]$ とすると、返答は
+
+$$r=d_0+2\sum_{i=1}^{k-1}d_i.$$
+
+従って逆種の個数は $\lceil r/2\rceil$、端の $u_0$ の種類は $z\mathbin{\mathrm{XOR}}(r\bmod2)$ である。一度の質問で全 $k$ 個を数え、さらに一個を次の質問の既知対象へ追加できる。既知が増えるほど質問一回で処理できる個数も増える。
+
+最初の識別では未知5個を `A,B,C,D,E`、基準種と逆種の既知を `0,1` と書く。同じ数字が繰り返される箇所には、**別々の既知番号**を使う。配布モデル解の二つの決定木を、次の質問表として使う。返答履歴に対応する行がなければ、その時点の5個の種類は一意に決まる。
+
+| 既知の条件 | 返答履歴 | 次の質問 |
+|---|---|---|
+| 基準種3個と逆種1個 | 空 | `A0B0C0DE` |
+| 同上 | `1` | `CED` |
+| 同上 | `2` | `DBE0A` |
+| 同上 | `3` | `CB0E0DA1` |
+| 同上 | `4` | `D0A0E0CB1` |
+| 同上 | `5` | `DBCE1` |
+| 同上 | `6` | `CED` |
+| 基準種1個だけでも可 | 空 | `ABCDE0` |
+| 同上 | `1` | `B0` |
+| 同上 | `1,1` | `EADC` |
+| 同上 | `2` | `CB0D` |
+| 同上 | `2,1` | `EADB` |
+| 同上 | `2,2` | `DAE0CB` |
+| 同上 | `3` | `CB0D` |
+| 同上 | `3,1` | `EDB0` |
+| 同上 | `3,2` | `AED` |
+| 同上 | `3,3` | `ED` |
+| 同上 | `4` | `B0` |
+| 同上 | `4,1` | `0EACD` |
+
+各質問の返答後、5個の全32通りから整合しない割当を除く。第一の木は高々2問、第二は高々3問で一意になる。第二の木でも全5個が基準種なら最初の返答0だけで確定する。既知の多数派を基準種にし、第一の木の条件を満たせばそちらを使う。
+
+未処理が5個以上あり、既知多数派が110個未満の間だけ、この識別を繰り返す。以後は既知多数派と未知を交互に並べる一括計数を使う。各対象を全て識別し終える必要はない。
+
+## 適用条件
+
+オラクルは相異なる番号の列に対する**隣接変化回数**を返す。各返答後に、それまでの全返答と整合する二値配置が少なくとも一つある。0番のAは全配置で固定される。質問内で番号を重複させる方法や、平均的な乱択質問回数に依存する方法にはしない。
+
+掲載API `count_two_species_from_transition_queries(n, machine)` は $1\le n\le20000$ を検査し、Aの個数・質問回数・総質問長を返す。`machine(vector<int>)` の返答は整数で、問い合わせ列の種類変化回数でなければならない。$n=1$ は1を返し、callbackを呼ばない。範囲外の $n$ は `std::invalid_argument`。返答が範囲外、または局所決定木の残る割当と整合しなければ `std::runtime_error`。
+
+IOI 2020の使用例では、 $2\le n\le20000$、各質問長 $2\ldots n$、番号 $0\ldots n-1$ は全て相異なる、総質問長100000以下である。ハード上限は20000問だが、**満点は全入力で226問以下**を要する。掲載APIは原典全域を含み、その厳しい方の予算を保証する。`count_mushrooms` は原典の入口である。配布graderへ接続するときだけ `TWO_SPECIES_IOI_GRADER` をdefineして最後のwrapperを有効化する。defineしない場合は、callbackを受ける再利用APIだけで単独にコンパイル・リンクできる。
+
+## なぜ正しいか
+
+**局所識別。** 候補は未知5個の全32割当である。表の質問を、各候補のビットと既知の0,1へ文字どおり置き換え、隣接不一致数を計算して返答と比較する。この有限な全列挙により、各到達可能な葉の候補数は1、深さは第一の木で高々2、第二で高々3と確認できる。両基準種について全32通りを列挙すると、全到達枝、番号の相異性、必要な既知の個数も確かめられる。実装も同じ32候補を返答ごとに絞り、葉で一意性を検査する。
+
+適応的な相手が候補を後から選んでも、過去と整合する全割当がこの候補集合に残る。葉が一意なら、その5個は全整合配置で同じ種類である。既知集合へ追加しても正しい。
+
+**初期費用。** 第二の木を使う時点では、既知は一種類だけである。二種類が一度でも判明した後は、5個単位の識別を一回以上終えて既知総数が6以上なので、多数派3個と逆種1個がそろい、第一の木を使える。第二の木で新しい5個も全て同種なら1問。最初に逆種が見つかる回だけ高々3問なので、5個識別する群の数を $t$ とすると、初期の総質問数は高々 $2t+1$ である。
+
+**一括計数と既知の追加。** 列の内部の未知 $u_i$ は同種の二つの既知にはさまれ、逆種のときだけ2回の変化を作る。端の $u_0$ は1回だけである。従って上の $r$ の式から、全未知のAの個数と $u_0$ の種類を同時に確定できる。Aの個数はこの群全体について一回だけ足し、$u_0$ を既知へ追加するときには再び足さない。既に数えた内部の未知は、その後の質問へ再使用しない。
+
+この群の個数と追加する一個の種類は、同じ返答と整合する全配置で共通である。全群を処理すると、どの整合配置でも同じAの総数になる。固定配置を仮定した乱択的な議論は使っていない。
+
+**質問数の保証。** 初期の既知総数は $T=1+5t$。$t=44$ なら $T=221$ で多数派が111以上なので、それ以上識別しない。未処理が5個未満になって止めた場合、残りは高々4問で数えられ、全体でも $2\cdot44+1+4=93$ 問以下である。
+
+多数派110以上で止めた場合は $22\le t\le44$。一括計数の $j$ 問目（0始まり）直前には、既知が $T+j$ 個ある。多数派は減らないので、一問の処理容量は
+
+$$L_j=\max\left(110,\left\lceil\frac{T+j}{2}\right\rceil\right)$$
+
+以上である。残りが容量未満ならその一問で全て処理する。
+
+$q=225-2t$ 問で処理できる容量の下界を $S=\sum_{j=0}^{q-1}L_j$ とする。$F(s)=\lfloor s^2/4\rfloor$ と置くと $F(s+1)-F(s)=\lceil s/2\rceil$。$22\le t\le43$ では、$h=220-5t$ 個の項だけを110に固定して
+
+$$S=110h+F(T+q)-F(T+h).$$
+
+原典最大 $n=20000$ の未処理個数との差は
+
+$$S-(20000-T)=\left\lfloor\frac{9t^2-824t+19040}{4}\right\rfloor\ge62.$$
+
+この二次式は区間 $22\ldots43$ で減少し、最小の $t=43$ でも分子249である。残る $t=44$ は $S=19831$、未処理は高々19779で、差は52。よって一括計数は高々 $q$ 問で終わり、初期と合わせて $(2t+1)+(225-2t)=226$ 問以下である。小さい $n$ でも残りが増えることはない。
+
+**各質問と総長の保証。** 文字表の各未知は一質問で高々一回だけ現れる。数字の出現ごとに異なる既知番号を割り当てる。第一の木の既知使用数は同種3個・逆種1個以下、第二では同種1個以下なので、全番号を相異ならせられる。一括計数でも既知と未処理は互いに素である。使う個数 $k\le\min(\text{既知数},\text{未処理数})$ から、質問長 $2k\le n$ となる。どの質問も2個以上である。
+
+5個の識別一群の総質問長は高々17。一括計数の総長は、残る各対象を一度ずつ既知と対にするので $2(n-T)$。従って総長は
+
+$$17t+2(n-1-5t)=2n-2+7t\le40306<100000.$$
+
+これは返答の取り方に依存しない。
+
+## 計算量
+
+単独質問 $[0,i]$ なら $n-1$ 問を使う。掲載実装は全原典範囲で高々226問、総質問長40306以下である。
+
+局所決定木の候補は32個に固定され、各文字列も高々9文字。識別は高々44群なので、この処理は定数で抑えられる。質問内の検査・構築と、一括計数の処理は総質問長に比例する。オラクル自身の処理を除く時間と補助空間は $O(n)$。全ての可変状態は一呼出しの中に置き、再帰も乱択も使わない。
+
+個数・番号は最大20000、返答は質問長未満で `int` に収まる。質問回数と総長は `size_t` で保持し、予算を足す前にも確認する。負の返答、範囲外、矛盾する返答を配列添字へ変換しない。
+
+## 実装
+
+`0,1` は基準種に対する相対表記であり、基準がBなら意味を反転する。質問文字列は配布モデル解の決定木を参照した。実装は返答の数値から種類を決め打ちせず、32候補を直接絞り込む。これにより、表の各葉に置く割当を別の表として持つ必要がない。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <cstddef>
+#include <cstdint>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+struct TwoSpeciesCount {
+    int count_a;
+    std::size_t queries;
+    std::size_t total_query_length;
+};
+namespace transition_species_detail {
+struct Rule { std::string_view history, query; };
+inline constexpr std::array<Rule, 7> mixed{{
+    {"", "A0B0C0DE"}, {"1", "CED"}, {"2", "DBE0A"},
+    {"3", "CB0E0DA1"}, {"4", "D0A0E0CB1"}, {"5", "DBCE1"}, {"6", "CED"}
+}};
+inline constexpr std::array<Rule, 12> single{{
+    {"", "ABCDE0"}, {"1", "B0"}, {"11", "EADC"},
+    {"2", "CB0D"}, {"21", "EADB"}, {"22", "DAE0CB"},
+    {"3", "CB0D"}, {"31", "EDB0"}, {"32", "AED"}, {"33", "ED"},
+    {"4", "B0"}, {"41", "0EACD"}
+}};
+inline int evaluate(std::string_view query, unsigned mask) {
+    auto value = [&](char token) {
+        return token <= '1' ? token - '0' : static_cast<int>((mask >> (token - 'A')) & 1u);
+    };
+    int changes = 0;
+    for (std::size_t i = 1; i < query.size(); ++i)
+        changes += value(query[i - 1]) != value(query[i]);
+    return changes;
+}
+template<class Ask>
+unsigned identify_five(int first, int reference,
+                       const std::array<std::vector<int>, 2>& known, Ask& ask) {
+    const bool use_mixed = known[reference].size() >= 3 && !known[reference ^ 1].empty();
+    std::string history;
+    std::uint32_t candidates = ~std::uint32_t{0};
+    while (true) {
+        std::string_view pattern;
+        if (use_mixed) {
+            for (const auto& rule : mixed) if (rule.history == history) pattern = rule.query;
+        } else {
+            for (const auto& rule : single) if (rule.history == history) pattern = rule.query;
+        }
+        if (pattern.empty()) break;
+        std::array<std::size_t, 2> used{};
+        std::vector<int> query;
+        for (const char token : pattern) {
+            if (token <= '1') {
+                const int type = reference ^ (token - '0');
+                if (used[type] >= known[type].size())
+                    throw std::logic_error("insufficient known anchors");
+                query.push_back(known[type][used[type]++]);
+            } else query.push_back(first + token - 'A');
+        }
+        const int response = ask(std::move(query));
+        std::uint32_t remaining = 0;
+        for (unsigned mask = 0; mask < 32; ++mask)
+            if ((candidates & (std::uint32_t{1} << mask)) && evaluate(pattern, mask) == response)
+                remaining |= std::uint32_t{1} << mask;
+        if (!remaining) throw std::runtime_error("inconsistent machine response");
+        candidates = remaining;
+        history.push_back(static_cast<char>('0' + response));
+    }
+    if (!std::has_single_bit(candidates))
+        throw std::runtime_error("decision tree did not identify five species");
+    return static_cast<unsigned>(std::countr_zero(candidates));
+}
+} // namespace transition_species_detail
+
+template<class Machine>
+TwoSpeciesCount count_two_species_from_transition_queries(int n, Machine machine) {
+    if (n < 1 || n > 20000) throw std::invalid_argument("n must be in 1..20000");
+    TwoSpeciesCount result{1, 0, 0};
+    std::array<std::vector<int>, 2> known;
+    known[0].push_back(0);
+    std::vector<std::size_t> stamp(n, 0);
+    auto ask = [&](std::vector<int> query) {
+        const std::size_t length = query.size();
+        if (length < 2 || length > static_cast<std::size_t>(n))
+            throw std::logic_error("internal query length");
+        if (result.queries >= 226 || length > 100000 - result.total_query_length)
+            throw std::logic_error("query budget exceeded");
+        const std::size_t current = result.queries + 1;
+        for (const int index : query) {
+            if (index < 0 || index >= n || stamp[index] == current)
+                throw std::logic_error("internal duplicate or invalid query index");
+            stamp[index] = current;
+        }
+        ++result.queries; result.total_query_length += length;
+        const int response = machine(std::move(query));
+        if (response < 0 || static_cast<std::size_t>(response) >= length)
+            throw std::runtime_error("machine response outside transition range");
+        return response;
+    };
+    int first = 1;
+    auto majority = [&] { return known[0].size() >= known[1].size() ? 0 : 1; };
+    while (n - first >= 5 && known[majority()].size() < 110) {
+        const int reference = majority();
+        const unsigned mask = transition_species_detail::identify_five(first, reference, known, ask);
+        for (int bit = 0; bit < 5; ++bit) {
+            const int type = reference ^ static_cast<int>((mask >> bit) & 1u);
+            known[type].push_back(first + bit);
+            result.count_a += type == 0;
+        }
+        first += 5;
+    }
+    while (first < n) {
+        const int reference = majority();
+        const int count = std::min(n - first, static_cast<int>(known[reference].size()));
+        std::vector<int> query;
+        for (int i = 0; i < count; ++i) {
+            query.push_back(first + i); query.push_back(known[reference][i]);
+        }
+        const int response = ask(std::move(query));
+        const int opposite = response / 2 + response % 2;
+        result.count_a += reference == 0 ? count - opposite : opposite;
+        known[reference ^ (response & 1)].push_back(first);
+        first += count;
+    }
+    return result;
+}
+
+// Enable only when linking against the original grader. Without this macro,
+// the reusable callback API has no external use_machine dependency.
+#ifdef TWO_SPECIES_IOI_GRADER
+int use_machine(std::vector<int> indices);
+int count_mushrooms(int n) {
+    return count_two_species_from_transition_queries(n,
+        [](std::vector<int> indices) { return use_machine(std::move(indices)); }).count_a;
+}
+#endif
+```
+
+## 関連する手法
+
+[対話問題](/flowchartcp/techniques/interactive/)では、返答が何を意味するかと最悪質問回数を同時に設計する。本技巧では一つの返答の商と余りに、集団の個数と次の質問へ使う一個の種類が分かれている。
+
+[小規模全探索での観察](/flowchartcp/techniques/brute-force-observation/)を局所決定木の全32割当の証明に使う。全対象の割当を列挙するのではなく、定数個の識別だけを完全に検証し、残りを[不変量](/flowchartcp/techniques/invariant/)と容量の下界で保証する。
+
+## 参考資料
+
+- [Counting Mushrooms — 主催者公式原典](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf)と[AOI配布のISC原典PDF](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf)。入力・質問予算・採点表・適応的な返答条件を参照できる。
+- [Solution for Counting Mushrooms — 主催者公式解説](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf)。同種既知と未知の交互列、偶奇から既知を増やす方針、少数の決定木を使う満点方針を参照した。整数和による質問回数の上界は本文で証明した。
+- [配布モデル解 decision-tree-endagorion.cpp](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp)。Mikhail Tikhomirovによる二つの決定木の質問表と、多数派110の切替値を参照した。全枝の意味と掲載APIの予算は独立に検証する。
+- [配布manager](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp)と[配布task設定](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml)。元の範囲・質問の相異性・総長・満点226問、およびモデル解が100点用であることを照合した。
+- [日本委員会の2020年課題一覧](https://www2.ioi-jp.org/ioi/2020/tasks/index.html)。競技日2の2020年9月19日。難度値は設定しない。
+
+<TechniqueReferences techniqueId="interactive-transition-count-species-decision-trees" />

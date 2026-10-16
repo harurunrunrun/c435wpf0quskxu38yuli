@@ -1,0 +1,85 @@
+---
+title: "区間の種類数を各値の最新位置だけで数える"
+description: "問い合わせを右端順に並べ、同じ値を代表する1を最後の出現位置へ移す。"
+techniqueId: offline-rightmost-occurrence
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+問い合わせを右端順に並べ、同じ値を代表する1を最後の出現位置へ移す。
+
+## 使う場面
+
+更新されない配列に対し、多数の区間の値の種類数を求める。区間を毎回走査する処理を省きたい。すべての問い合わせが先に分かっている場合に使える。
+
+## 考え方
+
+問い合わせを右端 $r$ の昇順に並べる。配列を右へ走査し、各値の最後の出現位置だけをFenwick Tree上で1にする。同じ値が新しく現れたら、古い位置を0にして新しい位置を1にする。
+
+右端 $r$ まで処理した時点で、区間 $[l,r)$ の和を取る。各値の最新位置が区間内にあれば、その値が区間内にあると分かる。
+
+## 適用条件
+
+静的な配列と、先に分かっている問い合わせを対象にする。右端より後の出現を登録してはいけない。途中の点更新を扱う場合は、最新位置だけの管理では足りない。
+
+## なぜ正しいか
+
+右端までに現れた値ごとに1が一つだけある。その値が区間に含まれることと、最新の位置が左端以上であることは同値になる。よって区間内の1の和が、重複を除いた種類数に一致する。
+
+## 計算量
+
+全区間を独立に走査する $O(NQ)$ から、時間 $O((N+Q)\log(N+Q))$、空間 $O(N+Q)$ に改善する。右端のソートと最新位置の辞書管理も含む。
+
+## 実装
+
+`offline_distinct_counts` は各問い合わせの答えを元の順序で返す。空区間にも対応する。Fenwick Tree上の添字は、値の番号ではなく配列の位置である。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct SumBIT {
+    int n;
+    std::vector<long long> bit;
+    explicit SumBIT(int n):n(n),bit(n+1) {}
+    void add(int p,long long x) {
+        assert(0<=p && p<n);
+        for(int i=p+1;i<=n;i+=i&-i) bit[i]+=x;
+    }
+    long long prefix(int r) const {
+        assert(0<=r && r<=n);
+        long long s=0;
+        for(int i=r;i>0;i-=i&-i) s+=bit[i];
+        return s;
+    }
+};
+#include <map>
+#include <algorithm>
+#include <numeric>
+#include <utility>
+std::vector<long long> offline_distinct_counts(const std::vector<long long>& a,const std::vector<std::pair<int,int>>& queries) {
+    int n=a.size(),q=queries.size(),right=0;
+    SumBIT bit(n);std::map<long long,int> last;
+    std::vector<int> order(q);std::iota(order.begin(),order.end(),0);
+    std::sort(order.begin(),order.end(),[&](int i,int j){return queries[i].second<queries[j].second;});
+    std::vector<long long> answer(q);
+    for(int id:order) {
+        auto [l,r]=queries[id];assert(0<=l && l<=r && r<=n);
+        while(right<r) {
+            auto it=last.find(a[right]);
+            if(it!=last.end()) bit.add(it->second,-1);
+            last[a[right]]=right;bit.add(right,1);++right;
+        }
+        answer[id]=bit.prefix(r)-bit.prefix(l);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[オフラインクエリ](/flowchartcp/techniques/offline-queries/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC174 F](https://img.atcoder.jp/abc174/editorial.pdf)
+
+<TechniqueReferences techniqueId="offline-rightmost-occurrence" />

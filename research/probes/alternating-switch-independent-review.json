@@ -1,0 +1,141 @@
+{
+  "status": "complete-no-material-findings",
+  "reviewer": "ioi_2020_fixed_corpus_audit",
+  "techniqueId": "alternating-switch-bit-reversal-pruned-router",
+  "sharedDataModified": false,
+  "authorArtifactsModified": false,
+  "artifactSha256": {
+    "article": "95d536213fd20810ae198622fd8acb7edab07d73a27cf348acb5907e39a263eb",
+    "checker": "0723b54ee597ee7b8e3ecad3890e31686c9c3ebb8e73daf7999d72883ffede4f",
+    "sidecar": "d46d7baf78e1090951cdd2b733f30d4323ad0b495e6fc6c9faa3079877f6b789",
+    "cpp": "ec7888a3cf046dd5d72d48429c83b1113d401c82558d0e36899cb1591be7a973"
+  },
+  "primarySourcesReviewed": {
+    "statement": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+    "officialReview": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+    "authorSupplement": "https://www.algonotes.com/en/solutions-ioi2018/",
+    "numericEvidence": {
+      "originalDomainAndFullScore": "https://ioi2018.jp/tasks/contest2/LVA-doll.pdf",
+      "hardBudgets": "https://ioi2018.jp/tasks/contest2/JPN-doll.pdf",
+      "hardBudgetCorroboration": [
+        "https://ioi2018.jp/tasks/contest2/LVA-doll.pdf",
+        "https://ioi2018.jp/tasks/contest2/FRA-doll.pdf"
+      ],
+      "bounds": {
+        "M": [
+          1,
+          100000
+        ],
+        "N": [
+          1,
+          200000
+        ],
+        "A": "1..M; repeats and unused triggers allowed",
+        "fullScoreS": "S<=N+log2(N)",
+        "hardS": 400000,
+        "hardChanges": 20000000
+      },
+      "acquisition": "Organizer translation indexed search text and parsed official English text; no PDF image inspection claimed.",
+      "discrepancy": "SYR p5 search extraction shows2000000 in one place; not used for20m. English/JPN/FRA/LVA evidence establishes20000000; cause of SYR discrepancy not determined."
+    },
+    "provenance": "Contemporaneous organizer/Japanese committee Review kept distinct from later Tomasz Idziaszek author supplement. Formula extraction is incomplete, so verification=independent-analysis is accurate."
+  },
+  "proofReview": {
+    "completeTree": "Each successive routing decision uses the next low bit of root-entry index, yielding h-bit reversal. Every node spanning2^j leaves receives2^j entries in a complete P-entry period.",
+    "pruningProjection": "Every all-dead subtree emits no trigger and returns to root regardless of its internal switch state. Replacing it by one direct root edge removes only deleted state events and preserves retained-node event/state order.",
+    "firstStopAndReset": "The last complete-tree leaf P-1 is retained and is the unique0 output. Every earlier retained output is positive; every removed subtree points to negative root. First return0 thus occurs after exactly A and a complete projected period, with every allocated switch visited a positive even number of times. Continuing from the actual final states repeats A.",
+    "budget": "Right suffix K=N+1 intersects ceil(K/2^j) aligned blocks at levelj. S=sumceil=N-popcount(N)+h<=N+floorlog2N; T=sum2^j*ceil<=Ph<=4718592. Fullscore/hard400000/20m hold over full original domain.",
+    "implementation": "One visible complete C++20 fence. Root is first allocated switch-1; no vector references survive recursive allocation. All label assignments consumed N+1 live leaves. Array dimensions/serials meet original contract.",
+    "api": "Checks M/N/all symbols before constructing output; input unchanged. Construction is stateless with no grader link dependency. Returned vectors own storage; independent calls and value copies do not share mutable state. Initial allX execution contract is explicit; arbitraryY is not promised.",
+    "integerAndRecursion": "After bounds checks N+1<=200001,P<=262144,h<=18,first+last<=524288; switch serials/int casts safe on the tested32bit-int target. Balanced recursion has<=19 live frames. ConstructionO(M+Nlog(N+1)), storageO(M+N)."
+  },
+  "reproducedChecker": {
+    "checks": 117243125,
+    "smallCases": 97738,
+    "binaryExtra": 130560,
+    "allNIntegerBudgets": 200000,
+    "actuallyBuiltSingleLengths": 2048,
+    "powerBoundaries": 80,
+    "randomCases": 300,
+    "maximumCases": 4,
+    "periods": 461464,
+    "outputs": 15279956,
+    "switchChanges": 180979888,
+    "maximumN": 200000,
+    "maximumM": 100000,
+    "maximumS": 200012,
+    "maximumOnePeriodChanges": 3836286,
+    "invalidBuilderCalls": 12,
+    "checksum": "17302177393877592427",
+    "normal": {
+      "passed": true,
+      "seconds": 0.94674,
+      "peakRSSKiB": 8340
+    },
+    "asanUbsan": {
+      "passed": true,
+      "seconds": 2.98652,
+      "peakRSSKiB": 500836,
+      "leakSanitizer": false
+    },
+    "scope": "Actual article fence, literal current-exit-then-toggle simulator; all small sequences and two consecutive periods without resetting final states. All-N budget arithmetic is separate from sampled actual construction; does not claim every large N circuit was built."
+  },
+  "independentAdditionalProbe": {
+    "source": "research/probes/alternating-switch-structure.py",
+    "sourceSha256": "113addc74f0217e53ed2f77593819b8028555f069e871373f0641a05f12a3f99",
+    "results": "research/probes/alternating-switch-structure-results.json",
+    "result": {
+      "status": "passed",
+      "allNSpatialStructureCases": 200000,
+      "oracle": "suffix subtree split: S=1+Sleft+Sright,T=span+Tleft+Tright; all-dead child contributes zero",
+      "maxS": {
+        "value": 200012,
+        "firstN": 200000
+      },
+      "maxT": {
+        "value": 3836286,
+        "firstN": 200000
+      },
+      "negativeControls": {
+        "wrongTimePrefixPruningN4": {
+          "switches": 7,
+          "fullScoreIntegerBound": 6,
+          "correctSpatialPruningSwitches": 6
+        }
+      },
+      "checksum": "9839057549024960597",
+      "memoStates": 331089,
+      "seconds": 0.8766709799965611,
+      "articleSha256": "95d536213fd20810ae198622fd8acb7edab07d73a27cf348acb5907e39a263eb"
+    },
+    "independence": "Oracle recursively splits spatial surviving suffix, counting one retained root and its full-span visits. It does not use ceiling or popcount formulas to produce S/T; those are compared afterward. Wrong time-prefix pruning is rejected atN4.",
+    "originalSourceSha256": "ea972b818bc573945fc393275f07c05341a607538da79024cc9a7b27cb6ba25f"
+  },
+  "sidecarReview": {
+    "shaAndSectionCountMatch": true,
+    "date": "2018-09-05",
+    "difficulty": null,
+    "numericApiContainment": true,
+    "sourceHistoryAndFormulaLimitationsExplicit": true
+  },
+  "reproductionCommands": [
+    "python3 scripts/check_alternating_trigger_circuit_cpp.py",
+    "python3 scripts/check_alternating_trigger_circuit_cpp.py --sanitize",
+    "python3 research/probes/alternating-switch-structure.py"
+  ],
+  "materialFindings": [],
+  "unconfirmedLemmas": [],
+  "nextFlowBaseline": {
+    "directory": "/tmp/flowchartcp-ioi2018-circuits-independent-baseline",
+    "oldGraphs": 455,
+    "oldWalks": 509,
+    "currentIoi2018Resolutions": [
+      "combo",
+      "seats",
+      "werewolf"
+    ],
+    "matchesParentRawBytes": true
+  },
+  "originalReviewSha256": "ec61cb6aca1554208723242244f0ab30da4ba40098d1fcdc3854802835e66b91",
+  "scope": "元author成果物への独立レビュー。恒久scriptは参照先と結果出力だけを調整。公開記事の日本語は調整したがC++SHAは同一。"
+}

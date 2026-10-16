@@ -1,0 +1,141 @@
+---
+title: "出現回数が値に等しい種類数は、条件を満たす左端の区間を更新する"
+description: "右端を一つ進めるたび、変わった値の出現位置から、ちょうど指定回数を含む左端の範囲を入れ替える。"
+techniqueId: frequency-equals-value-offline
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+正整数の配列があり、多数の区間について「値 $v$ がちょうど $v$ 回現れる正整数 $v$ は何種類あるか」を求めたい。例えば $[1,2,2,3]$ では1と2が条件を満たすので答えは2になる。
+
+配列は更新されず、全ての質問が先に分かっている。右端を固定すると、ある値をちょうど指定回数含む左端が、一つの連続した範囲になることを使う。
+
+## 考え方
+
+区間を半開区間 $[l,r)$ とする。右端 $r$ より前に現れた値 $v$ の位置が
+
+$$p_0<p_1<\dots<p_{k-1}$$
+
+であるとする。$k<v$ なら、条件を満たす左端はない。$k\ge v$ なら、後ろから $v$ 個目の出現 $p_{k-v}$ を含み、その一つ前の出現を含まなければよい。$p_{-1}=-1$ と置くと、条件は
+
+$$p_{k-v-1}<l\le p_{k-v}$$
+
+になる。従って、この値が答えに1を加える左端は、整数位置の半開区間
+
+$$[p_{k-v-1}+1,\ p_{k-v}+1)$$
+
+である。
+
+全ての値について、この左端範囲へ1を加えた配列を持つ。右端を一つ進めて $a_{r-1}=v$ を取り込むと、変わるのは $v$ の範囲だけである。古い範囲へ $-1$、新しい範囲へ $+1$ を加える。質問の左端 $l$ の値を一点読むと、その区間の答えが得られる。
+
+区間加算・一点取得には、差分をFenwick Treeで持てばよい。左端範囲 $[b,e)$ への加算は、差分の位置 $b$ に $+1$、位置 $e$ に $-1$ を加える。左端 $l$ までの差分和が答えになる。
+
+例えば $v=2$ の出現が位置1,3にあると、条件を満たす左端は $[0,2)$。位置5にもう一つ現れた後は $[2,4)$ へ移る。右端を延ばしたからといって、条件を満たす左端の集合が増え続けるわけではない。
+
+## 適用条件
+
+配列は静的で、質問を右端ごとにまとめて処理できる必要がある。質問への即時回答が必要な場合や、途中に配列の更新が入る場合には、このまま使えない。
+
+掲載実装は $N,Q\le200000$、$1\le a_i\le10^9$。$v>N$ は配列全体でも $v$ 回現れないので、出現位置を管理しなくてよい。値を座標圧縮する場合も、「必要な出現回数」には圧縮前の値を使う。例えば値100を圧縮して1にしても、必要な回数は100のままである。
+
+値0を許し、「0が0回現れる場合も数える」定義に変えると、出現した正整数だけを扱うこの初期状態では足りない。区間の種類数や、出現回数の合計を求める問題とも異なる。
+
+## なぜ正しいか
+
+右端 $r$ を固定する。$k\ge v$ のとき、$[l,r)$ にちょうど $v$ 個の出現を残すには、後ろから $v$ 個目を含み、それより前の出現を全て除く必要がある。直前の出現だけを除けば、さらに前の出現も全て除かれる。その必要十分条件が、上の左端範囲である。
+
+右端を進めても、新たに取り込んだ値以外の出現位置は変わらない。その値の古い範囲を取り消して新しい範囲へ置き換えれば、全値の条件が保たれる。各値の寄与は範囲内で1、範囲外で0なので、位置 $l$ の合計が条件を満たす値の種類数になる。
+
+全ての許容範囲の右端は現在の $r$ 以下である。空区間の左端 $l=r$ はどの範囲にも入らず、答えも0になる。
+
+## 計算量
+
+各質問で区間の頻度を数え直すと $O(NQ)$ 時間。掲載実装は右端ごとに質問をバケットへ入れるため、質問のソートは不要。配列の一要素につき高々4回の差分更新、質問につき一回のFenwick Treeの和で、時間 $O((N+Q)\log(N+2))$、空間 $O(N+Q)$。
+
+値ごとの出現位置配列の要素数は合計で高々 $N$ である。値域 $10^9$ の大きさの表を確保する必要はない。
+
+## 実装
+
+`offline_frequency_equals_value(a, queries)` は各半開区間の答えを質問の元の順序で返す。空配列・空区間・質問なしにも対応する。長さまたは値の契約違反には `std::invalid_argument`、`0 <= l <= r <= N` を満たさない質問には `std::out_of_range` を投げる。
+
+```cpp
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+std::vector<int> offline_frequency_equals_value(
+    const std::vector<long long>& a,
+    const std::vector<std::pair<int, int>>& queries) {
+    if (a.size() > 200000 || queries.size() > 200000) {
+        throw std::invalid_argument("too many values or queries");
+    }
+    const int n = static_cast<int>(a.size());
+    const int q = static_cast<int>(queries.size());
+    for (long long value : a) {
+        if (value < 1 || value > 1000000000LL) {
+            throw std::invalid_argument("value outside supported range");
+        }
+    }
+    std::vector<std::vector<std::pair<int, int>>> by_right(n + 1);
+    for (int id = 0; id < q; ++id) {
+        const auto [l, r] = queries[id];
+        if (l < 0 || r < l || r > n) {
+            throw std::out_of_range("invalid half-open interval");
+        }
+        by_right[r].emplace_back(id, l);
+    }
+
+    // 差分の位置0..nを管理する。位置nは空区間にも必要。
+    const int bit_size = n + 1;
+    std::vector<int> bit(bit_size + 1);
+    auto add = [&](int position, int delta) {
+        for (int i = position + 1; i <= bit_size; i += i & -i) {
+            bit[i] += delta;
+        }
+    };
+    auto point = [&](int position) {
+        int result = 0;
+        for (int i = position + 1; i > 0; i -= i & -i) {
+            result += bit[i];
+        }
+        return result;
+    };
+    auto update_range = [&](const std::vector<int>& positions,
+                            int value, int delta) {
+        const int k = static_cast<int>(positions.size());
+        if (k < value) return;
+        const int left = k == value ? 0 : positions[k - value - 1] + 1;
+        const int right = positions[k - value] + 1;
+        add(left, delta);
+        add(right, -delta);
+    };
+
+    std::vector<std::vector<int>> occurrences(n + 1);
+    std::vector<int> answer(q);
+    for (int r = 0; r <= n; ++r) {
+        if (r > 0 && a[r - 1] <= n) {
+            const int value = static_cast<int>(a[r - 1]);
+            auto& positions = occurrences[value];
+            update_range(positions, value, -1);
+            positions.push_back(r - 1);
+            update_range(positions, value, 1);
+        }
+        for (const auto& [id, l] : by_right[r]) {
+            answer[id] = point(l);
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[区間の種類数を各値の最新位置だけで数える](/flowchartcp/techniques/offline-rightmost-occurrence/) ・ [区間の頻度二乗和を、要素の出し入れの差分で求める](/flowchartcp/techniques/mo-frequency-quadratic/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [Codeforces：220B — Little Elephant and Array](https://codeforces.com/problemset/problem/220/B)
+- [Codeforces公式解説：Round 136、220B](https://codeforces.com/blog/entry/5177)。右端順に処理し、出現位置の境界で寄与を更新する方法。解説は位置に置く差分の区間和、本文は左端ごとの答えに対する区間加算として説明している。
+
+<TechniqueReferences techniqueId="frequency-equals-value-offline" />

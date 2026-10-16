@@ -1,0 +1,52 @@
+---
+title: "取れる個数が1からkまでなら、山の個数をk+1で割った余りをXORする"
+description: "一つの山の遷移先の連続性から、Grundy数の周期を証明します。"
+techniqueId: "bounded-take-grundy-period"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+独立な複数の山があり、一手で一つの山から $1,2,\ldots,k$ 個のいずれかを取り除けるとき。山が大きくても、取れる個数が連続していることが手掛かりです。原典は $k=3$ です。
+
+## 考え方
+
+山の個数 $x$ の Grundy 数を $g(x)$ とすると、$g(0)=0$、$g(x)=\operatorname{mex}\{g(x-t):1\le t\le\min(k,x)\}$。この式から $g(x)=x\bmod(k+1)$ が成り立ちます。各山の余りを XOR し、0 なら後手、0 以外なら先手が勝ちます。
+
+## 適用条件
+
+毎手ちょうど一つの山を変更し、山どうしの合法手が独立であること。操作できない側が負ける通常ルールを使います。取れる個数が飛び飛び、山ごとに操作が連動する、最後に取った側が負ける場合にはこの式を流用できません。$k\ge1$。掲載実装では $k+1$ を64ビット符号なし整数で計算するため、$k\le2^{64}-2$ とします。
+
+## なぜ正しいか
+
+$x\le k$ では遷移先の値が $0,\ldots,x-1$ なので mex は $x$。$x>k$ では、直前の $k$ 個の余りは $0,\ldots,k$ のうち $x\bmod(k+1)$ を除いた全てです。帰納法で周期式を得ます。独立な通常ゲームの和は Grundy 数の XOR で勝敗を判定できるため、全体にも適用できます。
+
+## 計算量
+
+最大の山を $A$ として遷移を列挙すると前計算は時間 $O(Ak)$、空間 $O(A)$。周期式なら $n$ 山の判定は時間 $O(n)$、追加空間 $O(1)$。64ビット整数の剰余を定数時間として数えます。
+
+## 実装
+
+`bounded_take_first_wins` は、山の個数と一手の上限を受け取ります。空の山や、山が一つもない終局も処理します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+bool bounded_take_first_wins(const vector<unsigned long long>& heaps,
+                            unsigned long long k){
+    assert(k>=1 && k<numeric_limits<unsigned long long>::max());
+    unsigned long long value=0;
+    for(auto x:heaps)value^=x%(k+1);
+    return value!=0;
+}
+```
+
+## 関連する手法
+
+[Grundy数](/flowchartcp/techniques/game-theory/)、[小さい入力で全探索する](/flowchartcp/techniques/brute-force-observation/)
+
+## 参考資料
+
+- [原典の条件](https://cses.fi/problemset/task/1098/)
+
+<TechniqueReferences techniqueId="bounded-take-grundy-period" />

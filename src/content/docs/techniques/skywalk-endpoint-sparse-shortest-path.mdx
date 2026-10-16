@@ -1,0 +1,315 @@
+---
+title: "空中通路を必要な交点だけのグラフに縮めて、最短距離を求める"
+description: "始終点に近い十分高いビルで通路を分け、通路の端から下への接続だけを残す。矩形への進入を置き換える補題で距離を保存し、全交点を作らず最短路を求める。"
+techniqueId: skywalk-endpoint-sparse-shortest-path
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+地面から伸びる鉛直なビルと、ビルを結ぶ水平な空中通路がある。その和集合に沿って、指定した二つのビルの根元を移動する最短距離を求めたい。通路の途中でも、そこまで届くビルとの交点で乗り換えられる。地上の横移動はできない。
+
+ビル数を $N$、通路数を $M$ とする。全交点を作ると、同じ通路が多数のビルを横切るため $\Theta(NM)$ 頂点になる。距離を保つ専用の疎化によって、必要な交点を $O(M)$ 個に絞る。
+
+## 考え方
+
+まず通路を、始点・終点の位置に合わせて分ける。高さ $y$ の通路が始点または終点のビル $t$ の位置をまたぐなら、$t$ 以下で最後の高さ $y$ 以上のビルと、$t$ 以上で最初のそのようなビルを切れ目にする。$h_t\ge y$ なら両方とも $t$ になる。始点と終点について行っても、一本の通路に追加する切れ目は高々四つである。
+
+全交点グラフを考え、上端がこの分割後の通路の**端点**である鉛直辺だけを残す。各端点から、同じビル上で最も近い下の通路へつなげばよい。始終点ビルでは、下に通路がなければ高さ0の根元へつなぐ。それ以外のビルの根元は加えない。
+
+残った鉛直辺の両端と、全ての切れ目だけを頂点にする。各通路上では、残した点を横位置順につなぐ。始終点ビルをまたぐ途中の接続は切れ目として保存済みなので、この小さいグラフにDijkstra法を使える。
+
+掲載実装では分割した通路を別々の配列へ作らず、元の通路に切れ目を登録する。全切れ目を左から走査し、その位置を覆う通路を高さ順の集合へ置く。切れ目より真に低い直前の要素が、求める下の通路である。
+
+## 適用条件
+
+ビルは $(x_i,0)$ から $(x_i,h_i)$ の線分で、$x_i$ は真に増加する。通路 $j$ はビル $l_j<r_j$ を高さ $y_j$ で結び、$1\le y_j\le\min(h_{l_j},h_{r_j})$。同じ高さの通路は重ならず、端点同士の接触だけを許す。異なる高さの通路は水平なので交わらない。
+
+`skywalk_shortest_distance(x,h,l,r,y,s,g)` は、到達不能なら $-1$、到達可能なら64bit整数の距離を返す。$1\le N\le100000$、$0\le M\le100000$、$0\le x_i\le10^9$、$1\le h_i\le10^9$ を扱う。原典の $1\le M\le100000$ と異なる始終点を全て含み、通路なしや $s=g$ も拡張として許す。
+
+配列長、座標、端点、高さ、通路の重なり、始終点を全て検査し、不正なら `std::invalid_argument`。$s=g$ や通路なしでも検査を省かない。入力を変更せず、割当例外はそのまま伝える。全状態は呼出し内にあり、再呼出しにも以前のグラフは残らない。
+
+地面に接しない鉛直線分、通路同士の内部での重なり、地上の横移動には、以下の証明をそのまま適用しない。
+
+## なぜ正しいか
+
+**全交点モデル。** 全てのビル・通路の交点と二つの根元を頂点にし、各線分上の隣接点を距離付きで結ぶと、元の移動と同じ距離になる。線分の途中で曲がる必要があるのは交点だけだからである。同じ座標の端点は一頂点へまとめる。
+
+**切れ目の性質。** 分割後の一通路を $[a,b]$、その高さを $Y$ とする。始点または終点 $t$ がその内部にある場合、それは $t$ の左右の直近の十分高いビルを両端とする部分である。この開区間内には、高さ $Y$ まで届くビルが一つもない。従って、内部にビルとの交点を持つ部分通路は、始点も終点もその内部に含まない。もう一方のビルによる追加分割も、この性質を壊さない。
+
+**矩形への進入の置換。** 上端 $v=(x_q,Y)$ が部分通路の内部にある鉛直辺を考える。その下端 $u$ は、端ビルと上の通路で囲まれる矩形の内部にある。$q$ が始終点なら切れ目になるので、この辺の下端が始点・終点の根元である場合はない。
+
+経路がこの辺を上向きに通るとき、その $u$ までの接頭部分は、矩形の外または左右の境界上にある始点から来る。高さは常に0以上で、地面を横には歩けないので、矩形へ入るには左右の辺か上辺を通る。$u$ へ至る前のその交点を $p$ とする。
+
+$p$ が上辺なら、その上辺を直接 $v$ へ進む。$p$ が左右の辺なら、その端ビルを上がって上辺を進む。この経路は実在する線分だけを使い、長さは $p$ と $v$ のマンハッタン距離である。元の $p$ から $v$ の経路より長くならず、上端が通路内部である鉛直辺を使わない。下向きの場合は、$u$ から終点への接尾部分を逆向きに見て同じ置換を行う。
+
+この置換で新しく使う鉛直辺のうち、高さ $Y$ に上端があるものは通路の端にある。それ以外の新しい鉛直辺の上端は $Y$ より低い。最短経路の中から、「不要な鉛直辺の使用数」を上端高さの高い順に並べたベクトルが辞書式最小のものを選ぶと、不要な辺があれば今の置換で矛盾する。重なった歩行にできた閉路は消せばよい。従って全ての不要な鉛直辺を取り除いても、少なくとも一つの最短経路が残る。一般の始終点に対して、横方向に単調な経路を仮定する必要はない。
+
+**残す辺の生成。** 切れ目の上端から直下の交点までが、残す鉛直辺そのものである。左からの走査では、同じ位置の開始イベントを先、切れ目の照会を次、終了イベントを最後に処理する。端で接する通路も集合に残る。高さ $Y$ 未満の直前の通路を取れば、その途中の交点を飛び越さない。下の通路の高さは $Y$ 未満なので、上端のあるビルは必ずそこまで届く。
+
+同じ高さの通路が端で接する場合は、その高さを全て飛ばして真に低いものを探す。下の高さでも二本が端で接していれば、どちらを選んでも座標が同一で、後の頂点統合により両方へ移れる。
+
+**水平辺の縮約。** 残す鉛直辺の両端と切れ目以外の交点は、水平に通過するだけである。各元通路上で残した点の隣接同士をつなぐことは、途中の水平辺をその長さの和へ縮約したことになる。同じ座標を統合した後の辺は全て元の移動として実現できるので、短すぎる距離も作らない。以上より、疎グラフと元の問題の最短距離が一致する。
+
+## 計算量
+
+元の通路ごとの切れ目数の和を $P$ とする。両端二つと、始終点から各二つを加えるため $P\le6M$。鉛直辺は高々 $P$ 本、その両端と根元を含む頂点は高々 $2P+2$ 個である。通路上へ登録する点も高々 $2P$ 個なので、水平辺は高々 $2P$ 本。無向辺は高々 $3P$ 本となる。
+
+十分高いビルの集合を高さの降順に作る処理、イベントと点の整列、各集合操作、Dijkstra法を合わせて、時間は **$O((N+M)\log(N+M+1))$**、補助空間は **$O(N+M)$**。全交点の列挙は行わない。入力サイズに比例する深さの再帰は使わない。
+
+最短路のヒープには未確定頂点を一度ずつ置き、距離更新時はその位置を上げる。古い距離を何度も積む方式ではない。最大 $M=100000$ で頂点数は1200002以下、無向辺数は1800000以下。距離・ヒープ・辺と、構築時の点・対応表は段階ごとに破棄する。32bitの `int`、64bitの距離、掲載した構造体の要素配置では、同座標の統合・隣接配列の構築段階の主要な補助配列のデータ量は $132P+48$ byte、約79.2MB以下である。それより前の切れ目生成では、イベント領域が $96M$ byte、順序番号が $4(N+M)$ byteとなり、十分高いビルの集合も持つ。その次の走査では、イベント・点・鉛直接続と通路の集合を持つ。両方の集合とイベントは、隣接配列を作る前に解放する。入力配列やメモリ確保・集合ノードの管理領域は、この補助配列のデータ量には含めない。原典の値渡し関数へ、保持している配列を渡す場合は、その複製も別に必要になる。
+
+各辺の重みは $10^9$ 以下で `int` に収まる。頂点番号と隣接配列の添字も上の個数上界内である。単純路の長さは $(2P+1)10^9\le1200001000000000$ で、緩和時の一辺追加まで含めて64bitに十分収まる。座標の差は検査後の非負の順序で計算する。
+
+## 実装
+
+入力検査、切れ目と直下接続の生成、同座標統合、水平辺の生成、最短路の順に処理する。原典の値渡し `min_distance` 入口も末尾に含める。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <limits>
+#include <iterator>
+#include <numeric>
+#include <set>
+#include <stdexcept>
+#include <tuple>
+#include <utility>
+#include <vector>
+
+namespace skywalk_detail {
+using Distance = std::int64_t;
+static_assert(std::numeric_limits<int>::max() >= 1000000000);
+constexpr int limit = 100000;
+constexpr int coordinate_limit = 1000000000;
+
+void validate(const std::vector<int>& x, const std::vector<int>& h,
+              const std::vector<int>& l, const std::vector<int>& r,
+              const std::vector<int>& y, int s, int g) {
+    if (x.empty() || x.size() > std::size_t(limit) || h.size() != x.size()
+        || l.size() > std::size_t(limit) || r.size() != l.size()
+        || y.size() != l.size()) throw std::invalid_argument("array sizes");
+    const int n = int(x.size()), m = int(l.size());
+    if (s < 0 || s >= n || g < 0 || g >= n)
+        throw std::invalid_argument("terminal index");
+    for (int i = 0; i < n; ++i) {
+        if (x[i] < 0 || x[i] > coordinate_limit || (i && x[i-1] >= x[i])
+            || h[i] < 1 || h[i] > coordinate_limit)
+            throw std::invalid_argument("building");
+    }
+    std::vector<int> order(m);
+    std::iota(order.begin(), order.end(), 0);
+    for (int j = 0; j < m; ++j)
+        if (l[j] < 0 || r[j] >= n || l[j] >= r[j] || y[j] < 1
+            || y[j] > std::min(h[l[j]], h[r[j]]))
+            throw std::invalid_argument("skywalk");
+    std::sort(order.begin(), order.end(), [&](int a, int b) {
+        return std::tie(y[a],l[a],r[a]) < std::tie(y[b],l[b],r[b]);
+    });
+    for (int k = 1; k < m; ++k) {
+        const int a = order[k-1], b = order[k];
+        if (y[a] == y[b] && r[a] > l[b])
+            throw std::invalid_argument("overlapping skywalks");
+    }
+}
+
+struct Arc { int to, next, weight; };
+struct Graph {
+    std::vector<int> head;
+    std::vector<Arc> arcs;
+    int source = -1, target = -1;
+    void edge(int u, int v, int weight) {
+        if (u == v) return;
+        arcs.push_back({v, head[u], weight}); head[u] = int(arcs.size())-1;
+        arcs.push_back({u, head[v], weight}); head[v] = int(arcs.size())-1;
+    }
+};
+struct Touch { int segment, building, height, id; };
+struct Link { int upper, lower, weight; };
+struct Event { int building, type, segment; }; // start=0, query=1, end=2
+
+Graph build_validated(const std::vector<int>& x, const std::vector<int>& h,
+                      const std::vector<int>& l, const std::vector<int>& r,
+                      const std::vector<int>& y, int s, int g) {
+    const int n = int(x.size()), m = int(l.size());
+    std::vector<Touch> touches;
+    std::vector<Link> links;
+    std::size_t p = 0;
+    {
+        std::vector<Event> events;
+        events.reserve(std::size_t(8)*m);
+        for (int j = 0; j < m; ++j) {
+            events.push_back({l[j],0,j}); events.push_back({r[j],2,j});
+        }
+        {
+            std::vector<int> buildings(n), walks(m);
+            std::iota(buildings.begin(),buildings.end(),0);
+            std::iota(walks.begin(),walks.end(),0);
+            std::sort(buildings.begin(),buildings.end(),[&](int a,int b){return h[a]>h[b];});
+            std::sort(walks.begin(),walks.end(),[&](int a,int b){return y[a]>y[b];});
+            std::set<int> tall;
+            int next = 0;
+            for (int j : walks) {
+                while (next < n && h[buildings[next]] >= y[j]) tall.insert(buildings[next++]);
+                std::array<int,6> cuts{};
+                cuts.fill(r[j]);
+                int count = 0;
+                cuts[count++] = l[j]; cuts[count++] = r[j];
+                for (int terminal : {s,g}) if (l[j] < terminal && terminal < r[j]) {
+                    cuts[count++] = *tall.lower_bound(terminal);
+                    cuts[count++] = *std::prev(tall.upper_bound(terminal));
+                }
+                std::sort(cuts.begin(),cuts.end());
+                count = int(std::unique(cuts.begin(),cuts.end())-cuts.begin());
+                for (int k = 0; k < count; ++k) events.push_back({cuts[k],1,j});
+                p += std::size_t(count);
+            }
+        }
+        touches.reserve(2*p+2); links.reserve(p);
+        touches.push_back({-1,s,0,0}); touches.push_back({-2,g,0,1});
+        std::sort(events.begin(),events.end(),[](const Event& a,const Event& b){
+            return std::tie(a.building,a.type,a.segment) < std::tie(b.building,b.type,b.segment);
+        });
+        std::set<std::pair<int,int>> active;
+        for (const Event& event : events) {
+            const int j = event.segment, building = event.building;
+            if (event.type == 0) active.insert({y[j],j});
+            else if (event.type == 2) active.erase({y[j],j});
+            else {
+                const int upper = int(touches.size());
+                touches.push_back({j,building,y[j],upper});
+                auto below = active.lower_bound({y[j],-1});
+                if (below != active.begin()) {
+                    --below;
+                    const int k = below->second, lower = int(touches.size());
+                    touches.push_back({k,building,y[k],lower});
+                    links.push_back({upper,lower,y[j]-y[k]});
+                } else if (building == s || building == g) {
+                    links.push_back({upper,building == s ? 0 : 1,y[j]});
+                }
+            }
+        }
+    }
+    Graph graph;
+    graph.head.reserve(2*p+2); graph.arcs.reserve(6*p);
+    std::vector<int> node_of_touch(touches.size());
+    std::sort(touches.begin(),touches.end(),[](const Touch& a,const Touch& b){
+        return std::tie(a.building,a.height) < std::tie(b.building,b.height);
+    });
+    int last_building = -1, last_height = -1, node = -1;
+    for (Touch& touch : touches) {
+        if (touch.building != last_building || touch.height != last_height) {
+            ++node; graph.head.push_back(-1);
+            last_building = touch.building; last_height = touch.height;
+        }
+        node_of_touch[touch.id] = node;
+        touch.id = node;
+    }
+    graph.source = node_of_touch[0]; graph.target = node_of_touch[1];
+    for (const Link& link : links)
+        graph.edge(node_of_touch[link.upper],node_of_touch[link.lower],link.weight);
+    std::vector<int>().swap(node_of_touch); std::vector<Link>().swap(links);
+    std::sort(touches.begin(),touches.end(),[](const Touch& a,const Touch& b){
+        return std::tie(a.segment,a.building) < std::tie(b.segment,b.building);
+    });
+    for (std::size_t k = 1; k < touches.size(); ++k) {
+        const Touch& a = touches[k-1]; const Touch& b = touches[k];
+        if (a.segment >= 0 && a.segment == b.segment && a.building != b.building)
+            graph.edge(a.id,b.id,x[b.building]-x[a.building]);
+    }
+    return graph;
+}
+
+class IndexedHeap {
+    const std::vector<Distance>& distance;
+    std::vector<int> heap;
+    bool before(int a,int b) const {
+        return distance[a] < distance[b] || (distance[a] == distance[b] && a < b);
+    }
+    void exchange(int a,int b) {
+        std::swap(heap[a],heap[b]); position[heap[a]]=a; position[heap[b]]=b;
+    }
+public:
+    std::vector<int> position; // -1 unseen, -2 settled
+    explicit IndexedHeap(const std::vector<Distance>& values)
+        : distance(values), position(values.size(),-1) { heap.reserve(values.size()); }
+    bool empty() const { return heap.empty(); }
+    void decrease(int vertex) {
+        int at = position[vertex];
+        if (at == -1) { at=int(heap.size()); heap.push_back(vertex); position[vertex]=at; }
+        while (at > 0) {
+            const int parent = (at-1)/2;
+            if (!before(heap[at],heap[parent])) break;
+            exchange(at,parent); at=parent;
+        }
+    }
+    int pop() {
+        const int result = heap.front(), last = heap.back();
+        heap.pop_back(); position[result]=-2;
+        if (heap.empty()) return result;
+        heap.front()=last; position[last]=0;
+        int at = 0;
+        while (2*at+1 < int(heap.size())) {
+            int child = 2*at+1;
+            if (child+1 < int(heap.size()) && before(heap[child+1],heap[child])) ++child;
+            if (!before(heap[child],heap[at])) break;
+            exchange(child,at); at=child;
+        }
+        return result;
+    }
+};
+Distance shortest(const Graph& graph) {
+    constexpr Distance infinity = std::numeric_limits<Distance>::max()/4;
+    std::vector<Distance> distance(graph.head.size(),infinity);
+    IndexedHeap heap(distance);
+    distance[graph.source]=0; heap.decrease(graph.source);
+    while (!heap.empty()) {
+        const int u = heap.pop();
+        if (u == graph.target) return distance[u];
+        for (int at = graph.head[u]; at != -1; at = graph.arcs[at].next) {
+            const Arc& edge = graph.arcs[at];
+            if (heap.position[edge.to] == -2) continue;
+            const Distance candidate = distance[u]+edge.weight;
+            if (candidate < distance[edge.to]) {
+                distance[edge.to]=candidate; heap.decrease(edge.to);
+            }
+        }
+    }
+    return -1;
+}
+} // namespace skywalk_detail
+
+long long skywalk_shortest_distance(const std::vector<int>& x,const std::vector<int>& h,
+                                   const std::vector<int>& l,const std::vector<int>& r,
+                                   const std::vector<int>& y,int s,int g) {
+    skywalk_detail::validate(x,h,l,r,y,s,g);
+    if (s == g) return 0;
+    if (l.empty()) return -1;
+    return skywalk_detail::shortest(skywalk_detail::build_validated(x,h,l,r,y,s,g));
+}
+
+long long min_distance(std::vector<int> x,std::vector<int> h,
+                       std::vector<int> l,std::vector<int> r,std::vector<int> y,int s,int g) {
+    return skywalk_shortest_distance(x,h,l,r,y,s,g);
+}
+```
+
+## 関連する手法
+
+- [Dijkstra法](/flowchartcp/techniques/dijkstra/)：疎化後の非負重み付きグラフで最短距離を求める。
+- [座標圧縮](/flowchartcp/techniques/coordinate-compression/)：同じビル位置と高さの点を一つの頂点番号へまとめる。
+- [グラフへの変換](/flowchartcp/techniques/graph-reduction/)：元の移動を全交点グラフに写し、距離を保存する辺の除去と水平辺の縮約を行う。
+
+## 参考資料
+
+- [IOI 2019 Sky Walking 原典](https://ioinformatics.org/files/ioi2019problem6.pdf)
+- [主催者配布の公式Review](https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf)
+- [主催者配布LVA原典](https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf)
+- [主催者配布IDN原典](https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf)
+- [主催者配布MAC原典](https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf)
+- [主催者配布Day2 Notice](https://ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf)
+- [日本委員会の課題・競技日一覧](https://www2.ioi-jp.org/ioi/2019/tasks/index.html)
+
+<TechniqueReferences techniqueId="skywalk-endpoint-sparse-shortest-path" />

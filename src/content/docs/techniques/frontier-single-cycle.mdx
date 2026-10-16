@@ -1,0 +1,213 @@
+---
+title: "細い盤面を一本の閉路で覆うなら、境界の端点のつながりを持つ"
+description: "境界を横切る辺の有無に加え、どの二端点が同じ道に属するかを保存し、小さな閉路が先にできるのを防ぎます。"
+techniqueId: frontier-single-cycle
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+障害物のある格子で、使える全てのマスを一回ずつ通り、出発点へ戻る閉路を数える場面です。移動は上下左右だけとし、使える各マスの次数を2にします。
+
+短辺が小さければ、処理済み部分と未処理部分の境界だけを状態にできます。ただし、境界を通る辺の有無だけでは不十分です。各マスの次数が2でも、離れた複数の閉路になることがあります。境界のどの端点同士が、処理済み部分を通ってつながっているかも持ちます。
+
+このように境界の接続関係を保存するDPは、連結性の状態圧縮、plug DPなどと呼ばれます。ここでは、全マスを覆う無向の単純閉路を一本だけ作る場合に絞ります。
+
+## 考え方
+
+短辺を幅 $W$ にして、上の行から順に、各行を左から右へ処理します。処理中のマスに入ってくる辺は左と上、これから出す辺は右と下だけです。
+
+途中で閉路を作らなければ、処理済み部分にある各連結成分は一本の道です。その両端は境界に現れます。同じ道の二端点に同じ番号を付け、辺のない位置を0とします。例えば `(4, 7, 7, 4, 0)` は `(1, 2, 2, 1, 0)` と同じ接続関係です。左から初めて現れる番号を1、2、…と付け直し、同じ状態にまとめます。
+
+処理済みマスの次数はその場で2に確定します。未処理マスへの辺の本数は境界の0・非0から読めるため、過去の全マスの次数表を残す必要はありません。
+
+各マスで選ぶ辺は次の四つの場合に分かれます。
+
+| 左・上からの辺 | 処理 |
+| --- | --- |
+| 0本 | 右と下へ一本ずつ出し、新しい道の両端を作る。両方へ進める場合だけ可能。 |
+| 1本 | 右か下へ一本出し、入ってきた道の端点を移す。 |
+| 2本、異なる道 | 右にも下にも出さず、二本の道をつなぐ。残った両端の番号を統合する。 |
+| 2本、同じ道 | 道の両端をつないで閉路にする。下の終了条件を満たす場合だけ許す。 |
+
+障害物のマスは左・上からの辺がともに0の場合だけ通過できます。右や下が盤外・障害物なら、その方向へ辺を出しません。
+
+### 閉路を閉じるのは最後の一回だけ
+
+同じ番号の二端点をつなぐと、その道は境界から消え、閉路になります。後から別のマスと接続する余地はありません。そのため、次の両方を確認します。
+
+- 今のマスが、走査順で最後の使えるマスである。
+- 今の二端点を消した後、境界に別の端点が残らない。
+
+残りに障害物しかなければ、閉路を閉じた後は空の境界のまま最後まで進めます。途中で境界が空になったという理由だけで完成扱いにすると、複数の小さな閉路を数えてしまいます。
+
+### 行をまたぐときの位置
+
+以下の実装では境界を $W+1$ 枠で持ちます。列 $c$ の処理直前には、枠 $c$ が左、枠 $c+1$ が上からの辺です。この二枠を消し、枠 $c$ に下、枠 $c+1$ に右へ出る辺を入れます。
+
+行末では右への辺がないので、枠 $W$ は必ず0です。次の行へ移るときに全体を一枠ずらすと、前の行から下へ出た辺が、次の行の上からの辺になります。新しい枠0は0です。
+
+## 適用条件
+
+四近傍の格子グラフで、指定された全マスを一つの単純閉路で覆う場合です。マスの選択を許す問題、複数の閉路を許す問題、始点・終点のある道を作る問題では、次数や成分が消える条件を変える必要があります。
+
+実装は `.` を使うマス、`*` を障害物として受け取り、転置後の幅 $W\le 12$ を要求します。境界の13枠以下を、各4ビットで `uint64_t` に詰めます。道の端点は対になっているため、使用する成分番号はこの4ビットに収まります。
+
+無向の辺集合を一通りと数えます。同じ閉路を逆向きにたどったものや、出発点を変えたものを別に数えません。最後に2やマス数で割る必要はありません。
+
+空の盤面、使えるマスがない盤面、1マスだけの盤面の答えは0です。格子は二部グラフなので、使える白マスと黒マスの個数が異なる場合も0です。使えるマスが分断されている場合は、閉路を早く閉じられないためDPの遷移が消えます。連結で白黒が同数でも、閉路が存在するとは限りません。
+
+## なぜ正しいか
+
+各使えるマスの処理を終えると、そのマスに選んだ辺はちょうど2本です。それ以降、そのマスに新たな辺を足すことはありません。未完成の連結成分は閉路を含まないため一本の道であり、未来とつながれる箇所は境界上の両端だけです。したがって、境界の端点とその対応が等しい過去は、今後選べる辺も等しく、個数を足せます。
+
+一つの正しい閉路を固定すると、各マスでの右・下の辺は一意です。左・上から来る辺も既に決まっているので、四つの遷移のうちちょうど一つを通ります。閉路の一部だけが先に閉じることはなく、最後の使えるマスで全体が閉じるため、この閉路は必ず一回数えられます。
+
+逆に、受理された遷移列では全ての使えるマスの次数が2で、閉路を作る操作は最後の一回だけです。そのとき他の端点も残らないため、全てのマスがその一つの閉路に属します。番号の付け直しは成分名だけを変える操作であり、辺の選択を増減させません。
+
+## 計算量
+
+高さを $H$、転置後の幅を $W$、一時点の状態数の最大値を $S$ とします。境界の端点は交差しない対になります。$K=W+1$ とすると、状態数の上界は
+
+$$S\le\sum_{j=0}^{\lfloor K/2\rfloor}\binom{K}{2j}C_j\le 3^K$$
+
+です。$C_j$ はCatalan数です。端点を置く $2j$ 枠を選び、その非交差な対応を選んでいます。盤面の条件により、実際に現れる状態はさらに減ります。
+
+各状態の遷移は定数個ですが、下の実装は状態の復号、番号の統合、番号の付け直しに $O(W)$ かかります。また、個数は多倍長整数 `cpp_int` で保持します。途中の個数を表す最大の機械語数を $B$ とすると、ハッシュ表の操作を期待 $O(1)$ として、時間は $O(HWS(W+B))$、空間は盤面を含めて $O(HW+S(B+1)+W)$ です。ハッシュ表の衝突が集中する最悪の場合の時間は、この期待計算量とは異なります。
+
+最終的な答えが64ビットに収まっても、不成立になる途中状態の個数まで収まるとは限りません。以下では途中も含めて正確に数えます。
+
+## 実装
+
+`count_grid_hamiltonian_cycles(grid)` は `cpp_int` を返します。長方形でない入力、`.` と `*` 以外の文字、転置後も幅が12を超える入力は `invalid_argument` です。幅の検査は、使えるマス数による早期終了より先に行います。
+
+```cpp
+#include <bits/stdc++.h>
+#include <boost/multiprecision/cpp_int.hpp>
+using namespace std;
+using boost::multiprecision::cpp_int;
+
+cpp_int count_grid_hamiltonian_cycles(vector<string> grid) {
+    if (grid.empty()) return 0;
+    if (grid.size() > size_t(INT_MAX) ||
+        grid.front().size() > size_t(INT_MAX))
+        throw invalid_argument("grid dimensions");
+    int H = int(grid.size()), W = int(grid.front().size());
+    for (const auto& row : grid) {
+        if (row.size() != size_t(W)) throw invalid_argument("ragged grid");
+        for (char ch : row)
+            if (ch != '.' && ch != '*') throw invalid_argument("grid cell");
+    }
+    if (W == 0) return 0;
+    if (W > H) {
+        vector<string> transposed(W, string(H, '*'));
+        for (int r = 0; r < H; ++r)
+            for (int c = 0; c < W; ++c) transposed[c][r] = grid[r][c];
+        grid = move(transposed);
+        swap(H, W);
+    }
+    if (W > 12) throw invalid_argument("frontier width");
+
+    size_t colors[2]{};
+    int last_r = -1, last_c = -1;
+    for (int r = 0; r < H; ++r) {
+        for (int c = 0; c < W; ++c) if (grid[r][c] == '.') {
+            ++colors[(r & 1) ^ (c & 1)];
+            last_r = r;
+            last_c = c;
+        }
+    }
+    if (colors[0] != colors[1] || colors[0] + colors[1] < 4) return 0;
+
+    using Key = uint64_t;
+    using Frontier = array<int, 13>;
+    using Table = unordered_map<Key, cpp_int>;
+
+    auto encode = [&](const Frontier& frontier) -> Key {
+        array<int, 16> renamed{};
+        int next_label = 0;
+        Key key = 0;
+        for (int i = 0; i <= W; ++i) {
+            int label = frontier[i];
+            if (label && renamed[label] == 0) renamed[label] = ++next_label;
+            key |= Key(renamed[label]) << (4 * i);
+        }
+        return key;
+    };
+
+    Table dp;
+    dp[0] = 1;
+    for (int r = 0; r < H; ++r) {
+        Table shifted;
+        for (const auto& [key, ways] : dp) {
+            // 行末の枠Wは0。新しい枠0を空け、上からの辺を一枠右へ。
+            assert((key >> (4 * W)) == 0);
+            shifted[key << 4] += ways;
+        }
+        dp = move(shifted);
+        for (int c = 0; c < W; ++c) {
+            Table next;
+            bool down = r + 1 < H && grid[r + 1][c] == '.';
+            bool right = c + 1 < W && grid[r][c + 1] == '.';
+            for (const auto& [key, ways] : dp) {
+                Frontier frontier{};
+                for (int i = 0; i <= W; ++i)
+                    frontier[i] = int((key >> (4 * i)) & 15);
+                int left = frontier[c], up = frontier[c + 1];
+                frontier[c] = frontier[c + 1] = 0;
+                auto put = [&](const Frontier& state) {
+                    next[encode(state)] += ways;
+                };
+
+                if (grid[r][c] == '*') {
+                    if (left == 0 && up == 0) put(frontier);
+                } else if (left == 0 && up == 0) {
+                    if (down && right) {
+                        int label = *max_element(frontier.begin(),
+                                                 frontier.begin() + W + 1) + 1;
+                        frontier[c] = frontier[c + 1] = label;
+                        put(frontier);
+                    }
+                } else if (left == 0 || up == 0) {
+                    int label = left ? left : up;
+                    if (down) {
+                        frontier[c] = label;
+                        put(frontier);
+                        frontier[c] = 0;
+                    }
+                    if (right) {
+                        frontier[c + 1] = label;
+                        put(frontier);
+                    }
+                } else if (left != up) {
+                    for (int i = 0; i <= W; ++i)
+                        if (frontier[i] == up) frontier[i] = left;
+                    put(frontier);
+                } else if (r == last_r && c == last_c) {
+                    bool empty = true;
+                    for (int i = 0; i <= W; ++i)
+                        if (frontier[i]) empty = false;
+                    if (empty) put(frontier);
+                }
+            }
+            dp = move(next);
+        }
+    }
+    auto it = dp.find(0);
+    return it == dp.end() ? cpp_int(0) : it->second;
+}
+```
+
+## 関連する手法
+
+- [細い盤面の敷き詰めでは、境界をまたぐ占有マスを持つ](/flowchartcp/techniques/domino-column-transition/)
+- [集合の状態をビット列で持つ](/flowchartcp/techniques/bitmask-dp/)
+- [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [Timus：1519. Formula 1](https://acm.timus.ru/problem.aspx?space=1&num=1519) — 障害物以外の全マスを一本の閉路で覆う問題。縦横は2以上12以下で、答えは符号付き64ビット以内。
+- [洛谷：P5056 插头 DP](https://www.luogu.com.cn/problem/P5056) — 同じ問題の中国語掲載。背景欄でTimus 1519を原典として挙げているため、独立した別問題とは数えない。
+
+<TechniqueReferences techniqueId="frontier-single-cycle" />

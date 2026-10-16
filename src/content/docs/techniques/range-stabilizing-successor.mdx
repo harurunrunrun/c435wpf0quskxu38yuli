@@ -1,0 +1,163 @@
+---
+title: "繰り返すと変わらなくなる区間更新は、固定した位置を次回から飛ばす"
+description: "約数個数や整数平方根への更新で、各要素が変わる回数だけを処理する。"
+techniqueId: range-stabilizing-successor
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+区間の各値を約数の個数や切り捨て平方根へ変え、途中の区間和を答える。同じ要素へ何度も作用させると、以後は値が変わらなくなる。点代入など、変わらなくなった値を再び動かす操作はない。
+
+## 考え方
+
+値の変換 $f$ と、$f(x)=x$ となる固定点を調べる。固定点に着いた位置は、それ以後の更新で読む必要がない。更新区間 $[l,r)$ の中で、まだ固定していない位置だけを順に訪れる。変わった差分だけを Fenwick 木へ加えれば、区間和も求められる。
+
+飛ばす位置を管理するには、隣り合う添字をまとめる DSU を使う。各成分は「固定済みの位置の列と、その直後の未固定位置」からなる区間とする。成分の右端を保存すれば、位置 $i$ 以降で最初の未固定位置は、その成分の右端になる。末尾には番兵 $N$ を置く。位置 $i$ が固定したら、$i$ と $i+1$ の成分を併合する。
+
+代表元を必ず右側へ向ける必要はない。サイズによる併合と経路圧縮を行い、右端は別の情報として持つ。これにより通常の DSU の計算量を使える。
+
+## 適用条件
+
+- 同じ変換を繰り返し、固定点に着いた値は永久に変わらない。
+- 各要素が固定するまでの回数を、制約から小さく抑えられる。
+- 掲載実装では値は非負、変換後は元の値以下、初期の総和は符号付き64ビットに収まる。
+- 固定点の判定と変換は、値だけで決まる副作用のない関数とする。
+
+値が毎回1ずつ減るだけなら、固定点があっても大きな値には時間がかかる。「減る」だけでは十分ではない。また、点代入で固定点から戻す場合、この削除専用の管理は使えない。その場合は未固定位置の順序集合などを検討する。
+
+## なぜ正しいか
+
+固定点にある要素は変換しても同じ値なので、省略してよい。固定していない要素は、区間内で一回ずつ変換する。変換後も未固定の要素を同じ操作中に再訪しないよう、次は必ず $i+1$ 以降から探す。
+
+DSU の成分の右端が未固定位置または番兵であることを保つ。未固定の右端 $i$ が固定したときだけ右隣の成分と併合するため、その区間の新しい右端が次の未固定位置になる。最初から固定している位置も同じ方法で除く。したがって訪問する位置は、ちょうど省略できない位置である。各差分を Fenwick 木へ反映するので区間和も一致する。
+
+約数個数 $d(x)$ では、正整数の固定点は1と2。$x>2$ のとき $d(x)<x$ で、すべての約数個数を事前計算できる。値上限 $A$ に対し、$h(1)=h(2)=0$、$h(x)=1+h(d(x))$ を昇順に求めれば、最大更新回数 $R=\max h(x)$ も推測せず計算できる。
+
+整数平方根では0と1が固定点で、2以上なら小さくなる。値上限 $A$ から平方根を繰り返した回数が、そのまま全要素に共通の上限になる。回数は $O(\log\log(A+2))$。
+
+## 計算量
+
+実際に行う要素の変換回数を $K$、操作数を $Q$ とする。初期化は $O(N\log(N+1))$、操作全体は
+
+$$O((N+Q+K)\alpha(N+1)+(Q+K)\log(N+1)+K T_f)$$
+
+時間、管理用の空間は $O(N)$。$T_f$ は一回の値変換の時間で、固定点の判定は $O(1)$ とする。各要素の更新回数が $R$ 以下なら $K\le NR$ になる。一回の区間更新が必ず対数時間になるわけではない。
+
+約数表は $O(A\log(A+1))$ 時間・$O(A)$ 空間で作れ、以後の変換は $O(1)$。下の整数平方根は整数の二分探索で求めるため一回 $O(\log(A+1))$。浮動小数点の丸めに依存しない。
+
+## 実装
+
+区間は半開区間。`apply(l,r)` が各要素を一度ずつ変換し、`sum(l,r)` が和を返す。`get(i)` は現在値。空の列・空区間にも対応する。固定点判定の正しさと更新回数の上限は、利用する変換について確認する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class StabilizingRangeMap {
+    using ll = long long;
+    int n;
+    vector<ll> a, bit;
+    vector<int> parent, size, last;
+    function<ll(ll)> step;
+    function<bool(ll)> fixed;
+
+    int find(int x) {
+        int root = x;
+        while (parent[root] != root) root = parent[root];
+        while (parent[x] != x) {
+            int p = parent[x]; parent[x] = root; x = p;
+        }
+        return root;
+    }
+    void unite(int x, int y) {
+        x = find(x); y = find(y);
+        if (x == y) return;
+        if (size[x] < size[y]) swap(x, y);
+        parent[y] = x; size[x] += size[y];
+        last[x] = max(last[x], last[y]);
+    }
+    int next_active(int i) { return last[find(i)]; }
+    void add(int i, ll delta) {
+        for (long long p = 1LL + i; p <= n; p += p & -p) bit[p] += delta;
+    }
+    ll prefix(int r) const {
+        ll total = 0;
+        for (; r; r -= r & -r) total += bit[r];
+        return total;
+    }
+    void check(int l, int r) const {
+        if (l < 0 || l > r || r > n) throw out_of_range("range");
+    }
+public:
+    StabilizingRangeMap(vector<ll> values, function<ll(ll)> transform,
+                        function<bool(ll)> is_fixed)
+        : n(0), a(move(values)), step(move(transform)), fixed(move(is_fixed)) {
+        if (a.size() > static_cast<size_t>(INT_MAX - 1))
+            throw length_error("too many elements");
+        n = static_cast<int>(a.size());
+        if (!step || !fixed) throw invalid_argument("missing function");
+        __int128 total = 0;
+        for (ll x : a) {
+            if (x < 0) throw invalid_argument("negative value");
+            total += x;
+        }
+        if (total > LLONG_MAX) throw overflow_error("initial sum");
+        bit.assign(n + 1, 0);
+        parent.resize(n + 1); size.assign(n + 1, 1); last.resize(n + 1);
+        iota(parent.begin(), parent.end(), 0);
+        iota(last.begin(), last.end(), 0);
+        for (int i = 0; i < n; ++i) add(i, a[i]);
+        for (int i = n - 1; i >= 0; --i)
+            if (fixed(a[i])) unite(i, i + 1);
+    }
+    void apply(int l, int r) {
+        check(l, r);
+        for (int i = next_active(l); i < r; i = next_active(i + 1)) {
+            ll value = step(a[i]);
+            if (value < 0 || value > a[i])
+                throw invalid_argument("transform must be nonincreasing");
+            add(i, value - a[i]);
+            a[i] = value;
+            if (fixed(value)) unite(i, i + 1);
+        }
+    }
+    ll sum(int l, int r) const { check(l, r); return prefix(r) - prefix(l); }
+    ll get(int i) const {
+        if (i < 0 || i >= n) throw out_of_range("position");
+        return a[i];
+    }
+};
+
+long long integer_sqrt(long long x) {
+    if (x < 0) throw invalid_argument("negative square root");
+    long long lo = 0, hi = min(x, 3037000499LL) + 1;
+    while (hi - lo > 1) {
+        long long mid = lo + (hi - lo) / 2;
+        if (mid <= x / mid) lo = mid;
+        else hi = mid;
+    }
+    return lo;
+}
+
+vector<int> divisor_counts(int limit) {
+    if (limit < 1 || limit == INT_MAX) throw invalid_argument("value limit");
+    vector<int> d(limit + 1);
+    for (long long k = 1; k <= limit; ++k)
+        for (long long x = k; x <= limit; x += k) ++d[x];
+    return d;
+}
+```
+
+約数個数への更新なら、`d` を作って `step = [&d](long long x) { return d.at(x); }`、固定点判定を `x == 1 || x == 2` とする。`d` は更新器を使っている間保持する。初期値が1以上であることも確認する。平方根なら `integer_sqrt` と `x <= 1` を渡す。
+
+## 関連する手法
+
+[区間の剰余更新の減少回数を数える](/flowchartcp/techniques/range-modulo-halving/) ・ [Fenwick 木](/flowchartcp/techniques/fenwick-tree/) ・ [Union-Find](/flowchartcp/techniques/union-find/)
+
+## 参考資料
+
+- [Codeforces 920F：SUM and REPLACE](https://codeforces.com/problemset/problem/920/F)
+- [SPOJ GSS4：Can you answer these queries IV](https://www.spoj.com/problems/GSS4/)
+
+<TechniqueReferences techniqueId="range-stabilizing-successor" />

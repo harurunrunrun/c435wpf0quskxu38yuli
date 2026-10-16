@@ -1,0 +1,76 @@
+---
+title: "文字更新と区間回文判定を、正順・逆順ハッシュの併合で扱う"
+description: "区間長と両方向のハッシュを持ち、順序を保って併合する。衝突の可能性を許す判定に用いる。"
+techniqueId: palindrome-update-hash-monoid
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一文字の変更と、区間が回文かどうかの質問が混在する。静的な最大回文半径は、一度の文字変更で広い範囲が変わり得る。一質問で左右を全比較する $O(N)$ の処理を避けたい。
+
+## 考え方
+
+各区間に長さ、正順ハッシュ $F$、逆順ハッシュ $R$ を持つ。文字を数字に変え、左から高い桁に置く多項式ハッシュを使うと、左右の文字列 $A,B$ の併合は
+
+$$F(AB)=F(A)\,b^{|B|}+F(B),\qquad R(AB)=R(B)\,b^{|A|}+R(A)$$
+
+となる。二つの素数で同じ形を計算し、区間木に保存する。更新は葉から根へ、区間取得は文字の順序を保って併合する。回文なら両方向のハッシュは必ず等しい。等しくなければ必ず回文ではない。
+
+## 適用条件
+
+固定長の英小文字列への一点更新を扱い、$N\le2\times10^5$ とする。この方法はハッシュ衝突があると、回文ではない区間を回文と答える可能性がある。二つの法を使っても、常に正しいことの証明にはならない。厳密判定が必要なら、この候補を確定解法として選ばない。正順・逆順ハッシュが等しい候補を文字比較で確認すれば厳密になるが、一質問の最悪時間は $O(N)$ に戻る。
+
+実装の底は構築時に呼び出し側が選ぶ。$2\le b<10^9+7$ とする。入力から独立に乱数で選ぶと固定底を狙った衝突への対策になるが、誤判定の可能性は残る。公開コードの既定の固定底を、そのまま無衝突の保証と解釈しない。
+
+## なぜ正しいか
+
+ハッシュの併合式は、連結した文字列の各文字の指数を直接展開すれば得られる。連結の結合則を保つため、区間木の分割方法によらず同じ値になる。逆順では右区間が先に来るので、$R(B)$ の指数を $|A|$ だけ上げる必要がある。
+
+実際に回文なら、正順と逆順が同じ文字列なので値も等しい。一方、異なる文字列の多項式が法の下で同じ値を持つことはある。したがって、ここで証明できるのはハッシュ値の正しさと片側の判定であり、等しい場合の文字列一致は確率的な仮定を要する。
+
+## 計算量
+
+毎回の左右比較は最悪 $O(NQ)$ 時間。ハッシュ判定は構築と累乗表が $O(N)$、更新・区間取得が各 $O(\log N)$、空間 $O(N)$。候補を全比較して厳密に確認する場合、その比較時間を別に加える。
+
+## 実装
+
+`change` は0始まり、`possibly_palindrome(left,right)` は半開区間を使う。空区間も回文として扱う。
+
+```cpp
+#include <array>
+#include <cstdint>
+#include <string>
+#include <vector>
+class PalindromeHash {
+    using U=std::uint64_t;
+    static constexpr std::array<U,2> modulus{1000000007ULL,1000000009ULL};
+    struct Summary {int length=0;std::array<U,2> forward{},reverse{};};
+    int size=1;U base;std::vector<std::array<U,2>> power;std::vector<Summary> tree;
+    Summary merge(const Summary& a,const Summary& b) const{
+        Summary result;result.length=a.length+b.length;
+        for(int j=0;j<2;++j){result.forward[j]=(a.forward[j]*power[b.length][j]+b.forward[j])%modulus[j];result.reverse[j]=(b.reverse[j]*power[a.length][j]+a.reverse[j])%modulus[j];}return result;
+    }
+    static Summary leaf(char c){U value=U(c-'a'+1);return {1,{value,value},{value,value}};}
+public:
+    explicit PalindromeHash(const std::string& text,U chosen_base=911382323ULL):base(chosen_base){
+        int n=int(text.size());while(size<n)size*=2;power.resize(n+1);power[0]={1,1};
+        for(int i=1;i<=n;++i)for(int j=0;j<2;++j)power[i][j]=power[i-1][j]*base%modulus[j];
+        tree.resize(2*size);for(int i=0;i<n;++i)tree[size+i]=leaf(text[i]);for(int i=size-1;i;--i)tree[i]=merge(tree[2*i],tree[2*i+1]);
+    }
+    void change(int index,char c){int p=size+index;tree[p]=leaf(c);for(p/=2;p;p/=2)tree[p]=merge(tree[2*p],tree[2*p+1]);}
+    bool possibly_palindrome(int left,int right) const{
+        Summary a,b;for(left+=size,right+=size;left<right;left/=2,right/=2){if(left&1)a=merge(a,tree[left++]);if(right&1)b=merge(tree[--right],b);}auto result=merge(a,b);return result.forward==result.reverse;
+    }
+};
+```
+
+## 関連する手法
+
+[静的な区間の回文判定を、中心の最大半径だけで答える](/flowchartcp/techniques/palindrome-radius-range/) ・ [ローリングハッシュ](/flowchartcp/techniques/rolling-hash/)
+
+## 参考資料
+
+- [CSES：Palindrome Queries（原典）](https://cses.fi/problemset/task/2420)。
+
+<TechniqueReferences techniqueId="palindrome-update-hash-monoid" />

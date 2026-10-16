@@ -1,0 +1,2351 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2019",
+  "title": "IOI 2019 の公式競技全6題を先に固定した監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "fixedBeforeTechniqueSearch": true,
+    "fixedAt": "2026-10-15T05:58:18.381175+00:00",
+    "selectionRule": "IOI公式アーカイブとJOI委員会の競技日1/2各3題を全件固定。練習4題・Notice・翻訳重複を除外し、題名・既存技巧・資料の取得容易性で差し替えない。",
+    "expectedProblems": 6,
+    "fixedProblems": [
+      {
+        "source": "ioi",
+        "problemId": "ioi2019_shoes",
+        "officialTaskId": "shoes",
+        "day": 1,
+        "date": "2019-08-06",
+        "title": "靴の並び替え",
+        "englishTitle": "Arranging Shoes",
+        "statementUrl": "https://ioinformatics.org/files/ioi2019problem1.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf",
+        "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/shoes.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2019_split",
+        "officialTaskId": "split",
+        "day": 1,
+        "date": "2019-08-06",
+        "title": "アトラクションの分割",
+        "englishTitle": "Split the Attractions",
+        "statementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+        "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/split.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2019_rect",
+        "officialTaskId": "rect",
+        "day": 1,
+        "date": "2019-08-06",
+        "title": "長方形",
+        "englishTitle": "Rectangles",
+        "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+        "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/rect.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2019_line",
+        "officialTaskId": "line",
+        "day": 2,
+        "date": "2019-08-08",
+        "title": "壊れた線",
+        "englishTitle": "Broken Line",
+        "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+        "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2019_vision",
+        "officialTaskId": "vision",
+        "day": 2,
+        "date": "2019-08-08",
+        "title": "視覚プログラム",
+        "englishTitle": "Vision Program",
+        "statementUrl": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+        "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/vision.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2019_walk",
+        "officialTaskId": "walk",
+        "day": 2,
+        "date": "2019-08-08",
+        "title": "空中通路",
+        "englishTitle": "Sky Walking",
+        "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+        "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/walk.pdf"
+      }
+    ],
+    "contests": [
+      {
+        "name": "IOI 2019",
+        "dates": [
+          "2019-08-06",
+          "2019-08-08"
+        ],
+        "timezone": "Asia/Baku",
+        "exactDatesVerified": true,
+        "expectedProblemCount": 6,
+        "indexUrl": "https://ioinformatics.org/page/ioi-2019/51",
+        "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+        "hostIndexUrl": "https://ioi.te.lv/locations/ioi19/contest/"
+      }
+    ],
+    "countEvidence": {
+      "officialIndexUrl": "https://ioinformatics.org/page/ioi-2019/51",
+      "dateEvidenceUrls": [
+        "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+      ],
+      "practiceTasksExcluded": [
+        "cycle",
+        "job",
+        "packing",
+        "transfer"
+      ],
+      "archiveIndexUrl": "https://ioi.te.lv/locations/ioi19/contest/",
+      "officialIndexStatement": "IOI公式は競技2日・各3題と明記し、day1 shoes/split/rect、day2 line/vision/walkを列挙。アーカイブも同じ6題とReviewを列挙。",
+      "dateEvidenceStatement": "JOI委員会の公式一覧は競技日1を2019-08-06、競技日2を2019-08-08と明記。公式IOI記事の2019-10-12は記事公開日で、競技日へ転用しない。"
+    }
+  },
+  "snapshot": {
+    "createdAtUTC": "2026-10-15T05:57:46.305422+00:00",
+    "manifestFile": "research/snapshots/ioi-2019-manifest.json",
+    "manifestEntriesSha256": "10258e2cefddc391f91899495f5c57ecc72c1a6dd85f55e01ac1f77a7126274d",
+    "techniqueMetadataCount": 472,
+    "articleCount": 472,
+    "flowGraphCount": 439,
+    "flowSnapshotFile": "research/snapshots/ioi-2019-flow.json.gz",
+    "techniqueSnapshotFile": "research/snapshots/ioi-2019-technique.json.gz",
+    "flowSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181",
+    "techniqueSha256": "d37e0dd7a9ba814ecc61f4c5ac2bc1165dfe3f61deaf689e3a7c92d0210e1d40",
+    "note": "今回開始時472記事/439図を固定。SHAは各ファイルのraw bytes。後続統合を初回監査へ遡及しない。",
+    "registeredArticleCount": 472,
+    "metadataArticleCountAudited": 472,
+    "manifestFileSha256": "d39f6068cb6ee8ffa0d2ea5bf24e26bc42835dc6ca888a1e3c76c8539f8b0e51",
+    "initialWorkspaceDirectory": "/tmp/flowchartcp-ioi2019-snapshot",
+    "portableSnapshotNote": "全ファイルの初回SHA台帳を保持し、分岐と技巧metadataのraw JSONはgzipで保存。元MDX全472本の初回コピーは作業時点の一時領域にあり、恒久保管はmetadataと分岐に限定する。",
+    "specificTechniqueCount": 394
+  },
+  "records": [
+    {
+      "source": "ioi",
+      "problemId": "ioi2019_shoes",
+      "officialTaskId": "shoes",
+      "day": 1,
+      "date": "2019-08-06",
+      "title": "靴の並び替え",
+      "englishTitle": "Arranging Shoes",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem1.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/shoes.pdf",
+      "contest": {
+        "name": "IOI 2019",
+        "division": "Main competition",
+        "year": 2019,
+        "day": 1,
+        "date": "2019-08-06",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式IOI2019競技課題一覧とJOI委員会の競技日を確認。クロール日や公式アーカイブ記事の10月12日を競技日と取り違えない。",
+      "difficulty": null,
+      "features": [
+        "符号で左右を表す同サイズの品物を一列に置き、隣接二要素の交換だけを行う。",
+        "最終列を左・右の同サイズ対の連結にし、交換回数を最小にする。同じサイズは複数対あってよい。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "verifiedQualitative": [
+          "符号で左右を表す同サイズの品物を一列に置き、隣接二要素の交換だけを行う。",
+          "最終列を左・右の同サイズ対の連結にし、交換回数を最小にする。同じサイズは複数対あってよい。"
+        ],
+        "notes": "公式原典PDFの変数・数値・式がweb抽出から欠落。元のN/M/値域/ゲート/端子上限を推測しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "sequence-changes",
+        "reorder-cost"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "sequence-changes",
+          "answerLabel": "列の並び・各値・巡回位置を変えて目標の形にする"
+        },
+        {
+          "graphId": "range-sequence-changes",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "reorder-cost",
+          "answerLabel": "列の要素を移動して並べ替える費用の最小値"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "range-sequence-changes",
+        "nodeId": "reorder-operation",
+        "type": "question",
+        "title": "列を変えるとき、どの操作を使えますか？",
+        "options": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "oriented-equal-pair-adjacent-swaps-fenwick",
+        "features": [
+          "符号で左右を表す同サイズの品物を一列に置き、隣接二要素の交換だけを行う。",
+          "最終列を左・右の同サイズ対の連結にし、交換回数を最小にする。同じサイズは複数対あってよい。"
+        ],
+        "firstMissingGraphId": "range-sequence-changes",
+        "firstMissingNodeId": "reorder-operation",
+        "stopNodeType": "question",
+        "reason": "任意位置への移動一回と隣接交換一回では費用が異なり、値編集も許されない。最初の未処理要素を最左の逆符号同サイズと対応させ、向きの一回分を加え、削除後の距離をFenwickで数える専用の証明・実装がない。回文の同文字両端対応とは目標の形が異なる。",
+        "neededTechniqueIds": [
+          "oriented-equal-pair-adjacent-swaps-fenwick"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "fenwick-tree",
+          "exchange-argument",
+          "palindrome-adjacent-pair-inversions"
+        ],
+        "currentOptions": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "列を変えるとき、どの操作を使えますか？",
+        "proposedFeatureAnswer": "符号で左右を表す同サイズの品物を一列に置き、隣接二要素の交換だけを行う。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialProvenance": "IOI大会アーカイブの当該6課題にReviewとして直接リンクされたEnglish(HSC)解説PDF。IOI公式本部にもsolutions archiveへのリンクあり。",
+        "method": "最左の未処理要素iを、最左の逆符号・同サイズの未処理要素jと組にする。現在の二要素間の個数に、iが右要素なら1を足す。それらを消して繰り返す。型別出現キューと生存個数Fenwickで距離を求める。",
+        "complexity": "公式解説がO(N log N)を明記。生存個数Fenwickと型別出現キューでO(N)補助空間。",
+        "implementationRequirements": [
+          "任意位置への移動一回と隣接交換一回では費用が異なり、値編集も許されない。最初の未処理要素を最左の逆符号同サイズと対応させ、向きの一回分を加え、削除後の距離をFenwickで数える専用の証明・実装がない。回文の同文字両端対応とは目標の形が異なる。"
+        ],
+        "sourceUrls": [
+          "https://ioinformatics.org/files/ioi2019problem1.pdf",
+          "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 1,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "independentProofSupplement": [
+          "最初の要素と最適解での相手が現在距離jにあれば、その二つを同じ対にする交換が最低j−1回、向きが右→左なら最低j回必要。これらを先に行って先頭の正向き対を作っても他の要素の相対順序は変わらない。",
+          "同型の相手を飛ばして遠いものを使う必要はなく、相手を手前の同型要素へ交換できる。先頭の対を除いた問題へ帰納できる。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "visualDetails": "web-screenshot-failed-no-image-content"
+      },
+      "collectionStatus": "statement-and-official-editorial-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "公式原典・解説はwebで取得。原典の数値や抽出で消えた式を画像確認済みとしない。今回のscreenshotはcontent type/errorとなり画像本体を得ていない。",
+        "本文/解説の転載ではなく、入力特徴・確認できた方針・未確認補題を要約。新技巧記事・再利用C++20・共有分岐は今回作成しない。",
+        "独立multi-source BFSで全ての合法対順から全隣接交換状態を直接生成し、2サイズ・長さ8以下の全5340整合列で貪欲値と最短回数が一致。監査用Python probeであり最大制約の再利用実装検証ではない。"
+      ],
+      "subsequentSourceVerifications": [
+        {
+          "checkedAt": "2026-10-15",
+          "status": "verified",
+          "kind": "authorized-statement-translations",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem1.pdf",
+          "evidenceUrls": [
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/JPN.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/PSE.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/"
+          ],
+          "notes": "初回auditで未確認だった数値範囲を公式配布JP/PSEの検索本文で追加確認。初回auditのconstraints.numericBoundsVerifiedは書換えず、その後の確認として保存する。",
+          "numericBoundsVerified": true
+        }
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem1.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "official-editorial",
+          "collectionStatus": "statement-and-official-editorial-reviewed",
+          "materialStatus": {
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": true
+          },
+          "evidenceUrls": [
+            "https://ioinformatics.org/files/ioi2019problem1.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/JPN.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/PSE.pdf",
+            "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+          ],
+          "notes": "2026-10-15にIOI公式原典3頁と、公式アーカイブがReviewとして直接配布するEnglish(HSC)解説1頁を再読。原典の通常PDF抽出では数値式が欠けるが、同アーカイブ配布JPN/PSE版の検索本文で1<=n<=100000対、全iで1<=|S[i]|<=n、合法化可能を確認。JP委員会の日別一覧でday1=2019-08-06、難度null。先頭の最適相手を固定する射影下界と構成、手前の同型相手へ交換して残りの値列を保つ補題、Fenwickの半開区間生存数と向き補正を記事内に具体化した。再利用APIは空列も許し、32bit intの非0ラベル、偶数長M<=INT_MAX、INT_MIN除外、サイズごとの左右個数一致を全検査。原典20万要素とサイズ1..nを全て含む。実MDX単一可視C++20 fenceを-O2 -Wall -Wextra -Werrorで抽出コンパイルし、全合法対順を始点に全隣接交換だけを生成するmulti-source BFSと155850状態で比較。2サイズ・長さ10以下全68844整合列、3サイズ・長さ8以下全46686整合列、4サイズ各一対の全40320列、計55多重集合familyと1059098有向隣接交換を探索。最大原典10万対でn^2=10^10になる入れ子逆向き列、既完成、正負ブロック、全重複、各対逆向き、原典を超える200002要素、INT_MAXラベル、空/不正11例、反転+符号反転とサイズ全単射の不変性1000例を検査。通常/ASan+UBSanとも475661検査、checksum1456229913660587723成功。通常0.313715秒/29616KiB、sanitizer1.79811秒/476656KiB。割当上限に近いINT_MAX要素の実配置は行わず、整数上界と型による検査を独立に示した。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "oriented-equal-pair-adjacent-swaps-fenwick"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の調査状態・不足・停止位置を保持。原典の数値とAPIの包含、独立の証明・小規模全探索・最大範囲・ASan/UBSan・独立レビューを確認し、完成記事と特徴からの分岐で解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2019_split",
+      "officialTaskId": "split",
+      "day": 1,
+      "date": "2019-08-06",
+      "title": "アトラクションの分割",
+      "englishTitle": "Split the Attractions",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/split.pdf",
+      "contest": {
+        "name": "IOI 2019",
+        "division": "Main competition",
+        "year": 2019,
+        "day": 1,
+        "date": "2019-08-06",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式IOI2019競技課題一覧とJOI委員会の競技日を確認。クロール日や公式アーカイブ記事の10月12日を競技日と取り違えない。",
+      "difficulty": null,
+      "features": [
+        "連結な無向単純グラフの全頂点を、指定された三サイズa,b,cの集合へ分ける。",
+        "三集合のうち少なくとも二つを、その集合内の辺だけで連結にする。構築または不可能判定が必要。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "verifiedQualitative": [
+          "連結な無向単純グラフの全頂点を、指定された正の三サイズa,b,cの集合へ分ける。",
+          "三集合のうち少なくとも二つを、その集合内の辺だけで連結にする。構築または不可能判定が必要。"
+        ],
+        "notes": "公式原典PDFの変数・数値・式がweb抽出から欠落。元のN/M/値域/ゲート/端子上限を推測しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "group-constraints"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "group-constraints",
+          "answerLabel": "組分け・割当・変数どうしの条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "graphs-group-constraints",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "assignment",
+            "label": "組を選ぶ・容量を割り当てる"
+          },
+          {
+            "id": "partition-small",
+            "label": "少数の頂点を、内部の全組に辺があるグループへ分ける"
+          },
+          {
+            "id": "constraints",
+            "label": "二つの値の禁止組・偶奇・差の条件を満たせるか"
+          },
+          {
+            "id": "tree-color-union",
+            "label": "木の色を丸ごと併合し、一色の全頂点を連結にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "dfs-lowlink-three-size-two-connected-partition",
+        "features": [
+          "連結な無向単純グラフの全頂点を、指定された三サイズa,b,cの集合へ分ける。",
+          "三集合のうち少なくとも二つを、その集合内の辺だけで連結にする。構築または不可能判定が必要。"
+        ],
+        "firstMissingGraphId": "graphs-group-constraints",
+        "firstMissingNodeId": "shortest",
+        "stopNodeType": "question",
+        "reason": "少数頂点のクリーク分割ではなく、大きいグラフの指定サイズ・連結性の構築である。小さい二サイズを連結にしてよい同値性、DFSの最小十分部分木、祖先への後退辺で子部分木を反対側へ移す補題・実装が不足する。",
+        "neededTechniqueIds": [
+          "dfs-lowlink-three-size-two-connected-partition"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "bridge-edge-failure",
+          "subtree-euler-interval",
+          "graph-reduction"
+        ],
+        "currentOptions": [
+          {
+            "id": "assignment",
+            "label": "組を選ぶ・容量を割り当てる"
+          },
+          {
+            "id": "partition-small",
+            "label": "少数の頂点を、内部の全組に辺があるグループへ分ける"
+          },
+          {
+            "id": "constraints",
+            "label": "二つの値の禁止組・偶奇・差の条件を満たせるか"
+          },
+          {
+            "id": "tree-color-union",
+            "label": "木の色を丸ごと併合し、一色の全頂点を連結にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "頂点・辺について何を求めますか？",
+        "proposedFeatureAnswer": "連結な無向単純グラフの全頂点を、指定された正の三サイズa,b,cの集合へ分ける。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "IOI大会アーカイブの当該6課題にReviewとして直接リンクされたEnglish(HSC)解説PDF。IOI公式本部にもsolutions archiveへのリンクあり。",
+        "method": "a≤b≤cへ並べ替え、子部分木は全てa未満だが自身の部分木がa以上となるDFS頂点vを取る。vの部分木Pと残りQを分け、vの真の祖先への後退辺を持つ子部分木を、Pがa以上である範囲でQへ移す。両側a以上なら小側からa、大側からbを連結に取る。残りをcとする。",
+        "complexity": "独立具体化したDFS/lowlink/二回の連結prefix抽出はO(N+M)時間・O(N+M)空間。",
+        "implementationRequirements": [
+          "少数頂点のクリーク分割ではなく、大きいグラフの指定サイズ・連結性の構築である。小さい二サイズを連結にしてよい同値性、DFSの最小十分部分木、祖先への後退辺で子部分木を反対側へ移す補題・実装が不足する。"
+        ],
+        "sourceUrls": [
+          "https://ioinformatics.org/files/ioi2019problem2.pdf",
+          "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "independentProofSupplement": [
+          "a≤b≤cとする。任意の合法解の二つの連結集合から、各々連結なprefixを切り取りサイズa,bとし、残りcへ回せるため、小さい二サイズを連結にしてよい。",
+          "DFSには子をまたぐ辺がなく、vの子部分木はいずれもa未満。Pから子をQへ移すのはlow[child]<tin[v]の場合に限り、その後もP,Qは各々連結。",
+          "移し終えてQ<aの場合、祖先へ後退辺を持つ移せなかった子uがあるとP−size(u)<aかつsize(u)<aからP<2a。従ってQ=N−P>N−2a=b+c−a≥aとなり矛盾。よってそのような子は全てQに入る。vを除いた各成分はQまたは残るa未満の子部分木に入り、全成分がa未満。互いに素な二つの大きさa以上の連結集合はいずれもvを要するので不可能。",
+          "両側a以上なら、max(P,Q)≥N/2≥b。小側でa、大側でbの連結探索prefixを取り、残りcを出力できる。根vでQが空のときも同じ不可能性が成立。"
+        ],
+        "independentMethodDomain": "三サイズが正、a+b+c=Nである場合を証明・全小比較した。数値制約が抽出されないため原典がサイズ0を許すかは推測しない。記事APIでは正サイズ契約または0の個別処理が必要。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "visualDetails": "web-screenshot-failed-no-image-content"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "公式原典・解説はwebで取得。原典の数値や抽出で消えた式を画像確認済みとしない。今回のscreenshotはcontent type/errorとなり画像本体を得ていない。",
+        "本文/解説の転載ではなく、入力特徴・確認できた方針・未確認補題を要約。新技巧記事・再利用C++20・共有分岐は今回作成しない。",
+        "公式の添字が欠ける移動証明を独立に具体化。N=3..6の全27474連結単純グラフ・全81610個のa≤b≤c三サイズで、三集合の全割当と少なくとも二集合の直接連結検査をoracleとし、DFS法の可否と構築が一致。",
+        "三サイズが正である領域の独立証明と比較であり、読めない原典の下限値を確認済みとしない。"
+      ],
+      "subsequentSourceVerifications": [
+        {
+          "checkedAt": "2026-10-15",
+          "status": "verified",
+          "kind": "official-statement-public-mirror",
+          "sourceVerified": true,
+          "originalNumericBoundsVerified": true,
+          "statementUrl": "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+          "originalEnglishStatementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+          "sourceSection": "Constraints, page 3, ISC English original document",
+          "originalConstraints": {
+            "n": {
+              "minimum": 3,
+              "maximum": 100000
+            },
+            "m": {
+              "minimum": 2,
+              "maximum": 200000
+            },
+            "a_b_c": {
+              "minimum": 1,
+              "maximum": "n"
+            },
+            "sizeSum": "a+b+c=n",
+            "endpoints": "0<=p[i],q[i]<n; p[i]!=q[i]",
+            "undirected": true,
+            "connected": true,
+            "selfLoops": false,
+            "parallelEdges": false
+          },
+          "apiContainmentProof": [
+            "All original n and sizes fit int; the API imposes no artificial upper cap.",
+            "Each original edge array has at most 200000 entries; edge IDs and cursors use size_t without narrowing.",
+            "The sum is cast to int64_t before addition; even 3*INT_MAX fits.",
+            "All original endpoints satisfy the checked 0..n-1 distinct-endpoint contract.",
+            "Simple connected graphs are a subset of the accepted connected loopless multigraphs.",
+            "DFS and prefix extraction use heap stacks/queues, so n=100000 does not require recursive depth."
+          ],
+          "initialAuditNumericFalsePreserved": true
+        }
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "evidenceUrls": [
+            "https://ioinformatics.org/files/ioi2019problem2.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+            "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/",
+            "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+          ],
+          "notes": "2026-10-15にIOI公式本部原典3ページ・公式HSC Review2ページ・日本委員会の日別課題一覧を再確認した。公式本部PDF通常抽出で欠ける数値は、ISC英語原典の公開ミラー(split-ISC.pdf)の3ページ目で3<=n<=100000、2<=m<=200000、1<=a,b,c<=n、和=n、単純・連結、0<=p[i],q[i]<nかつ異端点と確認した。公開ミラーという取得経路を明記し、公式サイト抽出で数値を読めたとはしない。小さい二サイズの連結性への同値性、最小十分DFS部分木、low[u]<tin[v]の真祖先接続、移動の連結不変条件、失敗時のG-v全成分<aからの必要性を独立に証明した。再利用APIと公式find_split入口は正3サイズをint64で加算検査し、端点/配列/自己ループ/グラフ連結性を検査、平行辺を辺IDで扱う。DFS/抽出に再帰なし、人工N/M capなしで原典全域を含む。実MDX単一C++20 fenceの抽出コンパイルと直接三分割oracleで、4278886検査・273940API呼出し・全27474連結単純グラフ・81610ソートサイズ・271526全順序サイズ・16208532直接partitionを検証。乱択1200/平行辺1200/最大境界11/不正16を含む。通常/ASan+UBSanともchecksum17105848895082083793で成功し、全processを1MiBスタックで実行して最大10万頂点の鎖を処理した。通常0.304655秒/27036KiB、ASan+UBSan3.82549秒/729084KiB。公式数式の欠けた添字を見たとはせず、verificationはindependent-analysis。初回IOI2019監査と共有データは未変更。",
+          "originalNumericBoundsVerified": true,
+          "originalProblemScopeVerified": true
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "dfs-lowlink-three-size-two-connected-partition"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の調査状態・不足・停止位置を保持。原典の数値とAPIの包含、独立の証明・小規模全探索・最大範囲・ASan/UBSan・独立レビューを確認し、完成記事と特徴からの分岐で解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2019_rect",
+      "officialTaskId": "rect",
+      "day": 1,
+      "date": "2019-08-06",
+      "title": "長方形",
+      "englishTitle": "Rectangles",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/rect.pdf",
+      "contest": {
+        "name": "IOI 2019",
+        "division": "Main competition",
+        "year": 2019,
+        "day": 1,
+        "date": "2019-08-06",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式IOI2019競技課題一覧とJOI委員会の競技日を確認。クロール日や公式アーカイブ記事の10月12日を競技日と取り違えない。",
+      "difficulty": null,
+      "features": [
+        "高さのある格子で、盤面の外周に触れない長方形の個数を数える。",
+        "内側の各セルは、同じ行で左右に隣接する外側二セルと、同じ列で上下に隣接する外側二セルの四つ全てより厳密に低い必要がある。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "verifiedQualitative": [
+          "高さのある格子で、盤面の外周に触れない長方形の個数を数える。",
+          "内側の各セルは、同じ行で左右に隣接する外側二セルと、同じ列で上下に隣接する外側二セルの四つ全てより厳密に低い必要がある。"
+        ],
+        "notes": "公式原典PDFの変数・数値・式がweb抽出から欠落。元のN/M/値域/ゲート/端子上限を推測しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "geometry",
+      "choices": [
+        "rectangle-aggregates"
+      ],
+      "steps": [
+        {
+          "graphId": "geometry",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "rectangle-aggregates",
+          "answerLabel": "長方形や座標範囲の集計"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "geometry-rectangle-aggregates",
+        "nodeId": "geometry-task",
+        "type": "question",
+        "title": "点や座標から何を求めますか？",
+        "options": [
+          {
+            "id": "rect-sum",
+            "label": "指定した長方形内の重みの和"
+          },
+          {
+            "id": "rect-count",
+            "label": "長方形で囲める点集合の個数"
+          },
+          {
+            "id": "sweep",
+            "label": "座標順に対象を追加・削除して集計する"
+          },
+          {
+            "id": "rectangle-overlap",
+            "label": "長方形の重なりの枚数・面積"
+          },
+          {
+            "id": "rectangle-union",
+            "label": "多くの長方形の和集合の面積"
+          },
+          {
+            "id": "dominated",
+            "label": "三座標がすべて自分以下の点の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "grid-enclosing-higher-boundary-rectangle-candidates",
+        "features": [
+          "高さのある格子で、盤面の外周に触れない長方形の個数を数える。",
+          "内側の各セルは、同じ行で左右に隣接する外側二セルと、同じ列で上下に隣接する外側二セルの四つ全てより厳密に低い必要がある。"
+        ],
+        "firstMissingGraphId": "geometry-rectangle-aggregates",
+        "firstMissingNodeId": "geometry-task",
+        "stopNodeType": "question",
+        "reason": "囲める点集合の個数や矩形内の和とは異なる。行・列のgood pairから候補長方形を列挙し、厳密な四方向条件を満たす全候補を漏れなく重複なく数える具体手順がない。公式の16構造・一隅による一意決定の主要細部も未確認。",
+        "neededTechniqueIds": [
+          "grid-enclosing-higher-boundary-rectangle-candidates"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "subarray-extremum-contribution",
+          "fenwick-tree"
+        ],
+        "currentOptions": [
+          {
+            "id": "rect-sum",
+            "label": "指定した長方形内の重みの和"
+          },
+          {
+            "id": "rect-count",
+            "label": "長方形で囲める点集合の個数"
+          },
+          {
+            "id": "sweep",
+            "label": "座標順に対象を追加・削除して集計する"
+          },
+          {
+            "id": "rectangle-overlap",
+            "label": "長方形の重なりの枚数・面積"
+          },
+          {
+            "id": "rectangle-union",
+            "label": "多くの長方形の和集合の面積"
+          },
+          {
+            "id": "dominated",
+            "label": "三座標がすべて自分以下の点の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "点や座標から何を求めますか？",
+        "proposedFeatureAnswer": "高さのある格子で、盤面の外周に触れない長方形の個数を数える。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI大会アーカイブの当該6課題にReviewとして直接リンクされたEnglish(HSC)解説PDF。IOI公式本部にもsolutions archiveへのリンクあり。",
+        "method": "公式解説は各行・列のgood pairを単調スタックで列挙し、側の候補を合わせる方法と、2×2 block cornerを16種類の接続構造で扱って線形個候補を検査する方法を示す。",
+        "complexity": "公式解説の指数が抽出から消えるため満点の正確な式を確認済みにしない。",
+        "implementationRequirements": [
+          "囲める点集合の個数や矩形内の和とは異なる。行・列のgood pairから候補長方形を列挙し、厳密な四方向条件を満たす全候補を漏れなく重複なく数える具体手順がない。公式の16構造・一隅による一意決定の主要細部も未確認。"
+        ],
+        "sourceUrls": [
+          "https://ioinformatics.org/files/ioi2019problem3.pdf",
+          "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "good pairの等しい高さの処理、二方向の候補の対応、Fenwick照合のイベント式。",
+          "16構造の各場合で候補を一隅から一意に復元できる定義と、全有効長方形を漏れなく列挙する補題。",
+          "公式PDFのO(n)表記の失われた指数とnをセル総数とするか一辺長とするかの区別。"
+        ],
+        "independentProofSupplement": []
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed",
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-failed-no-image-content"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "公式原典・解説はwebで取得。原典の数値や抽出で消えた式を画像確認済みとしない。今回のscreenshotはcontent type/errorとなり画像本体を得ていない。",
+        "本文/解説の転載ではなく、入力特徴・確認できた方針・未確認補題を要約。新技巧記事・再利用C++20・共有分岐は今回作成しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "grid-enclosing-higher-boundary-rectangle-candidates"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の全field/分類/状態/凍結停止位置を保持。原典全域を含む完全C++20/API、主要補題/時間空間/整数境界を作者・root・別review者で独立確認し、全小literal oracleと原典最大、通常/ASan/UBSan、追加独立probeと特徴の根分岐まで確認して不足を解消。",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+          "numericBoundsVerified": true,
+          "numericEvidenceUrls": [
+            "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf"
+          ],
+          "sourceBounds": {
+            "rows": "1..2500",
+            "columns": "1..2500",
+            "height": "0..7000000",
+            "validArea": "1<=top<=bottom<=N-2;1<=left<=right<=M-2; every cell strictly lower than corresponding same-row/same-column four outer cells; outer corners unused"
+          },
+          "date": "2019-08-06",
+          "exactDateVerified": true,
+          "notes": "初回numericBoundsVerified:falseを保持し、今回実取得の公式配布検索本文で全数値を別途確認。画像目視とは主張しない。"
+        }
+      },
+      "subsequentSolutionReviews": [
+        {
+          "reviewedAt": "2026-10-15",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "evidenceUrls": [
+            "https://ioinformatics.org/files/ioi2019problem3.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+            "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf"
+          ],
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "statement": "retrieved-and-reviewed",
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "notes": "2026-10-15に原典/公式Reviewをwebで再確認。JP日本語/TWN公式配布の検索本文で1<=N,M<=2500、0<=a<=7000000を実際に取得し、JP公式日別一覧で2019-08-06を確認、難度null。通常PDF抽出の欠落式/指数や16構造を画像目視済みとはしない。公式good pair方針とは対応を記録し、最大セルによる候補完全性、同値をpopする厳密境界、全good pair列挙、連続出現の必要十分性、候補重複除去、radix/直接pair表の時間空間を独立に証明してindependent-analysisとした。実MDX単一可視完全C++20を抽出、全binary n,m1..4の74954盤、全ternary3x3/3x4/4x3の1082565盤、literal内部長方形5096743件、乱択1000盤を比較。oracleは全長方形を列挙し各内部セルと四外側セルを直接比較し、nearest/good pair/runを使わない。最初の高い位置/同値の全小列、run全1024出現bitmapと重複同一行更新、48bit radix対stdsortも別に照合。転置/反転/順位圧縮の不変性、原典例6・outer corner無関係・同値境界拒否、invalid11と例外後/交互再呼出しを確認。最大2500x2500は同値0/高い外枠と0内部/市松/単調/乱択加法分離/谷加法分離/二値乱択の7構成を、閉形式・quadratic1D区間最大計算の積・0の4近傍成分bbox充足性で独立比較。最大高さ7000000を含み、原典byvalue入口も最大外枠で実行。通常/ASan+UBSanとも2884927 checks/checksum16899164946917607117成功。通常2.67096s/RSS199372KiB、san18.6546s/RSS1102708KiB。初回unconfirmed/sharedは未変更。"
+        }
+      ]
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2019_line",
+      "officialTaskId": "line",
+      "day": 2,
+      "date": "2019-08-08",
+      "title": "壊れた線",
+      "englishTitle": "Broken Line",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+      "contest": {
+        "name": "IOI 2019",
+        "division": "Main competition",
+        "year": 2019,
+        "day": 2,
+        "date": "2019-08-08",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式IOI2019競技課題一覧とJOI委員会の競技日を確認。クロール日や公式アーカイブ記事の10月12日を競技日と取り違えない。",
+      "difficulty": null,
+      "features": [
+        "固定入力の点集合で全x座標・全y座標がそれぞれ異なる。原点から始まる水平・垂直線分の折れ線で全点を通る出力を作る。",
+        "点は線分端点でなくてもよく、自己交差と重なりは許される。線分数が少ないほど高得点のoutput-only問題。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "verifiedQualitative": [
+          "固定入力の点集合で全x座標・全y座標がそれぞれ異なる。原点から始まる水平・垂直線分の折れ線で全点を通る出力を作る。",
+          "点は線分端点でなくてもよく、自己交差と重なりは許される。線分数が少ないほど高得点のoutput-only問題。"
+        ],
+        "notes": "公式原典PDFの変数・数値・式がweb抽出から欠落。元のN/M/座標/ゲート/端子上限を推測しない。Lineの提出ファイル15MB制限は読めるが、全数値確認とは扱わない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "heuristic",
+      "choices": [
+        "yes"
+      ],
+      "steps": [
+        {
+          "graphId": "heuristic",
+          "nodeId": "offline",
+          "question": "提出する形式と、必要な候補の計算はどれですか？",
+          "answer": "yes",
+          "answerLabel": "固定入力の出力を事前に改善する"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "output-only"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "heuristic",
+        "nodeId": "output",
+        "type": "result",
+        "title": "出力を直接改善する",
+        "options": [],
+        "techniques": [
+          "output-only"
+        ]
+      },
+      "gap": {
+        "id": "orthogonal-point-cover-spiral-two-chains",
+        "features": [
+          "固定入力の点集合で全x座標・全y座標がそれぞれ異なる。原点から始まる水平・垂直線分の折れ線で全点を通る出力を作る。",
+          "点は線分端点でなくてもよく、自己交差と重なりは許される。線分数が少ないほど高得点のoutput-only問題。"
+        ],
+        "firstMissingGraphId": "heuristic",
+        "firstMissingNodeId": "output",
+        "stopNodeType": "result",
+        "reason": "到達先output-onlyは保存済み出力の合法性・得点更新を扱う一般記事であり、全点を少ない縦横線分で覆う構築ではない。螺旋と二つの単調鎖からN+3本へ接続する満点の細かい場合分けを公式sketchが省略しており、未確認のまま不足確定へ昇格しない。",
+        "neededTechniqueIds": [
+          "orthogonal-point-cover-spiral-two-chains"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "output-only",
+          "manhattan-transform"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "出力を直接改善する",
+        "proposedFeatureAnswer": "固定入力の点集合で全x座標・全y座標がそれぞれ異なる。原点から始まる水平・垂直線分の折れ線で全点を通る出力を作る。",
+        "proposedBranchAt": {
+          "graphId": "heuristic",
+          "nodeId": "offline",
+          "note": "yesが一般output-only記事へ到達した後に必要な具体構築がない。入力形式の一致だけでcoveredにしない。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI大会アーカイブの当該6課題にReviewとして直接リンクされたEnglish(HSC)解説PDF。IOI公式本部にもsolutions archiveへのリンクあり。",
+        "method": "公式解説は外接長方形の四つの極値点を螺旋へ追加し、二辺を兼ねる極値点を二つの単調鎖へ送る。三部分の接続でN+6本、接続順と向きの工夫でN+3本と記すが、その最終工夫を具体化しない。",
+        "complexity": "満点構築はN+3線分と公式解説に明記。構築の厳密な実装計算量は未確認。",
+        "implementationRequirements": [
+          "到達先output-onlyは保存済み出力の合法性・得点更新を扱う一般記事であり、全点を少ない縦横線分で覆う構築ではない。螺旋と二つの単調鎖からN+3本へ接続する満点の細かい場合分けを公式sketchが省略しており、未確認のまま不足確定へ昇格しない。"
+        ],
+        "sourceUrls": [
+          "https://ioinformatics.org/files/ioi2019problem4.pdf",
+          "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf"
+        ],
+        "statementPageCount": 4,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "三部分の接続順・通る向きからN+3本以下を常に保証する詳細。",
+          "満点閾値を含む公式採点表の数式・入力ごとの具体値。"
+        ],
+        "independentProofSupplement": []
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed",
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-failed-no-image-content"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "公式原典・解説はwebで取得。原典の数値や抽出で消えた式を画像確認済みとしない。今回のscreenshotはcontent type/errorとなり画像本体を得ていない。",
+        "本文/解説の転載ではなく、入力特徴・確認できた方針・未確認補題を要約。新技巧記事・再利用C++20・共有分岐は今回作成しない。"
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "reviewedAt": "2026-10-15",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "evidenceUrls": [
+            "https://ioinformatics.org/files/ioi2019problem4.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+            "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+          ],
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "statement": "retrieved-and-reviewed",
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "notes": "原典の全数値・満点閾値・出力制約はAOI委員会配布英語PDFのp1/p2/p3を実画像で読み、公式LVA検索本文と同配布採点器の全表に照合した。公式Reviewは螺旋＋二鎖とN+3を述べるsketchで、接続詳細は省略する。右上がり鎖→右下がり鎖→内外螺旋という固定順を使い、末尾延長と逆向き平行な始線分を一本の垂直線分で結ぶ決定構築を独立証明した。螺旋末尾は下向き又は左向きを保ち、次の外側長方形の最初の極値点の側を選ぶことで四本/層となる。原典全域を含む完全C++20を実MDXから抽出、n1..9全409113順位順列を全点×全線分のliteral包含で検査、6000乱択/6000変換、最大10万点の鎖・25000層・全三部分・元座標端を含む15生成case、14不正APIとwriterを通常/ASan+UBSanで照合した。両28709275checks/checksum16725969703083196、normal0.804934s/RSS21548KiB、san7.31009s/RSS638428KiB。公式10原入力のarchiveは取得不能で0件、生成した同Nの入力を原本と取り違えない。初回unconfirmed/全field/status/snapshotと既存resolutionは保持し、独立review後に後続positive reviewとresolutionのみを追記する。 作者と別review者に加えrootもPDF全4頁の画像・全数値・採点表を確認した。接続の完全な独立証明・通常/ASan・支持座標辞書oracleと厳密座標変換を確認し、後続reviewを一件追加する。原本10入力を取得・実行したとは扱わない。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "orthogonal-point-cover-spiral-two-chains"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+          "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+          "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+          "sourceDate": "2019-08-08",
+          "sourceDatePrecision": "day",
+          "exactDateVerified": true,
+          "contestDay": 2,
+          "difficulty": null,
+          "cutoffVerification": "contest-before-cutoff",
+          "originalNumericBoundsVerified": true,
+          "originalOutputContractVerified": true,
+          "originalScoringTableVerified": true,
+          "fullSourceRangeIncluded": true,
+          "sourceBounds": {
+            "N": [
+              1,
+              100000
+            ],
+            "inputCoordinate": [
+              1,
+              1000000000
+            ],
+            "distinctness": "All x coordinates pairwise distinct; all y coordinates pairwise distinct. No stronger general-position assumption is needed.",
+            "origin": [
+              0,
+              0
+            ],
+            "coverage": "Every input dot lies on at least one closed horizontal/vertical segment; dot need not be an endpoint.",
+            "selfCrossingAllowed": true,
+            "overlapAllowed": true,
+            "outputCoordinate": [
+              -2000000000,
+              2000000000
+            ],
+            "outputFormat": "First line k, then k integer vertex pairs p1..pk; implicit p0=(0,0) is not printed.",
+            "outputOnly": true,
+            "inputFiles": 10,
+            "perFilePoints": 10,
+            "submittedFileMaximum": "15MB for each output or zipped file",
+            "sourceCodeSubmitted": false,
+            "visualizerDisplayOnlyLimit": 1000
+          },
+          "scoring": {
+            "validityRequired": true,
+            "thresholdsDescending": true,
+            "ifKEqualsCi": "i points for i1..10",
+            "ifCiPlus1LessThanKLessThanCi": "i+(c_i-k)/(c_i-c_(i+1)) for i1..9",
+            "ifKAboveC1": 0,
+            "ifKBelowC10": 10,
+            "fullScoreCondition": "k<=c10=N+3, for each of the10 fixed inputs",
+            "table": [
+              {
+                "cases": [
+                  "01"
+                ],
+                "N": 20,
+                "c": [
+                  50,
+                  45,
+                  40,
+                  37,
+                  35,
+                  33,
+                  28,
+                  26,
+                  25,
+                  23
+                ]
+              },
+              {
+                "cases": [
+                  "02"
+                ],
+                "N": 600,
+                "c": [
+                  1200,
+                  937,
+                  674,
+                  651,
+                  640,
+                  628,
+                  616,
+                  610,
+                  607,
+                  603
+                ]
+              },
+              {
+                "cases": [
+                  "03"
+                ],
+                "N": 5000,
+                "c": [
+                  10000,
+                  7607,
+                  5213,
+                  5125,
+                  5081,
+                  5037,
+                  5020,
+                  5012,
+                  5008,
+                  5003
+                ]
+              },
+              {
+                "cases": [
+                  "04"
+                ],
+                "N": 50000,
+                "c": [
+                  100000,
+                  75336,
+                  50671,
+                  50359,
+                  50203,
+                  50047,
+                  50025,
+                  50014,
+                  50009,
+                  50003
+                ]
+              },
+              {
+                "cases": [
+                  "05"
+                ],
+                "N": 72018,
+                "c": [
+                  144036,
+                  108430,
+                  72824,
+                  72446,
+                  72257,
+                  72067,
+                  72044,
+                  72033,
+                  72027,
+                  72021
+                ]
+              },
+              {
+                "cases": [
+                  "06"
+                ],
+                "N": 91891,
+                "c": [
+                  183782,
+                  138292,
+                  92801,
+                  92371,
+                  92156,
+                  91941,
+                  91918,
+                  91906,
+                  91900,
+                  91894
+                ]
+              },
+              {
+                "cases": [
+                  "07",
+                  "08",
+                  "09",
+                  "10"
+                ],
+                "N": 100000,
+                "c": [
+                  200000,
+                  150475,
+                  100949,
+                  100500,
+                  100275,
+                  100050,
+                  100027,
+                  100015,
+                  100009,
+                  100003
+                ]
+              }
+            ],
+            "tableColumnCases": [
+              [
+                "01"
+              ],
+              [
+                "02"
+              ],
+              [
+                "03"
+              ],
+              [
+                "04"
+              ],
+              [
+                "05"
+              ],
+              [
+                "06"
+              ],
+              [
+                "07",
+                "08",
+                "09",
+                "10"
+              ]
+            ],
+            "tableRows": {
+              "N": [
+                20,
+                600,
+                5000,
+                50000,
+                72018,
+                91891,
+                100000
+              ],
+              "c1": [
+                50,
+                1200,
+                10000,
+                100000,
+                144036,
+                183782,
+                200000
+              ],
+              "c2": [
+                45,
+                937,
+                7607,
+                75336,
+                108430,
+                138292,
+                150475
+              ],
+              "c3": [
+                40,
+                674,
+                5213,
+                50671,
+                72824,
+                92801,
+                100949
+              ],
+              "c4": [
+                37,
+                651,
+                5125,
+                50359,
+                72446,
+                92371,
+                100500
+              ],
+              "c5": [
+                35,
+                640,
+                5081,
+                50203,
+                72257,
+                92156,
+                100275
+              ],
+              "c6": [
+                33,
+                628,
+                5037,
+                50047,
+                72067,
+                91941,
+                100050
+              ],
+              "c7": [
+                28,
+                616,
+                5020,
+                50025,
+                72044,
+                91918,
+                100027
+              ],
+              "c8": [
+                26,
+                610,
+                5012,
+                50014,
+                72033,
+                91906,
+                100015
+              ],
+              "c9": [
+                25,
+                607,
+                5008,
+                50009,
+                72027,
+                91900,
+                100009
+              ],
+              "c10": [
+                23,
+                603,
+                5003,
+                50003,
+                72021,
+                91894,
+                100003
+              ]
+            },
+            "perInputThresholds": [
+              {
+                "case": "01",
+                "N": 20,
+                "c": [
+                  50,
+                  45,
+                  40,
+                  37,
+                  35,
+                  33,
+                  28,
+                  26,
+                  25,
+                  23
+                ]
+              },
+              {
+                "case": "02",
+                "N": 600,
+                "c": [
+                  1200,
+                  937,
+                  674,
+                  651,
+                  640,
+                  628,
+                  616,
+                  610,
+                  607,
+                  603
+                ]
+              },
+              {
+                "case": "03",
+                "N": 5000,
+                "c": [
+                  10000,
+                  7607,
+                  5213,
+                  5125,
+                  5081,
+                  5037,
+                  5020,
+                  5012,
+                  5008,
+                  5003
+                ]
+              },
+              {
+                "case": "04",
+                "N": 50000,
+                "c": [
+                  100000,
+                  75336,
+                  50671,
+                  50359,
+                  50203,
+                  50047,
+                  50025,
+                  50014,
+                  50009,
+                  50003
+                ]
+              },
+              {
+                "case": "05",
+                "N": 72018,
+                "c": [
+                  144036,
+                  108430,
+                  72824,
+                  72446,
+                  72257,
+                  72067,
+                  72044,
+                  72033,
+                  72027,
+                  72021
+                ]
+              },
+              {
+                "case": "06",
+                "N": 91891,
+                "c": [
+                  183782,
+                  138292,
+                  92801,
+                  92371,
+                  92156,
+                  91941,
+                  91918,
+                  91906,
+                  91900,
+                  91894
+                ]
+              },
+              {
+                "case": "07",
+                "N": 100000,
+                "c": [
+                  200000,
+                  150475,
+                  100949,
+                  100500,
+                  100275,
+                  100050,
+                  100027,
+                  100015,
+                  100009,
+                  100003
+                ]
+              },
+              {
+                "case": "08",
+                "N": 100000,
+                "c": [
+                  200000,
+                  150475,
+                  100949,
+                  100500,
+                  100275,
+                  100050,
+                  100027,
+                  100015,
+                  100009,
+                  100003
+                ]
+              },
+              {
+                "case": "09",
+                "N": 100000,
+                "c": [
+                  200000,
+                  150475,
+                  100949,
+                  100500,
+                  100275,
+                  100050,
+                  100027,
+                  100015,
+                  100009,
+                  100003
+                ]
+              },
+              {
+                "case": "10",
+                "N": 100000,
+                "c": [
+                  200000,
+                  150475,
+                  100949,
+                  100500,
+                  100275,
+                  100050,
+                  100027,
+                  100015,
+                  100009,
+                  100003
+                ]
+              }
+            ]
+          },
+          "materials": [
+            {
+              "kind": "official-statement",
+              "url": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+              "status": "retrieved-and-reviewed",
+              "acquisition": "web text; numeric expressions missing from ordinary extraction"
+            },
+            {
+              "kind": "official-contest-statement",
+              "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+              "status": "retrieved-and-reviewed",
+              "acquisition": "web search full indexed result returned numeric/scoring table with query site:ioi.te.lv/locations/ioi19/contest/day2/Line \"N\" \"3\" \"100\""
+            },
+            {
+              "kind": "national-committee-statement-mirror",
+              "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+              "status": "retrieved-and-reviewed",
+              "acquisition": "GitHub connector fetch_file encoding=base64; decoded exact PDF bytes; pdftoppm and view_image of pages1,2,3 actually inspected",
+              "localPdf": "/tmp/flowchartcp-line-source/line-en.pdf",
+              "sha256": "b2dd1f7236c90f4237908f368cbc95dfcb31980d7378d8aea6f7cf2e5380721e",
+              "gitBlobSha": "cc00e3496b500456a521e4128aa3e2ba5b9593a3",
+              "imagePaths": [
+                "/tmp/flowchartcp-line-source/line-page1.png",
+                "/tmp/flowchartcp-line-source/line-page2.png",
+                "/tmp/flowchartcp-line-source/line-page3.png",
+                "/tmp/flowchartcp-line-source/line-page4.png"
+              ],
+              "verifiedPages": {
+                "1": "origin,10 input files, positive dots qualitative distinct x/y, legal geometry, output-only",
+                "2": "output k and p1..pk, no origin, integer output, sample and not actual scored input",
+                "3": "all numeric bounds,15MB, all scoring formulas and every table cell",
+                "4": "visualizer shows only first1000 segments; a display restriction, not output/grader segment cap"
+              }
+            },
+            {
+              "kind": "official-editorial-sketch",
+              "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+              "status": "retrieved-and-reviewed-as-sketch",
+              "acquisition": "host archive two-page English HSC Review read with web; N+6 decomposition and N+3 bound stated, final connection tricks omitted",
+              "claimsNotMade": [
+                "We do not attribute the deterministic one-connector proof below to this Review.",
+                "Missing chain-complexity formula exponents are not visually verified."
+              ]
+            },
+            {
+              "kind": "national-committee-distributed-reference-code",
+              "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+              "status": "retrieved-and-reviewed",
+              "gitBlobSha": "dca0531e734d7c778dbf98ad28c730e488f63908",
+              "method": "Three-object decomposition;384 order/orientation candidates with last-segment adjustment. Used as provenance and comparison; our API is an independently derived deterministic three-object connection. Original code authorship not independently established from its header."
+            },
+            {
+              "kind": "national-committee-distributed-checker",
+              "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+              "status": "retrieved-and-reviewed",
+              "gitBlobSha": "bfa7ba1f544bd4e7a757d632c54a0ec4ac51234a",
+              "method": "Axis-aligned legality; per-support-line interval unions and inclusive dot coverage; exact scoring table matches statement image."
+            },
+            {
+              "kind": "official-contest-calendar",
+              "url": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+              "status": "retrieved-and-reviewed",
+              "verifiedDate": "2019-08-08"
+            }
+          ],
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": false,
+          "solutionVerificationKind": "independent-analysis",
+          "chosenFullScoreConstructionProved": true,
+          "unconfirmedRequiredLemmas": [],
+          "originalContestData": {
+            "acquired": false,
+            "filesTested": 0,
+            "mustNotConflateWithGeneratedInputs": true,
+            "attempts": [
+              {
+                "tool": "GitHub fetch_file",
+                "path": "ioi2019-line/tc/01.in.gz",
+                "result": "Git-LFS pointer only, not input bytes"
+              },
+              {
+                "tool": "GitHub fetch_file encoding=base64",
+                "path": "ioi2019-line/attachment/line.zip",
+                "result": "content empty for5.6MB API item"
+              },
+              {
+                "tool": "GitHub fetch_blob",
+                "blobSha": "d72969fb2c8d09189892cf6b40c9d0458698d3a2",
+                "result": "UnicodeDecodeError on binary bytes"
+              },
+              {
+                "tool": "GitHub fetch git-blob API URL",
+                "result": "error, no usable archive"
+              },
+              {
+                "tool": "native curl default sandbox",
+                "url": "https://raw.githubusercontent.com/austrian-olympiad-informatics/ioi-tasks/main/ioi2019-line/attachment/line.zip",
+                "result": "exit6 Could not resolve host: raw.githubusercontent.com"
+              },
+              {
+                "tool": "native curl require_escalated",
+                "result": "exit6 Could not resolve host: raw.githubusercontent.com; not an automatic approval-review rejection"
+              }
+            ],
+            "effect": "No claim that actual10 outputs were generated/tested. Universal constructive proof covers their complete verified source domain, and generated maximum cases plus all relative-order small inputs test that construction."
+          }
+        },
+        "notes": "初回の全field・状態・凍結経路と既存5resolutionを保持。原典全域の完全C++20と証明・計算量・整数境界を作者/root/別review者で確認し、通常/ASan・独立oracle・最大入力と特徴の根経路へ接続した。初回のunconfirmed/数値未確認/officialEditorialVerified:falseは変更せず、一件の後続独立reviewを追加。原大会10固定入力の実行数は0で、生成入力と区別する。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2019_vision",
+      "officialTaskId": "vision",
+      "day": 2,
+      "date": "2019-08-08",
+      "title": "視覚プログラム",
+      "englishTitle": "Vision Program",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/vision.pdf",
+      "contest": {
+        "name": "IOI 2019",
+        "division": "Main competition",
+        "year": 2019,
+        "day": 2,
+        "date": "2019-08-08",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式IOI2019競技課題一覧とJOI委員会の競技日を確認。クロール日や公式アーカイブ記事の10月12日を競技日と取り違えない。",
+      "difficulty": null,
+      "features": [
+        "H×Wの二値画像には黒いセルがちょうど二つあり、そのマンハッタン距離がKかを全画像で判定する。",
+        "画像の値を先に読めず、NOT/AND/OR/XORゲート列を生成する。前のゲート出力だけを参照し、ゲート総数と全入力端子数の両方に上限がある。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "verifiedQualitative": [
+          "H×Wの二値画像には黒いセルがちょうど二つあり、そのマンハッタン距離がKかを全画像で判定する。",
+          "画像の値を先に読めず、NOT/AND/OR/XORゲート列を生成する。前のゲート出力だけを参照し、ゲート総数と全入力端子数の両方に上限がある。"
+        ],
+        "notes": "公式原典PDFの変数・数値・式がweb抽出から欠落。元のN/M/値域/ゲート/端子上限を推測しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "math",
+      "choices": [
+        "bits-digits"
+      ],
+      "steps": [
+        {
+          "graphId": "math",
+          "nodeId": "number-task",
+          "question": "整数や式について何を求めますか？",
+          "answer": "bits-digits",
+          "answerLabel": "桁や AND・OR・XOR の条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "math-bits-digits",
+        "nodeId": "number-task",
+        "type": "question",
+        "title": "整数や式について何を求めますか？",
+        "options": [
+          {
+            "id": "xor",
+            "label": "XOR で作れる値・順位"
+          },
+          {
+            "id": "pair-bits",
+            "label": "すべての組の AND・OR・XOR の合計"
+          },
+          {
+            "id": "xor-segments",
+            "label": "連続区間の XOR が指定値になる個数"
+          },
+          {
+            "id": "digits",
+            "label": "桁ごとの整数の条件"
+          },
+          {
+            "id": "bit-constraints",
+            "label": "AND・OR・XOR の等式を満たす整数や列の構築・個数・最適値"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "rotated-manhattan-two-mark-boolean-circuit",
+        "features": [
+          "H×Wの二値画像には黒いセルがちょうど二つあり、そのマンハッタン距離がKかを全画像で判定する。",
+          "画像の値を先に読めず、NOT/AND/OR/XORゲート列を生成する。前のゲート出力だけを参照し、ゲート総数と全入力端子数の両方に上限がある。"
+        ],
+        "firstMissingGraphId": "math-bits-digits",
+        "firstMissingNodeId": "number-task",
+        "stopNodeType": "question",
+        "reason": "既存manhattan-transformは既知の点座標を通常のC++で読むAPIで、未知の2画素に対するゲート列を生成しない。対角線の占有を作り、幅K以下とK−1以下の条件を回路にし、端子総数を抑える具体手順・構築APIが不足する。",
+        "neededTechniqueIds": [
+          "rotated-manhattan-two-mark-boolean-circuit"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "manhattan-transform",
+          "prefix-sum"
+        ],
+        "currentOptions": [
+          {
+            "id": "xor",
+            "label": "XOR で作れる値・順位"
+          },
+          {
+            "id": "pair-bits",
+            "label": "すべての組の AND・OR・XOR の合計"
+          },
+          {
+            "id": "xor-segments",
+            "label": "連続区間の XOR が指定値になる個数"
+          },
+          {
+            "id": "digits",
+            "label": "桁ごとの整数の条件"
+          },
+          {
+            "id": "bit-constraints",
+            "label": "AND・OR・XOR の等式を満たす整数や列の構築・個数・最適値"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "整数や式について何を求めますか？",
+        "proposedFeatureAnswer": "H×Wの二値画像には黒いセルがちょうど二つあり、そのマンハッタン距離がKかを全画像で判定する。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialProvenance": "IOI大会アーカイブの当該6課題にReviewとして直接リンクされたEnglish(HSC)解説PDF。IOI公式本部にもsolutions archiveへのリンクあり。",
+        "method": "u=r+c,v=r−cへ変換するとL1距離はmax(|Δu|,|Δv|)。各対角線のORで占有を作り、両方向の占有幅がd以下かをゲートで求め、d=KとK−1の差を取る。公式は対角線内の1個/2個と連続する対角線ブロックを使う。",
+        "complexity": "公式解説はO(H+W)ゲート、O(HW)入力端子と明記。独立のprefix-OR版でもO(H+W)ゲート、O(HW+H+W)端子。公式の具体的なゲート数/端子数の上限への適合確認は別途残る。",
+        "implementationRequirements": [
+          "既存manhattan-transformは既知の点座標を通常のC++で読むAPIで、未知の2画素に対するゲート列を生成しない。対角線の占有を作り、幅K以下とK−1以下の条件を回路にし、端子総数を抑える具体手順・構築APIが不足する。"
+        ],
+        "sourceUrls": [
+          "https://ioinformatics.org/files/ioi2019problem5.pdf",
+          "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf"
+        ],
+        "statementPageCount": 4,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "independentProofSupplement": [
+          "|Δr|+|Δc|=max(|Δ(r+c)|,|Δ(r−c)|)を符号場合分けで示せる。",
+          "対角線占有q_iとprefix OR P_iを作る。幅がdより大きいことは、あるi>dでq_i AND P_{i−d−1}が真となることと同値。同一対角線に二点ある場合は幅0でそのまま処理できる。",
+          "二方向いずれかで幅>dを返す回路をB_dとすると、距離KはB_{K−1} AND NOT B_K。空のORは定数falseゲートで扱う必要がある。各画素は二つの対角線集約へ一度ずつ入るため、端子総数はO(HW+H+W)。これは独立の回路化案であり、公式のwindow回路の実装を全文確認したとはしない。"
+        ],
+        "unconfirmedConstraints": [
+          "公式ゲート上限・端子上限・H/W上限の数値。満点予算を満たす実コードの最大実行は未実施。主要な数学的構成は確認済み。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "visualDetails": "web-screenshot-failed-no-image-content"
+      },
+      "collectionStatus": "statement-and-official-editorial-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "公式原典・解説はwebで取得。原典の数値や抽出で消えた式を画像確認済みとしない。今回のscreenshotはcontent type/errorとなり画像本体を得ていない。",
+        "本文/解説の転載ではなく、入力特徴・確認できた方針・未確認補題を要約。新技巧記事・再利用C++20・共有分岐は今回作成しない。",
+        "独立prefix-OR回路条件はH,W=1..6の全異なる画素対と全K=1..H+W+1、42140件を直接L1距離と照合。これは条件式のprobeで、ゲートAPIの実装/原典の具体予算/最大制約実行を済ませたとは記録しない。"
+      ],
+      "subsequentSourceVerifications": [
+        {
+          "checkedAt": "2026-10-15",
+          "status": "verified",
+          "kind": "national-committee-statement-distribution",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+          "originalNumericBoundsVerified": true,
+          "evidenceUrls": [
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/statement/vision-en.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/grader/grader.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/attachment/grader.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/checker/checker.cpp"
+          ],
+          "notes": "2026-10-15にIOI公式原典4ページ・HSC Review2ページ・JOI委員会の競技日一覧をwebで再確認。競技日2は2019-08-08、難度は公式値不明のためnull。テキスト抽出から消えた数値は推測せず、AOI配布repoの原典vision-en.pdfを公開GitHub read connectorからbase64で取得して復号し、pdftoppmで2/3ページを描画してview_imageで実際に確認した。H/W1..200、HW>=2、K1..H+W−2、10000ゲート・1000000端子を目視。PDFのGit blob SHA1=a0bcc84674f5d83d213415706229baa85581e5b0、raw SHA256=9b1737c0540382e8e0c4f0bda17a2526633100f6fe97ebf91f820d7cfea43f96。配布grader/attachment/checker C++で同じ予算、NOT単一入力、AND/OR一入力以上、前番号限定、最後の出力、重複参照の扱いも確認した。HSC Reviewの回転座標補題を参照し、掲載のprefix-OR構築、B(d)の必要十分性、K境界、厳密gate/端子式は独立に証明。実MDXの唯一の常時表示C++20を抽出し-O2 -Wall -Wextra -Werrorでコンパイル。H/W1..8・HW>=2の全2黒画素配置を全K0..H+W+1で逐次gate interpreterと独立直接L1で比較(297360画像)。別実装のuint64 lane interpreterでも実ゲートを評価。1x200/200x1は全二画素対×全K0..201、200x200は全K0..400ごとに境界/同対角/同一行列/乱択256配置、200x199/199x200/2x200/200x2/最小2画素/INT_MAX Kも検査した。回路1858件、bitpacked画像8485484件、callback gate17078件。全gateの非空入力、NOT入力数、前出力参照、最終出力、独立の端子数をチェックし、G=4D+4R+1+[R>=2],T=2HW+4D+12R−4を実測と比較。最大3190ゲート・86368端子・最終ID43189を達成し原典予算を満たす。不正H/W/K/INT_MIN/MAXと不正callback ID、callbackを呼ぶ前の不正引数拒否も確認。55810190 checks、checksum15915287276903946258、通常0.437363秒・ASan/UBSan2.96732秒で成功。ptrace環境のためLeakSanitizerのみ無効。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "rotated-manhattan-two-mark-boolean-circuit"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の調査状態・不足・停止位置を保持。原典の数値とAPIの包含、独立の証明・小規模全探索・最大範囲・ASan/UBSan・独立レビューを確認し、完成記事と特徴からの分岐で解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2019_walk",
+      "officialTaskId": "walk",
+      "day": 2,
+      "date": "2019-08-08",
+      "title": "空中通路",
+      "englishTitle": "Sky Walking",
+      "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+      "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/walk.pdf",
+      "contest": {
+        "name": "IOI 2019",
+        "division": "Main competition",
+        "year": 2019,
+        "day": 2,
+        "date": "2019-08-08",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式IOI2019競技課題一覧とJOI委員会の競技日を確認。クロール日や公式アーカイブ記事の10月12日を競技日と取り違えない。",
+      "difficulty": null,
+      "features": [
+        "高さを持つ鉛直なビルと、端点がビル上にある水平な通路の和集合だけを移動する。",
+        "通路と途中のビルの交点でも乗り換えられ、地上の横移動はできない。指定二ビルの根元間の最短距離または到達不能を求める。水平通路どうしは端点以外で交わらない。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "verifiedQualitative": [
+          "高さを持つ鉛直なビルと、端点がビル上にある水平な通路の和集合だけを移動する。",
+          "通路と途中のビルの交点でも乗り換えられ、地上の横移動はできない。指定二ビルの根元間の最短距離または到達不能を求める。水平通路どうしは端点以外で交わらない。"
+        ],
+        "notes": "公式原典PDFの変数・数値・式がweb抽出から欠落。元のN/M/値域/ゲート/端子上限を推測しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "walk-goals",
+        "distance",
+        "many-connections"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "walk-goals",
+          "answerLabel": "移動費用・訪れる頂点・辺の通り方"
+        },
+        {
+          "graphId": "graphs-walk-goals",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "distance",
+          "answerLabel": "移動費用や移動回数の最小値"
+        },
+        {
+          "graphId": "shortest-path",
+          "nodeId": "movement",
+          "question": "移動の特徴はどれですか？",
+          "answer": "many-connections",
+          "answerLabel": "多数の移動が、区間・集合・共通の費用式で決まる"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "shortest-shared-connection-goals",
+        "nodeId": "movement",
+        "type": "question",
+        "title": "移動の特徴はどれですか？",
+        "options": [
+          {
+            "id": "dense-rule",
+            "label": "全組の移動費用が規則式で決まり、辺が多い"
+          },
+          {
+            "id": "range-edges",
+            "label": "頂点と、添字の区間内の全頂点を結ぶ移動"
+          },
+          {
+            "id": "shared-set",
+            "label": "集合やグループの共通要素を通じた移動回数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "skywalk-endpoint-sparse-shortest-path",
+        "features": [
+          "高さを持つ鉛直なビルと、端点がビル上にある水平な通路の和集合だけを移動する。",
+          "通路と途中のビルの交点でも乗り換えられ、地上の横移動はできない。指定二ビルの根元間の最短距離または到達不能を求める。水平通路どうしは端点以外で交わらない。"
+        ],
+        "firstMissingGraphId": "shortest-shared-connection-goals",
+        "firstMissingNodeId": "movement",
+        "stopNodeType": "question",
+        "reason": "全交点を頂点にすると二次規模になり得る。区間辺の通常の区間木とは別に、始終点をまたぐ通路の切分けと不要な鉛直辺の除去で距離を保存する専用の疎グラフ化が必要。公式の距離保存補題はここでは未確認。",
+        "neededTechniqueIds": [
+          "skywalk-endpoint-sparse-shortest-path"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "dijkstra",
+          "dijkstra-range-edges",
+          "coordinate-compression",
+          "graph-reduction"
+        ],
+        "currentOptions": [
+          {
+            "id": "dense-rule",
+            "label": "全組の移動費用が規則式で決まり、辺が多い"
+          },
+          {
+            "id": "range-edges",
+            "label": "頂点と、添字の区間内の全頂点を結ぶ移動"
+          },
+          {
+            "id": "shared-set",
+            "label": "集合やグループの共通要素を通じた移動回数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "移動の特徴はどれですか？",
+        "proposedFeatureAnswer": "高さを持つ鉛直なビルと、端点がビル上にある水平な通路の和集合だけを移動する。"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI大会アーカイブの当該6課題にReviewとして直接リンクされたEnglish(HSC)解説PDF。IOI公式本部にもsolutions archiveへのリンクあり。",
+        "method": "公式解説は全交点グラフから、上端が水平通路の内部にある鉛直辺を捨て、O(M)辺へ疎化する。一般始終点では、それらの左右の十分高い直近ビルで水平通路を切り分けてから同じ疎化とDijkstraを行う。",
+        "complexity": "全交点グラフはO(NM)頂点・辺、O(NM log(NM))時間。疎化版はO(M)非孤立頂点/辺という公式方針を確認したが全処理の計算量と保存証明は未確認。",
+        "implementationRequirements": [
+          "全交点を頂点にすると二次規模になり得る。区間辺の通常の区間木とは別に、始終点をまたぐ通路の切分けと不要な鉛直辺の除去で距離を保存する専用の疎グラフ化が必要。公式の距離保存補題はここでは未確認。"
+        ],
+        "sourceUrls": [
+          "https://ioinformatics.org/files/ioi2019problem6.pdf",
+          "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "始終点まわりで分割後、不要な鉛直辺を除去しても最短距離を保つ補題の全証明。",
+          "同座標/同高さ/端点接触時のイベント順序、直近の十分高いビル探索と疎グラフ全辺生成。",
+          "満点解の厳密な前処理・時間・空間上界。"
+        ],
+        "independentProofSupplement": []
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed",
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-failed-no-image-content"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "公式原典・解説はwebで取得。原典の数値や抽出で消えた式を画像確認済みとしない。今回のscreenshotはcontent type/errorとなり画像本体を得ていない。",
+        "本文/解説の転載ではなく、入力特徴・確認できた方針・未確認補題を要約。新技巧記事・再利用C++20・共有分岐は今回作成しない。"
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "reviewedAt": "2026-10-15",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "evidenceUrls": [
+            "https://ioinformatics.org/files/ioi2019problem6.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf",
+            "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf"
+          ],
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "statement": "retrieved-and-reviewed",
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "notes": "2026-10-15に公式原典/English(HSC)Reviewと主催LVA/IDN翻訳の検索本文を再確認。N/M各1..100000、昇順x0..1e9、h1..1e9、l<rと端点上限、正のy<=両端h、s!=g、通路同士は端点接触のみを実取得。JP委員会一覧から2019-08-08競技日2を確認し難度null。公式Reviewの始終点まわりの分割と上端内部の鉛直辺除去の方針に沿い、全交点モデル・端末近傍の切れ目の性質・矩形境界への進入のManhattan置換・上端高さ順の辞書式最小性・下方投影生成・同高さ接触・水平辺縮約を独立に完全証明。一般s/gにx単調性を仮定しない。完全C++20を実MDX単一fenceから抽出、全小N1..4/高さ1..3/隣接x差1,2/全有効通路集合108279と全端末対1716019、乱択4000全対を、全交点直接生成の独立literalグラフと比較。反転/座標拡大平行移動/通路順入替/通路分割の15440検査、不正24・再呼出し・入力非変更・原典例27/21・64bit3e9を確認。原典最大N=M100000の7構成を閉形式と比較し最大99998999890004、密な全長通路10^10交点を作らず成功。通常/ASan+UBSanとも9280397 checks/checksum9377741248886004889、通常4.98573s/RSS79036KiB、san81.6905s/RSS783140KiB。英語/JPN抽出で欠落した到達不能返値は、主催MAC実装段落とAZE検索本文で-1を実取得して補完。画像目視は主張しない。初回unconfirmedと共有データは未変更。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "skywalk-endpoint-sparse-shortest-path"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+          "statementTranslationUrls": [
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf"
+          ],
+          "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+          "provenance": "IOI2019公式配布アーカイブに置かれた原典/主催翻訳とEnglish(HSC) Review。非公式競技者コードは原典の根拠にしない。",
+          "numericBoundsVerified": true,
+          "numericAcquisition": "公式LVA/IDN翻訳の検索本文で各行を実取得。PDF画像目視の主張なし。KGZ検索本文の一部添字末尾が欠けるため主根拠にはしない。",
+          "sourceBounds": {
+            "N": "1..100000",
+            "M": "1..100000",
+            "x": "0<=x[0]<...<x[N-1]<=1000000000",
+            "h": "1..1000000000",
+            "l/r": "0<=l[j]<r[j]<N",
+            "y": "1<=y[j]<=min(h[l[j]],h[r[j]])",
+            "s/g": "0<=s,g<N;s!=g",
+            "segments": "Two skywalks may share points only at their endpoints."
+          },
+          "date": "2019-08-08",
+          "day": 2,
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+          "exactDateVerified": true,
+          "difficulty": null,
+          "cutoff": "2026-10-14",
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": false,
+          "visualInspectionClaimed": false,
+          "apiContainsEntireSourceRange": true,
+          "statementPages": 3,
+          "editorialPages": 2,
+          "officialEditorialProvenance": "IOI大会史アーカイブのDay2 Sky walking（作者Riku Kawasaki）からReviewへ直接リンク。PDFのEnglish(HSC)表記を確認。公式本部IOI2019ページもSolutions to all problemsへリンク。",
+          "officialArchiveUrl": "https://ioi.te.lv/locations/ioi19/contest/index.shtml",
+          "officialHeadquartersUrl": "https://ioinformatics.org/page/ioi-2019/51",
+          "originalSourceRangeContainsNoAdditionalSubtaskAssumptions": true,
+          "fullOriginalContractVerified": true,
+          "originalAbsentPathNumericMarkerVerified": true,
+          "implementationNoticeUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf",
+          "implementationNoticeBounds": {
+            "timeSeconds": 4,
+            "memoryMB": 1024,
+            "cppInt64": "long long",
+            "cppIntArray": "std::vector"
+          },
+          "numericSearchQueries": [
+            "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/ \"n, m\" \"100000\" \"10^9\"",
+            "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/ \"1 ≤ h\" \"s ≠ g\""
+          ],
+          "consultedIndependentExplanation": {
+            "url": "https://koosaga.com/237",
+            "kind": "original-author-public-editorial-sketch",
+            "scope": "Read original analyst blog; distinguishes its non-fully-rigorous case/Jordan sketches from officialReview. Its x-monotone/extreme-column outline is not used as a complete proof of the general-terminal solution. Published rectangle-boundary replacement and lexicographic proof are independently supplied here."
+          },
+          "unconfirmedOriginalNumericBounds": [],
+          "unconfirmedRequiredLemmas": [],
+          "originalAbsentPathValue": -1,
+          "originalAbsentPathEvidenceUrls": [
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+            "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf"
+          ],
+          "initialReturnMarkerExtractionFailure": "Original English/JPN PDF web extraction yields return[missingformula]; official translations search currently retrieved statement/constraints, not return paragraph. DMOJ mirror visibly says -1, but it is not used as a primary verification claim. No successful PDF screenshot/image content received.",
+          "returnMarkerAcquisition": {
+            "method": "Official distributed MAC/AZE translation PDF search-visible text, not screenshot/visual inspection.",
+            "successfulSearchQuery": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf \"返回\"",
+            "observedMacPage": 1,
+            "observedMacContract": "Absent path returns -1. This explicit final clause was retrieved inside the implementation paragraph.",
+            "observedAzePage": 2,
+            "crossCheck": "AZE search excerpt also explicitly gives absent-path −1.",
+            "previousProvisionalSidecarSha256": "64b9a751a0b0d13b86419a04c6c642e98a6b71834af021446e0c610e92e15c25",
+            "retrievedSnippets": [
+              {
+                "query": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf \"返回\"",
+                "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+                "page": 1,
+                "text": "否則，該函數應該返回 `-1`。",
+                "acquisition": "search-visible official translation text; no PDF image received"
+              },
+              {
+                "query": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf \"27\"",
+                "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf",
+                "page": 2,
+                "text": "yol olmadığı təqdirdə isə −1 qaytarmalıdır.",
+                "acquisition": "search returned a different official translation than the exact URL in the query; record actual returned AZE URL; no PDF image received"
+              }
+            ]
+          }
+        },
+        "notes": "初回の全field・分類・未確認flag・凍結停止位置を保持。今回の原典数値と返値を主催翻訳本文、日付をJP委員会で確認し、独立の矩形置換証明と全域C++20を完成。作者/root/別review者の通常/ASan、全交点oracle、最大7構成、別の単位格子BFSを確認。後続のpositive独立reviewとresolutionで不足を解消し、公式Reviewの未掲載証明を原文で確認済みとは扱わない。"
+      }
+    }
+  ],
+  "eventVerification": {
+    "status": "verified",
+    "format": "IOI 2019, Baku, Azerbaijan, two competition days with three tasks each",
+    "competitionDates": [
+      "2019-08-06",
+      "2019-08-08"
+    ],
+    "evidenceUrls": [
+      "https://ioinformatics.org/page/ioi-2019/51",
+      "https://ioi.te.lv/locations/ioi19/contest/",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ],
+    "notes": "練習日2019-08-05と競技日を区別。難度の公式区分はないため全6題null。"
+  },
+  "status": {
+    "fixedProblemListComplete": true,
+    "firstPassAuditComplete": true,
+    "fixedCorpusResearchComplete": false,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "officialEditorialRetrievedCount": 6,
+    "officialEditorialVerifiedCount": 2,
+    "solutionReviewedCount": 3,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 3,
+    "unconfirmedCount": 3,
+    "unavailableCount": 0,
+    "unconfirmedVisualOrMainLemmaCount": 3,
+    "firstPassAuditCompleteDefinition": "固定6題全件で公式原典と解説を取得し、分野根から凍結フローを再生して、確認済み主要手順と未確認主要補題を分けた。原典全数値・満点実装の確認完了ではない。",
+    "fixedCorpusResearchCompleteDefinition": "全6題で必要な主要補題/満点手順を確認したときだけtrue。今回はRect/Line/Walkの主要細部が残る。",
+    "articleResolutionComplete": false,
+    "articleResolutionNotes": "今回の成果は監査候補と監査用小probeのみ。技巧記事/C++20 API/分岐/問題walk/出典行は未追加。",
+    "numericBoundsVerifiedCount": 0,
+    "numericBoundsUnconfirmedCount": 6,
+    "unconfirmedPrincipalDetailsCount": 3
+  },
+  "classificationDefinitions": {
+    "covered": "問題全体に必要な具体技巧と実装があり、忠実な特徴から分野根を辿って到達できる。",
+    "missing-route": "必要な具体実装は既存だが自然な分岐がない。",
+    "missing-technique": "原典と主要解法を確認できたが具体帰着・実装が不足。公式数値の確認と最大制約の実装検証は別に記録する。",
+    "unconfirmed": "主要な証明、満点構築、候補の完全性、実装対応のいずれか未確認。取得できたことだけで確認済みにしない。"
+  },
+  "knownGapsProposal": [
+    {
+      "id": "oriented-equal-pair-adjacent-swaps-fenwick",
+      "source": "ioi",
+      "problemId": "ioi2019_shoes",
+      "status": "missing-technique",
+      "entryGraphId": "ranges",
+      "choices": [
+        "sequence-changes",
+        "reorder-cost"
+      ],
+      "neededTechniqueIds": [
+        "oriented-equal-pair-adjacent-swaps-fenwick"
+      ],
+      "reason": "任意位置への移動一回と隣接交換一回では費用が異なり、値編集も許されない。最初の未処理要素を最左の逆符号同サイズと対応させ、向きの一回分を加え、削除後の距離をFenwickで数える専用の証明・実装がない。回文の同文字両端対応とは目標の形が異なる。",
+      "firstMissingGraphId": "range-sequence-changes",
+      "firstMissingNodeId": "reorder-operation",
+      "currentOptions": [
+        {
+          "id": "move-position",
+          "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+        },
+        {
+          "id": "swap-and-adjust",
+          "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "dfs-lowlink-three-size-two-connected-partition",
+      "source": "ioi",
+      "problemId": "ioi2019_split",
+      "status": "missing-technique",
+      "entryGraphId": "graphs",
+      "choices": [
+        "group-constraints"
+      ],
+      "neededTechniqueIds": [
+        "dfs-lowlink-three-size-two-connected-partition"
+      ],
+      "reason": "少数頂点のクリーク分割ではなく、大きいグラフの指定サイズ・連結性の構築である。小さい二サイズを連結にしてよい同値性、DFSの最小十分部分木、祖先への後退辺で子部分木を反対側へ移す補題・実装が不足する。",
+      "firstMissingGraphId": "graphs-group-constraints",
+      "firstMissingNodeId": "shortest",
+      "currentOptions": [
+        {
+          "id": "assignment",
+          "label": "組を選ぶ・容量を割り当てる"
+        },
+        {
+          "id": "partition-small",
+          "label": "少数の頂点を、内部の全組に辺があるグループへ分ける"
+        },
+        {
+          "id": "constraints",
+          "label": "二つの値の禁止組・偶奇・差の条件を満たせるか"
+        },
+        {
+          "id": "tree-color-union",
+          "label": "木の色を丸ごと併合し、一色の全頂点を連結にする"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "grid-enclosing-higher-boundary-rectangle-candidates",
+      "source": "ioi",
+      "problemId": "ioi2019_rect",
+      "status": "unconfirmed",
+      "entryGraphId": "geometry",
+      "choices": [
+        "rectangle-aggregates"
+      ],
+      "neededTechniqueIds": [
+        "grid-enclosing-higher-boundary-rectangle-candidates"
+      ],
+      "reason": "囲める点集合の個数や矩形内の和とは異なる。行・列のgood pairから候補長方形を列挙し、厳密な四方向条件を満たす全候補を漏れなく重複なく数える具体手順がない。公式の16構造・一隅による一意決定の主要細部も未確認。",
+      "firstMissingGraphId": "geometry-rectangle-aggregates",
+      "firstMissingNodeId": "geometry-task",
+      "currentOptions": [
+        {
+          "id": "rect-sum",
+          "label": "指定した長方形内の重みの和"
+        },
+        {
+          "id": "rect-count",
+          "label": "長方形で囲める点集合の個数"
+        },
+        {
+          "id": "sweep",
+          "label": "座標順に対象を追加・削除して集計する"
+        },
+        {
+          "id": "rectangle-overlap",
+          "label": "長方形の重なりの枚数・面積"
+        },
+        {
+          "id": "rectangle-union",
+          "label": "多くの長方形の和集合の面積"
+        },
+        {
+          "id": "dominated",
+          "label": "三座標がすべて自分以下の点の個数"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "orthogonal-point-cover-spiral-two-chains",
+      "source": "ioi",
+      "problemId": "ioi2019_line",
+      "status": "unconfirmed",
+      "entryGraphId": "heuristic",
+      "choices": [
+        "yes"
+      ],
+      "neededTechniqueIds": [
+        "orthogonal-point-cover-spiral-two-chains"
+      ],
+      "reason": "到達先output-onlyは保存済み出力の合法性・得点更新を扱う一般記事であり、全点を少ない縦横線分で覆う構築ではない。螺旋と二つの単調鎖からN+3本へ接続する満点の細かい場合分けを公式sketchが省略しており、未確認のまま不足確定へ昇格しない。",
+      "firstMissingGraphId": "heuristic",
+      "firstMissingNodeId": "output",
+      "currentOptions": []
+    },
+    {
+      "id": "rotated-manhattan-two-mark-boolean-circuit",
+      "source": "ioi",
+      "problemId": "ioi2019_vision",
+      "status": "missing-technique",
+      "entryGraphId": "math",
+      "choices": [
+        "bits-digits"
+      ],
+      "neededTechniqueIds": [
+        "rotated-manhattan-two-mark-boolean-circuit"
+      ],
+      "reason": "既存manhattan-transformは既知の点座標を通常のC++で読むAPIで、未知の2画素に対するゲート列を生成しない。対角線の占有を作り、幅K以下とK−1以下の条件を回路にし、端子総数を抑える具体手順・構築APIが不足する。",
+      "firstMissingGraphId": "math-bits-digits",
+      "firstMissingNodeId": "number-task",
+      "currentOptions": [
+        {
+          "id": "xor",
+          "label": "XOR で作れる値・順位"
+        },
+        {
+          "id": "pair-bits",
+          "label": "すべての組の AND・OR・XOR の合計"
+        },
+        {
+          "id": "xor-segments",
+          "label": "連続区間の XOR が指定値になる個数"
+        },
+        {
+          "id": "digits",
+          "label": "桁ごとの整数の条件"
+        },
+        {
+          "id": "bit-constraints",
+          "label": "AND・OR・XOR の等式を満たす整数や列の構築・個数・最適値"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "skywalk-endpoint-sparse-shortest-path",
+      "source": "ioi",
+      "problemId": "ioi2019_walk",
+      "status": "unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "walk-goals",
+        "distance",
+        "many-connections"
+      ],
+      "neededTechniqueIds": [
+        "skywalk-endpoint-sparse-shortest-path"
+      ],
+      "reason": "全交点を頂点にすると二次規模になり得る。区間辺の通常の区間木とは別に、始終点をまたぐ通路の切分けと不要な鉛直辺の除去で距離を保存する専用の疎グラフ化が必要。公式の距離保存補題はここでは未確認。",
+      "firstMissingGraphId": "shortest-shared-connection-goals",
+      "firstMissingNodeId": "movement",
+      "currentOptions": [
+        {
+          "id": "dense-rule",
+          "label": "全組の移動費用が規則式で決まり、辺が多い"
+        },
+        {
+          "id": "range-edges",
+          "label": "頂点と、添字の区間内の全頂点を結ぶ移動"
+        },
+        {
+          "id": "shared-set",
+          "label": "集合やグループの共通要素を通じた移動回数"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "IOI2019公式競技6題だけを固定した初回監査であり、世界全体の網羅完了ではない。",
+    "原典6/6・解説取得6/6・主要手順確認3/6・確認済み技巧不足3件・未確認3件を分ける。",
+    "公式PDFの全数値が未確認であることと、主要補題が未確認であることを区別。推測で上限を埋めない。",
+    "一般Fenwick/lowlink/マンハッタン変換/Dijkstra/output-onlyの名称一致だけでは具体手順のcoverageとしない。",
+    "監査用Python probeは技巧記事の再利用API・最大制約実装検証の代用ではない。",
+    "開始時472記事/439図の凍結に対して照合し、後続IOI2020等の統合は遡及しない。",
+    "共有ファイル未編集、.env未読、push/外部公開なし。"
+  ],
+  "validation": {
+    "actualFlowRuntimeReplay": "passed",
+    "canonicalIds": [
+      "ioi2019_shoes",
+      "ioi2019_split",
+      "ioi2019_rect",
+      "ioi2019_line",
+      "ioi2019_vision",
+      "ioi2019_walk"
+    ],
+    "replayedPaths": 6,
+    "replayedAgainstFlowSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181",
+    "existingReferencesDuplicateCount": 0,
+    "existingReferencesDuplicateCheck": "凍結references全JSON・problem-features・problem-walks内でioi2019、IOI 2019、ioi/2019、公式archive URLおよび固有英題を検索し一致0。Rectangles等の一般語だけを同一問題と判定しない。",
+    "relatedTechniqueIdsPresent": true,
+    "missingTechniqueProposalsNotRegistered": true,
+    "snapshotHashesVerified": true,
+    "completeRecordIdentitiesMatchFixedList": true,
+    "note": "凍結flow.tsの製品walkFromRoot/getNodeOptions/getAnswerLabelをTypeScript transpileし、凍結flowsだけをinlineして6経路を再生。未使用描画importだけ除外し、歩行コードは変更していない。",
+    "probeArtifacts": [
+      "research/probes/ioi-2019-probe.py",
+      "research/probes/ioi-2019-shoes-probe.py"
+    ],
+    "routeReplayArtifacts": [
+      "/tmp/flowchartcp-ioi2019-replay.mjs",
+      "/tmp/flowchartcp-ioi2019-routes.json"
+    ],
+    "notesFile": "research/ioi-2019-audit-notes.md",
+    "progressClassifierConfirmedCount": 3,
+    "validationResult": "passed: all snapshot raw bytes SHA-256, 472 unique metadata/472 articles/439 flows, fixed6 identities, runtime replay6, all related IDs present/proposed IDs absent, corpus-progress statement6/solution3, duplicate0",
+    "snapshotManifestFileCount": 594,
+    "originalValidationCommand": "node /tmp/flowchartcp-ioi2019-validate.mjs",
+    "validationCommand": "node --test tests/ioi-2019-fixed-corpus.test.mjs"
+  }
+}

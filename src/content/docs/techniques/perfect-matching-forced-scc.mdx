@@ -1,0 +1,183 @@
+---
+title: "全ての完全対応に共通する組を、入替え可能な閉路から判定する"
+description: "一つの完全対応を基準に、辺を外せるかを交互閉路と強連結成分でまとめて調べる。"
+techniqueId: perfect-matching-forced-scc
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+条件を満たす一対一対応は一つとは限らない。どの完全対応でも変わらない組を全部知りたい。一つの解だけでは、確定した組と任意に選んだ組を区別できない。
+
+## 考え方
+
+完全対応 $M$ を一つ求める。未採用辺は左→右、採用辺は右→左へ向ける。有向閉路では辺が採用・未採用と交互に現れる。閉路上を入れ替えても全頂点を一度使う条件を保つ。
+
+強連結成分を求める。採用辺の両端が同じ成分なら閉路で外せる。異なる成分なら全完全対応に必須。未採用辺は同じ成分なら、どれかの完全対応に入れられる。
+
+## 適用条件
+
+左右同数で完全対応が存在する。存在しない場合は必須辺を定義せず失敗を返す。単なる最大対応では未使用頂点からの交互経路も必要で、閉路だけでは足りない。
+
+候補の組を重複させない。同じ端点を結ぶ辺を別物として二本渡すと、その組が必須とその一本が必須では意味が異なる。
+
+## なぜ正しいか
+
+二つの完全対応の対称差は次数0か2なので、互いに頂点を共有しない交互閉路に分かれる。採用辺を外す別対応があればその辺を含む閉路がある。逆に閉路を反転すれば外した完全対応ができる。
+
+有向辺の両端が同じ強連結成分にあることと、その辺が有向閉路に入ることは同値。全辺を成分番号だけで判定できる。
+
+## 計算量
+
+各採用辺を削除して対応をやり直すと最大 $N$ 回の計算。一度の完全対応を $O((N+E)\sqrt N)$ 時間で求め、その後の成分分解と全辺分類は $O(N+E)$ 時間。空間は $O(N+E)$。重複検査は $O(E\log E)$ 時間。
+
+## 実装
+
+入力辺の順で、どれかの完全対応に入る allowed と、全てに入る forced を返す。partner は基準の完全対応。成分分解の二回の探索も非再帰。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+#include <optional>
+#include <set>
+#include <stdexcept>
+struct PerfectMatchingEdges {
+    std::vector<int> partner; // 各左頂点の対応先
+    std::vector<bool> allowed,forced; // 入力した候補辺の順序
+};
+std::optional<PerfectMatchingEdges> classify_perfect_edges(
+    int n,const std::vector<std::pair<int,int>>& edges) {
+    std::set<std::pair<int,int>> unique(edges.begin(),edges.end());
+    if(unique.size()!=edges.size()) throw std::invalid_argument("duplicate pairs");
+    int s=2*n,t=s+1; FlowNetwork flow(t+1);
+    for(int v=0;v<n;++v) { flow.add(s,v,1); flow.add(n+v,t,1); }
+    std::vector<int> ids;
+    for(auto [a,b]:edges) ids.push_back(flow.add(a,n+b,1));
+    if(flow.flow(s,t,n)!=n) return std::nullopt;
+    std::vector<std::vector<int>> g(2*n),reverse(2*n);
+    PerfectMatchingEdges result;
+    result.partner.assign(n,-1);
+    for(int i=0;i<int(edges.size());++i) {
+        auto [a,b]=edges[i]; int u=a,v=n+b;
+        if(flow.used(ids[i])) { result.partner[a]=b; std::swap(u,v); }
+        g[u].push_back(v); reverse[v].push_back(u);
+    }
+    std::vector<bool> seen(2*n); std::vector<int> order;
+    for(int root=0;root<2*n;++root) if(!seen[root]) {
+        std::vector<std::pair<int,int>> stack{{root,0}}; seen[root]=true;
+        while(!stack.empty()) {
+            int v=stack.back().first; int& at=stack.back().second;
+            if(at==int(g[v].size())) { order.push_back(v); stack.pop_back(); }
+            else {
+                int u=g[v][at++];
+                if(!seen[u]) { seen[u]=true; stack.push_back({u,0}); }
+            }
+        }
+    }
+    std::vector<int> component(2*n,-1); int count=0;
+    std::reverse(order.begin(),order.end());
+    for(int root:order) if(component[root]<0) {
+        std::vector<int> q{root}; component[root]=count;
+        for(int at=0;at<int(q.size());++at) for(int u:reverse[q[at]])
+            if(component[u]<0) { component[u]=count; q.push_back(u); }
+        ++count;
+    }
+    for(int i=0;i<int(edges.size());++i) {
+        auto [a,b]=edges[i]; bool chosen=flow.used(ids[i])!=0;
+        bool exchangeable=component[a]==component[n+b];
+        result.allowed.push_back(chosen || exchangeable);
+        result.forced.push_back(chosen && !exchangeable);
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[二部マッチング](/flowchartcp/techniques/matching/) ・ [強連結成分分解](/flowchartcp/techniques/scc/)
+
+## 参考資料
+
+- [UVa Online Judge：Sorting Slides（原典）](https://onlinejudge.org/external/6/663.pdf)
+
+<TechniqueReferences techniqueId="perfect-matching-forced-scc" />

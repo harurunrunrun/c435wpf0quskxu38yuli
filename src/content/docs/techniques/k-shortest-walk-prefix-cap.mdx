@@ -1,0 +1,74 @@
+---
+title: "再訪できる経路の費用を小さい順にK個求めるなら、各頂点への到達をK回まで確定する"
+description: "再訪を許す経路でも、同じ到着点への余分な接頭経路を打ち切れば列挙を有限にできる。"
+techniqueId: k-shortest-walk-prefix-cap
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+再訪を許す経路でも、同じ到着点への余分な接頭経路を打ち切れば列挙を有限にできる。
+
+## 使う場面
+
+同じ都市を何度訪れてもよい移動について、安い順に K 本の費用を求める。同じ費用の別経路も数えるため、通常の「一頂点に最短距離を一つ」だけでは足りない。
+
+## 考え方
+
+優先度付きキューに「接頭経路の費用と到着頂点」を入れ、安い順に取り出す。頂点 $v$ で既に $K$ 本を確定していたら、その状態を捨てる。そうでなければ確定回数を増やし、全ての出辺へ続けた状態を入れる。
+
+終点で確定した費用を順に出力する。状態の費用と頂点が同じでも、異なる経路から作られたものは統合しない。平行辺も別の移動として扱う。
+
+## 適用条件
+
+同じ頂点・辺を繰り返せる経路を対象とする。全辺の費用は厳密に正で、辺列が異なるものを別々に数える。単純経路を $K$ 本求める問題では、後続に使える頂点が訪問履歴で変わるため、この打ち切りは使えない。
+
+掲載実装は $1\le K\le10$。必要な接頭費用は `INF` 未満に収まることを要する。始点と終点が同じときは辺を使わない費用0の経路も一つと数える。
+
+## なぜ正しいか
+
+同じ到着点への接頭経路を費用順に並べる。$K$ 本より後の接頭経路に任意の後続を付けても、先の $K$ 本にその同じ後続を付けた経路が、同じ費用以下で $K$ 本存在する。接頭の辺列が異なれば完成した辺列も異なる。
+
+再訪が許されるので、どの接頭にも同じ後続を付けられる。従って $K$ 本目までの費用を求める際に、各頂点でそれより後の接頭を展開する必要はない。優先度付きキューは正の辺の追加で費用順を保つ。
+
+## 計算量
+
+全経路の列挙は閉路があると無限になり得て、時間も記録量も一律には抑えられない。各頂点の出辺を高々 $K$ 回展開するので、キューへ入れる状態は $O(KM+1)$ 個、時間は $O(N+M+KM\log(KM+2))$、空間はグラフとキュー込みで $O(N+M+KM)$。
+
+## 実装
+
+`k_shortest_walk_costs` は得られる経路が足りなければ $K$ 個未満の配列を返す。費用が同じ状態を消す集合は使わず、重複を保持するキューを使う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct WeightedArc {int to;long long cost;};
+vector<long long> k_shortest_walk_costs(const vector<vector<WeightedArc>>& g,
+        int source,int target,int k) {
+    int n=g.size();assert(n>0 && 0<=source && source<n && 0<=target && target<n);
+    constexpr long long INF=(1LL<<62);
+    if(k<1 || k>10) throw invalid_argument("1 <= k <= 10 required");
+    for(const auto& row:g) for(auto e:row)
+        if(e.cost<=0 || e.cost>=INF) throw invalid_argument("positive cost required");
+    vector<int> accepted(n);vector<long long> answer;
+    priority_queue<pair<long long,int>,vector<pair<long long,int>>,greater<pair<long long,int>>> queue;
+    queue.push({0,source});
+    while(!queue.empty() && int(answer.size())<k) {
+        auto [cost,v]=queue.top();queue.pop();
+        if(accepted[v]==k) continue;
+        ++accepted[v];
+        if(v==target) answer.push_back(cost);
+        for(auto e:g[v]) if(accepted[e.to]<k && e.cost<INF-cost)
+            queue.push({cost+e.cost,e.to});
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [最短路の個数と辺数は、正の辺からなる最短距離の順でまとめる](/flowchartcp/techniques/shortest-tight-dag-statistics/)
+
+## 参考資料
+
+- [CSES：Flight Routes](https://cses.fi/problemset/task/1196)
+
+<TechniqueReferences techniqueId="k-shortest-walk-prefix-cap" />

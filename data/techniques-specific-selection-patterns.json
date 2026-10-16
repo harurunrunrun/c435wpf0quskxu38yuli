@@ -1,0 +1,327 @@
+[
+  {
+    "id": "deadline-duration-remove-longest",
+    "title": "締切までに終える仕事数は、締切順に足して超えたら最長の仕事を外す",
+    "summary": "開始可能時刻が共通なら、採用済みの合計時間と最長時間を持ち、採用数を減らす損失を最小にします。",
+    "aliases": [
+      "Moore Hodgson scheduling",
+      "deadline maximum count remove longest",
+      "Course Schedule III"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://leetcode.com/problems/course-schedule-iii/description/"
+    ]
+  },
+  {
+    "id": "unit-release-expiry-earliest",
+    "title": "利用できる時間帯がある一単位の仕事は、最も早く期限が来るものから処理する",
+    "summary": "待機中の仕事を終了時刻順に管理し、何も処理できない時間は次の開始時刻まで飛ばします。",
+    "aliases": [
+      "unit jobs release deadline earliest expiry",
+      "event jump earliest deadline first",
+      "Printing Machine"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc325/tasks/abc325_d",
+      "https://atcoder.jp/contests/abc325/editorial/7482"
+    ]
+  },
+  {
+    "id": "interval-k-resources-predecessor",
+    "title": "同時にk本まで選べる時間区間は、終了順に見て最も遅く空く担当へ割り当てる",
+    "summary": "開始に間に合う担当のうち、直前の終了が最大の担当を選び、早く空く担当を残します。",
+    "aliases": [
+      "k viewer interval scheduling predecessor",
+      "Movie Festival II",
+      "maximum intervals k resources"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://cses.fi/problemset/task/1632"
+    ]
+  },
+  {
+    "id": "threshold-coupon-max-discount",
+    "title": "下限以上の対象へ一度だけ使える割引は、対象を小さい順に見て最大割引を使う",
+    "summary": "利用できる対象が入れ子なら、使える割引を増やしながら最大のものを割り当てられます。",
+    "aliases": [
+      "threshold coupons maximum discount heap",
+      "nested eligible sets greedy matching",
+      "Vouchers"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc308/tasks/abc308_f",
+      "https://atcoder.jp/contests/abc308/editorial/6715"
+    ]
+  },
+  {
+    "id": "unordered-split-residual-huffman",
+    "title": "順序自由の切り分けで切る長さを払うなら、余りを一個にまとめて小さい二つから逆に併合する",
+    "summary": "必要な長さと余りを葉にし、切断を逆向きの二個併合へ変えて最小の二重量を選びます。",
+    "aliases": [
+      "Huffman merge residual free order splitting",
+      "optimal merge leftover bread",
+      "Bread"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument",
+      "reverse-thinking"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc252/tasks/abc252_f",
+      "https://atcoder.jp/contests/abc252/editorial/4009"
+    ]
+  },
+  {
+    "id": "fixed-size-diversity-exchange",
+    "title": "ちょうどK個の価値和と種類ボーナスは、重複の最小値を未選択種類の最大値と交換する",
+    "summary": "価値上位K個から始め、種類を一つ増やすたびに最小の交換損失だけ払い、各段階の得点を比べます。",
+    "aliases": [
+      "fixed cardinality distinct types bonus greedy exchange",
+      "Various Sushi",
+      "diversity bonus duplicate heap"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc116/tasks/abc116_d",
+      "https://img.atcoder.jp/abc116/editorial.pdf"
+    ]
+  },
+  {
+    "id": "cyclic-inversion-delta",
+    "title": "順列の全巡回シフトの転倒数は、先頭が末尾へ移る差だけ更新する",
+    "summary": "最初の転倒数だけ数え、移す値より小さい組を引き、大きい組を足します。",
+    "aliases": [
+      "cyclic permutation inversions delta",
+      "Shift and Inversions",
+      "rotation inversion n minus 1 minus 2x"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "fenwick-tree",
+      "contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc190/tasks/abc190_f",
+      "https://atcoder.jp/contests/abc190/editorial/690"
+    ]
+  },
+  {
+    "id": "maximum-product-sign-exchange",
+    "title": "負数を含むK個の積最大化は、絶対値の上位から符号を一回の交換で直す",
+    "summary": "積の符号を先に判定し、二種類の境界交換を交差積で比べ、最後にだけ剰余を取ります。",
+    "aliases": [
+      "maximum product k signed integers boundary exchange",
+      "Multiplication 4",
+      "negative product absolute rank swap"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc173/tasks/abc173_e",
+      "https://img.atcoder.jp/abc173/editorial.pdf"
+    ]
+  },
+  {
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "level": "上級",
+    "id": "kth-signed-pair-product",
+    "title": "負数を含む積のK番目は、符号ごとにしきい値以下の組を数える",
+    "summary": "負・0・正の積を分け、二つのポインタによる計数を値の二分探索に使う。",
+    "family": "選択・順位",
+    "aliases": [
+      "Kth Signed Pair Product",
+      "Kth Smallest Pairwise Product",
+      "負数を含む二要素の積の順位",
+      "符号分割による積の二分探索"
+    ],
+    "prerequisites": [
+      "binary-search",
+      "two-pointers"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc155/tasks/abc155_d",
+      "https://img.atcoder.jp/abc155/editorial.pdf"
+    ]
+  },
+  {
+    "id": "disjoint-candidate-sets-complement-lookup",
+    "title": "局所条件で絞った集合を二つ選び、補集合の照合で秘密の候補を求める",
+    "summary": "各集合の禁止・必須・一つ以上含む条件を先に処理し、互いに素な二集合から三つ目を決める。",
+    "aliases": [
+      "Get a Clue disjoint hands complement lookup",
+      "locally filtered candidate sets",
+      "手札 局所条件 補集合 互いに素 秘密候補"
+    ],
+    "family": "状態と部分集合",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "meet-in-the-middle",
+      "bitmask-dp",
+      "state-design"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=3",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=3"
+    ]
+  },
+  {
+    "id": "oriented-equal-pair-adjacent-swaps-fenwick",
+    "title": "隣接交換で同サイズの左右を対にする最小回数",
+    "summary": "最初の未処理要素と最も近い相手を対にし、間に残る要素数と左右の向きから交換回数を求める。",
+    "aliases": [
+      "IOI 2019 Arranging Shoes",
+      "oriented equal pair adjacent swaps Fenwick",
+      "signed pair stable occurrence greedy",
+      "重複サイズ 左右対 隣接交換 生存個数"
+    ],
+    "family": "列の並べ替えと交換",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "fenwick-tree",
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem1.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/review.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Shoes/PSE.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  {
+    "id": "bounded-spread-subset-sum-sorted-window-witness",
+    "title": "合計を範囲に収める部分集合を、重さの幅を使って一つ見つける",
+    "summary": "許容範囲の幅が重さの最大差以上なら、ソート後の連続区間から元の添字を復元する。",
+    "aliases": [
+      "Bounded spread subset sum sorted contiguous window original index witness",
+      "IOI2016 Molecules solve find_subset",
+      "正の部分集合和 許容幅 重さの最大差 ソート窓 元添字の復元"
+    ],
+    "family": "幅の保証を使う部分集合の証拠復元",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "two-pointers",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  }
+]

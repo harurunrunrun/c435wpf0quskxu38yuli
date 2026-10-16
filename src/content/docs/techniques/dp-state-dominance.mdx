@@ -1,0 +1,55 @@
+---
+title: "同じ長さの増加部分列は末尾が小さい状態だけ残す"
+description: "今後選べる要素を狭めない状態があれば、それより不利な状態を捨てます。"
+techniqueId: dp-state-dominance
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+今後選べる要素を狭めない状態があれば、それより不利な状態を捨てます。
+
+## 使う場面
+
+最長増加部分列のDPを $dp_i=1+\max_{j<i,\,a_j<a_i}dp_j$ とすると、全候補の比較は $O(N^2)$ です。同じ長さの増加部分列が複数あるとき、今後の遷移に必要な情報はその末尾だけであり、小さい末尾の方が常に有利です。
+
+## 考え方
+
+$T[\ell]$ を、長さ $\ell+1$ の増加部分列で最小の末尾とします。新しい値 $x$ が来たら、$T$ のうち最初に $x$ 以上になる位置を二分探索し、そこを $x$ へ置き換えます。そのような位置がなければ末尾へ追加します。$T$ の要素数が最長長です。
+
+## 適用条件
+
+長さだけを最適化し、次の要素が末尾より大きいことだけを要求する場合に使えます。各要素の重みの合計も最適化する場合は、同じ長さで末尾が小さいだけでは他の状態を支配できません。非減少部分列を求めるなら、二分探索を `upper_bound` に変えます。
+
+## なぜ正しいか
+
+同じ長さで末尾が $x<y$ の2状態があれば、$y$ の後ろへ追加できる値は $x$ の後ろにも追加できます。したがって、末尾 $y$ の状態を捨てても将来の最適解を失いません。最小末尾は長さに対して狭義に増えるので、置き換える位置を二分探索できます。
+
+## 計算量
+
+時間は $O(N^2)$ から $O(N\log N)$ に減ります。空間は元のDPも最小末尾配列も $O(N)$ です。状態の支配関係を利用して遷移元の比較を省きます。
+
+## 実装
+
+`strict_lis_length(a)` は狭義増加部分列の最大長を返します。`tails` は実際の部分列を表しているとは限らないため、この配列自体を復元結果として出力しないでください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int strict_lis_length(const vector<long long>& a) {
+    vector<long long> tails;
+    for(long long x:a) {
+        auto it=lower_bound(tails.begin(),tails.end(),x);
+        if(it==tails.end()) tails.push_back(x); else *it=x;
+    }
+    return tails.size();
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) ・ [二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [CSES：Increasing Subsequenceの解説・実装](https://usaco.guide/gold/lis)
+
+<TechniqueReferences techniqueId="dp-state-dominance" />

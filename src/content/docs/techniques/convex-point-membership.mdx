@@ -1,0 +1,70 @@
+---
+title: "凸多角形の内外を、一頂点からの扇形の二分探索で判定する"
+description: "一頂点から見た方向順を使い、点を含み得る三角形を一つに絞る。"
+techniqueId: convex-point-membership
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定された凸多角形に対し、内部・外部・辺上を判定する点が多数ある。一質問で全辺を確認すると $O(NQ)$ になる。多角形の頂点が境界に沿って整列していることを使う。
+
+## 考え方
+
+頂点 $p_0$ を共通の原点とし、$p_0p_1$ と $p_0p_{N-1}$ が作る扇形の外を先に除く。二本の境界線上にある点は、線分の範囲内かを別に判定する。
+
+残った点 $q$ について、外積 $\operatorname{cross}(p_i-p_0,q-p_0)$ の符号が切り替わる場所を二分探索する。隣り合う二本の放射線 $p_0p_i,p_0p_{i+1}$ の間に $q$ があるので、最後は辺 $p_ip_{i+1}$ のどちら側かだけを見ればよい。
+
+扇形の内部にある対角線上の点を、多角形の「辺上」とは判定しない。境界になるのは元の多角形の辺だけである。
+
+## 適用条件
+
+頂点は反時計回りで、狭義凸、異なる頂点が並ぶことを要求する。凹多角形では放射線の順序と内部の区間が崩れる。共線頂点を含む凸多角形には、最初に境界上の余分な頂点を除く前処理が必要である。
+
+座標の絶対値は $10^{12}$ 以下とする。外積は128ビットで計算し、整数入力で `EPS` を使わない。
+
+## なぜ正しいか
+
+凸多角形は $p_0$ からの三角形 $p_0p_ip_{i+1}$ に重なりのない内部で分割される。狭義凸なので放射線の方向は単調に進み、二分探索で唯一の候補三角形を選べる。扇形の二辺は既に確認済みなので、残る一辺の左側であることが三角形内にあるための最後の条件になる。
+
+## 計算量
+
+全辺を毎回見る方法は $O(NQ)$ 時間。前処理 $O(N)$、一質問 $O(\log N)$、合計 $O(N+Q\log N)$ 時間、$O(N)$ 空間。
+
+## 実装
+
+`ConvexLocation` には条件を満たす3頂点以上の多角形を渡す。`locate` は外部0、境界1、内部2を返す。
+
+```cpp
+#include <algorithm>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+i128 orientation(Point a,Point b,Point c){return (i128(b.x)-a.x)*(i128(c.y)-a.y)-(i128(b.y)-a.y)*(i128(c.x)-a.x);}
+bool on_segment(Point a,Point b,Point q){return orientation(a,b,q)==0 && std::min(a.x,b.x)<=q.x && q.x<=std::max(a.x,b.x) && std::min(a.y,b.y)<=q.y && q.y<=std::max(a.y,b.y);}
+class ConvexLocation {
+    std::vector<Point> p;
+public:
+    explicit ConvexLocation(std::vector<Point> polygon):p(std::move(polygon)){}
+    int locate(Point q) const { // 0: 外部、1: 境界、2: 内部
+        int n=p.size();i128 left=orientation(p[0],p[1],q),right=orientation(p[0],p[n-1],q);
+        if(left<0 || right>0)return 0;
+        if(left==0)return on_segment(p[0],p[1],q)?1:0;
+        if(right==0)return on_segment(p[0],p[n-1],q)?1:0;
+        int l=1,r=n-1;
+        while(r-l>1){int m=(l+r)/2;if(orientation(p[0],p[m],q)>=0)l=m;else r=m;}
+        i128 side=orientation(p[l],p[r],q);
+        return side<0?0:side==0?1:2;
+    }
+};
+```
+
+## 関連する手法
+
+[凹多角形の内外を、半開区間の交差と外積で判定する](/flowchartcp/techniques/polygon-winding-integer/) ・ [凸包](/flowchartcp/techniques/convex-hull/)
+
+## 参考資料
+
+- [AtCoder：Polygon and Points（原典）](https://atcoder.jp/contests/abc296/tasks/abc296_g)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="convex-point-membership" />

@@ -1,0 +1,370 @@
+{
+  "techniqueId": "parity-walk-profile-layer-greedy-realization",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-minedges-article.mdx",
+    "checker": "/tmp/flowchartcp-minedges-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/parity-walk-profile-layer-greedy-realization.mdx",
+    "checker": "scripts/check_parity_walk_minimum_cpp.py"
+  },
+  "metadata": {
+    "id": "parity-walk-profile-layer-greedy-realization",
+    "title": "始点から到達できる全歩数を保ち、無向グラフの辺を最少にする",
+    "summary": "偶奇ごとの最短歩数を二つの前駆条件に変え、同じ距離和の層で次の集合を助ける辺を優先する。根の0歩と末端の自己ループを分け、任意の新しい辺を許す最小実現を求める。",
+    "aliases": [
+      "USACO2021 February Minimizing Edges parity distance greedy realization",
+      "全walk長保存 偶奇別最短距離 A B C辺 層greedy",
+      "minimum edges root walk language self loops"
+    ],
+    "family": "偶奇付き到達性を保つグラフの最小実現",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "exchange-argument",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+      "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ]
+  },
+  "reference": {
+    "techniqueId": "parity-walk-profile-layer-greedy-realization",
+    "source": "USACO",
+    "problemId": "1117",
+    "title": "Minimizing Edges",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+    "evidence": "連結無向グラフの固定始点から各頂点へ到達できる全ての歩数を保ち、元にない辺も許して辺数を最少にする。無向辺の往復から全歩数を偶奇別最短値で表し、同じ距離組を集める。二距離の前駆を同時に満たすA辺、同距離和の隣の集合を助けるB辺、末端の内部辺・自己ループCへ分け、根の距離0を免除したgreedyと末端の二人組で最小辺数を求める。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2021-02",
+    "datePrecision": "month",
+    "exactDateVerified": false,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にUSACO公式原典とBenjamin Qi・Danny Mittal公式解説をweb再読。公式resultsのPlatinum第2題から原典cpid1117/Solutionへの直リンク、N2..100000、総N100000、総M200000、T1..50000、loop可/多重辺不可、全a/b>=0の辺再訪を含むwalk言語保存、新しい辺を使えることを確認。開催年月は公式タイトルにより2021-02のみ、未確認の日は補わず難度null。偶奇最短値と全言語の同値、許容A/B/C辺の必要十分、各正距離の前駆と根の例外、層独立、同費用で右Bを優先する交換、末端f-floor(x/2)/(f-x)+ceil(f/2)、単純辺での実現可能性を独立証明。実MDXの唯一の常時表示C++20 fenceを抽出し、-Wall -Wextra -Werrorでコンパイル。全loop付き連結グラフN2..5の23940件を、正確にt歩で届く頂点集合の最初の反復による完全な無限列で932群へ分類し、群内の真の最小辺数と比較。独立edge-count DPの全小23940＋1600乱択、23940件の任意root/ラベル置換・端点反転・順序変更、元辺部分集合なら4/新辺ありなら3の反例を確認。N100000の7構成（M200000、有限距離2N-1、奇数末端、深い道、二部、根/葉loop、oddcycle）とT50000独立呼出し、invalid14を検査。通常0.242906秒/RSS25564KiB、ASan+UBSan1.6266秒/RSS314208KiB、両292700 checks/checksum18056148866444260320一致。元の研究probeとは別の完成C++検査であり、初回audit/snapshot/共有dataは変更していない。"
+  },
+  "problemFeature": {
+    "source": "USACO",
+    "problemId": "1117",
+    "title": "Minimizing Edges",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+    "techniqueIds": [
+      "parity-walk-profile-layer-greedy-realization"
+    ],
+    "features": [
+      "連結無向グラフで固定始点から各頂点へ到達できる全歩数を保存し、同じラベル付き頂点で最小辺数を求める。",
+      "自己ループ可・多重辺不可、頂点と辺の再訪可。新しい辺を追加してよく、元グラフの部分集合に限らない。",
+      "原典N2..100000、総N100000、総M200000、T50000以内。APIは任意の始点と無向辺の端点順序を扱う。"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYearMonth": "2021-02",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "notes": "連結無向グラフの固定始点から各頂点へ到達できる全ての歩数を保ち、元にない辺も許して辺数を最少にする。無向辺の往復から全歩数を偶奇別最短値で表し、同じ距離組を集める。二距離の前駆を同時に満たすA辺、同距離和の隣の集合を助けるB辺、末端の内部辺・自己ループCへ分け、根の距離0を免除したgreedyと末端の二人組で最小辺数を求める。",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1117"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+    "contestIndexUrl": "https://usaco.org/index.php?page=feb21results",
+    "officialEditorialAuthors": [
+      "Benjamin Qi",
+      "Danny Mittal"
+    ],
+    "officialEditorialProvenance": "USACO公式2021February結果一覧のPlatinum第2題Solution直リンク、本文Analysis見出しの著者名を確認。",
+    "statementAndAllNumericBoundsVerified": true,
+    "sourceBounds": {
+      "N": "2..100000",
+      "M": "N-1..N(N+1)/2; sum M<=200000",
+      "T": "1..50000",
+      "sumN": 100000,
+      "graph": "connected undirected, optional self-loops, no parallel edges",
+      "target": "for every labeled vertex a and integer b>=0 preserve root1 walk reachability of exactly b traversed edges; repeated edges count; arbitrary new edges allowed"
+    },
+    "sourceDate": "2021-02",
+    "datePrecision": "month",
+    "exactDateVerified": false,
+    "exactDays": "unconfirmed; never inferred from recollection/sidebar/crawl date",
+    "difficulty": null,
+    "division": "USACO Platinum",
+    "apiContainsEntireSourceRange": true,
+    "unconfirmedIndependentLemmas": []
+  },
+  "api": {
+    "signature": "int minimum_edges_preserving_root_walk_lengths(int n,const std::vector<std::pair<int,int>>& edges,int root=0)",
+    "returns": "minimum number of undirected edges on the same labeled vertices preserving all exact root-to-vertex walk lengths; not an edge-list construction",
+    "bounds": "2<=N<=100000, M<=200000, 0<=root<N",
+    "graph": "connected undirected, loops allowed once, no duplicate unordered pairs",
+    "extensions": [
+      "arbitrary supplied root instead of only vertex0",
+      "either endpoint orientation and arbitrary edge-list order"
+    ],
+    "invalid": "invalid_argument on size/root/endpoint bounds, repeated unordered edges including reversed copies or repeated loops, disconnected graph, including empty edge list",
+    "sourceAdapter": "原典の1-based端点を0-basedへ直し、各独立testcaseについて呼ぶ。全call状態localでT50000/総N100000/総M200000を包含。",
+    "state": "pure stateless function; const input; all local vectors/map; allocation failures propagate",
+    "integerSafety": [
+      "BFS2N<=200000 states; finite distances<=2N-1<=199999; infinity2N+1<=200001",
+      "CSR neighbor entries<=2M<=400000 and offsets/cursors fit int",
+      "profile counts<=N, 2*f<=200000, f+1<=100001",
+      "answer<=min(M,2N-1), accumulated nonnegative terms fit signed int",
+      "No N*N integer product is computed"
+    ],
+    "stackSafety": "BFS/greedy iterative, no recursive graph traversal"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "walkLanguage": "A two-step backtrack extends any reachable length in the same parity; connected N>=2 also extends root0. Thus two parity minima determine the complete language.",
+    "edgeClassification": "All four swapped-parity endpoint inequalities are equivalent to A=(a,b)-(a-1,b-1), B=(a,b)-(a+1,b-1), or terminal C within(a,a+1), including loops.",
+    "sufficiency": "Allowed edges never shorten target distances. Each positive target distance has a minus-one predecessor, so induction constructs its walk. Root even0 is exempt.",
+    "layerIndependence": "A only helps the higher a+b layer, B/C stay in a layer. Bucket order can be lexicographic because the sole incoming neighbor(a-1,b+1) always comes first.",
+    "greedy": "Spread existing B endpoints to min(f,p) vertices. With A available replace A by equal-cost outgoing B for already-left-covered vertices; for the others choose A rather than two B, deferring a right edge if later needed. Without A both B predecessors are mandatory.",
+    "terminal": "With A, each pair of left-covered vertices saves one edge through C: f-floor(min(f,p)/2). Without A first fill missing left edges then pair all f through C/one loop: f-min(f,p)+ceil(f/2). Root terminal has one loop.",
+    "simpleEdgeRealization": "Between adjacent buckets all pairs are allowed. Initial outgoing edges use different left vertices; maximize distinct right endpoints. Missing incoming edges land on uncovered right vertices, hence never duplicate an existing pair. Terminal pairs are disjoint, with at most one loop for odd remainder.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "time": "O(N log(N+1)+M log(M+1)) including deterministic duplicate validation",
+    "space": "O(N+M) additional",
+    "validation": "copy/canonicalize/sort unordered pairs, CSR then connectivity check before any bipartite early return",
+    "grouping": "at most N map buckets; one map stores counts and incoming B counts, O(log(N+1)) per insertion/lookup",
+    "nativeMemoryScope": "peak RSS covers the full checker and independent graph/DP oracles; not a tight API-only allocation bound"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "parentGraphId": "graphs-network-connection",
+    "parentNodeId": "shortest",
+    "newAnswerId": "walk-language-minimize",
+    "newAnswerLabel": "始点から到達できる全歩数を保ち、グラフの辺数を最小にする",
+    "guardGraphId": "parity-walk-minimum-conditions",
+    "canonicalChoices": [
+      "network-connection",
+      "walk-language-minimize",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "undirected-connected",
+        "question": "無向の一歩の辺で、自己ループ可・多重辺なしの連結グラフですか？"
+      },
+      {
+        "id": "all-walk-lengths",
+        "question": "頂点や辺を再訪でき、固定始点の全到達歩数を保ちながら新しい辺も使えますか？"
+      },
+      {
+        "id": "bounds",
+        "question": "頂点は2〜10万、辺は20万以内で、グラフ全体が分かっていますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "parity-walk-profile-layer-greedy-realization"
+    ]
+  },
+  "verification": {
+    "checkerReadsActualSingleVisibleMdxFence": true,
+    "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+    "articleSha256": "ac23c38de4d68ec4bf81a46b0fe9b882ad452aaff1c9f392d8b33dc9ff5c0c48",
+    "checkerSha256": "3d7d20b42d257cc1e4ff2a085aa7a9eb746c2394161a597b254141619e97ed2f",
+    "commands": [
+      "python3 /tmp/flowchartcp-minedges-checker.py",
+      "python3 /tmp/flowchartcp-minedges-checker.py --sanitize"
+    ],
+    "compiler": "g++ -std=c++20 -O2 -Wall -Wextra -Werror; sanitized adds -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-pie -no-pie",
+    "sanitizerEnvironment": "ASAN_OPTIONS=detect_leaks=0:halt_on_error=1; UBSAN_OPTIONS=halt_on_error=1",
+    "normalSeconds": 0.242906,
+    "normalPeakRssKiB": 25564,
+    "asanUbsanSeconds": 1.6266,
+    "asanUbsanPeakRssKiB": 314208,
+    "checks": 292700,
+    "checksum": "18056148866444260320",
+    "allConnectedLoopGraphsN2to5": 23940,
+    "completeInfiniteLanguageGroups": 932,
+    "rootRelabelingCases": 23940,
+    "independentDpComparisons": 25540,
+    "randomCases": 1600,
+    "maximumN100000Cases": 7,
+    "maximumBatchCalls": 50000,
+    "invalidCalls": 14,
+    "oracle": "Enumerate EVERY connected labeled loop-allowed graph N2..5; evolve exact reachable vertex sets until first repeated set and group by the full preperiod/cycle word. Minimum edge count over each whole group is the literal global optimum, with no parity-distance cutoff or greedy oracle. Independently enumerate possible incoming/outgoing edge counts in a layered DP, crosschecked on all small groups and 1600 larger random cases.",
+    "maximumCases": [
+      "deep bipartite path N100000/M99999 =>99999",
+      "path+root loop N100000 =>100000",
+      "same path+loop with root at opposite end; shortest odd return199999 =>100000",
+      "star with every leaf loop N100000/M199998 =>149999",
+      "odd cycle99999 plus pendant vertex =>100000",
+      "connected bipartite N100000/M200000 arbitrary root =>99999",
+      "root loop+star+redundant leaf edges N100000/M200000 =>100000"
+    ],
+    "strictSubgraphWitness": {
+      "n": 3,
+      "root": 0,
+      "originalEdges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "newTriangleEdges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "sameCompleteWalkLanguage": true,
+      "minimumArbitraryGraph": 3,
+      "minimumOriginalSubgraph": 4,
+      "all16OriginalEdgeSubsetsChecked": true
+    },
+    "separationFromInitialResearchProbe": "This new checker compiles and invokes the actual complete published C++ API, has its own complete-cycle oracle/DP/max/invalid/sanitizer checks; the original fixed-corpus Python lemma probe is neither renamed nor claimed to be production C++."
+  },
+  "relatedWork": {
+    "countingGraphsApiImplemented": false,
+    "sharedMathematicalOpportunity": "同じ偶奇profileのBFS/許容A-B-C辺/前駆証人はCounting Graphsの数学にも再利用できる。辺選択の数え上げ・未充足頂点数DP・包除・mod APIは本記事に含めず、別途完成検証が必要。"
+  },
+  "preservation": {
+    "sharedFilesModified": false,
+    "initialCorpusAuditAndSnapshotModified": false,
+    "articleAndCodeAlwaysVisible": true,
+    "sections": [
+      "使う場面",
+      "考え方",
+      "適用条件",
+      "なぜ正しいか",
+      "計算量",
+      "実装",
+      "関連する手法",
+      "参考資料"
+    ],
+    "allMetadataSourceUrlsInArticleReferences": true,
+    "externalPublicationOrPush": false
+  },
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/parity-walk-profile-layer-greedy-realization.mdx",
+    "checker": "scripts/check_parity_walk_minimum_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "network-connection",
+      "walk-language-minimize",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "prerequisiteNormalization": "Author greedy placeholder refers to the existing exchange-argument article."
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "reviewedAt": "2026-10-15",
+      "techniqueId": "parity-walk-profile-layer-greedy-realization",
+      "status": "passed",
+      "reviewer": "root",
+      "allEightSectionsAndCompleteCppRead": true,
+      "allPrimaryStatementBoundsAndChosenOfficialSolutionReread": true,
+      "codeSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "fullSourceInputRangeIncluded": true,
+      "normalAndAsanUbsanActualFenceSucceeded": true,
+      "referenceDifficulty": null,
+      "initialResearchAlreadyPositive": true,
+      "appendResolutionOnly": true,
+      "proofReview": [
+        "無向往復で各偶奇の可能歩数は最短値+2k。連結N>=2と根0歩の往復も含む。",
+        "非二部なら二距離有限。辺の四不等式はA/B/Cを尽くし、各正距離の前駆で必要十分。",
+        "Aは上の距離和の集合だけを満たし、B/Cは同層内。唯一の左隣を辞書順で先に処理。",
+        "既存Bの端を分散し、同費用で次を助ける右Bへ交換。Aなしでは両B必須、末端Cは二人ずつと余りloopで下限達成。",
+        "根b>1の右隣は最短奇閉歩の最初の一辺で必ず存在。元辺部分集合だけに限定しない。"
+      ],
+      "apiReview": [
+        "任意root、無向端順/入力順、自己loop一回CSR、const入力、重複/非連結/範囲検査。",
+        "有限距離2N-1、CSR2M、queue2N、答え<=min(M,2N-1)でint範囲。非再帰。",
+        "重複検査のMlogMを含めた時間とO(N+M)空間。返すのは辺数。"
+      ]
+    },
+    "normal": {
+      "checks": 292700,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "completeInfiniteLanguageGroups": 932,
+      "rootRelabelingCases": 23940,
+      "independentDpComparisons": 25540,
+      "randomCases": 1600,
+      "maximumN100000Cases": 7,
+      "maximumBatchCalls": 50000,
+      "invalidCalls": 14,
+      "checksum": "18056148866444260320",
+      "seconds": 0.226991,
+      "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 292700,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "completeInfiniteLanguageGroups": 932,
+      "rootRelabelingCases": 23940,
+      "independentDpComparisons": 25540,
+      "randomCases": 1600,
+      "maximumN100000Cases": 7,
+      "maximumBatchCalls": 50000,
+      "invalidCalls": 14,
+      "checksum": "18056148866444260320",
+      "seconds": 1.7204,
+      "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+      "sanitized": true
+    },
+    "additionalReviewFile": "research/probes/parity-walk-minimum-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  },
+  "artifactSha256": {
+    "originalArticle": "ac23c38de4d68ec4bf81a46b0fe9b882ad452aaff1c9f392d8b33dc9ff5c0c48",
+    "originalChecker": "3d7d20b42d257cc1e4ff2a085aa7a9eb746c2394161a597b254141619e97ed2f",
+    "publishedArticle": "e145dbe65c27b105c2c23c5c77c3b7f902e44bf61e488b982c856b4a158310ef",
+    "publishedChecker": "68c156152dd0e261e0fbfdc893682402c8e871774f655136b91ee08001c86276"
+  }
+}

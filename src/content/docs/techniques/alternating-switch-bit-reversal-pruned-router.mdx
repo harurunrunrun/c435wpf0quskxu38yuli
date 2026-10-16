@@ -1,0 +1,151 @@
+---
+title: "交互に出口が変わる回路で列を再生し、全ての状態を元に戻す"
+description: "出口が交互に変わる二分木を使い、指定列を再生する。不要な葉の部分木を取り除き、最初に原点へ戻るときに全てのスイッチを初期状態へ戻す。"
+techniqueId: alternating-switch-bit-reversal-pruned-router
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+一出口のトリガーと、通るたびにX・Yを交互に選ぶ二出口スイッチを接続し、指定されたトリガー列を再生したい。初期状態は全てXで、現在の状態に対応する出口を使った後に反転する。同じトリガーは何度現れてもよい。
+
+指定列を出すだけでなく、**初めて原点へ戻る時に全スイッチをXへ戻す**必要がある。トリガーには一出口しかないので、同じトリガーの出現ごとに次の行き先を直接変えることはできない。全トリガーの出口を一つの分岐回路へ集め、その回路に次の出力を記憶させる。
+
+## 考え方
+
+指定列を $A$、長さを $N$ とし、最後に原点番号0を加えた $K=N+1$ 個の出力を作る。$P$ を $K$ 以上の最小の二冪、$h=\log_2P$ とする。
+
+高さ $h$、葉数 $P$ の完全二分木を考え、内部頂点を全てスイッチにする。Xが左、Yが右である。葉を左から $0\ldots P-1$ と番号付けすると、根に入る第 $t$ 回、ただし $t$ は0始まり、の到達葉は、$t$ の $h$ ビットを逆順にした番号になる。
+
+葉が余るので、左端の $P-K$ 枚を不要葉とする。その葉に着いたらトリガーを出さず、根へ再び入る。さらに、葉が全て不要である部分木は丸ごと削り、そこへ向かう辺を直接根へつなぐ。不要葉を時間順で選ぶのではなく、**木の左右の並びで連続させる**ことで、多くの内部スイッチを削れる。
+
+残る葉を実際のビット反転順で訪れる順に並べ、$A_0,A_1,\ldots,A_{N-1},0$ を割り当てる。原点と全トリガーの出口は根へつなぐ。未使用のトリガーも同じ配線でよい。
+
+例えば $N=2$ なら $P=4$、葉の訪問順は $0,2,1,3$。葉0を根へ戻し、葉2・1・3へ順に $A_0,A_1,0$ を置く。出力しない最初の一周分の分岐も残すことが、状態を正しく戻すために必要になる。
+
+## 適用条件
+
+各スイッチは入るたびに現在の出口を一つ選び、その後必ずX/Yを反転する。全スイッチはXから開始し、原点・トリガーは状態を持たない一出口装置である。スイッチやトリガーへの入口はいくつあってもよく、同じ装置へ戻る辺も許される。
+
+掲載APIはトリガー数 $1\le M\le100000$、列長 $1\le N\le200000$、各要素 $1\le A_i\le M$ を扱う。重複も未出現トリガーも許し、原典の全範囲を含む。空列、範囲外の個数・トリガー番号は `std::invalid_argument`。入力は変更せず、割当例外はそのまま伝わる。
+
+返す配線では、原点は0、トリガーは $1\ldots M$、スイッチは $-1,-2,\ldots,-S$。`trigger_exit` は原点も含む $M+1$ 要素、`x,y` は各 $S$ 要素で、スイッチ $-j$ の出口を添字 $j-1$ に置く。全ての配線先は $[-S,M]$ の有効番号となる。
+
+構築APIは実行状態を引数に取らず、呼出しごとに新しい配線を返す。任意の初期X/Y状態から同じ列を出す保証はない。実行時は全Xから始め、初回原点復帰で停止するか、そのまま同じ列を繰り返す。
+
+## なぜ正しいか
+
+**完全木の訪問順。** 根の出口はX,Y,X,Yと交互になり、葉への最初の左右選択は到着回数 $t$ の最下位ビットになる。同じ側の子へは二回に一回入り、その子の出口選択は $t$ の次のビットになる。これを繰り返すと、根から葉への左右ビット列は $t$ の下位ビットから順に並ぶ。従って到達葉は $h$ ビット反転した番号である。
+
+根へ $P$ 回入る完全周期では、葉からの距離が $j$ の内部スイッチを $2^j$ 回通る。$j\ge1$ なので全て偶数回で、全状態がXへ戻る。
+
+**不要な部分木の削除。** いったん、不要葉だけを根へつないだ完全木を考える。葉が全て不要な部分木に入ると、その内部でどの出口を使っても、トリガーを出さずに根へ戻る。そこで部分木全体を根への一辺に置き換えても、残るスイッチに入る順序と、その時の状態は変わらない。削除した内部の動作だけを省くため、残ったスイッチの状態と、実際に出るトリガー列は完全木からの投影と一致する。
+
+**初回原点復帰と全状態。** ビット反転順の最後は $P-1$ であり、この右端の葉は必ず残る。ここへだけ0を置く。その他の残る葉は正のトリガー番号、削除箇所は負の根番号へつながるため、それ以前に原点へ戻ることはない。残る葉の訪問順に割り当てた $A$ をちょうど出し終え、完全周期の最後で初めて原点へ着く。残る全スイッチは完全周期と同じ偶数回通過しており、全てXとなる。原点を出れば、同じ初期状態から同じ列を繰り返せる。
+
+**スイッチ数。** 葉から距離 $j$ の内部ノード一つは、空間的に連続する $2^j$ 枚の葉を受け持つ。右端 $K$ 枚を残すと、そのような区画のうち残るものは正確に $\lceil K/2^j\rceil$ 個である。従って
+
+$$S=\sum_{j=1}^{h}\left\lceil\frac{N+1}{2^j}\right\rceil
+=h+\sum_{j=1}^{h}\left\lfloor\frac{N}{2^j}\right\rfloor
+=N-\operatorname{popcount}(N)+h.$$
+
+二進表示の各1ビットがこの床和へ寄与する量を足すと、床和は $N-\operatorname{popcount}(N)$ となる。また $h=\lfloor\log_2N\rfloor+1$、$\operatorname{popcount}(N)\ge1$ だから、全ての $N\ge1$ で
+
+$$S\le N+\lfloor\log_2N\rfloor\le N+\log_2N.$$
+
+これは満点条件を整数計算だけで保証する。$N=1$ でも $S=1$ であり、根の二回の通過で指定トリガーと原点を順に出せる。
+
+## 計算量
+
+葉の割当には $P$ 個の番号を $h$ ビット反転する。$P<2(N+1)$ なので、掲載実装の構築時間は **$O(M+N\log(N+1))$**、配線と葉ラベルを含む領域は **$O(M+N)$** である。木の構築は、残る内部ノード一つにつき二つの子を調べるだけなので $O(S)$。再帰の深さは高々 $h+1\le19$ である。
+
+初回原点復帰までの状態変化数は、削除後も残る内部ノードの訪問回数から正確に
+
+$$T=\sum_{j=1}^{h}2^j\left\lceil\frac{N+1}{2^j}\right\rceil\le Ph$$
+
+となる。各項は $P$ 以下である。原典全域では $P\le262144$、$h\le18$ なので、$T\le4718592<20000000$。また $S\le200017<400000$ であり、スイッチ数の満点条件とhard上限、状態変化の上限を同時に満たす。
+
+原点を出てから初めて戻るまでの辺移動数は $T+N+1$。スイッチでの反転とトリガーへの到着を区別して数える。構築API自身は回路の実行をシミュレートしない。
+
+## 実装
+
+`build_alternating_trigger_circuit(M,A)` は配線を返す。最初に作る内部ノードを根のスイッチ $-1$ とするので、不要な部分木はその番号を直接返せる。ベクトルの要素への参照を再帰呼出しの前後で保持せず、子の作成後に添字で出口を書き込む。
+
+```cpp
+#include <bit>
+#include <cstddef>
+#include <stdexcept>
+#include <vector>
+
+struct AlternatingTriggerCircuit {
+    std::vector<int> trigger_exit; // origin0 and triggers1..M
+    std::vector<int> x, y;        // switch-j uses element j-1
+};
+
+AlternatingTriggerCircuit build_alternating_trigger_circuit(
+    int trigger_count, const std::vector<int>& sequence) {
+    if (trigger_count < 1 || trigger_count > 100000 ||
+        sequence.empty() || sequence.size() > 200000)
+        throw std::invalid_argument("trigger or sequence size outside supported range");
+    for (int trigger : sequence)
+        if (trigger < 1 || trigger > trigger_count)
+            throw std::invalid_argument("invalid trigger serial number");
+
+    const int n = static_cast<int>(sequence.size()), required = n + 1;
+    int leaves = 1, height = 0;
+    while (leaves < required) { leaves *= 2; ++height; }
+    const int dead = leaves - required;
+    std::vector<int> label(leaves, -1);
+    int used = 0;
+    for (int time = 0; time < leaves; ++time) {
+        int bits = time, leaf = 0;
+        for (int level = 0; level < height; ++level) {
+            leaf = 2 * leaf + (bits & 1);
+            bits >>= 1;
+        }
+        if (leaf >= dead) {
+            label[leaf] = used < n ? sequence[used] : 0;
+            ++used;
+        }
+    }
+
+    AlternatingTriggerCircuit result;
+    const int switches = n - std::popcount(static_cast<unsigned>(n)) + height;
+    result.x.reserve(switches); result.y.reserve(switches);
+    const auto make = [&](auto&& self, int first, int last) -> int {
+        if (last <= dead) return -1; // every leaf in this subtree is unused
+        if (last - first == 1) return label[first];
+        const int index = static_cast<int>(result.x.size());
+        result.x.push_back(0); result.y.push_back(0);
+        const int middle = (first + last) / 2;
+        const int left = self(self, first, middle);
+        const int right = self(self, middle, last);
+        result.x[index] = left; result.y[index] = right;
+        return -index - 1;
+    };
+    const int root = make(make, 0, leaves); // first allocated switch: -1
+    result.trigger_exit.assign(trigger_count + 1, root);
+    return result;
+}
+```
+
+外部APIが `answer(C,X,Y)` を一度呼ぶ形式なら、返却値を `c` として `answer(c.trigger_exit,c.x,c.y)` に渡す。構築関数は外部出力やグローバル状態を使わないため、同じ列や別の列へ繰り返し利用できる。
+
+## 関連する手法
+
+- [不変条件](/flowchartcp/techniques/invariant/)：出力順だけでなく、完全周期の終わりに保持するスイッチの偶奇状態が元へ戻ることを保つ。
+- [最後の操作からの構築](/flowchartcp/techniques/construct-last-operation/)：原点への辺を最後の葉にだけ置き、停止時刻を完全周期の末尾に合わせる。
+- [ダブリング](/flowchartcp/techniques/doubling/)：二冪の周期を扱う点は共通する。ただしこの回路の遷移はスイッチの状態に依存するため、装置番号だけの固定した次頂点として扱えない。
+
+## 参考資料
+
+- [IOI 2018 Mechanical Doll 原典](https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf)：交互出口、初回原点復帰、全Xへの復元と装置番号の定義。
+- [主催者配布の原典翻訳・制約と採点](https://ioi2018.jp/tasks/contest2/SYR-doll.pdf)：$M,N,A$ の範囲と $N+\log_2N$ の満点条件。
+- [主催者配布の英語原典](https://ioi2018.jp/tasks/contest2/day2-doll.pdf)、[ラトビア語原典](https://ioi2018.jp/tasks/contest2/LVA-doll.pdf)：400000スイッチと20000000状態変化のhard上限。
+- [公式Review](https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf)：全出口を共有する回路と、不要な出口を集めてスイッチを減らす方針。
+- [Tomasz Idziaszek の公開解答](https://www.algonotes.com/en/solutions-ioi2018/)：後年の著者による補足。競技時の公式Reviewとは区別する。
+
+- [日本委員会の公式日別一覧](https://www2.ioi-jp.org/ioi/2018/tasks/index.html)：競技日2は2018年9月5日。
+
+<TechniqueReferences techniqueId="alternating-switch-bit-reversal-pruned-router" />

@@ -1,0 +1,114 @@
+---
+title: "点集合の回転と平行移動による一致を、重心からの巡回列で判定する"
+description: "重心を除いて方向順に並べ、長さ・隣の内積・外積の列を循環一致させる。"
+techniqueId: point-congruence-cyclic-signature
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+点の対応が分からない二つの点集合について、平行移動と回転で一致するか判定する。回転角を数値で探すと誤差が入り、全点の対応を試すと候補が増える。
+
+## 考え方
+
+まず重心をそろえて、平行移動の自由度をなくす。点数を $N$ として、各点を
+
+$$u_i=Np_i-\sum_jp_j$$
+
+へ変えると、分母を使わずに重心を原点へ移せる。零ベクトルがあるかを別に記録し、残る非零ベクトルを偏角順に並べる。同じ向きなら二乗長の順にする。
+
+隣接するベクトルごとに
+
+$$\bigl(|u_i|^2,\ u_i\cdot u_{i+1},\ u_i\times u_{i+1}\bigr)$$
+
+という三つ組を作る。最後のベクトルの次は先頭とする。回転によって偏角順の開始位置は変わるが、この巡回列は変わらない。片方を2周並べた列で他方を KMP 法などにより探す。
+
+外積の符号も残す。内積や距離だけにすると、反転した配置を区別できない。
+
+## 適用条件
+
+許される変換が回転と平行移動で、拡大縮小や反転は含まれないこと。入力は重複のない整数点集合とする。重心上の一点は偏角が定義できないため、列から外して有無を比較する。
+
+掲載実装の上限は $N\le200000$、座標の絶対値 $10^9$。重心からの拡大ベクトルは `long long` に収まり、その積と和差は `__int128` で計算する。空集合同士と一点同士も一致として扱う。
+
+## なぜ正しいか
+
+合同な点集合の重心は同じ変換で移る。重心を除いた後は、一つの回転だけで対応する。回転は二乗長・内積・符号付き外積を保ち、方向順も巡回的にしか変えないので、巡回列の一致は必要である。
+
+逆に列が一致したとする。最初の非零ベクトルを対応先へ移す回転は、その二乗長が同じなので存在する。隣のベクトルは、現在の非零ベクトルとの内積と外積によって一意に定まる。実際、$u$ を固定すると $v\mapsto(u\cdot v,u\times v)$ の行列式は $|u|^2>0$。従って同じ回転が次のベクトルも対応させる。これを一周繰り返すと全点が一致する。零ベクトルの有無も一致させているため十分である。
+
+## 計算量
+
+基準点の対応と回転を全て試し、その都度点集合を整列して照合する方法は $O(N^2\log N)$ 時間、追加空間 $O(N)$。巡回署名は偏角順の整列に $O(N\log N)$、列の作成と KMP に $O(N)$ で、全体 $O(N\log N)$ 時間、追加空間 $O(N)$。三つ組をハッシュにしないので衝突確率はない。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+using CongruencePoint=std::pair<long long,long long>;
+using CongruenceTriple=std::array<__int128,3>;
+std::pair<int,std::vector<CongruenceTriple>> point_rotation_signature(const std::vector<CongruencePoint>& p) {
+    if(p.size()>200000) throw std::invalid_argument("too many points");
+    long long sx=0,sy=0,n=(long long)p.size();
+    for(auto [x,y]:p) {
+        if(x < -1000000000LL || x > 1000000000LL || y < -1000000000LL || y > 1000000000LL) throw std::invalid_argument("coordinate range");
+        sx+=x;sy+=y;
+    }
+    std::vector<CongruencePoint> v;int zero=0;
+    for(auto [x,y]:p) {
+        x=n*x-sx;y=n*y-sy;
+        if(x==0 && y==0) ++zero;else v.emplace_back(x,y);
+    }
+    auto cross=[](CongruencePoint a,CongruencePoint b){return (__int128)a.first*b.second-(__int128)a.second*b.first;};
+    auto dot=[](CongruencePoint a,CongruencePoint b){return (__int128)a.first*b.first+(__int128)a.second*b.second;};
+    auto half=[](CongruencePoint a){return a.second>0 || (a.second==0 && a.first>0) ? 0 : 1;};
+    std::sort(v.begin(),v.end(),[&](auto a,auto b){
+        if(half(a)!=half(b)) return half(a)<half(b);
+        auto c=cross(a,b);return c!=0 ? c>0 : dot(a,a)<dot(b,b);
+    });
+    std::vector<CongruenceTriple> signature;
+    for(std::size_t i=0;i<v.size();++i) {
+        auto a=v[i],b=v[(i+1)%v.size()];signature.push_back({dot(a,a),dot(a,b),cross(a,b)});
+    }
+    return {zero,signature};
+}
+bool congruent_by_rotation_translation(const std::vector<CongruencePoint>& p,const std::vector<CongruencePoint>& q) {
+    if(p.size()!=q.size()) return false;
+    auto [zp,a]=point_rotation_signature(p);auto [zq,b]=point_rotation_signature(q);
+    if(zp!=zq || a.size()!=b.size()) return false;
+    int n=(int)a.size();if(n==0) return true;
+    std::vector<int> prefix(n);
+    for(int i=1;i<n;++i) {
+        int j=prefix[i-1];while(j && a[i]!=a[j]) j=prefix[j-1];
+        if(a[i]==a[j]) ++j;
+        prefix[i]=j;
+    }
+    int matched=0;
+    for(int i=0;i<2*n-1;++i) {
+        const auto& value=b[i%n];
+        while(matched && value!=a[matched]) matched=prefix[matched-1];
+        if(value==a[matched]) ++matched;
+        if(matched==n) return true;
+    }
+    return false;
+}
+```
+
+## 関連する手法
+
+- [回転合同の基準を決める対称性](/flowchartcp/techniques/symmetry/)
+- [Z algorithm](/flowchartcp/techniques/z-algorithm/)
+- [三角形の角を方向順で数える](/flowchartcp/techniques/angle-vector-two-pointers/)
+
+## 参考資料
+
+- [AtCoder — Congruence Points](https://atcoder.jp/contests/abc207/tasks/abc207_d)
+- [公式解説](https://atcoder.jp/contests/abc207/editorial/2168)
+
+<TechniqueReferences techniqueId="point-congruence-cyclic-signature" />

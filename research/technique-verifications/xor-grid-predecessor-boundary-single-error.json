@@ -1,0 +1,227 @@
+{
+  "artifacts": {
+    "article": "/tmp/flowchartcp-replicate-article.mdx",
+    "checker": "/tmp/flowchartcp-replicate-checker.py"
+  },
+  "metadata": {
+    "id": "xor-grid-predecessor-boundary-single-error",
+    "title": "一セルの誤りがあるXOR格子更新を逆算する",
+    "summary": "行と列の三周期の剰余で反転位置を特定し、二方向の逆算から最小の初期図形を求める。",
+    "aliases": [
+      "ICPC2017 Replicate Replicate Rfplicbte cellular inverse one error",
+      "GF2 separable 3x3 convolution boundary syndrome modulo 3",
+      "無限格子 一セル誤反転 境界症候 逆算 最小初期図形"
+    ],
+    "family": "線形な格子更新の逆算",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "reverse-thinking",
+      "invariant",
+      "xor-basis"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6"
+    ]
+  },
+  "reference": {
+    "techniqueId": "xor-grid-predecessor-boundary-single-error",
+    "source": "ICPC",
+    "problemId": "wf2017_g",
+    "title": "Replicate Replicate Rfplicbte",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6",
+    "evidence": "無限二値格子の各セルを、自身を含む3×3近傍のXORへ同時更新し、その直後に任意の一セルを高々一回反転できる。非空の最終図形の全外接長方形から、非空初期図形の外接面積を最小にする。行列ごとの1+t+t²の二ビット剰余で一誤りの交点を特定し、境界二セルの除算検査と再更新で一段前を復元する手順が適用できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にICPC公式hostの原典13/14ページとSolution sketches6ページをweb本文で再読。原典の幅・高さ1..300、無限格子九セル同時XOR、更新後に任意セル高々1反転、初期非空、bbox面積最小、最小行数/列数の図形を出力する仕様を確認。大会年2017のみ確定で、日単位は補わず、難度はnull。sketchは自身がunofficial analysisと明記するので公式解説とは呼ばない。独立に1D畳込の両端から最小重み2、分離2Dから最小重み4、一誤り球の非交差、四辺各2セル以上、前有効窓と任意遠方flip、mod3剰余の候補一意性、修正後除算+再更新の完全性、鎖の縮小と最小性を証明。実MDX唯一の可視C++20 fenceを抽出して-O2 -Wall -Wextra -Werrorでコンパイル。全1..4行/列の非空観測74938件（空周囲を含む）で、前窓の全非空割当を直接更新する独立oracleと一段・最小鎖を比較。全1..3行/列の非空初期割当×更新bbox内とその一層外の全一反転、および誤りなしを直接近傍数え上げforwardと比較。候補割当13634516、forward33505件。±10^9の絶対座標へ平行移動した最大距離297のoutlier、全mod3残余位置、240乱択多段履歴、300×300/149段、300×300全1の閉形式除算、二隅だけの不可能逆算、300×300空周囲、公式3sample、不正APIを検証。948236 checks、checksum11714764890392139543、通常1.40613秒、ASan/UBSan8.41401秒で成功。LeakSanitizerのみptrace環境のため無効。"
+  },
+  "problemFeature": {
+    "source": "ICPC",
+    "problemId": "wf2017_g",
+    "title": "Replicate Replicate Rfplicbte",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13",
+    "techniqueIds": [
+      "xor-grid-predecessor-boundary-single-error"
+    ],
+    "features": [
+      "無限二値格子で、自身を含む3×3のXORへ同時更新した直後に、任意の一セルが高々一回反転する。",
+      "外部0も含む非空観測から、更新0回以上を許して非空初期図形の外接長方形面積を最小化する。",
+      "原典の幅・高さ1..300。全外接範囲を与え、最小行列数の図形そのものを返す。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYear": 2017,
+    "notes": "無限二値格子の各セルを、自身を含む3×3近傍のXORへ同時更新し、その直後に任意の一セルを高々一回反転できる。非空の最終図形の全外接長方形から、非空初期図形の外接面積を最小にする。行列ごとの1+t+t²の二ビット剰余で一誤りの交点を特定し、境界二セルの除算検査と再更新で一段前を復元する手順が適用できる。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "difficulty": null
+  },
+  "api": {
+    "predecessor": "std::optional<XorGridPredecessor> xor_grid_predecessor(const std::vector<std::string>& observed)",
+    "minimum": "XorGridMinimum smallest_xor_grid_seed(const std::vector<std::string>& observed)",
+    "types": [
+      "XorGridCell{int row,column}",
+      "XorGridPredecessor{vector<string> pattern,int top,left,optional<XorGridCell> flipped}",
+      "XorGridMinimum{vector<string> pattern,int reverse_steps,top,left}"
+    ],
+    "bounds": "1..300 rows/columns、rectangular ./#、at least one #。原典全域を含み、外周空行列も受ける。",
+    "coordinates": "入力左上を(0,0)として返す前状態/最小初期の左上座標と修正セル座標。最初のcropも加算。",
+    "nullopt": "valid nonempty observation has no finite nonempty one-step predecessor with <=1 post-update flip",
+    "errors": "invalid_argument for empty/ragged/all-zero/alphabet/dimension violations",
+    "inputMutation": false,
+    "noError": "flipped=nullopt",
+    "zeroSteps": "observation itself is always an allowed nonempty initial pattern"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "oneDimensionalWeight": "q=1+t+t² convolution of any finite nonzero string has nonzero first and last output separated by >=2; weight>=2.",
+    "twoDimensionalWeight": "A nonzero row after horizontal convolution gives >=2 nonzero columns; each vertical convolution has >=2 ones, hence nonzero codeword weight>=4.",
+    "oneErrorUniqueness": "Two <=1-error explanations differ in <=2 cells, contradicting codeword weight>=4 for the nonzero difference.",
+    "fourEdges": "Each noiseless bbox side is a q-convolution of a nonzero extremal row/column and has >=2 ones; one flip cannot erase a side.",
+    "window": "Noiseless bbox contained in observed bbox even with distant outlier; predecessor lies >=1 inside every observed side, so both dimensions shrink >=2. Error outside observed bbox would erase an entire noiseless side and is impossible.",
+    "syndrome": "t^j mod q has nonzero two-bit period1,2,3. A one-cell error creates exactly one bad row and column with the prescribed residues.",
+    "propagation": "Inverse recurrence difference has period1,1,0; terminal two coefficients detect any propagated error. Equivalent to q-remainder.",
+    "acceptance": "Correct candidate then recompute horizontal/vertical division, check both terminal coordinates, reject empty, and rebuild every 3x3 contribution directly. No true predecessor missed and no invalid predecessor accepted.",
+    "minimum": "Unique reverse chain and strict decrease of both bbox dimensions force termination at its minimum nonempty area."
+  },
+  "complexity": {
+    "oneStepTime": "O(hw)",
+    "oneStepSpace": "O(hw)",
+    "totalTime": "O(HW min(H,W))",
+    "totalSpace": "O(HW)",
+    "successfulStepsUpperBound": "floor((min(H,W)-1)/2)",
+    "attemptsUpperBound": "floor((min(H,W)+1)/2)",
+    "areaSumUpperBoundAt300": 4545100,
+    "maximumSuccessfulStepsAt300": 149,
+    "maximumAttemptsAt300": 150,
+    "storage": "current/corrected/horizontal/vertical/full/rebuilt/cropped arrays are a constant number; no history or recursion",
+    "integerSafety": "validated <=300 dimensions; row/column/coordinate sums <=300; no large integer product needed"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13",
+    "statementPages": [
+      13,
+      14
+    ],
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6",
+    "editorialPages": [
+      6
+    ],
+    "editorialAuthors": [
+      "Per Austrin",
+      "Jakub Onufry Wojtaszczyk"
+    ],
+    "editorialStatus": "public-unofficial-sketch-hosted-by-ICPC",
+    "year": 2017,
+    "exactDateVerified": false,
+    "difficulty": null,
+    "numericBoundsVerified": true,
+    "sourceBounds": {
+      "width": [
+        1,
+        300
+      ],
+      "height": [
+        1,
+        300
+      ]
+    },
+    "sourceSemantics": [
+      "infinite two-state lattice",
+      "simultaneous own cell and eight neighbours XOR",
+      "after every update at most one arbitrary lattice cell flips",
+      "finite nonempty initial pattern",
+      "minimize initial bounding-box area",
+      "print pattern with minimum rows and columns",
+      "input has # on each of its four outer sides"
+    ],
+    "independentRefinement": "mod-q two-bit row/column syndrome locates the intersection directly instead of retaining a full two-dimensional erroneous inverse scan"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "grid-arrangements",
+    "proposedChoices": [
+      "color-numbers",
+      "xor-predecessor"
+    ],
+    "firstMissingGraphId": "grid-color-numbers",
+    "firstMissingNodeId": "goal",
+    "proposedAnswerId": "xor-predecessor",
+    "proposedAnswerLabel": "3×3のXOR更新と一セル誤りから、最小の非空初期図形を逆算する",
+    "proposedGuardGraphId": "xor-grid-predecessor-conditions",
+    "guards": [
+      {
+        "id": "infinite-xor-grid",
+        "feature": "有限非空の1集合と外部0を含む無限格子。自身と周囲8セルのXORへ同時更新する。"
+      },
+      {
+        "id": "one-error-step",
+        "feature": "各更新後の誤反転は任意位置で高々一セル。更新0回も許し、初期非空の外接長方形面積を最小化する。"
+      },
+      {
+        "id": "size",
+        "feature": "1..300行/列の全外接長方形が分かる。各段線形、両辺が2以上縮むのでO(HW min(H,W))で扱える。"
+      }
+    ],
+    "techniqueId": "xor-grid-predecessor-boundary-single-error"
+  },
+  "verification": {
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-replicate-checker.py /tmp/flowchartcp-replicate-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-replicate-checker.py /tmp/flowchartcp-replicate-article.mdx --sanitize",
+    "checks": 948236,
+    "arbitraryPatterns": 74938,
+    "forwardCases": 33505,
+    "candidateAssignments": 13634516,
+    "randomHistories": 240,
+    "checksum": "11714764890392139543",
+    "normalSeconds": 1.40613,
+    "asanUbsanSeconds": 8.41401,
+    "asanUbsan": "Same checks/counts/checksum passed; LeakSanitizer alone disabled for ptrace environment",
+    "maximumHeightExecuted": 300,
+    "maximumWidthExecuted": 300,
+    "maximumReverseStepsExecuted": 149,
+    "independentOracle": "Every nonempty assignment in finite possible predecessor window is literally updated by nine-neighbour counting, and popcount distance<=1 is checked against observation. Independent direct-coordinate forward counts all nine old neighbours.",
+    "exhaustiveObservations": "all nonzero bitmaps on every H,W in1..4, including padding",
+    "exhaustiveForward": "all nonzero initial bitmaps H,W in1..3 times no error or every flip in expanded bbox plus one outer layer; small bbox cases compare all predecessor assignments",
+    "boundaryCases": [
+      "all three row/column residue classes",
+      "equal shape at absolute coordinates around +/-10^9",
+      "isolated outlier up to297 cells away under original bbox bounds",
+      "one row/column and singleton",
+      "300x300 padding",
+      "300x300 all ones versus exact298x298 mod3 quotient",
+      "300x300 two-corner observation with no predecessor",
+      "all three published samples",
+      "invalid empty/ragged/zero/alphabet/301 dimensions"
+    ]
+  },
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/xor-grid-predecessor-boundary-single-error.mdx",
+    "checker": "scripts/check_xor_grid_predecessor_cpp.py",
+    "entryGraphId": "grid-arrangements",
+    "choices": [
+      "color-numbers",
+      "xor-predecessor",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "f0b0356a21f596c45df38e489132752e1a9a253610ae8bd45880237c39eb9f0e",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true
+  }
+}

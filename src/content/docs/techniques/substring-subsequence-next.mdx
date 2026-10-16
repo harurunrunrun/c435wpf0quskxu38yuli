@@ -1,0 +1,91 @@
+---
+title: "部分列の一致を、各文字の次の出現位置で進める"
+description: "固定された本文の次出現表を使い、多数の部分列照合や繰り返し列の照合を進めます。"
+techniqueId: "substring-subsequence-next"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+固定された本文に対して「指定列がこの区間の部分列か」を何度も判定する場合。また、同じ本文を繰り返した列から指定列を部分列として拾い、最後に拾う位置を最小にしたい場合。
+
+## 考え方
+
+$\mathrm{next}[i][c]$ を、位置 $i$ 以降で文字 $c$ が最初に現れる位置とします。なければ $N$。後ろから表を作り、指定列の文字を一つ読むたびに、その最早位置へ進みます。
+
+区間 $[l,r)$ の照合では、最早位置が $r$ 以上なら失敗です。繰り返し列では $N$ に達したら次の反復の $\mathrm{next}[0][c]$ へ進みます。そこにもなければ、何回繰り返しても拾えません。
+
+## 適用条件
+
+順序を保って文字を**読み飛ばせる部分列**の照合です。連続した部分文字列の照合では、途中の文字を飛ばしてはいけません。
+
+本文が固定で、文字種類が少ない場合に向きます。単一の有限本文で一度だけ照合するなら、本文を左から一度読む $O(N+M)$ の方法の方が前計算を省けます。次出現表が有利なのは、多数の照合や反復による再走査がある場合です。
+
+## なぜ正しいか
+
+指定列の次の文字を、選べる中で最も早い位置に合わせても、後に残る選択肢は減りません。他の有効な拾い方の各位置と比べて、貪欲に選んだ位置は帰納的に遅くならないため、失敗なら別の拾い方でも失敗し、成功なら最後の位置が最小です。
+
+次出現表はその最早位置を正確に保存します。反復の境界では同じ表の先頭へ戻すことで、仮想的な長い列を作らず照合できます。
+
+## 計算量
+
+有限本文を $Q$ 回読む改善前は $O(QN+\sum M)$。次出現表による改善後は前計算 $O(\sigma N)$、全照合 $O(\sum M)$、空間 $O(\sigma N)$ です。
+
+反復列を直接再走査する方法も、最悪 $O(NM)$。改善後は $O(\sigma N+M)$ です。実装の $\sigma$ は 26。
+
+## 実装
+
+英小文字を対象とします。`earliest_end` は半開区間内で拾えた最小の終了位置を返し、失敗なら `nullopt`。繰り返し版の答えは 64 bit で保持します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct NextSubsequence {
+    int n;
+    vector<array<int,26>> next;
+    explicit NextSubsequence(const string& s):n(s.size()),next(n+1) {
+        next[n].fill(n);
+        for(int i=n-1;i>=0;--i) {
+            next[i]=next[i+1];
+            int c=s[i]-'a';assert(0<=c && c<26);
+            next[i][c]=i;
+        }
+    }
+    optional<int> earliest_end(int l,int r,const string& pattern) const {
+        assert(0<=l && l<=r && r<=n);
+        int pos=l;
+        for(char ch:pattern) {
+            int c=ch-'a';assert(0<=c && c<26);
+            int at=next[pos][c];
+            if(at>=r) return nullopt;
+            pos=at+1;
+        }
+        return pos;
+    }
+};
+optional<long long> repeated_subsequence_length(const string& s,const string& pattern) {
+    NextSubsequence index(s);
+    long long blocks=0;
+    int pos=0;
+    for(char ch:pattern) {
+        int c=ch-'a';assert(0<=c && c<26);
+        int at=index.next[pos][c];
+        if(at==index.n) {
+            at=index.next[0][c];
+            if(at==index.n) return nullopt;
+            ++blocks;
+        }
+        pos=at+1;
+    }
+    return blocks*index.n+pos;
+}
+```
+
+## 関連する手法
+
+[パターンと本文を区切って、全ての一致位置を求める](/flowchartcp/techniques/z-concatenate-boundary/)、[状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [AtCoder：Strings of Impurity の問題文](https://atcoder.jp/contests/abc138/tasks/abc138_e)
+
+<TechniqueReferences techniqueId="substring-subsequence-next" />

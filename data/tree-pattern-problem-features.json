@@ -1,0 +1,183 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "613D",
+    "title": "Kingdom and its Cities",
+    "url": "https://codeforces.com/problemset/problem/613/D",
+    "techniqueIds": [
+      "virtual-tree-marked-vertex-separation"
+    ],
+    "features": [
+      "固定の無向木で、各質問が少数の指定頂点を与える",
+      "指定頂点は削除できず、他の頂点の削除費用は1",
+      "どの連結成分にも指定頂点が2個残らない最少削除数",
+      "N,Q≤100000、全質問の指定頂点数合計≤100000"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/22832",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は各質問の指定頂点を、指定頂点以外の最少削除で互いに分離する。指定頂点と合流点だけの補助木に縮め、上につながる印を高々1個へ保つDPで各質問の全木走査を省ける。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "1857G",
+    "title": "Counting Graphs",
+    "url": "https://codeforces.com/problemset/problem/1857/G",
+    "techniqueIds": [
+      "unique-mst-completion-count"
+    ],
+    "features": [
+      "重み付き木の全辺を必ず含む単純無向グラフを数える",
+      "指定木が唯一の最小全域木であることを要求する",
+      "追加辺は無し、または整数重み1..Sから選ぶ",
+      "N≤200000、1≤木の辺重み≤S≤10^9"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/119134",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は指定木が唯一の最小全域木となるグラフを、辺を置かない選択込みで数える。追加辺は木の経路最大より厳密に重い必要があり、重み順の成分結合で自由な頂点対数ab−1をまとめられる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc348_e",
+    "title": "Minimize Sum of Distances",
+    "url": "https://atcoder.jp/contests/abc348/tasks/abc348_e",
+    "techniqueIds": [
+      "weighted-tree-distance-reroot"
+    ],
+    "features": [
+      "木の全頂点を施設の候補とする",
+      "各頂点の正の需要Ciを掛けた距離和を最小化する",
+      "一つの始点から全距離を足す処理を候補ごとに繰り返すと遅い",
+      "原典 N≤100000、単位辺長、1≤Ci≤10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc348/editorial/9774",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は需要Ciを掛けた木の距離和の最小値を問う。一辺を越えた距離増減を子側とその他の需要和へ分けると、一つの始点の値から全候補へ線形時間で伝播できる。",
+    "publicationDate": "2024-04-06"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc152_f",
+    "title": "Tree and Constraints",
+    "url": "https://atcoder.jp/contests/abc152/tasks/abc152_f",
+    "techniqueIds": [
+      "tree-path-hitting-inclusion-exclusion"
+    ],
+    "features": [
+      "木の全辺を白または黒へ塗る",
+      "指定経路のそれぞれに黒い辺が少なくとも1本必要",
+      "条件を全て満たす塗り方の数を求める",
+      "原典 N≤50、指定経路数M≤20"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc152/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は各指定経路に黒辺が1本以上ある塗り方を数える。失敗した経路の集合を包除し、その和集合を白に固定すると、残り辺の二色選択だけを数えればよい。",
+    "publicationDate": "2020-01-19"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc201_e",
+    "title": "Xor Distances",
+    "url": "https://atcoder.jp/contests/abc201/tasks/abc201_e",
+    "techniqueIds": [
+      "tree-xor-pair-bit-contribution"
+    ],
+    "features": [
+      "非負整数の辺重みを持つ木",
+      "距離は足し算でなく経路上の全重みのXOR",
+      "全ての異なる頂点の順序なし対についてXORを足す",
+      "N≤200000、辺重み<2^60、答えは法10^9+7"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc201/editorial/1837",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は全頂点対の経路XORの和を求める。二つの根XORの共通辺が消え、各ビットが異なる頂点対を0/1個数の積で数えられるため、経路を対ごとに求めなくてよい。",
+    "publicationDate": "2021-05-15"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc240_e",
+    "title": "Ranges on Tree",
+    "url": "https://atcoder.jp/contests/abc240/tasks/abc240_e",
+    "techniqueIds": [
+      "rooted-tree-leaf-interval-labels"
+    ],
+    "features": [
+      "根付き木の各部分木へ非空の正整数区間を割り当てる",
+      "祖先の区間は子孫の区間を含み、別枝の区間は交わらない",
+      "使用する最大の整数を最小化する",
+      "N≤200000、根は頂点1"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc240/editorial/3447",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は部分木の包含と非交差を区間へ保ち、最大整数を最小化する。葉だけをDFS順に採番すれば各部分木の葉番号は連続し、互いに非交差な葉の数という下界を達成できる。",
+    "publicationDate": "2022-02-20"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1132",
+    "title": "Tree Distances I",
+    "url": "https://cses.fi/problemset/task/1132/",
+    "techniqueIds": [
+      "tree-eccentricity-diameter-endpoints"
+    ],
+    "features": [
+      "固定した無向木で全頂点の最遠距離を求める",
+      "原典は単位辺、一般化は非負の辺長",
+      "始点ごとに探索すると二乗時間になる",
+      "N≤200000"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1132/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は全頂点それぞれの最遠距離を問う。無向木の直径両端への距離の大きい方が各頂点の最遠距離になるので、始点ごとの探索を3回の探索へまとめられる。 原典から公開日を確認できないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc222_f",
+    "title": "Expensive Expense",
+    "url": "https://atcoder.jp/contests/abc222/tasks/abc222_f",
+    "techniqueIds": [
+      "tree-target-bonus-excluding-self"
+    ],
+    "features": [
+      "重み付き木で全始点の答えを求める",
+      "費用は始点から行先までの距離と行先値Djの和",
+      "始点自身は行先として選べない",
+      "原典 N≤200000、辺長とDjは1..10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc222/editorial/2763",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は自身以外の行先へ向かう距離と行先値の和の最大を全始点で求める。子方向の上位二候補を子番号付きで持つと、子へ戻す際にその子側を外せ、自身を答えへ混ぜずに全方向を線形で集計できる。",
+    "publicationDate": "2021-10-09"
+  }
+]

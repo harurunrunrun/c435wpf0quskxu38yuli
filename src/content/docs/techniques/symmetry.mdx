@@ -1,0 +1,61 @@
+---
+title: "対称性"
+description: "回転や反転などで同じとみなせる状態をまとめ、重複した処理を減らす。"
+techniqueId: symmetry
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+回転や反転などで同じとみなせる状態をまとめ、重複した処理を減らす。
+
+## 使う場面
+
+回転、反転、名前の付け替えによって、同じ構造が何度も現れるときに使う。場合分けが左右対称になっている場合や、探索で同じ形の状態を繰り返し調べる場合に有効である。
+
+## 考え方
+
+答えを変えない変換を決める。同じ状態からその変換で得られる状態を一つの組とし、辞書順最小の表現などを代表にする。
+
+円環の文字列では、開始位置をずらす回転と、向きを逆にする反転を考えられる。すべての回転・反転の中から最小の文字列を選べば、同じ円環は同じ表現になる。
+
+## 適用条件
+
+変換によって制約や目的値が変わらないことが必要になる。特定の始点や位置ごとの重みがあると、回転しても同じ問題とは限らない。状態をまとめて探索する場合は、その後の遷移も対応することを確認する。
+
+同じとみなす状態の個数は、形によって異なる場合がある。総数を回転数で割るだけでは、正しく数えられないことがある。
+
+## なぜ正しいか
+
+同じ状態から変換で得られる表現の集合は、どの表現から出発しても同じになる。その集合の最小値を選べば、同じ組の状態は必ず同じ代表に写る。異なる組が同じ代表を持つこともない。
+
+## 計算量
+
+長さ $N$ の円環文字列について、すべての回転と反転を直接比較する実装は時間 $O(N^2)$、空間 $O(N)$。大きい文字列には、最小回転を求めるアルゴリズムを使う方法がある。
+
+## 実装
+
+`canonical_dihedral` は、回転・反転で得られる文字列のうち辞書順最小のものを返す。空文字列には空文字列を返す。回転や反転を同じものとして扱う場面で使う。
+
+```cpp
+#include <algorithm>
+#include <string>
+std::string canonical_dihedral(std::string s) {
+    if (s.empty()) return s;
+    std::string best = s;
+    for (int side = 0; side < 2; ++side) {
+        for (std::size_t k = 0; k < s.size(); ++k)
+            best = std::min(best, s.substr(k) + s.substr(0, k));
+        std::reverse(s.begin(), s.end());
+    }
+    return best;
+}
+```
+
+## 関連する手法
+
+[不変量](../invariant/) ・ [状態の設計](../state-design/) ・ [小さい入力で全探索する](../brute-force-observation/)
+
+## 参考資料
+
+- [パナソニックプログラミングコンテスト2020 公式解説](https://img.atcoder.jp/panasonic2020/editorial.pdf)
+
+<TechniqueReferences techniqueId="symmetry" />

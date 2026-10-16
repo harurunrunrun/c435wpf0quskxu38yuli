@@ -1,0 +1,77 @@
+---
+title: "オフラインクエリ"
+description: "問い合わせを並べ替え、前の計算結果を使える順序で処理する。"
+techniqueId: offline-queries
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+問い合わせを並べ替え、前の計算結果を使える順序で処理する。
+
+## 使う場面
+
+すべての問い合わせが先に分かっていて、答える順番を自由に変えられるときに使う。右端、時刻、しきい値などで並べると、前の問い合わせの状態を少し更新するだけで次へ進める場合がある。
+
+## 考え方
+
+問い合わせに元の番号を付けてソートし、処理した答えを元の番号の位置に保存する。最後に入力された順番で出力する。
+
+区間に含まれる値の種類数を求める例では、右端の昇順に処理する。右端までに現れた各値の最新位置だけを1としてFenwick Treeに記録する。その区間の和を取れば、区間内にある値を一種類につき一度だけ数えられる。辺の削除を逆順の追加に変える方法や、しきい値順に辺を追加する方法もある。
+
+## 適用条件
+
+先に答えた値によって次の入力が決まる場合は、原則として並べ替えられない。途中で更新がある場合は、問い合わせが参照する時点を保つ必要がある。
+
+単にソートするだけでは速くならない。選んだ順序で状態を更新する総回数が減ることを確認する。
+
+## なぜ正しいか
+
+右端 $r$ まで処理した時点では、各値の最新の出現位置にだけ1が記録される。値が区間 $[l,r)$ に存在することと、その最新位置が $l$ 以上であることは同じである。したがって区間和が種類数になる。元の番号に結果を保存すれば、問い合わせの順番を変えても出力順は保てる。
+
+## 計算量
+
+配列長 $N$、問い合わせ数 $Q$ に対して、以下の例の時間は $O((N+Q)\log(N+Q))$、空間は $O(N+Q)$。問い合わせのソート、最新位置の管理、Fenwick Treeの操作を含む。
+
+## 実装
+
+`distinct_ranges` は、各区間 $[l,r)$ の値の種類数を入力順に返す。空区間の答えは0。値の大小ではなく、同じ値かどうかだけを使う。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <map>
+#include <cassert>
+using namespace std;
+struct OfflineQuery { int l,r; }; // [l,r)
+vector<int> distinct_ranges(const vector<int>& a,const vector<OfflineQuery>& queries) {
+    int n=a.size(),q=queries.size();
+    vector<int> bit(n+1),order(q),answer(q);
+    auto add=[&](int p,int x) { for(int i=p+1;i<=n;i+=i&-i) bit[i]+=x; };
+    auto prefix=[&](int r) { int s=0;for(int i=r;i;i-=i&-i) s+=bit[i];return s; };
+    iota(order.begin(),order.end(),0);
+    sort(order.begin(),order.end(),[&](int i,int j){return queries[i].r<queries[j].r;});
+    map<int,int> last;
+    int r=0;
+    for(int i:order) {
+        auto [l,end]=queries[i];
+        assert(0<=l && l<=end && end<=n);
+        while(r<end) {
+            if(last.contains(a[r])) add(last[a[r]],-1);
+            last[a[r]]=r;add(r,1);++r;
+        }
+        answer[i]=prefix(end)-prefix(l);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [Union-Find](/flowchartcp/techniques/union-find/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [AtCoder公式解説: ABC174 F](https://img.atcoder.jp/abc174/editorial.pdf)
+- [USACO Guide: Distinct Colors solution](https://usaco.guide/problems/cses-1139-distinct-colors/solution)
+
+<TechniqueReferences techniqueId="offline-queries" />

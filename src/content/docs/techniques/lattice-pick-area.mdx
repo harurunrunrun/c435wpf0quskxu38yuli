@@ -1,0 +1,58 @@
+---
+title: "格子多角形の内点数を面積と辺上の GCD から求める"
+description: "内部の格子点を走査せず、面積の二倍と境界格子点の数で計算します。"
+techniqueId: "lattice-pick-area"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+頂点が全て整数座標の単純多角形について、内部と境界の格子点を数えたいとき。座標が大きければ、囲まれた格子を一つずつ調べられません。
+
+## 考え方
+
+頂点を境界順に $(x_i,y_i)$ とします。面積の二倍は $A_2=|\sum_i(x_i y_{i+1}-x_{i+1}y_i)|$。辺ごとに $\gcd(|\Delta x|,|\Delta y|)$ を足すと境界の個数 $B$ になります。
+
+Pick の定理 $A=I+B/2-1$ から、内部の個数は $I=(A_2-B+2)/2$。面積を半分にする前に計算すれば半整数を浮動小数点で扱う必要がありません。
+
+## 適用条件
+
+自己交差も穴もない、面積が正の格子多角形であること。頂点は時計回りでも反時計回りでも構いません。穴がある領域には定数項の修正が必要です。実装は $|x|,|y|\le10^9$ を想定し、面積の積・総和には 128 bit を使います。
+
+## なぜ正しいか
+
+辺の差分を GCD で割ると最小の整数ステップになり、半開の各辺に GCD 個の格子点があります。終点を次の辺へ割り当てれば頂点を重複しません。格子点で三角形分割したときの面数と Euler の公式から Pick の定理が得られ、これに整数の面積公式を代入します。
+
+## 計算量
+
+境界箱の全点と全辺を調べる方法は、箱の幅を $X,Y$ として $O(XYN)$。改善後は GCD を含め時間 $O(N\log C)$、追加空間 $O(1)$。$C$ は座標差の最大値。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+pair<__int128,long long> polygon_lattice_counts(const vector<pair<long long,long long>>& p){
+    assert(p.size()>=3);
+    __int128 twice_area=0;long long boundary=0;
+    for(int i=0;i<(int)p.size();++i){
+        auto [x,y]=p[i];auto [u,v]=p[(i+1)%p.size()];
+        twice_area+=(__int128)x*v-(__int128)u*y;
+        boundary+=gcd(llabs(u-x),llabs(v-y));
+    }
+    if(twice_area<0)twice_area=-twice_area;
+    assert(twice_area>0 && (twice_area-boundary+2)%2==0);
+    return {(twice_area-boundary+2)/2,boundary};
+}
+```
+
+## 関連する手法
+
+[マンハッタン距離の最大値は x+y と x−y の幅を見る](/flowchartcp/techniques/manhattan-transform/)
+
+## 参考資料
+
+- [CSES：Polygon Lattice Points の問題文](https://cses.fi/problemset/task/2193)
+- [Pick の定理の証明（MIT PRIMES）](https://math.mit.edu/research/highschool/primes/circle/documents/2025/Hannah-Carolena-Final.pdf)
+
+<TechniqueReferences techniqueId="lattice-pick-area" />

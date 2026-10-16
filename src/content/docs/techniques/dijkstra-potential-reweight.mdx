@@ -1,0 +1,81 @@
+---
+title: "負の辺を頂点の値の差で非負へ変換する"
+description: "負閉路のないグラフで一度だけ補正値を求め、始点の異なる最短路を非負辺で処理する。"
+techniqueId: dijkstra-potential-reweight
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+疎な有向グラフに負の辺がある。始点を変えて何度も最短路を求めたいが、毎回Bellman–Fordを実行すると重い。負閉路がないことを確認した上で、辺の重みを変更できないかを考える。
+
+## 考え方
+
+全頂点へコスト0の辺を持つ仮想始点から、最短距離 $h[v]$ を求める。実装では全頂点の初期値を0にしてBellman–Fordを行えばよい。各辺 $(u,v,w)$ には
+
+$$h[v]\le h[u]+w$$
+
+が成立する。新しい重み $w'=w+h[u]-h[v]$ は非負になる。ダイクストラ法で求めた距離を $d'$ とすると、元の距離は $d(s,t)=d'(s,t)-h[s]+h[t]$。
+
+## 適用条件
+
+グラフ全体に負閉路がないことが必要。仮想始点は全頂点に届くため、元のある始点から届かない負閉路も検出する。これは全点対の距離を求める場合に適した扱いである。
+
+各辺に同じ定数を足す方法は、経路の辺数によって補正量が変わるので使えない。以下の実装は補正や距離を128ビットで計算する。`INF=2^120` 未満に有限距離が収まることを前提にする。
+
+## なぜ正しいか
+
+経路の補正量は $h[u]-h[v]$ が隣り合う辺で打ち消され、$s$–$t$ のどの経路でも $h[s]-h[t]$ に等しくなる。したがって経路間の優劣を変えない。閉路では補正量が0なので負閉路の有無も変わらない。非負へ変換した後に求めた最短距離から端点の補正を戻せば、元の最短距離になる。
+
+## 計算量
+
+Bellman–Fordを全始点で実行する方法は $O(N^2M)$ 時間。補正値の計算に $O(NM)$、全始点のダイクストラ法に $O(N(N+M)\log N)$ 時間。全距離を返す実装は $O(N^2+M)$ 空間。密なグラフでは $O(N^3)$ のFloyd–Warshallの方が適する場合もある。
+
+## 実装
+
+`johnson_all_pairs` は全点対の距離を返し、負閉路があれば `std::nullopt`。到達不能は `JOHNSON_INF`。辺は `(from,to,weight)`。
+
+```cpp
+#include <vector>
+#include <tuple>
+#include <utility>
+#include <optional>
+#include <queue>
+#include <functional>
+using WideDistance=__int128_t;
+constexpr WideDistance JOHNSON_INF=WideDistance(1)<<120;
+std::optional<std::vector<std::vector<WideDistance>>> johnson_all_pairs(int n,
+    const std::vector<std::tuple<int,int,long long>>& edges) {
+    std::vector<WideDistance> h(n,0);
+    for(int pass=0;pass<n;++pass) {
+        bool changed=false;
+        for(auto [a,b,w]:edges) if(h[b]>h[a]+w) {h[b]=h[a]+w;changed=true;}
+        if(!changed) break;
+        if(pass==n-1) return std::nullopt;
+    }
+    std::vector<std::vector<std::pair<int,WideDistance>>> g(n);
+    for(auto [a,b,w]:edges) g[a].push_back({b,WideDistance(w)+h[a]-h[b]});
+    std::vector<std::vector<WideDistance>> answer(n,std::vector<WideDistance>(n,JOHNSON_INF));
+    using P=std::pair<WideDistance,int>;
+    for(int s=0;s<n;++s) {
+        std::vector<WideDistance> dist(n,JOHNSON_INF);dist[s]=0;
+        std::priority_queue<P,std::vector<P>,std::greater<P>> pq;pq.push({0,s});
+        while(!pq.empty()) {
+            auto [d,v]=pq.top();pq.pop();if(d!=dist[v]) continue;
+            for(auto [u,w]:g[v]) if(d+w<dist[u]) {dist[u]=d+w;pq.push({dist[u],u});}
+        }
+        for(int t=0;t<n;++t) if(dist[t]!=JOHNSON_INF) answer[s][t]=dist[t]-h[s]+h[t];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[ベルマン–フォード法](/flowchartcp/techniques/bellman-ford/) ・ [ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [最小費用流](/flowchartcp/techniques/min-cost-flow/)
+
+## 参考資料
+
+- [AOJ：GRL_1_C All Pairs Shortest Path（原典）](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C)。補正値による計算法は原典の条件から導出し、負閉路を含む小グラフで全点対の直接計算と比較している。
+
+<TechniqueReferences techniqueId="dijkstra-potential-reweight" />

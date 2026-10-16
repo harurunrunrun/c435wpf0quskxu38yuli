@@ -1,0 +1,217 @@
+[
+  {
+    "techniqueId": "mo-frequency-quadratic",
+    "source": "Codeforces",
+    "problemId": "86D",
+    "title": "Powerful array",
+    "statementUrl": "https://codeforces.com/problemset/problem/86/D",
+    "evidenceUrl": "https://codeforces.com/problemset/problem/86/D",
+    "features": [
+      "更新のない数列",
+      "最大20万の区間質問",
+      "各値の出現回数の二乗に値を掛けた総和"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "mo-with-updates",
+    "source": "Codeforces",
+    "problemId": "940F",
+    "title": "Machine Learning",
+    "statementUrl": "https://codeforces.com/problemset/problem/940/F",
+    "evidenceUrl": "https://codeforces.com/problemset/problem/940/F",
+    "features": [
+      "一点の代入と区間質問が時系列で与えられる",
+      "最大10万操作",
+      "区間内の出現回数に現れない最小の正整数",
+      "質問の並べ替えと代入の巻き戻しが可能"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "parallel-binary-search-time",
+    "source": "Polish Olympiad in Informatics",
+    "problemId": "2011-met",
+    "title": "Meteory",
+    "statementUrl": "https://www.oi.edu.pl/media/attachment/20120215/oi18.pdf",
+    "evidenceUrl": "https://www.oi.edu.pl/media/attachment/20120215/oi18.pdf",
+    "features": [
+      "円環上の区間へ非負の加算を順に行う",
+      "各位置は一つの所属先を持つ",
+      "所属位置の総和が目標以上になる最初の操作番号",
+      "全操作を先に読める",
+      "減算はなく条件が時刻に対して単調"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "cdq-dominance",
+    "source": "洛谷",
+    "problemId": "P3810",
+    "title": "三维偏序 / 陌上花开",
+    "statementUrl": "https://www.luogu.com.cn/problem/P3810",
+    "evidenceUrl": "https://www.luogu.com.cn/problem/P3810",
+    "features": [
+      "三つの値を持つ点が最大10万",
+      "三座標すべてが自分以下の他の点の個数",
+      "同じ三座標の点もある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "offline-kth-divide-values",
+    "source": "洛谷",
+    "problemId": "P2617",
+    "title": "Dynamic Rankings",
+    "statementUrl": "https://www.luogu.com.cn/problem/P2617",
+    "evidenceUrl": "https://www.luogu.com.cn/problem/P2617",
+    "features": [
+      "一点の代入と区間のk番目の値",
+      "全操作を先に読める",
+      "最大10万操作",
+      "重複値も順位へ数える"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "persistent-prefix-kth",
+    "source": "Library Checker",
+    "problemId": "range_kth_smallest",
+    "title": "Range Kth Smallest",
+    "statementUrl": "https://judge.yosupo.jp/problem/range_kth_smallest",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/data_structure/range_kth_smallest/task.md",
+    "features": [
+      "更新のない数列",
+      "半開区間内のk+1番目の値",
+      "重複を含む",
+      "前からの出現個数の差が非負"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "wavelet-range-kth",
+    "source": "Library Checker",
+    "problemId": "range_kth_smallest",
+    "title": "Range Kth Smallest",
+    "statementUrl": "https://judge.yosupo.jp/problem/range_kth_smallest",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/data_structure/range_kth_smallest/task.md",
+    "features": [
+      "更新のない数列",
+      "半開区間内のk+1番目の値",
+      "各桁による安定した二分が可能"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "fenwick-prefix-lower-bound",
+    "source": "CSES",
+    "problemId": "2163",
+    "title": "Josephus Problem II",
+    "statementUrl": "https://cses.fi/problemset/task/2163",
+    "evidenceUrl": "https://cses.fi/problemset/task/2163",
+    "features": [
+      "円環の生き残りからk人飛ばして一人削除",
+      "最大20万人",
+      "残った人の何番目かを求める",
+      "位置ごとの生存数は非負"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "xor-basis-kth",
+    "source": "AtCoder",
+    "problemId": "abc283_g",
+    "title": "Partial Xor Enumeration",
+    "statementUrl": "https://atcoder.jp/contests/abc283/tasks/abc283_g",
+    "evidenceUrl": "https://atcoder.jp/contests/abc283/tasks/abc283_g",
+    "features": [
+      "空も許す部分集合のXOR",
+      "同じ値を重複排除した昇順",
+      "指定した順位区間だけ出力",
+      "値は60ビット以下"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "linear-basis-rollback",
+    "source": "Codeforces",
+    "problemId": "938G",
+    "title": "Shortest Path Queries",
+    "statementUrl": "https://codeforces.com/problemset/problem/938/G",
+    "evidenceUrl": "https://codeforces.com/problemset/problem/938/G",
+    "features": [
+      "無向辺の追加・削除",
+      "辺重みのXORが最小の歩道",
+      "同じ辺を何回通ってもよい",
+      "辺の有効時間を区間へ分けられる",
+      "閉路XORの基底を探索から戻る際に復元する"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。公開日不明のアーカイブは基準日前掲載を確認済みと扱わない。CF938Gでは閉路基底の復元を扱い、経路XORには辺潜在値付きUnion-Findと組み合わせる。"
+  },
+  {
+    "techniqueId": "sqrt-heavy-light-sets",
+    "source": "Codeforces",
+    "problemId": "348C",
+    "title": "Subset Sums",
+    "statementUrl": "https://codeforces.com/problemset/problem/348/C",
+    "evidenceUrl": "https://codeforces.com/problemset/problem/348/C",
+    "features": [
+      "重なりのある固定の位置集合",
+      "集合の全要素へ一括加算",
+      "集合内の値の総和",
+      "集合サイズ総和が10万以下",
+      "集合内の重複位置はない"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  },
+  {
+    "techniqueId": "range-add-count-less",
+    "source": "洛谷",
+    "problemId": "P2801",
+    "title": "教主的魔法",
+    "statementUrl": "https://www.luogu.com.cn/problem/P2801",
+    "evidenceUrl": "https://www.luogu.com.cn/problem/P2801",
+    "features": [
+      "連続区間への一様な加算",
+      "別の区間で閾値以上の個数",
+      "閾値が質問ごとに変わる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。独立に正当性を導出し、記事コードを小規模全探索・素朴法と比較する。"
+  }
+]

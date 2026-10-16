@@ -1,0 +1,65 @@
+---
+title: "凹多角形の内外を、半開区間の交差と外積で判定する"
+description: "横向きの線と辺の交差を上下別に数え、頂点の二重計上と浮動小数の誤差を避ける。"
+techniqueId: polygon-winding-integer
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+凸とは限らない単純多角形に対し、点の内部・外部・辺上を区別したい。境界の折り返しがあるため、一頂点からの扇形の二分探索は使えない。
+
+## 考え方
+
+まず各辺について外積が0で、点が両端の座標範囲内なら境界とする。
+
+それ以外は点 $q$ から右への半直線が、多角形の辺を何回上下に横切るかを調べる。上向きの辺 $a\to b$ は $a_y\le q_y<b_y$ のときだけ見て、$\operatorname{cross}(b-a,q-a)>0$ なら $+1$。下向きの辺は $b_y\le q_y<a_y$ のときだけ見て、外積が負なら $-1$。合計が0なら外部、0以外なら内部である。
+
+水平な辺は交差数へ加えない。高さの条件を半開区間にすることで、半直線が頂点を通る場合も同じ規則で処理できる。
+
+## 適用条件
+
+自己交差のない、頂点が境界順に並んだ多角形を要求する。時計回り・反時計回りのどちらでも使える。自己交差する曲線では巻き数が0でない領域と、偶奇規則で塗る領域が異なる場合があるので、「内部」の定義を先に決める。
+
+整数座標の絶対値は $10^{12}$ 以下とし、差から外積まで128ビットで計算する。境界判定に `EPS` を使わない。
+
+## なぜ正しいか
+
+単純閉曲線を横切るたびに内部・外部は切り替わる。向き付きの交差数は外部で0であり、内部では多角形の向きに応じて $+1$ または $-1$ になる。
+
+極大・極小の高さの頂点を半直線が通るとき、接して戻る二辺は両方数えないか、逆符号で打ち消す。一方、一方が上で他方が下へ続く頂点ではちょうど一回を数える。これが半開区間の指定によって成立する。
+
+## 計算量
+
+一質問 $O(N)$ 時間、追加 $O(1)$ 空間。$Q$ 質問なら $O(NQ)$。交点の座標を割り算して求める実装と同じ漸近計算量だが、整数の符号判定で境界を正確に扱える。
+
+## 実装
+
+`polygon_location` は3頂点以上の単純多角形を受け取る。繰り返しの開始頂点は末尾へ付けない。
+
+```cpp
+#include <algorithm>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+int polygon_location(const std::vector<Point>& p,Point q){
+    int winding=0;
+    for(int i=0;i<int(p.size());++i){Point a=p[i],b=p[(i+1)%p.size()];
+        i128 c=(i128(b.x)-a.x)*(i128(q.y)-a.y)-(i128(b.y)-a.y)*(i128(q.x)-a.x);
+        if(c==0 && std::min(a.x,b.x)<=q.x && q.x<=std::max(a.x,b.x) && std::min(a.y,b.y)<=q.y && q.y<=std::max(a.y,b.y))return 1;
+        if(a.y<=q.y && q.y<b.y && c>0)++winding;
+        if(b.y<=q.y && q.y<a.y && c<0)--winding;
+    }
+    return winding==0?0:2; // 0: 外部、1: 境界、2: 内部
+}
+```
+
+## 関連する手法
+
+[凸多角形の内外を、一頂点からの扇形の二分探索で判定する](/flowchartcp/techniques/convex-point-membership/) ・ [線分の交差を、四つの向きと座標区間で判定する](/flowchartcp/techniques/segment-intersection-orientation/)
+
+## 参考資料
+
+- [CSES：Point in Polygon（原典）](https://cses.fi/problemset/task/2192)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="polygon-winding-integer" />

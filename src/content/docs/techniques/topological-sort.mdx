@@ -1,0 +1,67 @@
+---
+title: "トポロジカルソート"
+description: "有向辺で示された前後関係を、すべて満たす頂点の順序を求める。"
+techniqueId: topological-sort
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+有向辺で示された前後関係を、すべて満たす頂点の順序を求める。
+
+## 使う場面
+
+作業の依存関係や、状態を計算する順序が有向辺で与えられるときに使う。処理できる順序を求めるだけでなく、依存関係に閉路がないかの確認にも使える。
+
+## 考え方
+
+各頂点に入る辺の数を数える。この入次数が0の頂点には未処理の前提がないので、先に処理できる。頂点を取り出したら、その頂点から出る辺を取り除いたものとして、行き先の入次数を減らす。
+
+新しく入次数0になった頂点をキューに加え、同じ操作を繰り返す。これはKahn法と呼ばれる。番号の小さい頂点を優先したい場合は、通常のキューを最小ヒープに置き換える。
+
+## 適用条件
+
+対象は有向グラフであり、すべての頂点を並べられるのは閉路がない場合だけになる。途中まで作れた順序を、閉路が残ったまま完全な順序として使わない。自己ループも閉路に含まれる。
+
+入次数0の頂点が複数あれば、順序は一般に一意ではない。特定の順序が必要なら、同時に処理できる頂点の優先順位を決める。
+
+## なぜ正しいか
+
+入次数0の頂点は、残っているどの頂点にも先行されないため、次に置ける。取り除いた後も、残りに同じ考え方を適用できる。頂点が残っているのに入次数0の頂点がない場合、前提をたどると必ず同じ頂点を再訪するため、閉路が存在する。
+
+## 計算量
+
+キューを使う実装は時間 $O(V+E)$、追加空間 $O(V)$。最小ヒープを使う場合は時間 $O(E+V\log V)$。グラフの空間は別に $O(V+E)$ 必要になる。
+
+## 実装
+
+`topological_sort` は順序を返し、閉路がある場合は `nullopt` を返す。頂点が0個の場合は、閉路なしとして空の順序を返す。
+
+```cpp
+#include <vector>
+#include <queue>
+#include <optional>
+using namespace std;
+optional<vector<int>> topological_sort(const vector<vector<int>>& g) {
+    int n=g.size();
+    vector<int> degree(n),order;
+    for(auto& row:g) for(int u:row) ++degree[u];
+    queue<int> q;
+    for(int v=0;v<n;++v) if(degree[v]==0) q.push(v);
+    while(!q.empty()) {
+        int v=q.front();q.pop();
+        order.push_back(v);
+        for(int u:g[v]) if(--degree[u]==0) q.push(u);
+    }
+    if(int(order.size())!=n) return nullopt;
+    return order;
+}
+```
+
+## 関連する手法
+
+[DAG上のDP](/flowchartcp/techniques/dag-dp/) ・ [強連結成分分解](/flowchartcp/techniques/scc/)
+
+## 参考資料
+
+- [USACO Guide: Topological Sort](https://usaco.guide/gold/toposort)
+
+<TechniqueReferences techniqueId="topological-sort" />

@@ -1,0 +1,120 @@
+---
+title: "ワイルドカードの不一致を非負の多項式にして畳み込む"
+description: "文字の不一致を xy(x-y)^2 へ変え、全てのずらし位置を三つの畳み込みで判定します。"
+techniqueId: "wildcard-convolution"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+パターンや本文に「任意の **1 文字**と一致する」記号があり、全ての開始位置の一致を求める場合。照合をずらすたびに全パターンを読むと $O(NM)$ になります。
+
+## 考え方
+
+ワイルドカードを 0、通常の各文字を異なる正整数へ変えます。
+
+$$f(x,y)=xy(x-y)^2=x^3y-2x^2y^2+xy^3$$
+
+は、同じ文字またはどちらかがワイルドカードなら 0、通常文字同士が異なるなら正です。開始位置 $i$ の全体が一致する条件は
+
+$$F_i=\sum_{j=0}^{M-1}f(T_{i+j},P_j)=0$$
+
+です。パターン側を反転すると、この三つの項の和を三つの畳み込みで全 $i$ について求められます。対応する係数の添字は $i+M-1$ です。
+
+## 適用条件
+
+各ワイルドカードが 1 文字だけを表す場合です。正規表現の `.*` のように可変長の文字列を表す条件には使えません。
+
+また、一つの法で $F_i\equiv0$ を見るだけでは、正の $F_i$ が法の倍数になって誤判定することがあります。以下は小文字 26 種と `*` に限定し、二つの法の積より $F_i$ が小さいという上界を使って、確率に頼らず判定します。
+
+## なぜ正しいか
+
+各項が非負で、0 になる条件が一文字の一致と同値なので、和が 0 であることは全位置の一致と同値です。畳み込みは反転した添字を使い、同じずらし位置の積だけを対応する係数へ集めます。
+
+文字の符号は $1,\ldots,26$ なので $F_i\le M\cdot26^2\cdot25^2$。実装の変換長上限では、この値は二つの法 $998244353$ と $469762049$ の積より小さいため、両方で 0 の整数は実際にも 0 です。
+
+## 計算量
+
+直接照合する改善前は $O(NM)$。改善後は $O((N+M)\log(N+M))$ 時間、$O(N+M)$ 空間。二つの法でそれぞれ三つの畳み込みを行います。
+
+## 実装
+
+両側の `*` を許し、一致する開始位置を返します。変換長は $2^{23}$ 以下です。空パターンは全 $N+1$ 位置に一致する定義で別扱いします。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace wildcard_ntt {
+int power(int a,int e,int mod) {
+    long long r=1;
+    for(;e;e>>=1,a=int(1LL*a*a%mod)) if(e&1) r=r*a%mod;
+    return int(r);
+}
+void transform(vector<int>& a,bool inverse,int mod) {
+    int n=a.size();
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1;
+        for(;j&bit;bit>>=1) j^=bit;
+        j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int step=power(3,(mod-1)/len,mod);
+        if(inverse) step=power(step,mod-2,mod);
+        for(int i=0;i<n;i+=len) {
+            long long w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=int(w*a[i+j+len/2]%mod);
+                a[i+j]=u+v>=mod ? u+v-mod : u+v;
+                a[i+j+len/2]=u-v<0 ? u-v+mod : u-v;
+                w=w*step%mod;
+            }
+        }
+    }
+    if(inverse) {int inv=power(n,mod-2,mod);for(int& x:a)x=int(1LL*x*inv%mod);}
+}
+vector<int> convolution(vector<int> a,vector<int> b,int mod) {
+    int size=int(a.size()+b.size())-1,n=1;
+    while(n<size) n<<=1;
+    if(n>(1<<23)) throw length_error("NTT length exceeds 2^23");
+    a.resize(n);b.resize(n);
+    transform(a,false,mod);transform(b,false,mod);
+    for(int i=0;i<n;++i) a[i]=int(1LL*a[i]*b[i]%mod);
+    transform(a,true,mod);a.resize(size);
+    return a;
+}
+}
+vector<int> wildcard_match_positions(const string& text,const string& pattern) {
+    int n=text.size(),m=pattern.size();
+    if(m==0) {vector<int> all(n+1);iota(all.begin(),all.end(),0);return all;}
+    if(m>n) return {};
+    auto encode=[](char c) {if(c=='*')return 0;assert('a'<=c && c<='z');return c-'a'+1;};
+    vector<int> a1(n),a2(n),a3(n),b1(m),b2(m),b3(m);
+    for(int i=0;i<n;++i) {int x=encode(text[i]);a1[i]=x;a2[i]=x*x;a3[i]=x*x*x;}
+    for(int j=0;j<m;++j) {int y=encode(pattern[j]);b1[m-1-j]=y;b2[m-1-j]=y*y;b3[m-1-j]=y*y*y;}
+    vector<bool> match(n-m+1,true);
+    for(int mod:{998244353,469762049}) {
+        auto c1=wildcard_ntt::convolution(a3,b1,mod);
+        auto c2=wildcard_ntt::convolution(a2,b2,mod);
+        auto c3=wildcard_ntt::convolution(a1,b3,mod);
+        for(int i=0;i<=n-m;++i) {
+            int at=i+m-1;
+            long long value=(c1[at]-2LL*c2[at]+c3[at])%mod;
+            if(value!=0) match[i]=false;
+        }
+    }
+    vector<int> answer;
+    for(int i=0;i<=n-m;++i) if(match[i]) answer.push_back(i);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[NTT・畳み込み](/flowchartcp/techniques/ntt/)、[パターンと本文を区切って、全ての一致位置を求める](/flowchartcp/techniques/z-concatenate-boundary/)
+
+## 参考資料
+
+- [Library Checker：Wildcard Pattern Matching の仕様](https://github.com/yosupo06/library-checker-problems/blob/master/string/wildcard_pattern_matching/task.md)
+- [ABC307 Ex：公式解説](https://atcoder.jp/contests/abc307/editorial/6666)
+
+<TechniqueReferences techniqueId="wildcard-convolution" />

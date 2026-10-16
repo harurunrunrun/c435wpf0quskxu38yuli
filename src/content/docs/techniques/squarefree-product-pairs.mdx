@@ -1,0 +1,78 @@
+---
+title: "二数の積が平方になる組は、奇数指数の素因数だけを残して同じ値を数える"
+description: "正の値から平方因子を除いた代表を作り、零を含む組は別に足します。"
+techniqueId: squarefree-product-pairs
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+全ての二要素の積を計算して平方根を調べると二乗時間になる。平方数かどうかは素因数の指数が全て偶数かで決まるため、値を等値判定できる小さい代表へ変えられる。
+
+## 考え方
+
+正の値 $a=\prod p^{e_p}$ を
+
+$$k(a)=\prod_{e_p\text{ が奇数}}p$$
+
+へ変える。二数の積が平方数であることは $k(a)=k(b)$ と同値。各代表の頻度 $c$ に $c(c-1)/2$ を足せばよい。読みながら以前の同じ代表数を足してもよい。
+
+零が $Z$ 個なら、零と非零の組 $Z(N-Z)$、零どうしの組 $Z(Z-1)/2$ を別に足す。零を代表0とだけ分類すると、零と他の値の組を取り落とす。
+
+## 適用条件
+
+この実装は非負整数専用で、添字が違えば同じ値でも別の組。平方数は0を含む。負数を許す場合は、積の符号も一致させるため、零以外の代表に符号を追加する必要がある。
+
+20万件、最大値20万まで。最小素因数を前計算して指数の偶奇を取る。代表は元の正整数の約数なので値域を超えない。値1の代表は空積の1。
+
+## なぜ正しいか
+
+積の素因数 $p$ の指数は $e_p(a)+e_p(b)$ になる。これが偶数であることは両者の指数の偶奇が等しいことと同値で、全ての素因数について一致すれば平方数になる。一意な素因数分解により、奇数指数の素数を掛けた代表の一致も同値である。
+
+零を含む積は必ず0。この組を非零どうしの分類と分ければ、全ての異なる二添字を重複せず数えられる。
+
+## 計算量
+
+全点対の積と平方根判定は $O(N^2)$ 時間。値域を $V$ とすると、最小素因数表の作成は $O(V\log\log V)$ 時間、各要素の分解は $O(\log V)$ 回以下。全体 $O(V\log\log V+N\log V)$ 時間、追加空間 $O(V)$。個別に試し割りする $O(N\sqrt V)$ より前計算を共有できる。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+long long count_square_product_pairs(const std::vector<int>& values) {
+    if(values.size()>200000) throw std::invalid_argument("size");
+    int limit=1;
+    for(int x:values) {if(x<0 || x>200000)throw std::invalid_argument("value");limit=std::max(limit,x);}
+    std::vector<int> smallest(limit+1);
+    for(int p=2;p<=limit;++p) if(!smallest[p])
+        for(int x=p;x<=limit;x+=p) if(!smallest[x]) smallest[x]=p;
+    std::vector<long long> count(limit+1);
+    long long zero=0,answer=0;
+    for(int x:values) {
+        if(x==0) {++zero;continue;}
+        int key=1;
+        while(x>1) {
+            int p=smallest[x],parity=0;
+            do {x/=p;parity^=1;} while(x>1 && x%p==0);
+            if(parity) key*=p;
+        }
+        answer+=count[key];++count[key];
+    }
+    long long n=static_cast<long long>(values.size());
+    return answer+zero*(n-zero)+zero*(zero-1)/2;
+}
+```
+
+## 関連する手法
+
+- [不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder — Square Pair](https://atcoder.jp/contests/abc342/tasks/abc342_d)
+- [公式解説](https://atcoder.jp/contests/abc342/editorial/9449)
+
+<TechniqueReferences techniqueId="squarefree-product-pairs" />

@@ -1,0 +1,61 @@
+---
+title: "多数の部分列照合を、次に待っている文字ごとの列で進める"
+description: "本文の一文字で進められる単語だけを取り出し、各単語の文字を一度ずつ消費する。"
+techniqueId: subsequence-waiting-buckets
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一つの本文に対して、多数の単語が部分列になっているかを調べたい。本文を単語ごとに読み直す代わりに、全ての照合を一度の本文走査で進める。単語は最初に全て分かっている。
+
+## 考え方
+
+各単語について、次に一致させる文字の位置を持つ。その文字ごとに待機列を作る。本文で文字 $c$ を読むとき、$c$ の列に入っていた単語だけを一文字進める。終わった単語は成功として数え、残りは次に待つ文字の列へ移す。
+
+重要なのは、処理前の列を丸ごと取り出してから進めることである。例えば単語 `aa` の最初の `a` を一致させた後、同じ列へ戻る。しかし今回の本文の一文字を二度使ってはいけない。取り出した列と次回用の列を分けると、この事故を防げる。
+
+## 適用条件
+
+本文と照合語は英小文字で、全ての照合語が開始前に分かる。単語間で本文の位置を共有してよい。重複した単語は配列の要素として別々に数える。実装は空の単語も成功として扱う。逐次届く新しい語を過去の本文にも照合する用途には、次出現表など別の構造が必要になる。
+
+## なぜ正しいか
+
+各単語を一つずつ貪欲に照合するなら、次に必要な文字の最初の出現を使えばよい。早く一致させるほど、残りに使える本文の範囲が広くなるからである。
+
+待機列による処理は、この貪欲な照合を全単語について同時に行っている。本文の文字と一致しない単語は進まず、一致する単語はちょうど一回だけ進む。処理前の列を分離することで、同じ本文位置が一単語で二回使われることもない。
+
+## 計算量
+
+本文長を $N$、語数を $K$、全単語長を $W$ とする。別々の走査は $O(KN+W)$。待機列では一文字進むたび単語の未処理長が減るので、$O(N+W+K)$ 時間。単語を参照する実装の補助空間は $O(K+26)$。
+
+## 実装
+
+`words` の内容は変更しない。返り値は一致した配列要素の数。
+
+```cpp
+#include <array>
+#include <string>
+#include <utility>
+#include <vector>
+int count_matching_subsequences(const std::string& text,const std::vector<std::string>& words){
+    using Waiting=std::pair<int,int>;
+    std::array<std::vector<Waiting>,26> bucket;int answer=0;
+    for(int id=0;id<int(words.size());++id){if(words[id].empty())++answer;else bucket[words[id][0]-'a'].push_back({id,0});}
+    for(char ch:text){
+        std::vector<Waiting> ready;ready.swap(bucket[ch-'a']);
+        for(auto [id,position]:ready){++position;if(position==int(words[id].size()))++answer;else bucket[words[id][position]-'a'].push_back({id,position});}
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[部分列の一致を、各文字の次の出現位置で進める](/flowchartcp/techniques/substring-subsequence-next/) ・ [残す部分列を前後に分け、最早・最遅の一致位置の間を消す](/flowchartcp/techniques/subsequence-delete-gap/)
+
+## 参考資料
+
+- [LeetCode：Number of Matching Subsequences（原典）](https://leetcode.com/problems/number-of-matching-subsequences/description/)。
+
+<TechniqueReferences techniqueId="subsequence-waiting-buckets" />

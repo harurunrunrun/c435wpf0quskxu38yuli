@@ -1,0 +1,169 @@
+---
+title: "大きい番号で再使用できる移動列は、最大番号の前後に分けて数える"
+description: "最大番号が一度だけ現れる性質から端点間の個数表を更新し、始終条件を特殊な端点として全問い合わせで共有する。"
+techniqueId: hierarchical-reset-walk-count
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+有向グラフの頂点にいるときに $1..K$ の番号を一つ使い、辺を通って次の頂点へ進むか、その場で終了する。同じ番号をもう一度使うには、二回の使用の間に必ずそれより大きい番号を使わなければならない。
+
+始点・最初の番号・終点・最後の番号を指定する複数の問い合わせに対し、合法な頂点列と番号列の組を数えたい。頂点の再訪や自己ループがあっても使える。履歴を使用不可の番号集合として持つと $2^K$ 状態になるが、番号の大小関係から列を分ければ、この集合を保存せずに数えられる。
+
+## 考え方
+
+番号は辺ではなく、**初期位置を含む各滞在頂点で一つ使う**と考える。押下が $m$ 回なら移動は $m-1$ 回である。以下の表は非空の番号列だけを数え、番号を一度も使わない列は含めない。
+
+番号上限 $h$ ごとに、端点 $a$ から $d$ までの個数を $D_h[a,d]$ とする。まず実頂点だけを考えると、$D_0$ は全て $0$。上限を $h$ に増やした列は、$h$ を使わない列と、ちょうど一度使う列に分かれる。後者で $h$ を使う頂点を $r$ として、前後を分ける。
+
+前後の番号は全て $h-1$ 以下なので、一つ前の表だけを参照できる。隣接行列を $A$ として、左側・右側の選び方をそれぞれ
+
+$$
+L_r[a]=[a=r]+\sum_{b=0}^{N-1} D_{h-1}[a,b]A_{b,r},
+\qquad
+R_r[d]=[d=r]+\sum_{c=0}^{N-1} A_{r,c}D_{h-1}[c,d]
+$$
+
+と置く。指示関数 $[a=r]$ は左側が空で中央の頂点から始まる場合、$[d=r]$ は右側が空で中央で終わる場合である。更新は外積の加算になる。
+
+$$
+D_h[a,d]=D_{h-1}[a,d]+\sum_{r=0}^{N-1}L_r[a]R_r[d].
+$$
+
+問い合わせ $j=(s_j,p_j,t_j,q_j)$ ごとの計算を共有するには、行に特殊始点 $\alpha_j$、列に特殊終点 $\beta_j$ を加える。特殊始点の行は「$s_j$ から番号 $p_j$ で始まる」、特殊終点の列は「$t_j$ で番号 $q_j$ を使って終わる」という制約を表す。
+
+特殊始点での左空列項は $[r=s_j\land h=p_j]$、特殊終点での右空列項は $[r=t_j\land h=q_j]$ にする。隣接辺を接続するときの中間添字 $b,c$ と、中央 $r$ は実頂点だけを走査する。答えは $D_K[\alpha_j,\beta_j]$。行と列は役割が違うので、実装上は両方を添字 $N+j$ で表してよい。
+
+## 適用条件
+
+- 番号の再使用を許す条件が、間により大きい番号を一度以上使うことである。大きい番号の使用により、小さい番号は全て再び使える。
+- 辺の使用回数や頂点の訪問回数には別の制約がなく、隣接する滞在頂点どうしが有向辺で結ばれていればよい。
+- 最初に番号を一つ使ってから移動または終了する。始終条件はその最初と最後の押下に掛かる。
+- 問い合わせの条件を端点の意味として追加でき、途中の頂点で発生する制約に変わらない。
+
+移動0回の列は、始終点と最初・最後の番号がそれぞれ一致するときに1通りある。空の番号列を加えるわけではない。同じ最初・最後の番号でも、それより大きい番号を間に使う列はあり得る。例えば自己ループのある一頂点で上限が2なら、最初と最後が1の列は $(1)$ と $(1,2,1)$ の二つになる。
+
+## なぜ正しいか
+
+上限 $h$ の列に $h$ が二度現れると、その間に必要なより大きい番号を用意できない。従って $h$ は高々一度であり、その位置と頂点 $r$ は一意に決まる。
+
+$h$ を使う列をそこで切ると、左右はそれぞれ上限 $h-1$ の合法列になる。逆に、そのような左右を中央の押下で接続すると、左右の内部は合法なままで、両側に同じ小さい番号があっても中央の $h$ が再使用を許す。左右が空の場合も指示関数で一度ずつ表せる。よって積 $L_r[a]R_r[d]$ は、中央が $(r,h)$ である列の個数に一致する。
+
+$h$ を使わない列は前の表に、使う列は一意な中央の項に入るので、重複も取りこぼしもない。特殊端点では、中央が列の端になる場合に指定の頂点と番号が一致したときだけ空側を許す。その他の場合は、前の表に保存された同じ始終条件を引き継ぐ。特殊端点を内部頂点として接続しないことで、制約が途中へ移動することも防げる。
+
+自己ループがあっても列の総数は有限である。最大押下数を $M_h$ とすると、中央の前後を分けて $M_h\le 2M_{h-1}+1$、$M_0=0$ より $M_h\le 2^h-1$。頂点数に関係なく、押下回数はこの上限を超えない。
+
+## 計算量
+
+行と列の大きさを $S=N+Q$ とする。各上限・中央頂点について、左右の集計が $O(NS)$、外積が $O(S^2)$。全体は時間 $O(KN(N+Q)^2)$ となる。問い合わせごとに計算し直す $O(QKN^3)$ を避けられる。
+
+前の番号層を読み、新しい番号層へ加算する二層構成により、追加空間は $O((N+Q)^2)$。同じ層を上書きして参照すると、中央で使った番号を同じ層の別の中央で再使用してしまうので、層の分離が必要である。
+
+## 実装
+
+`count_hierarchical_reset_walks(adjacency,label_count,queries)` は、問い合わせ順に個数を法 $10^9+7$ で返す。隣接行列は `0`・`1` からなる正方形で、頂点は0始まり、番号は1始まり。自己ループを許し、重複辺は表現しない。$1\le N,K\le60$、$0\le Q\le60$ を受け付け、条件違反は全て `invalid_argument` とする。入力は変更しない。
+
+`ResetWalkQuery` のフィールドは始点・最初の番号・終点・最後の番号の順。原典の入力順は「最初の番号・始点・最後の番号・終点」なので、読み込み時に対応させる。問い合わせが空でもグラフと番号上限を検証する。
+
+```cpp
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+struct ResetWalkQuery {
+    int start_vertex;
+    int first_label;
+    int end_vertex;
+    int last_label;
+};
+
+std::vector<int> count_hierarchical_reset_walks(
+    const std::vector<std::string>& adjacency,
+    int label_count,
+    const std::vector<ResetWalkQuery>& queries) {
+    if (adjacency.empty() || adjacency.size() > 60 ||
+        label_count < 1 || label_count > 60 || queries.size() > 60) {
+        throw std::invalid_argument("unsupported dimensions");
+    }
+    const int n = static_cast<int>(adjacency.size());
+    const int q = static_cast<int>(queries.size());
+    for (const auto& row : adjacency) {
+        if (row.size() != adjacency.size()) {
+            throw std::invalid_argument("adjacency must be square");
+        }
+        for (char value : row) {
+            if (value != '0' && value != '1') {
+                throw std::invalid_argument("adjacency must contain bits");
+            }
+        }
+    }
+    for (const auto& query : queries) {
+        if (query.start_vertex < 0 || query.start_vertex >= n ||
+            query.end_vertex < 0 || query.end_vertex >= n ||
+            query.first_label < 1 || query.first_label > label_count ||
+            query.last_label < 1 || query.last_label > label_count) {
+            throw std::invalid_argument("invalid query endpoint or label");
+        }
+    }
+    if (queries.empty()) return {};
+    constexpr int mod = 1000000007;
+    const int size = n + q;
+    std::vector<int> previous(size * size), next;
+    std::vector<int> left(size), right(size);
+    for (int label = 1; label <= label_count; ++label) {
+        next = previous;
+        for (int pivot = 0; pivot < n; ++pivot) {
+            for (int a = 0; a < size; ++a) {
+                left[a] = a == pivot ? 1 : 0;
+                right[a] = a == pivot ? 1 : 0;
+            }
+            for (int j = 0; j < q; ++j) {
+                const auto& query = queries[j];
+                left[n + j] = query.start_vertex == pivot &&
+                              query.first_label == label ? 1 : 0;
+                right[n + j] = query.end_vertex == pivot &&
+                               query.last_label == label ? 1 : 0;
+            }
+            // Only real vertices may connect to the central vertex.
+            for (int a = 0; a < size; ++a) {
+                for (int b = 0; b < n; ++b) {
+                    if (adjacency[b][pivot] == '1') {
+                        left[a] += previous[a * size + b];
+                        if (left[a] >= mod) left[a] -= mod;
+                    }
+                    if (adjacency[pivot][b] == '1') {
+                        right[a] += previous[b * size + a];
+                        if (right[a] >= mod) right[a] -= mod;
+                    }
+                }
+            }
+            for (int a = 0; a < size; ++a) {
+                for (int d = 0; d < size; ++d) {
+                    next[a * size + d] = static_cast<int>(
+                        (next[a * size + d] + 1LL * left[a] * right[d]) % mod);
+                }
+            }
+        }
+        previous.swap(next);
+    }
+    std::vector<int> answers(q);
+    for (int j = 0; j < q; ++j) {
+        answers[j] = previous[(n + j) * size + n + j];
+    }
+    return answers;
+}
+```
+
+## 関連する手法
+
+- [状態設計](/flowchartcp/techniques/state-design/)：過去の使用番号の集合を直接持つ代わりに、最大番号で分割した部分列の端点を残す。
+- [ビットマスクDP](/flowchartcp/techniques/bitmask-dp/)：小さい番号上限では、使用不可の番号集合を持つ直接DPが独立した検証方法になる。番号 $x$ を使うと下位ビットを消し、$x$ のビットを立てるため、マスクの整数値は必ず増える。
+- [DAG上のDP](/flowchartcp/techniques/dag-dp/)：実グラフに閉路があっても、番号上限の層や、小規模検証で使うマスクには計算順序がある。
+
+## 参考資料
+
+- [USACO 2020 December Platinum：Spaceship](https://usaco.org/index.php?page=viewproblem2&cpid=1069)：始終点と最初・最後の番号を指定する計数。初期頂点での押下直後の停止と自己ループを許す。
+- [Spaceship公式解説](https://usaco.org/current/data/sol_prob2_platinum_dec20.html)：Danny Mittalによる解説。最大番号で分ける端点DPと、問い合わせの始終条件を特殊端点へまとめる方法を確認した。
+
+<TechniqueReferences techniqueId="hierarchical-reset-walk-count" />

@@ -1,0 +1,76 @@
+---
+title: "三角形の角を、中心からの方向順と二つの境界でまとめて数える"
+description: "90度と180度の境界を単調に動かし、三点組の全列挙を省く。"
+techniqueId: angle-vector-two-pointers
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+点集合から選ぶ三点組について、鋭角・直角・鈍角の三角形の数を求めたい。どの三点も同一直線上にないなら、各三角形の角に注目して数えられる。
+
+## 考え方
+
+中心点を一つ固定し、他の点へのベクトルを反時計回りの方向順に並べる。列を二倍にして円周上の区間を直線の添字へ変換する。
+
+各開始方向から、反時計回りの角度差が $180$ 度未満である最後の範囲を外積が正かで求める。その範囲内で、内積が正から0以下へ変わる場所が $90$ 度の境界である。内積0を直角、負を鈍角として数える。二つの境界は、開始方向を進めるたびに戻らない。
+
+一つの三角形に直角・鈍角は高々一つあるので、それらの角の総数が三角形の数になる。鋭角三角形は全三点組から二種類を引く。
+
+## 適用条件
+
+点は異なり、どの三点も同一直線上にないことを要求する。この条件がない場合、同方向・逆方向のベクトルと退化した三角形を別に数える必要がある。
+
+各座標の絶対値は $10^9$ 以下、$N\le 2\times10^5$ とする。ただし時間は二次なので実用的な点数は数千程度。外積・内積を128ビット、三角形数を64ビットで扱う。 `atan2` や角度の誤差許容値は使わない。
+
+## なぜ正しいか
+
+上半平面・下半平面を先に分け、その中で外積の符号を使うと、厳密な方向順になる。共線の三点がないので、中心から見た方向は重複せず、逆向きもない。
+
+二方向の小さい方の角は180度未満であり、反時計回りにその角を測る向きは一つだけなので、各角は一回だけ数えられる。方向の開始位置が回ると90度・180度の境界も同じ方向に回るため、ポインタを戻さずに全角を集計できる。
+
+## 計算量
+
+三点組の全列挙は $O(N^3)$。中心ごとの整列は $O(N\log N)$、境界走査は $O(N)$。全体 $O(N^2\log N)$ 時間、追加 $O(N)$ 空間。
+
+## 実装
+
+`triangle_angle_counts` は鋭角・直角・鈍角の順で個数を返す。入力条件を満たす3点未満の集合なら全て0になる。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+std::array<long long,3> triangle_angle_counts(const std::vector<Point>& points){
+    int n=points.size();long long right=0,obtuse=0;
+    auto cross=[](Point a,Point b){return i128(a.x)*b.y-i128(a.y)*b.x;};
+    auto dot=[](Point a,Point b){return i128(a.x)*b.x+i128(a.y)*b.y;};
+    auto half=[](Point a){return a.y>0 || (a.y==0 && a.x>=0)?0:1;};
+    for(int center=0;center<n;++center){std::vector<Point> v;
+        for(int i=0;i<n;++i)if(i!=center)v.push_back({points[i].x-points[center].x,points[i].y-points[center].y});
+        std::sort(v.begin(),v.end(),[&](Point a,Point b){if(half(a)!=half(b))return half(a)<half(b);return cross(a,b)>0;});
+        int m=v.size();for(int i=0;i<m;++i)v.push_back(v[i]);
+        int p90=1,p180=1;
+        for(int i=0;i<m;++i){p90=std::max(p90,i+1);p180=std::max(p180,i+1);
+            while(p180<i+m && cross(v[i],v[p180])>0)++p180;
+            while(p90<p180 && dot(v[i],v[p90])>0)++p90;
+            int equal=p90<p180 && dot(v[i],v[p90])==0;
+            right+=equal;obtuse+=p180-p90-equal;
+        }
+    }
+    long long total=1LL*n*(n-1)*(n-2)/6;
+    return {total-right-obtuse,right,obtuse};
+}
+```
+
+## 関連する手法
+
+[同一直線の点を、最大公約数と向きの統一でまとめる](/flowchartcp/techniques/collinear-direction-gcd/) ・ [尺取り法](/flowchartcp/techniques/two-pointers/)
+
+## 参考資料
+
+- [AtCoder：三角形の分類（原典）](https://atcoder.jp/contests/abc033/tasks/abc033_d)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="angle-vector-two-pointers" />

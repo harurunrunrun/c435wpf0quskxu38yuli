@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "JOI2020 Constellation3/HarvestとIOI2020 Tickets/Supertrees/Stationsの不足解消",
+  "counts": {
+    "specificTechniques": 397,
+    "foundationArticles": 78,
+    "allArticles": 475,
+    "exampleMappings": 496,
+    "originalUrls": 458,
+    "graphs": 442,
+    "nodes": 3523,
+    "questions": 1597,
+    "answerEdges": 5202,
+    "verifiedWalks": 492,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "skyline-cartesian-star-paths",
+      "articleSha256": "8f7b4bc1beda2e90d167c71735049dcd6df832d23f9080c28b8ddfa29e60373d",
+      "codeSha256": "ff9c131f57e12740b2e9d279eeabbcb70240302a603dcae6e2d626680cdaf501",
+      "checks": 57582,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true
+    },
+    {
+      "id": "functional-graph-timed-arrivals-offline",
+      "articleSha256": "207f2d23ebce79aef84977eb355bb12d753b8b39b39ca9dd920c0e3b724f42bd",
+      "codeSha256": "5dd0f026eb99e6b9ff2dfac14f87667938062660b35c9975e34ec99cf7f3f83e",
+      "checks": 26409576,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true
+    },
+    {
+      "id": "median-ticket-extreme-selection-round-decomposition",
+      "articleSha256": "9f70ff3de70f84459253054b1cf18df909ef86a1f62032d87b5d42c3029defbd",
+      "codeSha256": "b0880b045093b030ed61e1f8b5e4ca96e25d01fcb6ed68cd6e65e11e97b04fec",
+      "checks": 20445406,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true
+    },
+    {
+      "id": "tree-local-routing-alternating-dfs-labels",
+      "articleSha256": "bc0839caea3c2de972d79c7a6bd0ac4c9655d0f4b3a8a893a9ae57e84abbeb99",
+      "codeSha256": "eb6375bb725cbd88216044d54633d953b042ab968d5d6ab4c4d0c2b266bd280a",
+      "checks": 54792748,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true
+    },
+    {
+      "id": "simple-path-count-matrix-tree-cycle-construction",
+      "articleSha256": "78848e2ef23cb9197fb94e0656787a622ff0ed8901651e6ba0a5f493d8cec11e",
+      "codeSha256": "398ce4268c28801ccab3f6b74793483efde8baf5aba0e48d81e34895756de839",
+      "checks": 52708028,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true
+    }
+  ],
+  "verified": [
+    "各実公開MDXのC++20を抽出し、長方形と祖先パス選択、秒単位の物理イベントと個体の移動、券の全割当と中央値、全小グラフと全小対称行列、全小木と全根のBFSとの比較を実行。記事のコードは作者と独立レビューでASan/UBSanを通過したコードと完全一致。",
+    "Stationsの準備関数を含まない実行ファイルを別コンパイルし、局所tuple71696件だけで経路選択が一致。正常検査54792748件と合わせて54864444件。",
+    "Supertreesの人工1000頂点上限を除去し、1001/2000頂点も返却グラフの全頂点対単純路を独立DFSで直接再計数。原典PDFの数値上限は未確認と区別。",
+    "新JOI技巧の4入口・IOI3入口、全必要条件のno/unknown、SVG回答ラベルと記事リンク、share/back、原典日付と難度null、旧491/493歩行と全到達nodeの固定hashを独立テストで検証。",
+    "旧格子根の厳密な回帰条件を保つため、新設skyline-starsのみ幾何根へ移動。旧テストと旧491経路は変更していない。",
+    "全分岐・配置・表示切替・ホイール・履歴共有・台帳・固定群・収集器の38テスト群PASS。",
+    "IOI2020の初回466記事431図・Ticketsのみ解法確認1/6のsnapshotと原始未確認5件を保持。Supertrees/Stationsの証明は明示のsubsequentSolutionReviewsへ追記し、後続3/6確認・記事解消と区別。",
+    "最終npm run build:local は475記事496対応442図で成功。新5記事の日英/全角検索21件、数式、カタログ、原典/解説リンクと分類の根拠を照合。",
+    "最終442 SVG pairsと図専用ページ、5202回答ラベル、404旧共有URLを照合。追加技巧の詳細図と新入口を含む幾何根図を画像化し目視。",
+    "最終npm run verify:local は1368 HTML/SVGの28023内部リンク・資産を確認。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 36,
+    "fixedCorpusSolutionsReviewed": 29,
+    "publishedExamplesSolutionsReviewed": 456,
+    "allDistinctSolutionsReviewed": 460,
+    "usacoCovered": "6/6",
+    "icpcCovered": "7/12",
+    "joiCovered": "9/12",
+    "ioiResearch": "3/6",
+    "ioiCovered": "3/6",
+    "remainingKnownGaps": 12
+  },
+  "limitations": [
+    "全世界の問題母数は未確定で網羅未完了。固定問題群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは環境上の失敗後に再試行しておらず未検証。",
+    "外部リンクの全件生存確認は未実施。",
+    "push・アップロード・公開は実施していない。"
+  ],
+  "inProgress": [
+    "IOI2019公式競技全6題の凍結監査",
+    "ICPC2018 World Finals公式全11題の凍結監査",
+    "Biscuitsの必要十分条件と状態数証明に基づく完全記事・実装比較"
+  ]
+}

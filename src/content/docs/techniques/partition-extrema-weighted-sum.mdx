@@ -1,0 +1,128 @@
+---
+title: "分割の重みに区間の最大値・最小値が掛かるなら、同じ極値の遷移をまとめる"
+description: "右端を伸ばしたときに変わる極値をまとめ、各まとまりに切れ目より前のDPの総和を持ちます。"
+techniqueId: partition-extrema-weighted-sum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+右端を伸ばしたときに変わる極値をまとめ、各まとまりに切れ目より前のDPの総和を持ちます。
+
+## 使う場面
+
+列を連続した非空区間に分割し、各区間の重みを掛けた値を、すべての分割について足したい。区間の重みが「最大値と最小値の差」なら、最後の切れ目を全探索するDPは $O(N^2)$ になる。
+
+右端を一つ進めると、いくつもの切れ目で区間の最大値が同じ値に変わる。このまとまりごとに、既に求めたDPの総和を保存すると、各切れ目を毎回調べずに済む。最小値側も同様に処理する。
+
+## 考え方
+
+$a[0..i)$ の分割の重みの総和を $d_i$ とし、$d_0=1$ とする。最後の区間の始点を $j$ とすれば、
+
+$$
+d_{i+1}=\sum_{j=0}^{i}d_j\left(\max a[j..i]-\min a[j..i]\right).
+$$
+
+最大値の項と最小値の項を分けて、
+
+$$
+S_{\max}=\sum_{j=0}^{i}d_j\max a[j..i],\qquad
+S_{\min}=\sum_{j=0}^{i}d_j\min a[j..i]
+$$
+
+を保つ。答えは $d_{i+1}=S_{\max}-S_{\min}$ になる。
+
+最大値用のスタックには、区間の最大値 $v$ と、その値になる始点の重みの総和 $w=\sum d_j$ を保存する。値 $v$ は下から上へ狭義単調減少する。
+
+新しい値 $x=a_i$ を加えるとき、新しい始点 $j=i$ の重みは $d_i$。スタックの末尾で $v\le x$ となるまとまりは、すべて最大値が $x$ に変わる。それらの $vw$ を $S_{\max}$ から引き、重み $w$ を新しい始点の重みに足す。最後に一つのまとまり $(x,w)$ を積み、その $xw$ を加える。
+
+最小値側は $v\ge x$ のまとまりを併合する。二つのスタックへ渡す新しい始点の重みは、どちらも更新前の $d_i$ にする。
+
+## 適用条件
+
+- 各切れ目の係数 $d_j$ は、その切れ目を追加した後には変わらない。
+- 区間を右へ伸ばす操作だけを行う。任意位置の値の変更には、そのままでは対応しない。
+- 遷移が極値に対して線形に分離できる。例えば $\max-\min$ には使えるが、$\max\times\min$ は二つのスタックの総和を引くだけでは求まらない。
+- 同じ極値になる始点について、係数の総和だけで必要な情報が尽くされる。区間長ごとに別の制約がある場合は、追加の情報や削除の処理が必要になる。
+
+重みを数える対象の個数と取り違えないこと。ここで足すのは始点の数ではなく $d_j$ であり、剰余上で $0$ になるまとまりも存在する。等しい値は併合してよく、値に負数があっても極値の比較は同じように成立する。
+
+## なぜ正しいか
+
+各分割は、最後の区間の始点 $j$ によって一意に分かれる。前半の分割の重みの総和 $d_j$ に、最後の区間の重みを掛ければ、この始点を持つ分割をちょうど数えられる。これが漸化式になる。
+
+最大値用のスタックでは、各まとまりが「現在の最大値が等しい始点の集合」を表す。新しい $x$ より大きい最大値は変わらず、$x$ 以下の最大値はすべて $x$ になる。後者はスタックの連続した末尾にあるため、まとめて取り出せる。係数 $d_j$ は変わらないので、重みを足すだけで併合後の寄与が得られる。
+
+したがって差分更新後も $S_{\max}$ は定義どおりの総和になる。最小値側にも同じ議論が成り立ち、両者の差は漸化式と一致する。
+
+## 計算量
+
+各要素はそれぞれのスタックに一度入り、一度だけ取り出される。全体で時間 $O(N)$、追加空間 $O(N)$。ある一回の追加で $O(N)$ 個を取り出すことはあるが、全体の取り出し回数は $O(N)$ に収まる。
+
+剰余を取らない版では、答えの桁数に応じて算術の費用も変わる。以下は法 $998244353$ の固定長整数による実装である。
+
+## 実装
+
+`partition_extrema_product_sum` は、各区間の「最大値と最小値の差」を掛けた値の全分割にわたる総和を返す。入力は符号付き64ビット整数で、重複・負数も扱う。空列は空分割の重み $1$ を返す。
+
+極値の比較には元の値を使い、掛け算には正規化した剰余を使う。`max - min` を元の整数型で計算しないため、両端の値の差が64ビットに収まらなくてもよい。剰余同士の積は符号付き64ビットに収まる。
+
+```cpp
+#include <vector>
+
+int partition_extrema_product_sum(const std::vector<long long>& a) {
+    constexpr long long mod = 998244353;
+    struct Group {
+        long long value;
+        long long weight;
+    };
+    std::vector<Group> maxima, minima;
+    maxima.reserve(a.size());
+    minima.reserve(a.size());
+    long long sum_max = 0, sum_min = 0;
+    long long dp = 1;
+
+    auto contribution = [=](long long value, long long weight) {
+        long long residue = value % mod;
+        if (residue < 0) residue += mod;
+        return residue * weight % mod;
+    };
+
+    for (long long x : a) {
+        const long long previous_dp = dp;
+        long long weight = previous_dp;
+        while (!maxima.empty() && maxima.back().value <= x) {
+            const Group group = maxima.back();
+            maxima.pop_back();
+            sum_max = (sum_max - contribution(group.value, group.weight)
+                       + mod) % mod;
+            weight = (weight + group.weight) % mod;
+        }
+        maxima.push_back({x, weight});
+        sum_max = (sum_max + contribution(x, weight)) % mod;
+
+        weight = previous_dp;
+        while (!minima.empty() && minima.back().value >= x) {
+            const Group group = minima.back();
+            minima.pop_back();
+            sum_min = (sum_min - contribution(group.value, group.weight)
+                       + mod) % mod;
+            weight = (weight + group.weight) % mod;
+        }
+        minima.push_back({x, weight});
+        sum_min = (sum_min + contribution(x, weight)) % mod;
+        dp = (sum_max - sum_min + mod) % mod;
+    }
+    return static_cast<int>(dp);
+}
+```
+
+## 関連する手法
+
+- [全区間の最大値を各要素の寄与に分ける](/flowchartcp/techniques/subarray-extremum-contribution/)：すべての始点の重みが既知なら、各極値の左右の境界からも集計できる。
+- [区間最小値の担当ごとに、分割DPの最大値をまとめる](/flowchartcp/techniques/partition-minimum-pivot-max-score/)：総和の代わりに最大値を持ち、最小値の担当が持つ得点を足す。
+
+## 参考資料
+
+- [AtCoder：ABC234 G - Divide a Sequence](https://atcoder.jp/contests/abc234/tasks/abc234_g)
+- [AtCoder公式解説：ABC234 G](https://atcoder.jp/contests/abc234/editorial/3227?lang=ja)
+
+<TechniqueReferences techniqueId="partition-extrema-weighted-sum" />

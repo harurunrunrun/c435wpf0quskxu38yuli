@@ -1,0 +1,79 @@
+---
+title: "上限付きの一数とのXOR和は、桁ごとの利益と上限未満の状態を組み合わせる"
+description: "上限を超えない範囲で、0と1のどちらが各ビットの合計へ多く寄与するかを選ぶ。"
+techniqueId: bounded-xor-sum-maximum
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定した非負整数列に対し、一つの数 $X$ を選んで $\sum_i(X\mathbin{\mathrm{XOR}}A_i)$ を最大化する。ただし $X\le K$ という上限がある。各桁の多数派・少数派だけで $X$ を決めると、その上限を超える可能性がある。
+
+## 考え方
+
+ビット $b$ が1の要素数を $c_b$ とする。$X$ のその桁を0にすれば合計への寄与は $2^bc_b$、1にすれば $2^b(N-c_b)$。寄与は桁ごとに足せるので、要素列を遷移のたびに走査する必要はない。
+
+上位から見て、既に決めた $X$ の接頭辞が $K$ と一致する状態と、既に小さい状態に分ける。一致している間は $K$ の次の桁を超えられない。小さくなれば、下位は0・1のどちらでも選べる。同じ状態では利益の最大値一個だけを残す。
+
+例えば $A=(0,0,2)$、$K=2$。上位桁の利益だけを見ると $X=2$ を選んでしまうが、その利益は4。上位を0にして下位を1にする $X=1$ なら利益は5になる。上位を1にする選択と0にして下位を自由にする選択は、両方を比較する必要がある。
+
+## 適用条件
+
+全ての要素に**同じ** $X$ を使い、目的関数は各XORの通常の和。上位と下位をまたぐ制約は $X\le K$ だけとする。$X$ のpopcount、剰余、禁止ビット列なども指定されるなら、その条件の状態を追加する。
+
+掲載実装は20万要素以下、各値と $K$ は符号なし64ビット全域。負数は扱わない。答えは64ビットを超え得るため、`unsigned __int128` で返す。原典の $N\le10^5$、$A_i,K\le10^{12}$ なら符号付き64ビットにも収まる。空の列の最大値は0とする。
+
+## なぜ正しいか
+
+ビットごとの寄与を足し直しても、二数のXORを評価してから足した値と等しい。上限の判定は上位から最初に異なる桁だけで決まり、既に小さい接頭辞の下位は自由になる。
+
+同じ一致・未満の状態では、下位に選べる桁の列は過去の具体的な $X$ に依存しない。過去の利益が小さい候補は、同じ下位列を付けても大きい候補を超えないので捨ててよい。遷移は全ての $0\le X\le K$ を含み、超える値を含まないため、最後の最大値が最適になる。
+
+## 計算量
+
+$X=0,\ldots,K$ を試すと時間 $O(N(K+1))$、追加空間 $O(1)$。ビット幅を $B$ とすると、各桁の個数集計に $O(NB)$、DPに $O(B)$ 時間、追加空間 $O(B)$。掲載実装の $B=64$ は固定。入力列自体の保存領域は含めない。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <stdexcept>
+#include <vector>
+unsigned __int128 maximum_bounded_xor_sum(
+    const std::vector<std::uint64_t>& values, std::uint64_t limit) {
+    if(values.size()>200000) throw std::invalid_argument("length");
+    std::array<std::uint64_t,64> ones{};
+    for(auto value:values) for(int b=0;b<64;++b) ones[b]+=(value>>b)&1U;
+    std::array<__int128,2> dp{0,-1};
+    for(int b=63;b>=0;--b) {
+        std::array<__int128,2> next{-1,-1};
+        int upper=(limit>>b)&1U;
+        for(int less=0;less<2;++less) if(dp[less]>=0) {
+            for(int chosen=0;chosen<2;++chosen) {
+                if(!less && chosen>upper) continue;
+                int next_less=less || chosen<upper;
+                std::uint64_t count=chosen ? values.size()-ones[b] : ones[b];
+                __int128 gain=static_cast<__int128>(count)*(__int128{1}<<b);
+                next[next_less]=std::max(next[next_less],dp[less]+gain);
+            }
+        }
+        dp=next;
+    }
+    return static_cast<unsigned __int128>(std::max(dp[0],dp[1]));
+}
+```
+
+## 関連する手法
+
+- [全ての組のXORの和をビットごとに数える](/flowchartcp/techniques/bitwise-contribution/)
+- [和とXORが等しい二数は、繰り上がりを禁止して和の上限だけを追う](/flowchartcp/techniques/carryfree-sum-xor-bound/)
+
+## 参考資料
+
+- [AtCoder — XXOR](https://atcoder.jp/contests/abc117/tasks/abc117_d)
+- [公式解説 D 節](https://img.atcoder.jp/abc117/editorial.pdf) — 上限と初めて異なる桁を固定する形で、同じ自由な下位桁の選択を扱う。
+
+<TechniqueReferences techniqueId="bounded-xor-sum-maximum" />

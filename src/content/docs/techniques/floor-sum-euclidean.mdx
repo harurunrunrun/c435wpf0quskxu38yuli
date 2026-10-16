@@ -1,0 +1,74 @@
+---
+title: "一次式を割って切り捨てた和を、格子点の縦横を入れ替えて求める"
+description: "巨大な添字範囲を走査せず、商の整数部分と残った格子点を分けて分母を減らします。"
+techniqueId: floor-sum-euclidean
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$S=\sum_{i=0}^{n-1}\lfloor(ai+b)/m\rfloor$ を求めます。傾いた直線の下の格子点の個数、周期ごとの到達回数、剰余の大小の計数などに現れます。$n$ が $10^9$ でも、添字を一つずつ処理しません。
+
+## 考え方
+
+まず $a=q_am+r_a$、$b=q_bm+r_b$、$0\le r_a,r_b<m$ に分けます。整数部分の寄与は
+
+$$q_a\frac{n(n-1)}2+q_bn$$
+
+です。残りは $0\le a,b<m$ として考えます。
+
+各列の高さの和は、横方向に数えても同じです。$y=an+b$ が $m$ 未満なら終わり。そうでなければ、新しい列数を $\lfloor y/m\rfloor$、切片を $y\bmod m$ とし、$a$ と $m$ を入れ替えます。再び整数部分を外して繰り返します。
+
+## 適用条件
+
+分母は正、添字範囲は非負です。掲載実装は $0\le n\le10^9$、$1\le m\le10^9$、$a,b$ は符号付き 64 bit の範囲です。負の値は、0 に向かう整数除算ではなく床関数になるよう、商と余りを最初に直します。
+
+答えも中間の積も 64 bit に収まるとは限らないため、戻り値と計算に `__int128` を使います。たとえば $a=0,b=-1,m=2$ なら、一項は 0 でなく -1 です。
+
+## なぜ正しいか
+
+整数部分を取り除く式は各項の床関数へ直接代入して得られます。正規化後の和は、$0\le i<n$、$1\le j$、$mj\le ai+b$ となる格子点の個数です。
+
+$Y=\lfloor(an+b)/m\rfloor$ と置き、$j=Y,\ldots,1$ の順に横方向へ数えると、個数は $\lfloor(m t+(an+b)\bmod m)/a\rfloor$、$0\le t<Y$ の和になります。これが入れ替えた式です。$a=0$ の場合は高さが分母未満で先に終了します。入れ替え後の剰余処理はユークリッドの互除法と同じく、分母を小さくします。
+
+## 計算量
+
+直接計算の時間 $O(n)$ を、時間 $O(\log(m+1))$ へ減らします。追加空間は $O(1)$ です。符号の処理は最初の定数時間だけで、元の $a,b$ が大きくても繰り返し回数を増やしません。
+
+## 実装
+
+`floor_sum_exact(n,m,a,b)` は床関数の和を正確な 128 bit 整数で返します。一般的な `%` の結果が負になる言語でも、商の補正を省かないでください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 floor_sum_exact(long long n,long long m,long long a,long long b) {
+    assert(0<=n && n<=1000000000 && 1<=m && m<=1000000000);
+    auto divide_floor=[](__int128 value,long long modulus) {
+        __int128 quotient=value/modulus,remainder=value%modulus;
+        if(remainder<0) --quotient;
+        return quotient;
+    };
+    __int128 qa=divide_floor(a,m),qb=divide_floor(b,m);
+    __int128 result=__int128(n)*(n-1)/2*qa+__int128(n)*qb;
+    a=__int128(a)-qa*m;b=__int128(b)-qb*m;
+    while(true) {
+        result+=__int128(n)*(n-1)/2*(a/m)+__int128(n)*(b/m);
+        a%=m;b%=m;
+        __int128 height=__int128(a)*n+b;
+        if(height<m) return result;
+        n=height/m;b=height%m;
+        swap(a,m);
+    }
+}
+```
+
+## 関連する手法
+
+[床関数の商が同じ区間をまとめる](/flowchartcp/techniques/quotient-blocks/)
+
+## 参考資料
+
+- [AtCoder Library: floor_sum の仕様と使用例](https://atcoder.github.io/ac-library/production/document_ja/math.html)
+
+<TechniqueReferences techniqueId="floor-sum-euclidean" />

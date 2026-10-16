@@ -1,0 +1,96 @@
+---
+title: "マンハッタン距離の全点対の辺を、八方向の最近点へ絞る"
+description: "全点対を結ぶ最小全域木を、各点の方向別の候補辺だけから作る。"
+techniqueId: manhattan-nearest-octants
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+平面の全ての点対をマンハッタン距離の重みで結び、最小全域木を作りたい。辺を全て作ると $O(N^2)$ 個になり、点が十万以上あると保持できない。
+
+## 考え方
+
+各点 $p$ の周囲を45度ずつの八方向に分ける。各方向には片方の境界だけを含め、もう片方は隣の方向へ渡す。各方向に入る点のうちマンハッタン距離が最小の点だけを候補にする。この $O(N)$ 個の辺から最小全域木を求められる。
+
+一方向を $q_x-p_x\ge q_y-p_y>0$ とする。この範囲では距離は $(q_x+q_y)-(p_x+p_y)$ なので、条件
+
+$$q_y>p_y,\qquad q_x-q_y\ge p_x-p_y$$
+
+を満たす点の $q_x+q_y$ の最小値を探せばよい。$y$ の降順で走査し、同じ $y$ の点は全て問い合わせた後で追加する。圧縮した $x-y$ の末尾側の最小値をFenwick木で管理する。軸の交換と各軸の符号反転を組み合わせ、八方向で繰り返す。向きを反転させる変換では境界の担当も逆にし、$q_y\ge p_y$ と $q_x-q_y>p_x-p_y$ の組を使う。
+
+## 適用条件
+
+辺重みは障害物や方向制限のない二次元マンハッタン距離である。この距離以外の重みや、使える辺を限定する条件では候補を捨てる証明をやり直す。
+
+座標の絶対値は $10^9$ 以下とする。座標の和・差と距離は64ビットで収まり、全域木の重み合計は128ビットで返す。重複点は同一点の代表へ距離0の辺で結んでから、異なる座標の点だけを八方向で調べる。軸上・斜め45度上の点を、どれか一つの方向へ必ず割り当てる。
+
+## なぜ正しいか
+
+同じ半開の45度領域で、$p$ からの距離が $R$ 以下の二つの異なる非零点 $q,r$ は、$d(q,r)<R$ を満たす。領域を切る等距離線が作る三角形で、この不等式を各座標の差から確認できる。非厳密な等号が起こる二つの端のうち一方を領域から除くことが、境界を半開にする理由である。
+
+候補辺でない辺 $pq$ を最小全域木が使っているとする。$q$ と同じ方向の最近点を $r$ とすれば $d(p,r)\le d(p,q)$ で、上の性質から $d(q,r)<d(p,q)$。$pq$ を消したとき、$r$ が $p$ 側にいれば $qr$ で置換して木を軽くできるため矛盾する。従って $r$ は $q$ 側にあり、候補辺 $pr$ で同じ重さ以下に置換できる。候補でない辺の本数が減るので、この置換を繰り返せば候補辺だけの最小全域木を得る。最近点の距離が同じでも成り立つ。
+
+同じ座標の点は先に距離0で接続し、残る代表点だけをこの議論へ使う。走査での厳密・非厳密の二条件を、同じ高さの一括追加とFenwick木の問い合わせ範囲で区別する。
+
+## 計算量
+
+全辺の構築は $O(N^2)$ 時間・空間で、Kruskal法の整列は $O(N^2\log N)$。八方向の走査と候補辺からのKruskal法は $O(N\log N)$ 時間、$O(N)$ 空間。
+
+## 実装
+
+`manhattan_mst` は合計重みと元添字の辺を返す。空集合は重み0・辺なし、非空集合は $N-1$ 辺となる。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <map>
+#include <numeric>
+#include <tuple>
+#include <utility>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+struct ManhattanTree { i128 weight; std::vector<std::pair<int,int>> edges; };
+ManhattanTree manhattan_mst(const std::vector<Point>& points){
+    int n=points.size();std::vector<std::tuple<long long,int,int>> edges;
+    std::map<std::pair<long long,long long>,int> representatives;std::vector<int> active;
+    for(int i=0;i<n;++i){auto [it,inserted]=representatives.emplace(std::pair{points[i].x,points[i].y},i);
+        if(inserted)active.push_back(i);else edges.emplace_back(0,i,it->second);}
+    for(int swap_axes=0;swap_axes<2;++swap_axes)for(int sx:{-1,1})for(int sy:{-1,1}){
+        struct Item{long long y,key,sum;int id;};std::vector<Item> a;std::vector<long long> keys;
+        for(int i:active){long long x=swap_axes?points[i].y:points[i].x,y=swap_axes?points[i].x:points[i].y;x*=sx;y*=sy;
+            a.push_back({y,x-y,x+y,i});keys.push_back(x-y);}
+        std::sort(keys.begin(),keys.end());keys.erase(std::unique(keys.begin(),keys.end()),keys.end());
+        std::sort(a.begin(),a.end(),[](Item p,Item q){if(p.y!=q.y)return p.y>q.y;if(p.key!=q.key)return p.key>q.key;return p.id<q.id;});
+        const auto INF=std::pair{std::numeric_limits<long long>::max(),-1};
+        std::vector<std::pair<long long,int>> bit(keys.size()+1,INF);
+        auto index_of=[&](Item p){return int(keys.size())-int(std::lower_bound(keys.begin(),keys.end(),p.key)-keys.begin());};
+        auto query=[&](Item p,bool strict_key){int index=index_of(p)-int(strict_key);auto best=INF;
+            for(int j=index;j>0;j-=j&-j)best=std::min(best,bit[j]);
+            if(best.second>=0)edges.emplace_back(best.first-p.sum,p.id,best.second);};
+        auto insert=[&](Item p){auto value=std::pair{p.sum,p.id};for(int j=index_of(p);j<int(bit.size());j+=j&-j)bit[j]=std::min(bit[j],value);};
+        bool strict_y=(swap_axes?-1:1)*sx*sy>0;
+        if(strict_y){for(int begin=0;begin<int(a.size());){int end=begin+1;while(end<int(a.size()) && a[end].y==a[begin].y)++end;
+                for(int i=begin;i<end;++i)query(a[i],false);
+                for(int i=begin;i<end;++i)insert(a[i]);
+                begin=end;}}
+        else for(Item p:a){query(p,true);insert(p);}
+    }
+    std::sort(edges.begin(),edges.end());std::vector<int> parent(n),size(n,1);std::iota(parent.begin(),parent.end(),0);
+    auto find=[&](int v){while(v!=parent[v]){parent[v]=parent[parent[v]];v=parent[v];}return v;};
+    ManhattanTree result{0,{}};
+    for(auto [w,u,v]:edges){int a=find(u),b=find(v);if(a==b)continue;if(size[a]<size[b])std::swap(a,b);parent[b]=a;size[a]+=size[b];result.weight+=w;result.edges.push_back({u,v});}
+    return result;
+}
+```
+
+## 関連する手法
+
+[マンハッタン距離の最大値は x+y と x−y の幅を見る](/flowchartcp/techniques/manhattan-transform/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [Library Checker：Manhattan MST（原典）](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/geo/manhattanmst/task.md)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="manhattan-nearest-octants" />

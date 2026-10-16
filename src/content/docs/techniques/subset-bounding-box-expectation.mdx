@@ -1,0 +1,99 @@
+---
+title: "無作為に選ぶマスの外接長方形は、各マスを含まない四方向の包除で数える"
+description: "長方形の四辺を列挙せず、選んだ点が全て上・下・左・右にある事象を各マスで引く。"
+techniqueId: subset-bounding-box-expectation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+盤面から異なる $K$ マスを一様に選び、その外接長方形の面積の期待値を求めたい。外接長方形の四辺の位置を列挙すると $O(H^2W^2)$ 通りになる。面積を、各マスが長方形に含まれるかの和へ分ける。
+
+## 考え方
+
+0始まりのマス $(r,c)$ を考える。選んだ点が全てこのマスより上、下、左、右のいずれかにあると、このマスは外接長方形の外になる。この四事象を $U,D,L,R$ とする。
+
+全選択数を $T=\binom{HW}K$ とすれば、含まれる選択数は
+
+$$\begin{aligned}
+G_{r,c}={}&T-\binom{rW}K-\binom{(H-r-1)W}K-\binom{Hc}K-\binom{H(W-c-1)}K\\
+&+\binom{rc}K+\binom{r(W-c-1)}K+\binom{(H-r-1)c}K+\binom{(H-r-1)(W-c-1)}K.
+\end{aligned}$$
+
+上かつ左などの交差は四隅の長方形になる。上かつ下、左かつ右は空集合であり、$K\ge1$ なら選択数0。三事象以上の交差も空になる。求める期待値は $T^{-1}\sum_{r,c}G_{r,c}$。
+
+## 適用条件
+
+重複しない $K\ge1$ マスを一様に選び、長方形の辺は座標軸に平行とする。空の選択の外接長方形は定義しない。重複を許す選択や非一様な重みでは二項係数を別の確率へ置き換える必要がある。
+
+法は素数 $P=998244353$、掲載実装は $HW<P$ を要求する。この範囲では $T$ は法で0でなく逆元を持つ。$HW\ge P$ では二項係数の評価と分母の可逆性を別に確認する。行・列数は1000以下を想定する。
+
+## なぜ正しいか
+
+マス $(r,c)$ が外接長方形に含まれる条件は、選択点の最小行が $r$ 以下、最大行が $r$ 以上、最小列が $c$ 以下、最大列が $c$ 以上である。これが破れるのは四事象の和集合と正確に一致するため、包除で $G_{r,c}$ が得られる。
+
+ある選択集合が作る長方形の面積は、長方形内の各マスに1を足した数。マスごとの選択数を合計してから全選択数で割れば、全選択の面積の平均になる。各マスの包含事象同士の独立性は不要である。
+
+## 計算量
+
+全選択の列挙は $O(K\binom{HW}K)$ 時間、四辺の列挙は $O(H^2W^2)$ 時間。階乗表を $HW$ まで作り、各マスを定数項で処理すれば $O(HW+\log P)$ 時間、$O(HW)$ 空間。$K=1$ なら必ず面積1、$K=HW$ なら必ず面積 $HW$ になる。
+
+## 実装
+
+返り値は有理数の期待値を法 $998244353$ で表した値。空の領域や $K$ より小さい領域の二項係数は0として扱う。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+constexpr long long BOX_MOD=998244353;
+long long expected_subset_bounding_box(int h,int w,int k) {
+    if(h<1 || w<1 || h>1000 || w>1000 || k<1 || k>h*w)
+        throw std::invalid_argument("range");
+    BinomialTable<BOX_MOD> combinations(h*w);
+    long long total=combinations.choose(h*w,k),sum=0;
+    auto count=[&](int rows,int cols) {return combinations.choose(rows*cols,k);};
+    for(int r=0;r<h;++r) for(int c=0;c<w;++c) {
+        int down=h-r-1,right=w-c-1;
+        long long good=total;
+        for(long long bad:{count(r,w),count(down,w),count(h,c),count(h,right)})
+            good=(good+BOX_MOD-bad)%BOX_MOD;
+        for(long long overlap:{count(r,c),count(r,right),count(down,c),count(down,right)})
+            good=(good+overlap)%BOX_MOD;
+        sum=(sum+good)%BOX_MOD;
+    }
+    return sum*BinomialTable<BOX_MOD>::power(total,BOX_MOD-2)%BOX_MOD;
+}
+```
+
+## 関連する手法
+
+[総数の期待値を、各組が成立する確率に分ける](/flowchartcp/techniques/expectation-indicators/) ・ [全ての指定文字を含む列を、欠ける文字から数える](/flowchartcp/techniques/inclusion-exclusion-forbidden/)
+
+## 参考資料
+
+- [AtCoder：F - Minimum Bounding Box 2（原典）](https://atcoder.jp/contests/abc297/tasks/abc297_f)。
+
+<TechniqueReferences techniqueId="subset-bounding-box-expectation" />

@@ -1,0 +1,158 @@
+---
+title: "行列の各要素の下限を先に引き、行和と列和を流量で復元する"
+description: "下限のために必ず入る量を行と列の合計から差し引き、残りだけを割り振る。"
+techniqueId: matrix-margin-lower-offset
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+行の合計と列の合計が決まっていて、各要素にも上下限がある。行を先に貪欲に埋めると、残った列の上限に引っかかる場合がある。
+
+## 考え方
+
+求める値を $x_{ij}=\ell_{ij}+y_{ij}$ と分ける。新しい制約は $0\le y_{ij}\le u_{ij}-\ell_{ij}$。行和から $\sum_j\ell_{ij}$、列和から $\sum_i\ell_{ij}$ を引く。
+
+始点から行へ残る行和、行から列へ $u_{ij}-\ell_{ij}$、列から終点へ残る列和の容量を張る。残る行和の総和だけ流せたら、全行と全列の合計を満たす。復元するときに下限を戻す。
+
+累積和の入力は隣り合う差で通常の行和・列和へ直す。この差分と、下限の差し引きは順に行う。
+
+## 適用条件
+
+行和・列和をちょうど満たし、要素の制約は独立な非負整数の上下限 $0\le\ell_{ij}\le u_{ij}$。行和と列和の総和が異なる、差し引いた和が負、下限が上限を超える場合は不可能。
+
+実装には同じ寸法の上下限配列を与え、全ての加減算と容量の総和の絶対値を $10^{15}$ 以下にする。合計が単なる上限で使い切らなくてよい問題には、全容量の充足という終了条件をそのまま使わない。
+
+## なぜ正しいか
+
+合法な $y$ を行列間の辺の流量にすると、保存則が残る行和・列和を表す。逆に必要総量へ達した流量は始点側の全行容量を使い切る。列側の容量総和も同じなので全列容量も使い切る。整数容量の増加操作から整数行列が得られる。
+
+## 計算量
+
+各セルの値を全探索すると、値域幅を $K$ として $O(K^{RC})$。$V=R+C+2$、$E=RC+R+C$ のグラフへ変換し、掲載実装は $O(V^2E)$ 時間、$O(RC+R+C)$ 空間。復元は $O(RC)$ 時間。
+
+## 実装
+
+bounded_matrix には累積和ではなく通常の行和・列和を渡す。解を一つ返し、不可能なら nullopt。共通下限1・上限20も、セルごとに異なる上下限も扱う。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+#include <optional>
+std::optional<std::vector<std::vector<long long>>> bounded_matrix(
+    std::vector<long long> rows,std::vector<long long> columns,
+    const std::vector<std::vector<long long>>& lower,
+    const std::vector<std::vector<long long>>& upper) {
+    int r=rows.size(),c=columns.size(),s=r+c,t=s+1;
+    FlowNetwork g(t+1); std::vector<std::vector<int>> id(r,std::vector<int>(c));
+    for(int i=0;i<r;++i) for(int j=0;j<c;++j) {
+        if(lower[i][j]<0 || upper[i][j]<lower[i][j]) return std::nullopt;
+        rows[i]-=lower[i][j]; columns[j]-=lower[i][j];
+        id[i][j]=g.add(i,r+j,upper[i][j]-lower[i][j]);
+    }
+    long long total_rows=0,total_columns=0;
+    for(int i=0;i<r;++i) {
+        if(rows[i]<0) return std::nullopt;
+        total_rows+=rows[i]; g.add(s,i,rows[i]);
+    }
+    for(int j=0;j<c;++j) {
+        if(columns[j]<0) return std::nullopt;
+        total_columns+=columns[j]; g.add(r+j,t,columns[j]);
+    }
+    if(total_rows!=total_columns || g.flow(s,t,total_rows)!=total_rows)
+        return std::nullopt;
+    auto result=lower;
+    for(int i=0;i<r;++i) for(int j=0;j<c;++j) result[i][j]+=g.used(id[i][j]);
+    return result;
+}
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/)
+
+## 参考資料
+
+- [UVa Online Judge：Matrix Decompressing（原典）](https://onlinejudge.org/external/110/11082.pdf)
+
+<TechniqueReferences techniqueId="matrix-margin-lower-offset" />

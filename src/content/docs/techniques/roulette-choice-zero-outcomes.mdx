@@ -1,0 +1,67 @@
+---
+title: "行動を選べる増分DPは、行動ごとの足踏みを除いてから最小化する"
+description: "残量ごとに使うルーレットを選び、0点の自己遷移を除いた候補費用を比較する。"
+techniqueId: "roulette-choice-zero-outcomes"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+料金と出目が異なる複数の行動から毎回一つを選び、得点が目標以上になるまでの最小期待費用を求めるとき。0点を含むと同じ残量へ戻りますが、行動ごとに自己遷移を除けば小さい残量から計算できます。
+
+## 考え方
+
+あと $r$ 点の最小期待費用を $E[r]$ とし、$E[0]=0$。行動 $i$ の料金を $C_i$、等確率の出目の数を $P_i$、0の数を $Z_i$ とします。候補は
+$$R_i(r)=\frac{P_i C_i+\sum_{s\in S_i,\ s>0}E[\max(0,r-s)]}{P_i-Z_i},\qquad E[r]=\min_i R_i(r).$$
+重複した出目も別の確率として足します。目標を超えた残量は0へ丸めます。最適な行動は残量ごとに変わって構いません。
+
+## 適用条件
+
+増分が非負、各行動の出目が過去によらず独立、費用が正であること。0点しか出ない行動は改善を生まないので除きます。少なくとも一つは正の出目を持つ必要があり、なければ正の目標には到達不能です。残量以外の履歴によって料金や分布が変わる場合は状態を追加します。実装は目標・台数・各出目数が100以下、料金が1以上10000以下を対象にし、原典にはない全出目0の行動と目標0にも対応します。
+
+## なぜ正しいか
+
+小さい残量の値が決まっているとし、$V=\min_i R_i(r)$ とおきます。状態 $r$ で一回だけ行動 $i$ を行い、同じ状態に戻った後の値を $V$ とすると、その費用は $(Z_i/P_i)V+(1-Z_i/P_i)R_i(r)\ge V$。最小候補の行動では等号です。その行動を正の出目が出るまで繰り返すと有限の期待時間で進めるため、この下界を達成できます。したがって行動を途中で変更する戦略も含めた最適値が上の式になります。
+
+## 計算量
+
+時間 $O(M\sum_i P_i)$、入力を除く空間 $O(M)$。行動の全方針を列挙せず、各残量の候補を一度ずつ比較します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct RouletteChoice{long double cost;vector<int> outcomes;};
+optional<long double> minimum_roulette_cost(int target,const vector<RouletteChoice>& wheels){
+    if(target<0||target>100||wheels.size()>100)throw invalid_argument("roulette limits");
+    for(const auto& wheel:wheels){
+        if(!isfinite(wheel.cost)||wheel.cost<1||wheel.cost>10000||wheel.outcomes.empty()||wheel.outcomes.size()>100)throw invalid_argument("wheel");
+        for(int s:wheel.outcomes)if(s<0)throw invalid_argument("negative outcome");
+    }
+    vector<long double> expected(target+1);
+    for(int r=1;r<=target;++r){
+        long double best=numeric_limits<long double>::infinity();
+        for(const auto& wheel:wheels){
+            long double total=wheel.cost*wheel.outcomes.size();int positive=0;
+            for(int s:wheel.outcomes)if(s>0){++positive;total+=expected[max(0,r-s)];}
+            if(positive)best=min(best,total/positive);
+        }
+        if(!isfinite(best))return nullopt;
+        expected[r]=best;
+    }
+    return expected[target];
+}
+```
+
+## 関連する手法
+
+- [同じ状態に戻る確率を期待値の式から除く](/flowchartcp/techniques/expectation-self-loop/)
+- [増分が 0 の試行を含む期待値は、自己ループを左辺へ移す](/flowchartcp/techniques/random-gain-zero-elimination/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/abc314/tasks/abc314_e)
+- [出典の解説](https://atcoder.jp/contests/abc314/editorial/6966)
+
+<TechniqueReferences techniqueId="roulette-choice-zero-outcomes" />

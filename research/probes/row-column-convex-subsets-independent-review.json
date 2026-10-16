@@ -1,0 +1,250 @@
+{
+  "reviewStatus": "passed",
+  "reviewer": "/root/usaco_cowmistry_article",
+  "reviewedAt": "2026-10-15",
+  "problemId": "1142",
+  "techniqueId": "orthogonally-convex-row-interval-phase-prefix-dp",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-balanced-article.mdx",
+    "checker": "/tmp/flowchartcp-balanced-checker.py",
+    "sidecar": "/tmp/flowchartcp-balanced-sidecar.json",
+    "independentProbe": "/tmp/flowchartcp-balanced-independent-probe.py",
+    "independentProbeResult": "/tmp/flowchartcp-balanced-independent-probe.json"
+  },
+  "artifactSha256": {
+    "article": "38e17c60926ed565ba7d21994fca8e1090cfc5d6cff32b1cc975bb5daf899e26",
+    "checker": "278e7a65b569ac6a674ae5af6383be6a4a2a0d71b9270c87b7769e18a26e44ce",
+    "sidecar": "2cf12a03ba50ba62e021ea54b1fc82436cf2ffd28c958fd5cc25b9e81a0c9def",
+    "independentProbe": "cc679237ba2ec7b8b7b30e792bfefe4051090bc1e4b3b7d7a8e62627d704da69",
+    "independentProbeResult": "3481dd211c3a48e7e5e875271f900ef090fe44c5d56cba798b83299e709646e5"
+  },
+  "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedOriginalNumericBounds": [],
+  "nonblockingEditorialCorrection": {
+    "reportedBy": "root",
+    "issue": "O(AB+HW^2) needs a separate clause for zero-width API input, because checking A empty strings still takesO(A).",
+    "agreedIntegrationCorrection": "Empty outer grid:O(1). Nonempty zero-width rows:O(A) validation then0. For positive dimensions, retainO(AB+HW^2).",
+    "originalSourceCoverageAffected": false,
+    "codeChanged": false,
+    "parentWillApplyToIntegratedArticle": true
+  },
+  "sourceVerification": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+    "resultsUrl": "https://usaco.org/index.php?page=open21results",
+    "originalStatementAndOfficialSolutionIndependentlyRead": true,
+    "officialEditorialAuthor": "Spencer Compton",
+    "officialReferenceCodeAuthor": "Danny Mittal",
+    "officialProblemCredit": "Benjamin Qi",
+    "division": "Platinum",
+    "problemNumber": 3,
+    "sourceBounds": {
+      "N": "1..150",
+      "grid": "N byN G/.",
+      "subset": "Nonempty; allowed cells only;4-neighbor connected; selected cells in each row/column are contiguous.",
+      "modulus": 1000000007
+    },
+    "sourceDate": "2021",
+    "datePrecision": "year",
+    "exactMonthVerified": false,
+    "exactDayVerified": false,
+    "difficulty": null,
+    "visualInspectionClaimed": false,
+    "officialSolutionProvenance": "Official US Open Platinum problem3 View problem/Solution links independently checked; problem1 United Cows editorial is not used as Balanced evidence."
+  },
+  "proofReview": {
+    "connectivity": "Selected rows are consecutive and each is a nonempty interval. Adjacent row intervals intersect iff their row chains are joined by a vertical edge; these intersections are necessary and sufficient for4-connectivity.",
+    "oneTurnNecessity": "If left endpoints cross a column threshold upward and later downward, take a contiguous run with L>c bracketed by rows with L<=c. Neighbor overlap forces each bracket's R>c, so columnc is selected on both sides and absent in the run: a hole. The reflected argument gives the right-endpoint peak condition.",
+    "oneTurnSufficiency": "A valleyL makes rows withL<=c an interval; a peakR makes rows withR>=c an interval. Their intersection is exactly columnc's chosen rows and is contiguous.",
+    "uniquePhases": "Set left/right bits only at the first strict inward motion. Equality retains the prior bit. Each interval sequence therefore has exactly one state sequence; plateaus cannot introduce duplicate choices of a phase-change row.",
+    "transitions": "Intersect old l<=R,r>=L with each endpoint's phase rule. Independently checked all nine source rectangles:00one;01two;10two;11four. Strict0->1 excludes l=L orr=R;1->1 includes equality. Invalid l>r states remain zero, and empty halfopen rectangles return zero before indexing.",
+    "startEnd": "Start a new fullyG interval only in00 with weight1. Use only previous-row state, so empty rows are never skipped. Sum each state at its bottom row, counting each nonempty subset once.",
+    "implementation": "Rightward scans stop at the first blocked cell. Current tables are cleared every row, and previous-row prefix tables are overwritten only after all new row states finish. Transposed char lookup changes orientation without copying input."
+  },
+  "apiReview": {
+    "signature": "int count_row_column_convex_subsets(const std::vector<std::string>& grid)",
+    "entireOriginalRangeContained": true,
+    "extensions": "Rectangular0..150 dimensions including empty outer vector and zero-width rows.",
+    "invalidCases": "Dimension bounds, every row length, and all G/. characters checked before empty/zero-width return. Ragged/oversized/NUL/0xFF invalid. Standard allocation exceptions propagate.",
+    "state": "All mutable state local; input const; fresh calls after another size, empty input and exceptions.",
+    "integerSafety": "All stored values normalized below1e9+7. Prefix, rectangle and up tofour-source transitions explicitly useint64 before arithmetic. Maximum intermediate magnitude is only a few moduli. Index multiplication starts insize_t; each side<=151. No recursion.",
+    "time": "Positive dimensionsO(AB+max(A,B)*min(A,B)^2); zero-widthO(A); empty outerO(1).",
+    "space": "4W^2+4(W+1)^2 int entries,724816bytes atW150 on32bitint, plus constant objects/allocator/caller input separately. No copied transpose/all-row DP."
+  },
+  "presentationReview": {
+    "japaneseSections": 8,
+    "visibleCompleteCppFences": 1,
+    "allMetadataSourceUrlsInArticle": true,
+    "relatedLinksUseConfiguredBase": true,
+    "metadataSummaryMatchesArticle": true,
+    "referenceEvidenceOnlyApplicability": true,
+    "sourceYearPrecisionAndNullDifficultyConsistent": true,
+    "researchAcquisitionCountersKeptInSidecar": true
+  },
+  "reproduction": {
+    "normalCommand": "python3 /tmp/flowchartcp-balanced-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-balanced-checker.py --sanitize",
+    "normal": {
+      "checks": 83403,
+      "allSmallGrassBoards": 74954,
+      "literalNonemptyShapes": 74938,
+      "randomLiteralSubsetBoards": 600,
+      "literalEnumeratedSubsetCandidates": 909914,
+      "metamorphicChecks": 5400,
+      "directTransitionBoards": 240,
+      "invalidCalls": 10,
+      "checksum": "5989455240367906907",
+      "seconds": 1.07495,
+      "peakRSSKiB": 21600,
+      "maximumCases": [
+        {
+          "name": "all grass",
+          "count": 498249215
+        },
+        {
+          "name": "all blocked",
+          "count": 0
+        },
+        {
+          "name": "checkerboard",
+          "count": 11250
+        },
+        {
+          "name": "separated row stripes",
+          "count": 849375
+        },
+        {
+          "name": "four-arm cross",
+          "count": 32501250
+        },
+        {
+          "name": "two-row band",
+          "count": 85530175
+        },
+        {
+          "name": "one-cell outer frame",
+          "count": 134100
+        },
+        {
+          "name": "thin column extension",
+          "count": 11325
+        },
+        {
+          "name": "thin row extension",
+          "count": 11325
+        },
+        {
+          "name": "random maximum",
+          "count": 393302941
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "article": "/tmp/flowchartcp-balanced-article.mdx"
+    },
+    "sanitized": {
+      "checks": 83403,
+      "allSmallGrassBoards": 74954,
+      "literalNonemptyShapes": 74938,
+      "randomLiteralSubsetBoards": 600,
+      "literalEnumeratedSubsetCandidates": 909914,
+      "metamorphicChecks": 5400,
+      "directTransitionBoards": 240,
+      "invalidCalls": 10,
+      "checksum": "5989455240367906907",
+      "seconds": 4.06557,
+      "peakRSSKiB": 171336,
+      "maximumCases": [
+        {
+          "name": "all grass",
+          "count": 498249215
+        },
+        {
+          "name": "all blocked",
+          "count": 0
+        },
+        {
+          "name": "checkerboard",
+          "count": 11250
+        },
+        {
+          "name": "separated row stripes",
+          "count": 849375
+        },
+        {
+          "name": "four-arm cross",
+          "count": 32501250
+        },
+        {
+          "name": "two-row band",
+          "count": 85530175
+        },
+        {
+          "name": "one-cell outer frame",
+          "count": 134100
+        },
+        {
+          "name": "thin column extension",
+          "count": 11325
+        },
+        {
+          "name": "thin row extension",
+          "count": 11325
+        },
+        {
+          "name": "random maximum",
+          "count": 393302941
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "article": "/tmp/flowchartcp-balanced-article.mdx"
+    },
+    "semanticResultsEqual": true,
+    "asanUbsanPassed": true,
+    "leakSanitizerEnabled": false,
+    "counterScope": "83403 assertions, not distinct boards.74954 exhaustive grass boards use74938 literal nonempty shapes and subset-zeta; actual-subset enumeration909914 is separate. Maximum reference shares the phase characterization but uses one-axis prefixes and enumerates old right endpoints, not the published2D rectangle formula."
+  },
+  "additionalIndependentProbe": {
+    "command": "python3 /tmp/flowchartcp-balanced-independent-probe.py",
+    "result": {
+      "checks": 99248,
+      "boards": 33230,
+      "lifetimeTransitionUpdates": 3074360,
+      "all5x3Boards": 32768,
+      "literal5x3Shapes": 32767,
+      "maximumTallPatterns": 42,
+      "randomNarrowBoards": 420,
+      "maximumSeparatorChecks": 20,
+      "checksum": "16617549809945668858",
+      "seconds": 1.7923,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "oracle": "Per-column unseen/active/closed lifetimes and explicit row-overlap transitions, without endpoint phases or cumulative sums."
+    },
+    "oracle": "Track each column directly as unseen, active in the previous row, or closed. Enumerate every fullyallowed row interval. It may not reenter a closed column, must overlap the previous active interval, and closes every previous active column omitted now. Start one fresh interval per row and sum states at their bottom rows.",
+    "independence": "Uses explicit ternary column lifetimes and no left/right phase bits, unimodality characterization or cumulative sums. This directly enforces column contiguity and4-connectivity.",
+    "scope": "All32768 five-by-three availability boards and their transposes; the lifetime oracle itself is checked against all32767 literal5x3 cell shapes via direct row/column scans and cell BFS.42height150 narrow patterns (width1..7),420random narrow boards, and20 independent150x150 blocked-separator additivity identities.",
+    "separatorProof": "A wholly blocked row prevents any4-connected subset from meeting both sides, so the total equals the sum of the two sides modulo the modulus. This identity is independent of both DP state designs.",
+    "counterScope": "boards counts33230 base inputs, each compared in both orientations.99248 assertions includes32768 literal self-validation assertions,66460 API/oracle orientation checks and20 separator checks. Column transition updates are internal oracle work."
+  },
+  "initialAuditPolicy": {
+    "file": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+    "initialSixRecordProjectionSha256": "bc2de4b45dc7d449a1f4726c15c6887140484526f3941b731d0ed8c02b16941e",
+    "newPositiveResearchReviewRequested": false,
+    "coverageRequiresFutureRootFlowAndResolution": true
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "initialAuditModified": false,
+  "conclusion": "No substantive mathematical, implementation, source-coverage, API or integer defect found. The known empty-width complexity sentence should receive the parent's agreed text-only integration correction; all frozen C++ checks pass.",
+  "originalReviewSha256": "22bc824abd951c77c66c9840a259a5b2dc62404e5cdc47f8193331cf8fa11303",
+  "publishedArticle": "src/content/docs/techniques/orthogonally-convex-row-interval-phase-prefix-dp.mdx",
+  "permanentProbe": {
+    "script": "research/probes/row-column-convex-subsets-independent.py",
+    "originalScriptSha256": "cc679237ba2ec7b8b7b30e792bfefe4051090bc1e4b3b7d7a8e62627d704da69",
+    "normalizedScriptSha256": "14d538b423d596dc878f4b333c2e788d9c950863c8ae2d34b0bf7ccc8dda3718",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Algorithm and assertions unchanged."
+  }
+}

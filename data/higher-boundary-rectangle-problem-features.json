@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2019_rect",
+    "title": "Rectangles",
+    "url": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "techniqueIds": [
+      "grid-enclosing-higher-boundary-rectangle-candidates"
+    ],
+    "features": [
+      "固定高さの格子で、盤面の外周に触れない空でない長方形を重複なく数える。",
+      "各内部セルは、同じ行の左右外側二セルと同じ列の上下外側二セルの全てより真に低い。高さ同値と0があり、外側の四隅は条件外。",
+      "原典は行数/列数1..2500、高さ0..7000000。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-06",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "notes": "格子内部の長方形について、各内部セルが同じ行の左右外側セルと同じ列の上下外側セルの四つ全てより真に低いことを求める。内部最大セルの四方向nearest-strictly-greaterが外境界に一致するため全有効長方形をセル数以下の候補に含められる。四座標の重複を除き、各行・列で両端が内部最大より真に高い区間の連続出現runを照合する。固定48bit radix sortと三角直接表を使い原典全域をO(NM+N²+M²)時間で扱う。",
+    "discoveredBy": "ioi-2019",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf"
+  }
+]

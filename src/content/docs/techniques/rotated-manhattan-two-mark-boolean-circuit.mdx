@@ -1,0 +1,186 @@
+---
+title: "二つの黒画素の距離を判定する論理回路を作る"
+description: "対角線ごとの占有と接頭ORを共有し、位置が未知の二画素のマンハッタン距離を少数のゲートで判定する。"
+techniqueId: rotated-manhattan-two-mark-boolean-circuit
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+画像には黒い画素がちょうど二つあるが、その位置を読んでから分岐するプログラムは使えない。画像の大きさと距離 $K$ だけから、後でどの画像を与えても二画素間のマンハッタン距離が $K$ か判定する、固定の論理回路を作りたい。
+
+一つのAND/ORゲートへ多くの入力を渡せても、ゲート数と全入力端子数の両方に予算がある。全画素対ごとにANDを作ると二乗個になるので、二点の座標を明示的な数値へ変換せず、対角線に黒があるかという信号を使う。
+
+## 考え方
+
+行・列を $0\le r<H,0\le c<W$ とし、二種類の対角線番号を
+
+$$u=r+c,\qquad v=r-c+(W-1)$$
+
+とする。どちらも $0$ から $D-1$、ただし $D=H+W-1$ の範囲である。二点の距離は
+
+$$|\Delta r|+|\Delta c|=\max(|\Delta u|,|\Delta v|).$$
+
+各方向について、対角線 $i$ に属する全画素のORを $q_i$ とする。黒が一つでもあれば真で、二つが同じ対角線にある場合も一つの占有として扱える。さらに
+
+$$P_0=q_0,\qquad P_i=P_{i-1}\mathbin{\mathrm{OR}}q_i$$
+
+を作る。ある方向で占有する最小番号と最大番号の差が $d$ を超える条件は
+
+$$\bigvee_{i=d+1}^{D-1}\left(q_i\mathbin{\mathrm{AND}}P_{i-d-1}\right).$$
+
+右側の占有 $i$ に対して、$d+1$ 個以上離れた左側に黒があるかを見る。各項は二入力ANDで、接頭ORを共有できるので、区間内の画素を毎回ゲートへ入れ直す必要がない。
+
+二方向の「幅が $d$ を超える」をORしたものを $B(d)$ とすると、答えは
+
+$$B(K-1)\mathbin{\mathrm{AND}}\mathrm{NOT}\,B(K).$$
+
+候補のないORを空入力ゲートとして出してはいけない。掲載実装では最初に、入力画素 $a$ を一つ使った $a\mathbin{\mathrm{AND}}\mathrm{NOT}\,a$ を作り、定数falseとして再利用する。最後に答えのANDを追加するので、最終ゲートが出力という形式にも合う。
+
+## 適用条件
+
+数える黒画素はちょうど二つで、その距離は二次元のL1距離である。回路を作る時に分かるのは $H,W,K$ だけで、画素値は生成した回路へ後から与える。各ゲートは画像入力か、既に作ったゲートの出力だけを参照する。
+
+掲載APIは $1\le H,W\le200$、$HW\ge2$、$K\ge0$ を扱う。$K=0$ または最大距離 $H+W-2$ より大きい場合は、定数falseの二ゲートだけを返す。負の $K$、大きさの範囲違反、一画素だけの画像は `std::invalid_argument`。原典の範囲 $1\le K\le H+W-2$ を全て含む。
+
+生成するのはNOT・AND・ORの列である。NOTはちょうど一入力、AND/ORは一入力以上とし、空入力は使わない。ゲート出力の番号は $HW$ から連番で、最後のゲートが答えとなる。原典の上限は10000ゲート・全1000000入力端子。NOTが読む一入力も端子数に含める。
+
+## なぜ正しいか
+
+二つの座標差の符号が同じなら $|\Delta r+\Delta c|=|\Delta r|+|\Delta c|$、符号が異なるなら $|\Delta r-\Delta c|$ が同じ値になる。反対側の式は三角不等式によりそれを超えない。従って二方向の幅の最大値が元のマンハッタン距離となる。$v$ に足した定数は差に影響しない。
+
+各 $q_i$ はその対角線に黒があることと同値であり、帰納的に $P_j$ は番号 $0$〜$j$ のどこかが占有されることと同値である。幅が $d$ を超えるなら、最大の占有番号を $i$ とすると最小の番号は $i-d-1$ 以下なので、対応するAND項が真になる。逆にそのAND項が真なら、番号 $i$ と $i-d-1$ 以下の二つが占有され、幅は $d$ より大きい。
+
+二つの黒が同じ対角線にある場合の幅は0であり、この条件を満たす項はない。行や列が一つだけの場合も、両方向の番号と幅の式はそのまま成り立つ。
+
+よって $B(d)$ は距離が $d$ を超えることと同値。距離は整数なので、距離 $>K-1$ かつ距離 $\le K$ は距離 $=K$ と同値である。定数falseは画素値にかかわらず偽なので、候補がない場合にも正しい。相異なる二画素の距離は1以上で最大 $H+W-2$ 以下であり、範囲外の $K$ を先に偽とする処理も正しい。
+
+## 計算量
+
+$P=HW$、$D=H+W-1$ とする。通常の範囲 $1\le K\le D-1$ では $R=D-K$ と置ける。掲載コードが作るゲート数 $G$ と端子数 $T$ は正確に
+
+$$G=4D+4R+1+[R\ge2],\qquad T=2P+4D+12R-4$$
+
+となる。$[R\ge2]$ は条件が真のとき1、偽のとき0である。
+
+| 部分 | ゲート数 | 入力端子数 |
+|---|---:|---:|
+| 定数false | 2 | 3 |
+| 二方向の対角線OR | $2D$ | $2P$ |
+| 二方向の接頭OR | $2(D-1)$ | $4(D-1)$ |
+| $B(K-1),B(K)$ のAND項 | $4R-2$ | $8R-4$ |
+| そのAND項のOR集約 | $1+[R\ge2]$ | $4R-2$ |
+| 最後のNOTとAND | 2 | 3 |
+
+$B(K)$ の候補が空となる $R=1$ では、既存のfalseを参照してORを追加しない。一入力の対角線ORも省略せず、一ゲートとして数えている。通常範囲外の $K$ なら $G=2,T=3$。
+
+$H,W\le200$ では $P\le40000,D\le399,R\le398$ なので、全体の最大は **3190ゲート・86368端子**。原典の二つの上限を同時に満たす。セル番号と出力番号は最大でも43189で、32bitの `int` に収まる。
+
+回路生成は $O(P+D)$ 時間・空間。保存する回路は $O(D)$ 個のゲートと $O(P+D)$ 個の入力参照を持つ。回路を一画像に対して実行する時間は $O(P+D)$、全メモリを保持するなら同じ空間である。$H,W\ge1$ から $D\le P$ なので、いずれも $O(HW)$ とも書ける。画素値を見る処理は、この生成時間には含まれない。
+
+## 実装
+
+`build_two_mark_manhattan_circuit(H,W,K)` は、画像値に触れずゲート列を返す。画像入力の番号は `r*W+c`。`output` は必ず最後のゲートの出力で、`input_uses` はNOTを含む全入力参照数である。
+
+graderなどへ直接追加するときは `emit_two_mark_manhattan_circuit(H,W,K,add_not,add_and,add_or)` を使える。三つのcallbackは元の追加APIと同じ型の入力と連番の戻り値を持つ。戻り値が連番規則に反した場合は `std::logic_error`。不正な $H,W,K$ はcallbackを一度も呼ばずに拒否する。
+
+```cpp
+#include <array>
+#include <cstddef>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+enum class TwoMarkGateKind { Not, And, Or };
+struct TwoMarkGate {
+    TwoMarkGateKind kind;
+    std::vector<int> inputs;
+};
+struct TwoMarkCircuit {
+    int input_count;
+    std::vector<TwoMarkGate> gates;
+    int output;
+    std::size_t input_uses;
+};
+
+TwoMarkCircuit build_two_mark_manhattan_circuit(int height, int width, int distance) {
+    if (height < 1 || height > 200 || width < 1 || width > 200
+        || height * width < 2 || distance < 0)
+        throw std::invalid_argument("image size or distance");
+    const int pixels = height * width, diagonals = height + width - 1;
+    TwoMarkCircuit circuit{pixels, {}, -1, 0};
+    auto add = [&](TwoMarkGateKind kind, std::vector<int> inputs) {
+        const int id = pixels + static_cast<int>(circuit.gates.size());
+        circuit.input_uses += inputs.size();
+        circuit.gates.push_back({kind, std::move(inputs)});
+        return id;
+    };
+    const int not_pixel = add(TwoMarkGateKind::Not, {0});
+    const int false_id = add(TwoMarkGateKind::And, {0, not_pixel});
+    if (distance == 0 || distance >= diagonals) {
+        circuit.output = false_id;
+        return circuit;
+    }
+    std::array<std::vector<std::vector<int>>, 2> groups;
+    for (auto& family : groups) family.resize(diagonals);
+    for (int row = 0; row < height; ++row) for (int col = 0; col < width; ++col) {
+        const int id = row * width + col;
+        groups[0][row + col].push_back(id);
+        groups[1][row - col + width - 1].push_back(id);
+    }
+    std::array<std::vector<int>, 2> occupied, prefix;
+    for (int family = 0; family < 2; ++family) {
+        occupied[family].resize(diagonals); prefix[family].resize(diagonals);
+        for (int i = 0; i < diagonals; ++i)
+            occupied[family][i] = add(TwoMarkGateKind::Or, std::move(groups[family][i]));
+        prefix[family][0] = occupied[family][0];
+        for (int i = 1; i < diagonals; ++i)
+            prefix[family][i] = add(TwoMarkGateKind::Or, {prefix[family][i - 1], occupied[family][i]});
+    }
+    auto too_far = [&](int bound) {
+        std::vector<int> terms;
+        for (int family = 0; family < 2; ++family)
+            for (int i = bound + 1; i < diagonals; ++i)
+                terms.push_back(add(TwoMarkGateKind::And,
+                                    {occupied[family][i], prefix[family][i - bound - 1]}));
+        return terms.empty() ? false_id : add(TwoMarkGateKind::Or, std::move(terms));
+    };
+    const int above_previous = too_far(distance - 1);
+    const int above_current = too_far(distance);
+    const int at_most_current = add(TwoMarkGateKind::Not, {above_current});
+    circuit.output = add(TwoMarkGateKind::And, {above_previous, at_most_current});
+    return circuit;
+}
+
+template<class NotFunction, class AndFunction, class OrFunction>
+int emit_two_mark_manhattan_circuit(int height, int width, int distance,
+                                  NotFunction add_not, AndFunction add_and, OrFunction add_or) {
+    const auto circuit = build_two_mark_manhattan_circuit(height, width, distance);
+    for (std::size_t index = 0; index < circuit.gates.size(); ++index) {
+        const auto& gate = circuit.gates[index];
+        int actual;
+        if (gate.kind == TwoMarkGateKind::Not) actual = add_not(gate.inputs[0]);
+        else if (gate.kind == TwoMarkGateKind::And) actual = add_and(gate.inputs);
+        else actual = add_or(gate.inputs);
+        if (actual != circuit.input_count + static_cast<int>(index))
+            throw std::logic_error("gate callback must return consecutive cell IDs");
+    }
+    return circuit.output;
+}
+```
+
+## 関連する手法
+
+- [マンハッタン距離の座標変換](/flowchartcp/techniques/manhattan-transform/) — 和と差の座標では、L1距離を二方向の幅で表せる。ここでは、その幅判定そのものを回路へ変える。
+- [累積和](/flowchartcp/techniques/prefix-sum/) — 接頭部分の集約を共有する考え方を使う。ただしORには逆演算がないので、二つの接頭ORを引くことはしない。
+- [不変量](/flowchartcp/techniques/invariant/) — 各ゲートを追加した時点で、対角線の占有・接頭範囲・幅の条件という意味を保つ。
+
+## 参考資料
+
+- [IOI 2019 Vision Program — 公式原典](https://ioinformatics.org/files/ioi2019problem5.pdf) — 未知の二画素に対する距離判定回路を生成する適用例。
+- [IOI 2019 Vision — 公式HSC Review](https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf) — 対角線の距離による補題と、ゲート・端子を抑える方針。掲載の接頭ORによる「幅を超える」構築は本文で独立に具体化した。
+- [AOI配布の原典PDF](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/statement/vision-en.pdf)・[配布grader](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/grader/grader.cpp) — PDFの2〜3ページでサイズ・ゲート・端子の上限を確認し、graderでも空入力禁止と参照可能な番号、同じ二予算を照合した。
+- [日本情報オリンピック委員会 — IOI 2019課題一覧](https://www2.ioi-jp.org/ioi/2019/tasks/index.html) — 競技日2が2019年8月8日であり、この日の課題であることを確認できる。
+
+<TechniqueReferences techniqueId="rotated-manhattan-two-mark-boolean-circuit" />

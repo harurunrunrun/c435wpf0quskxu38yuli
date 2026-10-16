@@ -1,0 +1,93 @@
+---
+title: "最大流・最小カット"
+description: "容量を共有する割当を最大化したり、2つの集合を分断する最小費用を求めたりします。"
+techniqueId: max-flow
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+容量を共有する割当を最大化したり、2つの集合を分断する最小費用を求めたりします。
+
+別名：Max Flow / Minimum Cut / Dinic
+
+## 使う場面
+
+各人や資源を使える回数に上限があり、複数の選択がその上限を共有する場合に使います。人と仕事の一対一の割当は二部マッチングになり、1回限り使える頂点は、頂点を入口と出口に分けた容量付きの辺で表せます。
+
+また、選択を2つのグループに分け、グループ間の辺に応じて費用が生じる問題では、最小カットへの帰着を考えます。
+
+## 考え方
+
+容量付きの有向グラフを作り、始点から終点へ流せる最大量を求めます。途中の頂点では、流入量と流出量を等しくします。
+
+残余グラフには、未使用の容量と、流した分を取り消す逆辺を持ちます。Dinic法はBFSで始点からの距離を求め、距離が1増える辺だけを使って、これ以上流せない状態まで流します。その後、再びBFSを行います。最大流の後に残余辺で始点から到達できる集合が、最小カットの一方の側になります。
+
+## 適用条件
+
+容量は非負です。整数容量なら整数の流量を得られるため、離散的な割当にも使えます。元の辺と、取り消し用の逆辺は別に管理します。
+
+切断を禁止したい辺には、有限な候補解の上界より大きい容量を置きます。容量の総和が整数型に収まることも確認してください。辺ごとに費用がある場合は最小費用流、最低限流す量がある場合は流量下限付きフローを使います。
+
+## なぜ正しいか
+
+残余グラフの始点から終点への経路に流すと、容量制約と途中の流量保存を保てます。逆辺も使うことで、以前の割当を取り消して別の割当へ変えられます。
+
+これ以上流せないとき、始点から到達可能な集合とその外側を分けるカットの容量は、現在の流量に一致します。どの流量もどのカットの容量以下なので、現在の流量が最大で、そのカットが最小です。
+
+## 計算量
+
+頂点数を $V$、辺数を $E$ とすると、一般容量のDinic法は $O(V^2E)$ 時間、$O(V+E)$ 空間です。二部マッチングを表す単位容量ネットワークでは $O(E\sqrt V)$ になります。帰着で増えた後の頂点数と辺数で見積もります。
+
+## 実装
+
+`add` で辺を追加し、`flow` で最大流を求めます。元の容量から残余容量を引くと、その辺に流れた量が分かります。
+
+以下のDFSは再帰を使い、深さが最大 $V$ になります。非常に深いグラフを扱う場合は、反復DFSなどで呼び出しスタックの使用を抑えてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct Dinic {
+    struct Edge { int to,rev; long long cap; };
+    vector<vector<Edge>> g; vector<int> level,it;
+    explicit Dinic(int n):g(n),level(n),it(n) {}
+    int add(int u,int v,long long cap) {
+        assert(cap>=0); int a=g[u].size(),b=g[v].size()+(u==v);
+        g[u].push_back({v,b,cap}); g[v].push_back({u,a,0}); return a;
+    }
+    bool bfs(int s,int t) {
+        fill(level.begin(),level.end(),-1); queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) { int v=q.front(); q.pop();
+            for(auto e:g[v]) if(e.cap && level[e.to]<0) { level[e.to]=level[v]+1; q.push(e.to); }
+        }
+        return level[t]>=0;
+    }
+    long long dfs(int v,int t,long long f) {
+        if(v==t) return f;
+        for(int& i=it[v];i<int(g[v].size());++i) { auto& e=g[v][i];
+            if(e.cap && level[e.to]==level[v]+1) {
+                long long z=dfs(e.to,t,min(f,e.cap));
+                if(z) { e.cap-=z; g[e.to][e.rev].cap+=z; return z; }
+            }
+        }
+        return 0;
+    }
+    long long flow(int s,int t,long long limit=LLONG_MAX) {
+        assert(s!=t && limit>=0); long long ans=0;
+        while(ans<limit && bfs(s,t)) {
+            fill(it.begin(),it.end(),0);
+            while(ans<limit) { long long f=dfs(s,t,limit-ans); if(!f) break; ans+=f; }
+        }
+        return ans;
+    }
+};
+```
+
+## 関連する手法
+
+[幅優先探索](/flowchartcp/techniques/bfs/) ・ [グラフへの帰着](/flowchartcp/techniques/graph-reduction/)
+
+## 参考資料
+
+- [AtCoder Library: MaxFlow（公式仕様・使用例）](https://atcoder.github.io/ac-library/production/document_ja/maxflow.html)
+
+<TechniqueReferences techniqueId="max-flow" />

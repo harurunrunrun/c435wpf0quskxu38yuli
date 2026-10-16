@@ -1,0 +1,103 @@
+---
+title: "組数ごとの最大利益を、一組ずつ増やす残余経路からまとめて求める"
+description: "同じ左右資源を使わない組合せで、正確にk組選ぶ答えをすべて得る。"
+techniqueId: matching-profit-each-cardinality
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+候補を選ぶと左右の資源を一つずつ消費し、各資源は一度まで。選ぶ数ごとの最大利益を全部知りたい。二組に増やすために既存の一組を外す場合があり、利益順の貪欲法では扱えない。
+
+## 考え方
+
+利益を $w_e$、$B=\max(0,\max_e w_e)$ とする。候補辺の費用は $B-w_e$、容量1。始点→左、右→終点も容量1、費用0。ちょうど $k$ 流す最小費用 $C_k$ から、
+$$P_k=kB-C_k$$
+で最大利益へ戻す。
+
+流量を0から一つずつ増やす。逆辺の負費用が、以前選んだ組を外す操作を表す。残余グラフの最短増加経路が入替えを含む最適な次の対応を作る。頂点のポテンシャルを更新し、負の逆辺を含んでもDijkstra法で探索する。
+
+## 適用条件
+
+左右を一つずつ使う二部対応で、各資源は高々1回。利益は組ごとの和で相互作用はない。正確な組数 $k$ を固定するから、足した単価を $kB$ として戻せる。
+
+掲載実装は左右それぞれ $10^5$ 頂点以下、利益の絶対値 $10^9$ 以下。距離・費用は64ビットで持つ。負利益の組も大きな $k$ の答えには必要になり得る。答えが減少しても打ち切らない。
+
+## なぜ正しいか
+
+整数流量 $k$ と $k$ 組の対応は一致し、費用は $kB-\sum w_e$。固定 $k$ では費用最小と利益最大が同じ。
+
+最小費用の流量 $k$ の残余グラフには負閉路がない。別の流量との差を残余経路と循環に分けると、次の一単位の最小差分は最短増加経路になる。循環で下げる余地はない。初期の順方向費用は非負。始点から到達できた頂点だけに最短距離を足すと、その到達領域内の残余辺の補正費用は非負になる。増加で新しく使える逆辺の両端もこの領域内にあり、始点の到達領域は外へ広がらない。次回のDijkstra法が調べる辺に、非負性を引き継げる。
+
+## 計算量
+
+各 $k$ で最初からやり直すと増加探索が重複する。最大組数 $F$、変換後 $V$ 頂点・$E$ 辺として、一つの増加列から全答えを $O(F(V+E)\log V)$ 時間、$O(V+E+F)$ 空間で得る。$F$ は左右頂点数の小さい方以下だが、必ずそこまで達するとは限らない。
+
+## 実装
+
+返す配列の添字が組数で、添字0は0。最後の添字が最大の実現可能な組数。同じ端点の候補が複数あっても扱う。一単位ずつ増加し、各サイズの値を保存する。
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <limits>
+#include <queue>
+#include <tuple>
+#include <utility>
+#include <vector>
+std::vector<long long> matching_profit_by_size(int left,int right,
+    const std::vector<std::tuple<int,int,long long>>& offers) {
+    struct Edge { int to,rev,cap; long long cost; };
+    int s=left+right,t=s+1,n=t+1; std::vector<std::vector<Edge>> g(n);
+    auto add=[&](int u,int v,long long cost) {
+        int a=g[u].size(),b=g[v].size();
+        g[u].push_back({v,b,1,cost}); g[v].push_back({u,a,0,-cost});
+    };
+    long long base=0;
+    for(auto [a,b,w]:offers) { (void)a; (void)b; base=std::max(base,w); }
+    for(int a=0;a<left;++a) add(s,a,0);
+    for(int b=0;b<right;++b) add(left+b,t,0);
+    for(auto [a,b,w]:offers) add(a,left+b,base-w);
+    const long long inf=std::numeric_limits<long long>::max()/4;
+    std::vector<long long> potential(n),answer{0}; long long cost=0;
+    while(true) {
+        std::vector<long long> distance(n,inf);
+        std::vector<int> previous(n,-1),chosen(n,-1);
+        using Item=std::pair<long long,int>;
+        std::priority_queue<Item,std::vector<Item>,std::greater<Item>> q;
+        distance[s]=0; q.push({0,s});
+        while(!q.empty()) {
+            auto [d,v]=q.top(); q.pop();
+            if(d!=distance[v]) continue;
+            for(int k=0;k<int(g[v].size());++k) {
+                auto e=g[v][k]; if(e.cap==0) continue;
+                long long next=d+e.cost+potential[v]-potential[e.to];
+                if(next<distance[e.to]) {
+                    distance[e.to]=next; previous[e.to]=v; chosen[e.to]=k;
+                    q.push({next,e.to});
+                }
+            }
+        }
+        if(distance[t]==inf) break;
+        for(int v=0;v<n;++v) if(distance[v]!=inf) potential[v]+=distance[v];
+        for(int v=t;v!=s;v=previous[v]) {
+            auto& e=g[previous[v]][chosen[v]];
+            cost+=e.cost; --e.cap; ++g[v][e.rev].cap;
+        }
+        long long size=answer.size();
+        answer.push_back(size*base-cost);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[最小費用流](/flowchartcp/techniques/min-cost-flow/) ・ [負の辺を頂点の値の差で非負へ変換する](/flowchartcp/techniques/dijkstra-potential-reweight/)
+
+## 参考資料
+
+- [AtCoder：Dream Team（原典）](https://atcoder.jp/contests/abc247/tasks/abc247_g)
+- [公式解説](https://atcoder.jp/contests/abc247/editorial/3770)
+
+<TechniqueReferences techniqueId="matching-profit-each-cardinality" />

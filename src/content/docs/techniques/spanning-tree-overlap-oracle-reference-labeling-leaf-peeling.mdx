@@ -1,0 +1,313 @@
+---
+title: "全域木との共通辺数への質問から、隠れた木を葉から復元する"
+description: "基準木の辺を一つずつ交換して秘密の辺かを判別する。既知の基準辺で森を全域木へ補完し、残存する葉の接続先を部分集合への質問で絞る。"
+techniqueId: spanning-tree-overlap-oracle-reference-labeling-leaf-peeling
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+単純連結な無向グラフと、その中に隠された全域木がある。全域木を一つ指定すると、隠れた木との共通辺数だけが返る。この質問を少ない回数で行い、隠れた木の全辺を特定したいときに使う。
+
+一辺だけを質問することはできない。そこで、既に所属が分かった基準辺で質問を補い、森に含まれる秘密の辺の本数を数えられるようにする。頂点に接する辺の集合は森なので、次数と、葉から出る唯一の秘密辺を調べられる。
+
+## 考え方
+
+任意の全域木 $T$ を基準に取り、共通辺数 $b$ を聞く。辺 $e$ が秘密の木に入るかを $w(e)\in\{0,1\}$ と書く。$T$ にない辺 $e$ を加えると、両端を結ぶ木上の道と合わせて閉路ができる。その道の辺 $f$ を外した質問の差分は
+
+$$\Delta_f=\operatorname{answer}(T-f+e)-b=w(e)-w(f)$$
+
+となる。閉路に既知の辺があれば、それを一回交換して $w(e)$ を求め、未知の基準辺を一回ずつの交換で分類する。全て未知なら全差分を聞く。非零の差分で $w(e)$ が分かり、全て零なら閉路全辺の値は0である。
+
+次に、調べたい森 $F$ へ基準木の辺を追加し、全域木にする。追加した辺の値は既知なので、一回の返答からその寄与を引けば $F$ 内の秘密辺数が分かる。
+
+各頂点の星、つまりその頂点に接する全辺を質問して、隠れた木の次数を求める。次数1の頂点を取り、まだ消していない隣接候補を二分する。葉の秘密辺は一つだけなので、半分の星の個数が1か0かで候補を絞れる。見つけた辺を答えに加えて葉を削除し、隣の次数を減らして繰り返す。
+
+## 適用条件
+
+質問対象と秘密の集合が、同じ既知グラフの全域木であることが必要になる。返答は固定された一つの秘密木との共通辺数で、質問の途中に秘密が変わらない。グラフは無向・単純・連結とし、自己ループと平行辺を許さない。単純性により星は森であり、葉の隣接候補は高々 $N-1$ 本になる。
+
+掲載APIは頂点2〜500、辺数 $N-1$ 以上 $N(N-1)/2$ 以下を扱う。辺番号は入力順の0始まりで、端点の並び方や辺の入力順を自由にしてよい。質問には常に、重複のない $N-1$ 本からなる全域木を渡す。
+
+## なぜ正しいか
+
+基準木に非木辺 $e$ を加えた閉路から、木上の道の辺をどれか一本外すと、連結性を保ったまま辺数が $N-1$ になる。従って全ての交換質問が合法で、差分式が成立する。
+
+未知辺だけの閉路で差分が非零なら、$+1$ は $w(e)=1$、$-1$ は $w(e)=0$ を意味する。全て零なら閉路全辺が同じ値になる。全辺が1なら秘密の木に閉路ができるため不可能であり、全て0と分かる。既知辺を含む場合も、差分式から残りの値が一意になる。
+
+未知の基準辺を含む閉路だけ処理すると、その回に少なくとも一本が既知になる。一度既知になった基準辺を再分類する必要はない。最後まで未知の基準辺 $f$ は、どの非木辺の閉路にも含まれない。$T-f$ の二成分を結ぶ辺が他にないため $f$ は元グラフの橋であり、秘密を含む全ての全域木に入る。
+
+任意の森 $F$ に基準木の辺を追加して補完できることも示す。まだ二成分以上あるなら、連結な $T$ には異なる成分を結ぶ辺がある。それを追加しても閉路を作らない。これを繰り返すと全域木となり、返答は「$F$ の秘密辺数＋追加した既知辺の秘密辺数」になる。
+
+残存する秘密辺が、まだ消していない頂点を結ぶ木であることを不変量とする。初めは仮定から成立する。残存次数1の頂点では、残存候補の中に秘密辺がちょうど一本ある。部分星も森なので、二分した一方の個数を正確に聞ける。一本へ絞って削除しても、残りは木になる。残存頂点が二個以上なら必ず葉があるため、$N-1$ 本を全て復元できる。
+
+## 計算量
+
+基準木への最初の質問が一回。未知の基準辺を調べる交換は合計 $N-1$ 回以下、既知辺を手掛かりにする交換も処理した閉路ごとに一回以下で、合計 $N-1$ 回以下である。次数の質問が $N$ 回、葉の二分が一葉あたり $\lceil\log_2(N-1)\rceil$ 回以下なので、全質問数 $Q$ は
+
+$$Q\le 1+2(N-1)+N+(N-1)\lceil\log_2(N-1)\rceil\le5990<8000.$$
+
+各質問はちょうど $N-1$ 本を渡すため、質問配列の総要素数は高々 $5990\cdot499=2989010$。掲載コードは木上の道を親と深さから一辺ずつたどるため、全非木辺で $O(MN)$ 時間を使う。一質問の森の補完と合法性検査はDSUで $O(N\alpha(N))$。入力検査の整列も含め、ローカル計算時間は $O(M\log(M+1)+MN+N^2\log N\,\alpha(N))$、空間は $O(N+M)$ となる。返答を計算する外部の時間はこの式に含めない。
+
+全頂点・辺番号・質問数・総要素数は32ビット符号付き整数に収まる。木の深さが499でも、親の構築、道の走査、DSU、葉の処理は反復処理であり、再帰スタックを使わない。
+
+## 実装
+
+`recover_hidden_tree(n, edges, oracle, budget)` は、合法な全域木の辺番号を受けて共通辺数を返す関数を呼び、復元した `roads`、基準木とその0/1所属値、各段階の質問数・質問配列の総要素数を返す。`budget` は0〜8000で、上限に達したら次の質問を送る前に `runtime_error`。頂点数・辺数・端点・単純性・連結性・空コールバックなどの不正入力は、質問前に `invalid_argument` とする。
+
+返答の範囲や差分の0/1性、森の個数、次数の和など、途中で見つかる矛盾は `runtime_error`。固定された秘密木と整合する返答は呼び出し側の契約であり、任意の虚偽を必ず検出するAPIではない。コールバック自身の例外と割り当て例外はそのまま伝播する。質問の `span` は呼び出し中だけ有効で、保持しないこと。入力や過去の返値を変更せず、呼び出し間の状態を共有しない。
+
+原典へ接続するときは `SIMURGH_ORIGINAL_GRADER` を定義し、配布の `simurgh.h` を使う。`find_roads` は値渡しの配列で受け取り、`count_common_roads` には変更可能な局所配列を渡す。参照引数の正確な宣言は配布ヘッダーに任せるため、推測した宣言を追加しない。
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <span>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+#ifdef SIMURGH_ORIGINAL_GRADER
+#include "simurgh.h"
+#endif
+
+namespace tree_overlap {
+using Edge = std::pair<int, int>;
+using Oracle = std::function<int(std::span<const int>)>;
+struct Result {
+    std::vector<int> roads, reference, reference_membership;
+    int queries = 0, reference_queries = 0, degree_queries = 0, search_queries = 0;
+    int query_entries = 0;
+};
+struct DisjointSet {
+    std::vector<int> parent, size;
+    explicit DisjointSet(int n) : parent(n), size(n, 1) {
+        std::iota(parent.begin(), parent.end(), 0);
+    }
+    int find(int v) {
+        while (parent[v] != v) {
+            parent[v] = parent[parent[v]];
+            v = parent[v];
+        }
+        return v;
+    }
+    bool join(int u, int v) {
+        u = find(u); v = find(v);
+        if (u == v) return false;
+        if (size[u] < size[v]) std::swap(u, v);
+        parent[v] = u; size[u] += size[v];
+        return true;
+    }
+};
+int query_upper_bound(int n) {
+    if (n < 2 || n > 500) throw std::invalid_argument("vertex count");
+    int power = 1, logarithm = 0;
+    while (power < n - 1) { power *= 2; ++logarithm; }
+    return 1 + 2 * (n - 1) + n + (n - 1) * logarithm;
+}
+
+Result recover_hidden_tree(int n, std::span<const Edge> edges,
+                           const Oracle& oracle, int budget = 8000) {
+    if (n < 2 || n > 500 || budget < 0 || budget > 8000 || !oracle) {
+        throw std::invalid_argument("size, budget or oracle");
+    }
+    if (edges.size() < static_cast<std::size_t>(n - 1) ||
+        edges.size() > static_cast<std::size_t>(n * (n - 1) / 2)) {
+        throw std::invalid_argument("edge count");
+    }
+    const int m = static_cast<int>(edges.size());
+    std::vector<Edge> canonical;
+    canonical.reserve(m);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v) {
+            throw std::invalid_argument("edge endpoint");
+        }
+        canonical.emplace_back(std::min(u, v), std::max(u, v));
+    }
+    std::sort(canonical.begin(), canonical.end());
+    if (std::adjacent_find(canonical.begin(), canonical.end()) != canonical.end()) {
+        throw std::invalid_argument("parallel edge");
+    }
+    Result result;
+    std::vector<char> is_reference(m, false);
+    std::vector<std::vector<Edge>> tree(n);
+    std::vector<std::vector<int>> incident(n);
+    DisjointSet initial(n);
+    for (int e = 0; e < m; ++e) {
+        auto [u, v] = edges[e];
+        incident[u].push_back(e); incident[v].push_back(e);
+        if (initial.join(u, v)) {
+            result.reference.push_back(e); is_reference[e] = true;
+            tree[u].emplace_back(v, e); tree[v].emplace_back(u, e);
+        }
+    }
+    if (result.reference.size() != static_cast<std::size_t>(n - 1)) {
+        throw std::invalid_argument("disconnected graph");
+    }
+    auto ask = [&](const std::vector<int>& question, int stage) {
+        if (question.size() != static_cast<std::size_t>(n - 1)) {
+            throw std::logic_error("internal question size");
+        }
+        DisjointSet check(n);
+        for (int e : question) {
+            if (e < 0 || e >= m || !check.join(edges[e].first, edges[e].second)) {
+                throw std::logic_error("internal question is not a tree");
+            }
+        }
+        if (result.queries == budget) throw std::runtime_error("query budget");
+        ++result.queries; result.query_entries += n - 1;
+        if (stage == 0) ++result.reference_queries;
+        else if (stage == 1) ++result.degree_queries;
+        else ++result.search_queries;
+        const int answer = oracle(question);
+        if (answer < 0 || answer >= n) throw std::runtime_error("oracle range");
+        return answer;
+    };
+    std::vector<int> parent(n, -1), parent_edge(n, -1), depth(n, 0), order{0};
+    parent[0] = 0;
+    for (std::size_t i = 0; i < order.size(); ++i) {
+        const int u = order[i];
+        for (auto [v, e] : tree[u]) if (parent[v] == -1) {
+            parent[v] = u; parent_edge[v] = e; depth[v] = depth[u] + 1;
+            order.push_back(v);
+        }
+    }
+    const int baseline = ask(result.reference, 0);
+    std::vector<int> known(m, -1);
+    auto exchange_delta = [&](int back, int removed) {
+        std::vector<int> question;
+        question.reserve(n - 1);
+        for (int e : result.reference) if (e != removed) question.push_back(e);
+        question.push_back(back);
+        return ask(question, 0) - baseline;
+    };
+    auto binary = [](int value) {
+        if (value < 0 || value > 1) throw std::runtime_error("inconsistent exchange");
+        return value;
+    };
+    for (int back = 0; back < m; ++back) if (!is_reference[back]) {
+        auto [u, v] = edges[back];
+        std::vector<int> path, unknown;
+        while (u != v) {
+            if (depth[u] < depth[v]) std::swap(u, v);
+            path.push_back(parent_edge[u]); u = parent[u];
+        }
+        int anchor = -1;
+        for (int e : path) {
+            if (known[e] < 0) unknown.push_back(e);
+            else anchor = e;
+        }
+        if (unknown.empty()) continue;
+        if (anchor >= 0) {
+            const int back_value = binary(known[anchor] + exchange_delta(back, anchor));
+            for (int e : unknown) known[e] = binary(back_value - exchange_delta(back, e));
+        } else {
+            std::vector<int> deltas;
+            int back_value = 0;
+            for (int e : unknown) {
+                const int delta = exchange_delta(back, e);
+                if (delta < -1 || delta > 1) throw std::runtime_error("exchange difference");
+                deltas.push_back(delta);
+                if (delta != 0) back_value = delta == 1 ? 1 : 0;
+            }
+            for (std::size_t i = 0; i < unknown.size(); ++i) {
+                known[unknown[i]] = binary(back_value - deltas[i]);
+            }
+        }
+    }
+    int reference_sum = 0;
+    for (int e : result.reference) {
+        if (known[e] < 0) known[e] = 1;
+        result.reference_membership.push_back(known[e]); reference_sum += known[e];
+    }
+    if (reference_sum != baseline) throw std::runtime_error("reference sum");
+    auto forest_count = [&](std::span<const int> forest, int stage) {
+        if (forest.empty()) return 0;
+        DisjointSet components(n);
+        std::vector<int> question(forest.begin(), forest.end());
+        for (int e : forest) {
+            if (!components.join(edges[e].first, edges[e].second)) {
+                throw std::logic_error("internal forest cycle");
+            }
+        }
+        int added = 0;
+        for (int e : result.reference) {
+            if (components.join(edges[e].first, edges[e].second)) {
+                question.push_back(e); added += known[e];
+            }
+        }
+        const int answer = ask(question, stage) - added;
+        if (answer < 0 || answer > static_cast<int>(forest.size())) {
+            throw std::runtime_error("forest count");
+        }
+        return answer;
+    };
+    std::vector<int> degree(n), leaves;
+    int degree_sum = 0;
+    for (int v = 0; v < n; ++v) {
+        degree[v] = forest_count(incident[v], 1);
+        if (degree[v] < 1) throw std::runtime_error("hidden degree");
+        degree_sum += degree[v];
+        if (degree[v] == 1) leaves.push_back(v);
+    }
+    if (degree_sum != 2 * (n - 1)) throw std::runtime_error("degree sum");
+    std::vector<char> active(n, true);
+    for (std::size_t head = 0; result.roads.size() < static_cast<std::size_t>(n - 1); ++head) {
+        if (head == leaves.size()) throw std::runtime_error("no remaining leaf");
+        const int v = leaves[head];
+        if (!active[v] || degree[v] != 1) continue;
+        std::vector<int> candidates;
+        for (int e : incident[v]) {
+            if (active[edges[e].first] && active[edges[e].second]) candidates.push_back(e);
+        }
+        if (candidates.empty()) throw std::runtime_error("empty leaf star");
+        while (candidates.size() > 1) {
+            const std::size_t middle = candidates.size() / 2;
+            const int count = forest_count(std::span<const int>(candidates.data(), middle), 2);
+            if (count > 1) throw std::runtime_error("leaf count");
+            if (count == 1) candidates.resize(middle);
+            else candidates.erase(candidates.begin(), candidates.begin() + middle);
+        }
+        const int e = candidates[0];
+        const int other = edges[e].first == v ? edges[e].second : edges[e].first;
+        result.roads.push_back(e); active[v] = false; degree[v] = 0;
+        if (--degree[other] < 0) throw std::runtime_error("remaining degree");
+        if (degree[other] == 1) leaves.push_back(other);
+    }
+    return result;
+}
+} // namespace tree_overlap
+
+#ifdef SIMURGH_ORIGINAL_GRADER
+std::vector<int> find_roads(int n, std::vector<int> u, std::vector<int> v) {
+    if (n < 2 || n > 500 || u.size() != v.size() ||
+        u.size() < static_cast<std::size_t>(n - 1) ||
+        u.size() > static_cast<std::size_t>(n * (n - 1) / 2)) {
+        throw std::invalid_argument("endpoint array sizes");
+    }
+    std::vector<tree_overlap::Edge> edges;
+    edges.reserve(u.size());
+    for (std::size_t e = 0; e < u.size(); ++e) edges.emplace_back(u[e], v[e]);
+    return tree_overlap::recover_hidden_tree(n, edges, [](std::span<const int> question) {
+        std::vector<int> mutable_question(question.begin(), question.end());
+        return count_common_roads(mutable_question);
+    }).roads;
+}
+#endif
+```
+
+## 関連する手法
+
+[一個だけの秘密対象への集合質問](/flowchartcp/techniques/interactive-bit-group-testing/)と同じ二分の考え方は、葉の唯一の秘密辺へ使える。ただし、先に基準辺を分類して質問を合法な全域木へ補完しなければ、任意の部分集合を直接聞くことはできない。
+
+[Union-Find](/flowchartcp/techniques/union-find/)は基準木の構築と森の補完を担う。[対話問題の質問設計](/flowchartcp/techniques/interactive/)では、質問数だけでなく、毎回の合法性と返答の一貫性を契約に含める。
+
+## 参考資料
+
+- [IOI 2017 Simurgh 公式原典](https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf)。全域木への共通辺数質問、固定された秘密木、手続きと参照渡しの注意。
+- [公式配布EST版](https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf)。頂点・辺・質問上限、単純連結性、満点8000回。
+- [IOI 2017 Simurgh 公式解説](https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf)、[公式課題アーカイブ](https://ioi.te.lv/locations/ioi17/contest/index.shtml)。基準辺を既知にして森を補完する変換と葉の復元。本文の一般グラフでの基準辺分類は基本閉路の交換差分で証明している。
+- [公式Day 2 実装上の注意](https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf)。C++の配列型と、3秒・1024MBの制限。
+- [日本委員会公式・IOI 2017 課題一覧](https://www2.ioi-jp.org/ioi/2017/tasks/index.html)。競技日2の2017年8月1日と対象課題。
+
+<TechniqueReferences techniqueId="spanning-tree-overlap-oracle-reference-labeling-leaf-peeling" />

@@ -1,0 +1,81 @@
+---
+title: "一つでも選ぶと区間得点が付くなら、最後の選択位置だけで満たした条件を判定する"
+description: "区間の右端で評価し、最後に選んだ位置が区間内にある状態へ得点を一括加算する。"
+techniqueId: interval-hit-last-selected
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+位置をいくつか選び、指定区間ごとに「選んだ位置が一つ以上ある」場合の得点を足して最大化したい。得点が負なら、区間を満たさない選択も必要になる。区間に何個選んだかは得点へ影響しない。
+
+## 考え方
+
+右端を左から処理する。状態 $j$ を最後に選んだ位置とし、$j=0$ は未選択を表す。区間 $[l,r]$ は右端 $r$ を処理したとき、$l\le j\le r$ なら成立する。
+
+位置 $r$ を選ぶ新状態は、既存の全状態の最大値を引き継いで作る。その後、右端が $r$ の各区間について、状態の範囲 $[l,r]$ へ得点を加える。選ばない場合は古い状態をそのまま残す。
+
+新状態を作ってから区間得点を足す順番が必要である。逆にすると、位置 $r$ を選んだだけで満たす区間を反映できない。
+
+## 適用条件
+
+位置は二値選択で、選択数への上限や別の選択費用はない。各区間の得点は一回だけ、区間内に一つでも選べば発生する。区間内の選択数が二個以上必要な条件や、個数ごとの得点には最後の一位置だけでは足りない。
+
+掲載コードは $1\le N\le2\times10^5$、区間数20万以下、各得点の絶対値 $10^9$ 以下。区間は1始まりの両端を含む範囲で受け取る。負の得点、重なった区間、同じ区間の複数条件、全未選択を扱う。
+
+## なぜ正しいか
+
+右端 $r$ までに決着した区間の得点を、各最後の選択位置で最大化して持つとする。以後の区間の右端は $r$ より大きい。既に選ばれた点がその区間内にあるかは、最後の位置 $j$ が左端以上かだけで決まる。それより前の選択履歴は、未来の判定へ影響しない。
+
+位置を新たに選ぶ場合は全履歴から最良を引き継げ、選ばない場合は $j$ が変わらない。右端が今の区間の加算は成立した状態にだけ一回行う。従って帰納的に全状態の最適値を保つ。
+
+## 計算量
+
+全選択の列挙は $O(2^N(N+M))$ 時間。最後の位置ごとのDPを直接走査して更新すると $O(N^2+NM)$ 時間になる。区間加算と最大値を使うと $O((N+M)\log(N+1))$ 時間、$O(N+M)$ 空間。
+
+## 実装
+
+`maximum_interval_hit_reward(n,intervals)` は最大得点を返す。AtCoder Library の `lazysegtree` を使う。未生成の状態への加算は負の無限大を保ち、実現済みの値だけを比較する。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <tuple>
+#include <vector>
+#include <atcoder/lazysegtree>
+namespace interval_hit_detail {
+    constexpr long long NEG=-(1LL<<60);
+    long long op(long long a,long long b) {return std::max(a,b);}
+    long long e() {return NEG;}
+    long long mapping(long long f,long long x) {return x==NEG?NEG:x+f;}
+    long long composition(long long f,long long g) {return f+g;}
+    long long additive_identity() {return 0;}
+}
+long long maximum_interval_hit_reward(int n,const std::vector<std::tuple<int,int,long long>>& intervals) {
+    using namespace interval_hit_detail;
+    if(n<1 || n>200000 || intervals.size()>200000) throw std::invalid_argument("size");
+    std::vector<std::vector<std::pair<int,long long>>> ending(n+1);
+    for(auto [l,r,w]:intervals) {
+        if(l<1 || l>r || r>n || w<-1000000000 || w>1000000000) throw std::invalid_argument("interval");
+        ending[r].push_back({l,w});
+    }
+    std::vector<long long> initial(n+1,NEG);initial[0]=0;
+    atcoder::lazy_segtree<long long,op,e,long long,mapping,composition,additive_identity> tree(initial);
+    for(int r=1;r<=n;++r) {
+        tree.set(r,tree.prod(0,r));
+        for(auto [l,w]:ending[r]) tree.apply(l,r+1,w);
+    }
+    return tree.all_prod();
+}
+```
+
+## 関連する手法
+
+[区間の種類数を各値の最新位置だけで数える](/flowchartcp/techniques/offline-rightmost-occurrence/) ・ [遷移元が値の小さい側なら接頭辞最小値を持つ](/flowchartcp/techniques/dp-prefix-min/)
+
+## 参考資料
+
+- [AtCoder：W - Intervals（原典）](https://atcoder.jp/contests/dp/tasks/dp_w)
+
+<TechniqueReferences techniqueId="interval-hit-last-selected" />

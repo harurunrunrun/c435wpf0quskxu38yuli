@@ -1,0 +1,73 @@
+---
+title: "区間分割DPの最適な切れ目が単調なら分割統治する"
+description: "切れ目の単調性を証明し、層ごとに探索する遷移元の範囲を狭めます。"
+techniqueId: dp-monotone-split
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+切れ目の単調性を証明し、層ごとに探索する遷移元の範囲を狭めます。
+
+## 使う場面
+
+非負の列をちょうど $K$ 区間に分け、区間和の二乗の総和を最小にするとします。累積和を $P$ とすると、$dp_t[i]=\min_{t-1\le j<i}\{dp_{t-1}[j]+(P[i]-P[j])^2\}$ です。$O(KN^2)$ の切れ目の走査を高速化できます。
+
+## 考え方
+
+層 $t-1$ を確定させ、層 $t$ を中央から分割統治で計算します。中央の右端 $m$ に対する最適な切れ目が $q$ なら、左側では $q$ 以下、右側では $q$ 以上だけを試します。同じ費用なら小さい切れ目を選びます。
+
+## 適用条件
+
+非負列なので累積和が非減少になります。$a<b<c<d$ の区間和を順に $x,y,z$ とすると、費用のMonge不等式の差は $-2xz\le0$ となり、最適な切れ目の単調性を使えます。負の要素を許すとこの証明は成立しません。
+
+また、$t$ 区間を作るには少なくとも $t$ 要素必要です。到達不能の状態は遷移元へ入れません。
+
+## なぜ正しいか
+
+Monge不等式と同値時の規則によって、右端が増えると最適な切れ目は左へ戻りません。したがって中央の答えで左右の探索範囲を絞っても、真の最適な切れ目は残ります。その範囲を全比較するのでDP値も正しいままです。
+
+## 計算量
+
+時間は $O(KN^2)$ から $O(KN\log N)$ に減ります。区間費用は累積和で $O(1)$ です。全層を保存する $O(KN)$ 空間から、2層の $O(N)$ に減らせます。
+
+## 実装
+
+`squared_partition_cost(a, K)` はちょうど $K$ 個の非空区間への最小分割費用を返します。$1\le K\le N$、要素は非負、列の総和は $10^9$ 以下とします。到達不能の値に費用を加えない処理も含みます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long squared_partition_cost(const vector<long long>& a,int K) {
+    int n=a.size(); assert(1<=K && K<=n);
+    vector<long long> p(n+1);
+    for(int i=0;i<n;++i) { assert(a[i]>=0); p[i+1]=p[i]+a[i]; }
+    assert(p[n]<=1000000000LL);
+    const long long INF=1LL<<62;
+    vector<long long> prev(n+1,INF),cur(n+1,INF); prev[0]=0;
+    for(int t=1;t<=K;++t) {
+        fill(cur.begin(),cur.end(),INF);
+        auto solve=[&](auto&& self,int l,int r,int optl,int optr)->void {
+            if(l>r) return;
+            int m=(l+r)/2,q=-1; long long best=INF;
+            for(int j=optl;j<=min(optr,m-1);++j) {
+                if(prev[j]==INF) continue;
+                long long s=p[m]-p[j],value=prev[j]+s*s;
+                if(value<best) { best=value; q=j; }
+            }
+            assert(q>=0); cur[m]=best;
+            self(self,l,m-1,optl,q); self(self,m+1,r,q,optr);
+        };
+        solve(solve,t,n,t-1,n-1); prev.swap(cur);
+    }
+    return prev[n];
+}
+```
+
+## 関連する手法
+
+[分割統治によるDP高速化](/flowchartcp/techniques/divide-conquer-dp/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [AOJ：TiMe Tableの解説・実装](https://github.com/ei1333/library/blob/master/test/verify/aoj-2603.test.cpp)
+
+<TechniqueReferences techniqueId="dp-monotone-split" />

@@ -1,0 +1,61 @@
+---
+title: "同じ部分列を重複して数えるときは直前の出現を使う"
+description: "同じ文字で終わる部分列を二度作らないよう、前の出現で追加した数を引きます。"
+techniqueId: dp-last-occurrence
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+同じ文字で終わる部分列を二度作らないよう、前の出現で追加した数を引きます。
+
+## 使う場面
+
+文字を飛び飛びに選ぶ部分列のうち、異なる文字列が何種類あるかを数える場合です。添字の選び方を数える通常のDPでは、たとえば `aba` の `a` を2回数えてしまいます。文字列の同一性による重複を除く必要があります。
+
+## 考え方
+
+空列を含む総数を $S$、文字 $c$ を前回処理する直前の総数を $L[c]$ とします。現在の文字 $c$ を付けると $S$ 種類できますが、$L[c]$ 種類は以前も同じ文字で終わるものとして作りました。したがって、新しく増える数は $S-L[c]$、更新後は $S'=2S-L[c]$ です。更新前の $S$ を $L[c]$ に保存します。
+
+## 適用条件
+
+同じ文字列になる選び方を一つとして数える場合に使います。添字の選び方を区別する問題では引いてはいけません。また、隣接する文字を選べないなどの制約がある場合は、直前の出現までのどの状態が重複するかを改めて調べます。
+
+## なぜ正しいか
+
+今回文字 $c$ を付けて作る文字列のうち、すでに存在するものは、前の $c$ より前から作れる部分列へ $c$ を付けたものと一致します。前回より後に新しく作れるようになった部分列だけが、新しい文字列を生みます。この差を取ることで各文字列を1回だけ数えます。
+
+## 計算量
+
+直前の出現から遷移元を毎回走査する $O(N^2)$ 時間を、総数と前回の総数の保存によって $O(N)$ にできます。全DP値を保存する $O(N)$ 空間から、アルファベットサイズ $\sigma$ に対する $O(\sigma)$ に減らせます。
+
+## 実装
+
+`distinct_subsequence_count(s, mod)` は異なる非空部分列の数を指定した法で返します。省略時の法は998244353です。CSES の使用例では `mod=1000000007` とします。バイト値256種類を扱います。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int distinct_subsequence_count(const string& s, int mod=998244353) {
+    if(mod<=0) throw invalid_argument("positive modulus");
+    const long long MOD=mod;
+    array<long long,256> last{}; long long total=1;
+    for(unsigned char c:s) {
+        long long old=total;
+        total=(2*total-last[c]+MOD)%MOD;
+        last[c]=old;
+    }
+    return int((total-1+MOD)%MOD);
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+隣接する元の位置を同時に選べない場合は、[隣り合う位置を選べない部分列の重複を、二つ前までの総数で除く](/flowchartcp/techniques/subsequence-nonadjacent-last-range/)を参照してください。
+
+## 参考資料
+
+- [CSES：Distinct Subsequences の問題条件](https://cses.fi/problemset/task/1149)
+- [AtCoder：隣接位置を同時に選べない場合への拡張](https://atcoder.jp/contests/abc214/editorial/2447)
+
+<TechniqueReferences techniqueId="dp-last-occurrence" />

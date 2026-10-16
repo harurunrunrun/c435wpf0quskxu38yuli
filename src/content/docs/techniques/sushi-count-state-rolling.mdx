@@ -1,0 +1,67 @@
+---
+title: "同じ確率で選ぶ容器は、中身の個数ごとにまとめて期待値を計算する"
+description: "同じ役割の皿を個数で数え、空の皿による自己遷移を除き、依存順序に合わせて二層だけ保持する。"
+techniqueId: "sushi-count-state-rolling"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+毎回同じ確率で皿を一枚選び、中身が残っていれば一個取り除くとき。皿を区別して状態を持つと指数個になりますが、残りが一個・二個・三個の皿の枚数だけで次の確率が決まります。
+
+## 考え方
+
+一個の皿が $a$ 枚、二個が $b$ 枚、三個が $c$ 枚の状態を $E(a,b,c)$ とします。空の皿を引く項を移項すると、$a+b+c>0$ では
+$$E(a,b,c)=\frac{N+aE(a-1,b,c)+bE(a+1,b-1,c)+cE(a,b+1,c-1)}{a+b+c}.$$
+$c$、$b$、$a$ の順にそれぞれ昇順で回します。参照するのは一つ前の $c$ の層、同じ層の一つ前の $b$、同じ行の一つ前の $a$ だけです。
+
+## 適用条件
+
+選ぶ確率が皿によらず、中身が同じ皿は将来の役割も同じであること。皿ごとに確率や報酬が異なる場合は枚数だけにまとめられません。実装は空の皿を含む入力も受け取り、最大三個、合計300枚までを扱います。
+
+## なぜ正しいか
+
+選んだ皿の中身の個数で場合分けすると、空を引く確率は $(N-a-b-c)/N$。この自己遷移を除いた式が上の再帰です。非空の皿を引くと中身の総数が必ず一つ減るため、帰納的に正しい期待値になります。二層化した計算順でも全ての参照先は計算済みであり、枚数制約 $a+b+c\le N$ の外を読むことはありません。
+
+## 計算量
+
+時間 $O(N^3)$、空間 $O(N^2)$。個々の皿の状態を持つ指数個のDPを多項式個へ減らし、さらに三次元表の保存を二層へ減らします。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double sushi_count_expectation(const vector<int>& plates){
+    int n=plates.size();if(n>300)throw invalid_argument("too many plates");
+    int count[4]={};
+    for(int x:plates){if(x<0||x>3)throw invalid_argument("plate content");++count[x];}
+    int width=n+1;
+    vector<long double> previous(width*width),current(width*width);
+    auto index=[&](int a,int b){return a*width+b;};
+    for(int c=0;c<=count[3];++c){
+        fill(current.begin(),current.end(),0);
+        for(int b=0;b+c<=n;++b)for(int a=0;a+b+c<=n;++a){
+            if(a+b+c==0)continue;
+            long double value=n;
+            if(a)value+=a*current[index(a-1,b)];
+            if(b)value+=b*current[index(a+1,b-1)];
+            if(c)value+=c*previous[index(a,b+1)];
+            current[index(a,b)]=value/(a+b+c);
+        }
+        swap(previous,current);
+    }
+    return previous[index(count[1],count[2])];
+}
+```
+
+## 関連する手法
+
+- [同じ状態に戻る確率を期待値の式から除く](/flowchartcp/techniques/expectation-self-loop/)
+- [直前の層しか使わないDPは配列を使い回す](/flowchartcp/techniques/dp-dimension-rolling/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/dp/tasks/dp_j)
+
+<TechniqueReferences techniqueId="sushi-count-state-rolling" />

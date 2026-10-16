@@ -1,0 +1,311 @@
+---
+title: "切断点を含む区間の片端を縮めるなら、区間木と端点ごとの併合集合で管理する"
+description: "点の条件付き一括移動を区間の縮小へ写し、区間木の子へ降りる回数を償却して、追加と個体IDの照会も処理します。"
+techniqueId: interval-stabbing-endpoint-contraction-dsu
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+区間 $[a,b]$ を番号付きで追加し、指定点 $p$ を含む全区間に対して $[a,p]$ または $[p,b]$ へ縮めます。各番号の現在の端点も求めます。重なった区間や同一の区間を区別したまま、一括更新したいときに使います。
+
+例えば、三角形 $0\le x,y,\ x+y\le N$ の中の点を、条件に合うものだけ右または上へ押す操作です。各点を毎回調べると、点の総数を $K$、イベント数を $Q$ として $O(KQ)$ 時間かかります。この技巧では、区間を縮めても格納場所が上へ戻らない性質を使います。
+
+## 考え方
+
+点 $(x,y)$ を区間 $[a,b]=[y,N-x]$ に写します。三角形の条件から $a\le b$ です。逆変換は $(x,y)=(N-b,a)$ です。
+
+幅 $L$ の水平な掃除は、$x<N-L$ かつ $y\le L$ の点を $(N-L,y)$ へ移します。区間では $a\le L<b$ の右端を $L$ にする操作です。垂直な掃除は、$x\le L$ かつ $y<N-L$ の点を $(x,N-L)$ へ移すので、$a<N-L\le b$ の左端を $N-L$ にします。端点が切断点と等しい場合は変化しないため、実装ではどちらも $a\le p\le b$ を対象にできます。この対応は[原典1ページ](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping.pdf)と[公式解説15ページ](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping-review.pdf)に基づきます。
+
+初期の端点、追加される端点、全ての切断点を座標圧縮し、各座標を葉に持つ二分木を考えます。各区間は、それを丸ごと含む最小のノードへ一つだけ格納します。内部ノードの分割位置を $m$ とすると、そこに格納される区間は $a\le m<b$ です。点区間は葉に置きます。
+
+更新では、切断点 $p$ の葉へ向かう経路だけをたどります。経路上の一ノードで必要な操作は次の四つです。大小は圧縮後の座標順位で比較します。
+
+| 縮める端 | 切断点の側 | 対象 | 処理 |
+| --- | --- | --- | --- |
+| 右端 | $p\le m$ | $a\le p$ | $b=p$ にし、左部分木内の最小ノードへ移す |
+| 右端 | $p>m$ | $b\ge p$ | 右端をまとめて $p$ にし、同じノードに残す |
+| 左端 | $p\le m$ | $a\le p$ | 左端をまとめて $p$ にし、同じノードに残す |
+| 左端 | $p>m$ | $b\ge p$ | $a=p$ にし、右部分木内の最小ノードへ移す |
+
+各ノード内では、同じ左端の個体を一集合、同じ右端の個体を別の一集合にまとめます。左右を独立に管理するので、片方の端をまとめても、各個体のもう片方の端を失いません。端点順の `map` で対象の集合を取り出し、残る側の更新ではそれらを併合します。子へ移す側では、対象集合の個体を列挙し、左右両方の集合から外して移し直します。
+
+掲載実装は、削除のあるDSUの集合を、メンバーリストと集合番号で明示的に表します。併合では小さい集合のメンバーだけ集合番号を更新し、リストを連結します。個体を外す操作は双方向リストで定数時間です。各ノードの `map` を別々に確保する代わりに、左右それぞれ一つの `map<(ノード番号,端点),集合番号>` にまとめています。
+
+## 適用条件
+
+区間は空でなく、更新は切断点を含む区間の片端をその点に変える操作です。縮小だけを扱います。区間を伸ばす操作や、区間内部を二つの個体へ分裂させる操作には、子へ降りる回数の証明を使えません。任意の範囲加算や、全点を平行移動する処理にもそのまま適用しません。
+
+圧縮用に、使用する全ての端点と切断点を事前に知る必要があります。イベントを実行する順番は変えません。新しい個体は追加した位置から始まり、追加前の更新を受けません。同じ座標の個体も別々のIDを保ちます。斜辺上の点は $a=b$ の点区間となり、どの掃除でも動きません。
+
+原典の上限は $1\le N\le10^9$、初期点数 $1\le M\le500000$、イベント数 $1\le Q\le1000000$、幅 $0\le L\le N-1$ です。点の追加と照会IDの条件を含め、[原典2〜3ページ](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping.pdf)で確認できます。全て追加でも $K\le1500000$ で、原典の「照会が一つ以上」を含めた最大の実在個体数は1499999です。
+
+掲載ラッパーは空の初期集合と空のイベント列も受け付けます。$N,M,Q$ の上限、負の座標、三角形外の点、幅の範囲外、未追加のID、未知のイベント種別は `invalid_argument` です。入力は変更しません。区間用クラスでは、未登録座標、逆転区間、容量超過、不正IDも拒否します。容量は0〜1500000、登録座標配列は1〜3000002要素です。登録座標自体は符号付き32ビット整数の全範囲を使えます。
+
+## なぜ正しいか
+
+まず、前述の変換は一対一で、原典の二つの移動条件が片端の縮小へ一致します。厳密不等号が等号になる境界では、移動前後が同一です。従って切断点上の点を一括更新に含めても答えは変わりません。
+
+ある区間が切断点を含むなら、その格納ノードも切断点を含み、更新経路上にあります。内部ノードに置いた区間は分割をまたぐため、切断点が左側なら右端の条件は自動的に成立し、左端だけを判定すれば十分です。右側なら逆に左端の条件が成立します。これが表の対象条件です。経路外の区間には切断点が含まれず、更新しません。
+
+表の「残す」操作では、変えた端点も分割の同じ側に残り、区間は引き続きそのノードの分割をまたぎます。「移す」操作では両端が同じ子部分木へ入り、その中の最小ノードへ置き直します。従って各操作後も、全区間を最小の格納ノードへ置く不変条件を保ちます。更新済みの区間を同じ更新経路の下位で再び調べても、変更する端点が既に $p$ なので恒等更新にしかなりません。
+
+端点集合の併合は、対象の全メンバーのその端点を $p$ とする操作そのものです。もう片方の集合番号とメンバーリストを独立に残すため、相関も個体IDも保ちます。移送時には両端を取得してから両集合を離れ、新しい格納場所へ同じIDを入れます。よって各個体の照会は、現在の正しい区間と元の平面座標を返します。
+
+## 計算量
+
+追加された個体を含む総数を $K$、圧縮座標数を $C$、木の高さを $h=\lceil\log_2 C\rceil$ とします。登録値の配列のソートは $O((K+Q+1)\log(K+Q+2))$ 時間です。掃除回数を $S$ とすると $C\le2+2K+S$ で、原典上限では $C\le3000002$、$h\le22$ です。
+
+縮小のたびに各個体の格納ノードは同じか、その真の子孫になります。個体ごとの移送回数は高々 $h$、全移送回数は高々 $Kh$ です。経路の走査は一掃除につき $h$ ノードで、個体を列挙するのは移送するときだけです。
+
+集合の削除があるため、「併合後に集合サイズが倍になる」だけでは償却の証明になりません。ここでは全端点集合に対して $\Phi=\sum_G |G|\log_2|G|$ を考えます。小さい集合のサイズを $s$ とすると、その併合による $\Phi$ の増加は少なくとも $s$ です。一個体の削除による減少は高々 $O(\log(K+1))$ で、全削除回数は $O(Kh)$、最終的な $\Phi$ は $O(K\log(K+1))$ です。従って小さい集合を走査する総数も $O(Kh\log(K+1))$ に抑えられます。
+
+`map` の一操作は $O(\log(K+2))$、消える端点集合の数は作られた集合数以下です。操作列の処理時間は $O((K+Q+1)\log(C+1)\log(K+2))$ です。重複を除く前の登録値の個数を $R=O(K+Q+1)$ とすると、ソートも含めた全体は $O(R\log(R+1)+(K+Q+1)\log(C+1)\log(K+2))$、原典の上限では $O((M+Q)\log^2(M+Q+2))$ です。一掃除だけで多数の個体を移す場合があるため、これは列全体の償却計算量です。個体照会は $O(1)$、単独の追加は $O(\log(C+1)+\log(K+2))$ です。
+
+同時に存在する左右の集合とその `map` エントリはそれぞれ高々 $K$ 個です。空集合の領域は再利用し、個体の移送履歴は保存しません。木の全ノードも確保しないため、補助空間は圧縮用配列と出力を含めて $O(K+Q)$、重複除去後の主要な構造は $O(K+C)$ です。
+
+座標と個体IDは32ビット整数、$x+y$ の検査と検証用カウンタは64ビット整数です。葉番号を含む木の番号は $2\cdot2^{22}-1$ 以下です。幅0は軸上の点も押し、幅 $N-1$ は切断点が端に近い有効な更新です。$N=1$ の幅0だけのケース、点区間、全点重複も同じコードで処理します。
+
+## 実装
+
+`sweep_triangle_points(n, initial, events)` は、照会順の座標列と償却の計測値を返します。イベントは `1: ID照会`、`2: 水平掃除`、`3: 垂直掃除`、`4: 点追加` で、`first` はID・幅・追加点のx座標、`second` は追加点のy座標です。IDは追加順の0始まりです。原典の1始まりの照会IDは、呼び出し前に1を引きます。`ContractingIntervals` は平面を経由せず、登録した座標上の区間縮小だけにも使えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct SweepEvent {
+    // 1: zero-based ID query, 2: H(width), 3: V(width), 4: add(x,y).
+    int kind, first=0, second=0;
+};
+struct SweepStatistics {
+    uint64_t point_moves=0, levels_descended=0;
+    uint64_t member_relabels=0, path_nodes=0;
+    int coordinate_count=0, tree_height=0;
+};
+struct SweepResult {
+    vector<pair<int,int>> positions;
+    SweepStatistics statistics;
+};
+
+class ContractingIntervals {
+    // An endpoint group is a disjoint set with an explicit member list.
+    struct Endpoints {
+        struct Member { int group=-1, before=-1, after=-1; };
+        struct Group { int node=0, key=0, head=-1, tail=-1, size=0; };
+        vector<Member> members;
+        vector<Group> groups;
+        vector<int> unused;
+        map<pair<int,int>,int> ordered;
+        uint64_t relabels=0;
+
+        explicit Endpoints(int capacity) { members.reserve(capacity); }
+        void grow() { members.emplace_back(); }
+        int value(int id) const { return groups[members[id].group].key; }
+        int allocate() {
+            if(unused.empty()) { groups.emplace_back(); return int(groups.size())-1; }
+            int id=unused.back(); unused.pop_back(); return id;
+        }
+        void release(int group) {
+            groups[group]=Group{};
+            unused.push_back(group);
+        }
+        void put(int id,int node,int key) {
+            auto [it,created]=ordered.try_emplace({node,key},-1);
+            if(created) {
+                int group=allocate();
+                groups[group]={node,key,-1,-1,0};
+                it->second=group;
+            }
+            int group=it->second;
+            auto& g=groups[group];
+            members[id]={group,g.tail,-1};
+            if(g.tail!=-1) members[g.tail].after=id;
+            else g.head=id;
+            g.tail=id; ++g.size;
+        }
+        void erase(int id) {
+            auto m=members[id];
+            auto& g=groups[m.group];
+            if(m.before!=-1) members[m.before].after=m.after;
+            else g.head=m.after;
+            if(m.after!=-1) members[m.after].before=m.before;
+            else g.tail=m.before;
+            members[id]=Member{};
+            if(--g.size==0) {
+                ordered.erase({g.node,g.key});
+                release(m.group);
+            }
+        }
+        int merge(int a,int b) {
+            if(groups[a].size<groups[b].size) swap(a,b);
+            for(int id=groups[b].head;id!=-1;id=members[id].after) {
+                members[id].group=a; ++relabels;
+            }
+            members[groups[a].tail].after=groups[b].head;
+            members[groups[b].head].before=groups[a].tail;
+            groups[a].tail=groups[b].tail;
+            groups[a].size+=groups[b].size;
+            release(b);
+            return a;
+        }
+        int first(int node,int cut,bool prefix) const {
+            auto it=ordered.lower_bound({node,prefix?-1:cut});
+            if(it==ordered.end() || it->first.first!=node) return -1;
+            if(prefix && it->first.second>cut) return -1;
+            return groups[it->second].head;
+        }
+        void clamp(int node,int cut,bool prefix) {
+            auto it=ordered.lower_bound({node,prefix?-1:cut});
+            int combined=-1;
+            while(it!=ordered.end() && it->first.first==node &&
+                  (!prefix || it->first.second<=cut)) {
+                int group=it->second;
+                it=ordered.erase(it);
+                combined=combined==-1?group:merge(combined,group);
+            }
+            if(combined!=-1) {
+                groups[combined].key=cut;
+                ordered.emplace(make_pair(node,cut),combined);
+            }
+        }
+    };
+    vector<int> coordinates,owner;
+    static int checked_capacity(int value) {
+        if(value<0 || value>1500000) throw invalid_argument("unsupported capacity");
+        return value;
+    }
+    int base=1,height=0,capacity;
+    Endpoints left,right;
+    SweepStatistics counters;
+
+    int rank_of(int value) const {
+        auto it=lower_bound(coordinates.begin(),coordinates.end(),value);
+        if(it==coordinates.end() || *it!=value)
+            throw invalid_argument("coordinate was not registered");
+        return int(it-coordinates.begin());
+    }
+    int storage_node(int a,int b) const {
+        unsigned differing=unsigned((a+base)^(b+base));
+        return (a+base)>>bit_width(differing);
+    }
+    void put(int id,int a,int b) {
+        int node=storage_node(a,b);
+        owner[id]=node;
+        left.put(id,node,a); right.put(id,node,b);
+    }
+    void move_out(int node,int cut,bool contract_right) {
+        Endpoints& selected=contract_right?left:right;
+        for(int id;(id=selected.first(node,cut,contract_right))!=-1;) {
+            int a=left.value(id),b=right.value(id);
+            left.erase(id); right.erase(id);
+            if(contract_right) b=cut; else a=cut;
+            put(id,a,b);
+            ++counters.point_moves;
+            counters.levels_descended+=bit_width(unsigned(owner[id]))-
+                                       bit_width(unsigned(node));
+        }
+    }
+    void contract(int cut,bool contract_right) {
+        int p=rank_of(cut),node=1,lo=0,hi=base-1;
+        while(lo<hi) {
+            ++counters.path_nodes;
+            int mid=lo+(hi-lo)/2;
+            bool in_left=p<=mid;
+            if(contract_right) {
+                if(in_left) move_out(node,p,true);
+                else right.clamp(node,p,false);
+            } else {
+                if(in_left) left.clamp(node,p,true);
+                else move_out(node,p,false);
+            }
+            if(in_left) { node*=2; hi=mid; }
+            else { node=node*2+1; lo=mid+1; }
+        }
+    }
+public:
+    // Every endpoint and cut used later must be in registered_coordinates.
+    ContractingIntervals(vector<int> registered_coordinates,int maximum_points)
+      : coordinates(move(registered_coordinates)),capacity(checked_capacity(maximum_points)),
+        left(capacity),right(capacity) {
+        if(capacity<0 || capacity>1500000 || coordinates.empty() ||
+           coordinates.size()>3000002)
+            throw invalid_argument("unsupported capacity or coordinate count");
+        sort(coordinates.begin(),coordinates.end());
+        coordinates.erase(unique(coordinates.begin(),coordinates.end()),coordinates.end());
+        while(base<int(coordinates.size())) { base*=2; ++height; }
+        owner.reserve(capacity);
+    }
+    int add(int a,int b) {
+        if(a>b || int(owner.size())==capacity)
+            throw invalid_argument("invalid interval or exhausted capacity");
+        int x=rank_of(a),y=rank_of(b),id=int(owner.size());
+        owner.push_back(0); left.grow(); right.grow(); put(id,x,y);
+        return id;
+    }
+    void contract_right(int cut) { contract(cut,true); }
+    void contract_left(int cut) { contract(cut,false); }
+    pair<int,int> interval(int id) const {
+        if(id<0 || id>=int(owner.size())) throw invalid_argument("unknown point ID");
+        return {coordinates[left.value(id)],coordinates[right.value(id)]};
+    }
+    SweepStatistics statistics() const {
+        auto s=counters;
+        s.member_relabels=left.relabels+right.relabels;
+        s.coordinate_count=int(coordinates.size()); s.tree_height=height;
+        return s;
+    }
+};
+
+SweepResult sweep_triangle_points(int n,const vector<pair<int,int>>& initial,
+                                 const vector<SweepEvent>& events) {
+    if(n<1 || n>1000000000 || initial.size()>500000 || events.size()>1000000)
+        throw invalid_argument("unsupported N, M, or Q");
+    vector<int> coordinates={0,n};
+    int count=0,queries=0;
+    auto register_point=[&](int x,int y) {
+        if(x<0 || y<0 || int64_t(x)+y>n)
+            throw invalid_argument("point is outside the triangle");
+        coordinates.push_back(y); coordinates.push_back(n-x); ++count;
+    };
+    for(auto [x,y]:initial) register_point(x,y);
+    for(auto event:events) {
+        if(event.kind==1) {
+            if(event.first<0 || event.first>=count)
+                throw invalid_argument("query ID does not yet exist");
+            ++queries;
+        } else if(event.kind==2 || event.kind==3) {
+            if(event.first<0 || event.first>=n)
+                throw invalid_argument("invalid broom width");
+            coordinates.push_back(event.kind==2?event.first:n-event.first);
+        } else if(event.kind==4) register_point(event.first,event.second);
+        else throw invalid_argument("unknown event kind");
+    }
+    ContractingIntervals intervals(move(coordinates),count);
+    for(auto [x,y]:initial) intervals.add(y,n-x);
+    SweepResult answer;
+    answer.positions.reserve(queries);
+    for(auto event:events) {
+        if(event.kind==1) {
+            auto [a,b]=intervals.interval(event.first);
+            answer.positions.emplace_back(n-b,a);
+        } else if(event.kind==2) intervals.contract_right(event.first);
+        else if(event.kind==3) intervals.contract_left(n-event.first);
+        else intervals.add(event.second,n-event.first);
+    }
+    answer.statistics=intervals.statistics();
+    return answer;
+}
+```
+
+## 関連する手法
+
+[座標圧縮](/flowchartcp/techniques/coordinate-compression/)で端点順だけを残し、[Union-Find](/flowchartcp/techniques/union-find/)の集合併合と[小さい集合から大きい集合へ併合](/flowchartcp/techniques/small-to-large/)の償却を組み合わせます。[遅延評価セグメント木](/flowchartcp/techniques/lazy-segment-tree/)で配列の固定区間を更新する場合と異なり、ここでは各個体の格納ノードそのものが縮小に応じて降ります。
+
+## 参考資料
+
+- [JOI 2019/2020春季トレーニング合宿・公式課題一覧](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html)：競技1は2020年3月20日。掃除の解説公開日は2020年4月10日です。
+- [Sweeping・原典](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping.pdf)：1〜3ページで移動条件、追加と照会、全制約を確認。
+- [Sweeping・公式解説](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping-review.pdf)：15〜19ページの区間への写像、最小ノードへの格納、子への移送と集合併合に基づきます。掲載実装の端点集合と、削除を含む償却の証明はこれを具体化したものです。
+
+<TechniqueReferences techniqueId="interval-stabbing-endpoint-contraction-dsu" />

@@ -1,0 +1,78 @@
+---
+title: "流量下限付きフロー"
+description: "各辺の流量に下限と上限がある問題を、通常の最大流に帰着します。"
+techniqueId: lower-bound-flow
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+各辺の流量に下限と上限がある問題を、通常の最大流に帰着します。
+
+別名：Lower Bound Flow / Feasible Circulation / Flows with Demands
+
+## 使う場面
+
+各資源について「少なくとも $L$ 個、最大 $U$ 個」を使う制約がある場合に使います。通常の最大流の容量は上限しか表せません。まず、すべての頂点で流入と流出が等しい循環として、条件を満たす流量が存在するかを調べます。
+
+## 考え方
+
+辺 $u\to v$ に下限 $L$、上限 $U$ があるとします。下限 $L$ を先に流したと考え、残りの容量を $U-L$ にします。
+
+下限によって各頂点の流入と流出に差が生まれます。流入が多い頂点には補助始点から辺を張り、流出が多い頂点から補助終点へ辺を張ります。補助始点からの要求をすべて流せれば、残りの流量で差を埋められます。元の辺の流量は、下限と残りの流量の和です。
+
+## 適用条件
+
+下限・上限は非負で、下限が上限以下であることが必要です。容量と頂点の収支の合計は整数型の範囲内に収めます。
+
+始点 $s$ から終点 $t$ へのフローとして扱う場合は、$t\to s$ に十分な容量の辺を加えると循環になります。最大流量や最小流量まで求める場合は、可否判定の後に補助辺を除いた残余グラフで追加の処理を行います。可否判定で得た補助始点からの流量は、目的の流量そのものではありません。
+
+## なぜ正しいか
+
+各辺の流量を「下限＋残り」に分けると、元の流量保存は、残りの流量が下限による収支の差を埋める条件に変わります。補助辺をすべて飽和するフローがあれば、その差を埋める流量が存在します。
+
+逆に、条件を満たす元の流量があれば、各辺から下限を引いた部分を使って、補助辺をすべて飽和させることができます。したがって、この最大流の判定と元の実現可能性は同値です。
+
+## 計算量
+
+頂点が2個、辺が高々 $V$ 本増えたグラフで、最大流を1回実行します。Dinic法なら $O(V^2(E+V))$ 時間、空間は $O(V+E)$ です。
+
+## 実装
+
+最大流の記事の `Dinic` と合わせて、`circulation<Dinic>(n, edges)` を呼びます。実現できれば、元の辺ごとの流量を返します。実現できなければ `nullopt` を返します。以下は循環の可否判定と復元のコードです。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct BoundEdge { int u,v; long long low,high; };
+// Flow must implement the Dinic interface from the max-flow article.
+template<class Flow>
+optional<vector<long long>> circulation(int n,const vector<BoundEdge>& edges) {
+    Flow g(n+2); int s=n,t=n+1; vector<long long> balance(n);
+    vector<int> ids;
+    for(auto e:edges) {
+        assert(0<=e.low && e.low<=e.high);
+        ids.push_back(g.add(e.u,e.v,e.high-e.low));
+        balance[e.u]-=e.low; balance[e.v]+=e.low;
+    }
+    long long need=0;
+    for(int v=0;v<n;++v) {
+        if(balance[v]>0) { g.add(s,v,balance[v]); need+=balance[v]; }
+        else if(balance[v]<0) g.add(v,t,-balance[v]);
+    }
+    if(g.flow(s,t,need)!=need) return nullopt;
+    vector<long long> result;
+    for(int i=0;i<int(edges.size());++i) {
+        auto e=edges[i]; result.push_back(e.high-g.g[e.u][ids[i]].cap);
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/) ・ [グラフへの帰着](/flowchartcp/techniques/graph-reduction/)
+
+## 参考資料
+
+- [cp-algorithms: Flows with demands](https://cp-algorithms.com/graph/flow_with_demands.html)
+
+<TechniqueReferences techniqueId="lower-bound-flow" />

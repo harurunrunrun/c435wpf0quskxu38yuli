@@ -1,0 +1,132 @@
+{
+  "status": "complete-no-material-findings",
+  "reviewer": "ioi_2020_fixed_corpus_audit",
+  "techniqueId": "monotone-paint-stroke-links-offline-containment",
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "artifactSha256": {
+    "article": "b7cd9d8e491a6b2d7bef506d33f0bb702f6cdda5b8ff6d95fce52463628a2006",
+    "checker": "7b84267dc8a3a5946ce679764e47e9819bb39854b14829bb4a962437e3746a12",
+    "sidecar": "6b18fd0af72baf3035f20012fd3e35e5e7129f93bd573db6e7ebb3279214803d",
+    "cpp": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+  },
+  "primarySourcesReadIndependently": {
+    "statement": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "officialEditorial": "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+    "officialResults": "https://usaco.org/index.php?page=feb21results",
+    "editorialAuthor": "Benjamin Qi",
+    "method": "Approach1, official HTML formula and visible code read independently. Approach2 acknowledged but not required by the implementation.",
+    "originalBounds": {
+      "N": [
+        1,
+        200000
+      ],
+      "Q": [
+        1,
+        200000
+      ],
+      "colors": "1..N in increasing darkness",
+      "queries": "1based inclusive a..b,1<=a<=b<=N; all questions independent from globally unpainted state, leave outside unpainted"
+    },
+    "date": "2021-02",
+    "datePrecision": "month",
+    "exactDayVerified": false,
+    "difficulty": null,
+    "cutoff": "2026-10-14"
+  },
+  "proofReview": {
+    "barrierLowerBound": "Each finalcolorc position must receive a colorc stroke. One such stroke cannot cover finalc positions separated by a lighter finalcolor, since that intervening position could never be restored. Thus each color component separated by lighter barriers requires a distinctc stroke; different colors require different strokes.",
+    "construction": "For each samecolor link component, its leftmost..rightmost span contains no lighter FINAL color. Process components in increasing color and paint each span once. Earlier actual colors are<=current so strokes are legal; no later darker component can cover a lighter final target, by the same span property. Every final target is reached, using exactly one stroke per component, entirely inside a query.",
+    "equalityAndForest": "Eligible direct links require equal endpoints and strictly darker interior, including the vacuous adjacent case. Intermediate equal occurrences divide the direct pair into consecutive links. Each color graph is a monotone occurrence path; all colors form a forest, giving vertices minus internal edges.",
+    "queryRestriction": "An increasing-index occurrence path cannot leave an index interval and reenter. The global forest induced by a query interval equals the graph formed inside that interval. No use of external painting is needed. Our additional FULL-board BFS explicitly keeps all outside positions blank, verifying this independently of subarray slicing.",
+    "stack": "Retains strictly increasing distinct colors and the newest occurrence not blocked by a later lighter color. Pop only>, replacing the equal top after emitting its link. An encountered lighter value invalidates every larger candidate forever. Each position enters once and is popped/replaced once; all eligible links are emitted once.",
+    "fenwickAndEmptyRanges": "At sweependR, all registered links have right<R and therefore left<R. Subtractprefix(L) fromtotal tokeep left>=L, exactly both endpoints in[L,R). ForL=R all registered left<L, so total=prefix(L) and answer0; forN0, onlyend0 is processed and no add/color access occurs. Rightendpoint buckets retain original query indices and linked lists always point to earlier IDs.",
+    "integerAndBounds": "All sizes checked<=200000 before int casts; all queries checked before allocation, including empty and later invalid queries. n+1<=200001. Fenwick add begins at>=1 and nextindex<=262144, so i&-i never negatesINT_MIN or increments beyond explicit intmax>=1000000. Tree values/prefix/total/internal/answers<=N, validated endpoint subtraction bounded. ColorINT64_MIN/MAX only compared with>and==; unpainted is separate semantic state, no numeric sentinel.",
+    "apiAndMemory": "All original inputs included; arbitrary signedint64 colors, emptyN/Q/intervals are explicit extensions. Both inputvectors const, no mutation, global cache, external symbol, or recursion. Standard allocation failures unwind local buffers. Requested element payload3N+2Q+2 int slots with exact-request reserve as tested; at4byteint maximum4000008bytes excluding caller inputs/metadata/allocator/capacity policy. TimeO(N+Q+(N+Q)log(N+1)), includingN0."
+  },
+  "reproducedExistingChecker": {
+    "note": "This is reproduction of the author/root checker. It is NOT counted as a separately invented independent oracle.",
+    "checks": 2702609,
+    "checksum": "1028313103656390273",
+    "literalPaintingBFSStates": 87380,
+    "literalPaintingBFSActions": 4817386,
+    "allThreeColorArrays": 9840,
+    "allSubintervalsIncludingEmpty": 401040,
+    "randomCases": 1800,
+    "randomQueries": 540000,
+    "maximumQueries": 1200000,
+    "maximumN": 200000,
+    "maximumQ": 200000,
+    "normal": {
+      "passed": true,
+      "seconds": 0.218194,
+      "peakRSSKiB": 11392
+    },
+    "asanUbsan": {
+      "passed": true,
+      "seconds": 1.44724,
+      "peakRSSKiB": 151044,
+      "leakSanitizer": false
+    }
+  },
+  "newIndependentValidation": {
+    "source": "research/probes/monotone-paint-range-four-color-bfs.py",
+    "sourceSha256": "a0661dcb926a233cd53d4fd837e0d7cea27c167da6dbd524329fd90a77dbcf80",
+    "normalResultFile": "research/probes/monotone-paint-range-four-color-bfs-results.json",
+    "asanResultFile": "research/probes/monotone-paint-range-four-color-bfs-asan-results.json",
+    "normal": {
+      "status": "passed",
+      "checks": 551710,
+      "fiveStateBfsConfigurations": 19531,
+      "legalBrushActions": 799398,
+      "fourColorArraysIncludingEmpty": 5461,
+      "fullBoardBlankOutsideQueries": 140781,
+      "emptyQueriesIncludingMaximumBatches": 436409,
+      "maximumN": 200000,
+      "maximumQ": 200000,
+      "checksum": "15760702932218361702",
+      "sanitized": false,
+      "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c",
+      "secondsIncludingCompile": 0.6544026740011759,
+      "peakRSSKiB": 10636
+    },
+    "asanUbsan": {
+      "status": "passed",
+      "checks": 551710,
+      "fiveStateBfsConfigurations": 19531,
+      "legalBrushActions": 799398,
+      "fourColorArraysIncludingEmpty": 5461,
+      "fullBoardBlankOutsideQueries": 140781,
+      "emptyQueriesIncludingMaximumBatches": 436409,
+      "maximumN": 200000,
+      "maximumQ": 200000,
+      "checksum": "15760702932218361702",
+      "sanitized": true,
+      "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c",
+      "secondsIncludingCompile": 1.2730578999908175,
+      "peakRSSKiB": 85044
+    },
+    "differenceFromExistingChecker": "Newbase5 BFS on the FULL board with explicit blankstate0 and four ordered actual colors. Each query goal fixes EVERY outside cell to blank; it does not slice to a smaller board or use links/stack/Fenwick/component formula. Enumerates actual legal contiguous brush actions and records shortest action distance.",
+    "scope": "All4^N final target patterns,N0..6, mapped toINT64_MIN/-1/0/INT64_MAX; every halfopen subinterval in shuffled order. Fullboard goal has requested target ranks only inside and blank outside. Additional maxQ200000 withN0 plusmaxN200000 allINT64_MIN with empty queries at0/N/interior.",
+    "countsAreSeparate": true,
+    "originalSourceSha256": "6365a5ccb8cbb57bdeda2e8b591dddef09fc36b385959693ab9a781176a162b7"
+  },
+  "sidecarReview": {
+    "artifactAndCppHashesMatch": true,
+    "eightSectionsAndOneVisibleCompleteCpp": true,
+    "allMetadataSourceUrlsInArticle": true,
+    "numericDatePrecisionAndProvenanceAccurate": true,
+    "originalVsExtendedApiClearlySeparated": true,
+    "noFalseExactDate": true
+  },
+  "reproductionCommands": [
+    "python3 scripts/check_monotone_paint_range_cpp.py",
+    "python3 scripts/check_monotone_paint_range_cpp.py --sanitize",
+    "python3 research/probes/monotone-paint-range-four-color-bfs.py",
+    "python3 research/probes/monotone-paint-range-four-color-bfs.py --sanitize"
+  ],
+  "materialFindings": [],
+  "unconfirmedLemmas": [],
+  "originalReviewSha256": "56da21586f286cae9151ce5bca4f8f7288c4b95f6ccd5b402bcfbadd5c0d9832",
+  "scope": "元author凍結記事への独立レビュー。恒久probeは公開記事参照とstdout出力だけへ正規化。統合時のfrontmatter概要調整で本文SHAは変わったが、全C++SHAは同一。元記事/3artifact/元review/元probeのSHAを保持。"
+}

@@ -1,0 +1,764 @@
+[
+  {
+    "id": "quotient-blocks",
+    "title": "床関数の商が同じ区間をまとめる",
+    "summary": "floor(N/i) が変わる位置だけ処理し、N 項の和を平方根程度の区間にまとめます。",
+    "family": "整数・数え上げ",
+    "aliases": [
+      "floor division grouping",
+      "商の区間分割"
+    ],
+    "prerequisites": [
+      "binary-search"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc230/editorial/3015"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "divisor-multiple-reversal",
+    "title": "約数ごとの集計を倍数側から配る",
+    "summary": "各整数の約数を列挙する代わりに、d, 2d, 3d, … へ同じ寄与を配ります。",
+    "family": "整数・数え上げ",
+    "aliases": [
+      "divisor zeta transform",
+      "倍数列挙"
+    ],
+    "prerequisites": [
+      "mobius-inversion"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc162/tasks/abc162_e"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "gcd-divisibility-count",
+    "title": "GCD が d の倍数から、ちょうど d の個数を求める",
+    "summary": "全要素が d の倍数である列を数え、大きい倍数の GCD を持つ列を引きます。",
+    "family": "整数・数え上げ",
+    "aliases": [
+      "exact gcd counting",
+      "GCD 包除"
+    ],
+    "prerequisites": [
+      "mobius-inversion",
+      "divisor-multiple-reversal"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc162/tasks/abc162_e"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "factorial-inverses",
+    "title": "組合せを何度も求めるときは逆階乗を前計算する",
+    "summary": "n と k が毎回違う組合せクエリを、階乗と逆階乗で定数時間にします。",
+    "family": "整数・数え上げ",
+    "aliases": [
+      "factorial inverses",
+      "binomial precomputation"
+    ],
+    "prerequisites": [],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_y"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "stars-and-bars",
+    "title": "単調な列を差分にして非負整数の和を数える",
+    "summary": "非減少列の両端と差分を取り、和が固定された非負整数列に置き換えます。",
+    "family": "整数・数え上げ",
+    "aliases": [
+      "stars and bars",
+      "仕切り法"
+    ],
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc021/tasks/abc021_d"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "inclusion-exclusion-forbidden",
+    "title": "全ての指定文字を含む列を、欠ける文字から数える",
+    "summary": "必須文字が少ないとき、使われない文字の集合について包除を行います。",
+    "family": "整数・数え上げ",
+    "aliases": [
+      "required symbols inclusion exclusion",
+      "必須文字の包除"
+    ],
+    "prerequisites": [
+      "complement-counting"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc178/editorial/104"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "expectation-indicators",
+    "title": "総数の期待値を、各組が成立する確率に分ける",
+    "summary": "転倒数などの期待値を、組ごとの確率の和にして数えます。",
+    "family": "期待値",
+    "aliases": [
+      "indicator variables",
+      "指示変数の線形性"
+    ],
+    "prerequisites": [
+      "probability-expectation"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1728"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "expectation-first-step",
+    "title": "必ず小さくなる状態の期待値を一手目で分ける",
+    "summary": "確率的な遷移で状態が必ず小さくなるなら、遷移先の期待値から順に計算できます。",
+    "family": "期待値",
+    "aliases": [
+      "first step analysis",
+      "期待値の後ろ向き計算"
+    ],
+    "prerequisites": [
+      "probability-expectation"
+    ],
+    "entryPoints": [
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc350/editorial/9871"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "expectation-self-loop",
+    "title": "同じ状態に戻る確率を期待値の式から除く",
+    "summary": "進まない目があるときは E を移項し、前に進む遷移だけの式にします。",
+    "family": "期待値",
+    "aliases": [
+      "expected value self loop",
+      "期待値の移項"
+    ],
+    "prerequisites": [
+      "expectation-first-step",
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc263/editorial/4546"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "bitwise-contribution",
+    "title": "全ての組の XOR の和をビットごとに数える",
+    "summary": "各ビットで 0 と 1 の個数を数え、値を持つ組の数を掛け合わせます。",
+    "family": "寄与・状態の変換",
+    "aliases": [
+      "pair xor bit contribution",
+      "XOR の寄与分解"
+    ],
+    "prerequisites": [
+      "contribution"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc147/tasks/abc147_d"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "xor-prefix-count",
+    "title": "区間 XOR が K となる個数を接頭 XOR の頻度で数える",
+    "summary": "右端の接頭 XOR に対し、XOR が K になる左端の頻度を足します。",
+    "family": "寄与・状態の変換",
+    "aliases": [
+      "prefix xor frequency",
+      "subarray xor count"
+    ],
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/617/E"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "meet-in-middle-four-sums",
+    "title": "4 項の和を 2 項ずつに分け、添字の重複を避ける",
+    "summary": "先に作ったペアだけを保存し、残りのペアとの和を照合します。",
+    "family": "寄与・状態の変換",
+    "aliases": [
+      "four sum pair split",
+      "四項の和"
+    ],
+    "prerequisites": [
+      "meet-in-the-middle"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1642"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "sweep-interval-endpoints",
+    "title": "半開区間の開始と終了を同じ座標でまとめる",
+    "summary": "区間の負荷が変わる時刻だけを処理し、同時刻の差分を一括して足します。",
+    "family": "区間・順序",
+    "aliases": [
+      "half open interval sweep",
+      "イベント同時刻の集約"
+    ],
+    "prerequisites": [
+      "difference-array"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc183/tasks/abc183_d"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "turn-penalty-state",
+    "title": "曲がる回数を最小にするため、直前の向きを状態に持つ",
+    "summary": "同じマスでも到着方向を分け、直進を 0、方向変更を 1 の辺にします。",
+    "family": "経路・状態",
+    "aliases": [
+      "turn penalty state",
+      "direction expanded 0-1 BFS"
+    ],
+    "prerequisites": [
+      "zero-one-bfs",
+      "state-design"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/typical90/tasks/typical90_aq"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "multi-source-distance",
+    "title": "多数の始点からの最短距離を一度に求める",
+    "summary": "複数の始点から各頂点への距離の最小値を、全始点を同時にキューへ入れて求めます。",
+    "family": "経路・状態",
+    "aliases": [
+      "multi source BFS",
+      "多始点 BFS"
+    ],
+    "prerequisites": [
+      "bfs"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1194"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "exchange-crossproduct",
+    "title": "連結順の優劣を隣接交換の交差積で決める",
+    "summary": "二つの要素を交換した差を計算し、浮動小数点の比を使わず並べ替えます。",
+    "family": "順序・構築",
+    "aliases": [
+      "exchange cross product sort",
+      "ratio sorting"
+    ],
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc268/editorial/4788"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "construct-last-operation",
+    "title": "挿入の構築を、最後に取り除ける要素から逆算する",
+    "summary": "位置 j に値 j を入れる操作は、完成形の位置と値が一致する要素を消す操作へ反転します。",
+    "family": "順序・構築",
+    "aliases": [
+      "reverse insertion construction",
+      "rightmost removable element"
+    ],
+    "prerequisites": [
+      "reverse-thinking"
+    ],
+    "entryPoints": [
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/agc032/tasks/agc032_a"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "prefix-feasibility",
+    "title": "括弧列の判定を、合計と接頭和の最小値で持つ",
+    "summary": "区間が正しい括弧列かどうかを、二つの値を結合して判定します。",
+    "family": "区間・順序",
+    "aliases": [
+      "bracket balance minimum prefix",
+      "parenthesis monoid"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc223/editorial/2802"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "score-difference-game",
+    "title": "二人の取り分の合計が一定なら、得点差だけを持つ",
+    "summary": "手番が入れ替わるたびに得点差の符号を反転し、手番の軸を省きます。",
+    "family": "ゲーム・得点",
+    "aliases": [
+      "score difference minimax",
+      "零和ゲームの得点差"
+    ],
+    "prerequisites": [
+      "state-design"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc270/editorial/4850"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "digit-sum-residue-dp",
+    "title": "桁和の条件は合計でなく余りだけを持つ",
+    "summary": "非常に長い上限までの整数を、桁和の余りと上限との一致で数えます。",
+    "family": "DP の状態",
+    "aliases": [
+      "digit sum modulo DP",
+      "桁和の剰余"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "prerequisites": [
+      "digit-dp",
+      "dp-dimension-rolling"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_s"
+    ]
+  },
+  {
+    "id": "subset-coprime-small-primes",
+    "title": "短い整数区間では共通する小さい素数だけを持つ",
+    "summary": "互いに素な部分集合を、区間幅以下の素因数の使用状況で数えます。",
+    "family": "整数・状態の圧縮",
+    "aliases": [
+      "pairwise coprime subset mask",
+      "small prime mask"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "complexity",
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bitmask-dp"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc195/editorial/858?lang=ja"
+    ]
+  },
+  {
+    "id": "linear-congruence-gcd",
+    "title": "一次合同式は GCD で解の有無を判定してから割る",
+    "summary": "ax≡b を、逆元が存在する小さい法の合同式へ変えます。",
+    "family": "合同式",
+    "aliases": [
+      "linear congruence gcd",
+      "extended Euclid inverse"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "prerequisites": [],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc186/editorial/422"
+    ]
+  },
+  {
+    "id": "crt-noncoprime",
+    "title": "法が互いに素でない合同式も共通因子を確認して併合する",
+    "summary": "二つの周期が一致する時刻を、剰余の差と GCD から求めます。",
+    "family": "合同式",
+    "aliases": [
+      "generalized Chinese remainder theorem",
+      "non coprime CRT"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [
+      "linear-congruence-gcd"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc193/editorial/812?lang=en"
+    ]
+  },
+  {
+    "id": "lattice-pick-area",
+    "title": "格子多角形の内点数を面積と辺上の GCD から求める",
+    "summary": "内部の格子点を走査せず、面積の二倍と境界格子点の数で計算します。",
+    "family": "幾何",
+    "aliases": [
+      "Pick theorem lattice polygon",
+      "shoelace gcd boundary"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "prerequisites": [],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2193",
+      "https://math.mit.edu/research/highschool/primes/circle/documents/2025/Hannah-Carolena-Final.pdf"
+    ]
+  },
+  {
+    "id": "rectangle-union-sweep",
+    "title": "長方形の和集合の面積を、覆われた縦の長さで積分する",
+    "summary": "横に走査し、重なりを一度だけ数える区間長を更新します。",
+    "family": "幾何",
+    "aliases": [
+      "rectangle union sweep line",
+      "covered length segment tree"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [
+      "coordinate-compression",
+      "segment-tree"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1741"
+    ]
+  },
+  {
+    "id": "manhattan-transform",
+    "title": "マンハッタン距離の最大値は x+y と x−y の幅を見る",
+    "summary": "全ての点の組を比べず、変換後の二つの座標の最大値と最小値を持ちます。",
+    "family": "幾何",
+    "aliases": [
+      "Manhattan coordinate transform",
+      "L1 to Linfinity"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc178/editorial-E-phcdiydzyqa.pdf"
+    ]
+  },
+  {
+    "id": "circle-square-distance",
+    "title": "円周が交わる条件を二乗距離の上下限に変える",
+    "summary": "中心間距離を平方根で求めず、半径の差と和の二乗で比較します。",
+    "family": "幾何",
+    "aliases": [
+      "circle circumference squared distance",
+      "circle tangency exact"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc259/editorial/4280"
+    ]
+  },
+  {
+    "id": "knapsack-bitset-shift",
+    "title": "部分和の可否だけならビット列をずらしてまとめて更新する",
+    "summary": "個数や最大価値が不要な DP を、64 状態ずつのシフトと OR に変えます。",
+    "family": "DP の遷移",
+    "aliases": [
+      "subset sum bitset shift",
+      "boolean knapsack"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "knapsack"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc204/tasks/abc204_d"
+    ]
+  },
+  {
+    "id": "subset-sum-repeated-binary",
+    "title": "同じ重さを c 個まで選ぶときは個数を二進分解する",
+    "summary": "1, 2, 4, … 個と残りの束へ分け、個数制限を 0/1 の選択へ変えます。",
+    "family": "DP の遷移",
+    "aliases": [
+      "bounded subset sum binary grouping",
+      "binary splitting multiplicity"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "knapsack-bitset-shift",
+      "knapsack"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc286/tasks/abc286_d"
+    ]
+  },
+  {
+    "id": "matrix-walk-sum-block",
+    "title": "累乗と累乗の和を一組にして倍々に計算する",
+    "summary": "法で割れない等比和や、全ての長さの経路数を逆元なしで計算します。",
+    "family": "代数・繰り返し",
+    "aliases": [
+      "matrix power sum pair",
+      "block matrix geometric sum"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "prerequisites": [
+      "matrix-exponentiation"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc293/editorial/5962"
+    ]
+  },
+  {
+    "id": "cyclic-dp-first-state",
+    "title": "環の隣接条件は最初の選択を固定して最後で確認する",
+    "summary": "両端の依存を先頭の少数の状態に分け、線形 DP に変えます。",
+    "family": "DP の状態",
+    "aliases": [
+      "cycle DP fix first state",
+      "circular vertex cover DP"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [
+      "state-design",
+      "dp-dimension-rolling"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc251/editorial/3991"
+    ]
+  },
+  {
+    "id": "rectangle-split-dp",
+    "title": "長方形の切断は四つの境界と最初の切れ目を状態にする",
+    "summary": "二つの切断後の長方形が独立なら、四境界の DP に分けて費用を足します。",
+    "family": "DP の状態",
+    "aliases": [
+      "rectangle partition DP",
+      "guillotine cutting DP"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [
+      "interval-dp",
+      "prefix-sum"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://ioi.te.lv/locations/ioi09/contest/4_Raisins4bcf.pdf"
+    ]
+  },
+  {
+    "id": "positive-denominator-offset-real-bisection",
+    "title": "分母へ同じ実数を足す方程式は、正の定義域を決めて二分探索する",
+    "summary": "距離を補正後の速度で割った和を既知の時間へ合わせる。開いた下端を評価せず、解析的な上界と単調減少性で一意な補正を探す。",
+    "aliases": [
+      "positive denominator offset bisection",
+      "monotone reciprocal sum equation",
+      "正の分母の補正方程式"
+    ],
+    "family": "探索・単調性",
+    "level": "中級",
+    "prerequisites": [
+      "binary-search"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=9",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=5"
+    ]
+  }
+]

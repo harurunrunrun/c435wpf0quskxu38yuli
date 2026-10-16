@@ -1,0 +1,73 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2020_tickets",
+    "title": "Carnival Tickets",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-tickets-ISC.pdf",
+    "techniqueIds": [
+      "median-ticket-extreme-selection-round-decomposition"
+    ],
+    "features": [
+      "偶数n色それぞれに非減少順のm枚の券があり、k回で各色から毎回一枚ずつ選ぶ。同じ券は再使用できず、値は非負・同値を許す。",
+      "各回の得点は選んだn値の中央値への最小絶対偏差和。その合計を最大化し、券を使う回も復元する。",
+      "2<=n<=1500かつ偶数、1<=k<=m<=1500、0<=x[i][j]<=10^9。"
+    ],
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/tickets-solutions-ISC.pdf",
+    "reviewStatus": "verified",
+    "verification": "official-editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2020-09-16",
+    "notes": "各回の中央値得点を正負n/2枚ずつの符号和へ変え、各色の負側を小さいk-p枚、正側を大きいp枚へ固定する。正側を一枚増やす非増加の増分列を最大ヒープで統合し、全体nk/2枚を選ぶ。残り正側枚数の大きいn/2色を各回に選べば、全色一枚ずつへ戻せる。",
+    "publicationDate": "2020-09-16"
+  },
+  {
+    "source": "IOI",
+    "problemId": "ioi2020_stations",
+    "title": "ステーション (Stations)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf",
+    "techniqueIds": [
+      "tree-local-routing-alternating-dfs-labels"
+    ],
+    "features": [
+      "木全体を見られる準備段階で、各頂点へ相異なる小さい整数ラベルを一つずつ付ける。",
+      "別プロセスの実行段階には、現在地・目的地・隣接先全てのラベルだけを渡し、木や親の保存状態なしで目的地への最初の隣接先を返す。",
+      "原典はN2..1000、全隣接入力長合計10万以下、隣接labelは昇順、現在地と目的地は異なる。最大labelN-1の構成は原典の満点条件である最大label1000以下を満たす。"
+    ],
+    "verification": "independent-analysis",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://ioi2020.sg/schedule/",
+    "publicationNotes": "主催者公式scheduleで2020-09-19がContest Day2、公式課題一覧でStationsがDay2と確認。難度値は不明。"
+  },
+  {
+    "source": "IOI",
+    "problemId": "ioi2020_supertrees",
+    "title": "Connecting Supertrees",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+    "techniqueIds": [
+      "simple-path-count-matrix-tree-cycle-construction"
+    ],
+    "features": [
+      "固定した全N頂点の無向単純グラフについて、各二頂点間の単純路の正確な本数0/1/2/3を行列で指定する。",
+      "全ての本数を満たす辺集合を構築するか、不可能と判定する。自分自身への一頂点の路は1本と数える。",
+      "自己ループ・多重辺・補助頂点を使わず、全N²要素を読んで構造を検査できる。"
+    ],
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-16",
+    "notes": "固定したN頂点の無向単純グラフについて、全対の正確な単純路本数0/1/2/3を指定して辺を構築する。全対3本以下なら二閉路は置けず、成分は木か唯一の環を持つ形になる。正の関係で成分、要求1で木の同値類を分けて全組の整合を検査し、各類の木と三つ以上の代表の環で要求を実現する。代表2個と要求3は不可能になる。",
+    "discoveredBy": "ioi-2020"
+  }
+]

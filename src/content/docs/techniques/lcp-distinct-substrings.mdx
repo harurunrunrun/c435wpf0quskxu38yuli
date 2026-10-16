@@ -1,0 +1,65 @@
+---
+title: "異なる部分文字列を、直前の接尾辞との差だけ数える"
+description: "接尾辞を辞書順に並べ、既に出ている短い接頭辞を LCP の分だけ除きます。"
+techniqueId: "lcp-distinct-substrings"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+文字列の連続部分列について、出現回数ではなく異なる内容の数を求めたい場合。全ての部分文字列を文字列オブジェクトとして作ると、保存する文字の総数だけで三乗になります。
+
+## 考え方
+
+各部分文字列は、ある接尾辞の非空接頭辞です。接尾辞配列 $\mathrm{SA}$ の順で、接尾辞 $s[\mathrm{SA}[i],N)$ が持つ $N-\mathrm{SA}[i]$ 個の接頭辞を追加します。
+
+直前の接尾辞との一致長が $\mathrm{LCP}[i-1]$ なら、その長さ以下の接頭辞は既出で、それより長いものは新しく現れます。したがって
+
+$$\#\text{異なる非空部分文字列}
+=\frac{N(N+1)}2-\sum_i\mathrm{LCP}[i].$$
+
+## 適用条件
+
+文字列が固定で、文字の厳密な一致を使う場合です。空文字列も数える仕様なら最後に 1 を足します。複数の文字列をつないだ列では、元の境界を越える部分文字列をこの式が数えるため、そのまま使えません。
+
+答えは二乗程度になるので、32 bit 整数では足りない場合があります。
+
+## なぜ正しいか
+
+ある接頭辞を持つ接尾辞は辞書順で連続します。現在の接尾辞とそれより前のどれかが長さ $k$ 以上一致するなら、その間にある直前の接尾辞とも長さ $k$ 以上一致します。
+
+よって直前との LCP だけが、既に出た接頭辞の最大長になります。それを除いた分を各接尾辞から加えると、同じ内容を重複させず全てを数えます。
+
+## 計算量
+
+全ての部分文字列をコピーして集合へ保存する改善前は、コピーする文字の総数が $\Theta(N^3)$、空間も最悪 $\Theta(N^3)$ です。
+
+改善後の集計は $O(N)$。以下の ACL の固定アルファベット上の接尾辞配列・LCP 構築を含めても $O(N)$ 時間、$O(N)$ 空間です。比較ソートを使う倍増実装では、接尾辞配列の構築時間に合わせて $O(N\log^2 N)$ などになります。
+
+## 実装
+
+ASCII の文字列を対象とし、AtCoder Library を使います。LCP 配列の $i$ 番目は $\mathrm{SA}[i]$ と $\mathrm{SA}[i+1]$ の一致長です。
+
+```cpp
+#include <bits/stdc++.h>
+#include <atcoder/string>
+using namespace std;
+long long count_distinct_substrings(const string& s) {
+    if(s.empty()) return 0;
+    auto sa=atcoder::suffix_array(s);
+    auto lcp=atcoder::lcp_array(s,sa);
+    long long n=s.size(),answer=n*(n+1)/2;
+    for(int length:lcp) answer-=length;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[同じ部分文字列が K 回現れる条件を LCP の区間最小値にする](/flowchartcp/techniques/lcp-repeated-substring/)、[接尾辞配列・LCP配列](/flowchartcp/techniques/suffix-array/)
+
+## 参考資料
+
+- [CSES：Distinct Substrings の問題文](https://cses.fi/problemset/task/2105/)
+- [AtCoder Library：String の仕様](https://atcoder.github.io/ac-library/production/document_ja/string.html)
+
+<TechniqueReferences techniqueId="lcp-distinct-substrings" />

@@ -1,0 +1,85 @@
+---
+title: "ローリングハッシュ"
+description: "部分文字列を整数のハッシュ値に変換し、等しいかどうかを高速に比較します。"
+techniqueId: rolling-hash
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+部分文字列を整数のハッシュ値に変換し、等しいかどうかを高速に比較します。
+
+別名：Rolling Hash / Polynomial Hash / 文字列ハッシュ
+
+## 使う場面
+
+任意の部分文字列の比較や、逆文字列との比較を大量に行う場合に使います。前計算の後は、同じ長さの部分文字列を $O(1)$ で比較できます。ただし、異なる文字列が同じハッシュ値になる可能性がある、確率的な方法です。
+
+## 考え方
+
+基数 $B$ と法 $p$ を決め、接頭辞のハッシュを
+
+$$H[i+1]=H[i]B+s[i]\pmod p$$
+
+で計算します。区間 $[l,r)$ のハッシュは $H[r]-H[l]B^{r-l}$ です。基数の累乗も前計算しておきます。
+
+比較する文字列同士では同じ基数と法を使い、長さも確認します。最長共通接頭辞を求めるには、接頭辞が一致する長さを二分探索します。
+
+## 適用条件
+
+ハッシュ値が違えば文字列も違いますが、同じ値でも一致を保証できません。厳密な判定が必要なら、接尾辞配列・LCPや直接の比較を使います。
+
+ランダムな基数と複数の素数法で衝突を抑えます。別々に構築した文字列でも基数は共有してください。実行ごとに基数が変わる実装のハッシュ値は、実行をまたぐ識別子には使えません。
+
+## なぜ正しいか
+
+同じ文字列は同じ多項式を表すため、必ず同じハッシュ値になります。異なる同長文字列の差は非零多項式なので、ランダムに選んだ基数で値が0になる確率を、多項式の次数と法の大きさから評価できます。
+
+比較回数が多ければ、その分だけ衝突の可能性も増えます。また、以下の2つの法では同じ基数を使うため、両方の衝突が独立であるとして確率を単純に掛けることはできません。
+
+## 計算量
+
+前計算は $O(N)$ 時間・空間です。部分文字列のハッシュ取得と同長の比較は $O(1)$、二分探索による最長共通接頭辞は $O(\log N)$ です。文字列を更新する場合は、この配列版では再構築が必要です。
+
+## 実装
+
+以下は2つの素数法を使います。`get(l, r)` の返す値の組を、区間長と合わせて比較してください。基数は全オブジェクトで共有し、文字は非零の整数へ変換しています。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct RollingHash {
+    using Hash=array<long long,2>;
+    static constexpr Hash mod={1000000007,1000000009};
+    static const Hash& bases() {
+        static const Hash b=[] {
+            mt19937_64 rng(random_device{}()); Hash out;
+            for(int k=0;k<2;++k) out[k]=uniform_int_distribution<long long>(257,mod[k]-2)(rng);
+            return out;
+        }();
+        return b;
+    }
+    vector<Hash> h,p;
+    explicit RollingHash(const string& s):h(s.size()+1),p(s.size()+1) {
+        p[0]={1,1}; auto b=bases();
+        for(int i=0;i<int(s.size());++i) for(int k=0;k<2;++k) {
+            h[i+1][k]=(h[i][k]*b[k]+(unsigned char)s[i]+1)%mod[k];
+            p[i+1][k]=p[i][k]*b[k]%mod[k];
+        }
+    }
+    Hash get(int l,int r) const {
+        assert(0<=l && l<=r && r<int(h.size())); Hash out;
+        for(int k=0;k<2;++k) out[k]=(h[r][k]-h[l][k]*p[r-l][k]%mod[k]+mod[k])%mod[k];
+        return out;
+    }
+};
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [接尾辞配列・LCP配列](/flowchartcp/techniques/suffix-array/) ・ [乱択アルゴリズム](/flowchartcp/techniques/randomized-algorithms/)
+
+## 参考資料
+
+- [cp-algorithms: String Hashing](https://cp-algorithms.com/string/string-hashing.html)
+- [Nyaan: Rolling Hash（作者実装・検証先）](https://nyaannyaan.github.io/library/string/rolling-hash.hpp.html)
+
+<TechniqueReferences techniqueId="rolling-hash" />

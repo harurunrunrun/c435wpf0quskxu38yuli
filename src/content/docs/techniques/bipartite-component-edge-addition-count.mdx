@@ -1,0 +1,104 @@
+---
+title: "二部性を保つ辺の追加は、同じ成分の同色対だけを除いて数える"
+description: "成分ごとの二色の人数を数え、既存辺と同じ成分内の同色対を全頂点対から引く。"
+techniqueId: bipartite-component-edge-addition-count
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+単純な無向グラフに、まだ存在しない辺を一本だけ加える。追加後も二部グラフになる頂点対の数を求めたい。元のグラフは、連結とも二部グラフとも限らない。
+
+候補ごとに二部判定をやり直す代わりに、**各成分の色ごとの頂点数**だけから数えられる。
+
+## 考え方
+
+まず各連結成分を二色に塗る。元から同色どうしの辺があれば、奇閉路がある。辺を一本増やしてもそれは消えないため、答えは0。
+
+全成分が二部グラフなら、追加する辺の両端が同じ成分に属するかで場合を分ける。
+
+- 同じ成分：異なる色どうしで、既存の辺でないときに追加できる。
+- 異なる成分：どの頂点対にも追加できる。一方の成分の色を全て反転すれば、両端を異なる色にできる。
+
+成分 $i$ の色ごとの頂点数を $B_i,W_i$、全頂点数を $N$、既存辺数を $M$ とすると、
+
+$$
+\binom N2-M-\sum_i\left(\binom{B_i}{2}+\binom{W_i}{2}\right)
+$$
+
+が答え。全頂点対から既存辺と、同じ成分内で同色になる対を引く。
+
+異なる成分の色の名前は独立なので、全体の黒頂点数と白頂点数だけを使ってはいけない。例えば孤立頂点二つを両方黒で塗っても、その間には辺を追加できる。
+
+## 適用条件
+
+入力は自己ループ・多重辺のない無向グラフ。頂点対は順序を区別せず、既存辺を二重に追加することもない。
+
+各候補の辺は、**元のグラフへ独立に一本だけ追加する**ものとして数える。数えた全辺を同時に追加できるという意味ではない。また、頂点の色は固定されておらず、追加後に塗り直せる。色が指定済みなら、別成分を反転できるという議論は使えない。
+
+## なぜ正しいか
+
+連結な二部グラフの二色塗りは、全体の反転を除いて一意である。同じ成分の同色対をつなぐと、両端を結ぶ既存の偶数長の道と追加辺で奇閉路ができる。異なる色の対をつなぐ場合は、そのままの塗り分けを使える。
+
+異なる成分の間では、一方だけ色を反転しても各成分内の辺の条件は保たれる。追加辺の両端も異色にできるため、全ての成分間の対が候補になる。
+
+元の辺は既に異なる色どうしを結んでいるので、引く既存辺と同色対には重複がない。従って先ほどの式は、禁止される対だけをちょうど除いている。
+
+## 計算量
+
+まだ辺で直接結ばれていない全頂点対を試す方法は、最悪 $O(N^2(N+M))$ 時間。二色塗りと成分の頂点数の集計は $O(N+M)$ 時間、必要な追加空間も $O(N+M)$。頂点数から二項係数を求めて引くだけなので、各成分の集計後の計算は定数時間。
+
+## 実装
+
+`count_bipartite_edge_additions(n,edges)` は追加できる無向辺の数を返す。頂点は0始まり、$0\le N\le200000$、$M\le200000$。
+
+単純グラフであることは呼び出し側の前提とし、重複辺の検査は行わない。自己ループと範囲外の頂点は例外で拒否する。再帰を使わず、各成分をBFSで処理する。答えの型は64ビット整数。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long count_bipartite_edge_additions(
+        int n, const vector<pair<int,int>>& edges) {
+    if (n < 0 || n > 200000 || edges.size() > 200000)
+        throw invalid_argument("graph size");
+    vector<vector<int>> graph(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n)
+            throw out_of_range("edge endpoint");
+        if (u == v) throw invalid_argument("simple graph required");
+        graph[u].push_back(v); graph[v].push_back(u);
+    }
+    long long answer = 1LL * n * (n - 1) / 2
+                       - static_cast<long long>(edges.size());
+    vector<int> color(n, -1), queue;
+    queue.reserve(n);
+    for (int start = 0; start < n; ++start) {
+        if (color[start] != -1) continue;
+        long long count[2] = {1, 0};
+        queue.clear(); queue.push_back(start); color[start] = 0;
+        for (size_t read = 0; read < queue.size(); ++read) {
+            int v = queue[read];
+            for (int to : graph[v]) {
+                if (color[to] == color[v]) return 0;
+                if (color[to] != -1) continue;
+                color[to] = color[v] ^ 1;
+                ++count[color[to]]; queue.push_back(to);
+            }
+        }
+        for (long long size : count) answer -= size * (size - 1) / 2;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[同じ・異なる条件を偶奇で伝える](/flowchartcp/techniques/bipartite-parity-constraints/) ・ [幅優先探索](/flowchartcp/techniques/bfs/)
+
+## 参考資料
+
+- [AtCoder ABC282 D：Make Bipartite 2](https://atcoder.jp/contests/abc282/tasks/abc282_d)
+- [ABC282 D 公式解説](https://atcoder.jp/contests/abc282/editorial/5422)
+
+<TechniqueReferences techniqueId="bipartite-component-edge-addition-count" />

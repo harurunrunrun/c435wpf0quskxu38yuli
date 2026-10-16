@@ -1,0 +1,379 @@
+{
+  "reviewStatus": "passed",
+  "reviewer": "/root/usaco_cowmistry_article",
+  "reviewedAt": "2026-10-15",
+  "problemId": "ioi2019_line",
+  "techniqueId": "orthogonal-point-cover-spiral-two-chains",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-line-article.mdx",
+    "checker": "/tmp/flowchartcp-line-checker.py",
+    "sidecar": "/tmp/flowchartcp-line-sidecar.json",
+    "independentProbe": "/tmp/flowchartcp-line-independent-probe.py",
+    "independentProbeResult": "/tmp/flowchartcp-line-independent-probe.json",
+    "independentSourceVerification": "/tmp/flowchartcp-line-independent-source.json"
+  },
+  "artifactSha256": {
+    "article": "b2336a9286aa712aa54c5a536cc22ce297ce21df74e72947398b5f92433f5b9f",
+    "checker": "6ea68952d09fae006f4e8f7a324b3fb0632da0df0afa64faba043ef2cfe480e0",
+    "sidecar": "30a7f2fbbd9170c080543c3fff05e6923501ce46654f9993390abd21053cf414",
+    "independentProbe": "063d1ff9f8ae23e2ddc8044777260ac265f3d6e327236d92d90fe19aff1abd91",
+    "independentProbeResult": "71430e4663d75c71cca97ef408cf0cc71e3122cf19e25559e72c0a2bea290f30",
+    "independentSourceVerification": "13b1008698e905fc26d151b6d5bbb4b0f5cd3e8a57a45ed4dc2bff11a4ea6596"
+  },
+  "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedOriginalNumericBounds": [],
+  "nonblockingIntegrationCorrection": {
+    "issue": "Two related-technique links use /flowchart/techniques instead of the configured /flowchartcp/techniques base.",
+    "reportedBy": "root",
+    "parentWillCorrectPublishedCopy": true,
+    "codeChanged": false
+  },
+  "sourceVerification": {
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "statementMirrorUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+    "nationalCommitteeStatementMirrorUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+    "localPrimaryPdf": "/tmp/flowchartcp-line-source/line-en.pdf",
+    "primaryPdfAndImages": {
+      "scoringAll77TableEntriesVisuallyMatched": true,
+      "pdfSHA256": "b2dd1f7236c90f4237908f368cbc95dfcb31980d7378d8aea6f7cf2e5380721e",
+      "pdfGitBlobSHA1": "cc00e3496b500456a521e4128aa3e2ba5b9593a3",
+      "images": {
+        "/tmp/flowchartcp-line-source/line-page1.png": "4b823d61632b35b179e8a6e14d1975bbd2850113c1c66db8df9e7e3802037d89",
+        "/tmp/flowchartcp-line-source/line-page2.png": "37efa39a611d633e487a47c181a7bc9da22d5d8fc0b83a82fbd27c1b7e2ae186",
+        "/tmp/flowchartcp-line-source/line-page3.png": "046cb5392c695f6417f29269924ec72799a3a0732c9be0a21cad71bf7e135615",
+        "/tmp/flowchartcp-line-source/line-page4.png": "e0903a4634a746a27523951cb96744d8ff533ab58470da3a4845a8f2d4feca26"
+      },
+      "artifactSHA256": {
+        "article": "b2336a9286aa712aa54c5a536cc22ce297ce21df74e72947398b5f92433f5b9f",
+        "checker": "6ea68952d09fae006f4e8f7a324b3fb0632da0df0afa64faba043ef2cfe480e0",
+        "sidecar": "30a7f2fbbd9170c080543c3fff05e6923501ce46654f9993390abd21053cf414"
+      }
+    },
+    "visualInspectionClaimed": true,
+    "visuallyInspectedPages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "officialWebStatementAndReviewIndependentlyRead": true,
+    "numericBounds": {
+      "N": "1..100000",
+      "inputCoordinates": "Integer1..1000000000, each x and each y pairwise distinct",
+      "outputCoordinates": "Integer-2000000000..2000000000",
+      "origin": "0,0 implicit",
+      "fixedInputFiles": 10,
+      "submittedFileMaximum": "15MB for each submitted output or zip file",
+      "visualizerDisplayLimit": 1000
+    },
+    "outputContract": "Print k, then k integer vertex pairs p1..pk; do not print p0=(0,0). Every dot may lie in a segment interior. Axis-aligned self-crossing and overlap are permitted.",
+    "scoring": "Invalid output gives0; k=c_i gives i points; c_(i+1)<k<c_i gives i+(c_i-k)/(c_i-c_(i+1)); k>c_1 gives0; k<c_10 gives10. All77 table entries (7N+70thresholds) independently transcribed from page3 and matched sidecar. All10 fixed inputs have c_10=N+3.",
+    "sourceDate": "2019-08-08",
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "provenance": "Official Review gives two chains+spiral and states N+3 but omits connection details. The reviewed fixed-order one-connector construction is independently proved and does not rely on the national-committee code's384 candidate search.",
+    "originalContestInputFilesAcquired": false,
+    "originalContestInputFilesTested": 0,
+    "generatedInputsAreNotOriginalFiles": true
+  },
+  "proofReview": {
+    "partition": "Under unique coordinates, a shared x/y extremum is a bounding-box corner. SW/NE removals are comparable in both coordinates and form one increasing chain; NW/SE removals form one decreasing chain. Otherwise allfour extrema are different, each lies strictly inside its own side, and removing them strictly shrinks every box coordinate. Intervening corner removals cannot enlarge the box. Every point is assigned once.",
+    "chain": "Alternating axes visits one new monotone point per segment. Before a bend, move the previous segment's endpoint farther in its current direction to the next point's other coordinate; monotonicity keeps every previous covered point. Global x/y uniqueness makes every new segment nonzero.",
+    "deterministicConnection": "Start the increasing chain (or, if empty, the decreasing chain) in x-ascending order with a rightward horizontal first segment, entered from the origin by one vertical segment. If a second decreasing chain exists, its reversal offers either direction on either chosen first axis. Choose its first axis equal to the previous last axis and its direction opposite; extend the previous endpoint beyond both relevant coordinates by one, then add one perpendicular connector. The next chain's first segment is already its own point budget.",
+    "innerBox": "For an incoming horizontal segment, connect to the inner bottom side; for incoming vertical, to its left side. One perpendicular connector and opposite first direction traverse allfour sides. Ending is always vertical down or horizontal left. With no chains, origin connects horizontally to the positive left side and then goes up.",
+    "outerBoxes": "If the last segment is down, extend to the outer bottom and choose left/right according to the outer bottom extremum's x. If last is left, extend to the outer left and choose up/down according to the outer left extremum's y. Strict nesting places the start within that side; global coordinate uniqueness excludes equality with its target extremum. The first new edge covers that extremum, three further edges cover the otherthree, and the same down/left tail invariant returns.",
+    "nondegeneracy": "Chain/box connectors change the perpendicular coordinate because distinct input points have distinct coordinates. Initial origin connectors are nonzero because coordinates are positive. Nested box edges have positive width/height; the first outer edge is nonzero by strict interior placement and distinct target coordinate. Singleton and empty components use the same invariants.",
+    "countAndCoordinates": "If chain sizesa,b and box countr, N=a+b+4r. Each nonempty object adds at most one connector, hence<=N+3. At every inter-object connection the previous endpoint is an input point, so max+1/min-1 uses original bounds and never accumulates repeated+1. Other new coordinates are0 or input extrema; output is0..1e9+1.",
+    "serialization": "At most100003 segments. In normal decimal format each output line uses at most10+1+10+1=22bytes and count line at most7bytes, so<=2200073bytes per generated output, safely below15MB.",
+    "complexity": "Two coordinate sorts and two chain sorts takeO(Nlog(N+1)); monotone removed-array extrema scans totalO(N), as do drawing and output. O(N) extra storage, no input-depth recursion; all coordinate arithmetic within int64."
+  },
+  "apiReview": {
+    "functions": [
+      "orthogonal_cover::cover_points_orthogonally",
+      "orthogonal_cover::write_line_output"
+    ],
+    "originalRangeContained": true,
+    "extensions": "N0 returns origin only; arbitrary input order.",
+    "validation": "N<=100000, signed64bit coordinates in1..1e9 and x/y separately distinct checked before drawing. Invalid inputs throwinvalid_argument without mutation; writer constructs before emitting, so invalid input emits no partial text.",
+    "state": "All state local; returned path owns independent storage; input const; valid calls recover after invalid calls; allocation/ostream policy exceptions propagate.",
+    "integerSafety": "n and indices<=100000, count<=100003, no length sum/cross product, coordinate±1 bounded by0..1e9+1. While extrema scans are safe because remaining>0 ensures an unremoved point still lies between the monotone scan ends.",
+    "outputLegality": "Origin included in returned path and omitted by writer. Every segment nonzero and axis-aligned, output dots may be interior, crossing/overlap permitted."
+  },
+  "presentationReview": {
+    "japaneseSections": 8,
+    "visibleCompleteCppFences": 1,
+    "allMetadataSourceUrlsInArticle": true,
+    "metadataSummaryMatchesArticle": true,
+    "referenceEvidenceOnlyApplicability": true,
+    "sourceDateAndNullDifficultyConsistent": true,
+    "requiresKnownRelatedLinkBaseCorrection": true
+  },
+  "reproduction": {
+    "normalCommand": "python3 /tmp/flowchartcp-line-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-line-checker.py --sanitize",
+    "normal": {
+      "checks": 28709275,
+      "rankPermutations": 409113,
+      "smallOutputSegments": 5239480,
+      "literalPointSegmentTests": 72632802,
+      "interiorCoveredPoints": 4103442,
+      "randomCases": 6000,
+      "metamorphicChecks": 6000,
+      "invalidCalls": 14,
+      "originalContestInputFilesTested": 0,
+      "checksum": "16725969703083196",
+      "seconds": 0.828856,
+      "peakRSSKiB": 21504,
+      "maximumCases": [
+        {
+          "name": "increasing chain",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177806
+        },
+        {
+          "name": "decreasing chain",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "25000 strictly nested four-point boxes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177795
+        },
+        {
+          "name": "nested boxes at original coordinate extremes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1977779
+        },
+        {
+          "name": "random all three parts at1e9",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "reversed input with same canonical path",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "alternating high low ranks",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "two chains plus deep spiral",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1177813
+        },
+        {
+          "name": "generated scoring-table size20",
+          "n": 20,
+          "segments": 23,
+          "outputBytes": 117
+        },
+        {
+          "name": "generated scoring-table size600",
+          "n": 600,
+          "segments": 603,
+          "outputBytes": 4460
+        },
+        {
+          "name": "generated scoring-table size5000",
+          "n": 5000,
+          "segments": 5003,
+          "outputBytes": 46379
+        },
+        {
+          "name": "generated scoring-table size50000",
+          "n": 50000,
+          "segments": 50003,
+          "outputBytes": 563650
+        },
+        {
+          "name": "generated scoring-table size72018",
+          "n": 72018,
+          "segments": 72021,
+          "outputBytes": 825368
+        },
+        {
+          "name": "generated scoring-table size91891",
+          "n": 91891,
+          "segments": 91894,
+          "outputBytes": 1062604
+        },
+        {
+          "name": "generated scoring-table size100000",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1159571
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "article": "/tmp/flowchartcp-line-article.mdx"
+    },
+    "sanitized": {
+      "checks": 28709275,
+      "rankPermutations": 409113,
+      "smallOutputSegments": 5239480,
+      "literalPointSegmentTests": 72632802,
+      "interiorCoveredPoints": 4103442,
+      "randomCases": 6000,
+      "metamorphicChecks": 6000,
+      "invalidCalls": 14,
+      "originalContestInputFilesTested": 0,
+      "checksum": "16725969703083196",
+      "seconds": 7.79654,
+      "peakRSSKiB": 711528,
+      "maximumCases": [
+        {
+          "name": "increasing chain",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177806
+        },
+        {
+          "name": "decreasing chain",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "25000 strictly nested four-point boxes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1177795
+        },
+        {
+          "name": "nested boxes at original coordinate extremes",
+          "n": 100000,
+          "segments": 100001,
+          "outputBytes": 1977779
+        },
+        {
+          "name": "random all three parts at1e9",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "reversed input with same canonical path",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1959525
+        },
+        {
+          "name": "alternating high low ranks",
+          "n": 100000,
+          "segments": 100002,
+          "outputBytes": 1177815
+        },
+        {
+          "name": "two chains plus deep spiral",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1177813
+        },
+        {
+          "name": "generated scoring-table size20",
+          "n": 20,
+          "segments": 23,
+          "outputBytes": 117
+        },
+        {
+          "name": "generated scoring-table size600",
+          "n": 600,
+          "segments": 603,
+          "outputBytes": 4460
+        },
+        {
+          "name": "generated scoring-table size5000",
+          "n": 5000,
+          "segments": 5003,
+          "outputBytes": 46379
+        },
+        {
+          "name": "generated scoring-table size50000",
+          "n": 50000,
+          "segments": 50003,
+          "outputBytes": 563650
+        },
+        {
+          "name": "generated scoring-table size72018",
+          "n": 72018,
+          "segments": 72021,
+          "outputBytes": 825368
+        },
+        {
+          "name": "generated scoring-table size91891",
+          "n": 91891,
+          "segments": 91894,
+          "outputBytes": 1062604
+        },
+        {
+          "name": "generated scoring-table size100000",
+          "n": 100000,
+          "segments": 100003,
+          "outputBytes": 1159571
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "article": "/tmp/flowchartcp-line-article.mdx"
+    },
+    "semanticResultsEqual": true,
+    "asanUbsanPassed": true,
+    "leakSanitizerEnabled": false,
+    "counterInterpretation": "28709275 assertions,409113 rank permutations forN1..9;72632802 literal point-segment tests are oracle work, not input instances. Fifteen maximum/scoring-size generated inputs are explicitly different from the unavailable ten original files."
+  },
+  "additionalIndependentProbe": {
+    "command": "python3 /tmp/flowchartcp-line-independent-probe.py",
+    "result": {
+      "checks": 13310052,
+      "baseRankPatterns": 402,
+      "directCoverCalls": 1608,
+      "writerCalls": 6,
+      "totalCoverConstructions": 1614,
+      "strictCoordinateWarpSignatures": 1206,
+      "pointsChecked": 4231768,
+      "segmentsChecked": 4236112,
+      "maximumN100000DirectCoverCalls": 24,
+      "maximumN100000WriterCalls": 6,
+      "endpointCoverageHits": 256,
+      "interiorCoverageHits": 4231828,
+      "originalContestInputFilesTested": 0,
+      "checksum": "2898367367102235497",
+      "seconds": 1.29093,
+      "cppSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "oracle": "For each segment, its unique supporting x/y identifies at most one input dot; direct coordinate-dictionary membership, no per-point all-segment search or interval union. Independent strict monotone x/y warps preserve segment axis/direction signatures."
+    },
+    "oracle": "Input x and y are separately unique. Each vertical segment can cover at most the unique dot with that x; each horizontal segment at most the unique dot with that y. Directly look up that candidate and test its other coordinate inside the closed segment. This checks all geometry by segment-to-dot dictionaries without per-point total segment scans, supporting-line interval unions or construction decomposition.",
+    "rankWarpScope": "402 base rank patterns across singleton/short sizes/monotone/reverse/alternating/cyclic/two-parity/random cases, including sixN100000 base patterns. Three independent strictly increasing x/y warps: full1..1e9 stretched nonuniform gaps; nonuniform coordinates ending at1e9; tight low/high clusters.1206 warped outputs preserve complete axis/direction signatures and therefore segment counts, while every actual output is also independently checked for coverage and bounds.",
+    "writerScope": "Six maximum writer calls parsed exact vertices and analytically bounded bytes. Counter fields distinguish1608 direct cover calls,6writer calls and1614total cover constructions.",
+    "originalContestInputFilesTested": 0
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "initialAuditModified": false,
+  "conclusion": "No substantive mathematical, API, numeric, output-contract or construction defect found. The fixed deterministic construction universally reaches N+3 without a384-candidate assumption. Original contest files remain untested and are not conflated with generated tests; known link-base correction belongs to the parent's published copy.",
+  "originalReviewSha256": "cd095dd2f2b5c16585e0444eb104ecad712116bed53f2e6087f87e38bdaf0c2c",
+  "publishedArticle": "src/content/docs/techniques/orthogonal-point-cover-spiral-two-chains.mdx",
+  "permanentProbe": {
+    "script": "research/probes/orthogonal-point-cover-independent.py",
+    "originalScriptSha256": "063d1ff9f8ae23e2ddc8044777260ac265f3d6e327236d92d90fe19aff1abd91",
+    "normalizedScriptSha256": "f6297ea7fe33ec534657345ec62c69783cf74c819d7c0be280b0d11572b5a9ca",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Algorithm and assertions unchanged."
+  }
+}

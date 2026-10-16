@@ -1,0 +1,63 @@
+---
+title: "環の隣接条件は最初の選択を固定して最後で確認する"
+description: "両端の依存を先頭の少数の状態に分け、線形 DP に変えます。"
+techniqueId: "cyclic-dp-first-state"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+円環の $N$ 個の選択に隣接条件があり、最後と最初にも同じ条件を課したいとき。例えば隣り合う二つの選択を両方 0 にしてはいけない、という最小費用です。
+
+## 考え方
+
+最初の選択 $f\in\{0,1\}$ を固定します。直前を選んだかを $s$ とする線形 DP を行い、$s=t=0$ を禁止して次へ進みます。最後の状態 $s$ についても $s=f=0$ を禁止します。
+
+一般に先頭の状態が $K$ 種類なら、その $K$ 通りを固定して線形 DP へ分けます。環の条件を忘れて最後の二状態の最小値だけを取らないようにします。
+
+## 適用条件
+
+両端の依存を先頭の少数の状態に固定すると、以後の未来が直前の状態だけで決まること。長距離の依存が残る問題では状態を増やす必要があります。下の実装は非負の選択費用で、総和が $2^{61}$ 未満の範囲です。
+
+## なぜ正しいか
+
+全ての有効な環の選択列は、先頭が 0 か 1 かのどちらか一方に属します。各群で内部の隣接条件を DP が検査し、最後に残る両端の条件を直接検査するため、有効な列を全て含み、無効な列を除きます。
+
+## 計算量
+
+選択列の全列挙は時間 $O(N2^N)$。二通りの先頭固定による改善後は時間 $O(N)$、追加空間 $O(1)$。先頭が $K$ 状態なら、線形 DP 一回の計算量を $K$ 倍します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long minimum_cycle_cover_cost(const vector<long long>& cost){
+    if(cost.empty())return 0;
+    constexpr long long inf=(1LL<<61);
+    __int128 total=0;for(long long x:cost){assert(x>=0);total+=x;}assert(total<inf);
+    long long answer=inf;
+    for(int first=0;first<2;++first){
+        array<long long,2> dp{inf,inf};dp[first]=first ? cost[0]:0;
+        for(int i=1;i<(int)cost.size();++i){
+            array<long long,2> next{inf,inf};
+            for(int previous=0;previous<2;++previous)for(int chosen=0;chosen<2;++chosen)
+                if(previous || chosen)if(dp[previous]<inf)
+                    next[chosen]=min(next[chosen],dp[previous]+(chosen ? cost[i]:0));
+            dp=next;
+        }
+        for(int last=0;last<2;++last)if(first || last)answer=min(answer,dp[last]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [AtCoder：Takahashi and Animals の解説](https://atcoder.jp/contests/abc251/editorial/3991)
+
+<TechniqueReferences techniqueId="cyclic-dp-first-state" />

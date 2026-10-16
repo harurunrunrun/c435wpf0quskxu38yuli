@@ -1,0 +1,537 @@
+{
+  "techniqueId": "monotone-paint-stroke-links-offline-containment",
+  "auditGapId": "monotone-paint-stroke-links-offline-containment",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-notime-article.mdx",
+    "checker": "/tmp/flowchartcp-notime-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/monotone-paint-stroke-links-offline-containment.mdx",
+    "checker": "scripts/check_monotone_paint_range_cpp.py",
+    "metadataGroup": "range-patterns",
+    "metadataFile": "data/techniques-specific-range-patterns.json",
+    "referenceFile": "data/references-specific-range-patterns.json",
+    "feature": "data/monotone-paint-range-problem-features.json"
+  },
+  "metadata": {
+    "id": "monotone-paint-stroke-links-offline-containment",
+    "title": "薄い色へ戻せない区間塗装の最小回数を、同色を結ぶ対で数える",
+    "summary": "間が全て濃い色である同色の隣接出現を結ぶと、区間内の最小筆数は区間長から内部リンク数を引いた値になる。単調スタックでリンクを作り、右端順のFenwick走査で多数の区間に答える。",
+    "aliases": [
+      "USACO No Time to Dry",
+      "monotone paint stroke links offline containment",
+      "ordered color interval painting minimum strokes",
+      "濃さ順 上書き 区間塗装 同色リンク"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "fenwick-tree",
+      "offline-queries"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+      "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ]
+  },
+  "reference": {
+    "techniqueId": "monotone-paint-stroke-links-offline-containment",
+    "source": "USACO",
+    "problemId": "1116",
+    "title": "No Time to Dry",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+    "evidence": "原典は濃い色から薄い色へ戻せない一筆の連続区間塗装で、質問区間の外を未塗装に残す最小筆数を各回独立に求める。等色で間が厳密に濃い連続出現だけを結び、区間長から内部リンク数を引けば最適筆数になる。リンクを単調スタックで作り、右端バケットとFenwickで内包リンク数を集計すると原典全N,Q各20万を扱える。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2021-02",
+    "sourceDatePrecision": "month",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "主催原典全文・公式resultsから直接リンクされるBenjamin Qiの公式解説Approach 1を再読し、同色成分ごとの筆数下界と薄い順構成、区間制限、厳密比較、stackとFenwick不変条件を独立に証明。可視完全C++20を実操作BFS87380状態/4817386合法操作、全3色9840列/401040全小区間、1800乱択540000質問、原典最大N=Q=200000の6例120万質問と比較。通常/ASan+UBSanとも2702609 checks/checksum1028313103656390273。色は任意int64、空列/空区間/質問なしへ拡張する。公式原典は2021 Februaryまでの日付精度で、日を補わない。"
+  },
+  "problemFeature": {
+    "source": "USACO",
+    "problemId": "1116",
+    "title": "No Time to Dry",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+    "techniqueIds": [
+      "monotone-paint-stroke-links-offline-containment"
+    ],
+    "features": [
+      "固定の完成色列に薄い順の大小関係があり、一筆で連続区間を一色に塗れる。濃い色を薄い色へ戻せない。",
+      "各質問は全体が未塗装の状態から独立に始め、指定区間の中だけを完成させ、区間外は未塗装に残す最小筆数を求める。",
+      "原典N,Q各1..200000、色1..N、1始まり両端込み1<=a<=b<=N。掲載APIは0始まり半開区間・任意int64色・空列/空区間/質問なしも扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021-02",
+    "publicationDatePrecision": "month",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "notes": "等色二位置の最短距離ではなく、間に薄い色がない連続出現を結ぶリンク数を数える。区間外へはみ出す筆や質問間で塗装を使い回す操作は許さない。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "officialEditorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=feb21results",
+    "statementFullTextVerified": true,
+    "numericBoundsVerified": true,
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "officialEditorialAuthor": "Benjamin Qi",
+    "officialEditorialProvenance": "USACO公式February2021 resultsのPlatinum第1問No Time to DryのSolution直接リンク。原典/公式解説と非公式資料を取り違えていない。",
+    "chosenMethod": "Approach 1: monotone-stack same-color stroke links plus offline BIT containment counting",
+    "otherOfficialMethod": "Approach 2 is present in the official page but is not used by the published implementation.",
+    "problemCredits": [
+      "Andi Qu",
+      "Brian Dean",
+      "Benjamin Qi"
+    ],
+    "sourceBounds": {
+      "N": "1..200000",
+      "Q": "1..200000",
+      "colors": "1..N in increasing darkness",
+      "queries": "1<=a<=b<=N, inclusive1based, independent",
+      "operation": "paint a contiguous range with one color in one stroke, never paint lighter over darker",
+      "outside": "all segments outside the query remain uncolored"
+    },
+    "date": "2021-02",
+    "datePrecision": "month",
+    "exactContestDayVerified": false,
+    "dateEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedRequiredLemmas": [],
+    "visualInspectionClaimed": false,
+    "method": "Official HTML full text, formulas and visible C++ read directly through web. No PDF/image inspection claimed."
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "statementVerified": true,
+      "officialEditorialRetrieved": true,
+      "officialEditorialVerified": true,
+      "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+      "solution": "retrieved-and-reviewed",
+      "numericBounds": "verified-from-full-official-statement"
+    },
+    "chosenFullSolutionVerified": true,
+    "fullImplementationValidated": true,
+    "evidenceUrls": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+      "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ],
+    "notes": "初回固定監査のmissing-technique分類/旧route/旧停止位置/原始カウントを変更しない。後続の具体記事と完全API候補として、実MDX fenceのBFS比較・全小区間・原典最大・通常/ASanを完了。root側で独立レビュー、metadata/reference/feature/guard接続、原典walkと回帰確認後にresolutionを登録する。"
+  },
+  "api": {
+    "function": "std::vector<int> range_monotone_paint_strokes(const std::vector<std::int64_t>& colors,const std::vector<std::pair<int,int>>& queries)",
+    "input": "0<=N,Q<=200000; arbitrary signed64 colors ordered by darkness; queries0based halfopen0<=left<=right<=N",
+    "originalAdapter": "Read original positive integer colors into int64; convert original inclusive1based[a,b] to halfopen0based[a-1,b); call once and print one answer per input query.",
+    "result": "vector<int> in original query order; minimum brush count for each independently unpainted range; empty query answer0",
+    "originalProblemCoverage": "Every original legalN,Q/color/query is inside API limits. Arbitrary signed colors/empty inputs/empty ranges are explicit extensions, not original constraints.",
+    "validation": "Size bounds validated before narrowing to int. Every query including later/empty queries validated before allocations/computation. Negative, reversed or out-of-array endpoints and oversizedN/Q throw std::invalid_argument. No color-domain rejection: all int64 values valid.",
+    "allocationErrors": "standard allocation exceptions propagate, no exception wrapping; const caller inputs remain unchanged",
+    "state": "all buffers/counters local per invocation; no static mutable state, no sorting or modification of inputs, no recursion",
+    "integerSafety": [
+      "Each size is checked<=200000 beforeint conversion. n+1<=200001 and q<=200000. static_assert intmax>=1000000 is explicit.",
+      "Stack/head/next indices in[-1,200000], sentinel-1 tested before indexing. current=end-1 evaluated onlyforend>0.",
+      "Fenwick add startsposition+1>=1. Its nextindex is at most262144 forN<=200000, so integer addition/lowbit have no signed overflow and loop exits whenindex>N.",
+      "Each BIT stored value/prefix/total_links/internal_links<=N. Valid query has0<=internal_links<=right-left, answer in0..N; all subtraction performed with boundedint operands.",
+      "Colors only compared with>or==; no subtraction, absolute value, hashing, rank arithmetic or color0 sentinel, so INT64_MIN/MAX are accepted."
+    ],
+    "time": "O(N+Q+(N+Q)log(N+1)); forN>=1 usualO((N+Q)log(N+1)); noQlogQ sort",
+    "space": "O(N+Q) additional, including returned answer vector",
+    "payloadTypical4ByteInt": "Requested element/capacity payload3N+2Q+2 int slots, at most4000008 bytes with4-byteint when vectorreserve keeps requestedcapacity, as in verifiedtoolchain. Excludes vectorobjects/allocatoroverhead/possibleimplementationcapacityrounding/callerinputs. AsymptoticO(N+Q)space is implementation-independent.",
+    "recursion": "none"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "eligibleLink": "x<y,A[x]=A[y], every strictinteriorA[k]>A[x]; adjacent equal cells satisfy emptyinterior. This implies consecutive occurrences of that color, preventing a triangle among equal triples.",
+    "lowerBound": "A colorc stroke cannot cover two finalc positions separated by a lighter finalcolor: that cell could never be restored. Hence each same-color component separated by lighter barriers needs a distinctc stroke. Different colors require different strokes.",
+    "construction": "Process same-color link components by increasingcolor, painting each component min..max once. Every position in a component span has finalcolor>=componentcolor; previouslypainted values<=current, so every stroke is legal. Later darker components restoretheir positions. Exactly one stroke percomponent is sufficient.",
+    "forest": "Links only join consecutive occurrences ofonecolor, so all components are paths and the wholegraph is a forest. An induced query interval containsLvertices,Einternaledges and henceL-E components.",
+    "outsideAndRestriction": "All component spans used for a query are contained in it. A monotone-index occurrencechain cannot leave an interval and then reenter, so internal links of the global forest equal links generated only within that query. No outside painting or shared state between queries is needed.",
+    "stackInvariant": "Strictly increasing colors, each retained color has latest candidateposition with no laterlighter barrier. A newlyseen lightercolor invalidates all larger candidates. Afterpopping>, an equal top has strictlylargerinterior and emits exactlytheeligiblelink; replace itsposition. Otherwise noeligiblepredecessor exists. Everypositionpushesonce/popsatmostonce.",
+    "offlineContainment": "Beforeansweringright=end, everylinkwithright<end is registered once atitsleft. Everyregisteredleft<right<end; subtractprefix(left_query) fromtotal tokeep exactlyleft_link>=left_query. Internalcount=T-prefix(L); answer=end-L-internalcount. End0 andL=end workunchanged.",
+    "complexity": "Rightendpoints lie0..N, so linked buckets costO(N+Q). O(N) stack work/links and one BIT prefix perquery, oneBITaddperlink give statedtime andspace.",
+    "unconfirmedLemmas": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "ranges",
+    "initialChoices": [
+      "aggregate-goals",
+      "static"
+    ],
+    "firstMissingGraphId": "range-static",
+    "firstMissingNodeId": "kind",
+    "proposedAnswerId": "paint-strokes",
+    "proposedAnswerLabel": "薄い色へ戻せない連続区間の塗装で、指定区間の最小筆数を求める",
+    "guardGraphId": "monotone-paint-stroke-conditions",
+    "guards": [
+      {
+        "id": "ordered-overwrite",
+        "feature": "色には薄い順の全順序があり、一筆で連続区間を一色に塗り、濃い色を薄い色へ戻せない。",
+        "strictness": "等色は同色として扱う。結べる同色の連続出現の間は全て厳密に濃く、より薄い色が一つでもあれば結べない。"
+      },
+      {
+        "id": "isolated-range",
+        "feature": "完成色列は固定、各質問は全体未塗装から独立に始める。区間の外は未塗装に残し、最小筆数だけを求める。"
+      },
+      {
+        "id": "offline-bounds",
+        "feature": "色列長と質問数は各20万以下。色はint64で比較でき、O((N+Q)log(N+1))時間/O(N+Q)空間を使える。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "monotone-paint-stroke-links-offline-containment"
+    ],
+    "canonicalNotYetRegistered": true,
+    "notes": "Parent selected these canonical branch/guard names after read-only proof and normal/ASan reproduction. Shared flow not yet registered; old frozen first-gap records remain unchanged.",
+    "canonicalChoices": [
+      "aggregate-goals",
+      "static",
+      "paint-strokes",
+      "yes",
+      "yes",
+      "yes"
+    ]
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-notime-checker.py",
+    "sanitizerCommand": "python3 /tmp/flowchartcp-notime-checker.py --sanitize",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizerFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer"
+    ],
+    "normal": {
+      "checks": 2702609,
+      "literalPaintingBFSStates": 87380,
+      "literalPaintingBFSActions": 4817386,
+      "allThreeColorArrays": 9840,
+      "allSubintervalsIncludingEmpty": 401040,
+      "randomCases": 1800,
+      "randomQueries": 540000,
+      "maximumQueries": 1200000,
+      "maximumN": 200000,
+      "maximumQ": 200000,
+      "maximumCaseSeconds": 0.00742953,
+      "checksum": "1028313103656390273",
+      "seconds": 0.218329,
+      "peakRSSKiB": 11312,
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 2702609,
+      "literalPaintingBFSStates": 87380,
+      "literalPaintingBFSActions": 4817386,
+      "allThreeColorArrays": 9840,
+      "allSubintervalsIncludingEmpty": 401040,
+      "randomCases": 1800,
+      "randomQueries": 540000,
+      "maximumQueries": 1200000,
+      "maximumN": 200000,
+      "maximumQ": 200000,
+      "maximumCaseSeconds": 0.0287276,
+      "checksum": "1028313103656390273",
+      "seconds": 1.47088,
+      "peakRSSKiB": 151320,
+      "sanitized": true
+    },
+    "oracle": "For eachN1..8, BFS all4^N states with separateunpainted0 andfinalcolors1/2/3. Enumerate everycontiguous brushinterval and everycolor>=itsmaxexistingcolor, make thatliterallegalstroke, record shortestactioncount. This oracle uses no same-colorlinks/stack/Fenwick. Compare every3^Ntargetarray/allhalfopensubranges.",
+    "exhaustiveScope": "All9840 arrays of length1..8 on alphabet1/2/3; all401040 halfopen queries includingempty, nonsorted/reversed/rotated queryorders; BFS87380states/4817386legal actionevaluations. Does not claim all possibleint64 colorpatterns.",
+    "randomScope": "1800 cases,N0..200,Q300 each; signed/extreme/equal colors. Independent recursive minimum-color decomposition oracle for each540000basequeries. Also reversedarray/mappedqueries and strictorderrankremapping. The randomQueries counter counts basequeries, not the two additional metamorphic querybatches.",
+    "maximumCases": [
+      {
+        "pattern": "all same color1",
+        "N": 200000,
+        "Q": 200000,
+        "expected": "1 for every nonempty query"
+      },
+      {
+        "pattern": "strictly increasing1..N",
+        "N": 200000,
+        "Q": 200000,
+        "expected": "range length"
+      },
+      {
+        "pattern": "strictly decreasingN..1",
+        "N": 200000,
+        "Q": 200000,
+        "expected": "range length"
+      },
+      {
+        "pattern": "alternating1,2",
+        "N": 200000,
+        "Q": 200000,
+        "expected": "number of2cells plus indicator ofatleastone1cell"
+      },
+      {
+        "pattern": "consecutive equal pairs1,1,2,2,...",
+        "N": 200000,
+        "Q": 200000,
+        "expected": "number of intersected equalpair blocks"
+      },
+      {
+        "pattern": "repeated ramp1..1000",
+        "N": 200000,
+        "Q": 200000,
+        "expected": "range length minus numberof1cells plus indicator ofatleastone1cell"
+      }
+    ],
+    "maximumDetails": "Eachcase200000 independent pseudorandom nonemptyintervals, forcing fullrange/singletons regularly. Everymaximumcase satisfies originalN/Q/color domains. 1200000 total maxqueries.",
+    "apiBoundaryCases": [
+      "Original sample converted1basedinclusive→0basedhalfopen exactly.",
+      "[2,1,2] requires3,[1,2,1]requires2; equal triples use onlyconsecutive links; oldlargercandidates are blockedbylighterpositions.",
+      "EmptyN/Q/ranges, signed/zero/extreme colors, unchangedinputvectors, arbitraryqueryorder.",
+      "OversizedN evenQ0, oversizedQ evenN0; negative/reversed/outsideINT_MIN/MAX endpoints; laterinvalidquery aftervalid/emptyones.",
+      "Thirty repeated/interleaved differentlysized calls leave no residual state."
+    ],
+    "counterScope": "checks counts require assertions, not literalBFS edge evaluations; bfs_actions counts every legal action evaluated including no-op brushstrokes/revisited states. Inputpreservation/metamorphic checks are included.",
+    "timingScope": "Native measured runtime includeschecker BFS,oracles,allcases; peakRSS includeschecker/callerinput/oracletables, notonlyAPI. maximumCaseSeconds measures the largest observedAPIcall among the six maxpatterns, not a proof ofworstcase runtime.",
+    "sharedFilesModified": false,
+    "independentReview": {
+      "reviewer": "/root",
+      "status": "passed-no-substantive-findings",
+      "reportedAt": "2026-10-15",
+      "scope": "Parent independently reread original and full visible C++, checked all mathematical/API/integer/empty-range invariants, and reproduced extracted checker normal plus ASan/UBSan.",
+      "normal": {
+        "checks": 2702609,
+        "literalPaintingBFSStates": 87380,
+        "literalPaintingBFSActions": 4817386,
+        "allThreeColorArrays": 9840,
+        "allSubintervalsIncludingEmpty": 401040,
+        "randomCases": 1800,
+        "randomQueries": 540000,
+        "maximumQueries": 1200000,
+        "maximumN": 200000,
+        "maximumQ": 200000,
+        "maximumCaseSeconds": 0.00745913,
+        "checksum": "1028313103656390273",
+        "seconds": 0.218261,
+        "peakRSSKiB": 11404,
+        "article": "/tmp/flowchartcp-notime-article.mdx",
+        "sanitized": false,
+        "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+      },
+      "asanUbsan": {
+        "checks": 2702609,
+        "literalPaintingBFSStates": 87380,
+        "literalPaintingBFSActions": 4817386,
+        "allThreeColorArrays": 9840,
+        "allSubintervalsIncludingEmpty": 401040,
+        "randomCases": 1800,
+        "randomQueries": 540000,
+        "maximumQueries": 1200000,
+        "maximumN": 200000,
+        "maximumQ": 200000,
+        "maximumCaseSeconds": 0.0263167,
+        "checksum": "1028313103656390273",
+        "seconds": 1.3998,
+        "peakRSSKiB": 151196,
+        "article": "/tmp/flowchartcp-notime-article.mdx",
+        "sanitized": true,
+        "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+      },
+      "reports": [
+        "/tmp/flowchartcp-notime-root-normal.json",
+        "/tmp/flowchartcp-notime-root-asan.json"
+      ]
+    },
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "Eight natural Japanese technique sections and one always-visible complete reusableC++20 function; no perproblem page.",
+    "Body contains technique/model/conditions/proofs/complexity/API/implementation/relatedtechniques/sources. Researchhistory/checkcounts/timings belong only in this sidecar.",
+    "Originaland official analysisURLs and official contestresults are included in bodyreferences. Difficultyunknownnumericrating staysnull; Platinum is the verifieddivision.",
+    "Date2021-02 is monthprecision fromofficialheaders/results. Exactday is notverifiedand mustnotbeinvented.",
+    "The frozen488/455/509 springaudit remains initialhistory with research6/6/coverage0/6. Thiswork supplies a later candidatearticle/API; shareddata/flow/ledger/audit unmodified."
+  ],
+  "artifactSha256": {
+    "article": "b7cd9d8e491a6b2d7bef506d33f0bb702f6cdda5b8ff6d95fce52463628a2006",
+    "checker": "7b84267dc8a3a5946ce679764e47e9819bb39854b14829bb4a962437e3746a12",
+    "publishedArticle": "59400b92143a7792e0e4f026ee9ce641aacf4b8d9bff094ecc39c522864bfad5"
+  },
+  "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/monotone-paint-stroke-links-offline-containment.mdx",
+    "checker": "scripts/check_monotone_paint_range_cpp.py",
+    "metadataGroup": "range-patterns",
+    "entryGraphId": "ranges",
+    "choices": [
+      "aggregate-goals",
+      "static",
+      "paint-strokes",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "separatePositiveReviewAdded": false
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "date": "2026-10-15",
+      "techniqueId": "monotone-paint-stroke-links-offline-containment",
+      "reviewer": "root",
+      "sourceReview": [
+        "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+        "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+        "https://usaco.org/index.php?page=feb21results"
+      ],
+      "sourceBounds": {
+        "N": [
+          1,
+          200000
+        ],
+        "Q": [
+          1,
+          200000
+        ],
+        "colors": "1..N in increasing darkness",
+        "query": "one-based inclusive; paint only the selected interval; every query starts unpainted"
+      },
+      "sourceDate": "2021-02",
+      "sourceDatePrecision": "month",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "codeSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c",
+      "reviewedArticleSha256": "b7cd9d8e491a6b2d7bef506d33f0bb702f6cdda5b8ff6d95fce52463628a2006",
+      "proofReview": [
+        "A brush of color c cannot cross any final color below c at any time, so distinct same-color chain components require distinct c brushes.",
+        "For each component, paint its span in increasing color order. Every crossed final color is at least the current color, so all operations are legal and every position ends at its specified color. The component spans stay inside each queried interval.",
+        "Links join consecutive equal occurrences with every internal color strictly greater; they form a disjoint union of chains. The induced subgraph for a contiguous query has |V|−|E| components and cannot connect two internal pieces via outside positions because every chain is ordered by position.",
+        "The stack retains only the latest unblocked occurrence per color in strictly increasing color order; a smaller color permanently blocks popped candidates, equality emits exactly one link then replaces its last position.",
+        "Before answering [l,r), all links with right endpoint<r are present. Their left endpoints are also<r, so total_links−prefix(l) counts exactly links wholly inside. For empty queries l=r, every registered left is<l and the formula returns0.",
+        "All colors are compared without subtraction and arbitrary signed64bit values are safe. Sizes checked before int casts, every interval checked before indexing, Fenwick indices and counts bounded by200000; no recursion or persistent state. API0-based half-open/empty and signed color extensions explicitly contain the original1-based inclusive domain."
+      ],
+      "normal": {
+        "checks": 2702609,
+        "literalPaintingBFSStates": 87380,
+        "literalPaintingBFSActions": 4817386,
+        "allThreeColorArrays": 9840,
+        "allSubintervalsIncludingEmpty": 401040,
+        "randomCases": 1800,
+        "randomQueries": 540000,
+        "maximumQueries": 1200000,
+        "maximumN": 200000,
+        "maximumQ": 200000,
+        "maximumCaseSeconds": 0.00745913,
+        "checksum": "1028313103656390273",
+        "seconds": 0.218261,
+        "peakRSSKiB": 11404,
+        "article": "/tmp/flowchartcp-notime-article.mdx",
+        "sanitized": false,
+        "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+      },
+      "asanUbsan": {
+        "checks": 2702609,
+        "literalPaintingBFSStates": 87380,
+        "literalPaintingBFSActions": 4817386,
+        "allThreeColorArrays": 9840,
+        "allSubintervalsIncludingEmpty": 401040,
+        "randomCases": 1800,
+        "randomQueries": 540000,
+        "maximumQueries": 1200000,
+        "maximumN": 200000,
+        "maximumQ": 200000,
+        "maximumCaseSeconds": 0.0263167,
+        "checksum": "1028313103656390273",
+        "seconds": 1.3998,
+        "peakRSSKiB": 151196,
+        "article": "/tmp/flowchartcp-notime-article.mdx",
+        "sanitized": true,
+        "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+      },
+      "materialFindings": [],
+      "unconfirmedLemmas": [],
+      "integrationStatus": "not registered; author sidecar and final flow regression pending"
+    },
+    "normal": {
+      "checks": 2702609,
+      "literalPaintingBFSStates": 87380,
+      "literalPaintingBFSActions": 4817386,
+      "allThreeColorArrays": 9840,
+      "allSubintervalsIncludingEmpty": 401040,
+      "randomCases": 1800,
+      "randomQueries": 540000,
+      "maximumQueries": 1200000,
+      "maximumN": 200000,
+      "maximumQ": 200000,
+      "maximumCaseSeconds": 0.00745913,
+      "checksum": "1028313103656390273",
+      "seconds": 0.218261,
+      "peakRSSKiB": 11404,
+      "article": "/tmp/flowchartcp-notime-article.mdx",
+      "sanitized": false,
+      "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+    },
+    "asanUbsan": {
+      "checks": 2702609,
+      "literalPaintingBFSStates": 87380,
+      "literalPaintingBFSActions": 4817386,
+      "allThreeColorArrays": 9840,
+      "allSubintervalsIncludingEmpty": 401040,
+      "randomCases": 1800,
+      "randomQueries": 540000,
+      "maximumQueries": 1200000,
+      "maximumN": 200000,
+      "maximumQ": 200000,
+      "maximumCaseSeconds": 0.0263167,
+      "checksum": "1028313103656390273",
+      "seconds": 1.3998,
+      "peakRSSKiB": 151196,
+      "article": "/tmp/flowchartcp-notime-article.mdx",
+      "sanitized": true,
+      "cppSha256": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c"
+    },
+    "additionalReviewFile": "research/probes/monotone-paint-range-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

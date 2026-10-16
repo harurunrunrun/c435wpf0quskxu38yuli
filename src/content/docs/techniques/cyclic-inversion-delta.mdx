@@ -1,0 +1,72 @@
+---
+title: "順列の全巡回シフトの転倒数は、先頭が末尾へ移る差だけ更新する"
+description: "最初の転倒数だけ数え、移す値より小さい組を引き、大きい組を足します。"
+techniqueId: cyclic-inversion-delta
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+同じ列を一つずつ巡回シフトした全結果を求めたい。各シフトで列全体の転倒数を数え直すと遅いが、隣り合うシフトの差は一要素に限られる。
+
+## 考え方
+
+最初の転倒数を累積頻度で求める。値 $x$ を先頭から末尾へ移すと、$x$ より小さい $x$ 個との転倒が消え、$x$ より大きい $N-1-x$ 個との転倒が生まれる。
+
+したがって次の転倒数は
+
+$$I_{k+1}=I_k+(N-1-x)-x.$$
+
+各段階の答えを記録してから、元の列の次の値についてこの差を足す。列自体を動かす必要はない。
+
+## 適用条件
+
+実装は $0,\ldots,N-1$ が一度ずつ現れる順列用。重複のある一般列なら、差は「全体で $x$ より大きい個数−小さい個数」へ置き換え、等しい値の組を数えない。値だけをそのまま個数として使ってはいけない。空列は空の結果を返す。転倒数は $N(N-1)/2$ まで増えるので64bit整数を使う。
+
+## なぜ正しいか
+
+動かさない二要素の相対順序は変わらない。先頭の $x$ は、それ以外の全要素より前から後へ移るため、大小が異なる組の転倒判定が反転する。減る組と増える組の個数を正確に足し引きしており、他の組は変化しない。この差分を全シフトに適用できる。
+
+## 計算量
+
+毎回累積頻度で数え直すと時間 $O(N^2\log N)$、追加空間 $O(N)$。初回 $O(N\log N)$ と全差分 $O(N)$ で、合計時間 $O(N\log N)$、追加空間は出力込みで $O(N)$。
+
+## 実装
+
+```cpp
+#include <stdexcept>
+#include <vector>
+std::vector<long long> cyclic_inversion_counts(const std::vector<int>& permutation) {
+    if (permutation.size()>300000) throw std::invalid_argument("too many values");
+    int n=static_cast<int>(permutation.size());
+    std::vector<bool> seen(n);std::vector<int> bit(n+1);
+    long long inversions=0;
+    for (int i=0;i<n;++i) {
+        int x=permutation[i];
+        if (x<0 || x>=n || seen[x]) throw std::invalid_argument("not a permutation");
+        seen[x]=true;int less_or_equal=0;
+        for (int p=x+1;p>0;p-=p&-p) less_or_equal+=bit[p];
+        inversions+=i-less_or_equal;
+        for (int p=x+1;p<=n;p+=p&-p) ++bit[p];
+    }
+    std::vector<long long> result;result.reserve(n);
+    for (int x:permutation) {
+        result.push_back(inversions);
+        inversions+=n-1-2LL*x;
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+- [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+- [寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [AtCoder — Shift and Inversions](https://atcoder.jp/contests/abc190/tasks/abc190_f)
+- [公式解説](https://atcoder.jp/contests/abc190/editorial/690)
+
+<TechniqueReferences techniqueId="cyclic-inversion-delta" />

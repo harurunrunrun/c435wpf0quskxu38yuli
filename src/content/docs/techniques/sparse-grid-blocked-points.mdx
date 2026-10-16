@@ -1,0 +1,81 @@
+---
+title: "巨大な格子で障害物が少ないなら、最初に通る障害物ごとに経路を引く"
+description: "全マスを走査せず、障害物と終点の間の単調経路を二項係数でまとめます。"
+techniqueId: sparse-grid-blocked-points
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+格子全体は大きいのに、経路を妨げる点が少ない場面です。空きマスを一つずつ処理せず、障害物だけをDPの到達点として扱います。
+
+## 考え方
+
+障害物と終点を行・列の辞書順に並べます。点 $p_i=(r_i,c_i)$ へ、途中で障害物を通らず着く経路数を $D_i$ とします。$p_i$ 自体が障害物でも、到達した最後の一マスだけは許して数えます。
+
+$$D_i=\binom{r_i+c_i-2}{r_i-1}-\sum_{j<i,\ p_j\preceq p_i}D_j\binom{r_i-r_j+c_i-c_j}{r_i-r_j}.$$
+
+$p_j\preceq p_i$ は両座標が小さいか等しいことです。引く経路を「最初に踏む障害物」で分類するため、後ろで別の障害物を通っても重複して引きません。終点の $D_i$ が答えです。
+
+## 適用条件
+
+移動は右と下の一歩だけです。単調経路数を二項係数で求められ、全障害点を列挙できます。法 $10^9+7$ に対して階乗の最大添字 $H+W-2$ が法未満であることが必要です。実装は $H+W\le 10^6$、重複障害物は除去し、始点・終点が塞がれている場合は0を返します。
+
+## なぜ正しいか
+
+始点から目的点への全経路のうち、障害物を通る経路には最初の障害物が一意にあります。その障害物までの経路は、前に他の障害物を通らない $D_j$ 通り。その後は障害物を無視した二項係数の通りに進めます。これらの互いに素な分類を全経路から引くため、残りは障害物を避ける経路と一致します。座標順は単調に到達できる障害物を先に処理する順です。
+
+## 計算量
+
+格子DPは時間・空間 $O(HW)$。障害物数 $k$ に対し、改善後は時間 $O(H+W+k^2)$、空間 $O(H+W+k)$。階乗と逆階乗の前計算を含みます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int count_sparse_grid_paths(int height, int width, vector<pair<int, int>> blocked) {
+    constexpr long long MOD = 1000000007;
+    if (height < 1 || width < 1 || (long long)height + width > 1000000) throw invalid_argument("dimensions");
+    for (auto [r, c] : blocked) if (r < 1 || r > height || c < 1 || c > width) throw invalid_argument("point");
+    sort(blocked.begin(), blocked.end());
+    blocked.erase(unique(blocked.begin(), blocked.end()), blocked.end());
+    if (binary_search(blocked.begin(), blocked.end(), pair{1, 1}) ||
+        binary_search(blocked.begin(), blocked.end(), pair{height, width})) return 0;
+    blocked.emplace_back(height, width);
+    int length = height + width - 2;
+    vector<long long> fact(length + 1, 1), inverse(length + 1, 1);
+    for (int i = 1; i <= length; ++i) fact[i] = fact[i - 1] * i % MOD;
+    auto power = [](long long a, long long b) {
+        long long result = 1;
+        for (; b; b >>= 1, a = a * a % MOD) if (b & 1) result = result * a % MOD;
+        return result;
+    };
+    inverse[length] = power(fact[length], MOD - 2);
+    for (int i = length; i > 0; --i) inverse[i - 1] = inverse[i] * i % MOD;
+    auto choose = [&](int n, int k) { return fact[n] * inverse[k] % MOD * inverse[n - k] % MOD; };
+    vector<long long> dp(blocked.size());
+    for (size_t i = 0; i < blocked.size(); ++i) {
+        auto [r, c] = blocked[i];
+        dp[i] = choose(r + c - 2, r - 1);
+        for (size_t j = 0; j < i; ++j) {
+            auto [pr, pc] = blocked[j];
+            if (pr <= r && pc <= c) {
+                dp[i] = (dp[i] - dp[j] * choose(r - pr + c - pc, r - pr) % MOD + MOD) % MOD;
+            }
+        }
+    }
+    return int(dp.back());
+}
+```
+
+## 関連する手法
+
+- [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/dp/tasks/dp_y)
+
+<TechniqueReferences techniqueId="sparse-grid-blocked-points" />

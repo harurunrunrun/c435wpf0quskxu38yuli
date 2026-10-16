@@ -1,0 +1,82 @@
+---
+title: "最長増加部分列の長さを制限して数えるなら、各長さの最小末尾を状態にする"
+description: "履歴の列全体を、将来の増加部分列を決める三つの末尾へ圧縮します。"
+techniqueId: lis-tail-three-count
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+各値の範囲が小さく、最長増加部分列の長さにも小さい上限がある場面です。一つの列のLISを求めるときの最小末尾配列を、今度は列を数えるDPの状態にします。
+
+## 考え方
+
+長さ1、2、3の増加部分列について最小の末尾を $(t_1,t_2,t_3)$ とします。存在しない長さの末尾は $\infty=M+1$ です。
+
+数字 $x$ を追加すると、最初に $t_i\ge x$ となる位置を $x$ に置き換えます。三つとも $x$ より小さければ長さ4ができるため、その遷移を除きます。初期状態は $(\infty,\infty,\infty)$。$N$ 桁相当の遷移後に $t_3\le M$ の状態だけを足すと、最大長がちょうど3の列数になります。
+
+同じ末尾へ到達した異なる列は、個数を足して保存します。列を一つだけ残すLISの計算とは、この点が異なります。
+
+## 適用条件
+
+値は $1\ldots M$ の整数で、増加は狭義です。等しい値を付けるときは最初の $t_i\ge x$ を置き換え、非減少部分列の規則と混同しません。実装は $M\le 10$、法998244353。列長0や3未満では返り値0です。
+
+## なぜ正しいか
+
+ある長さの部分列を今後伸ばせるかは、最小末尾だけで決まります。値 $x$ を付けたとき、$x$ 未満の最小末尾を持つ最長の部分列の後ろへ追加でき、その次の長さの末尾を $x$ で改善します。これが末尾配列の更新規則です。同じ末尾配列の履歴は、どの次の値に対しても同じ状態へ移るため、個数を合算しても将来の分類は変わりません。
+
+## 計算量
+
+列挙は $O(M^N)$。三つの末尾を持つDPは時間 $O(NM^4)$、空間 $O(M^3)$。順序の成立する状態だけ列挙すれば定数を小さくできます。上限を一般の $k$ にすると状態数は $O(M^k)$ なので、小さい $k$ が必要です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int count_lis_exactly_three(int length, int alphabet) {
+    constexpr int MOD = 998244353;
+    if (length < 0 || alphabet < 1 || alphabet > 10) throw invalid_argument("parameters");
+    int inf = alphabet + 1, side = alphabet + 2;
+    auto index = [side](int a, int b, int c) { return (a * side + b) * side + c; };
+    vector<int> dp(side * side * side), ndp(dp.size());
+    dp[index(inf, inf, inf)] = 1;
+    for (int pos = 0; pos < length; ++pos) {
+        fill(ndp.begin(), ndp.end(), 0);
+        for (int a = 1; a <= inf; ++a) for (int b = a; b <= inf; ++b)
+            for (int c = b; c <= inf; ++c) {
+                int ways = dp[index(a, b, c)];
+                if (!ways) continue;
+                for (int x = 1; x <= alphabet; ++x) {
+                    int na = a, nb = b, nc = c;
+                    if (x <= a) na = x;
+                    else if (x <= b) nb = x;
+                    else if (x <= c) nc = x;
+                    else continue;
+                    int& out = ndp[index(na, nb, nc)];
+                    out += ways;
+                    if (out >= MOD) out -= MOD;
+                }
+            }
+        dp.swap(ndp);
+    }
+    int answer = 0;
+    for (int a = 1; a <= alphabet; ++a) for (int b = a + 1; b <= alphabet; ++b)
+        for (int c = b + 1; c <= alphabet; ++c) {
+            answer += dp[index(a, b, c)];
+            if (answer >= MOD) answer -= MOD;
+        }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [同じ長さの増加部分列は末尾が小さい状態だけ残す](/flowchartcp/techniques/dp-state-dominance/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/abc237/tasks/abc237_f)
+
+<TechniqueReferences techniqueId="lis-tail-three-count" />

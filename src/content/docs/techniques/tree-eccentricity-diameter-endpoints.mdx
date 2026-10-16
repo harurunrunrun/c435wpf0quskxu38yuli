@@ -1,0 +1,87 @@
+---
+title: "木の各頂点からの最遠距離は、直径の両端への距離だけで求める"
+description: "全ての始点で探索せず、一組の直径端点からの距離を全頂点で使い回す。"
+techniqueId: tree-eccentricity-diameter-endpoints
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の全頂点について、そこから他の頂点までの距離の最大値を求める。距離の相手は自由に選べるが、始点が多いため毎回探索し直せない。
+
+## 考え方
+
+最も離れた二頂点を $a,b$、その距離を木の直径とする。各頂点 $v$ の最遠距離は
+
+$$\max(d(v,a),d(v,b))$$
+
+で求められる。最遠点が複数あっても、直径のどちらかの端点が最大距離を達成する。
+
+任意の頂点から最遠点 $a$ を探し、$a$ から最遠点 $b$ を探す。その探索で得た $a$ からの距離を残し、最後に $b$ からの距離を求めて、頂点ごとに大きい方を取る。合計3回の探索で全頂点の答えが得られる。木では経路が一意なので、重み付きでもヒープを使わず経路の長さを足せる。
+
+## 適用条件
+
+固定の無向木で、辺長が非負である。一般グラフでは直径端点以外の頂点が最遠になることがあり、この式は成立しない。負の辺長を含む木でも最遠点を二回探す操作をそのまま使えない。
+
+距離を最大にする相手に色・集合・自身禁止といった追加条件があるなら、端点が許された相手とは限らない。頂点1個では最遠距離0。長さ0の辺や直径端点の同距離の候補は扱える。
+
+## なぜ正しいか
+
+直径の長さを $D$ とする。直径上の位置を $a$ からの距離で表し、頂点 $x$ から直径に合流する点の位置を $t$、そこまでの距離を $h$ とする。直径より長い経路はないので、$h+t\le D$、$h+D-t\le D$ となり、$h\le\min(t,D-t)$ である。
+
+別の頂点 $v$ の合流位置を $s$、直径までの距離を $g$ とすると、$d(v,x)\le g+h+|s-t|$。同じ枝へ入る場合は途中が共有されるので、等号でなく上界になる。この値は
+
+$$g+\min(t,D-t)+|s-t|\le g+\max(s,D-s)$$
+
+以下であり、右辺は $\max(d(v,a),d(v,b))$。従ってどんな相手も端点への最大距離を超えられない。
+
+同じ不等式で、ある始点から距離最大の頂点がこの上界へ達する場合を見ると、その頂点と少なくとも一方の直径端点との距離が $D$ になる。よって任意の最遠点は直径の端点として使え、最遠点を二回探す構成も正しい。
+
+## 計算量
+
+各頂点から探索する $O(N^2)$ 時間から、3回の木の探索で $O(N)$ 時間へ改善する。空間 $O(N)$。掲載実装は $N\le200000$、辺長 $0$ 以上 $10^9$ 以下とし、最大経路長を64ビット整数に収める。
+
+## 実装
+
+`tree_eccentricities(n, edges)` は全頂点の最遠距離を返す。辺は `(u,v,length)`、頂点は0始まり。原典の重みのない木では長さを全て1にする。探索は反復で行い、辺長0の木にも同じ手順を使う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> tree_eccentricities(int n,const vector<tuple<int,int,long long>>& edges) {
+    assert(1<=n && n<=200000 && int(edges.size())==n-1);
+    vector<vector<pair<int,long long>>> g(n);
+    for(auto [u,v,w]:edges) {
+        assert(0<=u && u<n && 0<=v && v<n && 0<=w && w<=1000000000);
+        g[u].push_back({v,w});g[v].push_back({u,w});
+    }
+    auto distances=[&](int start) {
+        vector<long long> d(n);
+        vector<int> parent(n,-2),order{start};parent[start]=-1;
+        for(size_t i=0;i<order.size();++i) {
+            int v=order[i];
+            for(auto [u,w]:g[v]) if(u!=parent[v]) {
+                assert(parent[u]==-2);parent[u]=v;d[u]=d[v]+w;order.push_back(u);
+            }
+        }
+        assert(int(order.size())==n);return d;
+    };
+    auto first=distances(0);
+    int a=max_element(first.begin(),first.end())-first.begin();
+    auto from_a=distances(a);
+    int b=max_element(from_a.begin(),from_a.end())-from_a.begin();
+    auto from_b=distances(b);
+    for(int v=0;v<n;++v) from_a[v]=max(from_a[v],from_b[v]);
+    return from_a;
+}
+```
+
+## 関連する手法
+
+[木の距離を質問できるなら、最遠点を二回探して直径を得る](/flowchartcp/techniques/interactive-tree-diameter/) ・ [木の距離に行先の値を足す最大値は、戻す子方向を上位二つから除く](/flowchartcp/techniques/tree-target-bonus-excluding-self/)
+
+## 参考資料
+
+- [CSES：Tree Distances I](https://cses.fi/problemset/task/1132/)
+
+<TechniqueReferences techniqueId="tree-eccentricity-diameter-endpoints" />

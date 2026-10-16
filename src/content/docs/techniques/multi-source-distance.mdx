@@ -1,0 +1,56 @@
+---
+title: "多数の始点からの最短距離を一度に求める"
+description: "複数の始点から各頂点への距離の最小値を、全始点を同時にキューへ入れて求めます。"
+techniqueId: "multi-source-distance"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+敵、避難所、施設などが複数あり、いずれかの始点から各頂点への最短距離や最早到着時刻を求めたいとき。始点ごとに BFS を繰り返すと重複が多くなります。
+
+## 考え方
+
+全ての始点の距離を 0 にして最初のキューへ入れ、普段通りに BFS します。各頂点が最初に訪問される距離は、始点のいずれかから到達する距離の最小値です。
+
+追跡者がいる問題では、この距離を締切として使えます。同時到着が危険なら、自分の到着時刻を敵の最早到着時刻より厳密に小さくします。
+
+## 適用条件
+
+辺の移動時間は全て 1、始点は同時刻に出発すること。有向グラフで「各頂点から始点集合への距離」が欲しいなら、辺を反転してから実行します。重み付きなら多始点ダイクストラ法へ変えます。どの始点から来たかによって通れる辺が変わる場合、単一の距離では情報が足りません。
+
+## なぜ正しいか
+
+各始点につながる仮想の始点を考えると、一つの始点からの最短路と同じです。BFS が距離順に頂点を処理するため、一番近い始点の経路が先に届きます。
+
+## 計算量
+
+始点数を $K$ として改善前は $O(K(V+E))$。改善後は $O(V+E+K)$ 時間、$O(V+K)$ 追加空間。重複始点はキューへ一度だけ入れます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> nearest_source_distance(const vector<vector<int>>& g,
+                                    const vector<int>& sources){
+    vector<int> dist(g.size(),-1);
+    queue<int> q;
+    for(int s:sources)if(dist[s]<0){dist[s]=0;q.push(s);}
+    while(!q.empty()){
+        int v=q.front();q.pop();
+        for(int u:g[v])if(dist[u]<0){dist[u]=dist[v]+1;q.push(u);}
+    }
+    return dist;
+}
+```
+
+## 関連する手法
+
+[曲がる回数を最小にするため、直前の向きを状態に持つ](/flowchartcp/techniques/turn-penalty-state/)
+
+## 参考資料
+
+- [CSES：Monsters の問題文](https://cses.fi/problemset/task/1194)
+
+<TechniqueReferences techniqueId="multi-source-distance" />

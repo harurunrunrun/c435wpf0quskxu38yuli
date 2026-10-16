@@ -1,0 +1,221 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc285_g",
+    "title": "Tatami",
+    "url": "https://atcoder.jp/contests/abc285/tasks/abc285_g",
+    "techniqueIds": [
+      "mandatory-matching-lower-bounds"
+    ],
+    "features": [
+      "隣接する二マスを組にする",
+      "1のマスは組禁止、2のマスは必ず組、?は任意",
+      "市松模様で左右に分かれる",
+      "全頂点を組ませる必要はない、存在判定"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc285/editorial/5500",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "市松模様の二部対応で、2のマスに接する入口または出口の下限を1にする。1のマスは候補から除き、?は任意のままにする。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典の開催日は基準日以前。"
+  },
+  {
+    "source": "UVa Online Judge",
+    "problemId": "11082",
+    "title": "Matrix Decompressing",
+    "url": "https://onlinejudge.org/external/110/11082.pdf",
+    "techniqueIds": [
+      "matrix-margin-lower-offset"
+    ],
+    "features": [
+      "行ごと・列ごとの累積和",
+      "全セルの整数値が1以上20以下",
+      "条件を満たす行列を一つ復元"
+    ],
+    "evidenceUrl": "https://onlinejudge.org/external/110/11082.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "累積和の差を取り、各セルへ先に1を置く。残る値を0..19として、行和と列和を使い切る流量から復元する。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典に初回公開日の明記がないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc318_g",
+    "title": "Typical Path Problem",
+    "url": "https://atcoder.jp/contests/abc318/tasks/abc318_g",
+    "techniqueIds": [
+      "vertex-disjoint-through-pivot"
+    ],
+    "features": [
+      "無向グラフ",
+      "異なる三頂点A,B,C",
+      "AからCへの単純パスでBを経由",
+      "B以外で二経路が同じ頂点を使えない"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc318/editorial/7086",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "BからAとCへの二経路を同時に流し、中継頂点の分割辺を容量1にする。流量2が経由点を通る単純パスの存在と一致する。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典の開催日は基準日以前。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc247_g",
+    "title": "Dream Team",
+    "url": "https://atcoder.jp/contests/abc247/tasks/abc247_g",
+    "techniqueIds": [
+      "matching-profit-each-cardinality"
+    ],
+    "features": [
+      "大学と得意分野の両方で重複しない人を選ぶ",
+      "人ごとに利益",
+      "ちょうどk人の最大利益を全kについて求める",
+      "増員に伴い既存の選択を入れ替える場合がある"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc247/editorial/3770",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "大学を左、得意分野を右、人を利益付き候補辺にする。各正確人数の最小費用を単価変換して最大強さに戻す。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典の開催日は基準日以前。"
+  },
+  {
+    "source": "Aizu Online Judge",
+    "problemId": "2251",
+    "title": "Merry Christmas",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2251",
+    "techniqueIds": [
+      "dag-path-cover-vertex-disjoint"
+    ],
+    "features": [
+      "各配送に場所と固定時刻",
+      "移動距離以内の時間差なら連続実行できる",
+      "初期位置は自由、作業時間0",
+      "全依頼を一度ずつ担当する最小人数"
+    ],
+    "evidenceUrl": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2251",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "全場所間距離から配送の連続実行可能性を列挙し、依頼の前任・後任を高々一つにするパス分割へ帰着する。人数は依頼数から最大対応数を引く。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典に初回公開日の明記がないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc205_f",
+    "title": "Grid and Tokens",
+    "url": "https://atcoder.jp/contests/abc205/tasks/abc205_f",
+    "techniqueIds": [
+      "rectangle-rook-flow"
+    ],
+    "features": [
+      "各駒の候補は行区間と列区間の直積",
+      "置く駒を選べる",
+      "行と列の重複は禁止",
+      "駒数、行数、列数は100以下"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc205/editorial/2081",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "長方形の行・列は独立な候補なので行→駒in→駒out→列に分ける。中央の容量1が一つの駒の複数使用を防ぐ。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典の開催日は基準日以前。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "typical90_by",
+    "title": "077 - Planes on a 2D Plane（★7）",
+    "url": "https://atcoder.jp/contests/typical90/tasks/typical90_by",
+    "techniqueIds": [
+      "translated-point-matching"
+    ],
+    "features": [
+      "前後の点集合それぞれに重複なし",
+      "8方向のいずれかへT時間進む、T>0",
+      "途中で向きを変えない",
+      "全機の向きを復元、N<=20000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/typical90/tasks/typical90_by",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "各出発点の8方向の候補を座標辞書で照合し、実在する到着点だけへ辺を張る。完全対応から各機の方向を復元する。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典に初回公開日の明記がないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "UVa Online Judge",
+    "problemId": "663",
+    "title": "Sorting Slides",
+    "url": "https://onlinejudge.org/external/6/663.pdf",
+    "techniqueIds": [
+      "perfect-matching-forced-scc"
+    ],
+    "features": [
+      "長方形の内部の番号点が対応候補",
+      "両側同数の一対一の完全対応",
+      "全整合する対応で変わらない組を出力",
+      "番号点は長方形の境界にない"
+    ],
+    "evidenceUrl": "https://onlinejudge.org/external/6/663.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "長方形に含まれる点を候補辺にし、完全対応と交互閉路を調べて、番号が全対応で確定する長方形だけを抽出する。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典に初回公開日の明記がないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "arc085_c",
+    "title": "MUL",
+    "url": "https://atcoder.jp/contests/arc085/tasks/arc085_c",
+    "techniqueIds": [
+      "maximum-profit-closure"
+    ],
+    "features": [
+      "残す対象の利益は正負",
+      "倍数を残すには全約数を残す",
+      "選択集合が含意で閉じる",
+      "選択数の制約なし"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/arc085/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "残す数は約数方向に閉じる。倍数→約数を大容量の含意辺にし、正負の金額をカット費用へ変換する。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典の開催日は基準日以前。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc274_g",
+    "title": "Security Camera 3",
+    "url": "https://atcoder.jp/contests/abc274/tasks/abc274_g",
+    "techniqueIds": [
+      "grid-corridor-cover-matching"
+    ],
+    "features": [
+      "障害物で視線を遮る格子",
+      "一台は一方向の連続マスを監視",
+      "同じマスに複数台設置可",
+      "全空マスを覆う最小台数"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc274/editorial/5084",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "最大の横・縦通路を対象に空マスを辺へ変える。二部の最小頂点被覆を対応から復元し、選んだ通路の端へカメラを置く。 掲載C++20実装を独立な小規模全列挙・素朴解法および境界ケースと比較して確認した。 原典の開催日は基準日以前。"
+  }
+]

@@ -1,0 +1,84 @@
+---
+title: "編集回数の上限が小さいなら、長さの差が上限以内の対角帯だけを計算する"
+description: "挿入と削除が長さの差を生むので、上限回数では到達できないDP状態を除く。"
+techniqueId: edit-distance-diagonal-band
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+挿入と削除が長さの差を生むので、上限回数では到達できないDP状態を除く。
+
+## 使う場面
+
+二つの長い文字列を、少ない編集回数で一致させられるかだけを知りたい。正確な距離が大きい場合の値は不要で、挿入・削除・置換は全て一文字あたり1回と数える。
+
+## 考え方
+
+通常の編集距離DPは、$S$ の先頭 $i$ 文字と $T$ の先頭 $j$ 文字の距離を持つ。長さの差 $|i-j|$ を埋めるだけでも、その差以上の挿入・削除が必要となる。
+
+答えを $K$ 以下かに限定すると、$|i-j|>K$ の状態は使えない。主対角線から幅 $K$ 以内の帯だけ計算する。
+
+$j$ 自体ではなく差 $d=j-i$ で添字を持つと、各行は $-K\le d\le K$ の高々 $2K+1$ 状態になる。削除の遷移元は前行の $d+1$、挿入は現行の $d-1$、一致・置換は前行の $d$。二行だけ保存し、$K$ より大きい値を $K+1$ に丸める。
+
+## 適用条件
+
+挿入・削除・置換が非負で、一文字の挿入・削除の費用が1。距離 $K$ 以下の判定で、$K$ が十分小さい。掲載実装は一律1の費用を扱う。
+
+無料の挿入・削除があると長さ差の下界は使えない。文字列全体の回転や一括削除を一操作に数える場合にも、この帯幅は正当化できない。$K$ が大きければ帯も広くなり、二乗の計算に近づく。
+
+各長さは $500000$ 以下、$K\ge0$。空文字列も扱う。$K$ が両文字列の長さの最大以上なら、先頭から置換し余った文字を挿入・削除すれば届くため、すぐ真を返す。
+
+## なぜ正しいか
+
+編集の対応を格子上の道で表すと、挿入・削除は $j-i$ を一つ変え、一致・置換は変えない。差の絶対値が $K$ を超える地点へ行くには、それまでに少なくとも $K+1$ 回の挿入・削除が必要になる。従って総費用 $K$ 以下の道は帯の外へ出ない。
+
+帯の中では通常と同じ三遷移を全て調べるため、費用 $K$ 以下の編集列は全て残る。費用は後の遷移で減らないので、$K$ を超えた値を $K+1$ に丸めても判定は変わらない。
+
+## 計算量
+
+全表の計算は $O(|S||T|)$ 時間・$O(|S||T|)$ 空間、二行にしても時間は同じ。帯だけなら $O((|S|+1)(K+1))$ 時間・$O(K+1)$ 補助空間。まず長さ差を確認するため、差が $K$ より大きければ $O(1)$ で偽を返す。
+
+## 実装
+
+`edit_distance_at_most` は距離が $K$ 以下かを返す。帯の外と、文字列の端から外れる状態を混同しない。
+
+```cpp
+#include <algorithm>
+#include <cstdlib>
+#include <stdexcept>
+#include <string>
+#include <vector>
+bool edit_distance_at_most(const std::string& s,const std::string& t,int k) {
+    if(s.size()>500000 || t.size()>500000 || k<0) throw std::invalid_argument("length or threshold");
+    int n=s.size(),m=t.size();
+    if(std::abs(n-m)>k) return false;
+    if(k>=std::max(n,m)) return true;
+    int offset=k+1,width=2*k+3,inf=k+1;
+    std::vector<int> previous(width,inf),current(width,inf);
+    for(int j=0;j<=std::min(m,k);++j) previous[offset+j]=j;
+    for(int i=1;i<=n;++i) {
+        std::fill(current.begin(),current.end(),inf);
+        for(int d=-k;d<=k;++d) {
+            int j=i+d,at=offset+d;
+            if(j<0 || j>m) continue;
+            current[at]=std::min(current[at],previous[at+1]+1);
+            if(j>0) {
+                current[at]=std::min(current[at],current[at-1]+1);
+                current[at]=std::min(current[at],previous[at]+(s[i-1]!=t[j-1]));
+            }
+        }
+        previous.swap(current);
+    }
+    return previous[offset+m-n]<=k;
+}
+```
+
+## 関連する手法
+
+[DPの状態を設計する](/flowchartcp/techniques/state-design/) ・ [状態設計の反例を探す](/flowchartcp/techniques/counterexample/)
+
+## 参考資料
+
+- [AtCoder：Operate K](https://atcoder.jp/contests/abc386/tasks/abc386_f)
+- [公式解説](https://atcoder.jp/contests/abc386/editorial/11706)
+
+<TechniqueReferences techniqueId="edit-distance-diagonal-band" />

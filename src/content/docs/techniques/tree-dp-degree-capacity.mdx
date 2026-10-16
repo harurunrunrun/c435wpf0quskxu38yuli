@@ -1,0 +1,63 @@
+---
+title: "木の接続数制限は、親の辺を選ぶかで残り枠を分ける"
+description: "子の辺を選ばない値を基準にし、改善量の大きい辺から残り枠だけ採用します。"
+techniqueId: "tree-dp-degree-capacity"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+木から辺を選び、各頂点に「接続する辺を最大 $d_v$ 本まで選べる」という制限があるとき。重みの大きい辺を全体で貪欲に選ぶと、両端の枠を取り合います。
+
+## 考え方
+
+$dp[v][b]$ を、親の辺を選ぶか $b\in\{0,1\}$ が決まっているときの子孫内部の最大値とします。子 $u$ の辺を選ばない値 $dp[u][0]$ を全部足し、選ぶことで増える $w_{vu}+dp[u][1]-dp[u][0]$ を大きい順に並べます。正の改善量を最大 $d_v-b$ 個だけ足します。親の辺の重みは親側で加えます。
+
+## 適用条件
+
+グラフが木で、制限が各頂点の接続本数だけに依存すること。$d_v=0$ なら $b=1$ は不可能です。負の辺もあり、選択は任意なので負の改善量は採用しません。「ちょうど $d_v$ 本」の制限ならこの停止条件は変わります。
+
+## なぜ正しいか
+
+親の辺の有無を固定すると、各子の部分木は独立です。子ごとに辺を選ぶ・選ばない差が決まり、全ての採用は一枠ずつ消費します。小さい改善量を採って大きい改善量を捨てているなら交換で値が増えるので、上位の正の差を採るのが最適です。
+
+## 計算量
+
+辺の全組合せは $2^{N-1}$ 通り。二状態の DP と子の整列で時間 $O(N\log N)$、空間 $O(N)$。再帰の代わりに逆順の頂点列を使い、長い一本の木でもスタックを深くしません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 maximum_tree_edges(const vector<int>& cap,const vector<tuple<int,int,long long>>& edges){
+    int n=cap.size();if(n==0){assert(edges.empty());return 0;}
+    assert((int)edges.size()==n-1);
+    vector<vector<pair<int,long long>>> g(n);
+    for(auto [v,u,w]:edges){assert(0<=v && v<n && 0<=u && u<n && v!=u);g[v].push_back({u,w});g[u].push_back({v,w});}
+    vector<int> parent(n,-2),order{0};parent[0]=-1;
+    for(size_t i=0;i<order.size();++i){int v=order[i];assert(cap[v]>=0);
+        for(auto [u,w]:g[v])if(u!=parent[v]){assert(parent[u]==-2);parent[u]=v;order.push_back(u);(void)w;}}
+    assert((int)order.size()==n);
+    const __int128 bad=-((__int128)1<<120);
+    vector<array<__int128,2>> dp(n);
+    for(auto it=order.rbegin();it!=order.rend();++it){int v=*it;__int128 base=0;vector<__int128> gain;
+        for(auto [u,w]:g[v])if(parent[u]==v){base+=dp[u][0];if(dp[u][1]!=bad)gain.push_back((__int128)w+dp[u][1]-dp[u][0]);}
+        sort(gain.rbegin(),gain.rend());
+        for(int b=0;b<2;++b){if(cap[v]<b){dp[v][b]=bad;continue;}
+            dp[v][b]=base;
+            for(int j=0;j<(int)gain.size() && j<cap[v]-b && gain[j]>0;++j)dp[v][b]+=gain[j];}
+    }
+    return dp[0][0];
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc259/editorial/4296)
+
+<TechniqueReferences techniqueId="tree-dp-degree-capacity" />

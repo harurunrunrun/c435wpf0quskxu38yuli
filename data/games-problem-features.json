@@ -1,0 +1,213 @@
+[
+  {
+    "techniqueId": "bounded-take-grundy-period",
+    "source": "CSES",
+    "problemId": "1098",
+    "title": "Nim Game II",
+    "statementUrl": "https://cses.fi/problemset/task/1098/",
+    "evidenceUrl": "https://cses.fi/problemset/task/1098/",
+    "features": [
+      "独立な複数の山から毎手一つを選ぶ",
+      "1個、2個、3個のいずれかを取り除く",
+      "操作不能になった側が負ける"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "stair-game-even-piles",
+    "source": "CSES",
+    "problemId": "1099",
+    "title": "Stair Game",
+    "statementUrl": "https://cses.fi/problemset/task/1099/",
+    "evidenceUrl": "https://cses.fi/problemset/task/1099/",
+    "features": [
+      "段1へ移した球は以後動かせない",
+      "段kから段k-1へ正の個数の球を動かせる",
+      "最後に動かした側が勝つ"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "retrograde-winning-draw",
+    "source": "AtCoder",
+    "problemId": "abc209_e",
+    "title": "Shiritori",
+    "statementUrl": "https://atcoder.jp/contests/abc209/tasks/abc209_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc209/editorial/2237",
+    "features": [
+      "同じ単語を何度でも使える",
+      "末尾3文字が次の単語の先頭3文字と一致する",
+      "次の単語を選べない側が負ける",
+      "負け回避を優先し、永続する対戦は引分"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "tree-cut-grundy",
+    "source": "AtCoder",
+    "problemId": "agc017_d",
+    "title": "Game on Tree",
+    "statementUrl": "https://atcoder.jp/contests/agc017/tasks/agc017_d",
+    "evidenceUrl": "https://atcoder.jp/img/agc017/editorial.pdf",
+    "features": [
+      "木の任意の辺を一つ切る",
+      "指定した根を含まない連結成分は全て捨てる",
+      "辺を切れなくなった側が負ける"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "divisor-game-prime-count",
+    "source": "AtCoder",
+    "problemId": "abc368_f",
+    "title": "Dividing Game",
+    "statementUrl": "https://atcoder.jp/contests/abc368/tasks/abc368_f",
+    "evidenceUrl": "https://atcoder.jp/contests/abc368/editorial/10829",
+    "features": [
+      "一つの整数を自由に選んでその真の正の約数へ変える",
+      "1も遷移先に含む",
+      "操作不能になった側が負ける"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "weighted-board-terminal-minimax",
+    "source": "AtCoder",
+    "problemId": "abc349_e",
+    "title": "Weighted Tic-Tac-Toe",
+    "statementUrl": "https://atcoder.jp/contests/abc349/tasks/abc349_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc349/editorial/9883",
+    "features": [
+      "交互に空きマスを自分の色で塗る",
+      "縦横斜めの3連が揃った瞬間に勝敗が決まる",
+      "盤面が埋まった場合だけ獲得した重みの和を比較する",
+      "重みは負でもよく、総和は奇数"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "grundy-conserved-state-bound",
+    "source": "AtCoder",
+    "problemId": "typical90_ae",
+    "title": "031 - VS AtCoder（★6）",
+    "statementUrl": "https://atcoder.jp/contests/typical90/tasks/typical90_ae",
+    "evidenceUrl": "https://raw.githubusercontent.com/E869120/kyopro_educational_90/main/sol/031.cpp",
+    "features": [
+      "独立な山に白石w個、青石b個がある",
+      "白石を1個減らし、青石を操作前のw個増やせる",
+      "青石を1からfloor(b/2)個まで減らせる",
+      "操作不能になった側が負ける"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "reference-solution",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "pair-removal-mask-game",
+    "source": "AtCoder",
+    "problemId": "abc354_e",
+    "title": "Remove Pairs",
+    "statementUrl": "https://atcoder.jp/contests/abc354/tasks/abc354_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc354/editorial/10046",
+    "features": [
+      "カードの表の値同士または裏の値同士が等しい二枚を消せる",
+      "Nは18以下",
+      "消したカードは戻らない",
+      "消せなくなった側が負ける"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "interactive-tree-diameter",
+    "source": "AtCoder",
+    "problemId": "abc019_4",
+    "title": "高橋くんと木の直径",
+    "statementUrl": "https://atcoder.jp/contests/abc019/tasks/abc019_4",
+    "evidenceUrl": "https://atcoder.jp/contests/abc019/tasks/abc019_4",
+    "features": [
+      "辺の情報は与えられない",
+      "正の重みを持つ木の二頂点間の距離を質問できる",
+      "Nは50以下で質問は100回以内",
+      "求めるのは木の直径の長さ"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "interactive-fibonacci-maximum",
+    "source": "AtCoder",
+    "problemId": "typical90_ba",
+    "title": "053 - Discrete Dowsing（★7）",
+    "statementUrl": "https://atcoder.jp/contests/typical90/tasks/typical90_ba",
+    "evidenceUrl": "https://atcoder.jp/contests/typical90/tasks/typical90_ba",
+    "features": [
+      "隠れた非負整数列は一つの頂点まで狭義増加、その後狭義減少",
+      "指定した位置の値を質問できる",
+      "Nは1500以下、15回以内の質問で最大値を求める"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "interactive-missing-rook",
+    "source": "AtCoder",
+    "problemId": "abc269_e",
+    "title": "Last Rook",
+    "statementUrl": "https://atcoder.jp/contests/abc269/tasks/abc269_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc269/editorial/4897",
+    "features": [
+      "N×N盤面にN-1個のルークが置かれている",
+      "各行と各列には高々一個のルーク",
+      "長方形内の個数を質問できる",
+      "Nは1000以下で20回以内に置ける位置を特定する"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  },
+  {
+    "techniqueId": "interactive-bit-group-testing",
+    "source": "AtCoder",
+    "problemId": "abc337_e",
+    "title": "Bad Juice",
+    "statementUrl": "https://atcoder.jp/contests/abc337/tasks/abc337_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc337/editorial/9281",
+    "features": [
+      "ちょうど一つだけ腐ったジュースがある",
+      "各友人には任意の部分集合のジュースを与えられる",
+      "全友人の結果を一度に受け取る",
+      "友人の人数を最小にする"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の操作・終了条件・質問上限を確認。実装は全探索または模擬ジャッジと比較。"
+  }
+]

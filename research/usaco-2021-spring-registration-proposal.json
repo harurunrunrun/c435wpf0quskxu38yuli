@@ -1,0 +1,179 @@
+{
+  "status": "unregistered-research-proposal",
+  "corpusId": "usaco-2021-february-us-open-platinum",
+  "initialSnapshotLedgerSha256": "94fe3a533a7bea30ceab38e0134388265176d409c2ee414cfa5b1e7b4ea65b5c",
+  "mustKeepInitialAuditUnchanged": true,
+  "prerequisiteBeforeCoverage": [
+    "write reusable Japanese8-section technique article with complete always-visibleC++20/API",
+    "verify originalnumericrange included; proof/allboundaries/APIexceptions/int/time/space",
+    "extract actualMDXfence and compare independent oracle, maximumcase andASan/UBSan",
+    "add feature-based route withno/unknown safeguards; refs/feature correctsource+ID/dateprecision/null difficulty",
+    "independently replay oldwalk preservation/newroute and append laterresolution withoutchanging initialfields"
+  ],
+  "items": [
+    {
+      "source": "USACO",
+      "problemId": "1116",
+      "title": "No Time to Dry",
+      "proposedTechniqueId": "monotone-paint-stroke-links-offline-containment",
+      "proposedFeatureAnswer": "指定区間だけを濃い色で上書きできるとき、完成までの最小筆数を多数回求める",
+      "proposedBranchAt": {
+        "graphId": "range-static",
+        "nodeId": "kind"
+      },
+      "sourceDate": "2021-02",
+      "sourceDatePrecision": "month",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "verificationWhenRegistered": "independent-analysis",
+      "requiredImplementation": [
+        "任意の順序付き整数色/座標圧縮と半開区間を受ける完全C++20 API。N,Q各20万を包含。",
+        "同色stack更新・隣接等色・小さい色の障害・区間外未塗装・単点・独立呼出しと不正区間を検査。",
+        "実MDX C++を実塗りBFS/全小色列・全区間/maxで照合しASan/UBSan。"
+      ],
+      "existingRelatedTechniqueIds": [
+        "offline-range-equal-gap",
+        "subarray-extremum-contribution",
+        "grid-rectangle-components-euler-boundary"
+      ],
+      "registerNow": false
+    },
+    {
+      "source": "USACO",
+      "problemId": "1117",
+      "title": "Minimizing Edges",
+      "proposedTechniqueId": "parity-walk-profile-layer-greedy-realization",
+      "proposedFeatureAnswer": "始点から各頂点へ到達できる全歩数を保ち、グラフの辺数を最小にする",
+      "proposedBranchAt": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest"
+      },
+      "sourceDate": "2021-02",
+      "sourceDatePrecision": "month",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "verificationWhenRegistered": "independent-analysis",
+      "requiredImplementation": [
+        "loopを正しく二層へ移すBFS、二部INF、root例外、a+b層/空bucket/末端Cを含む再利用C++20/API。",
+        "greedyが返す辺数だけでなく任意Gprimeでよいこと/元辺に限定しないことを明示。原典N10万/総M20万で実行。",
+        "全小loop付きgraphの完全walk言語群内最小辺数をoracleにし、公開fenceを通常/ASan/UBSan検証。"
+      ],
+      "existingRelatedTechniqueIds": [
+        "synchronous-product-parity-distance-sum",
+        "distance-matrix-essential-edges",
+        "bipartite-component-edge-addition-count"
+      ],
+      "registerNow": false
+    },
+    {
+      "source": "USACO",
+      "problemId": "1118",
+      "title": "Counting Graphs",
+      "proposedTechniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+      "proposedFeatureAnswer": "始点から各頂点へ到達できる全歩数を保つ、ラベル付きグラフの個数を数える",
+      "proposedBranchAt": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest"
+      },
+      "sourceDate": "2021-02",
+      "sourceDatePrecision": "month",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "verificationWhenRegistered": "independent-analysis",
+      "requiredImplementation": [
+        "二部/非二部、a0 root、空bucket、C終端とloopsの完全API。法/0^0/二項係数の範囲を明示。",
+        "N100/総N²1e5を含むC++20と積/累乗前計算・整数境界を確認。",
+        "全小graph完全walk言語の群サイズをexact oracleに公開fenceを照合し、通常/ASan/UBSan。"
+      ],
+      "existingRelatedTechniqueIds": [
+        "synchronous-product-parity-distance-sum",
+        "unique-mst-completion-count",
+        "inclusion-exclusion-forbidden"
+      ],
+      "registerNow": false
+    },
+    {
+      "source": "USACO",
+      "problemId": "1140",
+      "title": "United Cows of Farmer John",
+      "proposedTechniqueId": "interval-unique-endpoints-singleton-middle-active-lazy",
+      "proposedFeatureAnswer": "区間の両端と内側一点を選び、その三値がそれぞれ区間内で一度だけ現れる選び方を数える",
+      "proposedBranchAt": {
+        "graphId": "range-window",
+        "nodeId": "wanted"
+      },
+      "sourceDate": "2021",
+      "sourceDatePrecision": "year",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "verificationWhenRegistered": "independent-analysis",
+      "requiredImplementation": [
+        "queryの前後、前二出現sentinel、activate/deactivateとlazyの完全C++20/API。色圧縮とN20万全包含。",
+        "全同色/全異色/交互/少数色と各三leader全列挙、原典PlatinumをGold版と分けて確認。",
+        "公開fenceをexact triple oracle/max/不正API/呼出し独立性/ASan/UBSanで検証。"
+      ],
+      "existingRelatedTechniqueIds": [
+        "singleton-subarray-contribution",
+        "offline-range-singleton-witness",
+        "lazy-segment-tree"
+      ],
+      "registerNow": false
+    },
+    {
+      "source": "USACO",
+      "problemId": "1141",
+      "title": "Routing Schemes",
+      "proposedTechniqueId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+      "proposedFeatureAnswer": "複数の始点と終点を対応させ、全有向辺を一度使う経路分解の個数を数える",
+      "proposedBranchAt": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest"
+      },
+      "sourceDate": "2021",
+      "sourceDatePrecision": "year",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "verificationWhenRegistered": "independent-analysis",
+      "requiredImplementation": [
+        "role/次数/仮想辺/頂点再訪を定義した完全C++20/API。K0/1/2と道合併・両道cross閉路・receiver終端を明示。",
+        "法1e9+7/factorial0/deg0の孤立点、原典は存在保証ありだが一般APIで不正/0解をどう返すか決める。",
+        "実trail列挙をoracleに全小graph・全roleと比較し、N100/通常/ASan/UBSanを確認。"
+      ],
+      "existingRelatedTechniqueIds": [
+        "euler-degree-connectivity",
+        "frontier-single-cycle",
+        "dag-path-cover-vertex-disjoint"
+      ],
+      "registerNow": false
+    },
+    {
+      "source": "USACO",
+      "problemId": "1142",
+      "title": "Balanced Subsets",
+      "proposedTechniqueId": "orthogonally-convex-row-interval-phase-prefix-dp",
+      "proposedFeatureAnswer": "草のあるマスから、四連結で各行・各列が途切れない非空部分集合を数える",
+      "proposedBranchAt": {
+        "graphId": "grid-color-numbers",
+        "nodeId": "goal"
+      },
+      "sourceDate": "2021",
+      "sourceDatePrecision": "year",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "verificationWhenRegistered": "independent-analysis",
+      "requiredImplementation": [
+        "行/列の向き・inclusive overlap・strict phaseと開始状態を具体化した完全C++20/API。G/.とempty/不揃い盤/上限を検査。",
+        "全小実subsetの4BFSと行列穴判定を独立oracleに公開fence/矩形和最適化と照合。",
+        "N150の全草/全空/細い形/穴/対角接触/等号平坦部、ASan/UBSan。"
+      ],
+      "existingRelatedTechniqueIds": [
+        "frontier-single-cycle",
+        "grid-rectangle-components-euler-boundary",
+        "prefix-sum"
+      ],
+      "registerNow": false
+    }
+  ],
+  "sharedProfileOpportunity": "1117/1118 can share a carefully proved parity-walk-profile helper, while minimumrealization and graphcount remain distinct operations/articles or an explicitly separated joint API.",
+  "routingAlternative": "An O(N³)K<=2 frontier method is fullychecked here; laterchoose O(N²)PIE/BEST onlyaftertheir missing proofs/conventions are independently completed."
+}

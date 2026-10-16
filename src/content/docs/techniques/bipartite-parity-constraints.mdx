@@ -1,0 +1,67 @@
+---
+title: "同じ・異なるという二値制約を偶奇として伝播する"
+description: "二値変数の排他的論理和を辺に書き、閉路を一周したときの矛盾を調べる。"
+techniqueId: bipartite-parity-constraints
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各要素を二種類に分け、「この二つは同じ」「この二つは異なる」という条件をすべて満たせるかを求めたい。全割当て $2^N$ 通りを調べる前に、条件が二者間の偶奇だけを指定していないかを見る。
+
+## 考え方
+
+種類を $x_v\in\{0,1\}$ とする。同じという辺には $p=0$、異なるという辺には $p=1$ を書く。条件は $x_u\oplus x_v=p$。ある頂点の値が分かれば、隣は $x_u=x_v\oplus p$ に決まる。
+
+連結成分ごとに出発点を0と仮置きし、探索で値を伝播する。既に値が決まった隣に違う値を要求したら矛盾である。すべての辺が「異なる」なら、通常の二部グラフ判定になる。
+
+## 適用条件
+
+各制約が二変数のXORを一つの値に固定している場合に使う。「少なくとも片方が1」のような条件は、片方からもう片方を一意に決められないので別扱いになる。`x_v≠x_v` はその場で矛盾、`x_v=x_v` は影響しない。
+
+## なぜ正しいか
+
+成分の出発点を固定すると、木の辺に沿ったすべての値が一意に決まる。非木辺がその割当てと一致すれば全条件を満たす。不一致なら、閉路上のXORが1になり、出発点へ戻った際に自分の値と反対の値を要求する。出発点を1へ変えても成分全体が反転するだけで、矛盾は消えない。
+
+## 計算量
+
+全割当ての検査は $O(2^N M)$ 時間。伝播は $O(N+M)$ 時間、$O(N+M)$ 空間。
+
+## 実装
+
+辺は `(u,v,p)`。成功時は一つの割当て、不可能なら `std::nullopt` を返す。後から制約を追加し続ける場合は、XORを重みとして保存するUnion-Findへ置き換えられる。
+
+```cpp
+#include <vector>
+#include <tuple>
+#include <utility>
+#include <optional>
+#include <cassert>
+std::optional<std::vector<int>> parity_assignment(int n,const std::vector<std::tuple<int,int,int>>& edges) {
+    std::vector<std::vector<std::pair<int,int>>> g(n);
+    for(auto [a,b,p]:edges) {assert(p==0||p==1);g[a].push_back({b,p});g[b].push_back({a,p});}
+    std::vector<int> color(n,-1);
+    for(int s=0;s<n;++s) if(color[s]<0) {
+        std::vector<int> stack{s};color[s]=0;
+        while(!stack.empty()) {
+            int v=stack.back();stack.pop_back();
+            for(auto [u,p]:g[v]) {
+                int wanted=color[v]^p;
+                if(color[u]<0) {color[u]=wanted;stack.push_back(u);}
+                else if(color[u]!=wanted) return std::nullopt;
+            }
+        }
+    }
+    return color;
+}
+```
+
+## 関連する手法
+
+[二つの選択肢の禁止組を含意に直す](/flowchartcp/techniques/two-sat-forbidden-pairs/) ・ [変数間の差の制約を根からの差で管理する](/flowchartcp/techniques/dsu-potential-differences/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC327 D](https://atcoder.jp/contests/abc327/editorial/7578)
+
+<TechniqueReferences techniqueId="bipartite-parity-constraints" />

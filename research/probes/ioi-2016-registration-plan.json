@@ -1,0 +1,488 @@
+{
+  "corpusId": "ioi-2016",
+  "status": "draft-awaiting-independent-review",
+  "sharedFilesModified": false,
+  "initialCounts": {
+    "allTechniqueMdx": 504,
+    "metadataRecords": 504,
+    "referenceRecords": 525,
+    "flowcharts": 471,
+    "walks": 525,
+    "oldCorpusAudits": 9
+  },
+  "initialClassification": {
+    "fixedProblemListComplete": true,
+    "firstPassAuditComplete": true,
+    "fixedCorpusResearchComplete": true,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "globalLearningComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "numericBoundsVerifiedCount": 6,
+    "numericBoundsUnconfirmedCount": 0,
+    "officialEditorialRetrievedCount": 6,
+    "officialEditorialVerifiedCount": 6,
+    "solutionReviewedCount": 6,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 6,
+    "unconfirmedCount": 0,
+    "unavailableCount": 0,
+    "unconfirmedPrincipalDetailsCount": 0,
+    "fullImplementationValidatedCount": 0,
+    "articleResolutionComplete": false,
+    "fixedCorpusResearchCompleteDefinition": "固定6題の選定した原典全域手順と主要補題が一次資料+独立証明で確認できた状態。全別解や完成API/記事の存在を意味しない。",
+    "articleResolutionNotes": "研究6/6、完成API/記事対応/原典walk/coverage0/6。今後のresolutionを初回へ遡及しない。"
+  },
+  "futureTargets": {
+    "audit": "data/corpus-audits/ioi-2016.json",
+    "notes": "research/ioi-2016-audit-notes.md",
+    "probe": "research/probes/ioi-2016-research-checks.py",
+    "probeResult": "research/probes/ioi-2016-initial-probe-results.json",
+    "manualOnly": true
+  },
+  "noCompletedArticlesAdded": true,
+  "noResolvedGapClaimed": true,
+  "pendingGaps": [
+    {
+      "id": "bounded-spread-subset-sum-sorted-window-witness",
+      "state": "pending",
+      "problemIds": [
+        "ioi2016_molecules"
+      ],
+      "source": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "neededTechniqueIds": [
+        "bounded-spread-subset-sum-sorted-window-witness"
+      ],
+      "reason": "二つ/四つの組、順位、部分列の選択肢しかなく、幅条件を使う個数自由の部分集合と元添字の証拠がない。",
+      "branchAt": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "question": "数列について、何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ]
+      },
+      "featureAnswer": "範囲の幅が重さの最大差以上のとき、合計が範囲内の部分集合を一つ探す",
+      "threeGuards": [
+        "positive-spread-range",
+        "original-index-witness",
+        "bounds"
+      ],
+      "allNoUnknownTarget": "condition-check"
+    },
+    {
+      "id": "directed-line-balance-euler-augmentation-mst",
+      "state": "pending",
+      "problemIds": [
+        "ioi2016_railroad"
+      ],
+      "source": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+      "neededTechniqueIds": [
+        "directed-line-balance-euler-augmentation-mst"
+      ],
+      "reason": "必須の全区間を一度ずつ並べ、足りない接続を速度差の費用で買う分岐がない。既存all-edgesは指定始終点の既存辺だけの経路で、speed acceptanceと追加費用を保存しない。",
+      "branchAt": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest",
+        "question": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "edge-route-count",
+            "label": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ]
+      },
+      "featureAnswer": "全ての速度変換区間を並べ、入口上限に合わせる減速距離の総和を最小にする",
+      "threeGuards": [
+        "entry-exit-speed-order",
+        "positive-directed-line-balance",
+        "bounds"
+      ],
+      "allNoUnknownTarget": "condition-check"
+    },
+    {
+      "id": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+      "state": "pending",
+      "problemIds": [
+        "ioi2016_shortcut"
+      ],
+      "source": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "neededTechniqueIds": [
+        "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+      ],
+      "reason": "全体を最安でつなぐ/MSTや故障の問いはあるが、長さ固定の一本を自由に追加して最大最短距離を最小にする問いがない。",
+      "branchAt": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "question": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "walk-language-minimize",
+            "label": "始点から到達できる全歩数を保ち、辺数を最小にする"
+          },
+          {
+            "id": "walk-profile-count",
+            "label": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ]
+      },
+      "featureAnswer": "道に枝が付いた線路へ固定長の近道を一本追加し、全駅間の最大距離を最小にする",
+      "threeGuards": [
+        "weighted-path-with-leaves",
+        "one-fixed-distinct-main-edge",
+        "bounds"
+      ],
+      "allNoUnknownTarget": "condition-check"
+    },
+    {
+      "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+      "state": "pending",
+      "problemIds": [
+        "ioi2016_paint"
+      ],
+      "source": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "neededTechniqueIds": [
+        "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+      ],
+      "reason": "連続区間の分割条件に、長さ順が指定された黒blockと既知色を満たす全解の共通セル色を答える分岐がない。K黒blockだけへの分割と、白gapを含む全列のK区間分割を同一視しない。",
+      "branchAt": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "question": "区間の分け方には、どの条件がありますか？",
+        "currentOptions": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ]
+      },
+      "featureAnswer": "長さの並びが決まった黒い連続区間を置き、既知の色に合う全解で各位置の必須色を求める",
+      "threeGuards": [
+        "fixed-positive-run-clues",
+        "partial-colors-all-solutions",
+        "bounds"
+      ],
+      "allNoUnknownTarget": "condition-check"
+    },
+    {
+      "id": "precompiled-permutation-partition-signature-membership",
+      "state": "pending",
+      "problemIds": [
+        "ioi2016_messy"
+      ],
+      "source": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "neededTechniqueIds": [
+        "precompiled-permutation-partition-signature-membership"
+      ],
+      "reason": "otherで一般interactive記事へ届くが、compile前の符号設計と後の所属判定による全置換復元API/予算がない。一般記事への到達をcoverageに数えない。",
+      "branchAt": {
+        "graphId": "interactive-oracles",
+        "nodeId": "response",
+        "question": "質問すると何が返ってきますか？",
+        "currentOptions": [
+          {
+            "id": "tree-distance",
+            "label": "辺は未知だが、指定した二頂点の木距離"
+          },
+          {
+            "id": "unimodal-value",
+            "label": "隠れた単峰列の、指定位置の値"
+          },
+          {
+            "id": "rectangle-count",
+            "label": "各行列に高々一個の配置の、長方形内の個数"
+          },
+          {
+            "id": "batch-subsets",
+            "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+          },
+          {
+            "id": "navigation",
+            "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+          },
+          {
+            "id": "other",
+            "label": "その他の返答形式・通信条件"
+          },
+          {
+            "id": "changing-color-count",
+            "label": "任意集合の会合で、参加者によって変わる色の種類数"
+          },
+          {
+            "id": "transition-count",
+            "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+          },
+          {
+            "id": "prefix-in-substring",
+            "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+          },
+          {
+            "id": "binary-edge-distances",
+            "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ]
+      },
+      "featureAnswer": "一度だけ置換される文字列集合を書き込み、後の所属判定で全ビットの対応を復元する",
+      "threeGuards": [
+        "fixed-bit-permutation-set",
+        "write-compile-read-phases",
+        "bounds"
+      ],
+      "allNoUnknownTarget": "condition-check"
+    },
+    {
+      "id": "diagonal-square-union-cover-monge-penalty-cht",
+      "state": "pending",
+      "problemIds": [
+        "ioi2016_aliens"
+      ],
+      "source": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+      "neededTechniqueIds": [
+        "diagonal-square-union-cover-monge-penalty-cht"
+      ],
+      "reason": "点を高々K枚の対角正方形で覆い、union面積を最小にする回答がない。同名Aliens trickは汎用wrapperで、具体的なphoto DP/API/全域検証がない。",
+      "branchAt": {
+        "graphId": "point-set-shape-features",
+        "nodeId": "goal",
+        "question": "点集合や平面の移動で、出力したい量はどれですか？",
+        "currentOptions": [
+          {
+            "id": "parallelograms",
+            "label": "平面の点から、正の面積の平行四辺形を数える"
+          },
+          {
+            "id": "circle-lattice",
+            "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+          },
+          {
+            "id": "same-points",
+            "label": "点集合が回転と平行移動だけで一致するか"
+          },
+          {
+            "id": "translated-polygons",
+            "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+          },
+          {
+            "id": "repeat-moves",
+            "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+          },
+          {
+            "id": "wall-area",
+            "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+          },
+          {
+            "id": "cover-circle",
+            "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+          },
+          {
+            "id": "weighted-trapezoid",
+            "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ]
+      },
+      "featureAnswer": "対角線上に角を持つ正方形を高々K枚選び、全点を覆う面積の和集合を最小にする",
+      "threeGuards": [
+        "diagonal-cell-squares",
+        "union-at-most-k",
+        "bounds"
+      ],
+      "allNoUnknownTarget": "condition-check"
+    }
+  ],
+  "permanentSnapshotPlan": {
+    "preserveInitialFlowsMetadataWalkReferencesSources": true,
+    "all504MdxPermanentlyStored": false,
+    "allInitialRawTemporarilyStored": true,
+    "allRawHashLedgerPermanentlyStored": true,
+    "retainNearest19FullMdxAndFences": true,
+    "retainOld9AuditRawAndRuntimeAndHelper": true,
+    "public472SameInitialEpoch": true,
+    "vendor105LaterDependencyEpoch": true,
+    "doNotDescribeVendorAsInitialSvgBytes": true,
+    "normalizeProbeToReadPermanentSnapshotsBeforeRegistration": true,
+    "fixedsuiteMustPermitFutureGenuineResolution": true
+  },
+  "planCorpusEntry": {
+    "id": "ioi-2016",
+    "scope": "IOI2016 本競技全6題。練習と翻訳重複を除外、技巧照合前に母数固定。",
+    "state": "audited",
+    "expectedProblems": 6,
+    "auditFile": "data/corpus-audits/ioi-2016.json",
+    "selectionPolicy": "Official JP index fixes Day1 three/Day2 three before technique search.",
+    "fixedProblems": [
+      {
+        "source": "ioi",
+        "problemId": "ioi2016_molecules"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2016_railroad"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2016_shortcut"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2016_paint"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2016_messy"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2016_aliens"
+      }
+    ]
+  }
+}

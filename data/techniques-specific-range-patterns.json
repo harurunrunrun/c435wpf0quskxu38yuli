@@ -1,0 +1,517 @@
+[
+  {
+    "id": "fixed-window-min-mex-gaps",
+    "title": "固定長区間のmexの最小値は、値が出ない出現間隔から求める",
+    "summary": "各窓のmexを作らず、ある値を避けられる長さの空白があるかを調べる。",
+    "aliases": [
+      "Window Minimum Mex Occurrence Gaps",
+      "Mex Min",
+      "固定長窓のmex最小"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc194/tasks/abc194_e"
+    ]
+  },
+  {
+    "id": "subarray-fold-value-runs",
+    "title": "同じ右端のGCDやORは、値が変わる部分だけを短い列にまとめる",
+    "summary": "左端を延ばしても値が変わらない区間を、集計値と区間数の組で一括して持つ。",
+    "aliases": [
+      "Compressed Subarray GCD OR Runs",
+      "CGCDSSQ",
+      "Bitwise ORs of Subarrays",
+      "接尾区間の値圧縮"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/475/D",
+      "https://leetcode.com/problems/bitwise-ors-of-subarrays/description/"
+    ]
+  },
+  {
+    "id": "singleton-subarray-contribution",
+    "title": "全区間で一度だけ現れる要素は、前後の同じ値に挟まれた端点数で数える",
+    "summary": "一出現の担当範囲を、左端と右端の選び方の積にして足す。",
+    "aliases": [
+      "Unique Element Contribution Previous Next",
+      "Count Unique Characters",
+      "単出現の全区間寄与"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/description/"
+    ]
+  },
+  {
+    "id": "offline-range-singleton-witness",
+    "title": "区間に一度だけ現れる値は、最新位置の直前出現が左端より前かで探す",
+    "summary": "右端までの最新出現だけを残し、直前位置の区間最小値から単出現の候補を取り出す。",
+    "aliases": [
+      "Offline Range Singleton Witness",
+      "One Occurrence",
+      "単出現値の区間照会"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "segment-tree",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/1000/F"
+    ]
+  },
+  {
+    "id": "flip-longest-binary-run",
+    "title": "0と1の区間反転と最長連続は、両方の値の接頭・接尾・最大長を持つ",
+    "summary": "反転では0用と1用の要約を交換し、区間の境界をまたぐ連続も併合時に調べる。",
+    "aliases": [
+      "Range Flip Longest Binary Run",
+      "Vacation Query",
+      "0/1反転と最長連続"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "lazy-segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc322/tasks/abc322_f"
+    ]
+  },
+  {
+    "id": "point-update-nonadjacent-max-sum",
+    "title": "点更新後の非隣接最大和は、直前を選ぶかの二状態を区間ごとに合成する",
+    "summary": "二状態DPの一要素の遷移を、最大値と加算でつなぐ小さな行列として保存する。",
+    "aliases": [
+      "Point Update Nonadjacent Maximum Sum",
+      "Dynamic House Robber Matrix",
+      "Maximum Sum of Subsequence With Non-adjacent Elements"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/"
+    ]
+  },
+  {
+    "id": "range-modulo-halving",
+    "title": "区間の剰余更新は、最大値で省略し、変わる値が半分未満になる回数だけ降りる",
+    "summary": "剰余を遅延写像にせず、変わらない区間を飛ばし、値の減少量で総更新回数を抑える。",
+    "aliases": [
+      "Range Modulo Halving Potential",
+      "The Child and Sequence",
+      "区間剰余と最大値"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/438/D"
+    ]
+  },
+  {
+    "id": "offline-range-equal-gap",
+    "title": "区間内の同じ値の最短間隔は、連続する出現対を右端順に記録する",
+    "summary": "最短の同値対は隣り合う出現から選べるので、右端までに閉じた対の距離を左位置へ置く。",
+    "aliases": [
+      "Offline Range Closest Equals",
+      "Closest Equals",
+      "同値対の区間最短間隔"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "segment-tree",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/522/D"
+    ]
+  },
+  {
+    "id": "sequence-cut-reverse-split-merge",
+    "title": "列の区間を切り出して、反転・移動する",
+    "summary": "位置がずれる列を部分木の要素数で分割し、区間の切り貼りや反転をまとめて処理します。",
+    "aliases": [
+      "Implicit Treap",
+      "Implicit Key Treap",
+      "Sequence Split Merge",
+      "Cut and Paste",
+      "Substring Reversal",
+      "列の切り貼り",
+      "区間反転"
+    ],
+    "family": "データ構造・区間",
+    "level": "上級",
+    "prerequisites": [
+      "randomized-algorithms"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://faculty.washington.edu/aragon/pubs/rst89.pdf",
+      "https://cses.fi/problemset/task/2072/",
+      "https://cses.fi/problemset/task/2073/"
+    ]
+  },
+  {
+    "id": "dynamic-sequence-affine-sum",
+    "title": "挿入・削除・反転がある列で、一次変換と区間和を処理する",
+    "summary": "要素数で区間を切り出す木に、一次変換の遅延伝播を載せます。値の変換と順序の反転を別々に管理します。",
+    "aliases": [
+      "Dynamic Sequence Range Affine Range Sum",
+      "Implicit Treap Lazy Propagation",
+      "Reversible Lazy Sequence",
+      "動的列の区間一次変換",
+      "動的列の区間和"
+    ],
+    "family": "データ構造・区間",
+    "level": "上級",
+    "prerequisites": [
+      "sequence-cut-reverse-split-merge",
+      "affine-lazy-composition"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://faculty.washington.edu/aragon/pubs/rst89.pdf",
+      "https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/dynamic_sequence_range_affine_range_sum/task.md",
+      "https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/dynamic_sequence_range_affine_range_sum/sol/correct.cpp"
+    ]
+  },
+  {
+    "id": "range-stabilizing-successor",
+    "aliases": [
+      "Stabilizing Range Updates Successor DSU",
+      "Range Sqrt Divisor Update",
+      "固定点の位置を削除",
+      "SUM and REPLACE",
+      "GSS4"
+    ],
+    "family": "区間・配列の集計",
+    "prerequisites": [
+      "union-find",
+      "fenwick-tree"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/920/F",
+      "https://www.spoj.com/problems/GSS4/"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "繰り返すと変わらなくなる区間更新は、固定した位置を次回から飛ばす",
+    "summary": "約数個数や整数平方根への更新で、各要素が変わる回数だけを処理する。"
+  },
+  {
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "level": "上級",
+    "id": "top-k-bounded-subarray-sums",
+    "title": "長さ制限のある区間和の上位K個は、右端候補を分割して取り出す",
+    "summary": "左端ごとに最良の右端だけをヒープへ入れ、採用した右端の左右に候補を分ける。",
+    "family": "区間・配列の集計",
+    "aliases": [
+      "Top K Length Bounded Subarray Sums",
+      "Super Piano",
+      "長さ制限付き区間和の上位K個",
+      "RMQと候補区間の分割"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "segment-tree"
+    ],
+    "sources": [
+      "https://www.luogu.com.cn/problem/P2048"
+    ]
+  },
+  {
+    "id": "second-maximum-subarray-contribution",
+    "title": "全区間の二番目に大きい値は、左右二つずつの上位要素から寄与を数える",
+    "summary": "担当要素より上位の位置を左右二つずつ調べ、そのうち一つだけを含む区間を数える。",
+    "aliases": [
+      "Second Maximum Subarray Contribution",
+      "Second Sum",
+      "全区間の第二最大値の総和",
+      "左右二つの上位位置"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "contribution"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc140/tasks/abc140_e",
+      "https://img.atcoder.jp/abc140/editorial.pdf"
+    ]
+  },
+  {
+    "id": "frequency-equals-value-offline",
+    "title": "出現回数が値に等しい種類数は、条件を満たす左端の区間を更新する",
+    "summary": "右端を一つ進めるたび、変わった値の出現位置から、ちょうど指定回数を含む左端の範囲を入れ替える。",
+    "aliases": [
+      "Offline Frequency Equals Value",
+      "Little Elephant and Array",
+      "出現回数と値が一致する種類数",
+      "左端の許容範囲の更新"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "offline-queries",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/220/B",
+      "https://codeforces.com/blog/entry/5177"
+    ]
+  },
+  {
+    "id": "fibonacci-range-sequence-lazy",
+    "aliases": [
+      "Fibonacci Range Sequence Lazy Propagation",
+      "DZY Loves Fibonacci Numbers",
+      "Fibonacci First Two Terms Range Addition",
+      "区間へのフィボナッチ列加算",
+      "漸化式の先頭二項をずらす遅延伝播"
+    ],
+    "family": "配列・区間",
+    "prerequisites": [
+      "lazy-segment-tree",
+      "affine-lazy-composition"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/446/C"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "区間へフィボナッチ列を足す更新は、先頭二項を持って子区間へずらす",
+    "summary": "左端からの位置で加算量が変わる更新を、漸化式の初期値二つと区間和だけで伝える。"
+  },
+  {
+    "id": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+    "title": "番号を小さい順に集めたマスが長方形になる段階を、交換後も数える",
+    "summary": "格子の各頂点を囲む四マスから形を評価し、長方形となる条件を最小値4で表す。二マスの交換を少数の区間加算に直し、全ての段階の答えを更新する。",
+    "aliases": [
+      "IOI 2018 Seats",
+      "dynamic grid prefix rectangle corner minimum count",
+      "2x2 odd black corner potential",
+      "格子 番号交換 接頭集合 長方形 個数"
+    ],
+    "family": "動的な格子の形と局所不変量",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "lazy-segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/POL-seats.pdf",
+      "https://ioi2018.jp/tasks/contest1/IDN-seats.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/#seats"
+    ]
+  },
+  {
+    "id": "monotone-paint-stroke-links-offline-containment",
+    "title": "薄い色へ戻せない区間塗装の最小回数を、同色を結ぶ対で数える",
+    "summary": "間が全て濃い色である同色の隣接出現を結ぶと、区間内の最小筆数は区間長から内部リンク数を引いた値になる。単調スタックでリンクを作り、右端順のFenwick走査で多数の区間に答える。",
+    "aliases": [
+      "USACO No Time to Dry",
+      "monotone paint stroke links offline containment",
+      "ordered color interval painting minimum strokes",
+      "濃さ順 上書き 区間塗装 同色リンク"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "prerequisites": [
+      "fenwick-tree",
+      "offline-queries"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+      "https://usaco.org/current/data/sol_prob1_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ]
+  },
+  {
+    "id": "interval-unique-endpoints-singleton-middle-active-lazy",
+    "title": "両端と内部の一点が区間内で一度だけ現れる三点組を数える",
+    "summary": "両端と内部一点の値が、それぞれ区間全体で一度だけ現れる三点組を数える。有効な左端だけの重み和を持ち、前二出現から内部の単出現数を二つの区間加算で更新する。",
+    "aliases": [
+      "USACO United Cows of Farmer John Platinum",
+      "interval unique endpoints singleton middle active lazy",
+      "区間 両端 内部 三点 単出現 有効点 遅延加算"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "coordinate-compression",
+      "lazy-segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+      "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ]
+  },
+  {
+    "id": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+    "title": "一冊だけ持って並べ替える歩行距離を、サイクルの閉包で求める",
+    "summary": "本を一冊だけ持って直線上を歩き、置換を完成して開始位置へ戻る。運搬距離の下界に、サイクルを取り込むための往復距離を足し、左右の探索を線形時間で比較する。",
+    "aliases": [
+      "IOI 2017 Ancient Books",
+      "一冊持ちの棚の並べ替え",
+      "cycle interval closure first-cross greedy",
+      "旧Libraryの線形歩行距離解法"
+    ],
+    "family": "順列のサイクルと直線上の運搬距離",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "permutation-cycle-minimum-swaps"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  }
+]

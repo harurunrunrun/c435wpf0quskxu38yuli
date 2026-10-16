@@ -1,0 +1,89 @@
+---
+title: "少数の整数のOR条件は、各ビットの割当数を別々に数えて掛ける"
+description: "変数の値全体を選ばず、一つのビットを持つ変数集合だけを全探索する。"
+techniqueId: bitwise-or-constraint-count
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+少数の未知の整数に対し、三個のORが指定値と等しい、といった条件を同時に満たす配列の個数を求める。整数の値域は非常に大きいが、各条件に加算や大小比較が含まれず、桁ごとに独立している。
+
+## 考え方
+
+ビット $b$ を固定し、その桁が1になる変数の集合を $S$ とする。$N$ 変数なら $S$ は $2^N$ 通り。三変数のORのビットが1になる条件は、その三変数のうち少なくとも一つが $S$ に入ることになる。指定値のビットが0なら、三変数とも $S$ に入ってはいけない。
+
+全てのOR条件を満たす集合 $S$ の個数を $c_b$ と数える。各桁の割当は他の桁を制限しないので、答えは $\prod_b c_b$。一つでも $c_b=0$ なら全体も0になる。
+
+## 適用条件
+
+整数は $0\le A_i<2^B$ を自由に選べ、条件はビットごとの論理演算だけで判定できることが必要。$A_i\le K$ のような十進の上限、popcountの指定、要素間の大小関係があると桁が結び付くため、そのまま積にはできない。
+
+掲載実装は $1\le N\le12$、三変数ORの条件100個以下、$1\le B\le64$、答えは法 $10^9+7$。添字は0始まりで、同じ変数を複数回指定してもよい。原典は異なる三変数を指定し、$B=60$。条件がなければ各ビット $2^N$ 通りを掛ける。符号付きの負数は扱わない。
+
+## なぜ正しいか
+
+一つの整数列と、「各ビットで1になる変数の集合」の列は一対一に対応する。OR条件は、各ビットでその集合が指定された三変数と交わるかどうかだけを要求する。
+
+よって整数列が全条件を満たすことと、各集合が対応するビットの全条件を満たすことは同値。異なるビットの集合を任意に組み合わせても条件を壊さないので、積の法則で数えられる。位置で区別する配列を数えており、同じ値の並べ替えを同一視しない。
+
+## 計算量
+
+全ての整数列を列挙すると $2^{BN}$ 通りで、各候補の検査に $O(Q)$ 時間。ビットを分けると時間 $O(B(Q+1)2^N)$、追加空間 $O(Q)$。各集合の成立可否を保存せず、その場で数える。$B$ が64までなら、制約の三変数は整数マスク一個で判定できる。
+
+## 実装
+
+```cpp
+#include <array>
+#include <cstdint>
+#include <stdexcept>
+#include <vector>
+struct TripleOrRequirement {
+    std::array<int,3> index;
+    std::uint64_t value;
+};
+long long count_triple_or_arrays(
+    int n, const std::vector<TripleOrRequirement>& requirements, int bits=60) {
+    constexpr long long mod=1000000007;
+    if(n<1 || n>12 || bits<1 || bits>64 || requirements.size()>100)
+        throw std::invalid_argument("range");
+    std::vector<unsigned> positions;
+    for(const auto& q:requirements) {
+        unsigned mask=0;
+        for(int i:q.index) {
+            if(i<0 || i>=n) throw std::invalid_argument("index");
+            mask|=1U<<i;
+        }
+        if(bits<64 && (q.value>>bits)!=0) throw std::invalid_argument("value");
+        positions.push_back(mask);
+    }
+    long long answer=1;
+    for(int b=0;b<bits;++b) {
+        long long ways=0;
+        for(unsigned chosen=0;chosen<(1U<<n);++chosen) {
+            bool valid=true;
+            for(std::size_t j=0;j<requirements.size();++j) {
+                bool actual=(chosen&positions[j])!=0;
+                bool wanted=((requirements[j].value>>b)&1U)!=0;
+                if(actual!=wanted) {valid=false;break;}
+            }
+            ways+=valid;
+        }
+        answer=answer*ways%mod;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [区間ANDを指定する配列は、必要な1だけを置いて0の条件を確かめる](/flowchartcp/techniques/range-and-forced-bits/)
+- [XORと二数の1の個数を指定した構築は、異なる桁と共通の1へ分ける](/flowchartcp/techniques/xor-popcount-construction/)
+
+## 参考資料
+
+- [AtCoder — Snuke's Favorite Arrays](https://atcoder.jp/contests/typical90/tasks/typical90_ch)
+- [出題者による公開解答](https://github.com/E869120/kyopro_educational_90/blob/main/sol/086.cpp)
+
+<TechniqueReferences techniqueId="bitwise-or-constraint-count" />

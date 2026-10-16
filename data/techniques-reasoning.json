@@ -1,0 +1,403 @@
+[
+  {
+    "id": "brute-force-observation",
+    "title": "小さい入力で全探索する",
+    "aliases": [
+      "Brute Force Observation",
+      "Exhaustive Search",
+      "小規模全探索",
+      "実験"
+    ],
+    "family": "考察",
+    "level": "入門",
+    "summary": "小さい入力の答えをすべて求め、規則や反例を探す。",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc182/editorial/324?lang=en"
+    ]
+  },
+  {
+    "id": "contribution",
+    "title": "寄与の数え上げ",
+    "aliases": [
+      "Contribution Technique",
+      "Double Counting",
+      "主客転倒",
+      "寄与分解"
+    ],
+    "family": "考察",
+    "level": "入門",
+    "summary": "対象を一つずつ集計する代わりに、各要素が何回含まれるかを数える。",
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc177/editorial/97"
+    ]
+  },
+  {
+    "id": "reverse-thinking",
+    "title": "逆順処理",
+    "aliases": [
+      "Reverse Thinking",
+      "Offline Reverse Processing",
+      "逆から考える"
+    ],
+    "family": "考察",
+    "level": "中級",
+    "summary": "操作を最後からたどり、削除や上書きを扱いやすい処理に変える。",
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc229/editorial/2985"
+    ]
+  },
+  {
+    "id": "invariant",
+    "title": "不変量",
+    "aliases": [
+      "Invariant",
+      "Parity",
+      "Conservation Law",
+      "偶奇",
+      "保存則"
+    ],
+    "family": "考察",
+    "level": "入門",
+    "summary": "どの操作でも変わらない量を見つけ、到達できる状態を絞る。",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/arc135/editorial/3381"
+    ]
+  },
+  {
+    "id": "exchange-argument",
+    "title": "交換法",
+    "aliases": [
+      "Exchange Argument",
+      "Greedy Proof",
+      "貪欲法の証明"
+    ],
+    "family": "考察",
+    "level": "中級",
+    "summary": "最適解の選択を取り替えても悪化しないことを示し、貪欲法を証明する。",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc358/editorial/10276"
+    ]
+  },
+  {
+    "id": "symmetry",
+    "title": "対称性",
+    "aliases": [
+      "Symmetry",
+      "Canonicalization",
+      "Orbit",
+      "正規化"
+    ],
+    "family": "考察",
+    "level": "中級",
+    "summary": "回転や反転などで同じとみなせる状態をまとめ、重複した処理を減らす。",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/panasonic2020/editorial.pdf"
+    ]
+  },
+  {
+    "id": "state-design",
+    "title": "状態の設計",
+    "aliases": [
+      "State Design",
+      "Sufficient State",
+      "状態設計",
+      "状態の拡張"
+    ],
+    "family": "考察",
+    "level": "中級",
+    "summary": "これからの操作に必要な情報を見極め、DPや探索の状態に含める。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc244/editorial/3601?lang=en"
+    ]
+  },
+  {
+    "id": "counterexample",
+    "title": "反例探し",
+    "aliases": [
+      "Counterexample Search",
+      "Differential Testing",
+      "Stress Testing",
+      "反例探索",
+      "差分検証"
+    ],
+    "family": "考察",
+    "level": "入門",
+    "summary": "単純な正しい解法と比較して、仮説や実装が失敗する入力を探す。",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc270/editorial/4850"
+    ]
+  },
+  {
+    "id": "graph-reduction",
+    "title": "グラフへの帰着",
+    "aliases": [
+      "Graph Reduction",
+      "Auxiliary Vertices",
+      "Implicit Graph",
+      "補助頂点"
+    ],
+    "family": "考察",
+    "level": "上級",
+    "summary": "状態を頂点、操作を辺として表し、既知のグラフアルゴリズムを使う。",
+    "entryPoints": [
+      "reasoning",
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc232/editorial/3158"
+    ]
+  },
+  {
+    "id": "complement-counting",
+    "title": "補集合で数える",
+    "aliases": [
+      "Complement Counting",
+      "Complementary Events",
+      "余事象"
+    ],
+    "family": "考察",
+    "level": "入門",
+    "summary": "条件を満たさない対象を数え、全体から引いて答えを求める。",
+    "entryPoints": [
+      "reasoning"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc178/editorial/104"
+    ]
+  },
+  {
+    "id": "randomized-algorithms",
+    "title": "乱択アルゴリズム",
+    "aliases": [
+      "Randomized Algorithms",
+      "Monte Carlo",
+      "Las Vegas",
+      "Multiset Hash",
+      "多重集合ハッシュ"
+    ],
+    "family": "ゲーム・確率",
+    "level": "上級",
+    "summary": "乱数を利用して、比較や探索を速くする。",
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc367/editorial/10745",
+      "https://github.com/noshi91/blog/blob/master/pages/hash.pdf"
+    ]
+  },
+  {
+    "id": "game-theory",
+    "title": "Grundy数",
+    "aliases": [
+      "Game Theory",
+      "Sprague-Grundy",
+      "Nim",
+      "Mex",
+      "ゲームDP",
+      "グランディ数"
+    ],
+    "family": "ゲーム・確率",
+    "level": "上級",
+    "summary": "公平なゲームの各状態に数を割り当て、独立なゲームの勝敗をXORで判定する。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc368/editorial/10829"
+    ]
+  },
+  {
+    "id": "probability-expectation",
+    "title": "期待値の線形性",
+    "aliases": [
+      "Expected Value",
+      "Linearity of Expectation",
+      "Expected DP",
+      "期待値DP"
+    ],
+    "family": "ゲーム・確率",
+    "level": "中級",
+    "summary": "確率分布をすべて求めず、各要素の期待値を足して全体の期待値を求める。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc350/editorial/9871",
+      "https://atcoder.jp/contests/abc332/editorial/7926?lang=en"
+    ]
+  },
+  {
+    "id": "interactive",
+    "title": "対話問題の質問設計",
+    "aliases": [
+      "Interactive Problems",
+      "Query Design",
+      "Information Gain",
+      "対話問題"
+    ],
+    "family": "構築・対話",
+    "level": "中級",
+    "summary": "質問で候補を絞り、問い合わせ回数の上限内で答えを特定する。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc269/editorial/4897",
+      "https://atcoder.jp/contests/abc305/editorial/6554"
+    ]
+  },
+  {
+    "id": "output-only",
+    "title": "出力のみの問題",
+    "aliases": [
+      "Output Only",
+      "Answer Only",
+      "出力のみ",
+      "出力ファイル提出"
+    ],
+    "family": "構築・対話",
+    "level": "中級",
+    "summary": "固定入力の出力を保存し、合法性を確かめながら解を改善する。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2010/tasks/tasks_jpn/day2/t3_maze/index.html",
+      "https://ioinformatics.org/page/ioi-2010/36"
+    ]
+  },
+  {
+    "id": "local-search",
+    "title": "局所探索",
+    "aliases": [
+      "Local Search",
+      "Hill Climbing",
+      "Incremental Scoring",
+      "山登り法",
+      "差分評価"
+    ],
+    "family": "ヒューリスティック",
+    "level": "中級",
+    "summary": "現在の解を少し変えた候補を調べ、より良い解へ更新する。",
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_c",
+      "https://img.atcoder.jp/intro-heuristics/editorial.pdf"
+    ]
+  },
+  {
+    "id": "simulated-annealing",
+    "title": "焼きなまし法",
+    "aliases": [
+      "Simulated Annealing",
+      "SA",
+      "温度スケジュール"
+    ],
+    "family": "ヒューリスティック",
+    "level": "上級",
+    "summary": "一時的に悪くなる変更も確率的に採用し、局所最適を抜け出す。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc047/editorial/13096?lang=en",
+      "https://atcoder.jp/contests/ahc043/editorial/12355"
+    ]
+  },
+  {
+    "id": "beam-search",
+    "title": "ビームサーチ",
+    "aliases": [
+      "Beam Search",
+      "Beam Width",
+      "幅制限探索"
+    ],
+    "family": "ヒューリスティック",
+    "level": "上級",
+    "summary": "各段階で有望な候補を複数残し、解を順に組み立てる。",
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc043/editorial/12355",
+      "https://img.atcoder.jp/ahc032/editorial.pdf"
+    ]
+  }
+]

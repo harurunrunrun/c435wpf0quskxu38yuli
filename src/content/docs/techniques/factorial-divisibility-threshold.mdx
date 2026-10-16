@@ -1,0 +1,79 @@
+---
+title: "階乗が指定数の倍数になる最初の位置は、素因数ごとの必要指数を判定する"
+description: "階乗を作らず、各素数の指数を繰り返し除算で求め、必要指数に達する位置を探します。"
+techniqueId: factorial-divisibility-threshold
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+階乗の数値はすぐに64bitを超えるが、必要なのは指定整数 $K$ を割り切るかだけ。積全体ではなく、$K$ に必要な素因数の指数を調べる。
+
+## 考え方
+
+$K=\prod p^{e_p}$ へ分解する。$n!$ に含まれる $p$ の指数は
+
+$$v_p(n!)=\left\lfloor\frac np\right\rfloor+\left\lfloor\frac n{p^2}\right\rfloor+\cdots.$$
+
+繰り返し $n$ を $p$ で割り、その商を足す。$p^j$ を実際に作らないので、素数冪のオーバーフローを避けられる。
+
+各 $p^{e_p}$ について、指数が $e_p$ 以上となる最小の $n_p$ を二分探索する。上界は $p e_p$。必要な倍数 $p,2p,\ldots,e_pp$ が少なくとも一個ずつ $p$ を持つからである。全ての素因数条件を満たす最小位置は $\max n_p$ になる。
+
+## 適用条件
+
+指定数は正で、最小の正整数 $N$ を求める。掲載実装は $1\le K\le10^{12}$。$K=1$ なら答えを1とする。$0!=1$ を含む最小の非負整数を求めたい場合は、この境界だけを0へ変える。
+
+試し割りでの素因数分解は $\sqrt K$ までであり、$K$ がさらに巨大なら因数分解の方法を替える必要がある。各素因数の閾値を求める二分探索は、そのまま再利用できる。
+
+## なぜ正しいか
+
+$n!$ の中で $p$ の倍数は少なくとも一個の $p$ を与え、$p^2$ の倍数はさらに一個、$p^3$ の倍数はさらに一個を与える。各因子の指数を正確に数えているため、除算の和の式が成り立つ。
+
+階乗の指数は $n$ とともに減らないので、必要指数の達成は単調な判定になる。$K$ の倍数になることは全ての素因数で必要指数以上になることと同値。それぞれの最小閾値を超える必要があり、その最大は全条件を達成するため必要十分である。
+
+## 計算量
+
+階乗を多倍長整数で一つずつ作る方法は、到達位置と巨大な桁数の両方に依存する。試し割りを使う掲載実装は、時間 $O(\sqrt K+\sum_{p^{e_p}\parallel K}\log(pe_p)\log_p(pe_p))$、追加空間 $O(\log K)$。これは因数分解と、素因数ごとの二分探索・指数判定の費用。公式解説のように $p$ の倍数を必要指数ぶんだけ順に調べることもでき、その場合は因数分解後の計算を $O(\log K)$ にできる。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+long long minimum_positive_factorial_multiple(long long k) {
+    if(k<1 || k>1000000000000LL) throw std::invalid_argument("k range");
+    std::vector<std::pair<long long,int>> factors;long long remaining=k;
+    for(long long p=2;p<=remaining/p;++p) if(remaining%p==0) {
+        int exponent=0;do {remaining/=p;++exponent;} while(remaining%p==0);
+        factors.push_back({p,exponent});
+    }
+    if(remaining>1) factors.push_back({remaining,1});
+    long long answer=1;
+    for(auto [p,required]:factors) {
+        auto enough=[&](long long n) {
+            long long exponent=0;
+            while(n) {n/=p;exponent+=n;if(exponent>=required)return true;}
+            return false;
+        };
+        long long low=0,high=p*required;
+        while(high-low>1) {long long mid=low+(high-low)/2;if(enough(mid))high=mid;else low=mid;}
+        answer=std::max(answer,high);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [二分探索](/flowchartcp/techniques/binary-search/)
+- [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [AtCoder — Factorial and Multiple](https://atcoder.jp/contests/abc280/tasks/abc280_d)
+- [公式解説](https://atcoder.jp/contests/abc280/editorial/5341)
+
+<TechniqueReferences techniqueId="factorial-divisibility-threshold" />

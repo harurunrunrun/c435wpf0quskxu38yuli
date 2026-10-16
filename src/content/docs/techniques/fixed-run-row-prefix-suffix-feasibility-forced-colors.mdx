@@ -1,0 +1,191 @@
+---
+title: "黒い連続区間の長さから、全ての塗り方で共通する色を求める"
+description: "前後の配置可否をつなぎ、白にできる位置と黒い区間を置ける範囲を集めて各マスの色を確定する。"
+techniqueId: fixed-run-row-prefix-suffix-feasibility-forced-colors
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+一列のマスについて、左から並ぶ黒い連続区間の長さが決まっている。一部のマスは既に黒・白と分かっており、その条件に合う全ての塗り方から、必ず黒になるマスと必ず白になるマスを求めたい。
+
+一つの塗り方を復元するだけでは、あるマスが本当に確定しているかは分からない。前からの配置可否と後ろからの配置可否を組み合わせると、各マスを白にできるか、黒にできるかを調べられる。
+
+## 考え方
+
+列の長さを $N$、指定された黒区間の数を $K$、長さを $c_0,\ldots,c_{K-1}$ とする。区間はこの順に置き、隣り合う黒区間の間には少なくとも一マスの白を置く。
+
+$F[t][j]$ を「先頭 $j$ マスだけで、最初の $t$ 個の黒区間を全て置ける」とする。最後のマスを白にする場合と、最後に長さ $c_{t-1}$ の黒区間を置く場合に分ける。黒区間に既知の白が含まれるかは、既知白の累積和で定数時間に調べる。
+
+列と区間の順をともに反転した同じ表を $B$ とする。$B[t][j]$ は、元の列の末尾 $j$ マスへ、最後の $t$ 個の区間を置けることを表す。
+
+位置 $v$ を白にしたいなら、その左右で使う区間数を $t$ と $K-t$ に分ける。両側が独立に実現できれば、その白マスでつなげられる。
+
+黒にできるマスは、各黒区間を置ける全ての位置から集める。区間 $t$ を $[a,b)$ に置くなら、その内側は黒、存在する両隣は白にする。外側の配置可否を前後の表で確かめ、合法なら $[a,b)$ を差分配列へ加える。区間の各マスを毎回塗り直さず、最後に差分の累積和を取る。
+
+## 適用条件
+
+黒区間の個数・順序・正の長さが固定され、隣り合う区間は白で分離する。既知の色も全て満たす必要がある。長さだけを満たす区間分割や、順番を自由に入れ替える問題には、そのまま使えない。
+
+入力は黒 `X`・白 `_`・未定 `.` で表す。出力の `?` は、黒にも白にもできるマスであり、入力の記号には使わない。
+
+掲載APIは $N\le200000$、$K\le\min(N,100)$、各長さ $1\le c_t\le N$ を扱う。原典は $N,K\ge1$ かつ解の存在を保証するが、一般APIでは矛盾した既知色や置ききれない区間に対して解なしを返す。区間が0個の場合と空の列も拡張として受け付ける。
+
+## なぜ正しいか
+
+まず前向き表を考える。$F[0][j]$ は、先頭 $j$ マスに既知黒がなければ真である。$t>0$ の有効な塗り方は、最後のマスが白の場合と黒の場合に尽くされる。
+
+白なら、最後のマスが既知黒でなく、$F[t][j-1]$ が真であればよい。黒なら、最後の黒区間は $[a,j)$、$a=j-c_{t-1}$ となる。その中に既知白がなく、$a>0$ の場合は位置 $a-1$ が白にでき、残る先頭 $a-1$ マスで $t-1$ 個の区間を置ければよい。$a=0$ では残りは空である。各条件は必要であり、条件を満たす塗り方を連結すれば十分でもある。反転側にも同じ証明が使える。
+
+位置 $v$ が白の全体解では、黒区間は左右のどちらかに丸ごと含まれる。左の個数を $t$ とすれば、
+
+$$F[t][v]\land B[K-t][N-v-1]$$
+
+が真になる。逆にこの式が真で、位置 $v$ が既知黒でなければ、左右の解を白一マスで分けて連結できる。従って、この条件を満たす $t$ があることと、位置 $v$ を白にできることは同値である。
+
+区間 $t$ を $[a,b)$ に置く場合は、内側に既知白がなく、存在する両隣 $a-1,b$ が既知黒でないことを確認する。左側の残りの長さを $\ell=\max(0,a-1)$、右側を $r=\max(0,N-b-1)$ とすると、さらに
+
+$$F[t][\ell]\land B[K-t-1][r]$$
+
+を要求する。区間の両隣を白にしているため、外側で作った黒区間と結合することはない。列の端では、空の表の真偽が残る区間数も検査する。よって全ての合法な配置を、漏れも余分もなく集められる。
+
+あるマスを黒にできることは、それを含む合法な黒区間の配置が一つ以上あることと同値である。差分配列は、この全配置の和集合を表す。全体解があると確認した後は、各マスには少なくとも一方の色が可能である。白だけなら `_`、黒だけなら `X`、両方なら `?` とすれば、全解で共通する色が得られる。
+
+## 計算量
+
+原典の $N,K\ge1$ では時間・空間ともに $O(NK)$。前後の表、白の可能性、黒区間の全配置をそれぞれ $O(NK)$ 時間で調べる。区間の長さ分だけ黒の印を付けると余計な因子が掛かるため、差分の更新は両端だけに行う。
+
+実装では真偽値一個を `uint8_t` 一個で保存する。最大の前後二表は $2(100+1)(200000+1)=40400202$ バイト。既知白の累積和・差分配列を32ビット整数、白の可能性を1バイト、答えを一文字で持つと、主な要素領域は最大 $42400211$ バイトとなる。入力、コンテナの管理領域などは別だが、原典の2GB以内に収まる。反転した文字列や区間列のコピーは作らない。
+
+拡張を含めると時間・空間の上界は $O((N+1)(K+1))$。区間0個では入力を検査し、既知黒がなければ全て白を返す。空の列は定数時間。区間長の合計は64ビット、添字は検査後の範囲内、差分の累積値は全配置数 $K(N+1)\le20000100$ 以下なので32ビットに収まる。
+
+## 実装
+
+`run_colors::forced_colors(row, clues)` は確定色の文字列を返し、形式が正しいが全体解のない入力には `std::nullopt` を返す。空列・区間0個では空文字列を返し、非空列で区間0個なら全マスを白にする。長さ・個数・文字種が契約外なら `std::invalid_argument`。入力は変更せず、領域確保の例外はそのまま伝える。
+
+末尾の `solve_puzzle` は、原典の一般型と実装上の注意に合わせた `std::string`・`std::vector<int>` の入口である。原典では起こらない解なしの入力には例外を返す。全ての状態は呼び出しごとに作り直す。
+
+```cpp
+#include <cstddef>
+#include <cstdint>
+#include <optional>
+#include <span>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+namespace run_colors {
+std::optional<std::string> forced_colors(
+    std::string_view row, std::span<const int> clues) {
+    if (row.size() > 200000 || clues.size() > 100
+        || clues.size() > row.size())
+        throw std::invalid_argument("invalid row or clue count");
+    const int n = static_cast<int>(row.size());
+    const int k = static_cast<int>(clues.size());
+    for (char ch : row)
+        if (ch != 'X' && ch != '_' && ch != '.')
+            throw std::invalid_argument("invalid input color");
+    std::int64_t minimum_length = k == 0 ? 0 : k - 1;
+    for (int length : clues) {
+        if (length < 1 || length > n)
+            throw std::invalid_argument("invalid run length");
+        minimum_length += length;
+    }
+    if (minimum_length > n) return std::nullopt;
+    if (k == 0) {
+        if (row.find('X') != std::string_view::npos) return std::nullopt;
+        return std::string(row.size(), '_');
+    }
+
+    const std::size_t stride = row.size() + 1;
+    std::vector<std::int32_t> white(stride);
+    for (int j = 0; j < n; ++j)
+        white[j + 1] = white[j] + (row[j] == '_');
+    auto build = [&](bool reverse) {
+        std::vector<std::uint8_t> table((std::size_t(k) + 1) * stride);
+        auto at = [&](int j) { return row[reverse ? n - 1 - j : j]; };
+        auto no_white = [&](int a, int b) {
+            return reverse ? white[n - a] == white[n - b]
+                           : white[a] == white[b];
+        };
+        table[0] = 1;
+        for (int j = 1; j <= n; ++j)
+            table[j] = table[j - 1] && at(j - 1) != 'X';
+        for (int t = 1; t <= k; ++t) {
+            const int length = clues[reverse ? k - t : t - 1];
+            const std::size_t current = std::size_t(t) * stride;
+            const std::size_t previous = std::size_t(t - 1) * stride;
+            for (int j = 1; j <= n; ++j) {
+                bool possible = at(j - 1) != 'X' && table[current + j - 1];
+                const int a = j - length;
+                if (a >= 0 && no_white(a, j)) {
+                    const int before = a == 0 ? 0 : a - 1;
+                    if ((a == 0 || at(a - 1) != 'X') && table[previous + before])
+                        possible = true;
+                }
+                table[current + j] = possible;
+            }
+        }
+        return table;
+    };
+    auto forward = build(false);
+    if (!forward[std::size_t(k) * stride + n]) return std::nullopt;
+    auto backward = build(true);
+
+    std::vector<std::uint8_t> can_white(row.size());
+    for (int v = 0; v < n; ++v) if (row[v] != 'X') {
+        for (int t = 0; t <= k; ++t)
+            if (forward[std::size_t(t) * stride + v]
+                && backward[std::size_t(k - t) * stride + n - v - 1]) {
+                can_white[v] = 1;
+                break;
+            }
+    }
+    std::vector<std::int32_t> difference(stride);
+    for (int t = 0; t < k; ++t) {
+        const int length = clues[t];
+        for (int a = 0; a <= n - length; ++a) {
+            const int b = a + length;
+            if (white[a] != white[b] || (a > 0 && row[a - 1] == 'X')
+                || (b < n && row[b] == 'X')) continue;
+            const int left = a == 0 ? 0 : a - 1;
+            const int right = b == n ? 0 : n - b - 1;
+            if (forward[std::size_t(t) * stride + left]
+                && backward[std::size_t(k - t - 1) * stride + right]) {
+                ++difference[a];
+                --difference[b];
+            }
+        }
+    }
+    std::string answer(row.size(), '_');
+    std::int32_t active = 0;
+    for (int v = 0; v < n; ++v) {
+        active += difference[v];
+        if (active > 0) answer[v] = can_white[v] ? '?' : 'X';
+    }
+    return answer;
+}
+} // namespace run_colors
+
+std::string solve_puzzle(std::string s, std::vector<int> c) {
+    auto answer = run_colors::forced_colors(s, std::span<const int>(c));
+    if (!answer) throw std::invalid_argument("inconsistent puzzle");
+    return std::move(*answer);
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) では、これからの配置に必要な情報を状態へ残す。[前後のDPから列を復元する方法](/flowchartcp/techniques/lcs-hirschberg-reconstruction/) とも、左右で求めた情報をつなぐ点は共通する。この技巧では一つの解を選ぶ代わりに、全ての合法な接続から色の可能性を集める。[差分配列](/flowchartcp/techniques/difference-array/) は、黒にできる区間の和集合を長さに比例する処理なしで求める。
+
+## 参考資料
+
+- [日本委員会配布の英語原典：Paint By Numbers](https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf) — 記号、区間の順序と長さ、全解の必須色、解の存在保証、全数値範囲。
+- [日本語原典](https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf) — 黒い連続区間と白による分離の条件。
+- [公式解説、第8〜10頁](https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf) — 前後の配置可否と白・黒の可能性の照合。
+- [競技日2の実装上の注意](https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf) — 一般型のC++への対応、時間2秒・メモリ2GB、関数形式。
+- [日本委員会の公式課題一覧](https://www2.ioi-jp.org/ioi/2016/tasks/index.html) — 競技日2は2016年8月16日。
+
+<TechniqueReferences techniqueId="fixed-run-row-prefix-suffix-feasibility-forced-colors" />

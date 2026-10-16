@@ -1,0 +1,76 @@
+---
+title: "全ての半分の奇数倍を満たす数は、2の指数をそろえて最小公倍数の奇数倍にする"
+description: "共通の倍数条件と奇数商の条件を分け、2で割れる回数の不一致を先に排除します。"
+techniqueId: half-multiple-two-adic
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+全ての整数の倍数だが、商には「奇数」という追加条件がある。最小公倍数を求めるだけでは、商の偶奇が一致するかを判定できない。
+
+## 考え方
+
+$b_i=a_i/2$ とする。$X/b_i$ が奇数なら、$X$ と $b_i$ に含まれる2の指数は同じ。従って全 $b_i$ の2の指数が一致しなければ答えは0。
+
+一致するなら $L=\operatorname{lcm}(b_1,\ldots,b_N)$ を求める。$L/b_i$ も全て奇数なので、条件を満たすのは $L,3L,5L,\ldots$。上限 $M$ 内の個数は $Q=\lfloor M/L\rfloor$ として $(Q+1)/2$ を整数除算した値になる。
+
+最小公倍数は増える一方なので、$M$ を超えた時点で0を返せる。計算は $L/\gcd(L,b_i)$ を先に割り、掛ける前に上限と比較する。
+
+## 適用条件
+
+対象は全て正の偶数。各 $X$ は正で、半分の正の奇数倍になり、上限だけを持つ。偶数商も認めるなら2の指数の条件が消え、下限があるなら奇数倍の区間を別に数える。
+
+掲載実装は10万件以下、$a_i\le10^9$、$0\le M\le10^{18}$。空の条件列は受け付けない。$M=0$ の答えは0。入力を全て検証した後、上限を超える最小公倍数を作らず打ち切る。
+
+## なぜ正しいか
+
+$X/b_i$ が整数で奇数であることは、全素因数の指数が $X$ で $b_i$ 以上で、2の指数だけが等しいことと同値。異なる2の指数を同時に満たす $X$ はない。
+
+全 $b_i$ の2の指数が同じなら、最小公倍数 $L$ の2の指数も同じ。従って $L/b_i$ は全て奇数であり、$X=Lq$ の全ての商が奇数になるのは $q$ が奇数の場合に限る。これで全解が一つの等差数列へまとまる。
+
+## 計算量
+
+候補 $X=1,\ldots,M$ を試すと $O(NM)$ 時間、追加空間 $O(1)$。2の指数の検査と最小公倍数の併合は、最大値を $A$ として $O(N\log A)$ 時間、入力を除く追加空間 $O(1)$。$L>M$ ならそれ以上の大整数を作らない。
+
+## 実装
+
+```cpp
+#include <cstdint>
+#include <numeric>
+#include <stdexcept>
+#include <vector>
+long long count_half_odd_multiples(const std::vector<long long>& even_values,long long upper) {
+    if(even_values.empty() || even_values.size()>100000 || upper<0 || upper>1000000000000000000LL)
+        throw std::invalid_argument("range");
+    int common_power=-1;bool compatible=true;
+    for(long long a:even_values) {
+        if(a<2 || a>1000000000LL || a%2) throw std::invalid_argument("positive even value required");
+        long long b=a/2;int power=0;while(b%2==0) {b/=2;++power;}
+        if(common_power==-1) common_power=power;
+        else if(power!=common_power) compatible=false;
+    }
+    if(!compatible || upper==0) return 0;
+    long long lcm=1;
+    for(long long a:even_values) {
+        long long b=a/2,reduced=lcm/std::gcd(lcm,b);
+        if(reduced>upper/b) return 0;
+        lcm=reduced*b;
+    }
+    long long count=upper/lcm;
+    return count/2+count%2;
+}
+```
+
+## 関連する手法
+
+- [一次合同式は GCD で解の有無を判定してから割る](/flowchartcp/techniques/linear-congruence-gcd/)
+- [不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder — Semi Common Multiple](https://atcoder.jp/contests/abc150/tasks/abc150_d)
+- [公式解説](https://img.atcoder.jp/abc150/editorial.pdf)
+
+<TechniqueReferences techniqueId="half-multiple-two-adic" />

@@ -1,0 +1,265 @@
+[
+  {
+    "source": "CSES",
+    "problemId": "2194",
+    "title": "Minimum Euclidean Distance",
+    "url": "https://cses.fi/problemset/task/2194",
+    "techniqueIds": [
+      "geometry-closest-pair"
+    ],
+    "features": [
+      "整数座標の点集合",
+      "ユークリッド距離が最小の二点",
+      "N≤2×10^5、座標絶対値≤10^9"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2194",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc296_g",
+    "title": "Polygon and Points",
+    "url": "https://atcoder.jp/contests/abc296/tasks/abc296_g",
+    "techniqueIds": [
+      "convex-point-membership"
+    ],
+    "features": [
+      "反時計回りの狭義凸多角形",
+      "多数の点の内部・外部・辺上の判定",
+      "N,Q≤2×10^5、整数座標"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc296/tasks/abc296_g",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "87E",
+    "title": "Mogohu-Rea Idol",
+    "url": "https://codeforces.com/problemset/problem/87/E",
+    "techniqueIds": [
+      "convex-minkowski-sum"
+    ],
+    "features": [
+      "三つの凸領域から各一点を選ぶ",
+      "三点の平均が指定点になるか",
+      "各多角形は反時計回りかつ狭義凸",
+      "辺を方向順に併合できる"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/87/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "furthest_pair",
+    "title": "Furthest Pair",
+    "url": "https://judge.yosupo.jp/problem/furthest_pair",
+    "techniqueIds": [
+      "convex-diameter-calipers"
+    ],
+    "features": [
+      "整数座標の点集合",
+      "ユークリッド距離が最大の異なる二点",
+      "凸包への削減と平行支持線"
+    ],
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/geo/furthest_pair/task.md",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "UVa Online Judge",
+    "problemId": "1111",
+    "title": "Trash Removal",
+    "url": "https://onlinejudge.org/external/11/1111.pdf",
+    "techniqueIds": [
+      "convex-minimum-width"
+    ],
+    "features": [
+      "単純多角形を回転して平行な壁の間に収める",
+      "必要な幅の最小値",
+      "整数座標、N≤100、凸であるとは限らない",
+      "先に凸包を取り辺に平行な支持線を調べる"
+    ],
+    "evidenceUrl": "https://onlinejudge.org/external/11/1111.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2192",
+    "title": "Point in Polygon",
+    "url": "https://cses.fi/problemset/task/2192",
+    "techniqueIds": [
+      "polygon-winding-integer"
+    ],
+    "features": [
+      "凸とは限らない単純多角形",
+      "点の内部・外部・境界の区別",
+      "整数座標、N,Q≤1000",
+      "上向きと下向きで頂点を半開区間として数える"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2192",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2190",
+    "title": "Line Segment Intersection",
+    "url": "https://cses.fi/problemset/task/2190",
+    "techniqueIds": [
+      "segment-intersection-orientation"
+    ],
+    "features": [
+      "二本の線分の共通点の有無",
+      "端点接触と共線重なりを含む",
+      "整数座標絶対値≤10^9",
+      "浮動小数の交点を求めず符号と区間を比較"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2190",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc248_e",
+    "title": "K-colinear Line",
+    "url": "https://atcoder.jp/contests/abc248/tasks/abc248_e",
+    "techniqueIds": [
+      "collinear-direction-gcd"
+    ],
+    "features": [
+      "異なる整数座標の点",
+      "K点以上を通る直線数",
+      "K=1は無限、それ以外は同方向・逆方向を統合",
+      "N≤300、座標絶対値≤10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc248/tasks/abc248_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc168_e",
+    "title": "∙ (Bullet)",
+    "url": "https://atcoder.jp/contests/abc168/tasks/abc168_e",
+    "techniqueIds": [
+      "perpendicular-direction-pairs"
+    ],
+    "features": [
+      "整数の二成分を持つ対象から非空部分集合を選ぶ",
+      "内積ゼロの二対象を同時に選べない",
+      "同じ直線方向ごとに集約し直交方向と組にする",
+      "ゼロベクトルは一個だけ単独で選べる",
+      "N≤2×10^5、各成分絶対値≤10^18"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc168/tasks/abc168_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc033_d",
+    "title": "三角形の分類",
+    "url": "https://atcoder.jp/contests/abc033/tasks/abc033_d",
+    "techniqueIds": [
+      "angle-vector-two-pointers"
+    ],
+    "features": [
+      "異なる整数点の三点組の鋭角・直角・鈍角分類",
+      "どの三点も同一直線上にない",
+      "中心を固定して方向順に並べる",
+      "N≤2000、座標絶対値≤10000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc033/tasks/abc033_d",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "manhattanmst",
+    "title": "Manhattan MST",
+    "url": "https://judge.yosupo.jp/problem/manhattanmst",
+    "techniqueIds": [
+      "manhattan-nearest-octants"
+    ],
+    "features": [
+      "二次元整数点",
+      "全点対をマンハッタン距離で結ぶ最小全域木",
+      "N≤200000、座標0..10^9",
+      "各点の八方向領域の最近点だけを候補とする"
+    ],
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/geo/manhattanmst/task.md",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc250_f",
+    "title": "One Fourth",
+    "url": "https://atcoder.jp/contests/abc250/tasks/abc250_f",
+    "techniqueIds": [
+      "convex-polygon-half-area"
+    ],
+    "features": [
+      "反時計回りの凸多角形",
+      "非隣接の二頂点の弦で切る",
+      "全体の四分の一に最も近い片側面積",
+      "N≤10^5、整数座標、面積は整数の二倍値で比較",
+      "片側の端点を進めると面積が単調増加"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc250/tasks/abc250_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文のC++20実装を小規模の素朴解法・全列挙・境界ケースと比較して確認した。公開日が原典に明記されない場合、基準日以前の掲載とは断定しない。"
+  }
+]

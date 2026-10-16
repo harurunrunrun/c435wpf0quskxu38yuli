@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "固定始点からの全歩数を保つ最小辺数と、区間の両端・内部一点の単出現を数える不足を解消",
+  "counts": {
+    "specificTechniques": 417,
+    "foundationArticles": 78,
+    "allArticles": 495,
+    "exampleMappings": 516,
+    "originalUrls": 478,
+    "graphs": 462,
+    "nodes": 3643,
+    "questions": 1657,
+    "answerEdges": 5402,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 512,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "parity-walk-profile-layer-greedy-realization",
+      "articleSha256": "e145dbe65c27b105c2c23c5c77c3b7f902e44bf61e488b982c856b4a158310ef",
+      "codeSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    },
+    {
+      "id": "interval-unique-endpoints-singleton-middle-active-lazy",
+      "articleSha256": "c61d0662abef7f5f4fc02cf6be723bbcbc68c8b522ff62cbf07bbeb8b18fcb4c",
+      "codeSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    }
+  ],
+  "verification": {
+    "native": {
+      "command": "node tests/minedges-unitedcows-cpp.test.mjs",
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 9588.284719
+    },
+    "newFlow": {
+      "command": "node tests/minedges-unitedcows-flow.test.mjs",
+      "passed": 13,
+      "failed": 0,
+      "durationMs": 4111.066076,
+      "record": "research/probes/minedges-unitedcows-flow-results.json"
+    },
+    "broadRegression": {
+      "groups": 55,
+      "passed": 55,
+      "failed": 0,
+      "durationMs": 70179.767206,
+      "scope": "Navigation, guard, share/back/legacy, both displays, geometry/text, fixed-corpus/ledger/collector regressions; excludes native algorithm suites other than their fixed-corpus probes."
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 495,
+      "mappings": 516,
+      "diagrams": 462,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 495,
+      "recentArticlesChecked": 25,
+      "japaneseEnglishFullWidthQueries": 101,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 462,
+      "completeAnswerLabels": 5402,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Two new detailed diagrams and their two parent diagrams rasterized and viewed. New nodes, complete labels and arrows do not overlap; the larger parent map is available in the zoomable separate viewer."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1428,
+      "linksAssets": 29028,
+      "diagrams": 462,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": "allProblemsObserved / allSolutionsReviewed union / techniquesExtracted published mappings",
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "MinEdges: all walk lengths equal parity minimum+2k; allowed A/B/C endpoints plus every positive-distance predecessor are necessary and sufficient. Layer independence, spread of left endpoints, greedy exchanges, root zero exception, absent-right feasibility and terminal disjoint pairing/loop lower bounds checked. New edges allowed, minimum count only; arbitrary root and complete source N/M/T bounds included. Time includes duplicate-check MlogM sort.",
+    "MinEdges actual fence:292700checks/checksum18056148866444260320, all23940connected loop graphs N2..5/932exact infinite-language groups, independent edge-count DP25540comparisons, root relabeling23940, sevenN100000cases/M200000,50000independent calls,invalid14. Author/root/separate reviewer normal andASan/UBSan passed.",
+    "MinEdges separate independent oracle enumerates ALL1709056connected six-vertex optional-loop graphs and10263complete infinite-language groups, computing the true smallest edge count without A/B/C or greedy. Extra4265nonzero-root cases;1717587checks/checksum13145737057088314510. Permanent probe rerun on the published fence.",
+    "UnitedCows: full-interval uniqueness includes nonselected positions; valid endpoints make the interior singleton count exactly the third-position choices. Previous-two occurrence ranges, permanent deactivation, query-before-insertion, push-before-membership-change and reset-before-new-activation proved. Full source N200000/labels1..N included, extension to arbitrary signed64 labels and empty arrays. All integer bounds/O(NlogN)/O(N) checked.",
+    "UnitedCows actual fence:8876842checks/checksum11233411103425697573, all349525four-label arrays N0..9/35091758literal triples,757304event snapshots/2922420point states,2500small and500medium random,48000arbitrary helper operations, eight originalN200000cases. Author/root/separate reviewer normal andASan/UBSan passed.",
+    "UnitedCows separate nearest-equal oracle covers ALL142418equality partitions N0..10/15960528triples, crosschecks with literal full-interval counts on N<=7, plus1008disjoint-alphabet concatenations including eight N200000cases.144583checks/checksum5277007377993953808; permanent probe rerun on published fence.",
+    "Old514walks/fullsteps/terminals/text/labels and460graphs3631oldnodes/fullfield/optionorder/answer-key-order/targets/results,404shared URLs and593localprefixhistories preserved. Six guards and all12negative/unknown exits, both displays, Back, source precision/null and code hashes checked.",
+    "USACO initial6/status/selection/snapshot and NoTime entire existing resolution row remain unchanged. Both new problems were already research-positive, so add resolution only; research6/6 stays unchanged and current covered3/6 falls to1/6 when these two resolutions or their validated root targets are removed.",
+    "Article frontmatter title/description normalized to metadata; UnitedCows title made concise, MinEdges component import uses standard relative path, prerequisite greedy normalized to existing exchange-argument. Reviewed C++ fences unchanged. No preservation or applicability assertions relaxed."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 516,
+    "reviewedProblems": 476,
+    "corpusStatementsReviewed": 65,
+    "corpusSolutionsReviewed": 57,
+    "allSolutionsReviewed": 488
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "4/6",
+      "covered": "4/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "2/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "3/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 21,
+  "counterNote": "Both additions were already researched in the fixed USACO spring corpus; published reviewed identities476 and fixed reviews57 overlap, so the union remains488 rather than growing or being summed. Original URLs478 include the separately pending examples.",
+  "limitations": [
+    "Global denominator unknown; world-wide coverage incomplete.",
+    "Production Astro/Starlight/Pagefind build and real browser remain unverified after earlier environment failures; no dependency installs/server/browser retried.",
+    "External-link liveness for all examples was not verified.",
+    "No push, upload or publication."
+  ],
+  "inProgress": [
+    "IOI2019 Sky Walking full C++ and literal/max checker frozen; root ordinary and ASan/UBSan both9280397checks/checksum9377741248886004889 passed, separate independent geometric/raster review underway. Primary numeric constraints, competition date and absent-path return -1 independently rechecked from official translations/JP index. Initial shared unconfirmed row unchanged; not counted as published.",
+    "USACO Counting Graphs full counting API/proof/oracle being authored, not counted as published.",
+    "Routing optional PIE/determinant/BEST proof remains explicit nextWork separate from chosen frontier method."
+  ]
+}

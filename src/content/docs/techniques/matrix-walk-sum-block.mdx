@@ -1,0 +1,70 @@
+---
+title: "累乗と累乗の和を一組にして倍々に計算する"
+description: "法で割れない等比和や、全ての長さの経路数を逆元なしで計算します。"
+techniqueId: "matrix-walk-sum-block"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$S_N=I+A+\cdots+A^{N-1}$ を求めたいとき。$A$ は数でも正方行列でも構いません。行列がグラフの遷移なら、長さ $0\ldots N-1$ の経路数をまとめて数えられます。
+
+## 考え方
+
+$P_N=A^N$ と $S_N$ を一組にすると、二つの長さの連結は
+
+$$(P_m,S_m)\circ(P_n,S_n)=(P_mP_n,S_m+P_mS_n).$$
+
+単位元は $(I,0)$、一回分は $(A,I)$。この演算で繰り返し二乗法を使います。同じ組を倍にする式は $S_{2n}=S_n+P_nS_n$ です。拡大行列 $\begin{pmatrix}A&I\\0&I\end{pmatrix}^N$ の右上ブロックも $S_N$ になります。
+
+## 適用条件
+
+同じ遷移が繰り返されること。合成数の法でも使え、$A-I$ や $A-1$ の逆元は不要です。行列の乗算順は固定します。下の実装は任意の正の 64 bit の法に対応し、乗算・加算を 128 bit で計算します。
+
+## なぜ正しいか
+
+和の前半は $S_m$、後半は全て $A^m$ を掛けた $S_n$ です。この分割と累乗の結合則から式が得られます。同じ分割を二進の長さで繰り返せば、指定した全ての項を一度ずつ足せます。
+
+## 計算量
+
+一項ずつ足すとスカラーで $O(N)$、$D$ 次元行列で $O(ND^3)$。改善後はスカラー $O(\log N)$、行列 $O(D^3\log N)$ 時間、$O(D^2)$ 空間です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using Matrix=vector<vector<long long>>;
+pair<Matrix,Matrix> matrix_power_and_sum(Matrix a,unsigned long long exponent,long long mod){
+    assert(mod>0);int d=a.size();
+    for(auto& row:a){assert((int)row.size()==d);for(auto& x:row){x%=mod;if(x<0)x+=mod;}}
+    auto multiply=[&](const Matrix& x,const Matrix& y){
+        Matrix z(d,vector<long long>(d));
+        for(int i=0;i<d;++i)for(int k=0;k<d;++k)for(int j=0;j<d;++j)
+            z[i][j]=((__int128)z[i][j]+(__int128)x[i][k]*y[k][j])%mod;
+        return z;
+    };
+    auto add=[&](Matrix x,const Matrix& y){
+        for(int i=0;i<d;++i)for(int j=0;j<d;++j)x[i][j]=((__int128)x[i][j]+y[i][j])%mod;
+        return x;
+    };
+    Matrix identity(d,vector<long long>(d));for(int i=0;i<d;++i)identity[i][i]=1%mod;
+    Matrix power=identity,sum(d,vector<long long>(d)),chunk_power=a,chunk_sum=identity;
+    for(;exponent;exponent>>=1){
+        if(exponent&1){sum=add(sum,multiply(power,chunk_sum));power=multiply(power,chunk_power);}
+        chunk_sum=add(chunk_sum,multiply(chunk_power,chunk_sum));
+        chunk_power=multiply(chunk_power,chunk_power);
+    }
+    return {power,sum};
+}
+```
+
+## 関連する手法
+
+[行列累乗](/flowchartcp/techniques/matrix-exponentiation/)
+
+## 参考資料
+
+- [AtCoder：Geometric Progression の解説](https://atcoder.jp/contests/abc293/editorial/5962)
+
+<TechniqueReferences techniqueId="matrix-walk-sum-block" />

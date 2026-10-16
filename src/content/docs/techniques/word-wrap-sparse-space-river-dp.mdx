@@ -1,0 +1,207 @@
+---
+title: "行幅を変えて、空白の連なりを最長にする"
+description: "単語間の空白だけを前行の空白と照合し、列差1以内の最長鎖を伸ばす。折返しが変わる次の幅へ進み、行数の上界で探索を止める。"
+techniqueId: word-wrap-sparse-space-river-dp
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+単語を順番通りに左詰めで並べ、次の単語が入らなければ改行する。文字は等幅で、同じ行の単語間には空白を一つ置き、単語を途中で分割しない。
+
+連続する行から空白を一つずつ選び、隣の行では同じ列か左右一列へ移る鎖を考える。この最長鎖を最も長くする行幅を選び、同じ長さなら最小の幅を返したい。鎖に使えるのは実際の単語間空白だけで、行末から右の余白は使わない。
+
+## 考え方
+
+固定した行幅では改行位置が一意に決まる。各行について、空白の列番号を昇順に作る。現在行の空白が列 $c$ にあるなら、その空白で終わる鎖の長さは
+
+$$f(c)=1+\max\{f_{\rm prev}(p):|p-c|\le1\}$$
+
+となる。該当する前行の空白がなければ1で始める。前行と現在行の空白列はどちらも昇順なので、前行のポインタを進めながら照合できる。空白のない行では現在行の状態を空にし、その行をまたぐ鎖を作らない。
+
+幅は最大語長 $L$ から、一行に全単語を入れる長さ $T$ までで十分。ただし全ての整数幅を調べる必要はない。ある行の使用幅を $u$、次の単語の長さを $a$ とすると、その単語を同行へ入れられる最初の幅は $u+1+a$。現在の全ての改行について、この値の最小を次の候補幅にする。それまでは改行も空白の位置も変わらない。
+
+さらに、現在の行数を $R$ とする。鎖は高々 $R$ 個の空白しか使えず、幅を増やしても行数は増えない。既に得た最長鎖が $R$ 以上なら、これから幅を増やしても改善できないので終了する。
+
+## 適用条件
+
+単語順は固定し、各行へ入る最大の接頭部分を詰める。改行位置を自由に選んだり、単語間の空白を増減して両端を揃えたりしない。空白の鎖は必ず隣の行へ進み、列の差は高々1とする。
+
+原典は2〜2500語、各語は英小文字・英大文字だけからなり、長さは1〜80。行幅は最大語長以上である。掲載する長さAPIはこの全域を扱い、一語の場合も拡張として受け付ける。その場合の最長鎖は0、最小の幅はその語長になる。
+
+語の綴りは空白の位置に影響しないので、主な計算には語長だけを渡す。文字列APIでは英大小文字と語長を検査する。入力中の改行は単語の区切りであり、新たに作る行の改行位置を指定するものではない。
+
+## なぜ正しいか
+
+固定幅では、先頭から「次の単語まで入れば入れる」を繰り返すことで、指定された配置が得られる。空白は二つ目以降の単語を同行へ入れる直前の位置だけに作るため、行頭や行末の余白を状態へ混ぜない。
+
+ある空白で終わる鎖は、その直前の空白が一つ前の行の列差1以内にあるか、長さ1で始まるかのどちらかである。従って上の遷移は全ての鎖を含み、条件を満たさない移動は含まない。行の昇順で計算すれば、各状態の値は正しい。答えは最終行だけでなく、途中の全ての行の状態の最大値を取る。
+
+次に幅の飛び越しを示す。幅 $w$ の各行で、初めて入らなかった単語まで入れるのに必要な幅を記録し、その最小を $q$ とする。$w\le w'<q$ では、最初の行は既存の単語を全て収められる一方、次の単語はまだ収められない。従って最初の改行位置は同じである。以降の各行にも同じ議論を順に使えるので、全ての改行位置が同じになる。左詰めなら内部の空白位置も同じで、鎖の最大値は変わらない。よって区間 $[w,q)$ の最小幅 $w$ だけを評価してよい。
+
+行数の単調性は、貪欲な詰め方の接頭部分から示せる。固定幅で、貪欲配置の最初の $j$ 行は、同じ幅の任意の配置の最初の $j$ 行以上の単語を収める。最初の行は最大まで詰める。帰納段では、任意配置の第 $j$ 行の末尾を、貪欲配置が既に越えていればよい。まだなら、任意配置のその行から既に置いた先頭部分を除いた残りは幅内に収まるので、貪欲配置も少なくとも同じ末尾まで置ける。従って貪欲配置は必要行数を最小にする。幅を大きくしても元の各行の単語は収められるので、新しい最小行数は元以下である。
+
+鎖の長さ自体は幅に関して単調とは限らない。例えば一文字の六語では、幅3なら三行を貫く長さ3の鎖ができ、幅5では二行なので高々2になる。探索を止めるときに使うのは、この値の単調性ではなく、行数が将来の鎖の上界になることである。
+
+候補幅は昇順に進め、最長鎖を厳密に改善したときだけ幅を更新する。配置が同じ区間で飛ばす幅も、停止した後の幅も、それ以前より短い幅にはならない。従って最長鎖だけでなく、同点の最小幅も正しく返せる。
+
+最後に、$T=\sum_i a_i+N-1$ 以上なら全単語は一行へ入る。それ以上幅を広げても内部の空白列は変わらないため、$T$ を超える幅を調べる必要はない。
+
+## 計算量
+
+一つの幅では、全語を一度ずつ配置し、全行の空白総数は $N-1$ 以下になる。前行のポインタは左から右へしか進まない。また、単語長が正なので空白の列番号は互いに異なり、一つの照合範囲には高々三列しかない。従って固定幅の評価は時間 $O(N)$、前行と現在行を保存する空間 $O(N)$ である。
+
+実際に評価する幅数を $Q$ とすると、最適幅の探索は $O(NQ)$ 時間・$O(N)$ 空間。保証できる上界は $Q\le T-L+1$ なので、時間は $O(N(T-L+1))\subseteq O(N^2(L+1))$ である。幅の飛び越しと行数による停止は入力によって速くするが、それだけで別の最悪計算量を主張しない。
+
+原典では $T\le202499$、候補整数幅数は高々202420、語の配置回数の単純な上界は506,050,000回となる。文字列APIの検査には、これに総入力文字数の時間と語長配列の $O(N)$ 空間を加える。列番号・使用幅・次の変化幅・鎖長は32ビット符号付き整数に収まる。実際の行幅に比例する文字配列は作らない。
+
+## 実装
+
+`longest_river_at_width(lengths, width)` は、固定幅での最長鎖、行数、次に配置が変わる幅を返す。一行に収まる場合、次の変化幅は `nullopt`。固定幅APIでは最大語長以上の任意の `int` 幅を受け付ける。
+
+`best_space_river(lengths)` は最適な幅と鎖長を返す。`best_space_river_words(words)` は文字列を検査して同じ計算をする。`write_best_space_river` は幅、鎖長の順で一行へ出力する。
+
+空入力、2500を超す語数、1〜80以外の語長、文字列に英大小文字以外を含む場合、最大語長未満の指定幅は `invalid_argument`。入力は変更せず、全ての状態を呼び出しごとに作る。返値も入力の参照を保持しない。出力用関数は検査と計算を完了してから書き、呼び出し側の表示形式を変更しない。割り当てとストリームの例外はそのまま伝播する。
+
+```cpp
+#include <algorithm>
+#include <optional>
+#include <ostream>
+#include <span>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+namespace space_river {
+struct WidthEvaluation {
+    int longest;
+    int line_count;
+    std::optional<int> next_width;
+};
+struct Result {
+    int width;
+    int longest;
+};
+namespace detail {
+struct Bounds { int minimum, total; };
+Bounds validate(std::span<const int> lengths) {
+    if (lengths.empty() || lengths.size() > 2500) {
+        throw std::invalid_argument("word count");
+    }
+    int maximum = 0;
+    int total = static_cast<int>(lengths.size()) - 1;
+    for (int length : lengths) {
+        if (length < 1 || length > 80) {
+            throw std::invalid_argument("word length");
+        }
+        maximum = std::max(maximum, length);
+        total += length;
+    }
+    return {maximum, total};
+}
+struct Space { int column, longest; };
+WidthEvaluation evaluate(std::span<const int> lengths, int width) {
+    const int n = static_cast<int>(lengths.size());
+    std::vector<Space> previous, current;
+    previous.reserve(n);
+    current.reserve(n);
+    WidthEvaluation answer{0, 0, std::nullopt};
+    int begin = 0;
+    while (begin < n) {
+        current.clear();
+        int used = lengths[begin];
+        int end = begin + 1;
+        std::size_t left = 0;
+        while (end < n && used + 1 + lengths[end] <= width) {
+            const int column = used;
+            while (left < previous.size() && previous[left].column < column - 1) {
+                ++left;
+            }
+            int longest = 1;
+            for (std::size_t k = left;
+                 k < previous.size() && previous[k].column <= column + 1; ++k) {
+                longest = std::max(longest, previous[k].longest + 1);
+            }
+            current.push_back({column, longest});
+            answer.longest = std::max(answer.longest, longest);
+            used += 1 + lengths[end];
+            ++end;
+        }
+        ++answer.line_count;
+        if (end < n) {
+            const int change = used + 1 + lengths[end];
+            if (!answer.next_width || change < *answer.next_width) {
+                answer.next_width = change;
+            }
+        }
+        previous.swap(current);
+        begin = end;
+    }
+    return answer;
+}
+} // namespace detail
+
+WidthEvaluation longest_river_at_width(std::span<const int> lengths, int width) {
+    const auto bounds = detail::validate(lengths);
+    if (width < bounds.minimum) throw std::invalid_argument("line width");
+    return detail::evaluate(lengths, width);
+}
+
+Result best_space_river(std::span<const int> lengths) {
+    const auto bounds = detail::validate(lengths);
+    Result best{bounds.minimum, 0};
+    int width = bounds.minimum;
+    while (width <= bounds.total) {
+        const auto evaluated = detail::evaluate(lengths, width);
+        if (evaluated.longest > best.longest) {
+            best = {width, evaluated.longest};
+        }
+        if (evaluated.line_count <= best.longest || !evaluated.next_width) break;
+        width = *evaluated.next_width;
+    }
+    return best;
+}
+
+Result best_space_river_words(std::span<const std::string> words) {
+    if (words.empty() || words.size() > 2500) {
+        throw std::invalid_argument("word count");
+    }
+    std::vector<int> lengths;
+    lengths.reserve(words.size());
+    for (const auto& word : words) {
+        if (word.empty() || word.size() > 80) {
+            throw std::invalid_argument("word length");
+        }
+        for (unsigned char c : word) {
+            if (!(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z'))) {
+                throw std::invalid_argument("word alphabet");
+            }
+        }
+        lengths.push_back(static_cast<int>(word.size()));
+    }
+    return best_space_river(lengths);
+}
+
+void write_best_space_river(std::ostream& output,
+                           std::span<const std::string> words) {
+    const Result result = best_space_river_words(words);
+    const std::string text = std::to_string(result.width) + " " +
+                             std::to_string(result.longest) + "\n";
+    output.write(text.data(), static_cast<std::streamsize>(text.size()));
+}
+} // namespace space_river
+```
+
+## 関連する手法
+
+[尺取り法](/flowchartcp/techniques/two-pointers/)のように、昇順の位置列を照合するポインタは戻さずに進められる。ここでは区間内の文字を全走査せず、実在する空白だけを状態にする。
+
+[状態設計](/flowchartcp/techniques/state-design/)では、次の行へ必要な情報を考える。一つ前の行の空白位置と、そこで終わる最長鎖だけが必要であり、さらに前の文字列を保存する必要はない。
+
+## 参考資料
+
+- [ICPC World Finals 2018 問題冊子・Problem F、11〜12頁](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11)。詰め方、空白の鎖、同点時の幅、語数と語長の適用根拠。
+- [Per Austrin・Jakub Onufry Wojtaszczyk, Solution sketches・Problem F、7頁](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7)。ICPC公式ドメイン掲載の非公式分析。疎な空白状態、行数による終了、次の折返し変化への移動を参照した。これらの正当性と、保証する最悪計算量を本文で示した。
+- [ICPC公式ニュース・World Finals 2018](https://news.icpc.global/wf2018/)。競技日2018年4月19日の確認資料。
+
+<TechniqueReferences techniqueId="word-wrap-sparse-space-river-dp" />

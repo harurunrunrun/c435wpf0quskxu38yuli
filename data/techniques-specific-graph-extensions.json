@@ -1,0 +1,716 @@
+[
+  {
+    "id": "dag-reachable-bitsets",
+    "title": "合流する有向経路の到達先は、頂点集合のビット列を後ろから共有する",
+    "summary": "子の到達数を足さず、集合の論理和で重複した到達先を一度だけ数える。",
+    "aliases": [
+      "DAG Reachability Bitsets",
+      "Reachable Nodes",
+      "到達集合のビット列"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "dag-dp"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2138"
+    ]
+  },
+  {
+    "id": "scc-collect-once-reward",
+    "title": "再訪できる道の一回限りの報酬は、相互到達する頂点をまとめて足す",
+    "summary": "同じ部屋の報酬を重複させず、自由に巡れる成分の報酬を一つにしてから経路を選ぶ。",
+    "aliases": [
+      "SCC Collect Once Reward",
+      "Coin Collector",
+      "強連結成分の報酬合計"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "scc",
+      "dag-dp"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1686"
+    ]
+  },
+  {
+    "id": "unweighted-edge-removal-shortest",
+    "title": "一本ずつ辺を禁止する最短距離は、選んだ最短路の辺だけ再探索する",
+    "summary": "使っていない辺を消しても、残した一つの最短路がそのまま答えの証拠になる。",
+    "aliases": [
+      "Replacement Paths Selected Shortest Path",
+      "Blocked Roads",
+      "単位辺の禁止後最短距離"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "bfs"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc218/tasks/abc218_f"
+    ]
+  },
+  {
+    "id": "k-shortest-walk-prefix-cap",
+    "title": "再訪できる経路の費用を小さい順にK個求めるなら、各頂点への到達をK回まで確定する",
+    "summary": "再訪を許す経路でも、同じ到着点への余分な接頭経路を打ち切れば列挙を有限にできる。",
+    "aliases": [
+      "K Shortest Walks",
+      "Flight Routes",
+      "頂点ごとK回のダイクストラ"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "dijkstra"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1196"
+    ]
+  },
+  {
+    "id": "shortest-lexicographic-label-frontier",
+    "title": "最短経路の辺列を辞書順最小にするなら、同じ接頭列の到着点を全て残す",
+    "summary": "次の辺の最小ラベルだけを選び、そのラベルで進める頂点集合を一緒に更新する。",
+    "aliases": [
+      "Lexicographic Shortest Path Frontier",
+      "Ideal Path",
+      "辺色列の辞書順最短"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "bfs"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://onlinejudge.org/external/15/1599.pdf"
+    ]
+  },
+  {
+    "id": "bridgeless-strong-orientation",
+    "title": "全頂点間を行き来できる一方通行化は、橋を確かめて木の辺を下へ戻り辺を上へ向ける",
+    "summary": "片方向にしても往復できる条件は連結性と橋の不存在で、深さ優先探索の向きが構成を与える。",
+    "aliases": [
+      "Robbins Strong Orientation",
+      "Strongly Connected Edges",
+      "橋なしグラフの向き付け"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "bridge-edge-failure"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2177"
+    ]
+  },
+  {
+    "id": "distance-matrix-essential-edges",
+    "title": "最短距離の表から道路を復元するなら、第三の頂点で等号になる辺を除く",
+    "summary": "三角不等式で表の矛盾を検出し、迂回で再現できない距離だけを直接つなぐ。",
+    "aliases": [
+      "Distance Matrix Essential Edges",
+      "Restoring Road Network",
+      "距離表からの道路復元"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc074/tasks/arc083_b"
+    ]
+  },
+  {
+    "id": "capital-reachability-scc-sources",
+    "title": "始点から全体へ届かせる追加辺は、未到達部分の源の成分へ一本ずつ張る",
+    "summary": "相互到達する場所をまとめ、まだ届かない成分の間に入口がない場所だけへ接続する。",
+    "aliases": [
+      "Reachability from Capital SCC Sources",
+      "Minimum Reachability Augmentation",
+      "未到達の源成分"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "上級",
+    "prerequisites": [
+      "scc"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/999/E"
+    ]
+  },
+  {
+    "id": "exact-k-edge-minplus",
+    "aliases": [
+      "Exact K Edge Shortest Walk Min Plus",
+      "Min Plus Matrix Exponentiation",
+      "Graph Paths II",
+      "ちょうどK本の辺の最小費用",
+      "最小値と加算の行列累乗"
+    ],
+    "prerequisites": [
+      "matrix-exponentiation"
+    ],
+    "sources": [
+      "https://cses.fi/problemset/task/1724/",
+      "https://cses.fi/book/book.pdf"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "ちょうどK本の辺を使う最小費用は、最小値と加算の行列を累乗する",
+    "summary": "移動回数を足してつなぐ演算を作り、大きな回数の移動を二進法で組み合わせる。"
+  },
+  {
+    "id": "forward-dag-vertex-avoidance-intervals",
+    "aliases": [
+      "Forward DAG Vertex Avoidance Intervals",
+      "Teleporter and Closed Off",
+      "Replacement Vertex Paths Interval Heap",
+      "前向きグラフの頂点削除最短路",
+      "飛び越し辺の区間候補"
+    ],
+    "prerequisites": [
+      "dag-dp",
+      "sweep-interval-endpoints"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc291/tasks/abc291_f",
+      "https://atcoder.jp/contests/abc291/editorial/5864"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "前向きの辺だけのグラフで各頂点を避ける最短路は、飛び越す辺を区間へ配る",
+    "summary": "始点からと終点までの距離を共有し、一つの辺が飛び越せる頂点全体へ同じ候補を使う。"
+  },
+  {
+    "id": "steiner-terminal-subset-shortest",
+    "title": "少数の指定頂点をつなぐ最小費用は、頂点集合の分割と最短路を交互に使う",
+    "summary": "共有する辺の費用を一度だけ払う接続を、同じ頂点での部分集合の結合と、接続点の移動に分ける。",
+    "family": "グラフ・経路",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Minimum Steiner Tree",
+      "Dreyfus Wagner Algorithm",
+      "Terminal Subset Merge and Multi-source Dijkstra",
+      "少数端点の最小シュタイナー木",
+      "部分集合の結合と多始点最短路"
+    ],
+    "prerequisites": [
+      "bitmask-dp",
+      "dijkstra"
+    ],
+    "sources": [
+      "https://www.luogu.com.cn/problem/P6192"
+    ]
+  },
+  {
+    "id": "spanning-tree-laplacian-minor",
+    "title": "無向グラフの全域木数は、次数行列から隣接行列を引いた小行列式で求める",
+    "summary": "辺の部分集合を列挙せず、ラプラシアンの一行一列を削除して行列式を計算する。",
+    "family": "グラフ・経路",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Matrix Tree Theorem",
+      "Kirchhoff Theorem",
+      "Laplacian Cofactor Spanning Tree Count",
+      "行列木定理",
+      "キルヒホッフの定理",
+      "ラプラシアン余因子"
+    ],
+    "prerequisites": [
+      "union-find",
+      "matrix-exponentiation"
+    ],
+    "sources": [
+      "https://judge.yosupo.jp/problem/counting_spanning_tree_undirected",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/graph/counting_spanning_tree_undirected/task.md",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/graph/counting_spanning_tree_undirected/info.toml"
+    ]
+  },
+  {
+    "id": "synchronous-product-parity-distance-sum",
+    "title": "全成分を同時に一歩ずつ進む距離の総和は、偶奇別の最短距離と最大値の集計に分ける",
+    "summary": "巨大な頂点の組を列挙せず、各成分で偶数歩・奇数歩の距離を求め、両方で届く組の重複を引く。",
+    "aliases": [
+      "Synchronous Product Graph Distance Sum",
+      "Tensor Product Graph Parity Distances",
+      "Sum of Distances",
+      "同期積グラフの距離総和",
+      "偶奇別距離の最大値と重複補正"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "最上級",
+    "prerequisites": [
+      "bfs",
+      "state-design",
+      "contribution"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1092",
+      "https://usaco.org/current/data/sol_prob1_platinum_jan21.html"
+    ]
+  },
+  {
+    "id": "hierarchical-reset-walk-count",
+    "title": "大きい番号で再使用できる移動列は、最大番号の前後に分けて数える",
+    "summary": "最大番号が一度だけ現れる性質から端点間の個数表を更新し、始終条件を特殊な端点として全問い合わせで共有する。",
+    "aliases": [
+      "Hierarchical Reset Walk Counting",
+      "Maximum Label Split DP",
+      "Query Endpoint Pseudostates",
+      "Spaceship",
+      "最大番号による移動列の左右分割",
+      "問い合わせ始終条件の特殊端点"
+    ],
+    "family": "グラフの到達・経路",
+    "level": "最上級",
+    "prerequisites": [
+      "state-design",
+      "dag-dp",
+      "bitmask-dp"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1069",
+      "https://usaco.org/current/data/sol_prob2_platinum_dec20.html"
+    ]
+  },
+  {
+    "id": "directed-reciprocal-closure-dsu-small-to-large",
+    "title": "相互辺で結ばれた成分を併合し、有向閉包の辺数を保つ",
+    "summary": "個体から終点成分への辺と成分間の相互隣接を分け、連鎖する併合をsmall-to-largeで処理する。",
+    "aliases": [
+      "Reciprocal-neighbor Closure",
+      "Incremental Directed Closure",
+      "Queued Small-to-Large DSU",
+      "相互辺の閉包",
+      "個体から成分への辺",
+      "連鎖併合"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "union-find",
+      "small-to-large"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/joitter2.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/joitter2-review.pdf"
+    ]
+  },
+  {
+    "id": "functional-graph-timed-arrivals-offline",
+    "title": "行き先が一つの移動で、複数の始点からの累積到着を数える",
+    "summary": "閉路を一辺切り、最初の到着を木で、繰り返す到着を周期で分け、時刻と位置の条件をまとめて数える。",
+    "aliases": [
+      "Weighted Functional Graph Timed Arrivals",
+      "Multi-source Cumulative Arrivals",
+      "Circle Cooldown Successor Reduction",
+      "円周の再生待ちと次収穫者",
+      "時間付き巡回の累積到着"
+    ],
+    "family": "グラフ",
+    "level": "上級",
+    "prerequisites": [
+      "functional-graph-cycle-tail",
+      "offline-queries",
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/harvest.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/harvest-review.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html"
+    ]
+  },
+  {
+    "id": "dfs-lowlink-three-size-two-connected-partition",
+    "title": "指定サイズの三集合へ分け、二つを連結にする",
+    "summary": "DFS部分木と真の祖先への後退辺を使い、指定サイズの三分割を構築する。作れない場合も同じ条件で判定する。",
+    "aliases": [
+      "IOI 2019 Split the Attractions",
+      "DFS lowlink three-size partition two connected groups",
+      "最小十分部分木 真祖先後退辺 指定三サイズ分割"
+    ],
+    "family": "グラフ",
+    "level": "上級",
+    "prerequisites": [
+      "bridge-edge-failure",
+      "subtree-euler-interval",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem2.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+      "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  {
+    "id": "cyclic-window-height-poset-two-neighbor-doubling",
+    "title": "円周上の「自分より高い個数」から、必ず成り立つ大小関係を求める",
+    "summary": "条件に合う高さ順を一つ作り、近い二点の大小が全ての配置で共通することを使う。左右の候補への移動距離をまとめ、多数の比較に答える。",
+    "aliases": [
+      "IOI 2020 Comparing Plants",
+      "cyclic window height poset two neighbor doubling",
+      "circular local rank forced comparison",
+      "循環順位個数 全整合配置 半順序 最高下位候補"
+    ],
+    "family": "循環区間の順位制約",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "lazy-segment-tree",
+      "topological-sort",
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-original-ac.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/task.yaml"
+    ]
+  },
+  {
+    "id": "two-threshold-component-merge-trees-rectangle-intersection",
+    "title": "通れる頂点に二種類の制限がある移動を、到達集合の共通部分で判定する",
+    "summary": "前半は番号の下限、後半は上限を守る移動を、それぞれの到達集合へ分ける。多数の質問の集合を二つの木に保存し、共通する頂点の有無を調べる。",
+    "aliases": [
+      "IOI2018 Werewolf two threshold merge trees",
+      "two component intersection Euler points rectangle Fenwick",
+      "下限 上限 到達成分 併合木 葉区間 長方形 交差"
+    ],
+    "family": "閾値付き連結成分の交差",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "union-find",
+      "subtree-euler-interval",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  {
+    "id": "parity-walk-profile-layer-greedy-realization",
+    "title": "始点から到達できる全歩数を保ち、無向グラフの辺を最少にする",
+    "summary": "偶奇ごとの最短歩数を二つの前駆条件に変え、同じ距離和の層で次の集合を助ける辺を優先する。根の0歩と末端の自己ループを分け、任意の新しい辺を許す最小実現を求める。",
+    "aliases": [
+      "USACO2021 February Minimizing Edges parity distance greedy realization",
+      "全walk長保存 偶奇別最短距離 A B C辺 層greedy",
+      "minimum edges root walk language self loops"
+    ],
+    "family": "偶奇付き到達性を保つグラフの最小実現",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "exchange-argument",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+      "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ]
+  },
+  {
+    "id": "skywalk-endpoint-sparse-shortest-path",
+    "title": "空中通路を必要な交点だけのグラフに縮めて、最短距離を求める",
+    "summary": "始終点に近い十分高いビルで通路を分け、通路の端から下への接続だけを残す。矩形への進入を置き換える補題で距離を保存し、全交点を作らず最短路を求める。",
+    "aliases": [
+      "IOI2019 Sky Walking endpoint sparse shortest path",
+      "skywalk terminal nearest tall building vertical projection Dijkstra",
+      "空中通路 始終点切分け 矩形境界置換 全交点疎化"
+    ],
+    "family": "交点を絞る幾何グラフの最短路",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "dijkstra",
+      "graph-reduction",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem6.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf"
+    ]
+  },
+  {
+    "id": "parity-walk-profile-layer-inclusion-exclusion-count",
+    "title": "偶奇別の最短歩数を保つグラフを、層ごとの辺選択と包除原理で数える",
+    "summary": "各頂点の二つの距離を前駆の条件に変え、まだ前駆が足りない頂点数だけを状態にする。二集合間の辺と自己ループを含む内部辺を、包除原理で重複なく数える。",
+    "aliases": [
+      "USACO 2021 February Counting Graphs Platinum",
+      "parity walk profile layer inclusion exclusion count",
+      "all root walk lengths graph realization count",
+      "偶奇最短距離 未充足頂点 包除 行列 ループ"
+    ],
+    "family": "偶奇付き到達性を保つグラフの数え上げ",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "inclusion-exclusion-forbidden"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+      "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+      "https://usaco.org/index.php?page=feb21results"
+    ]
+  },
+  {
+    "id": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+    "title": "戻る辺が二本以下の有向グラフで、道の端を追って全辺の経路分解を数える",
+    "summary": "各頂点で入辺と出辺を対応させ、戻る辺を含む未完成の道だけを二組の端点で管理する。閉じた循環を作る対応を除き、残りの局所対応を階乗でまとめて数える。",
+    "aliases": [
+      "USACO 2021 US Open Routing Schemes Platinum",
+      "almost DAG edge routing pairing frontier cycle count",
+      "二本の戻る辺 局所入出対応 全辺経路分解"
+    ],
+    "family": "ほぼDAGの全辺経路分解の数え上げ",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "state-design",
+      "topological-sort"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+      "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ]
+  },
+  {
+    "id": "directed-line-balance-euler-augmentation-mst",
+    "title": "全ての速度変換区間を並べる費用は、境界の流量差と連結費用に分ける",
+    "summary": "入口上限と出口速度から生じる減速費用を最小にする。数直線の境界ごとに必要な下降量を払い、残る成分を最小費用でつなぐと、全区間を一度ずつ使える順序が得られる。",
+    "aliases": [
+      "Euler augmentation on a line",
+      "Cut balance and component MST",
+      "IOI2016 Roller Coaster Railroad plan_roller_coaster",
+      "入口上限と出口速度 境界の本数差と最小全域木"
+    ],
+    "family": "数直線上の必須有向辺をつなぐ最小費用",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "euler-degree-connectivity",
+      "union-find",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  {
+    "id": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+    "title": "一本道へ近道を一本足して直径を縮めるなら、遠すぎる駅の組を四つの境界にまとめる",
+    "summary": "枝の付いた道の直径に上限を置き、近道を必要とする駅の組だけを制約へ変える。座標の和と差の四境界を二つの整列順で集約し、駅に限られた近道の端点を線形走査で探す。",
+    "aliases": [
+      "IOI2016 Shortcut find_shortcut",
+      "Path shortcut diameter rotated L1 constraints",
+      "Sort-once two extrema with self-index exclusion",
+      "枝付きの道 固定長の近道 直径判定 和差の四境界"
+    ],
+    "family": "枝付きの道へ固定長の辺を一本追加する直径最小化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "binary-search",
+      "manhattan-transform",
+      "tree-eccentricity-diameter-endpoints"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  }
+]

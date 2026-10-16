@@ -1,0 +1,61 @@
+---
+title: "同じ状態に戻る確率を期待値の式から除く"
+description: "進まない目があるときは E を移項し、前に進む遷移だけの式にします。"
+techniqueId: "expectation-self-loop"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+位置 $i$ で $0,1,\ldots,A_i$ のいずれかだけ等確率で進み、0 なら同じ位置に残るとき。毎回一手を数え、終点までの期待手数を求めます。
+
+## 考え方
+
+最初の一手で分けると $E_i=1+(E_i+\sum_{k=1}^{A_i}E_{i+k})/(A_i+1)$。$E_i$ を移項して
+
+$$E_i=\frac{A_i+1+\sum_{k=1}^{A_i}E_{i+k}}{A_i}.$$
+
+終点から逆順に計算し、未来の和を累積和で引けば、遷移先を一つずつ足す必要もありません。一般の自己ループ確率 $p$ では $E=(c+\sum q_tE_t)/(1-p)$ です。
+
+## 適用条件
+
+$1\le A_i\le N-1-i$ とし、0 以外なら必ず終点に近づきます。$p=1$ なら期待終了時間は有限になりません。法 $P$ で計算するときは分母が $P$ の倍数にならないことが必要です。
+
+## なぜ正しいか
+
+式から自己ループの項を除く操作は $1-p\ne 0$ なら同値です。残りの遷移は後ろの位置だけなので、逆順で既知の期待値を使えます。累積和の差はその遷移先の和です。
+
+## 計算量
+
+式を移項しても遷移先を走査すると $O(\sum_i A_i)$。逆元と累積和を使う改善後は時間 $O(N)$、空間 $O(N)$。自己ループを再帰で展開する方法は終了しません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> forward_dice_expectations(const vector<int>& a) {
+    constexpr long long p=998244353;
+    int n=(int)a.size()+1;
+    assert(n<p);
+    vector<long long> inv(n,1), e(n), suffix(n+1);
+    for(int i=2;i<n;++i) inv[i]=p-(p/i)*inv[p%i]%p;
+    for(int i=n-2;i>=0;--i){
+        assert(1<=a[i] && a[i]<=n-1-i);
+        long long sum=(suffix[i+1]-suffix[i+a[i]+1]+p)%p;
+        e[i]=(sum+a[i]+1)%p*inv[a[i]]%p;
+        suffix[i]=(e[i]+suffix[i+1])%p;
+    }
+    return e;
+}
+```
+
+## 関連する手法
+
+[遷移元が連続範囲の和なら累積和を使う](/flowchartcp/techniques/dp-range-sum/)
+
+## 参考資料
+
+- [AtCoder：Sugoroku 3 の公式解説](https://atcoder.jp/contests/abc263/editorial/4546)
+
+<TechniqueReferences techniqueId="expectation-self-loop" />

@@ -1,0 +1,257 @@
+[
+  {
+    "id": "heuristic-rectangle-score-delta",
+    "title": "一つの長方形を変える評価は、面積比の一項だけ更新する",
+    "summary": "希望面積との比で決まる満足度を保存し、候補ごとの全広告の再計算を省きます。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "rectangle area ratio delta",
+      "AtCoder Ad incremental score"
+    ],
+    "prerequisites": [],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc001/tasks/ahc001_a"
+    ]
+  },
+  {
+    "id": "heuristic-rectangle-contact-bound",
+    "title": "長方形の一辺を動かすとき、接触限界と希望面積の前後だけ試す",
+    "summary": "他の長方形を固定し、一辺の合法範囲を求めてから整数候補を絞ります。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "rectangle one edge candidate",
+      "contact bounds area target"
+    ],
+    "prerequisites": [
+      "heuristic-rectangle-score-delta"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc001/tasks/ahc001_a"
+    ]
+  },
+  {
+    "id": "heuristic-path-tail-rollback",
+    "title": "タイルを一度だけ使う経路は、末尾だけ外して再構築し、失敗したら戻す",
+    "summary": "先頭の訪問記録を保ち、外した末尾と追加した末尾だけで合法性と得点を更新します。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "self avoiding tile path rollback",
+      "tail regrowth"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc002/tasks/ahc002_a"
+    ]
+  },
+  {
+    "id": "heuristic-path-reachable-upper-bound",
+    "title": "経路の続きの上界は、到達できる未使用タイルごとの最大得点を足す",
+    "summary": "タイルの使用制限を緩めた到達性から、安全に枝を捨てられる得点上界を作ります。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "reachable tile score upper bound",
+      "admissible path bound"
+    ],
+    "prerequisites": [
+      "heuristic-path-tail-rollback",
+      "bfs"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc002/tasks/ahc002_a"
+    ]
+  },
+  {
+    "id": "heuristic-precedence-two-opt",
+    "title": "受取が配達より先の巡回路では、両地点を含まない区間だけ反転する",
+    "summary": "反転で壊れる先行条件を先に検査し、距離差は両端の二辺だけで求めます。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "precedence constrained 2 opt",
+      "pickup delivery reversal"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc006/tasks/ahc006_a"
+    ]
+  },
+  {
+    "id": "heuristic-paired-insertion-prefix",
+    "title": "受取と配達の挿入は、先に入れられる最小増分を走査中に持つ",
+    "summary": "二地点を差し込む全組合せを、同じ辺への挿入と異なる辺への挿入に分けます。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "pickup delivery insertion prefix minimum",
+      "paired insertion delta"
+    ],
+    "prerequisites": [
+      "heuristic-precedence-two-opt"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc006/tasks/ahc006_a"
+    ]
+  },
+  {
+    "id": "heuristic-schedule-gap-delta",
+    "title": "開催日の変更は、前後の間隔を分ける積だけで減点差を求める",
+    "summary": "日ごとの経過日数を数え直さず、同じ種類の前後の開催日を管理します。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "contest scheduling gap delta",
+      "triangular penalty interval split"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_c"
+    ]
+  },
+  {
+    "id": "heuristic-schedule-swap-transaction",
+    "title": "二日間の交換は、一つ目を反映してから二つ目の差を計算する",
+    "summary": "相互に変わる開催間隔を順に更新し、棄却時は逆順に戻します。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "schedule swap transactional delta",
+      "dependent local changes undo"
+    ],
+    "prerequisites": [
+      "heuristic-schedule-gap-delta"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a"
+    ]
+  },
+  {
+    "id": "heuristic-radius-threshold-candidates",
+    "title": "整数半径の候補は、覆う点までの距離の切り上げに絞る",
+    "summary": "被覆集合が同じ半径を捨て、費用が最小になる境界値だけ残します。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "integer radius coverage thresholds",
+      "broadcasting radius candidate compression"
+    ],
+    "prerequisites": [
+      "circle-square-distance"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc020/tasks/ahc020_a"
+    ]
+  },
+  {
+    "id": "heuristic-cover-count-delta",
+    "title": "一局の半径変更は、境界を越えた点の被覆数だけ更新する",
+    "summary": "各点を覆う局数を保存し、0と1の間を動いた点だけ被覆総数を変えます。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "circle coverage multiplicity delta",
+      "broadcasting coverage cache"
+    ],
+    "prerequisites": [
+      "heuristic-radius-threshold-candidates"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/ahc020/tasks/ahc020_a"
+    ]
+  },
+  {
+    "id": "grid-triplet-conflict-packing",
+    "title": "格子の三マス候補を、衝突する串と入れ替える",
+    "summary": "中央W・両端P/Gの候補を列挙し、マスの所有者を調べて追加・削除と棄却時の復元を行います。",
+    "family": "ヒューリスティックの評価・近傍",
+    "aliases": [
+      "格子三マス串詰め",
+      "three-cell grid set packing",
+      "independent set add remove annealing",
+      "所有串の衝突削除と復元"
+    ],
+    "prerequisites": [
+      "simulated-annealing"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/dango2.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/dango2-review.pdf"
+    ]
+  }
+]

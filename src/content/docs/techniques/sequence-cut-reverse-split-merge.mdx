@@ -1,0 +1,227 @@
+---
+title: "列の区間を切り出して、反転・移動する"
+description: "位置がずれる列を部分木の要素数で分割し、区間の切り貼りや反転をまとめて処理します。"
+techniqueId: sequence-cut-reverse-split-merge
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+文字列や数列に対し、「今の左から何番目か」で区間を指定し、その区間を反転したり、別の位置へ移したりします。要素の挿入・削除がある場合も含みます。操作のたびに配列の要素をずらすと、1回に列の長さに比例する時間がかかります。
+
+要素が元の添字に残る区間更新と違い、切り貼りでは要素の並びそのものが変わります。**列を要素数で二つに分け、必要な順に連結する**操作へ直すと、移動する区間の各要素に触れる必要がなくなります。
+
+## 考え方
+
+列を二分木の中間順、すなわち「左の部分木、自分、右の部分木」の順に並べます。キーとして現在位置を全要素に書き込む代わりに、各部分木の要素数だけを持ちます。左の部分木の要素数が $s$ なら、根はその部分列の左から $s$ 番目です。これを **Implicit Treap** と呼びます。
+
+`split(t, k)` は、先頭 $k$ 個と残りへ木を分割します。左の要素数と $k$ を比較し、片方の子だけを再帰的に分けます。`merge(a, b)` は、列 `a` の後ろに列 `b` をつなぎます。値の大小を比較する操作ではありません。
+
+木の形には、各要素に与えた乱数の優先度を使います。親の優先度が子より大きくなるようにし、連結時には二つの根のうち優先度が大きい方を新しい根にします。同じ乱数が出ても比較が一意になるよう、生成番号を組にします。
+
+区間 $[l,r)$ を操作するには、列を $A+B+C$ に分けます。$A$ は先頭 $l$ 個、$B$ は次の $r-l$ 個です。
+
+- 反転：$B$ の左右の子を交換し、「反転を子へ渡していない」という印を付けてから、$A+B+C$ に戻します。
+- 切り貼り：まず $A+C$ を作ります。この残りの列を挿入先で $D+E$ に分け、$D+B+E$ にします。
+- 1要素の挿入：挿入先で二つに分け、新しい1要素の木を間につなぎます。
+- 1要素の削除：区間長1の $B$ を外し、$A+C$ にします。
+
+反転の印は排他的論理和で合成します。二度反転すれば元に戻るためです。子の要素数を見て進む前に、この印を子へ伝えます。
+
+## 適用条件
+
+位置を現在の列の順序で指定し、区間を丸ごと動かせる場合に向いています。値の大小で並べる操作ではありません。区間内をソートする操作も、分割と連結だけでは処理できません。
+
+この実装は、部分木に要素数と反転の印だけを持ちます。和などの集計を加えるなら、結合時に集計も再計算します。行列積や関数合成のように順序で結果が変わる場合は、順方向・逆方向の集計を両方持ち、反転時に交換する必要があります。
+
+要素同士の前後関係を変更するため、元の添字をそのまま固定区間の添字として使うことはできません。また、木の優先度を見て入力の操作を選ぶ場合には、以下の期待計算量の前提を別途検討する必要があります。
+
+## なぜ正しいか
+
+`split` は、左の部分木の長さによって分割点が根の前か後かを判定します。片方の子を正しい長さで分割し、根をもう片方へ残すので、中間順は変わらず、先頭の木の長さはちょうど $k$ になります。`merge` は常に `a` の要素を `b` の要素より前に置き、選んだ根の片側だけを再帰的につなぐので、連結後の中間順は `a` に続いて `b` です。どちらも優先度の親子関係を保ちます。
+
+列の逆順は「右の部分列の逆順、自分、左の部分列の逆順」です。左右の子を交換し、各子にも反転を予約すればこの順序を表せます。印を子へ渡してから分割するので、まだ各要素へ反転が届いていなくても、分割位置は反転後の列に対する位置です。
+
+したがって、切り出した $B$ を反転して戻す操作は区間反転と一致します。$A+C$ を挿入先で分けて $B$ を間に入れる操作も、区間を取り除いた後の位置への移動と一致します。
+
+## 計算量
+
+優先度が独立な乱数であり、操作列がその乱数に依存しないという通常の解析では、分割・連結は**期待 $O(\log N)$ 時間**です。掲載コードの反転・切り貼り・挿入・1要素削除も、定数回の分割・連結で処理します。挿入・削除では、保存用配列の拡張を含めると期待償却時間です。構築は1要素ずつ連結するため期待 $O(N\log N)$ 時間です。全要素の書き出しは $O(N)$ 時間です。
+
+保存領域は、同時に存在した要素数の最大値を $P$ として $O(P)$ です。削除した添字を再利用します。再帰の作業領域は期待 $O(\log N)$ ですが、木が偏ると分割・連結の時間も再帰の深さも $O(N)$ になります。乱数による木の解析は[Aragon・Seidel の原論文](https://faculty.washington.edu/aragon/pubs/rst89.pdf)を参照してください。コードは実用上の擬似乱数として `mt19937_64` を使います。
+
+## 実装
+
+添字は0始まり、区間は半開区間 $[l,r)$ です。空区間の反転・移動は何もしません。`cut_paste(l, r, p)` の `p` は、**区間を取り除いた後の列**に対する挿入位置です。例えば `[0,1,2,3,4]` に `cut_paste(1,3,3)` を行うと、残り `[0,3,4]` の末尾に `[1,2]` を置き、`[0,3,4,1,2]` になります。
+
+削除は1要素です。長さ $K$ の区間を削除して各保存領域まで回収するには、これを $K$ 回行うか、切り出した木を走査する処理が別途必要です。値の重複は許します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class CutReverseSequence {
+    struct Node {
+        int left = 0, right = 0, count = 1;
+        uint64_t priority = 0, serial = 0;
+        long long value = 0;
+        bool reversed = false;
+    };
+    vector<Node> nodes{Node{}};
+    vector<int> free_nodes;
+    int root = 0;
+    uint64_t next_serial = 0;
+    mt19937_64 random;
+
+    static uint64_t runtime_seed() {
+        random_device rd;
+        return (uint64_t(rd()) << 32) ^ uint64_t(rd());
+    }
+    int count(int v) const { return v ? nodes[v].count : 0; }
+    bool higher(int a, int b) const {
+        return pair{nodes[a].priority, nodes[a].serial}
+             > pair{nodes[b].priority, nodes[b].serial};
+    }
+    void pull(int v) {
+        nodes[v].count = count(nodes[v].left) + 1 + count(nodes[v].right);
+    }
+    void reverse_node(int v) {
+        if (!v) return;
+        swap(nodes[v].left, nodes[v].right);
+        nodes[v].reversed = !nodes[v].reversed;
+    }
+    void push(int v) {
+        if (!v || !nodes[v].reversed) return;
+        reverse_node(nodes[v].left);
+        reverse_node(nodes[v].right);
+        nodes[v].reversed = false;
+    }
+    pair<int, int> split(int v, int k) {
+        if (!v) return {0, 0};
+        push(v);
+        int left_count = count(nodes[v].left);
+        if (k <= left_count) {
+            auto [a, b] = split(nodes[v].left, k);
+            nodes[v].left = b;
+            pull(v);
+            return {a, v};
+        }
+        auto [a, b] = split(nodes[v].right, k - left_count - 1);
+        nodes[v].right = a;
+        pull(v);
+        return {v, b};
+    }
+    int merge(int a, int b) {
+        if (!a || !b) return a ? a : b;
+        if (higher(a, b)) {
+            push(a);
+            nodes[a].right = merge(nodes[a].right, b);
+            pull(a);
+            return a;
+        }
+        push(b);
+        nodes[b].left = merge(a, nodes[b].left);
+        pull(b);
+        return b;
+    }
+    int make_node(long long value) {
+        if (next_serial == numeric_limits<uint64_t>::max())
+            throw length_error("too many generated nodes");
+        int v;
+        if (free_nodes.empty()) {
+            if (nodes.size() >= size_t(numeric_limits<int>::max()))
+                throw length_error("too many nodes");
+            v = int(nodes.size());
+            nodes.emplace_back();
+        } else {
+            v = free_nodes.back();
+            free_nodes.pop_back();
+        }
+        nodes[v] = Node{};
+        nodes[v].value = value;
+        nodes[v].priority = random();
+        nodes[v].serial = next_serial++;
+        return v;
+    }
+    void check_range(int l, int r) const {
+        assert(0 <= l && l <= r && r <= size());
+    }
+
+public:
+    explicit CutReverseSequence(const vector<long long>& initial = {},
+                                uint64_t seed = runtime_seed()) : random(seed) {
+        for (long long x : initial) {
+            int v = make_node(x);
+            root = merge(root, v);
+        }
+    }
+    CutReverseSequence(const CutReverseSequence&) = delete;
+    CutReverseSequence& operator=(const CutReverseSequence&) = delete;
+    CutReverseSequence(CutReverseSequence&&) = delete;
+    CutReverseSequence& operator=(CutReverseSequence&&) = delete;
+    int size() const { return count(root); }
+    void insert(int pos, long long value) {
+        assert(0 <= pos && pos <= size());
+        int v = make_node(value);
+        auto [a, b] = split(root, pos);
+        root = merge(merge(a, v), b);
+    }
+    void erase(int pos) {
+        assert(0 <= pos && pos < size());
+        auto [a, rest] = split(root, pos);
+        auto [removed, b] = split(rest, 1);
+        assert(count(removed) == 1);
+        free_nodes.push_back(removed);
+        root = merge(a, b);
+    }
+    void reverse(int l, int r) {
+        check_range(l, r);
+        auto [a, rest] = split(root, l);
+        auto [b, c] = split(rest, r - l);
+        reverse_node(b);
+        root = merge(merge(a, b), c);
+    }
+    void cut_paste(int l, int r, int pos_after_removal) {
+        check_range(l, r);
+        assert(0 <= pos_after_removal && pos_after_removal <= size() - (r - l));
+        auto [a, rest] = split(root, l);
+        auto [b, c] = split(rest, r - l);
+        auto [d, e] = split(merge(a, c), pos_after_removal);
+        root = merge(merge(d, b), e);
+    }
+    vector<long long> values() {
+        vector<long long> result;
+        result.reserve(size());
+        vector<int> stack;
+        int v = root;
+        while (v || !stack.empty()) {
+            while (v) {
+                push(v);
+                stack.push_back(v);
+                v = nodes[v].left;
+            }
+            v = stack.back();
+            stack.pop_back();
+            result.push_back(nodes[v].value);
+            v = nodes[v].right;
+        }
+        return result;
+    }
+};
+```
+
+文字列なら各文字のコードを `long long` にして渡し、`values()` の結果を文字へ戻します。1始まりの閉区間 $[a,b]$ は、0始まりの半開区間 $[a-1,b)$ に変換します。切り出した区間を末尾へ移す場合は、`cut_paste(a-1, b, size()-(b-a+1))` です。
+
+## 関連する手法
+
+- [区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/)：要素の位置が変わらない列で、値だけをまとめて変える場合。
+- [挿入・削除・反転がある列で、一次変換と区間和を処理する](/flowchartcp/techniques/dynamic-sequence-affine-sum/)：列の形の変更と、値の一括更新を組み合わせる場合。
+- [辺をつなぎ替えながら、向きのあるパスを集計する](/flowchartcp/techniques/dynamic-forest-path-aggregate/)：木のパスを取り出して向きを反転する場合。
+
+## 参考資料
+
+- [Aragon・Seidel: Randomized Search Trees](https://faculty.washington.edu/aragon/pubs/rst89.pdf)
+- [CSES: Cut and Paste](https://cses.fi/problemset/task/2072/)
+- [CSES: Substring Reversals](https://cses.fi/problemset/task/2073/)
+
+<TechniqueReferences techniqueId="sequence-cut-reverse-split-merge" />

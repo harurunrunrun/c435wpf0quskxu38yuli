@@ -1,0 +1,64 @@
+---
+title: "長方形の切断は四つの境界と最初の切れ目を状態にする"
+description: "二つの切断後の長方形が独立なら、四境界の DP に分けて費用を足します。"
+techniqueId: "rectangle-split-dp"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+重み付きの格子長方形を、端から端までの水平・垂直な切断で全てのセルへ分けたいとき。毎回の切断費用が、その時点の長方形の重み総和で決まる場合です。
+
+## 考え方
+
+状態を長方形の四境界 $[t,b)\times[l,r)$ とします。最初の横の切れ目 $k$、または縦の切れ目 $k$ を全て試し、二つの長方形の最小費用を足します。これに現在の長方形の重みの和を加えます。
+
+一セルなら切らないので 0。重みの和は二次元累積和で $O(1)$ に評価します。セル数が同じでも重みの位置が違えば費用が違うため、高さと幅だけに状態を減らせません。
+
+## 適用条件
+
+切断は対象の長方形を完全に二分し、切断後の二つの費用が独立であること。複数の残った長方形へ一度に刃を通せる場合や、全体の切断順で費用が変わる場合、この加算式は成立しません。重みは非負で、全費用が 64 bit に収まる範囲を使います。
+
+## なぜ正しいか
+
+どの切断計画にも最初の切れ目があります。その後の切断は二つの長方形の内部に分かれ、互いに影響しません。各内部を最適な計画に置き換えても費用は増えないので、全ての最初の切れ目について最小を取れば最適値になります。
+
+## 計算量
+
+切断手順の列挙は指数的です。四境界の状態は $O(H^2W^2)$、各状態で試す切れ目は $O(H+W)$。時間は $O(H^2W^2(H+W))$、空間 $O(H^2W^2)$。累積和を使わず費用を走査すると、さらに面積の因子が掛かります。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long minimum_rectangle_split_cost(const vector<vector<long long>>& weight){
+    int h=weight.size();if(h==0)return 0;int w=weight[0].size();if(w==0)return 0;
+    vector<vector<long long>> prefix(h+1,vector<long long>(w+1));
+    for(int y=0;y<h;++y){assert((int)weight[y].size()==w);
+        for(int x=0;x<w;++x){assert(weight[y][x]>=0);
+            prefix[y+1][x+1]=prefix[y][x+1]+prefix[y+1][x]-prefix[y][x]+weight[y][x];}}
+    vector<long long> memo((size_t)h*h*w*w,-1);
+    auto index=[&](int t,int b,int l,int r){return (((size_t)t*h+(b-1))*w+l)*w+(r-1);};
+    function<long long(int,int,int,int)> solve=[&](int t,int b,int l,int r){
+        if(b-t==1 && r-l==1)return 0LL;
+        long long& value=memo[index(t,b,l,r)];if(value>=0)return value;
+        long long best=numeric_limits<long long>::max();
+        for(int k=t+1;k<b;++k)best=min(best,solve(t,k,l,r)+solve(k,b,l,r));
+        for(int k=l+1;k<r;++k)best=min(best,solve(t,b,l,k)+solve(t,b,k,r));
+        long long sum=prefix[b][r]-prefix[t][r]-prefix[b][l]+prefix[t][l];
+        return value=best+sum;
+    };
+    return solve(0,h,0,w);
+}
+```
+
+## 関連する手法
+
+[区間DP](/flowchartcp/techniques/interval-dp/)、[長方形への加算を四隅に記録する](/flowchartcp/techniques/difference-2d-corners/)
+
+## 参考資料
+
+- [IOI：Raisins の問題文](https://ioi.te.lv/locations/ioi09/contest/4_Raisins4bcf.pdf)
+
+<TechniqueReferences techniqueId="rectangle-split-dp" />

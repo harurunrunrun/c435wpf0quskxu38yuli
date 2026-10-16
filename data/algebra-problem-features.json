@@ -1,0 +1,280 @@
+[
+  {
+    "techniqueId": "fps-inverse-newton",
+    "source": "Library Checker",
+    "problemId": "inv_of_formal_power_series",
+    "title": "Inv of Formal Power Series",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/inv_of_formal_power_series/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/inv_of_formal_power_series/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/inv_of_formal_power_series/task.md",
+    "features": [
+      "係数列から積が 1 となる別の係数列を求める",
+      "定数項は 0 でない",
+      "必要なのは先頭 N 項"
+    ],
+    "observedFeatures": [
+      "係数列から積が 1 となる別の係数列を求める",
+      "定数項は 0 でない",
+      "必要なのは先頭 N 項"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "fps-log-derivative",
+    "source": "Library Checker",
+    "problemId": "log_of_formal_power_series",
+    "title": "Log of Formal Power Series",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/log_of_formal_power_series/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/log_of_formal_power_series/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/log_of_formal_power_series/task.md",
+    "features": [
+      "係数列の対数の先頭 N 項を求める",
+      "元の定数項は 1",
+      "結果の定数項は 0"
+    ],
+    "observedFeatures": [
+      "係数列の対数の先頭 N 項を求める",
+      "元の定数項は 1",
+      "結果の定数項は 0"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "fps-exp-newton",
+    "source": "Library Checker",
+    "problemId": "exp_of_formal_power_series",
+    "title": "Exp of Formal Power Series",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/exp_of_formal_power_series/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/exp_of_formal_power_series/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/exp_of_formal_power_series/task.md",
+    "features": [
+      "係数列の指数の先頭 N 項を求める",
+      "元の定数項は 0",
+      "結果の定数項は 1"
+    ],
+    "observedFeatures": [
+      "係数列の指数の先頭 N 項を求める",
+      "元の定数項は 0",
+      "結果の定数項は 1"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "linear-recurrence-bostan-mori",
+    "source": "Library Checker",
+    "problemId": "kth_term_of_linearly_recurrent_sequence",
+    "title": "K-th Term of Linearly Recurrent Sequence",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/other/kth_term_of_linearly_recurrent_sequence/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/other/kth_term_of_linearly_recurrent_sequence/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/other/kth_term_of_linearly_recurrent_sequence/task.md",
+    "features": [
+      "直前 d 項の固定係数の和で次の項が決まる",
+      "最初の d 項と係数が与えられる",
+      "遠い k 番目だけが必要"
+    ],
+    "observedFeatures": [
+      "直前 d 項の固定係数の和で次の項が決まる",
+      "最初の d 項と係数が与えられる",
+      "遠い k 番目だけが必要"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "subset-convolution-ranked",
+    "source": "Library Checker",
+    "problemId": "subset_convolution",
+    "title": "Subset Convolution",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/set_power_series/subset_convolution/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/set_power_series/subset_convolution/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/set_power_series/subset_convolution/task.md",
+    "features": [
+      "全ての集合 S に対して分割 A,B の積和を求める",
+      "A と B は交わらない",
+      "A と B の和集合が S"
+    ],
+    "observedFeatures": [
+      "全ての集合 S に対して分割 A,B の積和を求める",
+      "A と B は交わらない",
+      "A と B の和集合が S"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "xor-convolution-transform",
+    "source": "Library Checker",
+    "problemId": "bitwise_xor_convolution",
+    "title": "Bitwise XOR Convolution",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/convolution/bitwise_xor_convolution/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/convolution/bitwise_xor_convolution/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/convolution/bitwise_xor_convolution/task.md",
+    "features": [
+      "長さ 2^d の二つの係数列",
+      "i XOR j が同じになる積を合計する",
+      "全ての結果をまとめて求める"
+    ],
+    "observedFeatures": [
+      "長さ 2^d の二つの係数列",
+      "i XOR j が同じになる積を合計する",
+      "全ての結果をまとめて求める"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "binomial-convolution-factorials",
+    "source": "Library Checker",
+    "problemId": "stirling_number_of_the_second_kind",
+    "title": "Stirling Number of the Second Kind",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/stirling_number_of_the_second_kind/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/stirling_number_of_the_second_kind/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/stirling_number_of_the_second_kind/task.md",
+    "features": [
+      "整数 N が与えられる",
+      "x^N を x(x-1)...(x-k+1) の線形結合にした係数を全 k で求める",
+      "法 998244353 で答える"
+    ],
+    "observedFeatures": [
+      "整数 N が与えられる",
+      "x^N を x(x-1)...(x-k+1) の線形結合にした係数を全 k で求める",
+      "法 998244353 で答える"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の多項式恒等式を確認。この係数が集合の k 分割数に一致することを計数で証明し、包含排除からの畳み込みを掲載コードで検証。公開時点を基準日以前とは確定できていない。"
+  },
+  {
+    "techniqueId": "multipoint-product-tree",
+    "source": "Library Checker",
+    "problemId": "multipoint_evaluation",
+    "title": "Multipoint Evaluation",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/multipoint_evaluation/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/multipoint_evaluation/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/multipoint_evaluation/task.md",
+    "features": [
+      "一つの多項式を多数の指定点で評価する",
+      "次数と評価点数がともに大きい",
+      "評価点は等間隔とは限らず重複もある"
+    ],
+    "observedFeatures": [
+      "一つの多項式を多数の指定点で評価する",
+      "次数と評価点数がともに大きい",
+      "評価点は等間隔とは限らず重複もある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "polynomial-taylor-shift",
+    "source": "Library Checker",
+    "problemId": "polynomial_taylor_shift",
+    "title": "Polynomial Taylor Shift",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_taylor_shift/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_taylor_shift/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_taylor_shift/task.md",
+    "features": [
+      "f(x+c) の係数列を求める",
+      "c は任意の定数",
+      "全次数の係数が必要"
+    ],
+    "observedFeatures": [
+      "f(x+c) の係数列を求める",
+      "c は任意の定数",
+      "全次数の係数が必要"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "primitive-root-discrete-log",
+    "source": "Library Checker",
+    "problemId": "discrete_logarithm_mod",
+    "title": "Discrete Logarithm Mod",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/discrete_logarithm_mod/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/discrete_logarithm_mod/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/discrete_logarithm_mod/task.md",
+    "features": [
+      "a^k と b が法 m で一致する最小の非負 k",
+      "m は素数とは限らない",
+      "底 0 や解なしもある"
+    ],
+    "observedFeatures": [
+      "a^k と b が法 m で一致する最小の非負 k",
+      "m は素数とは限らない",
+      "底 0 や解なしもある"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "binomial-composite-prime-power",
+    "source": "Library Checker",
+    "problemId": "binomial_coefficient",
+    "title": "Binomial Coefficient",
+    "statementUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/binomial_coefficient/task.md",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/binomial_coefficient/task.md",
+    "proofSource": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/binomial_coefficient/task.md",
+    "features": [
+      "固定された法 m は素数とは限らない",
+      "多数の n,k について二項係数を求める",
+      "m は 10^6 以下、n は 10^18 以下"
+    ],
+    "observedFeatures": [
+      "固定された法 m は素数とは限らない",
+      "多数の n,k について二項係数を求める",
+      "m は 10^6 以下、n は 10^18 以下"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。実装は定義による小規模計算と比較。Library Checker の原典は公開時点を基準日以前と確定できていない。"
+  },
+  {
+    "techniqueId": "floor-sum-euclidean",
+    "source": "AtCoder",
+    "problemId": "practice2_c",
+    "title": "Floor Sum",
+    "statementUrl": "https://atcoder.jp/contests/practice2/tasks/practice2_c",
+    "evidenceUrl": "https://atcoder.github.io/ac-library/production/document_ja/math.html",
+    "proofSource": "https://atcoder.github.io/ac-library/production/document_ja/math.html",
+    "features": [
+      "Σ floor((ai+b)/m) を求める",
+      "n,m が最大 10^9",
+      "0<=a,b<m",
+      "最大 10^5 ケース、全添字の列挙はできない"
+    ],
+    "observedFeatures": [
+      "Σ floor((ai+b)/m) を求める",
+      "n,m が最大 10^9",
+      "0<=a,b<m",
+      "最大 10^5 ケース、全添字の列挙はできない"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "reference-solution",
+    "cutoffVerification": "contest-date",
+    "notes": "原典と公式ライブラリの適用例を確認。符号付き係数への拡張も直接計算と比較。"
+  }
+]

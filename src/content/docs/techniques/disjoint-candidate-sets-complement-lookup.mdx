@@ -1,0 +1,252 @@
+---
+title: "局所条件で絞った集合を二つ選び、補集合の照合で秘密の候補を求める"
+description: "各集合の禁止・必須・一つ以上含む条件を先に処理し、互いに素な二集合から三つ目を決める。"
+techniqueId: disjoint-candidate-sets-complement-lookup
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+少数の区別できる対象を、互いに重ならない複数の集合と、未公開の対象へ分けたい。集合ごとの要素数が決まっていて、「これらは含まない」「この対象は必ず含む」「この候補のうち一つ以上を含む」という観測がある。全ての観測と整合する分け方を残し、未公開の対象として可能なものを分類ごとに求めたいときに使う。
+
+一つの分け方が見つかっても、その分け方の未公開対象を確定とは呼べない。全ての合法な分け方で現れ得る候補を集め、候補が一つだけの分類を確定させる必要がある。
+
+## 考え方
+
+対象集合をビットマスクで表す。ある人が候補集合 $Q$ に対して何も持たないと答えたら、手札 $H$ の条件は $H\cap Q=\varnothing$。具体的な対象 $c$ を示したら $c\in H$。何か一つを持つがどれかは分からない応答なら $H\cap Q\ne\varnothing$ である。
+
+何かを示した人より前に回答した人の否定も条件に加える。まだ質問されていない人には条件を追加しない。具体的な対象を示した場合でも、同じ候補の他の対象を持たないとは限らない。
+
+まず、既知の一人の手札を除く。未知の各手札について、指定枚数の部分集合を別々に列挙し、その人に関する全ての局所条件で絞る。この段階では、別の人との重なりは許して候補として保存する。
+
+次に、各分類から一つずつ未公開対象を仮定する。その集合を $S$、既知の手札と $S$ を除いた全対象を $X$ とする。各人の候補から $S$ と交わるものを外し、残った三群のうち候補数が少ない二群を選ぶ。それぞれから $A,B$ を試し、
+
+$$
+A\cap B=\varnothing,\qquad C=X\setminus(A\cup B)
+$$
+
+と置く。$C$ が残る一人の合法な手札なら、三人の配分が一つ存在する。三集合の枚数の和は $|X|$ なので、三つ目をさらに全探索する必要はない。候補として登録済みのマスクかを直接参照表で確かめる。
+
+$A,B\subseteq X$ と互いに素であることを確認した後なら、コードの `X ^ A ^ B` は同じ補集合になる。この確認を省いたXORでは、二人に重複して割り当てた対象が消えてしまうので正しくない。
+
+ある $S$ で一つでも配分が見つかったら、それ以上の配分を数えず、その $S$ の対象を分類ごとの候補へ加える。別の $S$ は引き続き調べる。全ての候補の和集合が答えであり、分類内の候補数が一つなら一意、複数なら不明、どの配分もなければ観測全体が矛盾している。
+
+## 適用条件
+
+既知の集合を一つ、未知の集合を三つ扱い、全ての対象がその四集合か未公開集合のどれか一つに入る。未公開集合は、互いに重ならない三分類からちょうど一つずつ選ぶ。対象の重複割当は認めず、局所条件は各集合単独で検査できるものとする。
+
+掲載の一般APIは対象数3〜21、既知の手札を除く対象数は16以下。手札数は0を許し、四人分の和に秘密の3個を加えた数が対象総数と一致する必要がある。三分類は空でなく、全対象を重ならず覆う。全員分の「一つ以上含む」条件は合計150個以下とする。空の存在条件や、必須と禁止が衝突する条件は、整合する配分がないものとして返す。
+
+履歴用の `infer_card_history` は、対象を `A`〜`U`、分類を6個・6個・9個、手札数を **5,5,4,4** とした利用例用アダプタである。人0から順番に提案し、右隣から応答し、最初の証拠で止まる。履歴は0〜50回、応答列は空白を除いた `-`・`*`・対象の文字で渡す。人0が提案者または応答者なら証拠は具体的な文字、それ以外では `*` とする。
+
+分類外のビット、枚数の不整合、未知対象数超過、履歴の構造や可視性の違反は `std::invalid_argument`。構造が正しくても手札と応答が整合しない場合は `consistent=false` を返す。候補0個の分類を一意と誤認しないよう、このフラグを最初に見る。
+
+## なぜ正しいか
+
+各手札の候補列挙は、指定枚数を持ち、その人の禁止・必須・存在条件を満たす部分集合をちょうど残す。従って、合法な全体配分に含まれる各手札は、必ず自分の候補群に含まれる。
+
+秘密の仮定 $S$ を固定する。合法な全体配分の二つの手札を $A,B$ とすれば、両方とも $X$ の部分集合で互いに素なので、その組は探索される。残る手札は全体を重複なく使い切る条件から一意に $X\setminus(A\cup B)$ となり、参照表にも登録されている。従って、合法な $S$ を取り逃がさない。
+
+逆に照合が成功した場合、$A,B$ は互いに素で、参照表で見つけた $C$ はその補集合である。三集合は全て局所条件を満たし、既知の手札と秘密にも交わらず、対象を過不足なく配分する。従って、成功した $S$ には実際に合法な全体配分がある。
+
+以上から、候補へ加えるのは合法な秘密集合に含まれる対象だけであり、全ての合法な秘密集合を含む。ある分類で候補が一つなら、全配分で同じ対象が秘密になる。複数なら、それぞれを秘密にする配分があるため確定できない。
+
+## 計算量
+
+未知対象数を $u\le16$、未知の手札数を $s_1,s_2,s_3$、各人の存在条件数を $L_i$ とする。局所条件を満たす初期候補数を $A_i\le\binom{u}{s_i}$、秘密の仮定数を $G$、仮定 $S$ を除いた候補数を $D_i(S)$ と置く。
+
+全配分を毎回履歴で検査する方法では、分類ごとの秘密候補数の積に、残りを三手札へ配る多項係数と履歴長が掛かる。掲載実装は、局所条件の検査を先に済ませ、次の時間で処理する。
+
+$$
+O\!\left(3\cdot2^u+\sum_i(1+L_i)\binom{u}{s_i}
+ +G\sum_i A_i+\sum_S\min_{i<j}D_i(S)D_j(S)\right).
+$$
+
+既知の手札の条件検査はこれに加えて $O(L_0)$。二集合を決めた後の参照は、圧縮した $u$ ビットの配列なので最悪でも $O(1)$ であり、ハッシュの平均時間には依存しない。空間は $O(2^u+\sum_iA_i+\sum_iL_i+u)$。
+
+このAPIの上限では、三分類に残る個数の和は16以下なので $G\le5\cdot5\cdot6=150$。秘密を除いた対象数は13以下で、手札数の和も13以下である。残り対象数 $n=0,\ldots,13$ と $s_1+s_2+s_3=n$ を満たす全560通りを評価すると、三つの $\binom{n}{s_i}$ のうち小さい二つの積は、$n=13$、手札数4,4,5のとき最大 $\binom{13}{4}^2=511225$ になる。従って候補二群の試行回数は **76683750以下**。原典の5,4,4枚でもこの上界を満たす。一つ存在すれば打ち切るため、無制約入力で全ての配分を列挙することもない。
+
+三人分の合法性配列とマスクの復元表は、$u=16$ で計458752バイト。初期候補の総数は高々19449で、4バイトのマスクならその要素は計77796バイト以下。秘密ごとに作る三群の候補、存在条件、入力、`vector` の余剰容量と管理領域は別に必要となる。
+
+## 実装
+
+`infer_disjoint_hands` が一般APIで、対象番号を0から始めたビットマスクを使う。`HandRules::absent` は禁止対象、`present` は全て保有すべき対象、`intersects` は**各マスクにつき**少なくとも一つ保有する条件である。手札0は既知で、その人への条件も検査する。
+
+返り値の `possible[c]` は、分類 `c` で秘密になり得る対象のマスク。まず `consistent` を確認し、真なら `std::popcount(possible[c])==1` で一意性を判定できる。履歴アダプタの提案は各分類から一つずつの対象番号、応答は空白なしの文字列で指定する。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <cstdint>
+#include <numeric>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+using CardMask = std::uint32_t;
+struct HandRules {
+    CardMask absent = 0, present = 0;
+    std::vector<CardMask> intersects; // At least one card from EACH listed mask.
+};
+struct HiddenCandidates {
+    bool consistent = false;
+    std::array<CardMask, 3> possible{}; // Original card indices, not compressed indices.
+};
+bool matches_hand_rules(CardMask hand, const HandRules& rules) {
+    if ((hand & rules.absent) || (hand & rules.present) != rules.present) return false;
+    for (CardMask clause : rules.intersects) if (!(hand & clause)) return false;
+    return true;
+}
+
+// Categories partition [0,card_count); exactly one card per category is hidden.
+// Hand 0 is known; hands 1..3 are disjoint and have the specified sizes.
+HiddenCandidates infer_disjoint_hands(
+    int card_count, const std::array<CardMask, 3>& categories,
+    const std::array<int, 4>& hand_sizes, CardMask known_hand,
+    const std::array<HandRules, 4>& rules) {
+    if (card_count < 3 || card_count > 21) throw std::invalid_argument("card count");
+    const CardMask universe = (CardMask{1} << card_count) - 1;
+    CardMask covered = 0;
+    for (CardMask category : categories) {
+        if (!category || (category & ~universe) || (category & covered))
+            throw std::invalid_argument("category partition");
+        covered |= category;
+    }
+    if (covered != universe || (known_hand & ~universe))
+        throw std::invalid_argument("category coverage or known hand");
+    int total = 3;
+    for (int size : hand_sizes) {
+        if (size < 0 || size > card_count) throw std::invalid_argument("hand size");
+        total += size;
+    }
+    if (total != card_count || std::popcount(known_hand) != hand_sizes[0])
+        throw std::invalid_argument("hand sizes do not partition the cards");
+    const int unknown = card_count - hand_sizes[0];
+    if (unknown > 16) throw std::invalid_argument("more than 16 unknown cards");
+    std::size_t clause_count = 0;
+    for (const auto& rule : rules) {
+        if ((rule.absent | rule.present) & ~universe)
+            throw std::invalid_argument("rule mask outside universe");
+        clause_count += rule.intersects.size();
+        for (CardMask clause : rule.intersects)
+            if (clause & ~universe) throw std::invalid_argument("clause outside universe");
+    }
+    if (clause_count > 150) throw std::invalid_argument("too many existence clauses");
+    HiddenCandidates result;
+    if (!matches_hand_rules(known_hand, rules[0])) return result;
+    std::vector<CardMask> bits;
+    std::array<std::vector<CardMask>, 3> secret_bits;
+    for (int card = 0; card < card_count; ++card) if (!(known_hand & (CardMask{1} << card))) {
+        CardMask compact = CardMask{1} << bits.size();
+        bits.push_back(CardMask{1} << card);
+        for (int category = 0; category < 3; ++category)
+            if (categories[category] & bits.back()) secret_bits[category].push_back(compact);
+    }
+    for (const auto& choices : secret_bits) if (choices.empty()) return result;
+    const CardMask count = CardMask{1} << unknown, full = count - 1;
+    std::vector<CardMask> expanded(count, 0);
+    for (CardMask mask = 1; mask < count; ++mask)
+        expanded[mask] = expanded[mask & (mask - 1)] | bits[std::countr_zero(mask)];
+    std::array<std::vector<unsigned char>, 3> legal;
+    std::array<std::vector<CardMask>, 3> candidates;
+    for (int player = 0; player < 3; ++player) {
+        legal[player].assign(count, 0);
+        for (CardMask hand = 0; hand < count; ++hand)
+            if (std::popcount(hand) == hand_sizes[player + 1] &&
+                matches_hand_rules(expanded[hand], rules[player + 1])) {
+                legal[player][hand] = 1;
+                candidates[player].push_back(hand);
+            }
+        if (candidates[player].empty()) return result;
+    }
+    for (CardMask first : secret_bits[0])
+        for (CardMask second : secret_bits[1])
+            for (CardMask third : secret_bits[2]) {
+                const CardMask secret = first | second | third, available = full ^ secret;
+                std::array<std::vector<CardMask>, 3> active;
+                for (int player = 0; player < 3; ++player)
+                    for (CardMask hand : candidates[player])
+                        if (!(hand & secret)) active[player].push_back(hand);
+                std::array<int, 3> order{0, 1, 2};
+                std::sort(order.begin(), order.end(), [&](int a, int b) {
+                    return active[a].size() < active[b].size();
+                });
+                bool found = false;
+                for (CardMask a : active[order[0]]) {
+                    for (CardMask b : active[order[1]]) {
+                        if (a & b) continue;
+                        // Both are subsets of available, and now they are disjoint.
+                        CardMask rest = available ^ a ^ b;
+                        if (legal[order[2]][rest]) { found = true; break; }
+                    }
+                    if (found) break;
+                }
+                if (found) {
+                    result.consistent = true;
+                    CardMask original = expanded[secret];
+                    for (int category = 0; category < 3; ++category)
+                        result.possible[category] |= original & categories[category];
+                }
+            }
+    return result;
+}
+
+struct CardRound {
+    std::array<int, 3> suggestion; // One index from each of [0,6), [6,12), [12,21).
+    std::string responses; // No spaces: '-', '*', or 'A'..'U'.
+};
+// Four players take turns 0,1,2,3,0,...; known_hand belongs to player 0.
+HiddenCandidates infer_card_history(CardMask known_hand, const std::vector<CardRound>& history) {
+    if (history.size() > 50 || std::popcount(known_hand) != 5 || (known_hand >> 21))
+        throw std::invalid_argument("history length or known hand");
+    const std::array<CardMask, 3> categories{63, 63 << 6, 511 << 12};
+    std::array<HandRules, 4> rules;
+    for (std::size_t turn = 0; turn < history.size(); ++turn) {
+        const auto& round = history[turn];
+        CardMask suggestion = 0;
+        for (int category = 0; category < 3; ++category) {
+            int card = round.suggestion[category];
+            if (card < 0 || card >= 21 || !(categories[category] & (CardMask{1} << card)))
+                throw std::invalid_argument("suggestion category");
+            suggestion |= CardMask{1} << card;
+        }
+        if (round.responses.empty() || round.responses.size() > 3 ||
+            (round.responses.back() == '-' && round.responses.size() != 3))
+            throw std::invalid_argument("response count");
+        int asker = int(turn % 4);
+        for (std::size_t index = 0; index < round.responses.size(); ++index) {
+            int player = (asker + int(index) + 1) % 4;
+            char response = round.responses[index];
+            if (response != '-' && index + 1 != round.responses.size())
+                throw std::invalid_argument("evidence must be last");
+            if (response == '-') rules[player].absent |= suggestion;
+            else if (response == '*') {
+                if (asker == 0 || player == 0) throw std::invalid_argument("visible evidence hidden");
+                rules[player].intersects.push_back(suggestion);
+            } else {
+                if (response < 'A' || response > 'U' || (asker != 0 && player != 0))
+                    throw std::invalid_argument("evidence character or visibility");
+                CardMask shown = CardMask{1} << (response - 'A');
+                if (!(shown & suggestion)) throw std::invalid_argument("shown card not suggested");
+                rules[player].present |= shown;
+            }
+        }
+    }
+    return infer_disjoint_hands(21, categories, {5, 5, 4, 4}, known_hand, rules);
+}
+```
+
+## 関連する手法
+
+- [半分全列挙](/flowchartcp/techniques/meet-in-the-middle/) — 二群を組み合わせ、残りの必要条件を辞書や表で引く発想が共通する。
+- [ビット集合を状態にするDP](/flowchartcp/techniques/bitmask-dp/) — 小さい対象集合を一つの整数に表す。同じマスクでも、どの集合に割り当てたかを区別する必要がある。
+- [状態設計](/flowchartcp/techniques/state-design/) — 一つの成功例だけでなく、全ての可能な秘密対象を求めるために必要な情報を整理する。
+
+## 参考資料
+
+- [ICPC World Finals 2017 問題冊子、B節3〜4ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=3) — 既知の手札と応答から秘密の分類別候補を求める適用例。確認できる大会年は2017年で、月日はここでは確定しない。
+- [Per Austrin・Jakub Onufry Wojtaszczykによる公開solution sketches、3ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=3) — ICPC公式サイト掲載だが、文書自身が **unofficial analysis（非公式解析）** と明記する。各人の候補を別々に生成して補集合を照合する方針を参照し、掲載実装と正当性・上界は独立に構成した。資料の4人目を5枚とする記載は原典の配札と一致しないため、原典に従う5,5,4,4枚を使う。
+
+<TechniqueReferences techniqueId="disjoint-candidate-sets-complement-lookup" />

@@ -1,0 +1,269 @@
+[
+  {
+    "id": "simultaneous-swap-parity",
+    "title": "三添字を使う同時交換は、同値の有無と対応順の偶奇で判定する",
+    "summary": "二列の交換を一回ずつ行う操作の符号を調べ、同じ値の札を交換できる場合だけ偶奇の障害を消す。",
+    "aliases": [
+      "Simultaneous Swap",
+      "paired swaps permutation parity duplicates",
+      "同時交換の偶奇"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc296/tasks/abc296_f"
+    ]
+  },
+  {
+    "id": "unequal-multiset-cyclic-shift",
+    "title": "各位置で異なる値を置く並べ替えは、等値区間から安全な巡回ずらしを選ぶ",
+    "summary": "値の頻度の和を確認し、整列した二列の等値区間が重ならないずらし量を一回で決める。",
+    "aliases": [
+      "Contrast cyclic shift multiset derangement",
+      "unequal values rearrangement",
+      "等値区間の巡回ずらし"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc178/tasks/abc178_f"
+    ]
+  },
+  {
+    "id": "additive-sign-sweep",
+    "title": "他要素を足して列を非減少にするなら、符号をそろえて一方向へ累積する",
+    "summary": "最大絶対値の要素で反対符号を消し、非負なら左から、非正なら右から隣へ加える。",
+    "aliases": [
+      "Non-decreasing additive construction",
+      "sign normalization prefix additions",
+      "加算で非減少"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc081/tasks/arc086_b"
+    ]
+  },
+  {
+    "id": "special-ball-possibility",
+    "title": "どの玉を移したか不明なら、箱の確定個数と特別な玉の可能位置を分ける",
+    "summary": "特別な玉の可能性を移動先へ広げ、移動元が空になったときだけ元の可能性を消す。",
+    "aliases": [
+      "Box and Ball possible special location",
+      "unknown moved ball",
+      "特別な玉の可能位置"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/agc002/tasks/agc002_b"
+    ]
+  },
+  {
+    "id": "reserved-occurrence-deadlines",
+    "title": "指定した第i出現の位置は、前のコピーを締切順に置き、後ろを逆順に埋める",
+    "summary": "予約した出現を先に固定し、その前後に必要な個数を最も早い空きと最も遅い空きへ割り当てる。",
+    "aliases": [
+      "K-th K occurrence deadlines construction",
+      "reserved kth occurrence",
+      "指定出現順位の構築"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/agc008/tasks/agc008_d"
+    ]
+  },
+  {
+    "id": "circular-ramp-removal-counts",
+    "title": "環に1からNを引く操作は、総和と隣接差分から各開始点の回数を復元する",
+    "summary": "操作総数を総和で固定し、一周の差分で特別な一境界だけ変わることから非負整数の回数を求める。",
+    "aliases": [
+      "Boxes circular ramp difference invariant",
+      "cyclic 1 to n removals",
+      "環の連続量除去"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/agc010/tasks/agc010_b"
+    ]
+  },
+  {
+    "id": "adjacent-modulo-prime-grid",
+    "title": "隣接の余りをそろえる全異なる盤面は、二方向の素因子と積に1を足して作る",
+    "summary": "一色のマスへ斜線ごとの二素数の積を置き、他色へ隣接値の全因子を含む積と1を置く。",
+    "aliases": [
+      "Modulo Matrix checkerboard primes",
+      "adjacent modulo one grid",
+      "素因子で余りをそろえる構築"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/agc027/tasks/agc027_d"
+    ]
+  },
+  {
+    "id": "even-outdegree-orientation",
+    "title": "全出次数を偶数にする向き付けは、各成分の辺数を確かめて葉から親辺で直す",
+    "summary": "木以外の向きを先に決め、子の最後の一辺で偶奇を確定し、残る根の条件を成分全体の辺数へ結び付ける。",
+    "aliases": [
+      "Even Outdegree Edges",
+      "even outdegree orientation DFS parity",
+      "出次数偶数の向き付け"
+    ],
+    "family": "構築・操作・不変量",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2179"
+    ]
+  },
+  {
+    "id": "global-replace-reverse-map",
+    "aliases": [
+      "Offline Global Replacement Reverse Mapping",
+      "Replace the Numbers",
+      "Many Replacement",
+      "全出現の一括置換",
+      "逆順の行き先更新"
+    ],
+    "family": "列を変える操作",
+    "prerequisites": [
+      "reverse-thinking",
+      "coordinate-compression"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/1620/E",
+      "https://atcoder.jp/contests/abc342/tasks/abc342_c",
+      "https://atcoder.jp/contests/abc342/editorial/9450"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "同じ値の一括置換は、操作を逆順に読み、最後の行き先だけを持つ",
+    "summary": "末尾追加と全出現の置換を、各要素を何度も書き換えずに処理する。"
+  },
+  {
+    "id": "mex-sort-fix-positions",
+    "title": "配列のmexを代入できるなら、値と添字が一致する位置を増やす",
+    "summary": "mexが長さ未満ならその位置を直し、長さと等しいときは未完成の位置へその値を置く。",
+    "aliases": [
+      "Replace by MEX",
+      "MEX Sorting Fixed Positions",
+      "MEX置換による整列",
+      "mexと固定位置"
+    ],
+    "family": "構築",
+    "level": "中級",
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/1375/D"
+    ]
+  },
+  {
+    "id": "permutation-square-root-cycle-pairing",
+    "title": "二度適用して指定の順列になる置換は、同じ偶数長のサイクルを組にする",
+    "summary": "奇数長はサイクル内の移動幅を変え、偶数長は二本を交互につないで平方根を作る。",
+    "aliases": [
+      "Square Root of Permutation",
+      "Permutation Square Root Cycle Pairing",
+      "順列の平方根",
+      "偶数サイクルの組分け"
+    ],
+    "family": "構築",
+    "level": "上級",
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/612/E",
+      "https://codeforces.com/blog/entry/22299"
+    ]
+  }
+]

@@ -1,0 +1,69 @@
+{
+  "techniqueId": "precompiled-permutation-partition-signature-membership",
+  "problemId": "ioi2016_messy",
+  "testedAt": "2026-10-15",
+  "command": "node tests/ioi2016-messy-flow.test.mjs",
+  "exitCode": 0,
+  "tests": 14,
+  "passed": 14,
+  "failed": 0,
+  "durationMs": 5794.91853,
+  "testSha256": "9deda75e6f404f5eae013bb16b1946cdf1432e061e338749413c9bc76d5ccb7c",
+  "baseline": {
+    "counts": {
+      "graphs": 479,
+      "nodes": 3745,
+      "walks": 533,
+      "articles": 512
+    },
+    "datasetSha256": "a460bb2abf69c5f07db506349e47bac4238548440249f26c21495dc9a0d8731b",
+    "all533RawReplaySha256": "7112dd373e359193e8de077e0813218ffd238ec5da67848ff3a748591fc04185",
+    "oldGraphSha256": "eb5656d90cbe9d0820c9f225deb8924d8f30a9f0bb123dfb9b44891d1dc08947",
+    "oldWalkSha256": "36fba421fb6d6b3f1c1645f7e77039868855e2c027f44884a3f4b712277e61ca",
+    "oldAuditSha256": "94c7a850190fa8992dce41bf5b4d53bf157467e1ef7180cbe5557d40402ce056",
+    "draftSha256": "9deda75e6f404f5eae013bb16b1946cdf1432e061e338749413c9bc76d5ccb7c"
+  },
+  "baselineJsonFiles": 79,
+  "baselineFixedCorpora": 10,
+  "all533RawWalkRecordsPreserved": true,
+  "allOldNodesAndFieldsPreserved": true,
+  "entryDomainsPreserved": 15,
+  "guardNegativeUnknownCases": 6,
+  "previousLegacySharingCases": 997,
+  "initialResearchCount": 6,
+  "initialCompletedApiCount": 0,
+  "initialCoverageCount": 0,
+  "preExistingResolutionsPreserved": 4,
+  "newResolutionOnly": true,
+  "sourceDate": "2016-08-16",
+  "datePrecision": "day",
+  "difficulty": null,
+  "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+  "actualFenceNativeSmoke": true,
+  "invalidActualFencePreflightCoverageZeroAllCorpora": true,
+  "permanentIndependentProbeSha256": "d01c59a139e6b3b0f9a317d9e95ac5804ed877088549210fbc4782a10345d26a",
+  "priorDraftAttempt": {
+    "failedTests": 1,
+    "cause": "The test expected adjacent words nonempty disjoint zero support, while the verified record states blocks are disjoint and nonempty zero support separately. Only the test predicate was corrected; no author/product data or code changed."
+  },
+  "sharedFilesWritten": [
+    "tests/ioi2016-messy-flow.test.mjs",
+    "research/probes/ioi2016-messy-flow-results.json"
+  ],
+  "subtests": [
+    "ioi2016_messy: every guard gates the sole technique; all six no/unknown routes remain unresolved",
+    "ioi2016_messy: both displays, complete SVG labels, article links, shared URLs and Back retain each premise",
+    "ioi2016_messy: grouped metadata, date precision, source bounds, actual visible C++ fence and canonical example agree",
+    "all533 previous records and independently replayed terminals, targets, full questions and labels stay fixed",
+    "all479 old graphs and3745 old nodes preserve every field, old option order, answer order and exact result",
+    "all593 old local prefixes and404 completed shares retain terminal candidates, domains and full Back histories",
+    "published SVG files equal the shared renderer with complete metadata titles and full question/answer labels",
+    "all fifteen entry domains and all previous metadata/reference records retain identity, order and every old field",
+    "all ten baseline fixed corpora preserve every initial field; Messy appends a resolution to its six-record audit",
+    "Messy fixed permutation direction, complete source budgets, callback phases and frozen reusable API evidence agree",
+    "tiny actual generic fence and conditional original adapter recover the source direction and obey every original budget",
+    "Messy production coverage requires complete root walk, actual source and reviewed article; initial research6/API0 stays historical",
+    "coverage plan and manual source ledger preserve fixed identities and only genuinely resolved gap states may change",
+    "invalid visible C++ fails actual product preflight and gates production coverage to zero across every fixed corpus"
+  ]
+}

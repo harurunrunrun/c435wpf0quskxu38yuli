@@ -1,0 +1,101 @@
+---
+title: "木の距離に行先の値を足す最大値は、戻す子方向を上位二つから除く"
+description: "行先が自身ではない条件を保ち、子へ渡す候補からその子の部分木だけを外す。"
+techniqueId: tree-target-bonus-excluding-self
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の各始点 $v$ について、$\max_{x\ne v}(d(v,x)+b_x)$ を求める。行先の値も加わるため、距離だけで選んだ直径端点では足りない。また、自分の値が大きくても、行先として自身を選べない。
+
+## 考え方
+
+根を固定し、$down_v$ を「$v$ の部分木内で、自身も含めた行先への距離と行先値の最大」とする。
+
+$$down_v=\max\left(b_v,\max_{u:\text{子}}(\ell_{vu}+down_u)\right).$$
+
+一方、$up_v$ は $v$ の部分木の外に行く候補だけの最大値とする。答えには $b_v$ を直接含めず、$up_v$ と各子方向の $\ell+down_u$ の最大を取る。
+
+子 $u$ へ外側の候補を渡すときは、$b_v$、$up_v$、他の子方向の候補から最大を取り、辺長 $\ell_{vu}$ を足す。子方向の値の上位二つを、値だけでなく**方向を示す子番号**とともに残すと、戻る方向 $u$ を定数時間で外せる。
+
+最大値が同じ方向が複数あっても、異なる子からの二候補は別々に保存する。同じ数値を一種類にまとめてはいけない。
+
+## 適用条件
+
+木の形、辺長、行先値が固定され、費用が距離と行先値の加算である。行先の値が負でも、この最大値DPは成り立つが、候補がない状態を0で表してはいけない。掲載実装は $N\le200000$、辺長 $0$ 以上 $10^9$ 以下、行先値 $-10^9$ 以上 $10^9$ 以下。原典は辺長・行先値とも正である。
+
+頂点1個では自身以外の行先がないので、答えは値0ではなく候補なしとする。オンライン変更や、色ごとの行先制限には追加の状態や構造が必要。
+
+## なぜ正しいか
+
+行先の頂点は、自身、各子の部分木、親側の集合に重複なく分かれる。子の部分木へ向かう経路は最初にその子の辺を通るので、候補は辺長と子の $down$ の和になる。
+
+子 $u$ の部分木の外は、親 $v$ 自身、$v$ の親側、$u$ 以外の子の部分木からなる。従ってその三種類から最大を取り、$u$–$v$ 辺の長さを足した値が正しい $up_u$。下からの計算と上からの伝播で、全方向の最適候補をそろえられる。
+
+子方向を一つ除いて最大を取るには、その方向が最大を持っていなければ第1候補、持っていれば異なる方向の第2候補を使えばよい。候補に子番号を残すことで同値の候補も正しく扱える。最後の答えには自身の行先値を入れないため、$x\ne v$ が守られる。
+
+## 計算量
+
+各始点から探索する $O(N^2)$ 時間や、子へ渡すたびに兄弟を全走査する $O(\sum_v\deg(v)^2)$ 時間から、下向きDPと上位二候補を使う伝播で $O(N)$ 時間へ改善する。空間 $O(N)$。兄弟の全走査は星形の木で二乗になる。
+
+## 実装
+
+`farthest_target_bonuses(bonus, edges)` は各始点の最大値を `optional<long long>` で返す。頂点が1個の場合だけ `nullopt` になる。辺は `(u,v,length)`、頂点は0始まり。値が負のケースでも架空の行先を0として選ばない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<optional<long long>> farthest_target_bonuses(const vector<long long>& bonus,
+        const vector<tuple<int,int,long long>>& edges) {
+    int n=bonus.size();
+    assert(1<=n && n<=200000 && int(edges.size())==n-1);
+    constexpr long long bad=-(1LL<<60);
+    vector<vector<pair<int,long long>>> g(n);
+    for(long long b:bonus) assert(-1000000000<=b && b<=1000000000);
+    for(auto [u,v,w]:edges) {
+        assert(0<=u && u<n && 0<=v && v<n && 0<=w && w<=1000000000);
+        g[u].push_back({v,w});g[v].push_back({u,w});
+    }
+    vector<int> parent(n,-2),order{0};parent[0]=-1;
+    for(size_t i=0;i<order.size();++i) {
+        int v=order[i];
+        for(auto [u,w]:g[v]) if(u!=parent[v]) {
+            assert(parent[u]==-2);parent[u]=v;order.push_back(u);(void)w;
+        }
+    }
+    assert(int(order.size())==n);
+    vector<long long> down=bonus,up(n,bad);
+    for(int i=n-1;i>=0;--i) {
+        int v=order[i];
+        for(auto [u,w]:g[v]) if(parent[u]==v) down[v]=max(down[v],w+down[u]);
+    }
+    vector<optional<long long>> answer(n);
+    for(int v:order) {
+        pair<long long,int> first{bad,-1},second{bad,-1};
+        for(auto [u,w]:g[v]) if(parent[u]==v) {
+            pair<long long,int> candidate{w+down[u],u};
+            if(candidate.first>first.first) {second=first;first=candidate;}
+            else if(candidate.first>second.first) second=candidate;
+        }
+        long long best=max(up[v],first.first);
+        if(best!=bad) answer[v]=best;
+        for(auto [u,w]:g[v]) if(parent[u]==v) {
+            long long other=first.second==u?second.first:first.first;
+            up[u]=w+max({bonus[v],up[v],other});
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全方位木DPで一つの方向だけ除いて集計する](/flowchartcp/techniques/reroot-prefix-suffix/) ・ [木の各頂点からの最遠距離は、直径の両端への距離だけで求める](/flowchartcp/techniques/tree-eccentricity-diameter-endpoints/)
+
+## 参考資料
+
+- [AtCoder：Expensive Expense](https://atcoder.jp/contests/abc222/tasks/abc222_f)
+- [AtCoder公式解説](https://atcoder.jp/contests/abc222/editorial/2763)
+
+<TechniqueReferences techniqueId="tree-target-bonus-excluding-self" />

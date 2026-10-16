@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2018_doll",
+    "title": "Mechanical Doll",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+    "techniqueIds": [
+      "alternating-switch-bit-reversal-pruned-router"
+    ],
+    "features": [
+      "一出口の原点とトリガー、全Xから通過ごとにX/Yを交互選択する二出口スイッチの配線を構築する。同じトリガーの反復、任意個の入口、根への再入が可能。",
+      "初回原点復帰までに指定トリガー列を正確に出し、その時に全スイッチをXへ戻す。",
+      "M1..100000/N1..200000、満点S<=N+log2N、hardS<=400000、初回復帰までの状態変化<=20000000。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-05",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "notes": "初期Xの二出口スイッチが通過ごとにX/Yを反転し、状態を持たないトリガーの指定列を初回原点復帰まで正確に再現し、その時に全スイッチをXへ戻す構築である。全トリガーと原点の出口を一つの分岐木へ共有し、N+1個の出力A+[0]をビット反転訪問順に置く。不要葉を空間的な先頭へ集め、全葉が不要な部分木を根への辺で置き換えると、残る状態遷移と出力を保ちながらスイッチ数をN+log2N以内へ減らせる。",
+    "discoveredBy": "ioi-2018",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf"
+  }
+]

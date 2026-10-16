@@ -1,0 +1,72 @@
+---
+title: "半分の長さを削って残りが削除部分の逆順になる条件は、二つの前後一致へ分ける"
+description: "前半と逆順にした後半を二通りにつなぎ、全ての削除位置をZで一括判定する。"
+techniqueId: reverse-deletion-two-z
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+前半と逆順にした後半を二通りにつなぎ、全ての削除位置をZで一括判定する。
+
+## 使う場面
+
+長さ $2N$ の文字列から、連続する $N$ 文字を一か所消したい。消した部分を逆順にすると、残った前後をつないだ文字列と同じになるかを、全ての削除開始位置で調べる。
+
+## 考え方
+
+元の前半を $A$、後半を逆順にしたものを $B$ とする。位置 $i$ から $N$ 文字を消す条件は、半開区間で次の二つになる。
+
+$$A[0:i]=B[N-i:N],\qquad A[i:N]=B[0:N-i].$$
+
+第一式は $A+B$ の先頭と、位置 $2N-i$ からの接尾辞の一致を長さ $i$ だけ調べればよい。第二式は $B+A$ の先頭と、位置 $N+i$ からの一致を長さ $N-i$ だけ調べればよい。
+
+二つのZ配列を作れば、各位置の判定は定数時間になる。文字列の末尾位置 $2N$ のZ値を0として追加しておくと、空の接頭辞・接尾辞も同じ式で扱える。
+
+## 適用条件
+
+消す区間は必ず元の半分の長さで、その逆順と残りの連結を比較する。削除長が自由なら、この二つの固定した連結だけでは全ての比較をまとめられない。
+
+実装は長さが偶数で $2N\le2000000$ のバイト列を受け取る。先頭・末尾からの削除も許し、空文字列は位置0を返す。文字列の一致は確定的で、ハッシュの衝突はない。
+
+## なぜ正しいか
+
+削除区間のうち元の後半にある $i$ 文字を逆順にすると $B[N-i:N]$ になり、これは残る先頭の $A[0:i]$ と一致しなければならない。元の前半から削られる $N-i$ 文字を逆順にしたものは、残る後半と一致する必要があり、再び両側を逆順にすると第二式になる。
+
+二式が成立すれば、削除区間を逆順にした前半・後半が、それぞれ残った前半・後半と一致するので全体も一致する。従って必要十分である。Z値が要求長以上かを調べる操作は、この二式をそのまま判定する。
+
+## 計算量
+
+各削除位置で長さ $N$ の文字列を作って比較すると $O(N^2)$ 時間・$O(N)$ 空間。二つのZ配列なら $O(N)$ 時間・空間。見つかったときだけ残りの文字列を一度作る。
+
+## 実装
+
+`find_reverse_deletion` は残った文字列と削除開始位置を返す。存在しないときは `std::nullopt`。
+
+```cpp
+#include <atcoder/string>
+#include <algorithm>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <utility>
+std::optional<std::pair<std::string,int>> find_reverse_deletion(const std::string& t) {
+    if(t.size()%2 || t.size()>2000000) throw std::invalid_argument("even bounded length");
+    int n=t.size()/2;if(n==0) return std::pair<std::string,int>{"",0};
+    std::string a=t.substr(0,n),b=t.substr(n);std::reverse(b.begin(),b.end());
+    auto first=atcoder::z_algorithm(a+b),second=atcoder::z_algorithm(b+a);
+    first.push_back(0);second.push_back(0);
+    for(int i=0;i<=n;++i) if(first[2*n-i]>=i && second[n+i]>=n-i)
+        return std::pair<std::string,int>{t.substr(0,i)+t.substr(n+i),i};
+    return std::nullopt;
+}
+```
+
+## 関連する手法
+
+[パターンと本文を区切って一致位置を求める](/flowchartcp/techniques/z-concatenate-boundary/) ・ [接頭辞と接尾辞の一致から周期を求める](/flowchartcp/techniques/period-from-border/)
+
+## 参考資料
+
+- [AtCoder：ABCBAC](https://atcoder.jp/contests/abc284/tasks/abc284_f)
+- [公式解説](https://atcoder.jp/contests/abc284/editorial/5492)
+
+<TechniqueReferences techniqueId="reverse-deletion-two-z" />

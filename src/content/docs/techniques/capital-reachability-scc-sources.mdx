@@ -1,0 +1,105 @@
+---
+title: "始点から全体へ届かせる追加辺は、未到達部分の源の成分へ一本ずつ張る"
+description: "相互到達する場所をまとめ、まだ届かない成分の間に入口がない場所だけへ接続する。"
+techniqueId: capital-reachability-scc-sources
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+相互到達する場所をまとめ、まだ届かない成分の間に入口がない場所だけへ接続する。
+
+## 使う場面
+
+一つの出発点から行けない場所があり、有向の道を最小本数だけ足して全てへ行けるようにしたい。未到達の頂点ごとに足すと、既存の道でまとめて届く場所へ余分な辺を張ってしまう。
+
+## 考え方
+
+元の始点から到達できる頂点を先に印付けする。次に強連結成分へまとめ、未到達成分の間だけの辺を考える。
+
+この部分DAGで入次数0の成分を「源」とする。各源の代表頂点へ、元の始点から一本ずつ辺を追加する。それ以外の未到達成分は、どれかの源から既存の道で到達できる。
+
+入次数を数えるのは未到達成分の間の辺。未到達側から既に到達済みの成分への辺は、未到達側へ入る手段にはならない。
+
+## 適用条件
+
+追加辺の始点・終点を任意に選べる。必要なのは指定した一始点から全体への到達であり、全頂点から始点へ戻れる必要はない。辺の追加費用は全て一本として数える。
+
+使用できる追加辺が限定されたり、費用が異なったりする場合には、源の個数だけでは答えにならない。掲載実装は実際の最小追加辺も返す。
+
+## なぜ正しいか
+
+未到達部分の源には、他の未到達成分からの元の入口がない。到達済み成分からの元の入口があれば、その源も最初から到達済みのはずである。従って各源を初めて到達可能にするには、その成分を終点とする追加辺が少なくとも一本必要になる。異なる源への入口は別の辺なので源の数が下限。
+
+有限DAGの各頂点は、入る辺を逆向きにたどるといずれかの源へ着く。全ての源へ始点から一本ずつ足せば全成分へ届くので、この下限を達成する。
+
+## 計算量
+
+追加先の候補それぞれの到達範囲を探索すると $O(N(N+M))$ 時間・$O(N+M)$ 空間。到達探索、成分分解、未到達成分の入次数集計は合わせて $O(N+M)$ 時間・空間。
+
+## 実装
+
+`minimum_edges_from_start` は最小本数の追加辺を返す。全ての追加辺は指定始点から出る。すでに全体へ到達できる場合は空配列で、同じ成分内のどの頂点を代表にしてもよい。探索は反復。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct Components {int count;vector<int> id;};
+Components strong_components(const vector<vector<int>>& g) {
+    int n=g.size();vector<vector<int>> reverse_graph(n);
+    for(int v=0;v<n;++v) for(int u:g[v]) reverse_graph[u].push_back(v);
+    vector<char> seen(n);vector<int> finish;
+    for(int start=0;start<n;++start) if(!seen[start]) {
+        vector<pair<int,int>> stack{{start,0}};seen[start]=true;
+        while(!stack.empty()) {
+            int v=stack.back().first;int& i=stack.back().second;
+            if(i==int(g[v].size())) {finish.push_back(v);stack.pop_back();continue;}
+            int u=g[v][i++];
+            if(!seen[u]) {seen[u]=true;stack.push_back({u,0});}
+        }
+    }
+    vector<int> component(n,-1);int count=0;
+    for(int i=n-1;i>=0;--i) {
+        int start=finish[i];if(component[start]!=-1) continue;
+        vector<int> stack{start};component[start]=count;
+        while(!stack.empty()) {
+            int v=stack.back();stack.pop_back();
+            for(int u:reverse_graph[v]) if(component[u]==-1) {
+                component[u]=count;stack.push_back(u);
+            }
+        }
+        ++count;
+    }
+    return {count,move(component)};
+}
+
+vector<pair<int,int>> minimum_edges_from_start(const vector<vector<int>>& g,int source) {
+    int n=g.size();assert(n>0 && 0<=source && source<n);
+    vector<char> reachable(n);vector<int> queue{source};reachable[source]=true;
+    for(int i=0;i<int(queue.size());++i) for(int u:g[queue[i]])
+        if(!reachable[u]) {reachable[u]=true;queue.push_back(u);}
+    auto component=strong_components(g);
+    vector<int> representative(component.count,-1),indegree(component.count);
+    vector<char> known(component.count);
+    for(int v=0;v<n;++v) {
+        int c=component.id[v];representative[c]=v;
+        if(reachable[v]) known[c]=true;
+    }
+    for(int v=0;v<n;++v) if(!reachable[v]) for(int u:g[v]) {
+        int a=component.id[v],b=component.id[u];
+        if(a!=b && !known[b]) ++indegree[b];
+    }
+    vector<pair<int,int>> answer;
+    for(int c=0;c<component.count;++c) if(!known[c] && indegree[c]==0)
+        answer.push_back({source,representative[c]});
+    return answer;
+}
+```
+
+## 関連する手法
+
+[強連結成分分解](/flowchartcp/techniques/scc/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [Codeforces：Reachability from the Capital](https://codeforces.com/problemset/problem/999/E)
+
+<TechniqueReferences techniqueId="capital-reachability-scc-sources" />

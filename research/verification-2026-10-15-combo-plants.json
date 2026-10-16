@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2018全6題の固定監査登録とCombo、IOI2020 Plantsの不足解消",
+  "counts": {
+    "specificTechniques": 408,
+    "foundationArticles": 78,
+    "allArticles": 486,
+    "exampleMappings": 507,
+    "originalUrls": 469,
+    "graphs": 453,
+    "nodes": 3589,
+    "questions": 1630,
+    "answerEdges": 5312,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 503,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "unique-first-symbol-prefix-oracle-multiplexing",
+      "articleSha256": "db429c072c8d692f8b0c1e2af186570493950c10806cf28df685bde83ee72a02",
+      "codeSha256": "de1b771bf52638eec3e39270b39c84a0362e5485d89ffa19b86ac19e76496e28",
+      "normalAndAsanUbsanPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    },
+    {
+      "id": "cyclic-window-height-poset-two-neighbor-doubling",
+      "articleSha256": "993899731b75f52ad73f8036408a64b3c785d30093a260872f9ba0543b79ccf5",
+      "codeSha256": "d8dfab3f30ed369b6ab511e5585c2ad80cec9c5f0a46518ebbfbbe49ab17b0c1",
+      "normalAndAsanUbsanPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    }
+  ],
+  "verified": [
+    "IOI2018公式競技Day1/Day2の全6題を技巧検索前に固定した監査を恒久登録。初回482記事/404specific/449図/503walkの凍結状態から全6経路と停止位置を独立再生し、原典数値・日付・全主要解法を確認した。初回の具体記事不足6件は研究完了と区別した。",
+    "初回607 rawファイルのSHA台帳と元manifest bytesを保存。恒久保存する実rawはflowとmetadataの2種のみであり、全482 MDXが永続保存済みとは主張しない。初回audit全体SHAと各6行/status/selection/provenanceはprojectionから再現できる。固定コーパス5検査と独立追加probeに成功。",
+    "Comboは先頭文字の一意性により四つの接頭辞開始だけを使い、ブロック境界を越える一致を排除。中間三値・末尾二質問・N1/2・全記号置換、N+2回と4N-1最大質問長、2N^2+3N-7総送信長を独立確認。原典固定秘密列と追加の整合適応返答検査を区別した。",
+    "Combo公開C++抽出で10421309検査。全118096合法列(N<=10)、全24置換104928件、二進記号1456件、整合返答2684状態/1456葉、最大長33件、全2252418質問/297911871文字。N2000で2002回/7999最大長/8005993総文字。checksum9247008998039105376。作者とrootが通常/ASan+UBSanを再現した。",
+    "Plantsは作者・独立review者・rootが配布原典3頁を画像で確認。N/K/Q20万までの全原典scopeとAPIの包含、相異なる高さ、曖昧0、固定添字の窓を確認した。公式Editorialの数式画像は未確認と明記し、欠落した定義や主要補題は独立証明した。",
+    "Plantsは残余0の除去と未知DAGの入次数0の同値、近距離比較不変、全整合配置と線形拡張の一致、rank差帰納の二辺圧縮、円周をほどいた道の折返し除去、最高下位候補への貪欲な交換、距離N飽和を独立確認した。",
+    "Plants公開C++抽出で19024422検査。全362879順列を215446観測群へまとめ、全13368156比較を全整合配置の共通比較と照合。全71992個数配列の整合性/68872不整合、1500乱択、N200000で6instance各200000query、copy/moveとinvalidを検査。checksum3615291826092893586。作者/独立review者/rootの通常/ASan+UBSanで再現した。",
+    "別のPlants独立probeはN65..1000の48例に対し、実高さから作る全近距離DAGのbitset閉包と反転再観測を照合し18555245比較成功、checksum13630968379293366250。恒久scriptと結果をresearch/probesへ保存。",
+    "公開MDXを抽出するnative wrapperは3/3成功。両技巧の独立flow7+7検査は入口/全6guard/noとunknown/両表示/SVG全ラベル/共有とBack/原典dateと難度nullを確認。旧505/506全記録・全手順・終端・質問と回答ラベル、既存categoryノードと選択肢の順序/target、初回auditと既存解消の全SHAを保持。",
+    "全分岐/配置/折返し/共有/表示/ホイール/固定群/収集器/台帳49テスト群全成功。IOI2020初回1/6の履歴を保持しながら、explicit後続証明と完成記事/分岐により現在研究6/6・coverage6/6になった。世界全体の完了ではない。",
+    "最終ローカルビルド486記事507対応453図成功。直近16記事の日英/全角検索65件、数式エラー無し、原典/参考資料/使用例根拠/コード/カタログを確認。453SVG pairs・図専用ページ・5312回答ラベル・404旧共有URLを照合。新2図は画像化して目視し重なりなし。",
+    "最終local link検査は1401 HTML/SVGの28574リンク/資産で成功。研究表25/25行で観測identity数・解法確認の和集合・公開対応数が正しい列に一致。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 59,
+    "fixedCorpusSolutionsReviewed": 50,
+    "publishedExamplesSolutionsReviewed": 467,
+    "allDistinctSolutionsReviewed": 481,
+    "corpora": [
+      {
+        "id": "usaco-2020-dec-2021-jan-platinum",
+        "research": "6/6",
+        "covered": "6/6",
+        "coverageComplete": true
+      },
+      {
+        "id": "icpc-2017-world-finals",
+        "research": "11/12",
+        "covered": "9/12",
+        "coverageComplete": false
+      },
+      {
+        "id": "joi-2020-spring",
+        "research": "9/12",
+        "covered": "9/12",
+        "coverageComplete": false
+      },
+      {
+        "id": "ioi-2020",
+        "research": "6/6",
+        "covered": "6/6",
+        "coverageComplete": true
+      },
+      {
+        "id": "ioi-2019",
+        "research": "3/6",
+        "covered": "3/6",
+        "coverageComplete": false
+      },
+      {
+        "id": "icpc-2018-world-finals",
+        "research": "9/11",
+        "covered": "2/11",
+        "coverageComplete": false
+      },
+      {
+        "id": "ioi-2018",
+        "research": "6/6",
+        "covered": "1/6",
+        "coverageComplete": false
+      }
+    ],
+    "remainingKnownGaps": 24
+  },
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。固定群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは以前の環境上の失敗後に再試行しておらず未検証。",
+    "外部リンク全件の生存確認は未実施。",
+    "push・アップロード・公開は未実施。"
+  ],
+  "inProgress": [
+    "IOI2018 Seatsの局所cornerによるprefix長方形数の動的更新と、Werewolfの二閾値到達成分の長方形共通点判定。原典・完成API・独立検証と特徴分岐が揃うまで未解消のまま。"
+  ]
+}

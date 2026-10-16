@@ -1,0 +1,2717 @@
+{
+  "version": 1,
+  "baselineGraphCount": 248,
+  "graphs": [
+    {
+      "id": "math-integer-equations",
+      "title": "整数の等式・約数・余り・累乗",
+      "description": "約数・互いに素の条件、変数間の差、余り・累乗の等式を分けます。",
+      "root": "number-task",
+      "nodes": [
+        {
+          "id": "number-task",
+          "type": "question",
+          "title": "整数や式について何を求めますか？",
+          "explanation": "演算と、値の大きさの制約を選びます。",
+          "options": [
+            {
+              "id": "gcd",
+              "label": "約数・倍数・最大公約数の条件"
+            },
+            {
+              "id": "congruences",
+              "label": "整数の余りについて、一つまたは複数の条件を満たす"
+            },
+            {
+              "id": "product-exponents",
+              "label": "選んだ任意の二数が互いに素になる集合の個数"
+            },
+            {
+              "id": "variable-differences",
+              "label": "整数変数の間の差を順に指定し、矛盾を調べる"
+            },
+            {
+              "id": "power-exponent",
+              "label": "a^k の余りが b になる最小の回数 k"
+            },
+            {
+              "id": "power-tower",
+              "label": "M^(K^N) など、指数がさらに累乗になる式の余り"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "answers": {
+            "gcd": "divisors",
+            "unknown": "check",
+            "congruences": "congruence-route",
+            "product-exponents": "coprime-primes",
+            "variable-differences": "variable-difference-route",
+            "power-exponent": "power-exponent-gcd",
+            "power-tower": "tower-route"
+          }
+        },
+        {
+          "id": "divisors",
+          "type": "question",
+          "title": "約数・倍数・最大公約数を扱いますか？",
+          "explanation": "約数ごと、倍数ごとの数え上げへ変えられるかを考えます。",
+          "answers": {
+            "yes": "number-route",
+            "no": "count",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "count",
+          "type": "question",
+          "title": "場合の数を数えますか？",
+          "explanation": "全部を直接数えるか、余事象や寄与で数えるかを検討します。",
+          "answers": {
+            "yes": "combinatorics-route",
+            "no": "xor",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "xor",
+          "type": "question",
+          "title": "XOR による組合せや到達可能な値を扱いますか？",
+          "explanation": "XOR は二元体上の線形演算として表せます。",
+          "answers": {
+            "yes": "xor-result",
+            "no": "polynomial",
+            "unknown": "check",
+            "ranked-values": "xor-rank-distinct"
+          },
+          "options": [
+            {
+              "id": "yes",
+              "label": "はい"
+            },
+            {
+              "id": "no",
+              "label": "いいえ"
+            },
+            {
+              "id": "ranked-values",
+              "label": "部分集合 XOR の異なる値を、小さい順に取り出す"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "polynomial",
+          "type": "question",
+          "title": "多項式・数列の畳み込み・線形変換を扱いますか？",
+          "explanation": "係数の和と積、形式的な級数、繰り返し変換を区別します。",
+          "answers": {
+            "yes": "algebra-route",
+            "no": "digits",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digits",
+          "type": "question",
+          "title": "整数の桁の条件はどれですか？",
+          "explanation": "上限の接頭辞との一致だけでなく、次の桁を決めるのに必要な情報を選びます。",
+          "answers": {
+            "yes": "digit-result",
+            "no": "threshold",
+            "unknown": "check",
+            "sum-residue": "digit-residue-check",
+            "required-sum": "required-digits-route",
+            "digit-rank-sum": "rank-sum-route",
+            "substring-divisible": "substring-divisibility-route"
+          },
+          "options": [
+            {
+              "id": "yes",
+              "label": "数字の出現・大小など一般の桁の条件"
+            },
+            {
+              "id": "sum-residue",
+              "label": "上限以下で、桁の和の余りを指定する"
+            },
+            {
+              "id": "no",
+              "label": "桁以外の数値の最適値・存在条件"
+            },
+            {
+              "id": "required-sum",
+              "label": "指定の全数字を含む、上限以下の正整数の総和"
+            },
+            {
+              "id": "digit-rank-sum",
+              "label": "同じ桁数の正整数内の順位を、上限まで足す"
+            },
+            {
+              "id": "substring-divisible",
+              "label": "十進数字列の、指定数で割り切れる位置区間の個数"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "threshold",
+          "type": "question",
+          "title": "数値の候補を固定すると、判定問題へ変えられますか？",
+          "explanation": "候補が増えると可能性が一方向に変わることを確認します。",
+          "answers": {
+            "yes": "binary-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "check",
+          "type": "question",
+          "title": "答えは「個数」「最適値」「存在判定」のどれか区別できますか？",
+          "explanation": "同じ入力でも、求める量によって使う演算が異なります。",
+          "answers": {
+            "yes": "fallback",
+            "no": "uncertain",
+            "unknown": "uncertain"
+          }
+        },
+        {
+          "id": "uncertain",
+          "type": "route",
+          "title": "条件を確かめる",
+          "explanation": "まだ確認できていない性質を整理します。",
+          "graph": "condition-check"
+        },
+        {
+          "id": "number-route",
+          "type": "route",
+          "title": "約数・倍数・公約数の条件",
+          "explanation": "",
+          "graph": "number-theory"
+        },
+        {
+          "id": "combinatorics-route",
+          "type": "route",
+          "title": "対象と数え方",
+          "explanation": "",
+          "graph": "combinatorics"
+        },
+        {
+          "id": "algebra-route",
+          "type": "route",
+          "title": "積の集計・同じ計算の繰り返し",
+          "explanation": "",
+          "graph": "algebra"
+        },
+        {
+          "id": "xor-result",
+          "type": "result",
+          "title": "XOR 基底",
+          "explanation": "",
+          "techniques": [
+            "xor-basis"
+          ],
+          "conditions": [
+            "演算を二元体上の線形結合として表せる。"
+          ]
+        },
+        {
+          "id": "digit-result",
+          "type": "result",
+          "title": "桁 DP",
+          "explanation": "",
+          "techniques": [
+            "digit-dp"
+          ],
+          "conditions": [
+            "上限一致、先頭のゼロ、必要な余りを状態にする。"
+          ]
+        },
+        {
+          "id": "binary-result",
+          "type": "result",
+          "title": "答えの二分探索",
+          "explanation": "",
+          "techniques": [
+            "binary-search"
+          ],
+          "conditions": [
+            "判定の単調性を証明する。",
+            "判定コスト×探索回数が制限内に収まる。"
+          ]
+        },
+        {
+          "id": "fallback",
+          "type": "result",
+          "title": "求める量を式にする",
+          "explanation": "",
+          "techniques": [
+            "contribution",
+            "state-design"
+          ],
+          "conditions": [
+            "数え上げの単位と、演算の意味を決める。"
+          ]
+        },
+        {
+          "id": "congruence-route",
+          "type": "route",
+          "title": "整数の余りの等式",
+          "explanation": "",
+          "graph": "number-congruence"
+        },
+        {
+          "id": "coprime-primes",
+          "type": "question",
+          "title": "二数が共有できる素因数を、少数の素数へ絞れますか？",
+          "explanation": "短い整数区間では、共通素因数は二数の差を割るため、区間幅以下の素数だけを見れば足ります。",
+          "answers": {
+            "yes": "coprime-disjoint",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "coprime-disjoint",
+          "type": "question",
+          "title": "新しい数の素因数の集合は、選んだ数の集合と重ならない必要がありますか？",
+          "explanation": "共通素因数が一つでもあれば互いに素ではありません。積全体の指数を数える条件とは区別します。",
+          "answers": {
+            "yes": "coprime-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "coprime-result",
+          "type": "result",
+          "title": "小さい素因数の使用集合を持ち、重なる数を選ばない",
+          "explanation": "",
+          "techniques": [
+            "subset-coprime-small-primes"
+          ],
+          "conditions": [
+            "選択条件は任意の二数が互いに素であること。",
+            "共通し得る素因数の一覧が十分小さい。",
+            "短い整数区間では、大きい素数は異なる二数を同時に割れない。",
+            "必要な素因数を持たない数も、選ぶ・選ばないの二通りとして数える。"
+          ]
+        },
+        {
+          "id": "digit-residue-check",
+          "type": "question",
+          "title": "上限との大小と桁和の余りを覚えれば、残りの条件が決まりますか？",
+          "explanation": "先頭のゼロは桁和を変えません。正整数だけなら、すべての桁が 0 の列を最後に除きます。",
+          "answers": {
+            "yes": "digit-residue-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digit-residue-result",
+          "type": "result",
+          "title": "上限の接頭辞との一致と、桁和の余りを持って数字を選ぶ",
+          "explanation": "",
+          "techniques": [
+            "digit-sum-residue-dp",
+            "digit-dp"
+          ],
+          "conditions": [
+            "桁を選ぶとき、上限を超えない状態を保つ。",
+            "整数 0 を答えに含めるか、出力の条件に合わせて扱う。",
+            "必要なら桁和以外の条件も状態へ加える。"
+          ]
+        },
+        {
+          "id": "variable-difference-route",
+          "type": "route",
+          "title": "二者間の差の等式",
+          "explanation": "",
+          "graph": "graph-constraints"
+        },
+        {
+          "id": "power-exponent-gcd",
+          "type": "question",
+          "title": "底と法が互いに素でない場合も、共通因子を取り除いて判定できますか？",
+          "explanation": "a^k≡b (mod m) の最小非負 k を求めます。a=0、m=1、k=0、解なしを先に扱い、共通因子で割れない場合を退けます。",
+          "answers": {
+            "yes": "power-exponent-range",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "power-exponent-range",
+          "type": "question",
+          "title": "法の平方根程度の候補を保存し、最小の指数を照合できますか？",
+          "explanation": "巨大な法では平方根の時間・空間も収まらない場合があります。候補の一致だけでなく指数の最小性を保ちます。",
+          "answers": {
+            "yes": "power-exponent-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "power-exponent-result",
+          "type": "result",
+          "title": "共通因子を縮め、指数を二つの小さい範囲へ分けて照合する",
+          "explanation": "",
+          "techniques": [
+            "primitive-root-discrete-log"
+          ],
+          "conditions": [
+            "法は正で、非互いに素の場合の存在条件も処理する。",
+            "a=0、0^0=1、m=1、解なしを定義する。",
+            "O(√m) 程度の保存と計算が制限内。",
+            "底が原始根であることは要求しない。"
+          ]
+        },
+        {
+          "id": "xor-rank-distinct",
+          "type": "question",
+          "title": "同じ XOR 値になる部分集合は、重複を除いて一つの値としますか？",
+          "explanation": "部分集合の数の順位とは異なります。独立な XOR の方向の係数で、異なる値だけを表します。",
+          "answers": {
+            "yes": "xor-rank-order",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "xor-rank-order",
+          "type": "question",
+          "title": "最高ビットを揃え、他の基準ビットを消して、係数の二進順と値の昇順を一致させられますか？",
+          "explanation": "単に挿入した順の基底を使うと、係数の二進順は値の大小順になりません。",
+          "answers": {
+            "yes": "xor-rank-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "xor-rank-result",
+          "type": "result",
+          "title": "基準ビットを消し合わせ、二進の順位から XOR 値を復元する",
+          "explanation": "",
+          "techniques": [
+            "xor-basis-kth",
+            "xor-basis"
+          ],
+          "conditions": [
+            "同じ XOR 値を重複排除した順位を求める。",
+            "最高ビットの並びと、他の基準ビットの消去を揃える。",
+            "空集合の XOR 0 を含めるか、順位の定義に合わせる。",
+            "基底の次元による値の総数と、順位の範囲を確認する。"
+          ]
+        },
+        {
+          "id": "required-digits-route",
+          "type": "route",
+          "title": "数字の出現条件と整数の総和",
+          "explanation": "",
+          "graph": "digit-required-values"
+        },
+        {
+          "id": "tower-route",
+          "type": "route",
+          "title": "巨大な指数を持つ累乗の余り",
+          "explanation": "",
+          "graph": "prime-power-tower-residue"
+        },
+        {
+          "id": "rank-sum-route",
+          "type": "route",
+          "title": "桁数ごとの順位の総和",
+          "explanation": "",
+          "graph": "decimal-length-rank-total"
+        },
+        {
+          "id": "substring-divisibility-route",
+          "type": "route",
+          "title": "十進部分文字列の可除性",
+          "explanation": "",
+          "graph": "decimal-substring-remainders"
+        }
+      ],
+      "entry": false,
+      "domain": "math",
+      "width": 3576,
+      "height": 3288
+    },
+    {
+      "id": "math-bits-digits",
+      "title": "桁や AND・OR・XOR の条件",
+      "description": "整数の桁の条件、XORで作れる値、ビット演算の合計や等式を区別します。",
+      "root": "number-task",
+      "nodes": [
+        {
+          "id": "number-task",
+          "type": "question",
+          "title": "整数や式について何を求めますか？",
+          "explanation": "演算と、値の大きさの制約を選びます。",
+          "options": [
+            {
+              "id": "xor",
+              "label": "XOR で作れる値・順位"
+            },
+            {
+              "id": "pair-bits",
+              "label": "すべての組の AND・OR・XOR の合計"
+            },
+            {
+              "id": "xor-segments",
+              "label": "連続区間の XOR が指定値になる個数"
+            },
+            {
+              "id": "digits",
+              "label": "桁ごとの整数の条件"
+            },
+            {
+              "id": "bit-constraints",
+              "label": "AND・OR・XOR の等式を満たす整数や列の構築・個数・最適値"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "answers": {
+            "xor": "xor",
+            "pair-bits": "bit-contribution",
+            "xor-segments": "xor-segment",
+            "digits": "digits",
+            "unknown": "check",
+            "bit-constraints": "bit-constraints-route"
+          }
+        },
+        {
+          "id": "xor",
+          "type": "question",
+          "title": "XOR による組合せや到達可能な値を扱いますか？",
+          "explanation": "XOR は二元体上の線形演算として表せます。",
+          "answers": {
+            "yes": "xor-result",
+            "no": "polynomial",
+            "unknown": "check",
+            "ranked-values": "xor-rank-distinct"
+          },
+          "options": [
+            {
+              "id": "yes",
+              "label": "はい"
+            },
+            {
+              "id": "no",
+              "label": "いいえ"
+            },
+            {
+              "id": "ranked-values",
+              "label": "部分集合 XOR の異なる値を、小さい順に取り出す"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "polynomial",
+          "type": "question",
+          "title": "多項式・数列の畳み込み・線形変換を扱いますか？",
+          "explanation": "係数の和と積、形式的な級数、繰り返し変換を区別します。",
+          "answers": {
+            "yes": "algebra-route",
+            "no": "digits",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digits",
+          "type": "question",
+          "title": "整数の桁の条件はどれですか？",
+          "explanation": "上限の接頭辞との一致だけでなく、次の桁を決めるのに必要な情報を選びます。",
+          "answers": {
+            "yes": "digit-result",
+            "no": "threshold",
+            "unknown": "check",
+            "sum-residue": "digit-residue-check",
+            "required-sum": "required-digits-route",
+            "digit-rank-sum": "rank-sum-route",
+            "substring-divisible": "substring-divisibility-route"
+          },
+          "options": [
+            {
+              "id": "yes",
+              "label": "数字の出現・大小など一般の桁の条件"
+            },
+            {
+              "id": "sum-residue",
+              "label": "上限以下で、桁の和の余りを指定する"
+            },
+            {
+              "id": "no",
+              "label": "桁以外の数値の最適値・存在条件"
+            },
+            {
+              "id": "required-sum",
+              "label": "指定の全数字を含む、上限以下の正整数の総和"
+            },
+            {
+              "id": "digit-rank-sum",
+              "label": "同じ桁数の正整数内の順位を、上限まで足す"
+            },
+            {
+              "id": "substring-divisible",
+              "label": "十進数字列の、指定数で割り切れる位置区間の個数"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "threshold",
+          "type": "question",
+          "title": "数値の候補を固定すると、判定問題へ変えられますか？",
+          "explanation": "候補が増えると可能性が一方向に変わることを確認します。",
+          "answers": {
+            "yes": "binary-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "check",
+          "type": "question",
+          "title": "答えは「個数」「最適値」「存在判定」のどれか区別できますか？",
+          "explanation": "同じ入力でも、求める量によって使う演算が異なります。",
+          "answers": {
+            "yes": "fallback",
+            "no": "uncertain",
+            "unknown": "uncertain"
+          }
+        },
+        {
+          "id": "uncertain",
+          "type": "route",
+          "title": "条件を確かめる",
+          "explanation": "まだ確認できていない性質を整理します。",
+          "graph": "condition-check"
+        },
+        {
+          "id": "algebra-route",
+          "type": "route",
+          "title": "積の集計・同じ計算の繰り返し",
+          "explanation": "",
+          "graph": "algebra"
+        },
+        {
+          "id": "xor-result",
+          "type": "result",
+          "title": "XOR 基底",
+          "explanation": "",
+          "techniques": [
+            "xor-basis"
+          ],
+          "conditions": [
+            "演算を二元体上の線形結合として表せる。"
+          ]
+        },
+        {
+          "id": "digit-result",
+          "type": "result",
+          "title": "桁 DP",
+          "explanation": "",
+          "techniques": [
+            "digit-dp"
+          ],
+          "conditions": [
+            "上限一致、先頭のゼロ、必要な余りを状態にする。"
+          ]
+        },
+        {
+          "id": "binary-result",
+          "type": "result",
+          "title": "答えの二分探索",
+          "explanation": "",
+          "techniques": [
+            "binary-search"
+          ],
+          "conditions": [
+            "判定の単調性を証明する。",
+            "判定コスト×探索回数が制限内に収まる。"
+          ]
+        },
+        {
+          "id": "fallback",
+          "type": "result",
+          "title": "求める量を式にする",
+          "explanation": "",
+          "techniques": [
+            "contribution",
+            "state-design"
+          ],
+          "conditions": [
+            "数え上げの単位と、演算の意味を決める。"
+          ]
+        },
+        {
+          "id": "bit-contribution",
+          "type": "question",
+          "title": "各ビットの答えを、0 と 1 の個数から独立に数えられますか？",
+          "explanation": "桁上がりがない演算なら、各ビットの寄与を最後に足せます。",
+          "answers": {
+            "yes": "bit-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "xor-segment",
+          "type": "question",
+          "title": "区間の XOR を、二つの接頭辞 XOR の差として表せますか？",
+          "explanation": "prefix[r]^prefix[l] が指定値になる過去の接頭辞を数えます。",
+          "answers": {
+            "yes": "xor-segment-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "bit-result",
+          "type": "result",
+          "title": "各ビットの 0・1 の個数で寄与を数える",
+          "explanation": "",
+          "techniques": [
+            "bitwise-contribution",
+            "contribution"
+          ],
+          "conditions": [
+            "演算ごとに、ビットが立つ組の条件を決める。"
+          ]
+        },
+        {
+          "id": "xor-segment-result",
+          "type": "result",
+          "title": "接頭辞 XOR の出現回数を数える",
+          "explanation": "",
+          "techniques": [
+            "xor-prefix-count"
+          ],
+          "conditions": [
+            "現在位置より前の接頭辞だけを登録する。"
+          ]
+        },
+        {
+          "id": "digit-residue-check",
+          "type": "question",
+          "title": "上限との大小と桁和の余りを覚えれば、残りの条件が決まりますか？",
+          "explanation": "先頭のゼロは桁和を変えません。正整数だけなら、すべての桁が 0 の列を最後に除きます。",
+          "answers": {
+            "yes": "digit-residue-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digit-residue-result",
+          "type": "result",
+          "title": "上限の接頭辞との一致と、桁和の余りを持って数字を選ぶ",
+          "explanation": "",
+          "techniques": [
+            "digit-sum-residue-dp",
+            "digit-dp"
+          ],
+          "conditions": [
+            "桁を選ぶとき、上限を超えない状態を保つ。",
+            "整数 0 を答えに含めるか、出力の条件に合わせて扱う。",
+            "必要なら桁和以外の条件も状態へ加える。"
+          ]
+        },
+        {
+          "id": "xor-rank-distinct",
+          "type": "question",
+          "title": "同じ XOR 値になる部分集合は、重複を除いて一つの値としますか？",
+          "explanation": "部分集合の数の順位とは異なります。独立な XOR の方向の係数で、異なる値だけを表します。",
+          "answers": {
+            "yes": "xor-rank-order",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "xor-rank-order",
+          "type": "question",
+          "title": "最高ビットを揃え、他の基準ビットを消して、係数の二進順と値の昇順を一致させられますか？",
+          "explanation": "単に挿入した順の基底を使うと、係数の二進順は値の大小順になりません。",
+          "answers": {
+            "yes": "xor-rank-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "xor-rank-result",
+          "type": "result",
+          "title": "基準ビットを消し合わせ、二進の順位から XOR 値を復元する",
+          "explanation": "",
+          "techniques": [
+            "xor-basis-kth",
+            "xor-basis"
+          ],
+          "conditions": [
+            "同じ XOR 値を重複排除した順位を求める。",
+            "最高ビットの並びと、他の基準ビットの消去を揃える。",
+            "空集合の XOR 0 を含めるか、順位の定義に合わせる。",
+            "基底の次元による値の総数と、順位の範囲を確認する。"
+          ]
+        },
+        {
+          "id": "required-digits-route",
+          "type": "route",
+          "title": "数字の出現条件と整数の総和",
+          "explanation": "",
+          "graph": "digit-required-values"
+        },
+        {
+          "id": "rank-sum-route",
+          "type": "route",
+          "title": "桁数ごとの順位の総和",
+          "explanation": "",
+          "graph": "decimal-length-rank-total"
+        },
+        {
+          "id": "substring-divisibility-route",
+          "type": "route",
+          "title": "十進部分文字列の可除性",
+          "explanation": "",
+          "graph": "decimal-substring-remainders"
+        },
+        {
+          "id": "bit-constraints-route",
+          "type": "route",
+          "title": "AND・OR・XOR の等式を満たす整数や列の構築・個数・最適値",
+          "explanation": "",
+          "graph": "bit-constraint-features"
+        }
+      ],
+      "entry": false,
+      "domain": "math",
+      "width": 3240,
+      "height": 2525
+    },
+    {
+      "id": "math-counting-totals",
+      "title": "組合せ・式の係数・割り算の総和",
+      "description": "選び方の個数、式の積や係数、床を含む多数の項の総和を分けます。",
+      "root": "number-task",
+      "nodes": [
+        {
+          "id": "number-task",
+          "type": "question",
+          "title": "整数や式について何を求めますか？",
+          "explanation": "演算と、値の大きさの制約を選びます。",
+          "options": [
+            {
+              "id": "count",
+              "label": "組合せや配置の個数"
+            },
+            {
+              "id": "quotients",
+              "label": "floor(N/i) を多数の i について集計"
+            },
+            {
+              "id": "poly",
+              "label": "積の集計・多項式・線形漸化式"
+            },
+            {
+              "id": "linear-floor-sum",
+              "label": "floor((ai+b)/m) の、多数の i に対する総和"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "answers": {
+            "count": "combinatorics-route",
+            "quotients": "quotient-check",
+            "poly": "polynomial",
+            "unknown": "check",
+            "linear-floor-sum": "linear-floor-positive"
+          }
+        },
+        {
+          "id": "polynomial",
+          "type": "question",
+          "title": "多項式・数列の畳み込み・線形変換を扱いますか？",
+          "explanation": "係数の和と積、形式的な級数、繰り返し変換を区別します。",
+          "answers": {
+            "yes": "algebra-route",
+            "no": "digits",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digits",
+          "type": "question",
+          "title": "整数の桁の条件はどれですか？",
+          "explanation": "上限の接頭辞との一致だけでなく、次の桁を決めるのに必要な情報を選びます。",
+          "answers": {
+            "yes": "digit-result",
+            "no": "threshold",
+            "unknown": "check",
+            "sum-residue": "digit-residue-check",
+            "required-sum": "required-digits-route",
+            "digit-rank-sum": "rank-sum-route",
+            "substring-divisible": "substring-divisibility-route"
+          },
+          "options": [
+            {
+              "id": "yes",
+              "label": "数字の出現・大小など一般の桁の条件"
+            },
+            {
+              "id": "sum-residue",
+              "label": "上限以下で、桁の和の余りを指定する"
+            },
+            {
+              "id": "no",
+              "label": "桁以外の数値の最適値・存在条件"
+            },
+            {
+              "id": "required-sum",
+              "label": "指定の全数字を含む、上限以下の正整数の総和"
+            },
+            {
+              "id": "digit-rank-sum",
+              "label": "同じ桁数の正整数内の順位を、上限まで足す"
+            },
+            {
+              "id": "substring-divisible",
+              "label": "十進数字列の、指定数で割り切れる位置区間の個数"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "threshold",
+          "type": "question",
+          "title": "数値の候補を固定すると、判定問題へ変えられますか？",
+          "explanation": "候補が増えると可能性が一方向に変わることを確認します。",
+          "answers": {
+            "yes": "binary-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "check",
+          "type": "question",
+          "title": "答えは「個数」「最適値」「存在判定」のどれか区別できますか？",
+          "explanation": "同じ入力でも、求める量によって使う演算が異なります。",
+          "answers": {
+            "yes": "fallback",
+            "no": "uncertain",
+            "unknown": "uncertain"
+          }
+        },
+        {
+          "id": "uncertain",
+          "type": "route",
+          "title": "条件を確かめる",
+          "explanation": "まだ確認できていない性質を整理します。",
+          "graph": "condition-check"
+        },
+        {
+          "id": "combinatorics-route",
+          "type": "route",
+          "title": "対象と数え方",
+          "explanation": "",
+          "graph": "combinatorics"
+        },
+        {
+          "id": "algebra-route",
+          "type": "route",
+          "title": "積の集計・同じ計算の繰り返し",
+          "explanation": "",
+          "graph": "algebra"
+        },
+        {
+          "id": "digit-result",
+          "type": "result",
+          "title": "桁 DP",
+          "explanation": "",
+          "techniques": [
+            "digit-dp"
+          ],
+          "conditions": [
+            "上限一致、先頭のゼロ、必要な余りを状態にする。"
+          ]
+        },
+        {
+          "id": "binary-result",
+          "type": "result",
+          "title": "答えの二分探索",
+          "explanation": "",
+          "techniques": [
+            "binary-search"
+          ],
+          "conditions": [
+            "判定の単調性を証明する。",
+            "判定コスト×探索回数が制限内に収まる。"
+          ]
+        },
+        {
+          "id": "fallback",
+          "type": "result",
+          "title": "求める量を式にする",
+          "explanation": "",
+          "techniques": [
+            "contribution",
+            "state-design"
+          ],
+          "conditions": [
+            "数え上げの単位と、演算の意味を決める。"
+          ]
+        },
+        {
+          "id": "quotient-check",
+          "type": "question",
+          "title": "floor(N/i) が同じになる i の区間をまとめられますか？",
+          "explanation": "現在の商 q に対して、右端は floor(N/q) までです。",
+          "answers": {
+            "yes": "quotient-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "quotient-result",
+          "type": "result",
+          "title": "同じ商になる区間を一度に処理する",
+          "explanation": "",
+          "techniques": [
+            "quotient-blocks"
+          ],
+          "conditions": [
+            "i の右端を N/(N/i) として進め、0 除算を避ける。"
+          ]
+        },
+        {
+          "id": "digit-residue-check",
+          "type": "question",
+          "title": "上限との大小と桁和の余りを覚えれば、残りの条件が決まりますか？",
+          "explanation": "先頭のゼロは桁和を変えません。正整数だけなら、すべての桁が 0 の列を最後に除きます。",
+          "answers": {
+            "yes": "digit-residue-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digit-residue-result",
+          "type": "result",
+          "title": "上限の接頭辞との一致と、桁和の余りを持って数字を選ぶ",
+          "explanation": "",
+          "techniques": [
+            "digit-sum-residue-dp",
+            "digit-dp"
+          ],
+          "conditions": [
+            "桁を選ぶとき、上限を超えない状態を保つ。",
+            "整数 0 を答えに含めるか、出力の条件に合わせて扱う。",
+            "必要なら桁和以外の条件も状態へ加える。"
+          ]
+        },
+        {
+          "id": "linear-floor-positive",
+          "type": "question",
+          "title": "項数 n は非負、割る数 m は正ですか？",
+          "explanation": "係数 a,b は負でも床関数として扱います。整数除算の負の切り捨て規約と、積の型に注意します。",
+          "answers": {
+            "yes": "linear-floor-swap",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "linear-floor-swap",
+          "type": "question",
+          "title": "a,b の整数部分を先に足し、残った格子点の数で軸を入れ替えられますか？",
+          "explanation": "残りを 0≤a,b<m に正規化し、最大高さで行と列を交換します。商が減るため、大きい項数を直接列挙しません。",
+          "answers": {
+            "yes": "linear-floor-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "linear-floor-result",
+          "type": "result",
+          "title": "整数部分を取り出し、格子点の軸を交換して床関数の和を縮める",
+          "explanation": "",
+          "techniques": [
+            "floor-sum-euclidean"
+          ],
+          "conditions": [
+            "m>0、n≥0。",
+            "符号付き a,b を床関数の規約で正規化する。",
+            "ai+b と総和があふれない整数型を使う。"
+          ]
+        },
+        {
+          "id": "required-digits-route",
+          "type": "route",
+          "title": "数字の出現条件と整数の総和",
+          "explanation": "",
+          "graph": "digit-required-values"
+        },
+        {
+          "id": "rank-sum-route",
+          "type": "route",
+          "title": "桁数ごとの順位の総和",
+          "explanation": "",
+          "graph": "decimal-length-rank-total"
+        },
+        {
+          "id": "substring-divisibility-route",
+          "type": "route",
+          "title": "十進部分文字列の可除性",
+          "explanation": "",
+          "graph": "decimal-substring-remainders"
+        }
+      ],
+      "entry": false,
+      "domain": "math",
+      "width": 3072,
+      "height": 2113
+    },
+    {
+      "id": "shortest-path",
+      "title": "移動回数・移動費用",
+      "description": "重み、閉路、求める頂点の組で方法を選びます。",
+      "root": "movement",
+      "nodes": [
+        {
+          "id": "unweighted",
+          "type": "question",
+          "title": "各辺の移動コストはすべて同じ正の値ですか？",
+          "explanation": "辺を一本使う回数を最小化するなら BFS で距離を求められます。",
+          "answers": {
+            "yes": "bfs-result",
+            "no": "zero-one",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "zero-one",
+          "type": "question",
+          "title": "各辺の重みは 0 か 1 ですか？",
+          "explanation": "重み 0 の遷移を deque の先頭、重み 1 の遷移を末尾へ入れます。",
+          "answers": {
+            "yes": "zero-one-result",
+            "no": "dag",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "dag",
+          "type": "question",
+          "title": "有向閉路のないグラフですか？",
+          "explanation": "DAG なら辺に負の重みがあってもトポロジカル順序で緩和できます。",
+          "answers": {
+            "yes": "dag-result",
+            "no": "nonnegative",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "nonnegative",
+          "type": "question",
+          "title": "すべての辺の重みは非負ですか？",
+          "explanation": "負の辺がある場合、Dijkstra 法の確定処理は正当化できません。",
+          "answers": {
+            "yes": "dijkstra-result",
+            "no": "negative-cycle",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "negative-cycle",
+          "type": "question",
+          "title": "負閉路の有無や、負閉路から到達する頂点を調べる必要がありますか？",
+          "explanation": "始点から到達できる負閉路と、そこから目標へ到達できるかを分けます。",
+          "answers": {
+            "yes": "bellman-result",
+            "no": "size",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "size",
+          "type": "question",
+          "title": "頂点数×辺数の緩和を制限内で行えますか？",
+          "explanation": "Bellman–Ford 法の O(VE) を見積もります。",
+          "answers": {
+            "yes": "bellman-result",
+            "no": "reduction",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "reduction",
+          "type": "question",
+          "title": "特殊な構造で負の辺をなくすか、状態数を減らせますか？",
+          "explanation": "重みの付け替えは経路比較を保つ必要があります。根拠のない貪欲処理は避けます。",
+          "answers": {
+            "yes": "reduction-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "sources",
+          "type": "question",
+          "title": "始点が複数あり、どれか一つからの最短距離を求めますか？",
+          "explanation": "複数の始点を距離 0 で探索に入れる方法を考えます。",
+          "answers": {
+            "yes": "multi-source",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "check",
+          "type": "question",
+          "title": "問題文の重みの下限が 0 以上だと確認できますか？",
+          "explanation": "整数か実数かだけでは足りません。負の値が許されるかを調べます。",
+          "answers": {
+            "yes": "dijkstra-result",
+            "no": "uncertain",
+            "unknown": "uncertain"
+          }
+        },
+        {
+          "id": "uncertain",
+          "type": "route",
+          "title": "条件を確かめる",
+          "explanation": "",
+          "graph": "condition-check"
+        },
+        {
+          "id": "bfs-result",
+          "type": "result",
+          "title": "幅優先探索",
+          "explanation": "",
+          "techniques": [
+            "bfs"
+          ],
+          "conditions": [
+            "すべての辺のコストが同じ正の値である。",
+            "複数始点なら各始点を距離 0 として初期化できる。"
+          ]
+        },
+        {
+          "id": "zero-one-result",
+          "type": "result",
+          "title": "0-1 BFS",
+          "explanation": "",
+          "techniques": [
+            "zero-one-bfs"
+          ],
+          "conditions": [
+            "すべての辺の重みが 0 または 1 である。"
+          ]
+        },
+        {
+          "id": "dag-result",
+          "type": "result",
+          "title": "DAG の順序で距離を更新する",
+          "explanation": "",
+          "techniques": [
+            "dag-dp",
+            "topological-sort"
+          ],
+          "conditions": [
+            "有向閉路がない。",
+            "負の辺があっても、すべての依存元の距離から更新する。"
+          ]
+        },
+        {
+          "id": "dijkstra-result",
+          "type": "result",
+          "title": "Dijkstra 法",
+          "explanation": "",
+          "techniques": [
+            "dijkstra"
+          ],
+          "conditions": [
+            "すべての辺の重みが非負である。",
+            "到達不能と距離の overflow を扱う。"
+          ]
+        },
+        {
+          "id": "bellman-result",
+          "type": "result",
+          "title": "Bellman–Ford 法",
+          "explanation": "",
+          "techniques": [
+            "bellman-ford"
+          ],
+          "conditions": [
+            "始点から到達可能な辺を緩和する。",
+            "負閉路から目標へ届くかも必要に応じて調べる。"
+          ]
+        },
+        {
+          "id": "reduction-result",
+          "type": "result",
+          "title": "経路のモデルを変える",
+          "explanation": "",
+          "techniques": [
+            "graph-reduction"
+          ],
+          "conditions": [
+            "経路の合法性と比較するコストを保つ。"
+          ]
+        },
+        {
+          "id": "multi-source",
+          "type": "result",
+          "title": "複数始点から探索する",
+          "explanation": "",
+          "techniques": [
+            "multi-source-distance",
+            "bfs",
+            "dijkstra"
+          ],
+          "conditions": [
+            "BFS は一様な重み、Dijkstra 法は非負の重みの場合に使う。"
+          ]
+        },
+        {
+          "id": "fallback",
+          "type": "result",
+          "title": "重みと必要な距離を整理する",
+          "explanation": "",
+          "techniques": [
+            "state-design"
+          ],
+          "conditions": [
+            "始点・目標・重みの範囲・負閉路の扱いを先に確定する。"
+          ]
+        },
+        {
+          "id": "movement",
+          "type": "question",
+          "title": "移動の特徴はどれですか？",
+          "explanation": "元の頂点だけでは足りない情報と、移動費用を選びます。",
+          "options": [
+            {
+              "id": "normal",
+              "label": "位置と辺の費用だけで次の移動が決まる"
+            },
+            {
+              "id": "switch",
+              "label": "スイッチやモードで通れる辺が変わる"
+            },
+            {
+              "id": "turn",
+              "label": "進む向きや曲がる回数に費用がある"
+            },
+            {
+              "id": "many-starts",
+              "label": "複数の開始点のどれかからの距離"
+            },
+            {
+              "id": "dense-rule",
+              "label": "全組の移動費用が規則式で決まり、辺が多い"
+            },
+            {
+              "id": "resource",
+              "label": "移動で資源を消費し、場所で補充できる"
+            },
+            {
+              "id": "range-edges",
+              "label": "頂点と、添字の区間内の全頂点を結ぶ移動"
+            },
+            {
+              "id": "all-pairs",
+              "label": "負の辺を含むグラフの、すべての始点からの距離"
+            },
+            {
+              "id": "shared-set",
+              "label": "集合やグループの共通要素を通じた移動回数"
+            },
+            {
+              "id": "xor-walk",
+              "label": "辺重みの合計ではなく、XOR を最小にする再訪できる経路"
+            },
+            {
+              "id": "single-discount",
+              "label": "一辺だけ、費用を半分の整数切り捨てにする"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "answers": {
+            "normal": "ordinary-goal",
+            "switch": "switch-check",
+            "turn": "turn-check",
+            "many-starts": "sources",
+            "dense-rule": "dense-check",
+            "unknown": "check",
+            "resource": "resource-limit",
+            "range-edges": "range-edge-cost",
+            "all-pairs": "reweight-cycle",
+            "shared-set": "supernode-cost",
+            "xor-walk": "xor-walk-route",
+            "single-discount": "discount-route"
+          }
+        },
+        {
+          "id": "switch-check",
+          "type": "question",
+          "title": "位置とスイッチ・モードの組で、次の移動を決められますか？",
+          "explanation": "同じ位置でも次に進める場所が違うなら、別の状態にします。",
+          "answers": {
+            "yes": "switch-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "turn-check",
+          "type": "question",
+          "title": "現在位置と直前の方向を覚えれば、曲がる費用を計算できますか？",
+          "explanation": "向きを変えず進む辺と、向きを変える辺で費用を分けます。",
+          "answers": {
+            "yes": "turn-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "dense-check",
+          "type": "question",
+          "title": "同じ費用の移動を、補助の位置や頂点を経由してまとめられますか？",
+          "explanation": "元の二頂点間の最小費用を変えない対応が必要です。",
+          "answers": {
+            "yes": "dense-result",
+            "no": "reduction",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "switch-result",
+          "type": "result",
+          "title": "位置とモードを別の頂点にする",
+          "explanation": "",
+          "techniques": [
+            "state-design",
+            "bfs"
+          ],
+          "conditions": [
+            "すべての一手が同じ正の費用なら BFS。",
+            "その他の重みでは対応する最短経路手法を選ぶ。"
+          ]
+        },
+        {
+          "id": "turn-result",
+          "type": "result",
+          "title": "直前の方向を状態に加える",
+          "explanation": "",
+          "techniques": [
+            "turn-penalty-state",
+            "zero-one-bfs"
+          ],
+          "conditions": [
+            "曲がる費用と直進の費用を辺として表す。",
+            "0-1 BFS を使うのは重みが 0 または 1 の場合。"
+          ]
+        },
+        {
+          "id": "dense-result",
+          "type": "result",
+          "title": "共通する移動を補助頂点へまとめる",
+          "explanation": "",
+          "techniques": [
+            "graph-reduction",
+            "coordinate-compression"
+          ],
+          "conditions": [
+            "元の移動費用を保ち、頂点数と辺数を減らす。"
+          ]
+        },
+        {
+          "id": "resource-limit",
+          "type": "question",
+          "title": "資源の量を有限の上限で切っても、最適な移動時間を変えないと示せますか？",
+          "explanation": "単に上限を小さくするだけでは、大きい資源を持つ最適経路を失います。消費量と必要な移動数から上限を証明します。",
+          "answers": {
+            "yes": "resource-nonnegative",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "resource-nonnegative",
+          "type": "question",
+          "title": "位置と所持量を覚えると次の行動が定まり、各行動時間は非負ですか？",
+          "explanation": "移動と補充の両方を状態間の辺にし、資源不足の移動を除きます。",
+          "answers": {
+            "yes": "resource-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "resource-result",
+          "type": "result",
+          "title": "位置と残り資源を一つの状態にして、補充も辺にする",
+          "explanation": "",
+          "techniques": [
+            "dijkstra-expanded-resource",
+            "dijkstra"
+          ],
+          "conditions": [
+            "資源の上限を切り詰めても最適値が変わらない証明がある。",
+            "状態数は頂点数 × 資源の値域に比例する。",
+            "全遷移の時間は非負。"
+          ]
+        },
+        {
+          "id": "range-edge-cost",
+          "type": "question",
+          "title": "区間の全対象へ、同じ非負の費用で移動しますか？",
+          "explanation": "区間内の位置によって費用が変わる場合は、区間を単にまとめるだけでは等価になりません。",
+          "answers": {
+            "yes": "range-edge-direction",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "range-edge-direction",
+          "type": "question",
+          "title": "点から区間へ向かう辺と、区間から点へ向かう辺を区別できますか？",
+          "explanation": "まとめるための補助辺を逆向きにも張ると、元のグラフにない移動が生まれます。",
+          "answers": {
+            "yes": "range-edge-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "range-edge-result",
+          "type": "result",
+          "title": "区間を表す補助頂点へ、向きを保った辺を張る",
+          "explanation": "",
+          "techniques": [
+            "dijkstra-range-edges",
+            "graph-reduction",
+            "dijkstra"
+          ],
+          "conditions": [
+            "点→区間と区間→点の補助構造は、移動できる向きが異なる。",
+            "区間内の対象へ共通の非負費用を持つ。",
+            "追加する辺数を O((N+Q) log N) 程度に抑える。"
+          ]
+        },
+        {
+          "id": "reweight-cycle",
+          "type": "question",
+          "title": "どの頂点からも到達できる扱いで、負閉路がないと確認できますか？",
+          "explanation": "負閉路を含むグラフでは有限の最短距離が定まらない組があります。",
+          "answers": {
+            "yes": "reweight-potential",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "reweight-potential",
+          "type": "question",
+          "title": "頂点ごとの値 h で、w(u,v)+h[u]−h[v] がすべて非負になりますか？",
+          "explanation": "経路上の h の項は始点と終点の差にまとまり、元の経路の優劣を保ちます。",
+          "answers": {
+            "yes": "reweight-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "reweight-result",
+          "type": "result",
+          "title": "頂点の値を足し引きして、負の辺を非負へ置き換える",
+          "explanation": "",
+          "techniques": [
+            "dijkstra-potential-reweight",
+            "bellman-ford",
+            "dijkstra"
+          ],
+          "conditions": [
+            "元のグラフに負閉路がない。",
+            "全辺の新しい重みが非負であることを確かめる。",
+            "最後に始点・終点の差を戻して元の距離にする。",
+            "疎なグラフの全点対で有効か、前計算を含む計算量を見積もる。"
+          ]
+        },
+        {
+          "id": "supernode-cost",
+          "type": "question",
+          "title": "同じ集合への所属を、要素→集合→要素という二段階の移動にできますか？",
+          "explanation": "要素間を全部結ぶ代わりに、所属関係だけの辺を作ります。",
+          "answers": {
+            "yes": "supernode-zero-one",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "supernode-zero-one",
+          "type": "question",
+          "title": "二段階のうち片方を 0、もう片方を 1 として、元の費用を再現できますか？",
+          "explanation": "集合に入る回数など、何を 1 と数えるかを決めます。元の操作回数との定数差があるなら最後に補正します。",
+          "answers": {
+            "yes": "supernode-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "supernode-result",
+          "type": "result",
+          "title": "共通の集合を補助頂点にして、0・1 の辺で移動する",
+          "explanation": "",
+          "techniques": [
+            "zero-one-bfs-supernodes",
+            "zero-one-bfs",
+            "graph-reduction"
+          ],
+          "conditions": [
+            "所属関係の辺数が制限内に収まる。",
+            "補助頂点を通る経路と、元の合法な移動が対応する。",
+            "0 と 1 の割当てが元の費用を再現する。"
+          ]
+        },
+        {
+          "id": "xor-walk-route",
+          "type": "route",
+          "title": "辺重み XOR と時間による辺の変更",
+          "explanation": "",
+          "graph": "graph-xor-walks"
+        },
+        {
+          "id": "ordinary-goal",
+          "type": "question",
+          "title": "最小費用のほかに、何を求めますか？",
+          "explanation": "経路の個数や辺数も求めるときは、同じ最小費用になる遷移を残します。",
+          "answers": {
+            "distance-only": "unweighted",
+            "route-statistics": "statistics-route",
+            "unknown": "check",
+            "k-walks": "k-walks-route",
+            "label-sequence": "label-frontier-route"
+          },
+          "options": [
+            {
+              "id": "distance-only",
+              "label": "最小費用・最小回数だけ"
+            },
+            {
+              "id": "route-statistics",
+              "label": "最小費用の経路の個数と、辺数の最小・最大"
+            },
+            {
+              "id": "k-walks",
+              "label": "費用が小さい順の K 本の経路。頂点・辺の再訪と同費用の別経路を含む"
+            },
+            {
+              "id": "label-sequence",
+              "label": "辺数が最小の経路の中で、辺の色・ラベルの列を辞書順最小にする"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "statistics-route",
+          "type": "route",
+          "title": "最短経路だけの個数と辺数",
+          "explanation": "",
+          "graph": "shortest-route-statistics"
+        },
+        {
+          "id": "discount-route",
+          "type": "route",
+          "title": "一辺だけを割り引く移動",
+          "explanation": "",
+          "graph": "shortest-single-discount"
+        },
+        {
+          "id": "k-walks-route",
+          "type": "route",
+          "title": "再訪できる経路の費用を安い順に求める",
+          "explanation": "",
+          "graph": "k-cheapest-revisiting-walks"
+        },
+        {
+          "id": "label-frontier-route",
+          "type": "route",
+          "title": "同じ最短辺数の中で最小の辺ラベル列",
+          "explanation": "",
+          "graph": "lexicographic-shortest-labels"
+        }
+      ],
+      "domain": "graphs",
+      "width": 5396,
+      "height": 3970
+    },
+    {
+      "id": "tree-query",
+      "title": "木の祖先・部分木・経路",
+      "description": "祖先、部分木、経路、距離、少数の指定頂点を分けます。",
+      "root": "target",
+      "nodes": [
+        {
+          "id": "ancestor",
+          "type": "question",
+          "title": "祖先への移動や LCA が必要ですか？",
+          "explanation": "k 個上の祖先、二頂点の共通祖先、距離の計算を考えます。",
+          "answers": {
+            "yes": "doubling",
+            "no": "subtree",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "subtree",
+          "type": "question",
+          "title": "部分木の値を集計・更新しますか？",
+          "explanation": "DFS の入退出時刻で、部分木が連続する範囲になるように並べます。",
+          "answers": {
+            "yes": "subtree-result",
+            "no": "path",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "path",
+          "type": "question",
+          "title": "二頂点間の経路に集計・更新を行いますか？",
+          "explanation": "経路を少数の連続区間へ分ける方法を考えます。",
+          "answers": {
+            "yes": "hld",
+            "no": "marked",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "marked",
+          "type": "question",
+          "title": "一回の問い合わせで指定される頂点が少数ですか？",
+          "explanation": "指定頂点と必要な LCA だけを残して、その関係を小さな木にします。",
+          "answers": {
+            "yes": "virtual",
+            "no": "distance",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "distance",
+          "type": "question",
+          "title": "頂点からの距離に応じて全体の頂点を集計しますか？",
+          "explanation": "中心を一つずつ除き、距離に関する情報を併合する方法を考えます。",
+          "answers": {
+            "yes": "centroid",
+            "no": "merge",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "merge",
+          "type": "question",
+          "title": "部分木ごとの集合・頻度表を親へ併合しますか？",
+          "explanation": "小さい表を大きい表へ移すと、要素の移動回数を抑えられます。",
+          "answers": {
+            "yes": "small",
+            "no": "versions",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "versions",
+          "type": "question",
+          "title": "木上の値の過去の版を参照しますか？",
+          "explanation": "木の構造が固定で、値だけが版ごとに変化する場合を考えます。",
+          "answers": {
+            "yes": "persistent",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "check",
+          "type": "question",
+          "title": "問い合わせ対象は、祖先・部分木・一本の経路のどれか書けますか？",
+          "explanation": "根を決め、対象となる頂点や辺を小さな木に描いてみます。",
+          "answers": {
+            "yes": "fallback",
+            "no": "uncertain",
+            "unknown": "uncertain"
+          }
+        },
+        {
+          "id": "uncertain",
+          "type": "route",
+          "title": "条件を確かめる",
+          "explanation": "まだ確認できていない性質を整理します。",
+          "graph": "condition-check"
+        },
+        {
+          "id": "doubling",
+          "type": "result",
+          "title": "ダブリングと LCA",
+          "explanation": "",
+          "techniques": [
+            "doubling"
+          ],
+          "conditions": [
+            "木に根を定め、各頂点の親と深さを持つ。"
+          ]
+        },
+        {
+          "id": "subtree-result",
+          "type": "result",
+          "title": "DFS 順と区間データ構造",
+          "explanation": "",
+          "techniques": [
+            "subtree-euler-interval",
+            "segment-tree",
+            "fenwick-tree"
+          ],
+          "conditions": [
+            "部分木を DFS 順の連続区間へ対応させる。",
+            "BIT は和などの逆演算がある集計、セグメント木は結合的な演算で使う。"
+          ]
+        },
+        {
+          "id": "hld",
+          "type": "result",
+          "title": "Heavy-Light 分解",
+          "explanation": "",
+          "techniques": [
+            "heavy-light-decomposition",
+            "segment-tree"
+          ],
+          "conditions": [
+            "経路を O(log N) 個の区間へ分ける。",
+            "非可換な集計では経路の向きを保つ。"
+          ]
+        },
+        {
+          "id": "virtual",
+          "type": "result",
+          "title": "虚木",
+          "explanation": "",
+          "techniques": [
+            "virtual-tree-adjacent-lca",
+            "virtual-tree"
+          ],
+          "conditions": [
+            "指定頂点と、その間に必要な LCA を含める。",
+            "圧縮した辺の長さと省いた頂点の寄与を保持する。"
+          ]
+        },
+        {
+          "id": "centroid",
+          "type": "route",
+          "title": "二頂点の経路の長さと求める量",
+          "explanation": "",
+          "graph": "tree-pair-distance"
+        },
+        {
+          "id": "small",
+          "type": "result",
+          "title": "小さい集合から併合する",
+          "explanation": "",
+          "techniques": [
+            "small-to-large"
+          ],
+          "conditions": [
+            "要素が移るたびに、移動先の大きさが十分増える。"
+          ]
+        },
+        {
+          "id": "persistent",
+          "type": "result",
+          "title": "木上の値を永続化する",
+          "explanation": "",
+          "techniques": [
+            "persistent-segment-tree"
+          ],
+          "conditions": [
+            "木の順序や経路への対応を固定し、過去の根を保存する。"
+          ]
+        },
+        {
+          "id": "fallback",
+          "type": "result",
+          "title": "問い合わせの対象を整理する",
+          "explanation": "",
+          "techniques": [
+            "state-design"
+          ],
+          "conditions": [
+            "頂点の値か辺の値か、経路の向き、根の変更の有無を確認する。"
+          ]
+        },
+        {
+          "id": "target",
+          "type": "question",
+          "title": "木のどの部分について答えますか？",
+          "explanation": "根、値が付く場所、対象の頂点の範囲を選びます。",
+          "options": [
+            {
+              "id": "ancestor",
+              "label": "何個か上の祖先・二頂点の共通祖先"
+            },
+            {
+              "id": "subtree",
+              "label": "一つの部分木"
+            },
+            {
+              "id": "path-static",
+              "label": "値が変わらない一本の経路の集計・順位"
+            },
+            {
+              "id": "path-change",
+              "label": "値が変わる経路の集計・更新"
+            },
+            {
+              "id": "marked",
+              "label": "少数の指定頂点だけが重要"
+            },
+            {
+              "id": "distance",
+              "label": "長さの条件を満たす二頂点の経路の個数・最小辺数"
+            },
+            {
+              "id": "colors",
+              "label": "各部分木の色の種類・出現回数"
+            },
+            {
+              "id": "batch-paths",
+              "label": "全ての指定経路を足した後の、辺・頂点ごとの通過回数"
+            },
+            {
+              "id": "nearest-marked",
+              "label": "印を追加しながら、指定頂点から最寄りの印までの距離"
+            },
+            {
+              "id": "marked-separation",
+              "label": "指定された印頂点を、未印頂点の最少削除で互いに分離する"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "answers": {
+            "ancestor": "ancestor",
+            "subtree": "subtree-kind",
+            "path-static": "static-kind",
+            "path-change": "changed-kind",
+            "marked": "marked",
+            "distance": "centroid",
+            "colors": "colors-kind",
+            "unknown": "check",
+            "batch-paths": "batch-path-route",
+            "nearest-marked": "nearest-mark-route",
+            "marked-separation": "marked-separation-route"
+          }
+        },
+        {
+          "id": "prefix-check",
+          "type": "question",
+          "title": "根からの和・XOR と共通祖先から経路を復元できますか？",
+          "explanation": "辺の値か頂点の値かで、共通祖先の補正が変わります。",
+          "answers": {
+            "yes": "prefix-result",
+            "no": "path",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "prefix-result",
+          "type": "result",
+          "title": "根からの累積値を共通祖先で補正する",
+          "explanation": "",
+          "techniques": [
+            "tree-path-prefix-lca"
+          ],
+          "conditions": [
+            "和や XOR の逆演算で二本の根からの経路を引き合わせる。"
+          ]
+        },
+        {
+          "id": "subtree-kind",
+          "type": "question",
+          "title": "部分木について、どの操作や問い合わせがありますか？",
+          "explanation": "木の根が固定かどうかと、途中で値が変わるかを選びます。",
+          "answers": {
+            "depth-count": "subtree",
+            "root-change": "reroot-route",
+            "last-write": "overwrite-route",
+            "other": "subtree",
+            "unknown": "check",
+            "leaf-labels": "leaf-labels-route"
+          },
+          "options": [
+            {
+              "id": "depth-count",
+              "label": "固定の根で、指定深さの子孫を数える"
+            },
+            {
+              "id": "root-change",
+              "label": "根を変えながら、部分木へ加算・部分木の和"
+            },
+            {
+              "id": "last-write",
+              "label": "部分木を 1、根から指定頂点を 0 に上書きし、点を読む"
+            },
+            {
+              "id": "other",
+              "label": "固定の根で、その他の集計・更新"
+            },
+            {
+              "id": "leaf-labels",
+              "label": "部分木が連続区間になり、包含・非交差を保つ番号を割り当てる"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "static-kind",
+          "type": "question",
+          "title": "経路上の固定値から、何を求めますか？",
+          "explanation": "同じ値の出現も、頂点ごとに一つの要素として扱います。",
+          "answers": {
+            "sum": "prefix-check",
+            "kth": "kth-route",
+            "other": "path",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "sum",
+              "label": "和・XOR・長さ"
+            },
+            {
+              "id": "kth",
+              "label": "小さい順で k 番目の頂点値"
+            },
+            {
+              "id": "other",
+              "label": "その他の経路集計"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "changed-kind",
+          "type": "question",
+          "title": "値が変わる経路から、何を求めますか？",
+          "explanation": "和や最大値の集計と、始点から終点へ順に作用させる計算を分けます。",
+          "answers": {
+            "aggregate": "path",
+            "directed-compose": "composition-route",
+            "last-write": "overwrite-route",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "aggregate",
+              "label": "経路の和・最大値・連続部分の最適値など"
+            },
+            {
+              "id": "directed-compose",
+              "label": "各頂点の一次関数を、始点から終点の順に合成する"
+            },
+            {
+              "id": "last-write",
+              "label": "部分木を 1、根から指定頂点を 0 に上書きし、点を読む"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "colors-kind",
+          "type": "question",
+          "title": "各部分木の色について、何を求めますか？",
+          "explanation": "色の番号、色ごとの頻度、同率の場合の答えを確認します。",
+          "answers": {
+            "distinct": "merge",
+            "mode": "mode-route",
+            "other": "merge",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "distinct",
+              "label": "現れる色の種類数"
+            },
+            {
+              "id": "mode",
+              "label": "最も多い色を全て求め、その色番号を合計する"
+            },
+            {
+              "id": "other",
+              "label": "その他の集合・頻度の集計"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "reroot-route",
+          "type": "route",
+          "title": "根が変わる部分木の範囲",
+          "explanation": "",
+          "graph": "tree-root-change"
+        },
+        {
+          "id": "overwrite-route",
+          "type": "route",
+          "title": "部分木と祖先への上書きの時刻",
+          "explanation": "",
+          "graph": "tree-last-write"
+        },
+        {
+          "id": "kth-route",
+          "type": "route",
+          "title": "経路の順位と値の頻度",
+          "explanation": "",
+          "graph": "tree-path-order"
+        },
+        {
+          "id": "composition-route",
+          "type": "route",
+          "title": "向きを持つ経路の関数合成",
+          "explanation": "",
+          "graph": "tree-directed-functions"
+        },
+        {
+          "id": "mode-route",
+          "type": "route",
+          "title": "固定部分木の最頻色",
+          "explanation": "",
+          "graph": "tree-subtree-modes"
+        },
+        {
+          "id": "batch-path-route",
+          "type": "route",
+          "title": "全経路を加算した後の通過回数",
+          "explanation": "",
+          "graph": "tree-batch-paths"
+        },
+        {
+          "id": "nearest-mark-route",
+          "type": "route",
+          "title": "印が増える木の最寄り距離",
+          "explanation": "",
+          "graph": "tree-nearest-marked"
+        },
+        {
+          "id": "marked-separation-route",
+          "type": "route",
+          "title": "印頂点同士を、頂点削除で分離する",
+          "explanation": "",
+          "graph": "marked-vertex-separation"
+        },
+        {
+          "id": "leaf-labels-route",
+          "type": "route",
+          "title": "葉の番号から、部分木の区間を作る",
+          "explanation": "",
+          "graph": "rooted-tree-leaf-labels"
+        }
+      ],
+      "domain": "graphs",
+      "width": 4666,
+      "height": 3496
+    },
+    {
+      "id": "combinatorics",
+      "title": "対象と数え方",
+      "description": "余事象、寄与、対称性、集合、桁を使い分けます。",
+      "root": "count-kind",
+      "nodes": [
+        {
+          "id": "contribution",
+          "type": "question",
+          "title": "答えを各要素・各位置・各組の寄与の和にできますか？",
+          "explanation": "対象を列挙する代わりに、一つの要素が含まれる回数を数えます。",
+          "answers": {
+            "yes": "contribution-result",
+            "no": "symmetry",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "symmetry",
+          "type": "question",
+          "title": "回転・並べ替えなどで同じものになる状態がありますか？",
+          "explanation": "代表を選ぶか、同値類の大きさの違いを考慮します。",
+          "answers": {
+            "yes": "symmetry-result",
+            "no": "subsets",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "subsets",
+          "type": "question",
+          "title": "各集合に対して、その部分集合の値を集計しますか？",
+          "explanation": "全ペアを列挙する代わりに各ビットで変換します。",
+          "answers": {
+            "yes": "zeta",
+            "no": "digits",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "digits",
+          "type": "question",
+          "title": "整数の桁を順に決めることで数えられますか？",
+          "explanation": "上限の接頭辞と一致しているかを持ちます。",
+          "answers": {
+            "yes": "digit",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "check",
+          "type": "question",
+          "title": "一つの対象を何回数えているか、小さい例で確認できますか？",
+          "explanation": "重複、空集合、固定点の有無を調べます。",
+          "answers": {
+            "yes": "fallback",
+            "no": "uncertain",
+            "unknown": "uncertain"
+          }
+        },
+        {
+          "id": "uncertain",
+          "type": "route",
+          "title": "条件を確かめる",
+          "explanation": "まだ確認できていない性質を整理します。",
+          "graph": "condition-check"
+        },
+        {
+          "id": "contribution-result",
+          "type": "result",
+          "title": "寄与ごとに数える",
+          "explanation": "",
+          "techniques": [
+            "contribution"
+          ],
+          "conditions": [
+            "数える順序を変えても同じ対象を同じ回数数える。"
+          ]
+        },
+        {
+          "id": "symmetry-result",
+          "type": "result",
+          "title": "同値な状態をまとめる",
+          "explanation": "",
+          "techniques": [
+            "symmetry"
+          ],
+          "conditions": [
+            "すべての同値類が同じ大きさだと無条件に仮定しない。"
+          ]
+        },
+        {
+          "id": "zeta",
+          "type": "result",
+          "title": "部分集合ゼータ変換",
+          "explanation": "",
+          "techniques": [
+            "subset-transform"
+          ],
+          "conditions": [
+            "集合包含に沿った集計として表せる。"
+          ]
+        },
+        {
+          "id": "digit",
+          "type": "result",
+          "title": "桁 DP",
+          "explanation": "",
+          "techniques": [
+            "digit-dp"
+          ],
+          "conditions": [
+            "必要な性質を接頭辞の状態から更新できる。"
+          ]
+        },
+        {
+          "id": "fallback",
+          "type": "result",
+          "title": "小規模全探索で数え方を確認する",
+          "explanation": "",
+          "techniques": [
+            "brute-force-observation",
+            "counterexample"
+          ],
+          "conditions": [
+            "小さいサイズで対象を直接列挙し、式と比較する。"
+          ]
+        },
+        {
+          "id": "count-kind",
+          "type": "question",
+          "title": "数える対象には、どの特徴がありますか？",
+          "explanation": "禁止条件、同じ物の配置、二つの選び方への寄与を分けます。",
+          "options": [
+            {
+              "id": "binomial",
+              "label": "N 個から K 個を選ぶ個数を、何度も求める"
+            },
+            {
+              "id": "identical",
+              "label": "同じ物を、いくつかの箱へ配る"
+            },
+            {
+              "id": "forbidden",
+              "label": "いくつかの禁止条件を一つも満たさない個数"
+            },
+            {
+              "id": "pair-product",
+              "label": "異なる二つの位置の値の積の総和"
+            },
+            {
+              "id": "contribution",
+              "label": "各要素が何回含まれるかを数える"
+            },
+            {
+              "id": "symmetry",
+              "label": "回転・付け替えで同じになる対象"
+            },
+            {
+              "id": "subsets",
+              "label": "集合とその部分集合に関する集計"
+            },
+            {
+              "id": "digits",
+              "label": "各桁を選ぶ整数の個数"
+            },
+            {
+              "id": "monotone-values",
+              "label": "非減少に並ぶ K 個の整数の選び方"
+            },
+            {
+              "id": "composite-binomial",
+              "label": "法が合成数でもよい、多数の二項係数"
+            },
+            {
+              "id": "bracket-prefix",
+              "label": "与えた括弧の接頭辞を、正しい括弧列へ完成する個数"
+            },
+            {
+              "id": "equal-neighbors",
+              "label": "一列の色で、隣の色が等しくなる境界の個数を制限する"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "answers": {
+            "binomial": "factorial-check",
+            "identical": "distribution-kind",
+            "forbidden": "forbidden-kind",
+            "pair-product": "pair-product-check",
+            "contribution": "contribution-kind",
+            "symmetry": "identity-kind",
+            "subsets": "subsets",
+            "digits": "digits",
+            "unknown": "check",
+            "monotone-values": "monotone-values",
+            "composite-binomial": "composite-mod-small",
+            "bracket-prefix": "bracket-route",
+            "equal-neighbors": "equal-neighbor-route"
+          }
+        },
+        {
+          "id": "factorial-check",
+          "type": "question",
+          "title": "必要な階乗が、答えの法の下で逆元を持ちますか？",
+          "explanation": "素数法でも N が法以上なら、階乗を単純に割る公式をそのまま使えません。",
+          "answers": {
+            "yes": "factorial-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "boxes-check",
+          "type": "question",
+          "title": "箱ごとの個数だけを区別し、下限を引くとすべて非負になりますか？",
+          "explanation": "同じ物の並び順は区別しません。上限がある場合は追加の処理が必要です。",
+          "answers": {
+            "yes": "boxes-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "forbidden-check",
+          "type": "question",
+          "title": "同時に満たす禁止条件の個数を、各部分集合ごとに数えられますか？",
+          "explanation": "不在条件などの重複を補正するため、交わりを数えます。",
+          "answers": {
+            "yes": "forbidden-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "pair-product-check",
+          "type": "question",
+          "title": "一方の位置を固定すると、残りの値の和をまとめられますか？",
+          "explanation": "i<j の組なら、接頭辞または接尾辞の和を使って積をまとめます。",
+          "answers": {
+            "yes": "pair-product-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "factorial-result",
+          "type": "result",
+          "title": "階乗と逆階乗を前計算する",
+          "explanation": "",
+          "techniques": [
+            "factorial-inverses"
+          ],
+          "conditions": [
+            "必要な階乗が可逆で、前計算の値域が制限内に収まる。"
+          ]
+        },
+        {
+          "id": "boxes-result",
+          "type": "result",
+          "title": "下限を引いて仕切りの置き方を数える",
+          "explanation": "",
+          "techniques": [
+            "stars-and-bars"
+          ],
+          "conditions": [
+            "箱数と余った物の数を確認し、上限がある場合は別に補正する。"
+          ]
+        },
+        {
+          "id": "forbidden-result",
+          "type": "result",
+          "title": "禁止条件の交わりを包除する",
+          "explanation": "",
+          "techniques": [
+            "inclusion-exclusion-forbidden",
+            "complement-counting"
+          ],
+          "conditions": [
+            "各部分集合の交わりを数えられる。"
+          ]
+        },
+        {
+          "id": "pair-product-result",
+          "type": "result",
+          "title": "一方の位置を固定し、他方の和をまとめる",
+          "explanation": "",
+          "techniques": [
+            "contribution",
+            "prefix-sum"
+          ],
+          "conditions": [
+            "各 i<j の組をちょうど一回数える。"
+          ]
+        },
+        {
+          "id": "monotone-values",
+          "type": "question",
+          "title": "隣の値の差と両端の余りを、非負の整数へ変えられますか？",
+          "explanation": "1≤a1≤...≤aK≤N を、端を含む差の合計 N-1 に対応させます。",
+          "answers": {
+            "yes": "boxes-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "composite-mod-small",
+          "type": "question",
+          "title": "固定された法を素数の冪に分解し、各法の表を保存できますか？",
+          "explanation": "n が大きくても、法が小さいなら各素数冪について、その倍数でない積の表を作れます。",
+          "answers": {
+            "yes": "composite-valuation",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "composite-valuation",
+          "type": "question",
+          "title": "階乗中の素因数の指数と、その素因数を除いた可逆な部分を分けられますか？",
+          "explanation": "階乗そのものは法の下で 0 になる場合があります。割れる部分を逆元で割り、素因数の冪を最後に戻します。",
+          "answers": {
+            "yes": "composite-binomial-result",
+            "no": "fallback",
+            "unknown": "check"
+          }
+        },
+        {
+          "id": "composite-binomial-result",
+          "type": "result",
+          "title": "素数冪ごとに素因数を除いた階乗を計算し、余りを併合する",
+          "explanation": "",
+          "techniques": [
+            "binomial-composite-prime-power",
+            "crt-noncoprime"
+          ],
+          "conditions": [
+            "固定法の素数冪ごとの表を保存できる。",
+            "階乗の素因数指数と、可逆な部分を別に持つ。",
+            "素因数指数が法の冪以上なら、その法での答えは 0。",
+            "n,k が大きくても、法に依存する前計算が制限内。"
+          ]
+        },
+        {
+          "id": "identity-kind",
+          "type": "question",
+          "title": "何を動かして同じ配置とみなしますか？",
+          "explanation": "回転だけと、反転も認める場合は、固定される配置の数が異なります。",
+          "answers": {
+            "rotation": "necklace-route",
+            "reflection": "bracelet-route",
+            "other": "symmetry",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "rotation",
+              "label": "環の色列を、回転したものだけ同一視する"
+            },
+            {
+              "id": "reflection",
+              "label": "環の色列を、回転・裏返ししたものを同一視する"
+            },
+            {
+              "id": "other",
+              "label": "その他の回転・付け替え"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "forbidden-kind",
+          "type": "question",
+          "title": "禁止・一致条件は、どの形ですか？",
+          "explanation": "同じ物を二回使えるかと、位置ごとの一致条件を分けます。",
+          "answers": {
+            "permutation-fixed": "derangement-route",
+            "coordinate-match": "injective-route",
+            "rows-cols": "grid-colors-route",
+            "other": "forbidden-check",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "permutation-fixed",
+              "label": "順列で元の位置への配置を禁止する、または一致する位置数を指定する"
+            },
+            {
+              "id": "coordinate-match",
+              "label": "二つの列がそれぞれ重複を持たず、同じ位置の値が違う"
+            },
+            {
+              "id": "rows-cols",
+              "label": "二色のマスが、同じ行・同じ列を使わない"
+            },
+            {
+              "id": "other",
+              "label": "複数の禁止条件の交わりを数えられる"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "distribution-kind",
+          "type": "question",
+          "title": "箱への配分には、どの制約がありますか？",
+          "explanation": "同じ物を区別せず、箱は区別します。",
+          "answers": {
+            "sum": "boxes-check",
+            "moves": "redistribution-route",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "sum",
+              "label": "総数と箱ごとの下限だけを指定する"
+            },
+            {
+              "id": "moves",
+              "label": "各箱一個から、一個を他の箱へ移す回数を制限する"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "contribution-kind",
+          "type": "question",
+          "title": "各選び方の、どの量を合計しますか？",
+          "explanation": "添字で選択を区別するかを確認します。",
+          "answers": {
+            "extrema": "extrema-route",
+            "bounding-area": "box-expectation-route",
+            "other": "contribution",
+            "unknown": "check"
+          },
+          "options": [
+            {
+              "id": "extrema",
+              "label": "K 個を選んだときの最大値−最小値"
+            },
+            {
+              "id": "bounding-area",
+              "label": "一様に選んだ K マスの外接長方形の面積"
+            },
+            {
+              "id": "other",
+              "label": "要素・位置・組ごとのその他の寄与"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        },
+        {
+          "id": "necklace-route",
+          "type": "route",
+          "title": "回転で同じになる環の色列",
+          "explanation": "",
+          "graph": "colored-necklaces"
+        },
+        {
+          "id": "bracelet-route",
+          "type": "route",
+          "title": "反転も認める環の色列",
+          "explanation": "",
+          "graph": "colored-bracelets"
+        },
+        {
+          "id": "derangement-route",
+          "type": "route",
+          "title": "元の位置に置かない順列",
+          "explanation": "",
+          "graph": "permutation-fixed-positions"
+        },
+        {
+          "id": "injective-route",
+          "type": "route",
+          "title": "重複のない二列の同位置不一致",
+          "explanation": "",
+          "graph": "injective-pair-positions"
+        },
+        {
+          "id": "grid-colors-route",
+          "type": "route",
+          "title": "二色が行・列を共有しない配置",
+          "explanation": "",
+          "graph": "grid-color-rows-cols"
+        },
+        {
+          "id": "redistribution-route",
+          "type": "route",
+          "title": "一個ずつの移動による配分",
+          "explanation": "",
+          "graph": "balls-move-count"
+        },
+        {
+          "id": "extrema-route",
+          "type": "route",
+          "title": "選んだ最大値・最小値の寄与",
+          "explanation": "",
+          "graph": "subset-extrema"
+        },
+        {
+          "id": "box-expectation-route",
+          "type": "route",
+          "title": "選んだマスの外接長方形の期待面積",
+          "explanation": "",
+          "graph": "grid-bounding-expectation"
+        },
+        {
+          "id": "bracket-route",
+          "type": "route",
+          "title": "括弧の接頭辞を完成する個数",
+          "explanation": "",
+          "graph": "bracket-prefix-completion"
+        },
+        {
+          "id": "equal-neighbor-route",
+          "type": "route",
+          "title": "一列の色の同色境界の個数",
+          "explanation": "",
+          "graph": "linear-equal-neighbors"
+        }
+      ],
+      "domain": "math",
+      "width": 6068,
+      "height": 2846
+    }
+  ]
+}

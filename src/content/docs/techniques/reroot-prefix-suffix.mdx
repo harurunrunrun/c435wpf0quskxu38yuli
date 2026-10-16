@@ -1,0 +1,76 @@
+---
+title: "全方位木DPで一つの方向だけ除いて集計する"
+description: "隣接する部分木の結果を左右から累積し、子へ渡す情報を定数時間で作る。"
+techniqueId: reroot-prefix-suffix
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+隣接する部分木の結果を左右から累積し、子へ渡す情報を定数時間で作る。
+
+## 使う場面
+
+全方位木DPで、子へ情報を渡すたびに、その子以外の隣接部分木の結果を合成したい。隣接する方向を毎回走査すると、星形の木で二乗時間になる。
+
+## 考え方
+
+隣接方向から来る値を $x_0,\ldots,x_{d-1}$ とする。先頭からの合成 $P_i$ と末尾からの合成 $S_i$ を用意する。方向 $i$ を除いた結果は、$P_i$ と $S_{i+1}$ を合成すればよい。
+
+最大距離の例では、各方向の最大距離を最大値で合成する。自分自身への距離0も候補に入れ、除いた結果に辺の長さを足して相手側へ渡す。
+
+## 適用条件
+
+合成に結合則と単位元が必要になる。最大値から現在の子の値を引く操作はできない。同じ最大値が二方向から来る $[5,5]$ では、一つを除いても最大値は5である。
+
+積で合成する場合、0や逆元のない法があると割り算で除けない。左右の累積は、その場合でも使える。非可換の合成では、左右の順序を保つ。
+
+## なぜ正しいか
+
+左右の累積は、除きたい方向の前と後を重複なく覆う。結合則により、それらを合成した結果は一つを除いた全体の結果になる。各頂点で累積を一度作れば、すべての子への値をその場で取り出せる。
+
+## 計算量
+
+子ごとに全方向を走査すると最悪 $O(N^2)$。左右の累積を使うと各頂点で次数に比例する時間となり、木全体で時間・空間ともに $O(N)$。
+
+## 実装
+
+`farthest_with_exclusion` は各頂点からの最大距離を返す。非負の辺重みを持つ連結な無向木を使う。最大距離には自分自身の距離0も含める。走査順は配列で作るため、深い木でも再帰探索しない。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+std::vector<long long> farthest_with_exclusion(const std::vector<std::vector<std::pair<int,long long>>>& g) {
+    int n=g.size();if(!n) return {};
+    std::vector<int> parent(n,-1),order{0};parent[0]=0;
+    std::vector<long long> down(n),up(n),answer(n);
+    for(int i=0;i<int(order.size());++i)
+        for(auto [u,w]:g[order[i]]) if(u!=parent[order[i]]) { parent[u]=order[i];order.push_back(u); }
+    for(int i=n-1;i>0;--i) {
+        int v=order[i];
+        for(auto [u,w]:g[v]) if(parent[u]==v) down[v]=std::max(down[v],down[u]+w);
+    }
+    for(int v:order) {
+        int d=g[v].size();std::vector<long long> prefix(d+1),suffix(d+1),incoming(d);
+        for(int i=0;i<d;++i) {
+            auto [u,w]=g[v][i];incoming[i]=u==parent[v]?up[v]:down[u]+w;
+            prefix[i+1]=std::max(prefix[i],incoming[i]);
+        }
+        for(int i=d-1;i>=0;--i) suffix[i]=std::max(suffix[i+1],incoming[i]);
+        answer[v]=prefix[d];
+        for(int i=0;i<d;++i) {
+            auto [u,w]=g[v][i];if(parent[u]==v) up[u]=std::max(prefix[i],suffix[i+1])+w;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全方位木DP](/flowchartcp/techniques/rerooting/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC222 F](https://atcoder.jp/contests/abc222/editorial/2763)
+
+<TechniqueReferences techniqueId="reroot-prefix-suffix" />

@@ -1,0 +1,226 @@
+---
+title: "多数の点と値から、一次式の積を使って多項式を復元する"
+description: "ラグランジュ補間の各項を別々に展開せず、点の積の木で重み付きの和をまとめます。"
+techniqueId: polynomial-interpolation-product-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+相異なる $n$ 個の点 $x_i$ と、その点での値 $y_i$ が与えられ、次数 $n$ 未満の多項式の全係数を求めます。一次式の積を作り、各点について一つの因子を外して係数を足す実装は $O(n^2)$ 時間かかるため、点数が多い場合に使います。
+
+一つの未知の点での値だけが必要で、既知の点が連続する整数なら、[前後の積を使う方法](/flowchartcp/techniques/lagrange-consecutive-values/)の方が軽くなります。
+
+## 考え方
+
+点に対応する一次式を二分木の葉に置き、各頂点に、その部分木の積 $P_v(X)$ を保存します。根では
+
+$$
+P(X)=\prod_{i=0}^{n-1}(X-x_i)
+$$
+
+を持ちます。まず $P$ を微分し、[多点評価](/flowchartcp/techniques/multipoint-product-tree/)で全ての $P'(x_i)$ を求めます。重みを $w_i=y_i/P'(x_i)$ とすると、補間式は
+
+$$
+F(X)=\sum_i w_i\prod_{j\ne i}(X-x_j)
+$$
+
+です。
+
+葉には定数多項式 $H_i=w_i$ を置きます。左右の子から親を作るときは、
+
+$$
+H_v=H_{\rm left}P_{\rm right}+H_{\rm right}P_{\rm left}
+$$
+
+とします。一つずつ一次式を除いて展開する処理を、木の各高さにまとめた多項式積へ変えています。
+
+## 適用条件
+
+係数体で点同士の差が全て非零であり、その逆元を計算できる必要があります。素数を法にする場合は、整数として異なるだけでなく、**法を取った後も相異なること**を確認します。
+
+同じ点に異なる値が指定されれば解は存在しません。同じ点に同じ値が指定されても独立な条件は増えず、この実装にはそのまま渡せません。微分値も与えられる重複点の補間には別の手法が必要です。
+
+与えられた条件を満たす次数 $n$ 未満の多項式は常に一意です。ただし、未知の関数がその多項式と一致するという保証は別です。未知の関数の他の値を推定するなら、関数が多項式であり、次数が $n$ 未満であることを先に証明します。
+
+掲載実装は法 998244353、$0\le x_i,y_i<998244353$、$n\le2^{20}$ を前提にします。NTT の長さは最大 $2^{23}$ です。
+
+## なぜ正しいか
+
+$P'(x_i)=\prod_{j\ne i}(x_i-x_j)$ です。補間式の右辺に $X=x_k$ を代入すると、$i\ne k$ の項は $X-x_k$ を含むため 0 になり、残る項は $w_kP'(x_k)=y_k$ です。
+
+また、$H_v$ を「その部分木の各葉について、その葉だけを除いた一次式の積を重み付きで足したもの」と定義します。左側の葉の項には右側の全ての一次式が必要なので、$H_{\rm left}P_{\rm right}$ になります。右側も同様です。したがって根の $H$ は補間式そのものです。
+
+条件を満たす次数 $n$ 未満の多項式が二つあれば、その差は $n$ 個の異なる根を持ちます。次数 $n$ 未満の非零多項式には不可能なので、答えは一意です。
+
+## 計算量
+
+長さ $n$ の多項式積の時間を $M(n)$ とします。積の木、多点評価、重み付きの復元はそれぞれ $O(M(n)\log(n+1))$ 時間です。重みの分母 $P'(x_i)$ の逆元は、全ての分母の積を逆元にする一回の計算と、前後の走査でまとめて求めます。
+
+掲載実装の固定した法で NTT を使うと、時間は $O(n\log^2(n+1))$、補助空間は $O(n\log(n+1))$ です。各高さの積を保存するため、空間は $O(n)$ ではありません。
+
+## 実装
+
+`polynomial_interpolate(points, values)` は定数項から順に、ちょうど `points.size()` 個の係数を返します。零多項式でも末尾を省略しません。空の入力に対しては空列を返します。入力の順番を並べ替える必要はありません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    if(min(a.size(),b.size())<=32) {
+        vector<int> result(need);
+        for(size_t i=0;i<a.size();++i) for(size_t j=0;j<b.size();++j) {
+            result[i+j]=(result[i+j]+1LL*a[i]*b[j])%MOD;
+        }
+        return result;
+    }
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> fps_inverse(const vector<int>& f,int n) {
+    assert(0<=n && n<=(1<<21));
+    if(n==0) return {};
+    assert(!f.empty() && f[0]!=0);
+    vector<int> g{f[0]==1 ? 1 : ntt998::power(f[0],ntt998::MOD-2)};
+    while(int(g.size())<n) {
+        int m=min(n,2*int(g.size()));
+        vector<int> part(f.begin(),f.begin()+min(m,int(f.size())));
+        auto correction=ntt998::convolution(part,g);
+        correction.resize(m);
+        for(int& x:correction) x=(ntt998::MOD-x)%ntt998::MOD;
+        correction[0]=(correction[0]+2)%ntt998::MOD;
+        g=ntt998::convolution(g,correction);
+        g.resize(m);
+    }
+    return g;
+}
+
+vector<int> polynomial_remainder(vector<int> f,vector<int> divisor) {
+    while(!f.empty() && f.back()==0) f.pop_back();
+    while(!divisor.empty() && divisor.back()==0) divisor.pop_back();
+    assert(!divisor.empty());
+    if(f.size()<divisor.size()) return f;
+    int quotient_size=f.size()-divisor.size()+1;
+    vector<int> reverse_f(f.rbegin(),f.rend()),reverse_d(divisor.rbegin(),divisor.rend());
+    reverse_f.resize(quotient_size);
+    auto quotient=ntt998::convolution(reverse_f,fps_inverse(reverse_d,quotient_size));
+    quotient.resize(quotient_size);reverse(quotient.begin(),quotient.end());
+    auto product=ntt998::convolution(quotient,divisor);
+    for(int i=0;i<int(f.size());++i) f[i]=(f[i]-product[i]+ntt998::MOD)%ntt998::MOD;
+    f.resize(divisor.size()-1);
+    while(!f.empty() && f.back()==0) f.pop_back();
+    return f;
+}
+vector<int> polynomial_interpolate(const vector<int>& points,
+                                   const vector<int>& values) {
+    constexpr int MOD = ntt998::MOD;
+    assert(points.size() == values.size());
+    assert(points.size() <= size_t(1 << 20));
+    int n = int(points.size());
+    for (int x : points) assert(0 <= x && x < MOD);
+    for (int y : values) assert(0 <= y && y < MOD);
+    if (n == 0) return {};
+
+    vector<vector<int>> product(4 * n);
+    auto build = [&](auto&& self, int node, int left, int right) -> void {
+        if (right - left == 1) {
+            product[node] = {points[left] == 0 ? 0 : MOD - points[left], 1};
+            return;
+        }
+        int middle = (left + right) / 2;
+        self(self, node * 2, left, middle);
+        self(self, node * 2 + 1, middle, right);
+        product[node] = ntt998::convolution(product[node * 2], product[node * 2 + 1]);
+    };
+    build(build, 1, 0, n);
+
+    vector<int> derivative(n);
+    for (int i = 1; i <= n; ++i) derivative[i - 1] = 1LL * i * product[1][i] % MOD;
+    vector<int> denominator(n);
+    auto evaluate = [&](auto&& self, int node, int left, int right,
+                        vector<int> remainder) -> void {
+        remainder = polynomial_remainder(move(remainder), product[node]);
+        if (right - left == 1) {
+            denominator[left] = remainder.empty() ? 0 : remainder[0];
+            return;
+        }
+        int middle = (left + right) / 2;
+        self(self, node * 2, left, middle, remainder);
+        self(self, node * 2 + 1, middle, right, move(remainder));
+    };
+    evaluate(evaluate, 1, 0, n, move(derivative));
+
+    // 一回の逆元計算で、全ての 1/P'(x_i) を作る。
+    vector<int> prefix(n + 1, 1), weight(n);
+    for (int i = 0; i < n; ++i) {
+        assert(denominator[i] != 0);  // 0 なら点が重複している。
+        prefix[i + 1] = 1LL * prefix[i] * denominator[i] % MOD;
+    }
+    int inverse_product = ntt998::power(prefix[n], MOD - 2);
+    for (int i = n - 1; i >= 0; --i) {
+        int inverse = 1LL * inverse_product * prefix[i] % MOD;
+        weight[i] = 1LL * values[i] * inverse % MOD;
+        inverse_product = 1LL * inverse_product * denominator[i] % MOD;
+    }
+    auto combine = [&](auto&& self, int node, int left, int right) -> vector<int> {
+        if (right - left == 1) return {weight[left]};
+        int middle = (left + right) / 2;
+        auto left_sum = self(self, node * 2, left, middle);
+        auto right_sum = self(self, node * 2 + 1, middle, right);
+        auto a = ntt998::convolution(move(left_sum), product[node * 2 + 1]);
+        auto b = ntt998::convolution(move(right_sum), product[node * 2]);
+        a.resize(right - left);
+        for (int i = 0; i < int(b.size()); ++i) {
+            a[i] += b[i];
+            if (a[i] >= MOD) a[i] -= MOD;
+        }
+        return a;
+    };
+    return combine(combine, 1, 0, n);
+}
+```
+
+## 関連する手法
+
+- [多数の点で同じ多項式を評価する](/flowchartcp/techniques/multipoint-product-tree/)
+- [連続する整数での値から、一つの点での値を求める](/flowchartcp/techniques/lagrange-consecutive-values/)
+- [多項式の逆数を精度倍増で求める](/flowchartcp/techniques/fps-inverse-newton/)
+
+## 参考資料
+
+- [Library Checker: Polynomial Interpolation の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_interpolation/task.md)
+- [Nyaan's Library: Subproduct Tree による補間の公開実装](https://nyaannyaan.github.io/library/verify/verify-yosupo-fps/yosupo-polynomial-interpolation-fast.test.cpp.html)
+
+<TechniqueReferences techniqueId="polynomial-interpolation-product-tree" />

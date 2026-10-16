@@ -1,0 +1,242 @@
+[
+  {
+    "id": "restart-board-trial-expectation",
+    "title": "同じ地点へ戻される期待値は、一試行の費用を成功確率で割る",
+    "summary": "前へ進む区間と開始地点へのリセットを分け、一試行の成功確率と所要回数を後ろから計算する。",
+    "aliases": [
+      "Restart board renewal expectation",
+      "reset to start success probability cost",
+      "リセットの再生方程式"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-self-loop",
+      "sliding-window"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc189/tasks/abc189_f",
+      "https://atcoder.jp/contests/abc189/editorial/589"
+    ]
+  },
+  {
+    "id": "sushi-count-state-rolling",
+    "title": "同じ確率で選ぶ容器は、中身の個数ごとにまとめて期待値を計算する",
+    "summary": "同じ役割の皿を個数で数え、空の皿による自己遷移を除き、依存順序に合わせて二層だけ保持する。",
+    "aliases": [
+      "Sushi count states rolling DP",
+      "exchangeable plates expectation",
+      "寿司DPの二層化"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-self-loop",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_j"
+    ]
+  },
+  {
+    "id": "increasing-record-reward-probability",
+    "title": "添字が増える間だけ報酬を得るなら、各添字へ到達する確率を足す",
+    "summary": "報酬の総和を訪問の指示変数へ分け、直前の添字の候補を確率の累積和にまとめる。",
+    "aliases": [
+      "Increasing record reward probability",
+      "monotone stopping reward prefix probabilities",
+      "記録更新の期待報酬"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-indicators",
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc326/tasks/abc326_e",
+      "https://atcoder.jp/contests/abc326/editorial/7547"
+    ]
+  },
+  {
+    "id": "random-swap-symmetry-two-state",
+    "title": "一個の印付き要素をランダム交換するなら、元の位置と残りの位置に分ける",
+    "summary": "残りの位置の対称性で確率を一変数へまとめ、定常値との差を累乗して交換回数への依存を減らす。",
+    "aliases": [
+      "Random swaps symmetry two state",
+      "marked ball stationary difference power",
+      "ランダム交換の対称性"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "symmetry",
+      "probability-expectation"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc360/tasks/abc360_e"
+    ]
+  },
+  {
+    "id": "dice-product-prime-exponents",
+    "title": "小さな出目の積で目標に一致させるなら、必要な素因数の指数だけを持つ",
+    "summary": "出目1の自己遷移を除き、目標の2・3・5の残り指数を三次元の小さな表で管理する。",
+    "aliases": [
+      "Dice product prime exponent DP",
+      "multiplicative random walk exact target",
+      "サイコロの積の指数状態"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-self-loop",
+      "probability-expectation"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc300/tasks/abc300_e",
+      "https://atcoder.jp/contests/abc300/editorial/6291"
+    ]
+  },
+  {
+    "id": "dag-edge-removal-expectation",
+    "title": "確率的な前進から一辺だけ除くなら、到達確率と局所的な改善を掛ける",
+    "summary": "削除する辺の始点への到達確率は変わらないことを使い、候補ごとの期待値の再計算を省く。",
+    "aliases": [
+      "DAG edge removal expectation sensitivity",
+      "reach probability local expected reduction",
+      "一辺削除の期待値改善"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "topological-sort",
+      "expectation-first-step"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc144/tasks/abc144_f"
+    ]
+  },
+  {
+    "id": "roulette-choice-zero-outcomes",
+    "title": "行動を選べる増分DPは、行動ごとの足踏みを除いてから最小化する",
+    "summary": "残量ごとに使うルーレットを選び、0点の自己遷移を除いた候補費用を比較する。",
+    "aliases": [
+      "Roulette choice zero outcomes Bellman",
+      "stochastic shortest path zero gain choice",
+      "複数行動の自己ループ除去"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-self-loop",
+      "random-gain-zero-elimination"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc314/tasks/abc314_e",
+      "https://atcoder.jp/contests/abc314/editorial/6966"
+    ]
+  },
+  {
+    "id": "random-subtree-removal-ancestor-priority",
+    "title": "一様に頂点を選んで部分木を消す期待回数は、祖先の中で最初に選ばれる確率を足す",
+    "summary": "残った集合を状態にせず、ランダムな優先順位で各頂点が操作対象になる条件を判定する。",
+    "aliases": [
+      "Random subtree removal ancestor priority",
+      "Game on Tree expected depth reciprocal",
+      "部分木削除の祖先最小順位"
+    ],
+    "family": "確率過程に応じた期待値と状態の削減",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-indicators",
+      "symmetry"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/280/C"
+    ]
+  },
+  {
+    "id": "polya-urn-uniform-composition-top-r-sum",
+    "title": "多く持つ人ほど増えやすい過程で、上位の合計期待値を求める",
+    "summary": "初期重み1の比例増殖を、一様な弱合成へ変える。全員から1を引き、0になった人を除く計数DPで、相関する値の上位合計を安定して求める。",
+    "aliases": [
+      "ICPC2018 World Finals D Gem Island Polya urn top r expected sum",
+      "Pólya urn uniform weak composition top-r sum nonnegative DP",
+      "初期重み1 比例増殖 弱合成一様 上位r人合計 期待値 相関"
+    ],
+    "family": "比例増殖を一様組成へ変える順位期待値",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "expectation-indicators",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+      "https://news.icpc.global/wf2018/"
+    ]
+  }
+]

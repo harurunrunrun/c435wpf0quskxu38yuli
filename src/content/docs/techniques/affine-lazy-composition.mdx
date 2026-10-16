@@ -1,0 +1,93 @@
+---
+title: "区間の一次変換を合成して遅延伝播する"
+description: "加算・乗算・代入を一次変換としてまとめ、適用順を保って区間和を更新する。"
+techniqueId: affine-lazy-composition
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+加算・乗算・代入を一次変換としてまとめ、適用順を保って区間和を更新する。
+
+## 使う場面
+
+配列の区間に $x\mapsto ax+b$ を適用し、その区間の和を何度も求める。区間加算、区間乗算、区間代入が混在する場合も、それぞれ $(a,b)=(1,c),(c,0),(0,c)$ と表せる。
+
+## 考え方
+
+区間には和 $S$ と長さ $L$ を保存する。一次変換後の和は $aS+bL$ なので、各要素を更新せずに区間全体へ作用させられる。
+
+先の更新 $g(x)=cx+d$ の後に $f(x)=ax+b$ を行うと、$f(g(x))=acx+ad+b$ になる。遅延タグはこの順序で合成する。
+
+## 適用条件
+
+区間の長さも保存することと、変換の順序を保つことが必要になる。加算の後の乗算と、乗算の後の加算は同じではない。例えば3を足して2倍する結果は $2x+6$ だが、2倍して3を足す結果は $2x+3$ になる。
+
+## なぜ正しいか
+
+各区間の和に対する作用が、左右の区間の和を合成する操作と両立する。タグの合成は実際の関数合成なので、子への更新をまとめて遅らせても、元の順序で全要素を更新した結果と一致する。
+
+## 計算量
+
+全要素を直接変換すると1操作 $O(N)$。遅延伝播では更新・区間和ともに $O(\log N)$、構築と空間は $O(N)$。
+
+## 実装
+
+以下は法 $998244353$ で計算する区間和。`apply(l,r,a,b)` で区間 $[l,r)$ に変換を適用する。初期値と係数は0以上法未満にする。コードはC++20標準ライブラリだけで使える。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct AffineSumTree {
+    static constexpr long long MOD=998244353;
+    int n;
+    std::vector<long long> sum,mul,add;
+    explicit AffineSumTree(const std::vector<long long>& a):n(a.size()),sum(4*n+4),mul(4*n+4,1),add(4*n+4) {
+        if(n) build(1,0,n,a);
+    }
+    void build(int v,int l,int r,const std::vector<long long>& a) {
+        if(r-l==1) { sum[v]=a[l];return; }
+        int m=(l+r)/2;build(2*v,l,m,a);build(2*v+1,m,r,a);
+        sum[v]=(sum[2*v]+sum[2*v+1])%MOD;
+    }
+    void act(int v,int len,long long a,long long b) {
+        sum[v]=(a*sum[v]+b*len)%MOD;
+        mul[v]=a*mul[v]%MOD;
+        add[v]=(a*add[v]+b)%MOD;
+    }
+    void push(int v,int l,int r) {
+        int m=(l+r)/2;
+        act(2*v,m-l,mul[v],add[v]);act(2*v+1,r-m,mul[v],add[v]);
+        mul[v]=1;add[v]=0;
+    }
+    void update(int v,int l,int r,int ql,int qr,long long a,long long b) {
+        if(qr<=l || r<=ql) return;
+        if(ql<=l && r<=qr) { act(v,r-l,a,b);return; }
+        push(v,l,r);int m=(l+r)/2;
+        update(2*v,l,m,ql,qr,a,b);update(2*v+1,m,r,ql,qr,a,b);
+        sum[v]=(sum[2*v]+sum[2*v+1])%MOD;
+    }
+    long long query(int v,int l,int r,int ql,int qr) {
+        if(qr<=l || r<=ql) return 0;
+        if(ql<=l && r<=qr) return sum[v];
+        push(v,l,r);int m=(l+r)/2;
+        return (query(2*v,l,m,ql,qr)+query(2*v+1,m,r,ql,qr))%MOD;
+    }
+    void apply(int l,int r,long long a,long long b) {
+        assert(0<=l && l<=r && r<=n && 0<=a && a<MOD && 0<=b && b<MOD);
+        if(l<r) update(1,0,n,l,r,a,b);
+    }
+    long long range_sum(int l,int r) {
+        assert(0<=l && l<=r && r<=n);
+        return l==r?0:query(1,0,n,l,r);
+    }
+};
+```
+
+## 関連する手法
+
+[遅延セグメント木](/flowchartcp/techniques/lazy-segment-tree/)
+
+## 参考資料
+
+- [AtCoder Library：Lazy Segtree の実装例](https://atcoder.github.io/ac-library/production/document_en/lazysegtree.html)
+
+<TechniqueReferences techniqueId="affine-lazy-composition" />

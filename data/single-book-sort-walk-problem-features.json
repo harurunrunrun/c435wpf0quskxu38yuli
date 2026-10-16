@@ -1,0 +1,38 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2017_books",
+    "title": "古文書 (Ancient Books)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "直線上の各位置に本が一冊ずつあり、それぞれの移動先が順列で与えられる。",
+      "一度に一冊だけ持ち、交換・拾う・置く操作は無料。並べ替えて開始位置へ戻るまでの最小歩行距離を求める。",
+      "位置間隔は1、位置数は1〜100万。開始位置と順列は0始まりで、答えは64bitで求める。"
+    ],
+    "entryGraphId": "ranges",
+    "choices": [
+      "sequence-changes",
+      "reorder-cost",
+      "single-book-walk",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "permutation-cycle-interval-closure-two-sided-walk-greedy"
+    ],
+    "conditions": [
+      "permutation-line",
+      "one-held-return",
+      "bounds"
+    ],
+    "date": "2017-08-01",
+    "difficulty": null,
+    "publicationDate": "2017-08-01",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

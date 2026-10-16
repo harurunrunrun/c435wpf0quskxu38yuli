@@ -1,0 +1,287 @@
+---
+title: "通れる頂点に二種類の制限がある移動を、到達集合の共通部分で判定する"
+description: "前半は番号の下限、後半は上限を守る移動を、それぞれの到達集合へ分ける。多数の質問の集合を二つの木に保存し、共通する頂点の有無を調べる。"
+techniqueId: two-threshold-component-merge-trees-rectangle-intersection
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+頂点が $0,1,\ldots,N-1$ と番号付けされた無向グラフで、質問ごとに始点 $S$、終点 $E$、下限 $L$、上限 $R$ が変わる。前半は番号 $L$ 以上の頂点だけを使い、ある頂点で一度切り替え、後半は番号 $R$ 以下の頂点だけを使って終点へ行けるかを求めたい。切替は始点や終点でもよく、片方の区間が辺を使わなくてもよい。
+
+前半に使える頂点だけの誘導部分グラフで、$S$ の成分を $A(S,L)$ とする。後半に使える頂点だけの誘導部分グラフで、$E$ の成分を $B(E,R)$ とする。必要なのは、この二つの成分の共通頂点である。毎質問で制限付きBFSを行う代わりに、全閾値の成分を一度に記録する。
+
+## 考え方
+
+下限側では頂点を $N-1,N-2,\ldots,0$ の順に有効化する。頂点 $v$ を追加したら、既に有効な隣接頂点とDSUで併合する。異なる二成分がつながるたびに、新しい親ノードを作り、併合前の二成分の木を子にする。元の頂点が葉、過去の成分が部分木となる**併合木**が得られる。
+
+下限 $L$ の質問は、頂点 $L$ とその時点で有効な全隣接辺を処理した直後に答える。その時の $S$ のDSU成分が持つ木ノードを保存する。質問を閾値ごとのバケットへ入れておけば、木の祖先を二分探索する表は要らない。上限側も、頂点を $0,1,\ldots,N-1$ と追加し、上限 $R$ の処理後に $E$ の成分ノードを保存する。
+
+各木でDFSを行い、**元頂点の葉だけ**へ $0\ldots N-1$ の番号を振る。下限側の葉位置を $p_v$、上限側を $q_v$ とすると、一つの成分の葉集合はそれぞれ半開区間 $[a,b)$、$[c,d)$ になる。ただし二つの木の葉順序は異なるので、$[a,b)$ と $[c,d)$ を同じ数直線上で重ねてはいけない。
+
+元頂点 $v$ を点 $(p_v,q_v)$ に写す。二成分に共通する頂点の数は、長方形
+
+$$[a,b)\times[c,d)$$
+
+に入る点の数そのものになる。$x$ 座標の小さい順に点を追加し、$y$ 座標の個数をFenwick木で保持する。$x<t$ の点について $c\le y<d$ を数える値を $F(t,c,d)$ とすれば、長方形の点数は
+
+$$F(b,c,d)-F(a,c,d).$$
+
+各質問を $x=a$ の負イベントと $x=b$ の正イベントに分ける。イベントも座標 $0\ldots N$ のバケットに入れ、座標 $t$ では**点 $x=t$ を追加する前に**イベントを処理する。
+
+## 適用条件
+
+辺は固定された無向辺である。前半と後半の制限はそれぞれ頂点番号の下限・上限で、両端を含む。切替は一回であり、切替前後で同じ頂点を使う。距離の最小値や切替回数の最適化を求める場合には、成分の交差だけでは答えにならない。
+
+掲載APIは $1\le N\le200000$、辺数 $M\le400000$、質問数 $Q\le200000$ の単純な連結無向グラフを扱う。各質問は
+
+$$0\le L\le S<N,\qquad0\le E\le R<N,\qquad L\le R$$
+
+を満たす。原典の $N\ge2$、$M\ge N-1$、$Q\ge1$、$S\ne E$ を全て含み、拡張として一頂点・質問0件・$S=E$ も扱える。$S=E$ なら、その頂点が両方の制限を満たすため、その場で一度切り替える経路がある。
+
+空のグラフ、不正な番号や閾値、上限超過、自己辺、向きを逆に書いたものも含む重複辺、非連結グラフは `std::invalid_argument`。質問が0件でもグラフの検査は行う。入力は変更せず、標準の割当例外は伝播する。全状態は関数内にあり、別のグラフで何度呼んでも前回の状態を引き継がない。
+
+## なぜ正しいか
+
+合法な経路が存在するなら、切替頂点 $v$ までの前半は番号 $L$ 以上だけを使うので $v\in A(S,L)$。後半を逆向きにたどれるのはグラフが無向だからであり、番号 $R$ 以下だけを使って $E$ から $v$ へ届くため $v\in B(E,R)$ でもある。逆に共通頂点 $v$ があれば、$S$ から $v$ までの制限付き経路と、$v$ から $E$ までの制限付き経路をつなぎ、その頂点で一度切り替えればよい。従って必要十分条件は成分の共通部分が空でないことである。
+
+下限側で頂点 $v$ の追加を終えた時、有効なのはちょうど $v\ldots N-1$ である。この誘導部分グラフの辺は、両端のうち小さい方を追加した時に必ず一度処理される。DSUは処理済みの全辺の両端を併合するので、閾値 $v$ における連結成分と正確に一致する。上限側も大きい方の端点を追加した時に辺を処理し、有効頂点は $0\ldots v$ となる。同じ閾値の複数質問は、いずれもその頂点の全辺を処理した後に成分を保存するため、境界の頂点を取りこぼさない。
+
+併合前の二成分は互いに素である。新しい親の葉集合を二つの子の和集合とすれば、帰納的に各成分ノードの葉はその成分の元頂点と一致する。DSUが後で併合されても、保存済みの木ノードの子は変更しないので、過去の成分集合が失われない。
+
+一つの部分木の全葉はDFSで連続して訪問される。従って保存した成分を葉区間で表せる。元頂点 $v$ は下限側の成分に入ることと $a\le p_v<b$ が同値であり、上限側についても $c\le q_v<d$ と同値である。よって両方の成分に入ることは、その頂点の点が積長方形に入ることと同値である。
+
+走査座標 $t$ のイベント処理時、Fenwick木には $x<t$ の点だけが入る。二つの $y$ 接頭個数の差が $F(t,c,d)$ を与え、$t=b$ と $t=a$ の差を取れば、$a\le x<b$ の点だけが残る。従って掲載APIは切替可能な全頂点の数を正確に返し、その値が正であることと経路の存在が同値である。
+
+## 計算量
+
+グラフ検査は隣接リストを使って $O(N+M)$。重複辺は、頂点ごとに隣接先へ印を付けて検査するので、辺のソートやハッシュの期待計算量を使わない。
+
+二方向の有効化で各辺を一回ずつ併合候補にし、質問ごとにDSUの代表を取得する。DSUは元の $N$ 頂点に対してサイズ併合と経路圧縮を使い、木ノードは別に保存する。併合木の親をDSUの親に流用しない。連結グラフでは各木の成功した併合は $N-1$ 回、ノード数は正確に $2N-1$ である。
+
+併合木の処理と全バケット作成は線形時間。走査では $N$ 回の点追加と $2Q$ 個のイベントを処理し、一操作あたり $O(\log(N+1))$。全体は
+
+$$O\bigl((N+M)\alpha(N)+(N+Q)\log(N+1)\bigr)$$
+
+時間、入力・出力を含めて **$O(N+M+Q)$ 空間**となる。$\alpha$ は逆Ackermann関数である。質問からのDSU取得にかかる $O(Q\alpha(N))$ は後半の項に含めている。辺も質問もソートせず、頂点番号と葉座標の連番を使う。
+
+併合木が一本の長い鎖になっても、葉順序は明示的なスタックで求める。DSUの探索も反復であり、再帰によるスタック消費はない。$N=200000$ では木ノードは各399999個、走査イベントは最大400000個。点数とFenwick木の総和は $N$ 以下、符号付き途中和の絶対値も $N$ 以下なので `int` に収まる。
+
+## 実装
+
+`threshold_component_intersection_counts` は質問順に共通頂点数を返す。`threshold_switch_reachability` は同じ入力に対して、可否を0/1で返す。端点は0始まりで、`lower` と `upper` は両端を含む。
+
+葉を左の子から訪問し、その後に作成順で内部ノードの区間を集計する。併合時は必ず子ノードの番号が親より小さいため、再帰も終了イベントも使わずに区間を確定できる。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <numeric>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+struct ThresholdIntersectionQuery {
+    int start, goal, lower, upper;
+};
+
+namespace threshold_intersection_detail {
+class Dsu {
+    std::vector<int> parent, size;
+public:
+    explicit Dsu(int n) : parent(n), size(n, 1) {
+        std::iota(parent.begin(), parent.end(), 0);
+    }
+    int find(int x) {
+        while (parent[x] != x) {
+            parent[x] = parent[parent[x]];
+            x = parent[x];
+        }
+        return x;
+    }
+    int join_roots(int a, int b) {
+        if (size[a] < size[b]) std::swap(a, b);
+        parent[b] = a; size[a] += size[b];
+        return a;
+    }
+};
+
+struct Graph {
+    int n;
+    std::vector<int> offset, to;
+    Graph(int count, const std::vector<std::pair<int, int>>& edges)
+        : n(count), offset(n + 1), to(2 * edges.size()) {
+        for (auto [a, b] : edges) {
+            if (a < 0 || a >= n || b < 0 || b >= n || a == b)
+                throw std::invalid_argument("invalid undirected edge");
+            ++offset[a + 1]; ++offset[b + 1];
+        }
+        for (int v = 0; v < n; ++v) offset[v + 1] += offset[v];
+        auto cursor = offset;
+        for (auto [a, b] : edges) { to[cursor[a]++] = b; to[cursor[b]++] = a; }
+        std::vector<int> stamp(n, -1);
+        for (int v = 0; v < n; ++v) for (int i = offset[v]; i < offset[v + 1]; ++i) {
+            const int w = to[i];
+            if (stamp[w] == v) throw std::invalid_argument("duplicate undirected edge");
+            stamp[w] = v;
+        }
+        std::vector<char> seen(n);
+        std::vector<int> queue{0}; seen[0] = true;
+        for (std::size_t head = 0; head < queue.size(); ++head) {
+            const int v = queue[head];
+            for (int i = offset[v]; i < offset[v + 1]; ++i) if (!seen[to[i]]) {
+                seen[to[i]] = true; queue.push_back(to[i]);
+            }
+        }
+        if (queue.size() != static_cast<std::size_t>(n))
+            throw std::invalid_argument("graph must be connected");
+    }
+};
+
+struct LeafIntervals {
+    std::vector<int> position;
+    std::vector<std::pair<int, int>> query;
+};
+
+LeafIntervals make_intervals(
+    const Graph& graph, const std::vector<ThresholdIntersectionQuery>& queries,
+    bool descending) {
+    const int n = graph.n, q = static_cast<int>(queries.size());
+    std::vector<int> first(n, -1), next(q), saved(q), component(n);
+    for (int i = 0; i < q; ++i) {
+        const int threshold = descending ? queries[i].lower : queries[i].upper;
+        next[i] = first[threshold]; first[threshold] = i;
+    }
+    std::iota(component.begin(), component.end(), 0);
+    Dsu dsu(n);
+    std::vector<std::array<int, 2>> children(n, std::array<int, 2>{-1, -1});
+    children.reserve(2 * n - 1);
+    for (int step = 0; step < n; ++step) {
+        const int v = descending ? n - 1 - step : step;
+        for (int i = graph.offset[v]; i < graph.offset[v + 1]; ++i) {
+            const int w = graph.to[i];
+            if (descending ? w < v : w > v) continue;
+            const int a = dsu.find(v), b = dsu.find(w);
+            if (a == b) continue;
+            const int node = static_cast<int>(children.size());
+            children.push_back({component[a], component[b]});
+            component[dsu.join_roots(a, b)] = node;
+        }
+        // Inclusive threshold: save only after every incident active edge.
+        for (int i = first[v]; i != -1; i = next[i]) {
+            const int endpoint = descending ? queries[i].start : queries[i].goal;
+            saved[i] = component[dsu.find(endpoint)];
+        }
+    }
+
+    const int nodes = static_cast<int>(children.size());
+    std::vector<int> begin(nodes), end(nodes), stack{component[dsu.find(0)]};
+    int timer = 0;
+    while (!stack.empty()) {
+        const int node = stack.back(); stack.pop_back();
+        if (node < n) { begin[node] = timer++; end[node] = timer; }
+        else {
+            stack.push_back(children[node][1]);
+            stack.push_back(children[node][0]);
+        }
+    }
+    for (int node = n; node < nodes; ++node) {
+        begin[node] = begin[children[node][0]];
+        end[node] = end[children[node][1]];
+    }
+    LeafIntervals result;
+    result.position.assign(begin.begin(), begin.begin() + n);
+    result.query.resize(q);
+    for (int i = 0; i < q; ++i) result.query[i] = {begin[saved[i]], end[saved[i]]};
+    return result;
+}
+
+class Fenwick {
+    std::vector<int> tree;
+public:
+    explicit Fenwick(int n) : tree(n + 1) {}
+    void add(int position) {
+        for (int i = position + 1; i < static_cast<int>(tree.size()); i += i & -i) ++tree[i];
+    }
+    int prefix(int end) const {
+        int sum = 0;
+        for (int i = end; i > 0; i -= i & -i) sum += tree[i];
+        return sum;
+    }
+};
+} // namespace threshold_intersection_detail
+
+std::vector<int> threshold_component_intersection_counts(
+    int n, const std::vector<std::pair<int, int>>& edges,
+    const std::vector<ThresholdIntersectionQuery>& queries) {
+    if (n < 1 || n > 200000 || edges.size() > 400000 || queries.size() > 200000)
+        throw std::invalid_argument("graph or query size outside supported range");
+    for (const auto& query : queries)
+        if (query.lower < 0 || query.upper >= n || query.lower > query.upper ||
+            query.start < query.lower || query.start >= n ||
+            query.goal < 0 || query.goal > query.upper)
+            throw std::invalid_argument("invalid threshold query");
+    using namespace threshold_intersection_detail;
+    const Graph graph(n, edges);
+    if (queries.empty()) return {};
+    const auto low = make_intervals(graph, queries, true);
+    const auto high = make_intervals(graph, queries, false);
+    std::vector<int> y_at_x(n);
+    for (int v = 0; v < n; ++v) y_at_x[low.position[v]] = high.position[v];
+
+    struct Event { int next, query, sign; };
+    std::vector<int> first(n + 1, -1), answer(queries.size());
+    std::vector<Event> events;
+    events.reserve(2 * queries.size());
+    const auto add_event = [&](int x, int query, int sign) {
+        events.push_back({first[x], query, sign});
+        first[x] = static_cast<int>(events.size()) - 1;
+    };
+    for (int i = 0; i < static_cast<int>(queries.size()); ++i) {
+        add_event(low.query[i].first, i, -1);
+        add_event(low.query[i].second, i, 1);
+    }
+    Fenwick fenwick(n);
+    for (int x = 0; x <= n; ++x) {
+        // At this instant the structure contains exactly the points with p_v < x.
+        for (int index = first[x]; index != -1; index = events[index].next) {
+            const Event& event = events[index];
+            const auto [first_y, last_y] = high.query[event.query];
+            answer[event.query] += event.sign *
+                (fenwick.prefix(last_y) - fenwick.prefix(first_y));
+        }
+        if (x < n) fenwick.add(y_at_x[x]);
+    }
+    return answer;
+}
+
+std::vector<int> threshold_switch_reachability(
+    int n, const std::vector<std::pair<int, int>>& edges,
+    const std::vector<ThresholdIntersectionQuery>& queries) {
+    auto answer = threshold_component_intersection_counts(n, edges, queries);
+    for (int& count : answer) count = count > 0;
+    return answer;
+}
+```
+
+二つの葉順序の違いは、`y_at_x[low.position[v]] = high.position[v]` に集約される。同じ頂点の対応を保つこの代入を、二つの区間端点の比較で置き換えてはいけない。`S,E,L,R` が別々の配列で与えられるAPIでは、各添字の四値を `ThresholdIntersectionQuery` にまとめればよい。
+
+## 関連する手法
+
+- [Union-Find](/flowchartcp/techniques/union-find/)：有効化した頂点だけの連結成分を保持する。現在の代表だけで過去の集合を表すことはできないため、併合木を別に持つ。
+- [部分木のEuler区間](/flowchartcp/techniques/subtree-euler-interval/)：成分集合を葉の連続区間へ写す。二つの木には別々の順序が必要である。
+- [オフラインクエリ](/flowchartcp/techniques/offline-queries/)：下限は降順、上限は昇順にまとめて処理し、質問時点の成分を保存する。
+- [Fenwick木](/flowchartcp/techniques/fenwick-tree/)：二次元の長方形個数を、一方の座標の走査と他方の座標の接頭個数へ分ける。
+
+## 参考資料
+
+- [IOI 2018 Werewolf 原典](https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf)：二状態の頂点制限、一度の切替、始点・終点での切替を含む条件。
+- [主催者配布の原典翻訳](https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf)：頂点・辺・質問数と各閾値の数値範囲。
+- [IOI 2018 Werewolf 公式Review](https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf)：二成分の交差と、二つの木のEuler順序を用いる走査。
+- [Tomasz Idziaszek の公開解答](https://www.algonotes.com/en/solutions-ioi2018/)：後年に公開された著者による補足。主催者の公式Reviewとは区別する。
+
+- [競技日別の原典・公式Review一覧](https://www2.ioi-jp.org/ioi/2018/tasks/index.html)：競技日と出典。
+
+<TechniqueReferences techniqueId="two-threshold-component-merge-trees-rectangle-intersection" />

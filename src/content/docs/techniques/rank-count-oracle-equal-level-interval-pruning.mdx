@@ -1,0 +1,251 @@
+---
+title: "左右の上位個数から、唯一の最上位の位置を少ない質問で探す"
+description: "個数が二乗より速く増える階層から、最下位を確実に見分ける。区間内の上位個数を保ちながら中央からの走査と二分を組み合わせ、適応的な返答にも最悪質問数を保証する。"
+techniqueId: rank-count-oracle-equal-level-interval-pruning
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+列の位置を一つ選ぶと、その位置の品物より上位の品物が左右に何個ずつあるか返る。唯一の最上位を見つけたいが、列自体に単調性はなく、位置に対する通常の二分探索はできない。
+
+ここでは、上位から種類を $1,2,\ldots,v$、各種類の個数を $c_1,c_2,\ldots,c_v$ とし、$c_1=1$、$c_{t+1}>c_t^2$ が成り立つ場合を扱う。下位ほど個数が大きく増えるため、最下位以外の位置は少ない。最下位の位置への返答を境界として使うと、その少数の位置だけを追える。
+
+## 考え方
+
+返答を $(L_i,R_i)$ とする。和 $L_i+R_i$ は、その種類より上位の品物の総数なので、位置によらず種類だけで決まる。種類が下がると和は真に大きくなる。和が0なら、その位置が唯一の最上位である。
+
+長さが20万以下なら、個数の条件から次の二つが分かる。
+
+- 最下位以外の品物は、全体で高々472個。
+- 最下位でない位置の返答和は、高々26。
+
+従って、和が26を超える返答を得たら、その位置は最下位だと確定する。左から473位置まで調べれば、途中で最上位を発見するか、最下位を少なくとも一つ含む。26を超える和が一度も出なければ、調べた和の最大値が最下位の和となり、その値自体も26以下である。
+
+最下位より上位の総数を $S$ とする。その後は区間 $[l,r]$ と、区間の左外・右外にある上位品の個数 $a,b$ を持つ。区間内には正確に $k=S-a-b$ 個ある。$k=0$ なら調べる必要がない。
+
+中央 $m$ から右へ調べ、上位品が出る間だけ進む。$q$ 個を見つけた後に最下位の位置 $j=m+q$ へ着いたとする。その返答が $(L,R)$ なら、左の $[l,m-1]$ にある上位品は $L-a-q$ 個、右の $[j+1,r]$ には $R-b$ 個ある。中央からの走査部分を外し、それぞれ個数付きで探索する。走査中に区間内の $k$ 個を全て見つけたら、その時点で区間を終えられる。
+
+和1への短い経路も用意する。最初の位置の和が1なら、そこより上位なのは最上位一個だけである。以降も和1の返答が続く間は、その左右の0/1で二分できる。より大きな和が出たら上の一般手順へ移る。全ての返答を位置ごとに保存し、同じ位置への外部質問を繰り返さない。
+
+## 適用条件
+
+長さは $3\le N\le200000$、種類1は一個、隣り合う種類の個数は $c_{t+1}>c_t^2$ とする。位置は0始まりで、返答は厳密に上位の個数を表す。品物の並び順や、同じ種類の位置には制限を置かない。
+
+返答が初めに固定された列から来る場合に加え、各質問への返答後に、過去の全返答に整合する合法な列が少なくとも一つ残る場合も扱う。最初に隠し列を固定することは要求しない。返す位置は、最終的に残る全ての合法な列で最上位でなければならない。
+
+個数の成長条件だけを外して、上位472個という見込みやランダムな標本で代用してはいけない。以下の質問数は、乱択や期待値を使わない上界である。
+
+## なぜ正しいか
+
+まず個数の上界を示す。個数が最小でも、上位から $1,2,5,26,677,458330$ と増えるため、20万個では種類は高々五つである。最下位でない種類の個数を $c$ とすると、次の種類が $c^2+1$ 個以上あるので、$c+c^2+1\le200000$ より $c\le446$。
+
+五種類なら、その直前の個数は高々21、さらに直前は高々4となる。従って最下位以外の総数は
+
+$$S\le1+4+21+446=472.$$
+
+四種類なら $S\le1+21+446=468$、三種類なら $S\le1+446=447$、二種類なら $S=1$ である。最下位でない位置の返答和は、その位置より上位の種類だけを数える。五種類では高々 $1+4+21=26$、四種類では高々 $1+21=22$ で、他の場合も26以下になる。
+
+これで最下位の確定方法が正しいと分かる。26を超えた和は、どの整合する列でも最下位の和 $S$ である。それまでに左から調べた位置は全て最下位以外なので、$c$ 個調べた後に確定した場合、初期走査は $c+1$ 位置で終わる。超えなければ、473位置中に最下位が少なくとも一つあり、和の最大値が $S\le26$ となる。長さ473未満なら全位置を調べる前に最上位が見つかる。
+
+次に区間探索を示す。区間外の個数 $a,b$ が正確なら、区間内の個数 $k$ も正確である。中央から調べた $q$ 位置は全て最下位より上位なので、それだけを区間内の個数から引ける。最下位の位置 $j$ に着いた場合、$L$ は $j$ より左全体の上位個数であり、左外の $a$ と中央からの $q$ 個を除いた値が左の子区間の個数になる。右も $R-b$ である。子区間の外側の個数は、左の子では $(a,R+q)$、右の子では $(L,b)$ となる。
+
+右端まで上位品が続いた場合も、その部分を全て調べ終えている。残る左の子だけを、外側の個数 $(a,b+q)$ で探索すればよい。走査した $q$ が $k$ に達したら、残る未調査位置は最下位ばかりなので、その区間は終えられる。どの分岐でも最上位を含む可能性のある位置を捨てない。
+
+質問数も証明する。高さ $H$、長さ高々 $2^H-1$ の区間に上位品が $k$ 個あるとき、訪問位置数の上界を
+
+$$D_H(k)=\sum_{d=0}^{H-1}\min(2^d,k),\qquad D_H(0)=0$$
+
+とする。子区間の長さは高々親の半分で、走査部分を子へ渡さないため、同じ位置を再訪しない。
+
+$k\ge2^{H-1}$ なら $D_H(k)=2^H-1$ なので、全位置を訪問しても上界内である。それ以外を帰納法で示す。$q<k$ 個の上位品の後に最下位を一つ調べ、子へ $x+y=k-q$ 個を渡したとする。帰納法と
+
+$$\min(u,x)+\min(u,y)\le\min(2u,x+y)$$
+
+より、その区間の訪問数は
+
+$$q+1+D_{H-1}(x)+D_{H-1}(y)\le q+D_H(k-q)\le D_H(k).$$
+
+最後の不等式は、$k<2^{H-1}$ の範囲では $D_H$ の最後の項が $k$ に等しく、$k$ を $q$ 減らすだけで少なくとも $q$ 減ることによる。全 $k$ 個を走査した場合は訪問 $k$ 回で終わる。最下位に着く前に右端を越えた場合も、$q+D_{H-1}(k-q)\le D_H(k)$ である。これで、中央が上位品だった場合を追加費用として放置せず、全分岐を数えられる。
+
+全体では $H\le18$ であり、
+
+$$D_{18}(472)=511+9\cdot472=4759.$$
+
+最下位を早期確定した場合、初期走査で発見した上位品 $c$ 個は、後の探索個数から消える。$D_{18}$ の最後の項が $0\ldots472$ で線形なので、
+
+$$c+1+D_{18}(S-c)\le1+D_{18}(S)\le4760.$$
+
+473位置まで調べた場合は、$473+D_{18}(26)=473+369=842$。最初の和1による二分が行う高々19訪問を足しても、全体で高々4779回である。保存済みの位置は外部に再質問しないので、外部質問数もこの上界以下となる。
+
+これらは、一つの固定列を先に仮定する証明ではない。個数の上界、最下位の判定、区間外の個数は、各時点で残る全ての合法な列で成り立つ。区間を捨てる際も全ての列で最上位が存在しないと確認している。和0を返した位置は全ての整合する列で唯一の最上位であり、適応的な返答でも正しい。
+
+## 計算量
+
+外部質問は高々4779回で、各位置への質問は一回だけである。配列の初期化に $O(N)$、中央からの走査と区間処理に $O(Q)$ を使い、ローカル時間は $O(N+Q)$。外部コールバック内で返答を計算する時間は含めない。
+
+返答の保存に $O(N)$、未処理区間に $O(\log N)$ の空間を使う。子区間は高々半分になるので、先に左を処理するスタックは高々18区間となる。掲載コードは再帰せず、32区間分を先に確保する。
+
+位置や個数、質問数は全て32ビット符号付き整数に収まる。長さを検査してから配列を確保し、返答を位置の左右の長さ以内と検査してから足す。証明で使う二乗の計算を、探索本体で繰り返す必要はない。
+
+## 実装
+
+`find_unique_best(n, oracle, budget)` の `oracle(i)` は左右の個数を `std::array<int, 2>` で返す。初めに固定された合法列、または各返答後に全履歴と整合する合法列が少なくとも一つあることが契約である。
+
+返値の `index` が最上位の位置、`queries` が外部質問数である。`fast_queries`、`prefix_queries`、`search_queries` はその内訳、`cache_hits` は保存した返答の再利用数を表す。`reference_total` は最下位を確定した後の $S$ で、それ以前に答えが見つかった場合は−1。`maximum_pending` は未処理区間数の最大値である。
+
+長さの範囲外、空コールバック、質問予算の0〜10000外は、質問前に `invalid_argument`。予算を使い切った場合は、次の質問を送る前に `runtime_error` とする。既定予算は5000であり、合法な返答では上の保証が収まる。`query_upper_bound(n)` は掲載全域の上界を返し、実際に質問できる位置数 $N$ でも抑える。
+
+返答の範囲、確定した種類、区間の個数・長さなどに矛盾を発見した場合は `runtime_error`。任意の虚偽を全て検出するAPIではない。コールバック自身の例外と割り当て例外はそのまま伝播し、既に行った外部質問の効果は戻さない。呼び出し間で状態を共有せず、コールバックや返値への参照も保持しない。
+
+原典へ接続する場合は `PRIZE_ORIGINAL_GRADER` を定義し、配布の `prize.h` を使う。`find_best` は返答ベクトルの長さが2であることも確認する。一般APIだけを使う場合は定義せず、コールバックを渡せばよい。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <functional>
+#include <stdexcept>
+#include <vector>
+#ifdef PRIZE_ORIGINAL_GRADER
+#include "prize.h"
+#endif
+
+namespace ranked_prizes {
+using Reply = std::array<int, 2>;
+using Oracle = std::function<Reply(int)>;
+struct Result {
+    int index = -1;
+    int queries = 0, fast_queries = 0, prefix_queries = 0, search_queries = 0;
+    int cache_hits = 0, reference_total = -1, maximum_pending = 0;
+};
+int query_upper_bound(int n) {
+    if (n < 3 || n > 200000) throw std::invalid_argument("box count");
+    int height = 0;
+    for (int x = n - 1; x > 0; x /= 2) ++height;
+    return std::min(n, 4761 + height);
+}
+Result find_unique_best(int n, const Oracle& oracle, int budget = 5000) {
+    if (n < 3 || n > 200000 || budget < 0 || budget > 10000 || !oracle) {
+        throw std::invalid_argument("size, budget or oracle");
+    }
+    Result result;
+    std::vector<Reply> cache(n, Reply{-1, -1});
+    auto inspect = [&](int index, int stage) {
+        if (cache[index][0] >= 0) {
+            ++result.cache_hits;
+            return cache[index];
+        }
+        if (result.queries == budget) throw std::runtime_error("query budget");
+        ++result.queries;
+        if (stage == 0) ++result.fast_queries;
+        else if (stage == 1) ++result.prefix_queries;
+        else ++result.search_queries;
+        const Reply answer = oracle(index);
+        if (answer[0] < 0 || answer[0] > index || answer[1] < 0 ||
+            answer[1] > n - 1 - index || answer[0] + answer[1] > 472) {
+            throw std::runtime_error("reply range");
+        }
+        cache[index] = answer;
+        if (answer[0] + answer[1] == 0) result.index = index;
+        return answer;
+    };
+    auto answer = inspect(0, 0);
+    if (result.index >= 0) return result;
+    if (answer[0] + answer[1] == 1) {
+        int left = 1, right = n - 1;
+        while (left <= right) {
+            const int middle = left + (right - left) / 2;
+            answer = inspect(middle, 0);
+            if (result.index >= 0) return result;
+            if (answer[0] + answer[1] != 1) break;
+            if (answer[0] == 0) left = middle + 1;
+            else right = middle - 1;
+        }
+        if (left > right) throw std::runtime_error("missing unique best");
+    }
+    int read = 0, total = 0;
+    for (int i = 0; i < std::min(n, 473); ++i) {
+        answer = inspect(i, 1);
+        if (result.index >= 0) return result;
+        read = i + 1;
+        total = std::max(total, answer[0] + answer[1]);
+        if (total > 26) break;
+    }
+    if (read == n || total == 0) throw std::runtime_error("missing unique best");
+    result.reference_total = total;
+    int prefix_better = 0;
+    for (int i = 0; i < read; ++i) {
+        if (cache[i][0] + cache[i][1] < total) ++prefix_better;
+    }
+    struct Frame { int left, right, before, after; };
+    std::vector<Frame> pending;
+    pending.reserve(32);
+    auto push = [&](int left, int right, int before, int after) {
+        if (before < 0 || after < 0 || before + after > total) {
+            throw std::runtime_error("interval count");
+        }
+        const int count = total - before - after;
+        if (count > right - left + 1) throw std::runtime_error("interval capacity");
+        if (count == 0) return;
+        pending.push_back({left, right, before, after});
+        result.maximum_pending = std::max(result.maximum_pending, int(pending.size()));
+    };
+    push(read, n - 1, prefix_better, 0);
+    while (!pending.empty()) {
+        const Frame frame = pending.back(); pending.pop_back();
+        const int remaining = total - frame.before - frame.after;
+        const int middle = frame.left + (frame.right - frame.left) / 2;
+        int position = middle, scanned = 0;
+        bool common = false;
+        while (position <= frame.right && scanned < remaining) {
+            answer = inspect(position, 2);
+            if (result.index >= 0) return result;
+            const int sum = answer[0] + answer[1];
+            if (sum > total) throw std::runtime_error("inconsistent reference level");
+            if (sum == total) { common = true; break; }
+            ++scanned; ++position;
+        }
+        if (scanned == remaining) continue;
+        if (!common) {
+            push(frame.left, middle - 1, frame.before, frame.after + scanned);
+            continue;
+        }
+        const int left_count = answer[0] - frame.before - scanned;
+        const int right_count = answer[1] - frame.after;
+        if (left_count < 0 || right_count < 0 ||
+            left_count + right_count != remaining - scanned) {
+            throw std::runtime_error("inconsistent split");
+        }
+        push(position + 1, frame.right, answer[0], frame.after);
+        push(frame.left, middle - 1, frame.before, answer[1] + scanned);
+    }
+    throw std::runtime_error("missing unique best");
+}
+} // namespace ranked_prizes
+
+#ifdef PRIZE_ORIGINAL_GRADER
+int find_best(int n) {
+    return ranked_prizes::find_unique_best(n, [](int i) {
+        const auto answer = ask(i);
+        if (answer.size() != 2) throw std::runtime_error("original reply size");
+        return ranked_prizes::Reply{answer[0], answer[1]};
+    }).index;
+}
+#endif
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/)では、候補が入る側を絞れることが前提になる。この列の位置に単調性はないが、確定した最下位への返答が区間内の上位個数を与えるため、個数を保って探索できる。
+
+[一個だけ隠れた対象への集合質問](/flowchartcp/techniques/interactive-bit-group-testing/)と異なり、任意の集合を直接質問することはできない。[対話問題の質問設計](/flowchartcp/techniques/interactive/)と同様、返答による候補の削減だけでなく、適応的な返答に対する正しさと最悪の質問数まで設計する。
+
+## 参考資料
+
+- [IOI 2017 The Big Prize 公式原典](https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf)。左右の厳密な上位個数、二乗より大きい個数条件、適応的な返答、`find_best` と `ask` の契約。
+- [公式配布SWE版](https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf)、[公式配布MAC版](https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf)。長さ3〜20万、質問上限10000と満点5000回の採点条件。
+- [IOI 2017 The Big Prize 公式解説](https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf)、[公式課題アーカイブ](https://ioi.te.lv/locations/ioi17/contest/index.shtml)。同じ種類への返答を使う区間の枝刈りが基礎になる。本文は中央からの走査を含む別の具体手順と、4779回の上界を証明している。
+- [公式Day 2 実装上の注意](https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf)。C++の配列型 `std::vector<int>`、1秒・1024MBの制限。
+- [日本委員会公式・IOI 2017 課題一覧](https://www2.ioi-jp.org/ioi/2017/tasks/index.html)。競技日2の2017年8月1日と対象課題。
+
+<TechniqueReferences techniqueId="rank-count-oracle-equal-level-interval-pruning" />

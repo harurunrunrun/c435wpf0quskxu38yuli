@@ -1,0 +1,78 @@
+---
+title: "重なる集合への加算を、大きい集合だけ遅らせる"
+description: "集合サイズ総和を基準に分け、重なり個数で一括加算の寄与を計算する。"
+techniqueId: sqrt-heavy-light-sets
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+位置の集合が固定され、集合内の全値への加算と集合内の総和質問を行う。集合は重なり、区間とは限らない。大きい集合へ加算するたびに全位置を書き換えると時間が掛かる。
+
+## 考え方
+
+全所属数 $M=\sum_s |S_s|$ と閾値Bを用い、サイズB以上を大きい集合とする。その個数Hは $M/B$ 以下。各大集合と各集合の共通位置数を先に求める。
+
+配列 `base` には小さい集合からの加算だけを反映し、大集合の加算は `lazy[h]` に溜める。大集合には `base` の総和も保存する。小集合を加算するとき、その位置の `base` を変え、大集合の総和には `加算量×共通位置数` を足す。大集合への加算はlazy一つだけを変える。
+
+質問ではbaseの総和を取り、すべての大集合について `lazy[h]×共通位置数` を足す。
+
+## 適用条件
+
+集合が固定され、各集合内で位置の重複がないことが必要。集合が重なっていてもよい。閾値は位置数Nではなく所属数Mから決める。集合の追加やメンバー変更は共通位置数の再計算が必要。負の加算も扱える。
+
+## なぜ正しいか
+
+各位置の実際の値は、そのbaseと所属する大集合のlazyの総和に等しい。この式を質問集合の全位置で足すと、大集合hのlazyは共通位置数回現れる。小集合加算で大集合base総和へ現れる増分も同じ共通位置数である。すべての操作がこの不変条件を保つ。
+
+## 計算量
+
+集合数 $S$、大集合数 $H$。共通個数表の作成は $O(N+M+H(M+S))$ 時間、空間 $O(N+M+HS)$。掲載実装では集合内の重複を検査するため、さらに $O(\sum_s |S_s|\log(|S_s|+1))$ の整列を行います。一操作は $O(B+H)$、大集合加算だけは $O(1)$。$B\approx\sqrt M$ なら一操作 $O(\sqrt M)$。前処理・共通個数表の空間が許容されるかを確認します。
+
+## 実装
+
+`OverlappingSetSums(initial,groups)` の `add(s,delta)` と `sum(s)` を使う。位置・集合番号は0始まり。総和とlazyを128ビットで持つ。検証用に閾値を指定でき、通常は所属数の平方根を使う。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+struct OverlappingSetSums {
+    int n,threshold;std::vector<std::vector<int>> sets,overlap;
+    std::vector<int> heavy_id,heavy_sets;std::vector<__int128> base,lazy,base_sum;
+    OverlappingSetSums(const std::vector<long long>& initial,std::vector<std::vector<int>> groups,int block=0):
+        n(int(initial.size())),sets(std::move(groups)),heavy_id(sets.size(),-1),base(initial.begin(),initial.end()) {
+        int membership=0;
+        for(auto& group:sets) {membership+=int(group.size());auto copy=group;std::sort(copy.begin(),copy.end());assert(std::adjacent_find(copy.begin(),copy.end())==copy.end());for(int p:group) assert(0<=p&&p<n);}
+        threshold=block>0?block:std::max(1,int(std::sqrt(std::max(1,membership))));
+        for(int s=0;s<int(sets.size());++s) if(int(sets[s].size())>=threshold) {heavy_id[s]=int(heavy_sets.size());heavy_sets.push_back(s);}
+        int h=int(heavy_sets.size());lazy.resize(h);base_sum.resize(h);overlap.assign(h,std::vector<int>(sets.size()));std::vector<int> mark(n,-1);
+        for(int i=0;i<h;++i) {
+            for(int p:sets[heavy_sets[i]]) {mark[p]=i;base_sum[i]+=base[p];}
+            for(int s=0;s<int(sets.size());++s) for(int p:sets[s]) overlap[i][s]+=mark[p]==i;
+        }
+    }
+    void add(int s,long long delta) {
+        assert(0<=s&&s<int(sets.size()));int h=heavy_id[s];
+        if(h>=0) lazy[h]+=delta;
+        else {for(int p:sets[s]) base[p]+=delta;for(int i=0;i<int(heavy_sets.size());++i) base_sum[i]+=__int128(delta)*overlap[i][s];}
+    }
+    __int128 sum(int s) const {
+        assert(0<=s&&s<int(sets.size()));__int128 answer=0;int h=heavy_id[s];
+        if(h>=0) answer=base_sum[h];else for(int p:sets[s]) answer+=base[p];
+        for(int i=0;i<int(heavy_sets.size());++i) {answer+=lazy[i]*overlap[i][s];}
+        return answer;
+    }
+};
+```
+
+## 関連する手法
+
+[同じ集合内の移動を仮想頂点への入場と退出に分ける](/flowchartcp/techniques/zero-one-bfs-supernodes/) ・ [区間加算と閾値個数を、並べた小区間で両立させる](/flowchartcp/techniques/range-add-count-less/) ・ [区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/)
+
+## 参考資料
+
+- [Codeforces：Subset Sums（原典の条件）](https://codeforces.com/problemset/problem/348/C)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="sqrt-heavy-light-sets" />

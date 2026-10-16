@@ -1,0 +1,65 @@
+---
+title: "増分が 0 の試行を含む期待値は、自己ループを左辺へ移す"
+description: "一回で得られる個数の分布を作り、残り個数の期待値を小さい順に計算します。"
+techniqueId: "random-gain-zero-elimination"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+一回の試行で $0,1,\ldots,N$ 個を得て、合計が目標以上になるまでの期待回数を求めるとき。増分 0 の可能性があるため、期待値の式に同じ状態が現れます。
+
+## 考え方
+
+一回の増分を $g$、その確率を $p_g$、あと $r$ 個必要なときの期待値を $E[r]$ とします。$E[0]=0$ として、
+$$E[r]=\frac{1+\sum_{g=1}^{N}p_gE[\max(0,r-g)]}{\sum_{g=1}^{N}p_g}.$$
+分子の 1 は今回の試行です。独立な成功判定から増分を作る場合、成功数の分布をまず DP で求めます。
+
+## 適用条件
+
+試行ごとの増分分布が同じで独立、増分が非負、正の増分の確率が正であること。目標を超えても成功とするので残量を 0 に丸めます。分母は $1-p_0$ の差を取るより、正の増分の確率を直接足すと小さい成功確率で桁落ちを避けられます。
+
+## なぜ正しいか
+
+一回目で分けると $E[r]=1+p_0E[r]+\sum_{g\ge1}p_gE[\max(0,r-g)]$。自己ループだけを移項すると、右辺は全て小さい残量になります。正の増分が起こるまでの待ち時間が有限で、最大でも残量回の成功で終わるため期待値も有限です。
+
+## 計算量
+
+独立な $N$ 回の成否から分布を作る時間 $O(N^2)$、残量 DP が $O(NX)$、空間 $O(N+X)$。成否の全 $2^N$ 通りを毎状態で調べる処理を避けます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double expected_trials_for_gain(const vector<int>& percent,int target){
+    assert(target>=0);if(target==0)return 0;
+    int n=percent.size();vector<long double> p(n+1);p[0]=1;
+    int used=0;
+    for(int value:percent){
+        assert(0<=value && value<=100);long double q=value/100.0L;
+        for(int g=used+1;g>=0;--g)
+            p[g]=p[g]*(1-q)+(g ? p[g-1]*q : 0);
+        ++used;
+    }
+    long double positive=accumulate(p.begin()+1,p.end(),0.0L);
+    if(positive==0)return numeric_limits<long double>::infinity();
+    vector<long double> e(target+1);
+    for(int r=1;r<=target;++r){
+        long double sum=1;
+        for(int g=1;g<=n;++g)sum+=p[g]*e[max(0,r-g)];
+        e[r]=sum/positive;
+    }
+    return e[target];
+}
+```
+
+## 関連する手法
+
+[同じ状態に戻る確率を期待値の式から除く](/flowchartcp/techniques/expectation-self-loop/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc382/editorial/11487)
+
+<TechniqueReferences techniqueId="random-gain-zero-elimination" />

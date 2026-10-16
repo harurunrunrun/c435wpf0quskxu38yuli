@@ -1,0 +1,364 @@
+[
+  {
+    "id": "parallelogram-diagonal-midpoints",
+    "title": "平行四辺形の四点選択を、対角線の中点が一致する二組にする",
+    "summary": "四点を選ぶ代わりに点対の座標和を数え、共線による退化だけを分ける。",
+    "aliases": [
+      "Parallelogram Diagonal Midpoint",
+      "平行四辺形の個数",
+      "対角線の中点"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "collinear-direction-gcd"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/660/D",
+      "https://codeforces.com/blog/entry/44259"
+    ]
+  },
+  {
+    "id": "scaled-circle-lattice-scan",
+    "title": "小数の円に含まれる格子点は、桁をそろえた整数の二乗で数える",
+    "summary": "浮動小数で境界を丸めず、各整数の横座標について縦の範囲を整数平方根で求める。",
+    "aliases": [
+      "Circle Lattice Points",
+      "Scaled Integer Geometry",
+      "円内の格子点",
+      "小数の整数化"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc191/tasks/abc191_d",
+      "https://atcoder.jp/contests/abc191/editorial/611"
+    ]
+  },
+  {
+    "id": "point-congruence-cyclic-signature",
+    "title": "点集合の回転と平行移動による一致を、重心からの巡回列で判定する",
+    "summary": "重心を除いて方向順に並べ、長さ・隣の内積・外積の列を循環一致させる。",
+    "aliases": [
+      "Point Set Congruence",
+      "Cyclic Angular Signature",
+      "回転合同",
+      "重心と巡回一致"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "z-algorithm"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc207/tasks/abc207_d",
+      "https://atcoder.jp/contests/abc207/editorial/2168"
+    ]
+  },
+  {
+    "id": "translated-convex-halfplane-max",
+    "title": "同じ凸多角形を何度も平行移動した共通部分は、辺ごとの最も厳しい条件だけ残す",
+    "summary": "移動先ごとの内外判定をまとめ、辺の法線方向への射影の最大値を前計算する。",
+    "aliases": [
+      "Translated Convex Polygon Intersection",
+      "Halfplane Threshold Maximum",
+      "平行移動した凸多角形",
+      "辺ごとの最厳制約"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "convex-point-membership"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc251/tasks/abc251_g",
+      "https://atcoder.jp/contests/abc251/editorial/3961"
+    ]
+  },
+  {
+    "id": "repeated-grid-walk-orbits",
+    "title": "同じ格子歩行を大量に繰り返すなら、一周期の移動量で軌道と区間に分ける",
+    "summary": "訪問点を平行移動で重なる群に分け、繰返し回数を各群の整数区間の長さに変える。",
+    "aliases": [
+      "Repeated Grid Walk Orbits",
+      "Translation Orbit Intervals",
+      "反復格子歩行",
+      "平行移動の軌道"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc219/tasks/abc219_f",
+      "https://atcoder.jp/contests/abc219/editorial/2654"
+    ]
+  },
+  {
+    "id": "plane-wall-compressed-cells",
+    "title": "軸に平行な壁で囲まれる面積は、座標の間の長方形を頂点にして探索する",
+    "summary": "座標そのものと隣り合う座標の間を区別し、壁で通行を止めて元の幅と高さを足す。",
+    "aliases": [
+      "Compressed Plane Cells",
+      "Axis Aligned Wall Flood Fill",
+      "壁と座標圧縮",
+      "平面領域の面積"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression",
+      "bfs"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc168/tasks/abc168_f",
+      "https://img.atcoder.jp/abc168/editorial.pdf"
+    ]
+  },
+  {
+    "id": "disk-cover-center-intersections",
+    "title": "全ての点を半径Rで覆えるかは、中心候補を等半径円の交点に絞る",
+    "summary": "点を円の中心に置き換えて共通部分を考え、連続な中心位置の探索を有限個の候補に変える。",
+    "aliases": [
+      "Equal Radius Disk Intersection",
+      "Minimum Enclosing Circle Decision",
+      "被覆円の中心候補",
+      "等半径円の共通部分"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "binary-search"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc151/tasks/abc151_f",
+      "https://img.atcoder.jp/abc151/editorial.pdf"
+    ]
+  },
+  {
+    "id": "isosceles-trapezoid-bisector-groups",
+    "title": "等脚台形の二つの底辺を、垂直二等分線が同じで中点が異なる点対から選ぶ",
+    "summary": "四点の全探索を点対の群に変え、同じ中点を除いて重みの大きい二組を探す。",
+    "aliases": [
+      "Isosceles Trapezoid Bisector Grouping",
+      "Weighted Trapezium",
+      "等脚台形",
+      "垂直二等分線による分類"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "collinear-direction-gcd"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc220/tasks/abc220_g",
+      "https://atcoder.jp/contests/abc220/editorial/2684"
+    ]
+  },
+  {
+    "id": "disk-passage-wall-bottleneck",
+    "aliases": [
+      "Disk Passage Wall Bottleneck",
+      "Silver Woods",
+      "Corridor Clearance Connectivity",
+      "通路を通れる円の最大半径",
+      "上下の壁をつなぐ障害物の連鎖"
+    ],
+    "prerequisites": [
+      "union-find",
+      "dsu-threshold-queries",
+      "circle-square-distance"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc181/tasks/abc181_f",
+      "https://atcoder.jp/contests/abc181/editorial/299"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "障害点のある通路を通れる円の半径は、上下の壁がつながる距離から求める",
+    "summary": "近すぎて通れない隙間を辺にし、通路を横切る障害物の連鎖ができるしきい値を探す。"
+  },
+  {
+    "id": "row-column-maxima-height-matching",
+    "title": "行と列の最大高さを保つ最小配置は、同じ高さの証拠を対応で共有する",
+    "summary": "非零セルへ先に1を残し、行・列の最大値を実現する追加量を二部マッチングで節約する。",
+    "aliases": [
+      "Row Column Maxima Height Matching",
+      "Mission Improbable",
+      "支持を保つ三方向のシルエット",
+      "行と列の最大値の共有証拠"
+    ],
+    "family": "対応・流量・選択",
+    "prerequisites": [
+      "matching",
+      "contribution"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=5",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=3"
+    ]
+  },
+  {
+    "id": "grid-rectangle-components-euler-boundary",
+    "title": "部分長方形の同色成分数を、異色の境界線と外周の補正で数える",
+    "summary": "異色の境界線を平面グラフにし、内部の代表点数を外周で補正して、長方形内だけの同色成分数を求める。",
+    "aliases": [
+      "Rectangle Monochromatic Components",
+      "Planar Euler Boundary Correction",
+      "部分長方形の同色成分数",
+      "異色境界とEulerの式"
+    ],
+    "family": "平面・格子と形の一致",
+    "level": "上級",
+    "prerequisites": [
+      "prefix-sum",
+      "graph-reduction",
+      "bfs"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1094",
+      "https://usaco.org/current/data/sol_prob3_platinum_jan21.html",
+      "https://usaco.org/index.php?page=jan21results"
+    ]
+  },
+  {
+    "id": "grid-enclosing-higher-boundary-rectangle-candidates",
+    "title": "各行・各列で両端が内部より高い長方形を数える",
+    "summary": "内部の最大セルから候補を作り、各行・各列で同じ外側の二位置が条件を満たし続けるかを確かめる。等しい候補をまとめ、厳密な高さの条件を満たすものを数える。",
+    "aliases": [
+      "IOI2019 Rectangles maximum cell nearest greater candidates",
+      "strict higher enclosing border rectangle good pairs runs radix",
+      "高い外側セル 格子長方形 四方向厳密境界 候補列挙"
+    ],
+    "family": "境界から候補を絞る格子の数え上げ",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "subarray-extremum-contribution",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem3.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  {
+    "id": "orthogonal-point-cover-spiral-two-chains",
+    "title": "点集合を二つの単調鎖と螺旋に分け、少ない縦横線分で結ぶ",
+    "summary": "四方向の極値点を螺旋へ、角を兼ねる点を二つの単調鎖へ分ける。末尾の線分を延ばして次の部分へ一本で接続し、原点から全点を通る折れ線を点数に三本加えた本数以内で構成する。",
+    "aliases": [
+      "IOI2019 Broken Line N+3 orthogonal polyline",
+      "two monotone chains inside-out spiral one-connector construction",
+      "相異なる横縦座標 極値除去 入れ子長方形 点数プラス三本"
+    ],
+    "family": "極値の除去と末尾の延長による幾何構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant",
+      "output-only"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem4.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  }
+]

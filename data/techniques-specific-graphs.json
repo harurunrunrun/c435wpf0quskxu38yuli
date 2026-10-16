@@ -1,0 +1,531 @@
+[
+  {
+    "id": "bridge-edge-failure",
+    "title": "一本の辺を失うと切断される場所を一度の探索で求める",
+    "summary": "探索部分木から祖先へ戻れる辺の有無を記録し、辺ごとの再探索を省く。",
+    "aliases": [
+      "Bridge",
+      "Lowlink",
+      "橋",
+      "辺故障"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2076"
+    ]
+  },
+  {
+    "id": "block-cut-path",
+    "title": "一つの禁止頂点を避ける経路を分解木で判定する",
+    "summary": "二重連結成分と元の頂点の木を作り、禁止頂点が必須の通過点かを調べる。",
+    "aliases": [
+      "Block-cut Tree",
+      "Biconnected Components",
+      "関節点",
+      "頂点故障"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "bridge-edge-failure",
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1705"
+    ]
+  },
+  {
+    "id": "bipartite-parity-constraints",
+    "title": "同じ・異なるという二値制約を偶奇として伝播する",
+    "summary": "二値変数の排他的論理和を辺に書き、閉路を一周したときの矛盾を調べる。",
+    "aliases": [
+      "Bipartite Graph",
+      "Parity Constraints",
+      "二部グラフ",
+      "XOR制約"
+    ],
+    "family": "グラフ・経路",
+    "level": "中級",
+    "prerequisites": [],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc327/editorial/7578"
+    ]
+  },
+  {
+    "id": "two-sat-forbidden-pairs",
+    "title": "二つの選択肢の禁止組を含意に直す",
+    "summary": "二者の選択が両立しない条件を二本の含意に変え、全選択を同時に決める。",
+    "aliases": [
+      "2-SAT",
+      "Forbidden Pairs",
+      "Implication Graph",
+      "禁止組"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "scc"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_en/twosat.html"
+    ]
+  },
+  {
+    "id": "dsu-potential-differences",
+    "title": "変数間の差の制約を根からの差で管理する",
+    "summary": "差の加算と矛盾判定だけが必要なら、成分の根との差をUnion-Findに保存する。",
+    "aliases": [
+      "Weighted Union Find",
+      "Potential DSU",
+      "Difference Constraints",
+      "重み付きUnion-Find"
+    ],
+    "family": "データ構造・制約",
+    "level": "上級",
+    "prerequisites": [
+      "union-find"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc328/editorial/7664"
+    ]
+  },
+  {
+    "id": "dijkstra-expanded-resource",
+    "title": "移動で消費・回復する資源を持ち、不要な所持量を切る",
+    "summary": "場所だけでは経路を比較できないとき、証明した所持上限まで資源を状態に加える。",
+    "aliases": [
+      "Resource-expanded Shortest Path",
+      "資源付き最短路",
+      "所持量上限"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "dijkstra",
+      "state-design"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc164/editorial.pdf"
+    ]
+  },
+  {
+    "id": "dijkstra-range-edges",
+    "title": "点から区間・区間から点への移動を二つの区間木で張る",
+    "summary": "同一コストの区間遷移をまとめ、行きと帰りの補助辺を混ぜずに圧縮する。",
+    "aliases": [
+      "Segment Tree Graph",
+      "Range Edges",
+      "区間辺",
+      "区間グラフ"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "segment-tree",
+      "dijkstra"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/786/B"
+    ]
+  },
+  {
+    "id": "dijkstra-potential-reweight",
+    "title": "負の辺を頂点の値の差で非負へ変換する",
+    "summary": "負閉路のないグラフで一度だけ補正値を求め、始点の異なる最短路を非負辺で処理する。",
+    "aliases": [
+      "Johnson Algorithm",
+      "Potential Reweighting",
+      "ジョンソン法",
+      "ポテンシャル"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "dijkstra",
+      "bellman-ford"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C"
+    ]
+  },
+  {
+    "id": "functional-graph-cycle-tail",
+    "title": "一つに決まる移動を、巡回前と巡回後に分ける",
+    "summary": "最初の再訪まで記録し、巨大な移動回数の巡回部分を余りへ置き換える。",
+    "aliases": [
+      "Functional Graph",
+      "Tail and Cycle",
+      "関数グラフ",
+      "巡回"
+    ],
+    "family": "グラフ・経路",
+    "level": "中級",
+    "prerequisites": [],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://img.atcoder.jp/abc167/editorial.pdf"
+    ]
+  },
+  {
+    "id": "mst-replacement-edge",
+    "title": "辺を一本追加した全域木を、パス上の最大辺との交換で求める",
+    "summary": "元の最小全域木を一度作り、新辺が作る閉路から最も重い辺を外す。",
+    "aliases": [
+      "MST Replacement",
+      "Maximum Edge on Path",
+      "最小全域木",
+      "辺交換"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "union-find",
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc235/editorial/3263"
+    ]
+  },
+  {
+    "id": "euler-degree-connectivity",
+    "title": "すべての有向辺を一度ずつ通る経路を、次数と辺の消費で作る",
+    "summary": "入出次数の差で端点を確認し、行き止まりから逆順に辺をつなぎ直す。",
+    "aliases": [
+      "Eulerian Trail",
+      "Hierholzer Algorithm",
+      "オイラー路",
+      "全辺一回"
+    ],
+    "family": "グラフ・経路",
+    "level": "中級",
+    "prerequisites": [],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1693"
+    ]
+  },
+  {
+    "id": "zero-one-bfs-supernodes",
+    "title": "同じ集合内の移動を仮想頂点への入場と退出に分ける",
+    "summary": "集合内の全頂点対へ辺を張らず、一度の入場にだけコストを付けて0-1 BFSを使う。",
+    "aliases": [
+      "Supernode",
+      "Virtual Vertex",
+      "Hypergraph Shortest Path",
+      "仮想頂点"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "zero-one-bfs"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc302/editorial/6508"
+    ]
+  },
+  {
+    "id": "dynamic-forest-path-aggregate",
+    "title": "辺をつなぎ替えながら、向きのあるパスを集計する",
+    "summary": "森の辺の追加・削除と頂点の変更を、パスの集計と一緒に処理します。パスを反転するときは、順方向と逆方向の集計も入れ替えます。",
+    "prerequisites": [
+      "heavy-light-decomposition",
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "family": "木・グラフ",
+    "aliases": [
+      "Link-Cut Tree",
+      "LCT",
+      "dynamic forest path aggregation",
+      "evert",
+      "access",
+      "expose",
+      "動的木",
+      "リンクカット木",
+      "非可換なパス集計"
+    ],
+    "level": "最上級",
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://www.cs.cmu.edu/~sleator/papers/dynamic-trees.pdf",
+      "https://www.cs.cmu.edu/~sleator/papers/Self-Adjusting.htm",
+      "https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/15859-f09/www/handouts/link-cut-trees.txt",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/tree/dynamic_tree_vertex_set_path_composite/sol/correct.cpp"
+    ]
+  },
+  {
+    "id": "mst-equal-weight-edge-classification",
+    "title": "最小全域木に必須の辺は、同じ重みの辺をまとめて縮約後の橋で判定する",
+    "summary": "軽い辺でつながる成分を縮約し、同じ重みの候補を併合する前に三分類する。",
+    "aliases": [
+      "Edges in MST",
+      "Critical and Pseudo-Critical MST Edges",
+      "Equal Weight Kruskal Bridges",
+      "最小全域木の必須辺",
+      "同重み一括処理"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "union-find",
+      "bridge-edge-failure"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/160/D",
+      "https://codeforces.com/blog/entry/4108?mobile=true",
+      "https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/"
+    ]
+  },
+  {
+    "id": "strict-second-mst-two-maxima",
+    "title": "厳密に重い次の全域木は、経路上の異なる重みを二つ持って求める",
+    "summary": "同じ総重みの別解を除くため、追加辺と経路最大が等しいときは厳密な次点を外す。",
+    "aliases": [
+      "Strict Second Minimum Spanning Tree",
+      "Second Best MST",
+      "Distinct Top Two Path Weights",
+      "厳密次小全域木",
+      "経路の最大値と厳密な次大値"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "prerequisites": [
+      "mst-replacement-edge",
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.luogu.com.cn/problem/P4180",
+      "https://www.luogu.com.cn/article/tdx97f1b"
+    ]
+  },
+  {
+    "id": "shortest-edge-mandatory-tight-bridges",
+    "aliases": [
+      "Mandatory Shortest Path Edges Tight DAG Bridges",
+      "President and Roads",
+      "Shortest Edge Minimum Reduction",
+      "全最短路の必須辺",
+      "最短路の辺と無向の橋"
+    ],
+    "prerequisites": [
+      "dijkstra",
+      "bridge-edge-failure",
+      "shortest-one-edge-discount"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/567/E"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "全最短路に共通する辺は、最短路に使える辺だけ残して橋を調べる",
+    "summary": "正の重みの有向グラフで最短路の辺を絞り、向きを外した補助グラフの橋から必須辺を判定する。"
+  },
+  {
+    "id": "complement-graph-unvisited-bfs",
+    "aliases": [
+      "Complement Graph BFS Unvisited Linked List",
+      "Connected Components in a Complement Graph",
+      "存在しない辺からの連結成分",
+      "補グラフの探索"
+    ],
+    "prerequisites": [
+      "bfs"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/920/E"
+    ],
+    "family": "グラフ・経路",
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "存在しない辺だけが与えられるグラフは、未訪問の頂点を削除しながら探索する",
+    "summary": "禁止された隣接には印を付け、それ以外の未訪問頂点を連結リストから一度だけ取り出す。"
+  },
+  {
+    "id": "functional-cycle-minimum-order-cost",
+    "aliases": [
+      "Functional Graph Minimum Ordering Penalty",
+      "Minimum Cycle Cost Ordering",
+      "各要素に一つの前後条件",
+      "閉路ごとの最小罰則"
+    ],
+    "prerequisites": [
+      "topological-sort"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc256/tasks/abc256_e",
+      "https://atcoder.jp/contests/abc256/editorial/4145"
+    ],
+    "family": "グラフ・経路",
+    "level": "中級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "各要素に一つの前後条件がある順序は、閉路ごとの最小罰則で作る",
+    "summary": "自分より相手が先なら罰則となる条件を辺にし、閉路に入る前の頂点を先に処理する。"
+  },
+  {
+    "id": "bipartite-component-edge-addition-count",
+    "aliases": [
+      "Bipartite Edge Addition Count",
+      "Component Color Pair Counting",
+      "二部性を保つ追加辺の個数",
+      "連結成分ごとの同色対"
+    ],
+    "prerequisites": [
+      "bfs",
+      "bipartite-parity-constraints"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc282/tasks/abc282_d",
+      "https://atcoder.jp/contests/abc282/editorial/5422"
+    ],
+    "family": "グラフ・経路",
+    "level": "中級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "二部性を保つ辺の追加は、同じ成分の同色対だけを除いて数える",
+    "summary": "成分ごとの二色の人数を数え、既存辺と同じ成分内の同色対を全頂点対から引く。"
+  },
+  {
+    "id": "simple-path-count-matrix-tree-cycle-construction",
+    "title": "全頂点対の単純路本数から、木と環でグラフを構築する",
+    "summary": "全対の本数が3以下という条件から二閉路を排除し、0の連結成分、1の木、2の代表環の整合を検査する。",
+    "aliases": [
+      "IOI2020 Connecting Supertrees path count matrix construction",
+      "exact simple path counts tree cycle equivalence classes",
+      "単純路 本数 行列 構築 木 代表 環"
+    ],
+    "family": "グラフの構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "union-find",
+      "graph-reduction",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi2020.sg/ioi-2020-tasks/index.html",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ]
+  }
+]

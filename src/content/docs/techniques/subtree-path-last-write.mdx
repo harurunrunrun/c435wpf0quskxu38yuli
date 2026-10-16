@@ -1,0 +1,97 @@
+---
+title: "部分木の設定と祖先への上書きは、影響する最新時刻を比較する"
+description: "祖先を消す操作は、その頂点の子孫で最後に起きた消去を調べればよい。"
+techniqueId: subtree-path-last-write
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+祖先を消す操作は、その頂点の子孫で最後に起きた消去を調べればよい。
+
+## 使う場面
+
+部分木をまとめて1に設定し、根から指定頂点までを0に上書きする。質問は一頂点の現在の値で、加算や経路の合計は求めない。
+
+## 考え方
+
+操作の時刻を1から増やす。頂点 $v$ の値を決めるのは、最後に $v$ に影響した設定・消去のどちらかである。
+
+部分木を1へ設定する操作は、DFS区間へ設定時刻を書き、点 $tin_v$ に届いた最大時刻を調べる。一方、頂点 $x$ とその祖先を0へ変える操作は、$x$ の位置に消去時刻だけ記録する。
+
+$v$ が $x$ の祖先であることは、$x$ が $v$ の部分木にあることと同じ。したがって $v$ に影響した最新の消去は、$v$ のDFS区間の時刻最大値で求められる。
+
+設定時刻が消去時刻より大きければ1、それ以外なら0。初期時刻を両方0にすると、初期値0も表せる。
+
+## 適用条件
+
+根と木の形が固定され、値の変更は上書き。部分木の設定と根への経路の消去がこの二種類に限られる。一般の二点間経路や加算では、影響関係と最新時刻だけで同じ処理にはできない。
+
+時刻が増える順に操作を処理する。掲載実装の時刻は64ビット整数。
+
+## なぜ正しいか
+
+設定操作が $v$ へ届く条件は、設定する部分木のDFS区間が $tin_v$ を含むこと。消去が $v$ へ届く条件は、消す操作の端点が $v$ の部分木にあること。二つのデータ構造はこの条件を満たす操作の最新時刻を正確に返す。上書きなので新しい方の操作だけが現在値を決める。
+
+## 計算量
+
+各操作で部分木や祖先を走査する $O(N)$ を、設定・消去・質問のいずれも $O(\log N)$ に減らす。準備・空間は $O(N)$。祖先表も経路の分割も不要。
+
+## 実装
+
+`WaterTree` は初期値0。`fill(v)` が部分木を1に、`empty_ancestors(v)` が根から頂点を0にする。`value(v)` は現在値。設定は区間へ時刻の最大値を記録し、消去は点更新の区間最大値を使う。木の探索は反復。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct WaterTree {
+    int n,base=1;
+    long long clock=0;
+    vector<int> tin,tout;
+    vector<long long> fill_tag,erase_max;
+    explicit WaterTree(const vector<vector<int>>& g)
+        :n(g.size()),tin(n),tout(n) {
+        assert(n>0);
+        vector<int> parent(n,-1);parent[0]=0;
+        int timer=0;
+        vector<pair<int,int>> dfs{{0,0}};
+        while(!dfs.empty()) {
+            int v=dfs.back().first;int& i=dfs.back().second;
+            if(i==0) tin[v]=timer++;
+            if(i==int(g[v].size())) {tout[v]=timer;dfs.pop_back();continue;}
+            int u=g[v][i++];if(u==parent[v]) continue;
+            parent[u]=v;dfs.push_back({u,0});
+        }
+        while(base<n) base*=2;
+        fill_tag.resize(2*base);erase_max.resize(2*base);
+    }
+    void fill(int v) {
+        long long t=++clock;
+        for(int l=base+tin[v],r=base+tout[v];l<r;l/=2,r/=2) {
+            if(l&1) {fill_tag[l]=max(fill_tag[l],t);++l;}
+            if(r&1) {--r;fill_tag[r]=max(fill_tag[r],t);}
+        }
+    }
+    void empty_ancestors(int v) {
+        int p=base+tin[v];erase_max[p]=++clock;
+        for(p/=2;p>0;p/=2) erase_max[p]=max(erase_max[2*p],erase_max[2*p+1]);
+    }
+    bool value(int v) const {
+        long long filled=0,erased=0;
+        for(int p=base+tin[v];p>0;p/=2) filled=max(filled,fill_tag[p]);
+        for(int l=base+tin[v],r=base+tout[v];l<r;l/=2,r/=2) {
+            if(l&1) erased=max(erased,erase_max[l++]);
+            if(r&1) erased=max(erased,erase_max[--r]);
+        }
+        return filled>erased;
+    }
+};
+```
+
+## 関連する手法
+
+[部分木をDFS順の連続区間に変換する](/flowchartcp/techniques/subtree-euler-interval/) ・ [向きのある木の経路集計は、正順と逆順の要約を両方持つ](/flowchartcp/techniques/tree-path-directed-composition/)
+
+## 参考資料
+
+- [Codeforces：Water Tree](https://codeforces.com/problemset/problem/343/D)
+
+<TechniqueReferences techniqueId="subtree-path-last-write" />

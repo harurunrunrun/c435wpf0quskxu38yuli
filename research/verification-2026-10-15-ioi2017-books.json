@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "一冊だけ持って直線上を歩き、順列を直して開始位置へ戻る最小歩行距離を、サイクルの実頂点閉包と左右探索で線形化する技巧を追加。",
+  "counts": {
+    "specificTechniques": 428,
+    "foundationArticles": 78,
+    "allArticles": 506,
+    "exampleMappings": 527,
+    "originalUrls": 489,
+    "graphs": 473,
+    "nodes": 3709,
+    "questions": 1690,
+    "answerEdges": 5512,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 523,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+    "articleSha256": "4479734b4b15a08f09fb5fdd615080dd2074ccc3ca02d3e42446082ea070b00b",
+    "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+    "record": "research/technique-verifications/permutation-cycle-interval-closure-two-sided-walk-greedy.json",
+    "originalSourceRangeAndApiContainmentVerified": true,
+    "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2017-books-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 4989.736315
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "record": "research/probes/ioi2017-books-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 10,
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 18317.771002,
+      "scope": "Books and Train flows, prior specific-expansion/layout/domain-viewerclients/legacy-continuation/IOI2017fixed/ledger. All526priorwalks/472graphs/everyoldfield/nineaudits withWiring+Trainresolutions preserved.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "previousFollowingChangeRecord": "research/verification-2026-10-15-ioi2017-train.json",
+      "full61GroupsReexecutedAfterThisChange": false,
+      "command": "node --test --test-reporter=tap --test-concurrency=2 tests/corpus-ledger.test.mjs tests/diagram-viewer-client.test.mjs tests/flow-continuation-sharing.test.mjs tests/flow-domain-client.test.mjs tests/flow-layout.test.mjs tests/flow-legacy-sharing.test.mjs tests/ioi-2017-fixed-corpus.test.mjs tests/ioi2017-books-flow.test.mjs tests/ioi2017-train-flow.test.mjs tests/specific-expansion-flow.test.mjs",
+      "harnessIssue": "Two preliminary custom aggregators incorrectly required captured child-node TAP text, which was empty despite exit0. The existing direct node --test invocation above passed all10 file groups; source-test assertions were not relaxed."
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 506,
+      "mappings": 527,
+      "diagrams": 473,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 506,
+      "recentArticlesChecked": 36,
+      "japaneseEnglishFullWidthQueries": 148,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 473,
+      "completeAnswerLabels": 5512,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized expanded range-sequence-changes and new single-book-sort-walk-conditions. No node/answer/arrow overlap; full guard titles and explanations visible. Wheel-zoom separate viewer retained.",
+      "initialFailureAndCorrection": "First public/local comparison found old public parent SVG and absent new public detail; node scripts/build-diagrams.mjs regenerated473 public SVGs, then full exact-pair check and visual inspection passed. Local build itself had already included current data."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1461,
+      "linksAssets": 29583,
+      "diagrams": 473,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "One-held capacity gives base sum|i−p[i]|. Actual cycle-vertex insertion attains transport costs while visiting the entire cycle interval. Hull-only contact is invalid; p=[2,1,0],s1 requires6ratherthan4.",
+    "For everyfirstexitfromclosedvisitedinterval,heldbookdestinationisinsidesooutwardcrossingisextratotransport. Closedwalk/transportdirectionbalanceforcesatleast2excessperdistinctpaidcut;out/backexcursionswithsplicedcycletoursattain. Closestleft/right actual bridgevertices haveonecommonclosure bymonotonicity/idempotence. Prebridgeone-sidedexplorationisindependent;choosecheapercompletedbridge,or paybothifnobridge. Unionclosedtrialsisclosedandallnewscanscommitted. O(N)/O(N)with<=2(N−1)paid+scans.",
+    "FinalN1..1million,start0..N−1,permutation/freepickup/swap/emptyputdown/returntosame s fullycovered. Cost<1000001000000 fits64bit. Size/start/value/unique validation precedescycleindexwalks. Byvalue longlong minimum_walk derivedfromfinalgeneric+Notice2sec/1024MB. Official15page DanielGraf Library draft book sort/6subtasks/N1e8 are not substitutedforfinalAPI/5subtasks. Headerbytesunretrieved remains.",
+    "VisibleC++320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6 author/root/peer normal+ASan/UBSan:5166352checks/430576core+371400adapter/checksum11819723664200185900. All40319physicalN1..7permstarts/2177282states,362879N1..8subsetcases,8500intervaloraclecalls,14max1m,20kreentrant,16invalid.",
+    "Distinct directedarborescence oracle: actualcyclemembershavezeroarcs totheirhulls,adjacentpaidarcs2,rootstart. Physicalscheduleinducesreachablegraph(lowerbound) andout/backwithcycletoursattainsreachabilitycost(upperbound). Edmondscheckedagainst65769incomingassignments/719inputs,then40319small+1500random/4500metamorphic/19near-millionconstructions.1761612checks/checksum10441972892649583544 normal+ASan. All24allocationfailures/freshstate;exactfencecountercopy46338callssatisfyscan/endpointbounds.",
+    "InitialIOI2017positiveBooksrow/status/sixidentitiesandpriorWiring+Trainresolutionsunchanged. Resolutiononly,nonewresearchpositive. Currentresearch4/6,covered3/6,16knowngaps. Canonicalranges→sequence-changes→reorder-cost→single-book-walk→yes3 withsixNo/unknownexits. Everyold526walk/472graph/nineaudits/593localprefix/404legacyshare/back preserved. ActualinvalidCPPpreflightremovescoverage."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 527,
+    "reviewedProblems": 487,
+    "corpusStatementsReviewed": 71,
+    "corpusSolutionsReviewed": 63,
+    "allSolutionsReviewed": 494
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "3/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 16,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual originaldistribution C++ header not retrieved; adapter derivedfromfinalgeneric+Notice.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlierenvironmentfailures. No install/server/browser retried.",
+    "External example-link liveness not checked. No push/upload/publication."
+  ],
+  "inProgress": [
+    "Simurgh fullAPI/root+separate reviews complete, integration next.",
+    "Prize full-score strategy proof/native work underway; no promotion of initialunconfirmed row.",
+    "IOI2016 fixedsix/1431raw baseline beforematching; notregistered."
+  ]
+}

@@ -1,0 +1,87 @@
+---
+title: "全接尾辞との共通接頭辞の長さの和は、LCPの区間最小値を個数付きでまとめる"
+description: "新しいLCPを加えたときに小さくなる最小値だけを、単調なスタックで一括更新する。"
+techniqueId: suffix-lcp-pair-sum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+新しいLCPを加えたときに小さくなる最小値だけを、単調なスタックで一括更新する。
+
+## 使う場面
+
+一つの文字列の各接尾辞について、他の全接尾辞との共通接頭辞の長さを合計したい。異なる相手を全部比較すると二乗個の組が生じる。
+
+## 考え方
+
+接尾辞を辞書順に並べ、隣り合う二つのLCPを $h_0,\ldots,h_{N-2}$ とする。順位 $i<j$ の接尾辞同士のLCPは $\min(h_i,\ldots,h_{j-1})$ になる。
+
+順位 $j$ の左側の相手との和を求めるとき、$j$ を一つ進めると、以前の全ての最小値に新しい $h$ を取る操作が必要になる。最小値を個別に並べず、同じ値の個数をまとめる。
+
+末尾から $h$ 以上の値を取り除き、取り除いた個数と新しく加わる一つをまとめて $(h,\text{個数})$ として積む。各組の値と個数の積の和を更新しておけば、その順位の左側からの寄与が得られる。右側からも逆順に同じ計算を行う。
+
+最後に自分自身とのLCPである接尾辞長 $N-\mathrm{SA}[j]$ を足し、開始位置の順へ戻す。
+
+## 適用条件
+
+本文が固定で、全接尾辞とのLCPの和を求める。文字の更新には接尾辞配列の作り直しが必要となる。特定の相手だけを除いた和や重み付きの和では、スタックの個数を対象の重みに置き換えるなどの変更が必要。
+
+実装は $N\le10^6$、固定256種類のバイト列。答えは $N^2$ 以下なので64ビット整数に収まる。空文字列は空の配列を返す。
+
+## なぜ正しいか
+
+ある接頭辞を共有する接尾辞は、辞書順で連続した区間に並ぶ。両端が $x$ 文字を共有するなら途中の全接尾辞も共有し、途中の隣接LCPは全て $x$ 以上になる。逆に隣接LCPが全て $x$ 以上なら、文字ごとの等しさを隣接間でつなげて両端も $x$ 文字一致する。このため区間最小値の式が成り立つ。
+
+右端を延ばすと各区間の最小値は以前の値と新しい $h$ の最小になる。スタックの値は小さい順なので、末尾の $h$ 以上の組だけが $h$ に変わる。個数を保存して併合する操作は全ての左端を過不足なく維持する。左・右・自分自身は互いに重ならず全相手を尽くす。
+
+## 計算量
+
+全組を直接比較すると最悪 $O(N^3)$ 時間。LCPの区間最小値を前計算しても全組の集計は $O(N^2)$ 時間。接尾辞配列とLCPを作った後の二方向の集計は $O(N)$ 時間・空間。
+
+掲載実装は固定値域でAtCoder LibraryのSA-ISを使うので、構築も含め $O(N+\sigma)$ 時間・空間、$\sigma=256$。比較ソートで接尾辞を構築する場合はその構築時間を別に加える。
+
+## 実装
+
+`all_suffix_lcp_sums` の $i$ 番目は、開始位置 $i$ の接尾辞が全接尾辞と共有する接頭辞長の和。
+
+```cpp
+#include <atcoder/string>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+std::vector<long long> all_suffix_lcp_sums(const std::string& s) {
+    if(s.size()>1000000) throw std::invalid_argument("length");
+    int n=s.size();if(n==0) return {};
+    std::vector<int> text;for(unsigned char c:s) text.push_back(c);
+    auto sa=atcoder::suffix_array(text,255);
+    auto lcp=atcoder::lcp_array(text,sa);
+    std::vector<long long> answer(n);
+    for(int i=0;i<n;++i) answer[i]=n-i;
+    for(int direction=0;direction<2;++direction) {
+        std::vector<std::pair<int,int>> stack;
+        long long total=0;
+        for(int step=1;step<n;++step) {
+            int rank=direction==0?step:n-1-step;
+            int h=lcp[direction==0?rank-1:rank],count=1;
+            while(!stack.empty() && stack.back().first>=h) {
+                auto [old,c]=stack.back();stack.pop_back();
+                total-=1LL*old*c;count+=c;
+            }
+            stack.push_back({h,count});total+=1LL*h*count;
+            answer[sa[rank]]+=total;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[異なる部分文字列を直前の接尾辞との差だけ数える](/flowchartcp/techniques/lcp-distinct-substrings/) ・ [K回の反復をLCPの区間最小値にする](/flowchartcp/techniques/lcp-repeated-substring/)
+
+## 参考資料
+
+- [AtCoder：Common Prefixes](https://atcoder.jp/contests/abc213/tasks/abc213_f)
+- [公式解説](https://atcoder.jp/contests/abc213/editorial/2413)
+
+<TechniqueReferences techniqueId="suffix-lcp-pair-sum" />

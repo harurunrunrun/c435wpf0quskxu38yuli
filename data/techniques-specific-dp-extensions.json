@@ -1,0 +1,435 @@
+[
+  {
+    "id": "knuth-adjacent-merges",
+    "title": "隣接区間の併合費用が非負の和なら、最適な切れ目を両隣から挟む",
+    "summary": "区間を二つに分けるDPで、二つの短い区間の最適位置の間だけを調べます。",
+    "aliases": [
+      "Knuth optimization adjacent merge",
+      "Knuth Yao interval DP"
+    ],
+    "family": "区間DP",
+    "prerequisites": [
+      "dp-monotone-split"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_n",
+      "https://doi.org/10.1145/800141.804691"
+    ]
+  },
+  {
+    "id": "subset-bin-lexicographic",
+    "title": "同じ容量の箱への分配は、箱数と最後の使用量の二値だけ残す",
+    "summary": "同じ集合を詰め終えた状態を、箱数を優先し、同数なら最後の箱が軽い方へまとめます。",
+    "aliases": [
+      "Elevator Rides lexicographic subset DP",
+      "minimum bins last load"
+    ],
+    "family": "集合DP",
+    "prerequisites": [
+      "bitmask-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1653"
+    ]
+  },
+  {
+    "id": "domino-column-transition",
+    "title": "細い盤面の敷き詰めは、境界をまたぐマスと合法な次列だけ持つ",
+    "summary": "全てのマスク対を試さず、列の最初の空きマスから縦置き・横置きを作ります。",
+    "aliases": [
+      "domino tiling frontier mask",
+      "Counting Tilings profile transitions"
+    ],
+    "family": "境界のDP",
+    "prerequisites": [
+      "bitmask-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2181"
+    ]
+  },
+  {
+    "id": "interval-pair-removal-interleavings",
+    "title": "隣接二個を消す順序は、区間の個数に二項係数を掛けて混ぜる",
+    "summary": "左端の相手を固定し、内側の完了後に消す一組と右側の操作列を合流させます。",
+    "aliases": [
+      "adjacent pair removal interleavings",
+      "interval DP binomial shuffle"
+    ],
+    "family": "区間DP",
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc217/tasks/abc217_f",
+      "https://atcoder.jp/contests/abc217/editorial/2618"
+    ]
+  },
+  {
+    "id": "grid-xor-antidiagonal",
+    "title": "右下へ進む経路のXORは、中央の斜線で分け、合流マスを一回だけ数える",
+    "summary": "両端から半分の経路を列挙し、同じ合流位置でXORの頻度を照合します。",
+    "aliases": [
+      "grid path XOR meet in the middle",
+      "anti diagonal join XOR"
+    ],
+    "family": "経路の半分全列挙",
+    "prerequisites": [
+      "meet-in-the-middle"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc271/tasks/abc271_f"
+    ]
+  },
+  {
+    "id": "digit-required-count-sum",
+    "title": "条件付き整数の総和は、桁DPで個数と値の和を一緒に更新する",
+    "summary": "数字を一桁付け足す変換を、状態内の個数と総和だけに作用させます。",
+    "aliases": [
+      "digit DP count sum required digits",
+      "Variety of Digits aggregate"
+    ],
+    "family": "桁DP",
+    "prerequisites": [
+      "digit-dp-leading-zero"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc235/tasks/abc235_f",
+      "https://atcoder.jp/contests/abc235/editorial/3259"
+    ]
+  },
+  {
+    "id": "lis-tail-three-count",
+    "title": "最長増加部分列の長さを制限して数えるなら、各長さの最小末尾を状態にする",
+    "summary": "履歴の列全体を、将来の増加部分列を決める三つの末尾へ圧縮します。",
+    "aliases": [
+      "count sequences LIS exactly three",
+      "patience sorting tails counting DP"
+    ],
+    "family": "列の状態圧縮",
+    "prerequisites": [
+      "dp-state-dominance"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc237/tasks/abc237_f"
+    ]
+  },
+  {
+    "id": "tree-one-mark-components",
+    "title": "木の各成分へ印を一つ残す切断は、親へ渡す成分の印の数だけ持つ",
+    "summary": "閉じた成分の条件を先に満たし、まだ親につながる成分だけを0個・1個へ分けます。",
+    "aliases": [
+      "tree cuts exactly one black vertex",
+      "Appleman and Tree open component DP"
+    ],
+    "family": "木DP",
+    "prerequisites": [
+      "tree-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/461/B",
+      "https://codeforces.com/blog/entry/13568"
+    ]
+  },
+  {
+    "id": "sparse-grid-blocked-points",
+    "title": "巨大な格子で障害物が少ないなら、最初に通る障害物ごとに経路を引く",
+    "summary": "全マスを走査せず、障害物と終点の間の単調経路を二項係数でまとめます。",
+    "aliases": [
+      "sparse obstacle grid paths first forbidden point",
+      "Grid 2 combinatorial DP"
+    ],
+    "family": "障害点のDP",
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_y"
+    ]
+  },
+  {
+    "id": "independent-race-first-hit",
+    "title": "交互の独立な競争は、先着時刻の分布と相手の生存確率を掛ける",
+    "summary": "二人の位置を同時に持たず、一人ずつの初到着分布から勝率を合成します。",
+    "aliases": [
+      "independent race first hitting time survival",
+      "Unfair Sugoroku finish time distribution"
+    ],
+    "family": "確率の分解",
+    "prerequisites": [
+      "dp-range-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc298/tasks/abc298_e"
+    ]
+  },
+  {
+    "id": "frontier-single-cycle",
+    "title": "細い盤面を一本の閉路で覆うなら、境界の端点のつながりを持つ",
+    "summary": "境界を横切る辺の有無に加え、どの二端点が同じ道に属するかを保存し、小さな閉路が先にできるのを防ぎます。",
+    "aliases": [
+      "plug DP",
+      "connectivity frontier DP",
+      "Hamiltonian cycle frontier DP",
+      "連結性状態圧縮DP",
+      "プラグDP",
+      "単一閉路の境界DP",
+      "插头 DP"
+    ],
+    "family": "境界のDP",
+    "prerequisites": [
+      "domino-column-transition"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://acm.timus.ru/problem.aspx?space=1&num=1519",
+      "https://www.luogu.com.cn/problem/P5056"
+    ]
+  },
+  {
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "level": "上級",
+    "id": "color-exclusion-two-best-dp",
+    "title": "次と同じ色だけを除くDPは、末尾の色が異なる上位二つを残す",
+    "summary": "削除数ごとに二つの候補を持ち、次の色と異なる最良値を定数時間で取り出します。",
+    "family": "DPの高速化",
+    "aliases": [
+      "Color Exclusion Two Best DP",
+      "Colorful Subsequence",
+      "Distinct Color Top Two DP",
+      "末尾の色が異なる上位二候補",
+      "一色を除く最大値"
+    ],
+    "prerequisites": [
+      "dp-state-dominance",
+      "dp-dimension-rolling"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc345/tasks/abc345_e",
+      "https://atcoder.jp/contests/abc345/editorial/9590"
+    ]
+  },
+  {
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "level": "上級",
+    "id": "bracket-pair-color-boundaries",
+    "title": "対応する括弧と隣の色に条件があるなら、区間の両端の色で結合する",
+    "summary": "括弧の内側を処理し、両端の三色だけを保存して、外側の括弧と隣の括弧列をつなぎます。",
+    "family": "具体的なDPの状態と遷移",
+    "aliases": [
+      "Bracket Pair Boundary Color DP",
+      "Coloring Brackets",
+      "Parenthesis Tree Boundary DP",
+      "括弧対の境界色DP",
+      "括弧の三色塗り分け"
+    ],
+    "prerequisites": [
+      "interval-dp",
+      "tree-dp",
+      "state-design"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/149/D",
+      "https://codeforces.com/blog/entry/3864"
+    ]
+  },
+  {
+    "id": "grid-ray-direction-prefix",
+    "title": "壁まで何マスでも進める格子の経路数は、方向別の累積和を壁で切る",
+    "summary": "右・下・右下への移動を一マスずつ列挙せず、各方向から届く経路数の和を保つ。",
+    "family": "DPの高速化",
+    "level": "中級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Grid Ray Direction Prefix DP",
+      "Queen on Grid Directional Sums",
+      "障害物で切る三方向の累積DP",
+      "任意距離移動の格子経路DP"
+    ],
+    "prerequisites": [
+      "dp-range-sum",
+      "dp-dimension-rolling"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc183/tasks/abc183_e",
+      "https://atcoder.jp/contests/abc183/editorial/344"
+    ]
+  },
+  {
+    "id": "permutation-inversion-window-dp",
+    "title": "転倒数が指定された順列は、最大値の挿入で増える個数を窓の和にする",
+    "summary": "最大値を挿す位置と追加転倒数を対応させ、幅が一つずつ広がる遷移を足し引きで求める。",
+    "family": "DPの高速化",
+    "level": "中級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Permutation Inversion Window DP",
+      "K Inverse Pairs Array",
+      "Mahonian Number Sliding Sum",
+      "転倒数を指定した順列の数え上げ",
+      "最大値の挿入と転倒数分布"
+    ],
+    "prerequisites": [
+      "dp-range-sum",
+      "state-design"
+    ],
+    "sources": [
+      "https://leetcode.com/problems/k-inverse-pairs-array/"
+    ]
+  },
+  {
+    "id": "grid-row-pick-reset",
+    "title": "行ごとに拾える個数が限られる格子DPは、下へ進むと個数を戻す",
+    "summary": "現在の行で拾った個数だけを状態に持ち、行を移るときに前の行の個数をまとめて捨てる。",
+    "family": "DPの高速化",
+    "level": "中級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Grid Row Pick Quota Reset DP",
+      "Picking Goods Row Capacity DP",
+      "行の選択個数をリセットするDP",
+      "一行につき三個まで拾う格子DP"
+    ],
+    "prerequisites": [
+      "state-design",
+      "dp-dimension-rolling"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc175/tasks/abc175_e",
+      "https://atcoder.jp/contests/abc175/editorial/75"
+    ]
+  },
+  {
+    "id": "weighted-squared-quantization-interval-dp",
+    "title": "重み付きの二乗誤差をK個の整数代表値へまとめるなら、平均の前後を区間DPで選ぶ",
+    "summary": "小さな値域の頻度を、最寄りの整数代表値へ置き換える。連続区間の最小費用を重み付き平均と三つの累積和で求め、最大K群へ分割する。",
+    "aliases": [
+      "weighted squared quantization interval DP",
+      "integer representative weighted mean",
+      "重み付き一次元量子化"
+    ],
+    "family": "具体的なDPの更新と区間遷移",
+    "level": "中級",
+    "prerequisites": [
+      "prefix-sum",
+      "interval-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=11",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=5"
+    ]
+  }
+]

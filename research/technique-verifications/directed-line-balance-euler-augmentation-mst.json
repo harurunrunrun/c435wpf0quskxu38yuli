@@ -1,0 +1,590 @@
+{
+  "techniqueId": "directed-line-balance-euler-augmentation-mst",
+  "auditGapId": "directed-line-balance-euler-augmentation-mst",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2016-railroad-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2016-railroad-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2016-railroad-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/directed-line-balance-euler-augmentation-mst.mdx",
+    "checker": "scripts/check_line_section_connection_cpp.py",
+    "metadata": "data/techniques-specific-graph-extensions.json",
+    "references": "data/references-specific-graph-extensions.json",
+    "feature": "data/line-section-connection-problem-features.json"
+  },
+  "metadata": {
+    "id": "directed-line-balance-euler-augmentation-mst",
+    "title": "全ての速度変換区間を並べる費用は、境界の流量差と連結費用に分ける",
+    "summary": "入口上限と出口速度から生じる減速費用を最小にする。数直線の境界ごとに必要な下降量を払い、残る成分を最小費用でつなぐと、全区間を一度ずつ使える順序が得られる。",
+    "aliases": [
+      "Euler augmentation on a line",
+      "Cut balance and component MST",
+      "IOI2016 Roller Coaster Railroad plan_roller_coaster",
+      "入口上限と出口速度 境界の本数差と最小全域木"
+    ],
+    "family": "数直線上の必須有向辺をつなぐ最小費用",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "euler-degree-connectivity",
+      "union-find",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "directed-line-balance-euler-augmentation-mst",
+    "source": "IOI",
+    "problemId": "ioi2016_railroad",
+    "title": "Roller Coaster Railroad",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "evidence": "全区間を任意順で使う費用max(t_i-s_next,0)を、速度を頂点とする必須辺と最大速度から1への補助辺へ移す。境界ごとの必須下降量を補正し、残る弱連結成分を零差分境界の双方向辺による最小全域木で結ぶ。無料の上向き接続は入口上限の余裕を表し、物理的な加速を要求しない。",
+    "verificationNotes": "原典3頁/公式17頁Solutions内Railroad3-4頁/Notice/JP日付を独立再読。全原典N2..200000・両速度1..1e9とexact C++型導出を確認。掲載単一fenceの通常/ASan67533397checks/core93460/adapter76252・checksum10479858278086570783、literal11911144orders/HeldKarp5816/最大21/invalid30/fault22/20k反復成功。独立peer未実施時点の候補で、rootが承認・実rootwalk/ref登録後にresolutionのみ。実headerbytes未取得と初回researchpositive/API0は保持。 その後、rootと別担当の独立reviewが全原典範囲・証明・実fence通常ASanを再確認し、別の全degree補完列挙とEulerから実順序への構成67084件でも一致を確認して実登録した。"
+  },
+  "problemFeatureProposal": {
+    "source": "IOI",
+    "problemId": "ioi2016_railroad",
+    "title": "ジェットコースター (Roller Coaster Railroad)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "入口上限以下なら使用でき、出口速度が固定の全区間を一度ずつ自由な順序で並べる",
+      "初速1から単位距離ごとに速度が1減る接続を置き、その距離の合計を最小にする",
+      "区間2〜20万・速度1〜10億の整数で、等しい区間や入口と出口が同じ区間も許す"
+    ],
+    "entryGraphId": "graphs",
+    "choices": [
+      "walk-goals",
+      "section-connections",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "directed-line-balance-euler-augmentation-mst"
+    ],
+    "conditions": [
+      "entry-exit-model",
+      "linear-slowdown",
+      "bounds"
+    ],
+    "date": "2016-08-14",
+    "difficulty": null,
+    "publicationDate": "2016-08-14",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "flowProposal": {
+    "entryGraphId": "graphs",
+    "parentGraphId": "graphs-walk-goals",
+    "parentNodeId": "shortest",
+    "currentPrefix": [
+      "walk-goals"
+    ],
+    "newAnswerId": "section-connections",
+    "newAnswerLabel": "入口上限と出口速度を持つ全区間を並べ、つなぎ目の減速距離を最小にする",
+    "guardGraphId": "line-transition-connection-conditions",
+    "canonicalChoices": [
+      "walk-goals",
+      "section-connections",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "entry-exit-model",
+        "question": "入口速度が上限以下なら使え、出口速度が固定の区間を、全て一度ずつ自由な順序で並べますか？",
+        "explanation": "等しい区間や入口と出口が同じ区間も許します。先行関係など他の順序制約はありません。"
+      },
+      {
+        "id": "linear-slowdown",
+        "question": "初速1から、区間間だけで単位距離ごとに速度が1減り、その距離の合計を最小にしますか？",
+        "explanation": "実際の速度は常に正です。区間の後は指定速度になり、最後の区間から初速へ戻す距離は数えません。"
+      },
+      {
+        "id": "bounds",
+        "question": "区間は2〜20万個、入口上限と出口速度は1〜10億の整数ですか？",
+        "explanation": "最小距離のみを返します。大きい累積距離は64bitで扱い、補正する辺を本数分だけ作りません。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "directed-line-balance-euler-augmentation-mst"
+    ]
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+    "statementPages": 3,
+    "statementReadMethod": "Full official primary PDF web text; extracted formula fragments at page2 were read together to recover all integer ranges. No image inspection or local PDF retrieval claimed.",
+    "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "editorialPages": 17,
+    "relevantOneBasedPages": [
+      3,
+      4
+    ],
+    "printedAuthor": "Kento Nikaido",
+    "editorialProvenance": "Actual official archive Solutions link to IOI2016_analysis.pdf; Railroad heading/author and full selected subtask4 balance/MST approach read. Physical acceptance interpretation and both augmentation inequalities are explicit independent details, not quoted as source text.",
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+    "noticePages": 1,
+    "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "contestDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "originalConstraints": {
+      "N": [
+        2,
+        200000
+      ],
+      "s_i": [
+        1,
+        1000000000
+      ],
+      "t_i": [
+        1,
+        1000000000
+      ],
+      "initialSpeed": 1,
+      "slowdownPerMeter": 1,
+      "positiveSpeedThroughout": true,
+      "connectingLengths": "nonnegative integers; zero allowed",
+      "allSpecialSections": "each exactly once, arbitrary ordering",
+      "entry": "speed <=s_i",
+      "exit": "exactly t_i, independent of entry speed",
+      "finalReturnCostIncluded": false,
+      "objective": "minimum total length of connections between consecutive special sections",
+      "genericApi": "int64 plan_roller_coaster(int[] s,int[] t)",
+      "CLanguageSignatureIsDifferent": "int64 plan_roller_coaster(int n,int[] s,int[] t); not used as the C++ signature",
+      "sample": {
+        "s": [
+          1,
+          4,
+          5,
+          6
+        ],
+        "t": [
+          7,
+          3,
+          8,
+          6
+        ],
+        "answer": 3
+      },
+      "subtaskScores": [
+        11,
+        23,
+        30,
+        36
+      ],
+      "subtaskBounds": [
+        "N2..8",
+        "N2..16",
+        "N2..200000; only zero/nonzero required",
+        "N2..200000; exact minimum"
+      ],
+      "timeSeconds": 2,
+      "memoryGB": 2
+    },
+    "cppSignatureEvidence": {
+      "statementGeneric": "int64 plan_roller_coaster(int[] s,int[] t)",
+      "noticeMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>"
+      },
+      "derivedSignature": "long long plan_roller_coaster(std::vector<int> s,std::vector<int> t)",
+      "actualCppHeaderRetrieved": false,
+      "headerReadNotClaimed": true,
+      "adapterUsesExactDerivedCppTypes": true,
+      "noSyntheticHeaderClaim": true
+    },
+    "originalFullRangeIncludedByApi": true,
+    "unconfirmedPrincipalLemmas": [],
+    "unconfirmedOptionalSourceFacts": [
+      "Actual distributed railroad.h bytes were not retrieved. Generic primary signature plus Notice determine the C++ types; standalone exact-type assertions and real adapter calls were executed."
+    ]
+  },
+  "api": {
+    "signature": "std::int64_t minimum_section_connection_length(const std::vector<std::pair<int,int>>& sections)",
+    "originalAdapterSignature": "long long plan_roller_coaster(std::vector<int> s,std::vector<int> t)",
+    "input": "N2..200000; each entry/exit in1..1000000000. Equal pairs, equal endpoints and repeated individual values are allowed.",
+    "output": "Minimum sum of max(previous.exit-next.entry,0) over an arbitrary permutation of all sections, with no last-to-first charge. No order or expanded Euler tour is returned.",
+    "emptyAndSingleton": "invalid_argument; both are outside original source range.",
+    "invalid": "invalid_argument for N/range or adapter size mismatch; every public argument is validated before scratch allocation. By-value caller-side vector copies can allocate before adapter entry.",
+    "allocationExceptions": "std::bad_alloc and other standard allocation exceptions propagate; source arrays remain unchanged and subsequent calls have no retained state.",
+    "inputUnchanged": true,
+    "persistentState": false,
+    "reentrant": true,
+    "internalHelpers": "line_connection_detail::DisjointSet/validate_speed/Candidate are implementation details, not independently supported external APIs.",
+    "time": "O(NlogN); endpoint sorting and2N lower_bounds, optional-edge sorting, andO(N alpha(N)) iterative Union-Find.",
+    "auxiliarySpace": "O(N); sorted coordinates, signed degree deltas, Union-Find parent/size, optional(length,index) edges. Standard library sort stackO(logN). No expanded edge multiplicity or recursive Euler tour.",
+    "maximumCoordinateCount": 400001,
+    "maximumCoreVectorPayloadBytes": 8000012,
+    "adapterArgumentCopiesBytes": 1600000,
+    "adapterExtraPairVectorBytes": 1600000,
+    "maximumAdapterAdditionalPayloadBytesIncludingCore": 11200012,
+    "memoryMeaning": "Measured payloads on32bit int/64bit int64 tested GCC/libstdc++; exclude allocator overhead, caller-owned original inputs and sort stack. Adapter maximum includes its by-value argument copies, pair conversion and full core scratch, not just conversion.",
+    "integerSafety": {
+      "answerUpperBound": 199998999800001,
+      "intermediateCostBound": "base <=(N+1)*(U-1), optional tree <=U-1, total <=(N+2)*(U-1)<2.00002e14; article uses the still looser safe2*(N+2)*1e9",
+      "balanceAbsoluteUpperBound": 200001,
+      "coordinateRange": "1..1000000000, adjacent difference<=999999999 fits int",
+      "parentMinimum": -400001,
+      "positionsAndReserve": "N validated beforeint cast;2*N+1<=400001;V-1 nonnegative even V1",
+      "multiplication": "std::int64_t(balance)*gap promotes before multiplication; result/accumulator signed64",
+      "intWidthAssert": "numeric_limits<int>::max()>=1000000000"
+    },
+    "fullOriginalScopeIncluded": true
+  },
+  "proof": {
+    "transitionCost": "From exit x, distance max(x-y,0) leaves speedmin(x,y)>0, accepted by next entry upper boundy. No benefit from additional slowing. Initial1 is accepted everywhere.",
+    "auxiliary": "U=max_i max(s_i,t_i), not max_i s_i alone. Mandatory auxiliary U->1 is entered from every last exit and followed by every first entry at zero connection cost. Thus original arrangements map to equal-cost augmented cycles.",
+    "freeUpMeaning": "A zero-cost x->y for x<=y encodes acceptance of actual speedx under upper boundy. It is not physical acceleration. Internal prescribed s->t transitions themselves reset exit speed.",
+    "reverseAugmentation": "Read required sections around a balanced weak-connected Euler circuit and cut afteraux. Between consecutive required sections, downward variation>=max(lastExit-nextEntry,0). Replacing that connector path by the physically valid direct slowdown gives an original order with no greater cost. Together with the forward reduction the optima coincide.",
+    "adjacentExpansion": "Any connection between two compressed speeds expands monotonically into adjacent coordinates at equal cost. It can add intermediate visited vertices but never harms legality or connectivity in the abstract augmentation model.",
+    "cutBalance": "delta=required outdegree-indegree, includingaux. b_j=prefix delta =required right crossings-left crossings. Every balanced augmentation has d_j-u_j=b_j, hence d_j=max(b_j,0)+z_j andu_j=max(-b_j,0)+z_j with integerz_j>=0. Base cost=sum max(b_j,0)*gap is mandatory.",
+    "degreeEquality": "Zero total balance on every cut implies all per-vertex degree differences zero by adjacent prefix subtraction, including boundaries since totaldelta0.",
+    "componentContraction": "All mandatory edges and nonzero-cut minimum corrections form base components. Nonzero-cut endpoints are already in one component; extra balanced pairs there cannot connect different base components. Only zero-cut optional pairs can join them.",
+    "mstLowerBound": "Any normalized connected augmentation supplies a connected optional edge set on contracted base components. Each extra opposite pair costs itsgap. A nonnegative connected edge set contains a spanning tree, so its cost is at least the optional MST.",
+    "mstUpperBound": "Kruskal adds both adjacent directions for each selected zero-cut edge. It preserves degree equality and joins all base components; the complete coordinate path guarantees a tree exists. The resulting weak-connected balanced directed multigraph has an Euler circuit. No multiplicity is explicitly materialized in the implementation.",
+    "duplicatesAndSelfEdges": "Every required pair contributes its own two delta updates, so repeated sections remain distinct requirements; self-pairs cancel locally and remain harmless DSUjoins. If all coordinates are1, V1, aux is a self-edge and answer0.",
+    "selectedMethodFullyProved": true,
+    "unconfirmedPrincipalLemmas": []
+  },
+  "validation": {
+    "normal": {
+      "checks": 67533397,
+      "apiCalls": 93460,
+      "originalAdapterCalls": 76252,
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "randomHeldKarpCases": 360,
+      "metamorphicCases": 1208,
+      "maximumN200000Cases": 21,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 22,
+      "reentrantBatchCalls": 20000,
+      "maximumCoreVectorPayloadBytes": 8000012,
+      "maximumAdapterAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783",
+      "seconds": 1.88818,
+      "peakRSSKiB": 21600,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": false,
+      "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+    },
+    "asanUbsan": {
+      "checks": 67533397,
+      "apiCalls": 93460,
+      "originalAdapterCalls": 76252,
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "randomHeldKarpCases": 360,
+      "metamorphicCases": 1208,
+      "maximumN200000Cases": 21,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 22,
+      "reentrantBatchCalls": 20000,
+      "maximumCoreVectorPayloadBytes": 8000012,
+      "maximumAdapterAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783",
+      "seconds": 6.64079,
+      "peakRSSKiB": 450136,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": true,
+      "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+    },
+    "normalCommand": "python3 /tmp/flowchartcp-ioi2016-railroad-checker.py --output /tmp/flowchartcp-ioi2016-railroad-normal.json",
+    "asanUbsanCommand": "python3 /tmp/flowchartcp-ioi2016-railroad-checker.py --sanitize --output /tmp/flowchartcp-ioi2016-railroad-asan.json",
+    "actualPublishedFenceExtracted": true,
+    "singleAlwaysVisibleCppFence": true,
+    "eightStandardSections": true,
+    "sameCppShaBothNativeRuns": true,
+    "normalAndSanitizerAllDeterministicFieldsAgree": true,
+    "oracleIndependence": {
+      "literal": "All permutations of labeled section indices; simulate initialspeed1, choose minimum tracklength to each nextentry, check strictly positive accepted speed and reset to that section exit. No auxiliary edge/cut balance/DSU/MST.",
+      "heldKarp": "Separate subset-and-last exact DP on the complete directed transition-cost table, with any first/last. Crosschecked on all5456 binary-speed arrays, then360 random cases including40 full16-section DPs. No Euler or component calculation.",
+      "metamorphic": "Input section-label permutations; translation; reverse the order and transform(s,t)->(1000000001-t,1000000001-s) via a cost-preserving bijection; positive affine scaling. Maximum families use closed formulas, not the production result as oracle."
+    },
+    "counterSemantics": {
+      "checks": "Assertions include per-section positive-speed/entry validation on every literal order, so67.5million is not the number of distinct API inputs.",
+      "apiCalls": "Successful direct public core wrapper calls only. Original adapter calls counted separately, though each internally invokes core. Fault/invalid direct invocations are separately counted, not falsely included.",
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "familyOverlap": "The second family repeats binary-speed casesN2..5 already in the first; only its4096 N6 arrays are new. Do not add family counters and claim unique inputs.",
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "metamorphicCases": "1208 assertions, including8 maximum-array reordering/reflection cases.",
+      "maximumN200000Cases": 21,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 30,
+      "allocationFailuresInjected": "22 actual custom-bad_alloc failures: four core and seven adapter allocation sites on each ofN4 andN200000 under tested GCC/libstdc++; exact count not a portable allocation contract."
+    },
+    "maximumFamilies": [
+      "200000 copies(1,1e9): exact(N-1)*(1e9-1), exercising64bit cumulativeanswer",
+      "200000 copies(1e9,1) / (1e9,1e9) / (1,1):0 including V1",
+      "One required directed cycle through200000 coordinates:0",
+      "One required1->1e9 plus199999 selfsections2..200000:199999",
+      "One required1->(5N+1) plus equally spaced selfsections:5*(N-1), testing tied candidate gaps",
+      "100000 copies1->1e9 plus100000 middle selfsections:(100000-1)*(1e9-1)",
+      "200000 fully distinct endpoint pairs near1 or1e9:0, V400001, core payload8000012/adapter11200012",
+      "One1->1e9 plus199999 equal midpointselfsections:min(leftgap,rightgap)",
+      "Half1->1e9 and half1->1:(100000-1)*(1e9-1)",
+      "Alternating small/large-coordinate required cycle:0",
+      "Four shuffled plus reflected maximum optional-MST families:8 further N200000 cases"
+    ],
+    "invalidCoverage": "Empty/singleton/200001 sections;0,negative,1e9+1,INT_MIN/INT_MAX in either endpoint or either source array; unequal array lengths; invalid last entry at full sourceN.",
+    "allocationAndState": "Each injected failure preserves input/live allocated bytes; subsequent valid call succeeds. Repeated20k core/adapter alternating large-answer and positive-MST examples have independent local state.",
+    "sanitizerOptions": "ASAN_OPTIONS=detect_leaks=0:halt_on_error=1; UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1; -fno-pie -no-pie. Live vector bytes also checked explicitly by allocator instrumentation.",
+    "timingScope": "Native full checker including independent exponential/literal oracles, maximum families and faults. Compilation excluded. PeakRSS includes caller/oracle/checker allocations and ASan quarantine; not just core API memory.",
+    "independentReviewPending": true,
+    "researchPrototypeNotReclassifiedAsProductionValidation": true,
+    "unconfirmedPrincipalLemmas": [],
+    "sanitizerCoordination": "Notified root before start, waited for confirmation Molecules/root/peer sanitizer slots were free, ran to completion, and notified root that the slot was free."
+  },
+  "initialAuditPreservation": {
+    "corpusId": "ioi-2016",
+    "problemId": "ioi2016_railroad",
+    "auditFile": "data/corpus-audits/ioi-2016.json",
+    "frozenInitialAuditPath": "/tmp/flowchartcp-ioi2016-audit.json",
+    "frozenInitialAuditSha256": "d69b49d6672dcbf4145ef36c7d265bc135fb848a3561f4523677bd76d7318b83",
+    "initialRowCanonicalSha256": "bfb1a1f64cf413b0381fd497be05f7480b9a13a74ba16dc6c4521322c83e179c",
+    "canonicalHashFormat": "UTF8 ensure_ascii=false sort_keys=true separators=(comma,colon)",
+    "initialStatusCanonicalSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialResearchPositive": true,
+    "initialResearch6Of6Unchanged": true,
+    "initialCoverage0Of6Unchanged": true,
+    "initialCompletedApi0Of6Unchanged": true,
+    "initialRowsAndArtifactsModified": false,
+    "newResearchReviewNeeded": false,
+    "selectedExistingTechniqueIds": [
+      "euler-degree-connectivity",
+      "union-find",
+      "graph-reduction"
+    ],
+    "previousResearchProbeRemainsResearchOnly": true,
+    "resolutionOnlyAfterIndependentReviewAndRealArticleReferenceRootWalk": true
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "directed-line-balance-euler-augmentation-mst"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回研究positive6/API0/coverage0は保持。全域再利用API、両向きの平衡/連結/Euler証明、実fenceとliteral/HeldKarp/最大/通常ASan/別peer、原典referenceと特徴rootwalkが揃った後にのみresolutionを追加する。",
+    "notRegistered": true
+  },
+  "artifactSha256": {
+    "article.mdx": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c",
+    "checker.py": "fc6874ad88d92d422e676b5eca718642685e6b62f5933b0d606f198dfaf3370a",
+    "normal.json": "9b34495dd641c4a7340901f8d2bb32961353518abbada1f9cba2ba1d37136fd8",
+    "asan.json": "b22650f91055c804a6ec98b01cf9b542d9d589c5b8572daf0b08d2d393ad4432",
+    "authorArticle": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c",
+    "authorChecker": "fc6874ad88d92d422e676b5eca718642685e6b62f5933b0d606f198dfaf3370a",
+    "authorSidecar": "e40966d61eebfcae859ab71a3973886f3fc5a3e3694db7bb3f7fcfdab791be3b",
+    "publishedArticle": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c",
+    "publishedChecker": "cb416c3da6bafac411aa12c55d1589edf983eaeac9e55eefed095df6e1dbe1b7"
+  },
+  "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+  "sharedFilesModified": false,
+  "editorNotes": {
+    "bodyContainsNoResearchCountersOrAcquisitionHistory": true,
+    "unknownDifficultyNull": true,
+    "contestDatePrecisionHonest": true,
+    "noProblemSpecificExplanationPage": true,
+    "noPublishingOrCommit": true
+  },
+  "statusAtAuthorFreeze": "ready-for-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/directed-line-balance-euler-augmentation-mst.mdx",
+    "checker": "scripts/check_line_section_connection_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "walk-goals",
+      "section-connections",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Normalize checker and independent probe MDX paths to repository paths; article/C++ unchanged.",
+      "Normalize the new problem-feature record with standard techniqueIds/url/evidenceUrl/verification/sourceDate/datePrecision/exactDateVerified/cutoffVerification aliases; original proposal fields and content unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-ioi2016-railroad.json"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "date": "2026-10-15",
+      "reviewer": "/root",
+      "status": "passed",
+      "techniqueId": "directed-line-balance-euler-augmentation-mst",
+      "allEightSectionsAndEntireCppRead": true,
+      "completePublishedFenceCheckerRead": true,
+      "independentReportAndCompleteAdditionalProbeRead": true,
+      "sourceReview": "Entire JP3pageISC, selected officialSolutions pages3–4 and Day1Notice/type/numeric/date verified. Numeric formulas recovered from displaced page2 primary text. Actual original grader header bytes not retrieved.",
+      "proofReviewed": [
+        "physical entry upper bound gives max(exit−nextentry,0),positive actual speeds",
+        "auxiliary max over both entry and exit ->1 closes an open order at zero extra joins",
+        "free upward abstract connector is acceptance slack,not physical acceleration",
+        "adjacent connector normalization and cut balance yield forced downward lower bound",
+        "zero-balance adjacent pairs alone can join quotient components,so MST is necessary",
+        "MST pairs yield weakly connected balanced graph;SCC condensation proves directed Euler sufficiency",
+        "Euler cycle cut after auxiliary yields a legal physical order at no greater cost",
+        "iterativeDSU/multiplicity-free counting,64bit bounds,full argument validation and localRAII"
+      ],
+      "normal": {
+        "checks": 67533397,
+        "apiCalls": 93460,
+        "originalAdapterCalls": 76252,
+        "allArraysN2to5Speeds1to3": 66420,
+        "allArraysN2to6Speeds1to2": 5456,
+        "literalPhysicalPermutations": 11911144,
+        "heldKarpCases": 5816,
+        "heldKarpRelaxations": 167264334,
+        "randomHeldKarpCases": 360,
+        "metamorphicCases": 1208,
+        "maximumN200000Cases": 21,
+        "invalidCases": 30,
+        "allocationFailuresInjected": 22,
+        "reentrantBatchCalls": 20000,
+        "maximumCoreVectorPayloadBytes": 8000012,
+        "maximumAdapterAdditionalPayloadBytes": 11200012,
+        "checksum": "10479858278086570783",
+        "seconds": 2.02186,
+        "peakRSSKiB": 21748,
+        "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+        "sanitized": false,
+        "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+      },
+      "asanUbsan": {
+        "checks": 67533397,
+        "apiCalls": 93460,
+        "originalAdapterCalls": 76252,
+        "allArraysN2to5Speeds1to3": 66420,
+        "allArraysN2to6Speeds1to2": 5456,
+        "literalPhysicalPermutations": 11911144,
+        "heldKarpCases": 5816,
+        "heldKarpRelaxations": 167264334,
+        "randomHeldKarpCases": 360,
+        "metamorphicCases": 1208,
+        "maximumN200000Cases": 21,
+        "invalidCases": 30,
+        "allocationFailuresInjected": 22,
+        "reentrantBatchCalls": 20000,
+        "maximumCoreVectorPayloadBytes": 8000012,
+        "maximumAdapterAdditionalPayloadBytes": 11200012,
+        "checksum": "10479858278086570783",
+        "seconds": 6.91921,
+        "peakRSSKiB": 450112,
+        "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+        "sanitized": true,
+        "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+      },
+      "allDeterministicAuthorAndPeerFieldsMatched": true,
+      "independentReviewSha256": "b957d47313afa91d62f384db61cc0265d898bde42f8473476207428bd9970ee4",
+      "additionalOracleExecutionAttributedToPeer": true,
+      "normalizationAtIntegration": [
+        "Normalize checker and independent probe MDX paths to repository paths; article/C++ unchanged."
+      ],
+      "cppUnchangedAtIntegrationRequired": true,
+      "materialIssues": [],
+      "unconfirmedRequiredLemmas": [],
+      "unconfirmedRequiredSourceFacts": [],
+      "headerBytesRetrieved": false,
+      "initialAuditFieldsAndResearchCoveragePreservedRequired": true,
+      "registrationPerformed": false
+    },
+    "normal": {
+      "checks": 67533397,
+      "apiCalls": 93460,
+      "originalAdapterCalls": 76252,
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "randomHeldKarpCases": 360,
+      "metamorphicCases": 1208,
+      "maximumN200000Cases": 21,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 22,
+      "reentrantBatchCalls": 20000,
+      "maximumCoreVectorPayloadBytes": 8000012,
+      "maximumAdapterAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783",
+      "seconds": 2.02186,
+      "peakRSSKiB": 21748,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": false,
+      "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+    },
+    "asanUbsan": {
+      "checks": 67533397,
+      "apiCalls": 93460,
+      "originalAdapterCalls": 76252,
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "randomHeldKarpCases": 360,
+      "metamorphicCases": 1208,
+      "maximumN200000Cases": 21,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 22,
+      "reentrantBatchCalls": 20000,
+      "maximumCoreVectorPayloadBytes": 8000012,
+      "maximumAdapterAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783",
+      "seconds": 6.91921,
+      "peakRSSKiB": 450112,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": true,
+      "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+    },
+    "additionalReviewFile": "research/probes/line-section-connection-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,67 @@
+---
+title: "いもす法"
+description: "区間への加算を両端に記録し、累積和で最終的な値を求める。"
+techniqueId: difference-array
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+区間への加算を両端に記録し、累積和で最終的な値を求める。
+
+## 使う場面
+
+多くの区間に値を加算し、すべての加算が終わった後の配列を求めるときに使う。重なっている区間の個数や、各時刻の利用人数を求める処理もこの形になる。区間内の要素を一つずつ更新する必要がなくなる。
+
+## 考え方
+
+長さ $N+1$ の差分配列 $d$ を0で初期化する。区間 $[l,r)$ に $x$ を足す操作は、$d_l$ に $x$ を加え、$d_r$ から $x$ を引くだけで記録できる。
+
+すべての操作を記録した後、差分配列の累積和を取ると、各位置に加算された合計が得られる。元の配列が0でない場合は、この合計を元の値に足す。二次元の長方形への加算では、四隅を更新してから縦横に累積和を取る。
+
+## 適用条件
+
+区間に加える量を、操作ごとに足し合わせられることが必要になる。区間への代入のように操作順で結果が変わる処理には、そのまま使えない。
+
+途中の状態への問い合わせが必要な場合は、差分配列をFenwick Treeで管理するなどの方法を使う。右端を含む区間 $[l,r]$ は、右端を含まない区間 $[l,r+1)$ に直して扱う。
+
+## なぜ正しいか
+
+一つの更新だけを考える。差分配列を累積すると、$l$ より前では0、$l$ から $r-1$ までは $x$、$r$ 以降では0になる。複数の更新についても、それぞれの結果を足し合わせることで同じ性質が成り立つ。
+
+## 計算量
+
+1回の更新を記録する時間は $O(1)$。配列長 $N$、更新回数 $Q$ とすると、復元までの時間は $O(N+Q)$、空間は $O(N)$。二次元の復元は配列の大きさに対して線形時間で行える。
+
+## 実装
+
+`add(l, r, x)` で区間 $[l,r)$ への加算を記録し、`materialize()` で各位置の増分を取得する。復元時に差分配列を書き換えないため、さらに更新を追加してから再度復元できる。
+
+```cpp
+#include <vector>
+#include <cassert>
+using namespace std;
+struct DifferenceArray {
+    int n;
+    vector<long long> d;
+    explicit DifferenceArray(int n) : n(n), d(n+1) {}
+    void add(int l, int r, long long x) {
+        assert(0<=l && l<=r && r<=n);
+        d[l]+=x; d[r]-=x;
+    }
+    vector<long long> materialize() const {
+        vector<long long> a(n);
+        long long s=0;
+        for(int i=0;i<n;++i) a[i]=(s+=d[i]);
+        return a;
+    }
+};
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [オフラインクエリ](/flowchartcp/techniques/offline-queries/)
+
+## 参考資料
+
+- [USACO Guide: Difference Arrays](https://usaco.guide/silver/more-prefix-sums)
+
+<TechniqueReferences techniqueId="difference-array" />

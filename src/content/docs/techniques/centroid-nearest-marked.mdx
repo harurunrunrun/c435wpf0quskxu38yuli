@@ -1,0 +1,109 @@
+---
+title: "木の印付き最寄り点は、重心ごとの最短距離を追加時に更新する"
+description: "印を消さないなら、各重心への最小距離だけを保ち、少数の重心を経由して答える。"
+techniqueId: centroid-nearest-marked
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+印を消さないなら、各重心への最小距離だけを保ち、少数の重心を経由して答える。
+
+## 使う場面
+
+木の頂点へ印を追加しながら、指定頂点から最寄りの印までの距離を質問される。印は消さず、追加直後にも答える必要がある。
+
+## 考え方
+
+木を重心で分ける。各頂点 $v$ に、分割で通った重心 $c$ と元の木での距離 $\mathrm{dist}(v,c)$ を記録する。一頂点が持つ重心は $O(\log N)$ 個。
+
+重心 $c$ では、印付き頂点までの距離の最小値 $best_c$ を管理する。頂点 $x$ に印を追加すると、$x$ の重心列だけを使って
+
+$$best_c\gets\min(best_c,\mathrm{dist}(x,c))$$
+
+とする。頂点 $v$ の質問には
+
+$$\min_c\{\mathrm{dist}(v,c)+best_c\}$$
+
+を返す。
+
+## 適用条件
+
+木の形は固定。印の操作は追加だけで、削除がない。距離は辺数、または非負の辺重みの和。掲載実装は辺数距離を使う。印が一つもないときは `-1` を返す。
+
+印の削除では最小値を戻せないため、各重心に距離の多重集合を持つなどの追加管理が必要になる。
+
+## なぜ正しいか
+
+どの候補値も、$v$ から重心を経由して印付き頂点へ行く長さなので、真の最短距離以上になる。最寄りの印 $x$ を考え、分解中で $v,x$ が初めて異なる成分へ分かれる重心 $c$ を選ぶ。この $c$ は両頂点の一意な経路上にあり、両者の重心列に含まれる。よって $\mathrm{dist}(v,c)+\mathrm{dist}(x,c)=\mathrm{dist}(v,x)$ が候補に入り、上下の評価が一致する。
+
+## 計算量
+
+追加のたびの多始点探索・質問ごとの走査 $O(N)$ を、各操作 $O(\log N)$ に減らす。準備と空間は $O(N\log N)$。各分割の成分探索も反復で行うため、長い鎖でも木の深さによる再帰は生じない。
+
+## 実装
+
+`NearestMarked` を作成後、初期の印にも `mark` を呼ぶ。CF342 Eでは頂点0に最初の印を付ける。同じ頂点に何度印を付けても結果は変わらない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct NearestMarked {
+    int n;
+    vector<vector<int>> g;
+    vector<char> removed;
+    vector<int> parent,size,best;
+    vector<vector<pair<int,int>>> chain;
+    explicit NearestMarked(vector<vector<int>> graph)
+        :n(graph.size()),g(move(graph)),removed(n),parent(n),size(n),
+         best(n,n+1),chain(n) {
+        assert(n>0);
+        vector<int> tasks{0};
+        while(!tasks.empty()) {
+            int start=tasks.back();tasks.pop_back();
+            vector<int> component{start};parent[start]=-1;
+            for(int i=0;i<int(component.size());++i) {
+                int v=component[i];
+                for(int u:g[v]) if(!removed[u] && u!=parent[v]) {
+                    parent[u]=v;component.push_back(u);
+                }
+            }
+            int total=component.size(),centroid=-1;
+            for(int i=total-1;i>=0;--i) {
+                int v=component[i];size[v]=1;
+                int maximum=0;
+                for(int u:g[v]) if(!removed[u] && parent[u]==v) {
+                    size[v]+=size[u];maximum=max(maximum,size[u]);
+                }
+                maximum=max(maximum,total-size[v]);
+                if(maximum<=total/2) centroid=v;
+            }
+            assert(centroid!=-1);
+            vector<tuple<int,int,int>> stack{{centroid,-1,0}};
+            while(!stack.empty()) {
+                auto [v,p,d]=stack.back();stack.pop_back();
+                chain[v].push_back({centroid,d});
+                for(int u:g[v]) if(u!=p && !removed[u]) stack.push_back({u,v,d+1});
+            }
+            removed[centroid]=true;
+            for(int u:g[centroid]) if(!removed[u]) tasks.push_back(u);
+        }
+    }
+    void mark(int v) {
+        for(auto [c,d]:chain[v]) best[c]=min(best[c],d);
+    }
+    int query(int v) const {
+        int answer=n+1;
+        for(auto [c,d]:chain[v]) answer=min(answer,d+best[c]);
+        return answer<=n?answer:-1;
+    }
+};
+```
+
+## 関連する手法
+
+[重心を通る頂点対を異なる部分木の間だけで数える](/flowchartcp/techniques/centroid-count-cross-subtrees/) ・ [多数の始点からの最短距離を一度に求める](/flowchartcp/techniques/multi-source-distance/)
+
+## 参考資料
+
+- [Codeforces：Xenia and Tree](https://codeforces.com/problemset/problem/342/E)
+
+<TechniqueReferences techniqueId="centroid-nearest-marked" />

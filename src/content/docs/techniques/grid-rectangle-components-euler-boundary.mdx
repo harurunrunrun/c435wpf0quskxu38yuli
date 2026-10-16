@@ -1,0 +1,233 @@
+---
+title: "部分長方形の同色成分数を、異色の境界線と外周の補正で数える"
+description: "異色の境界線を平面グラフにし、内部の代表点数を外周で補正して、長方形内だけの同色成分数を求める。"
+techniqueId: grid-rectangle-components-euler-boundary
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+色が固定された格子から部分長方形を何度も指定し、その中の同色の連結成分数を求めます。隣接は上下左右の四方向です。一回で同じ色のつながったマスを塗り、上書きも長方形の外への塗り足しもできないなら、この数が必要な最少回数です。
+
+毎回の探索には長方形の面積分の時間がかかります。全盤面で付けた色の成分番号を数える方法も使えません。例えば `AAAA / ABBA / AAAA` の中央の一行だけを取り出すと、左右の A は別成分になります。長方形の外を回る道を取り除いた結果を数える必要があります。
+
+## 考え方
+
+マスの中心ではなく、角を頂点にします。隣接する二マスの色が異なるときだけ、その共有辺に線を引きます。全盤面についてこの境界グラフ $G$ を作り、線のない角も孤立頂点として残します。盤面の外周には、この段階では線を引きません。
+
+問い合わせの長方形の高さを $h$、幅を $w$ とします。その内部の異色境界だけを残し、長方形の外周をすべて線で閉じたグラフを $H$ とします。求める数は $H$ の有界面の数です。平面グラフの Euler の式から、辺数 $E$、頂点数 $V$、連結成分数 $C$ を使って $E-V+C$ で求まります。
+
+外周は一つにつながります。外周から離れた成分の個数を $I$、長方形内部の異色境界の本数を $E_{\mathrm{in}}$ とすれば、
+
+$$
+E=E_{\mathrm{in}}+2(h+w),\quad
+V=(h+1)(w+1),\quad C=1+I.
+$$
+
+したがって、答えは次の式です。
+
+$$
+\boxed{E_{\mathrm{in}}-(h-1)(w-1)+1+I}
+$$
+
+$E_{\mathrm{in}}$ は縦と横の線を別々に累積和にします。$I$ は単純な累積和だけでは求まりません。$G$ の各成分で代表の角を一つ決め、長方形の**厳密な内部**にある代表点を仮に数えます。その後、外周上の角を走査します。そこで見つかった成分の代表点も内部にある場合だけ、仮の個数から一度引きます。外周に何回現れても一回だけ引くことが要点です。
+
+## 適用条件
+
+格子は静的で、問い合わせは独立した非空の軸平行長方形とします。色数を二つに制限しません。穴のある領域、同色が斜めで触れる配置、三色以上が集まる角も扱えます。八近傍の接続、上書きによる塗装、格子の更新には、この式と前処理をそのまま使いません。
+
+掲載 API は縦横それぞれ $1\ldots1000$、色は `A`〜`Z` とします。空の盤面・長さ0の行・不揃いな行・範囲外の色・縦横の長さ上限超過は `invalid_argument` です。問い合わせは零始まり半開区間 `[r0,r1) × [c0,c1)` とし、空・逆転・盤面外も例外にします。問い合わせ回数の上限は設けません。
+
+公式原典の制約は $N,M,Q\le1000$、色は `A`〜`Z` です。閉路のない場合などは部分点の条件であり、全体の制約ではありません。原典は閉じ込められた色や穴を含めて解く必要があります。[USACO 公式原典](https://usaco.org/index.php?page=viewproblem2&cpid=1094)
+
+## なぜ正しいか
+
+まず、上書きしない一回の塗装で、異色のマスや互いに切り離された同色成分を同時には塗れません。一方、一成分全体は一回で塗れます。従って最少回数は、長方形内で定義した同色成分数と一致します。
+
+次に、$H$ の面と同色成分が一対一に対応します。二マスの共有辺に線がないのは同色のときだけなので、辺を越えられる関係が四近傍の接続と一致します。面の中の道は、有限個の角を避けてマスの内部と共有辺を通る形に直せます。斜めの点接触だけでは別の面を結びません。外周が閉じているため、長方形内の各成分が有界面になり、外側に一つだけ非有界面ができます。穴があると一つの面の境界が複数に分かれることがありますが、面の対応は変わりません。
+
+一般の平面グラフで全域森を残すと、辺数は $V-C$、面は外側の一つです。残りの辺を一つずつ戻すと、各辺が閉路を作って面を一つ増やします。従って有界面数は $E-(V-C)=E-V+C$ です。孤立点は $V$ と $C$ を一つずつ増やして相殺されます。線につながる角だけを数えようとして、孤立点の補正を落とさないようにします。
+
+最後に、補正後の代表点数が $I$ になることを示します。$H$ で外周に触れる境界線の成分は、外周を通じてすべて同じ一成分になります。外周に触れない一成分が、$G$ では別の場所へつながると仮定すると、その道は長方形の外へ出る前に必ず外周上の角を通ります。これは外周に触れないことと矛盾します。従って、外周から離れた成分は「$G$ の成分全体が厳密な内部に収まるもの」とちょうど一致します。
+
+内部の代表点を持つ $G$ の成分について、外周の角が一つでもあれば除外し、なければ全体が内部です。内部から外部への格子の道は必ず外周に角を持つため、外側だけに伸びる例も取りこぼしません。内部の代表点を持たない成分は初めから数えていないので、外周に現れても引きません。これで $I$ が正しく求まり、式全体が成り立ちます。
+
+例えば `AAA / ABA / AAA` では、内部の線は四本、内部の角は四個、外周から離れた境界成分は一個です。式は $4-4+1+1=2$ となり、中央を囲む穴を含めても正しく数えます。
+
+## 計算量
+
+全盤面の高さを $N$、幅を $M$ とします。角は $(N+1)(M+1)$ 個、異色境界は高々 $2NM-N-M$ 本です。反復探索による成分番号付けと三枚の累積和の構築は $O(NM)$ 時間、保持空間も $O(NM)$ です。
+
+高さ $h$、幅 $w$ の問い合わせは、外周の $2(h+w)$ 個の角だけを二回走査して $O(h+w)$ 時間です。印を付ける走査と解除する走査を分けるため、成分数分の配列初期化も訪問時刻の桁あふれもありません。全体は $O(NM+\sum(h+w))$、最悪で $O(NM+Q(N+M))$ 時間です。
+
+上限では角が $1{,}002{,}001$ 個、内部の線が $1{,}998{,}000$ 本、答えはマス数以下の $1{,}000{,}000$ です。累積和と番号は符号付き32ビットに収まり、面積を含む最終式は `long long` で計算します。通常の4バイト `int`・1バイト `unsigned char` では保持配列の要素は約21.1MB、構築中の隣接ビットと探索用配列を含めて約26.1MBです。入力文字列と管理領域は別に必要です。
+
+## 実装
+
+`GridRectangleComponents(grid)` で前処理し、`count(r0,c0,r1,c1)` を繰り返し呼びます。盤面自体は保持しません。外周成分の印を一時的に変更するため、同じインスタンスへの同時呼び出しは行わないものとします。
+
+縦の線は上端の角 `(r,c)` に置き、`[r0,r1) × [c0+1,c1)` で集計します。横の線は左端の角に置き、`[r0+1,r1) × [c0,c1)` で集計します。代表点は `[r0+1,r1) × [c0+1,c1)` です。高さ一または幅一ではこの内部が空になり、同じコードで扱えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class GridRectangleComponents {
+    struct Prefix2D {
+        int width;
+        vector<int> value;
+        Prefix2D(int rows, int cols)
+            : width(cols + 1), value((rows + 1) * (cols + 1), 0) {}
+        void put(int row, int col) {
+            value[(row + 1) * width + col + 1] = 1;
+        }
+        void build() {
+            int rows = int(value.size()) / width - 1;
+            for (int r = 1; r <= rows; ++r)
+                for (int c = 1; c < width; ++c) {
+                    int p = r * width + c;
+                    value[p] += value[p - width] + value[p - 1]
+                              - value[p - width - 1];
+                }
+        }
+        int sum(int r0, int c0, int r1, int c1) const {
+            return value[r1 * width + c1] - value[r0 * width + c1]
+                 - value[r1 * width + c0] + value[r0 * width + c0];
+        }
+    };
+
+    int n, m, stride;
+    Prefix2D vertical, horizontal, representatives;
+    vector<int> component, representative;
+    vector<unsigned char> marked;
+
+    static pair<int, int> dimensions(const vector<string>& grid) {
+        if (grid.empty() || grid.size() > 1000)
+            throw invalid_argument("grid height must be in 1..1000");
+        size_t width = grid.front().size();
+        if (width == 0 || width > 1000)
+            throw invalid_argument("grid width must be in 1..1000");
+        for (const string& row : grid) {
+            if (row.size() != width)
+                throw invalid_argument("ragged grid");
+            for (char color : row)
+                if (color < 'A' || color > 'Z')
+                    throw invalid_argument("color must be in A..Z");
+        }
+        return {int(grid.size()), int(width)};
+    }
+
+    GridRectangleComponents(const vector<string>& grid, pair<int, int> shape)
+        : n(shape.first), m(shape.second), stride(m + 1),
+          vertical(n + 1, m + 1), horizontal(n + 1, m + 1),
+          representatives(n + 1, m + 1),
+          component((n + 1) * (m + 1), -1) {
+        int vertices = int(component.size());
+        vector<unsigned char> edges(vertices, 0);
+        // Bits: up=1, right=2, down=4, left=8.
+        for (int r = 0; r < n; ++r)
+            for (int c = 1; c < m; ++c)
+                if (grid[r][c - 1] != grid[r][c]) {
+                    int p = r * stride + c;
+                    edges[p] |= 4;
+                    edges[p + stride] |= 1;
+                    vertical.put(r, c);
+                }
+        for (int r = 1; r < n; ++r)
+            for (int c = 0; c < m; ++c)
+                if (grid[r - 1][c] != grid[r][c]) {
+                    int p = r * stride + c;
+                    edges[p] |= 2;
+                    edges[p + 1] |= 8;
+                    horizontal.put(r, c);
+                }
+
+        vector<int> stack;
+        stack.reserve(vertices);
+        representative.reserve(vertices);
+        array<int, 4> delta{-stride, 1, stride, -1};
+        for (int seed = 0; seed < vertices; ++seed) {
+            if (component[seed] != -1) continue;
+            int id = int(representative.size());
+            representative.push_back(seed);
+            representatives.put(seed / stride, seed % stride);
+            component[seed] = id;
+            stack.push_back(seed);
+            while (!stack.empty()) {
+                int p = stack.back();
+                stack.pop_back();
+                for (int d = 0; d < 4; ++d) {
+                    if (!(edges[p] & (1 << d))) continue;
+                    int next = p + delta[d];
+                    if (component[next] != -1) continue;
+                    component[next] = id;
+                    stack.push_back(next);
+                }
+            }
+        }
+        marked.assign(representative.size(), 0);
+        vertical.build();
+        horizontal.build();
+        representatives.build();
+    }
+
+public:
+    explicit GridRectangleComponents(const vector<string>& grid)
+        : GridRectangleComponents(grid, dimensions(grid)) {}
+
+    // Count same-color 4-neighbor components among cells in
+    // [r0,r1) x [c0,c1). The rectangle must be nonempty and in the grid.
+    int count(int r0, int c0, int r1, int c1) {
+        if (r0 < 0 || r0 >= r1 || r1 > n ||
+            c0 < 0 || c0 >= c1 || c1 > m)
+            throw invalid_argument("invalid half-open rectangle");
+
+        int enclosed = representatives.sum(r0 + 1, c0 + 1, r1, c1);
+        auto visit = [&](int r, int c) {
+            int id = component[r * stride + c];
+            if (marked[id]) return;
+            marked[id] = 1;
+            int p = representative[id];
+            int rr = p / stride, cc = p % stride;
+            if (r0 < rr && rr < r1 && c0 < cc && cc < c1)
+                --enclosed;
+        };
+        for (int c = c0; c <= c1; ++c) {
+            visit(r0, c);
+            visit(r1, c);
+        }
+        for (int r = r0 + 1; r < r1; ++r) {
+            visit(r, c0);
+            visit(r, c1);
+        }
+        // Reset only the touched marks, so every query stays O(height+width).
+        for (int c = c0; c <= c1; ++c) {
+            marked[component[r0 * stride + c]] = 0;
+            marked[component[r1 * stride + c]] = 0;
+        }
+        for (int r = r0 + 1; r < r1; ++r) {
+            marked[component[r * stride + c0]] = 0;
+            marked[component[r * stride + c1]] = 0;
+        }
+
+        long long internal_edges = vertical.sum(r0, c0 + 1, r1, c1)
+                                 + horizontal.sum(r0 + 1, c0, r1, c1);
+        long long interior_vertices = 1LL * (r1 - r0 - 1) * (c1 - c0 - 1);
+        return int(internal_edges - interior_vertices + 1 + enclosed);
+    }
+};
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) は線と代表点の個数を素早く取り出す部分に使います。[グラフへの帰着](/flowchartcp/techniques/graph-reduction/) では、マスを頂点にする以外に、角と境界線を頂点・辺にする選択肢も考えます。
+
+[Union-Find](/flowchartcp/techniques/union-find/) で $G$ の成分番号を作ることもできます。ただし、その番号は色の成分ではありません。問い合わせの外周に触れる異色境界を除外する補正は、成分番号の作り方にかかわらず必要です。
+
+## 参考資料
+
+- [USACO 2021 January Platinum — 公式結果一覧](https://usaco.org/index.php?page=jan21results)
+- [Paint by Letters — 公式原典](https://usaco.org/index.php?page=viewproblem2&cpid=1094)
+- [Andi Qu・Benjamin Qi・Danny Mittal による公式解説](https://usaco.org/current/data/sol_prob3_platinum_jan21.html) — 異色境界の平面グラフ、Euler の式、内部の代表点と外周による補正。
+
+<TechniqueReferences techniqueId="grid-rectangle-components-euler-boundary" />

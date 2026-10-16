@@ -1,0 +1,147 @@
+---
+title: "同じ多項式の多数の評価を、一次式の積の余りへ分ける"
+description: "点ごとに全係数を読む代わりに、評価点の積を木にまとめて余りを配ります。"
+techniqueId: multipoint-product-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+一つの多項式 $F$ と、多数の評価点 $t_0,\ldots,t_{m-1}$ が与えられ、全ての $F(t_i)$ を求めます。各点で Horner 法を使うと、全係数を点の数だけ読みます。評価点が任意の位置にある場合にも使える方法です。
+
+## 考え方
+
+各点の一次式 $x-t_i$ を葉に置き、区間内の一次式の積を持つ二分木を作ります。根へ $F$ を置き、子へ進むたびに、その子の多項式で割った余りを渡します。
+
+葉では $x-t_i$ で割った定数の余りが $F(t_i)$ です。多項式の割り算は、係数を逆順にすると除数の逆数との積に変わります。商の長さだけ逆数を求め、商を戻して引くコードも含めます。
+
+## 適用条件
+
+多項式の乗算と逆数を高速に計算できる係数体を使います。点が全て異なる必要はありません。補間とは異なり、同じ点が複数あってもその値を繰り返し返すだけです。
+
+掲載実装の法は 998244353、係数と点は $[0,p)$、係数列の長さと点数はそれぞれ $2^{20}$ 以下です。零多項式は空列、または全係数 0 で表せます。評価点数 0 なら空列を返します。
+
+## なぜ正しいか
+
+$G$ が子の積、$H$ が親の積なら、$G$ は $H$ を割り切ります。$F=QH+R$ と表せるので、$F$ と $R$ は $G$ で割った余りが同じです。したがって、親で不要な高次数を捨てても、子の評価値は失いません。
+
+割り算で次数 $n$ の $F$ と次数 $m$ の $G$ を逆順にすると、商の先頭 $n-m+1$ 項は $\operatorname{rev}(F)/\operatorname{rev}(G)$ から決まります。除数の最高次係数は非零なので、逆数を使って商を復元できます。
+
+## 計算量
+
+係数列の長さを $n$、評価点数を $m$ とすると、点ごとの Horner 法は時間 $O(nm)$、補助空間 $O(m)$ です。積の木と余りの木では、時間は保守的に $O((n+m)\log^2(n+m+2))$、空間は $O(n+m\log(m+2))$ です。全ての積を保存するため、補助空間は線形だけではありません。
+
+## 実装
+
+`multipoint_evaluate(f,points)` は入力された点の順に値を返します。`polynomial_remainder` は零多項式の余りを空列で返します。多点評価だけなら、点同士の差で割る処理は不要です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> fps_inverse(const vector<int>& f,int n) {
+    assert(0<=n && n<=(1<<21));
+    if(n==0) return {};
+    assert(!f.empty() && f[0]!=0);
+    vector<int> g{ntt998::power(f[0],ntt998::MOD-2)};
+    while(int(g.size())<n) {
+        int m=min(n,2*int(g.size()));
+        vector<int> part(f.begin(),f.begin()+min(m,int(f.size())));
+        auto correction=ntt998::convolution(part,g);
+        correction.resize(m);
+        for(int& x:correction) x=(ntt998::MOD-x)%ntt998::MOD;
+        correction[0]=(correction[0]+2)%ntt998::MOD;
+        g=ntt998::convolution(g,correction);
+        g.resize(m);
+    }
+    return g;
+}
+
+vector<int> polynomial_remainder(vector<int> f,vector<int> divisor) {
+    while(!f.empty() && f.back()==0) f.pop_back();
+    while(!divisor.empty() && divisor.back()==0) divisor.pop_back();
+    assert(!divisor.empty());
+    if(f.size()<divisor.size()) return f;
+    int quotient_size=f.size()-divisor.size()+1;
+    vector<int> reverse_f(f.rbegin(),f.rend()),reverse_d(divisor.rbegin(),divisor.rend());
+    reverse_f.resize(quotient_size);
+    auto quotient=ntt998::convolution(reverse_f,fps_inverse(reverse_d,quotient_size));
+    quotient.resize(quotient_size);reverse(quotient.begin(),quotient.end());
+    auto product=ntt998::convolution(quotient,divisor);
+    for(int i=0;i<int(f.size());++i) f[i]=(f[i]-product[i]+ntt998::MOD)%ntt998::MOD;
+    f.resize(divisor.size()-1);
+    while(!f.empty() && f.back()==0) f.pop_back();
+    return f;
+}
+vector<int> multipoint_evaluate(vector<int> f,const vector<int>& points) {
+    int m=points.size();
+    assert(int(f.size())<=(1<<20) && m<=(1<<20));
+    if(m==0) return {};
+    vector<vector<int>> tree(4*m);
+    auto build=[&](auto&& self,int node,int left,int right)->void {
+        if(right-left==1) {
+            tree[node]={(ntt998::MOD-points[left])%ntt998::MOD,1};return;
+        }
+        int middle=(left+right)/2;
+        self(self,2*node,left,middle);self(self,2*node+1,middle,right);
+        tree[node]=ntt998::convolution(tree[2*node],tree[2*node+1]);
+    };
+    build(build,1,0,m);
+    vector<int> result(m);
+    auto descend=[&](auto&& self,int node,int left,int right,vector<int> remainder)->void {
+        remainder=polynomial_remainder(move(remainder),tree[node]);
+        if(right-left==1) {result[left]=remainder.empty()?0:remainder[0];return;}
+        int middle=(left+right)/2;
+        self(self,2*node,left,middle,remainder);
+        self(self,2*node+1,middle,right,move(remainder));
+    };
+    descend(descend,1,0,m,move(f));return result;
+}
+```
+
+## 関連する手法
+
+- [多数の点と値から、多項式の全係数を復元する](/flowchartcp/techniques/polynomial-interpolation-product-tree/)
+- [連続する整数での値から、一点の値を求める](/flowchartcp/techniques/lagrange-consecutive-values/)
+[積を 1 にする係数列を、誤差を二乗して伸ばす](/flowchartcp/techniques/fps-inverse-newton/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/multipoint_evaluation/task.md)
+
+<TechniqueReferences techniqueId="multipoint-product-tree" />

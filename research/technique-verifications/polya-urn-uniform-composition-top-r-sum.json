@@ -1,0 +1,1497 @@
+{
+  "techniqueId": "polya-urn-uniform-composition-top-r-sum",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-polya-top-r-article.mdx",
+    "checker": "/tmp/flowchartcp-polya-top-r-checker.py",
+    "sidecar": "/tmp/flowchartcp-polya-top-r-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/polya-urn-uniform-composition-top-r-sum.mdx",
+    "checker": "scripts/check_unit_polya_top_sum_cpp.py",
+    "metadata": "data/techniques-specific-probability-patterns.json",
+    "reference": "data/references-specific-probability-patterns.json",
+    "feature": "data/unit-polya-top-sum-problem-features.json"
+  },
+  "metadata": {
+    "id": "polya-urn-uniform-composition-top-r-sum",
+    "title": "多く持つ人ほど増えやすい過程で、上位の合計期待値を求める",
+    "summary": "初期重み1の比例増殖を、一様な弱合成へ変える。全員から1を引き、0になった人を除く計数DPで、相関する値の上位合計を安定して求める。",
+    "aliases": [
+      "ICPC2018 World Finals D Gem Island Polya urn top r expected sum",
+      "Pólya urn uniform weak composition top-r sum nonnegative DP",
+      "初期重み1 比例増殖 弱合成一様 上位r人合計 期待値 相関"
+    ],
+    "family": "比例増殖を一様組成へ変える順位期待値",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "expectation-indicators",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+      "https://news.icpc.global/wf2018/"
+    ]
+  },
+  "reference": {
+    "techniqueId": "polya-urn-uniform-composition-top-r-sum",
+    "source": "ICPC",
+    "problemId": "wf2018_d",
+    "title": "Gem Island",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+    "evidence": "全員が初期重み1で、全ての品物から一様に一つ選んだ所有者の重みを1増やす過程。固定回数後の相関する値の上位r人合計を求める。増加量のラベル付き弱合成が等確率となることを示し、全員から1を引いて0になった人を除く可逆な分割で、上位合計の総和を非負項のDPにする。最後に弱合成数で割る。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-04-19",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にICPC公式原典D7頁、公式ドメイン掲載のPer Austrin・Jakub Onufry Wojtaszczyk非公式sketch5/6頁・冒頭disclaimer、公式news競技日2018-04-19をweb再確認。N,D1..500/r1..N/abs-or-rel誤差1e−6、個体一様選択・所有者重み比例・初期全員1・総和固定による依存を確認。弱合成一様性、正の人数による可逆分割、総和基底(n+d)*C、非負DP、binary64のγ501501経路・分母誤差・中間<2^1010・出力込み絶対誤差<1e−6を独立証明。実MDX唯一の可視C++20を抽出し通常/ASan+UBSanとも2292379checks/759821API/checksum7563957929397653268成功。全小弱合成203489件、全所有者履歴2821488本の厳密確率、別の多倍長整数閾値計数で最大13構成まで比較。最大実測絶対誤差6.54421e−13。境界753001呼出し、乱択全順位2834/単調・凹性5488検査、invalid16、全3sample・writer書式保存・call間状態分離を確認。通常0.696570375秒/RSS56512KiB、ASan8.999549632秒/RSS1926244KiB（全履歴と多倍長oracleを含むハーネス）。初回研究probeとは別の完成C++検査であり、初回positive全fieldを保持しresolution-onlyを提案。"
+  },
+  "problemFeature": {
+    "source": "ICPC",
+    "problemId": "wf2018_d",
+    "title": "Gem Island",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+    "techniqueIds": [
+      "polya-urn-uniform-composition-top-r-sum"
+    ],
+    "features": [
+      "全員の初期重み1から、全ての品物を一様に選び、その所有者の重みを1増やす。所有者選択確率は現在重みに比例する。",
+      "固定回数後の上位r人合計の期待値を求める。総和固定で各人は独立ではない。",
+      "原典N,D1..500・r1..N、実数の絶対または相対誤差1e−6以内。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "全員が初期重み1で、全ての品物から一様に一つ選んだ所有者の重みを1増やす過程。固定回数後の相関する値の上位r人合計を求める。増加量のラベル付き弱合成が等確率となることを示し、全員から1を引いて0になった人を除く可逆な分割で、上位合計の総和を非負項のDPにする。最後に弱合成数で割る。",
+    "discoveredBy": "icpc-2018-world-finals",
+    "publicationDate": "2018-04-19",
+    "publicationYear": 2018,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+    "statementPages": [
+      7
+    ],
+    "page8": "intentionally blank; no facts inferred from it",
+    "statementReadMethod": "web full PDF extraction D lines206..239",
+    "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+    "publicSketchPages": [
+      5,
+      6
+    ],
+    "publicSketchAuthors": [
+      "Per Austrin",
+      "Jakub Onufry Wojtaszczyk"
+    ],
+    "publicSketchReadMethod": "web full PDF extraction lines175..260 and disclaimer0..7",
+    "publicSketchIsOfficiallyHosted": true,
+    "publicSketchSelfDescribesAsUnofficial": true,
+    "officialEditorialVerified": false,
+    "solutionVerification": "independent-analysis",
+    "fullOriginalContractVerified": true,
+    "numericBoundsVerified": true,
+    "originalBounds": {
+      "people": "1..500",
+      "steps": "1..500",
+      "topCount": "1..N",
+      "timeLimitSeconds": 3,
+      "error": "absolute OR relative <=1e−6",
+      "initialWeights": "each exactly1",
+      "transition": "uniform individual chosen, its owner gets+1; owners not uniformly chosen",
+      "dependence": "total final weight N+D fixed; no independence assumption"
+    },
+    "contestDate": "2018-04-19",
+    "datePrecision": "day",
+    "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "difficulty": null,
+    "printedSketchBaseCounterexample": {
+      "n": 2,
+      "d": 1,
+      "r": 2,
+      "labeledFinalWeights": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "trueSumAcrossStates": 6,
+      "printedBaseWithoutCount": 3,
+      "independentCorrection": "S_r(n,d)=(n+d)*binomial(n+d−1,d) whenn<=r"
+    },
+    "chosenProductionMethod": "independently completed nonnegative composition-sum DP, not floating inclusion-exclusion",
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedRequiredSourceFacts": []
+  },
+  "api": {
+    "namespace": "unit_polya",
+    "functions": [
+      "double expected_top_r_unit_polya(int n,int steps,int r)",
+      "void write_expected_top_r(ostream& output,int n,int steps,int r)"
+    ],
+    "parameters": {
+      "n": "1..500",
+      "steps": "0..500",
+      "r": "0..n"
+    },
+    "sourceCoverage": "all source n,d1..500/r1..n; step0 and top0 are explicit extensions",
+    "exactEarlyReturns": {
+      "r0": "0",
+      "steps0": "r",
+      "rEqualsN": "n+steps, includes singleton"
+    },
+    "numericContract": {
+      "type": "IEEE754 binary64/radix2/digits53/max_exponent>=1024 compile-asserted",
+      "rounding": "FE_TONEAREST runtime checked; other modes invalid_argument",
+      "compile": "normal floating semantics, no fast-math assumptions",
+      "guarantee": "positive-answer relative error<5.59e−11, absolute<5.59e−8 before fixed12 serialization, final absolute<1e−6",
+      "fenv": "only reads, does not change rounding mode"
+    },
+    "invalid": "invalid_argument on n/steps/r bounds or non-nearest mode; integer validation before index/size arithmetic; mode check before early returns",
+    "writer": "classic-locale fixed12 local buffer then unformatted write; invalid emits nothing; caller flags/precision/width/fill preserved",
+    "state": "local tables, no mutable global state or retained references; inputs by-value, independent calls",
+    "exceptions": "allocation and stream exceptions propagate"
+  },
+  "proof": {
+    "uniform": "Induct onD. Each final g receivesp*(g_i−1)/(N+D−1) from owneri; sum=pD/(N+D−1), independent ofg. Invalid predecessor withg_i1 contributeszero. Normalize over weak compositions.",
+    "count": "C(n,d)=binomial(n+d−1,d)",
+    "sumDefinition": "S_r(n,d) sums top min(r,n) FINAL POSITIVE weights across ALL labeled states, not the mean",
+    "base": "n<=r =>(n+d)*C(n,d); zero people contributezero",
+    "recurrence": "n>r: S=r*C(n,d)+sum_{k=1..min(n,d)}C(n,k)*S_r(k,d−k)",
+    "bijection": "subtract1 from all final weights, choose exactlyk remaining-positive labels, subtract1 from thosek; a weak composition ofd−k intok parts remains and reverses uniquely",
+    "tiesAndSmallK": "common subtraction preserves rank, equal boundary weights same sum; k<r contributes all positive values and zeros forotherselectedslots",
+    "dependency": "d−k<d, outer d ascending",
+    "unconfirmedLemmas": []
+  },
+  "numericalAnalysis": {
+    "unitRoundoff": "2^−53",
+    "gamma": "gamma_m=m*u/(1−m*u)",
+    "pascalDependencyLengthMax": 999,
+    "chooseNDependencyLengthMax": 500,
+    "sumDpDependencyLength": "L(d)=1001(d+1)<=501501; base length<=1001; multiplying choose(n,k) adds<=501 and accumulating<=500terms adds<=500",
+    "denominatorError": "gamma999, conservatively gamma1000",
+    "relativeErrorExpression": "(1+gamma501501)*(1+u)/(1−gamma1000)−1",
+    "relativeErrorUpperBoundHighPrecision": "5.57889290351252704453690151927575339981238121251876859548409800113584E-11",
+    "absoluteErrorUpperBoundHighPrecision": "5.57889290351252704453690151927575339981238121251876859548409800113584000E-8",
+    "writerExtraAbsoluteError": "<1e−12",
+    "sourceAbsoluteToleranceSatisfied": true,
+    "combinatorialIntermediateBound": "counts<=2^999; each sum, term and partial sum<=1000*2^999<2^1009",
+    "floatingIntermediateBound": "relative error<gamma501501 keeps values<2^1010, below overflow",
+    "underflow": "all positive intermediate mathematical values are integers>=1; final positive mean>=1; zeros exact",
+    "cancellation": "production has only positive additions/products then one positive division; only test oracle alternates arbitrary-precision integers"
+  },
+  "complexity": {
+    "binomialTime": "O((N+D)(D+1))",
+    "sumDpTime": "O(N²D+N)",
+    "totalTime": "O((N+D)(D+1)+N²D+N)",
+    "space": "O((N+D)(D+1))",
+    "maximumDoubleTableElements": 752001,
+    "maximumDoubleTableBytes": 6016008,
+    "storageScope": "two double vectors; vector object/allocator overhead and local output string additional",
+    "earlyReturns": "O(1) time/space forr0,D0,rN",
+    "integerIndexBounds": "<=501000/251001 index products; integer weight<=1000; no recursion",
+    "rssScope": "native RSS includes literal owner histories, cpp_int table/oracles, all repeated tests and ASan allocator quarantine; not a tight API-only memory measurement"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "game-probability",
+    "parentGraphId": "stateful-random-process-features",
+    "parentNodeId": "goal",
+    "newAnswerId": "unit-weight-growth",
+    "newAnswerLabel": "全員1個から、全個体を一様に選んで増やした後の上位合計",
+    "guardGraphId": "unit-polya-top-sum-conditions",
+    "canonicalChoices": [
+      "stateful-process",
+      "unit-weight-growth",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "unit-initial-reinforcement",
+        "question": "全員の初期重みは1で、全個体から一様に一つ選び、所有者を1増やしますか？"
+      },
+      {
+        "id": "fixed-horizon-top-sum",
+        "question": "決まった回数の後、重みが大きい上位r人の合計期待値を求めますか？"
+      },
+      {
+        "id": "bounds-numeric",
+        "question": "人数・操作回数は1〜500、上位は1〜人数で、実数誤差10⁻⁶を許しますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "polya-urn-uniform-composition-top-r-sum"
+    ],
+    "oldGuardPreservation": "append one feature option/route; preserve all existing root/options/answers/order/text and existing detailed guards"
+  },
+  "verification": {
+    "checkerReadsActualSingleVisibleMdxFence": true,
+    "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+    "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+    "checkerSha256": "37a8f64b343056480ef0879bfae2685887a7926aa7a059e415872a0fa4f8eaf7",
+    "commands": [
+      "python3 /tmp/flowchartcp-polya-top-r-checker.py",
+      "python3 /tmp/flowchartcp-polya-top-r-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 2292379,
+      "apiCalls": 759821,
+      "compositionParameterPairs": 104,
+      "allWeakCompositions": 203489,
+      "historyParameterPairs": 50,
+      "ownerHistories": 2821488,
+      "historyTerminalStates": 3002,
+      "exactTailOracleCalls": 3653,
+      "exactTailIntegerTerms": 105439,
+      "randomRankQueries": 2834,
+      "metamorphicChecks": 5488,
+      "boundaryApiCalls": 753001,
+      "invalidCases": 16,
+      "maximumAbsoluteError": 6.544209618652985e-13,
+      "checksum": "7563957929397653268",
+      "seconds": 0.696570375,
+      "peakRSSKiB": 56512,
+      "maximumCases": [
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 1,
+          "answer": 10.300789183514535,
+          "absoluteError": 5.340346220794601e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 2,
+          "answer": 19.15876289085194,
+          "absoluteError": 2.105954299835844e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 3,
+          "answer": 27.295060277324545,
+          "absoluteError": 6.050715484207103e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.32790897148946,
+          "absoluteError": 3.5561831257524545e-14
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 250,
+          "answer": 746.723323770303,
+          "absoluteError": 6.544209618652985e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 499,
+          "answer": 999.0000000000003,
+          "absoluteError": 3.410605131648481e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 500,
+          "answer": 1000,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 499,
+          "r": 1,
+          "answer": 10.286651364417166,
+          "absoluteError": 3.4807226545474634e-15
+        },
+        {
+          "n": 499,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.43694309125979,
+          "absoluteError": 5.804384750618397e-14
+        },
+        {
+          "n": 250,
+          "steps": 500,
+          "r": 125,
+          "answer": 583.1016570514605,
+          "absoluteError": 1.554312234475219e-14
+        },
+        {
+          "n": 347,
+          "steps": 431,
+          "r": 109,
+          "answer": 455.42195401891496,
+          "absoluteError": 2.3331336862497665e-13
+        },
+        {
+          "n": 1,
+          "steps": 500,
+          "r": 1,
+          "answer": 501,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 1,
+          "r": 499,
+          "answer": 500,
+          "absoluteError": 0
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 2292379,
+      "apiCalls": 759821,
+      "compositionParameterPairs": 104,
+      "allWeakCompositions": 203489,
+      "historyParameterPairs": 50,
+      "ownerHistories": 2821488,
+      "historyTerminalStates": 3002,
+      "exactTailOracleCalls": 3653,
+      "exactTailIntegerTerms": 105439,
+      "randomRankQueries": 2834,
+      "metamorphicChecks": 5488,
+      "boundaryApiCalls": 753001,
+      "invalidCases": 16,
+      "maximumAbsoluteError": 6.544209618652985e-13,
+      "checksum": "7563957929397653268",
+      "seconds": 8.999549632,
+      "peakRSSKiB": 1926244,
+      "maximumCases": [
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 1,
+          "answer": 10.300789183514535,
+          "absoluteError": 5.340346220794601e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 2,
+          "answer": 19.15876289085194,
+          "absoluteError": 2.105954299835844e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 3,
+          "answer": 27.295060277324545,
+          "absoluteError": 6.050715484207103e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.32790897148946,
+          "absoluteError": 3.5561831257524545e-14
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 250,
+          "answer": 746.723323770303,
+          "absoluteError": 6.544209618652985e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 499,
+          "answer": 999.0000000000003,
+          "absoluteError": 3.410605131648481e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 500,
+          "answer": 1000,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 499,
+          "r": 1,
+          "answer": 10.286651364417166,
+          "absoluteError": 3.4807226545474634e-15
+        },
+        {
+          "n": 499,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.43694309125979,
+          "absoluteError": 5.804384750618397e-14
+        },
+        {
+          "n": 250,
+          "steps": 500,
+          "r": 125,
+          "answer": 583.1016570514605,
+          "absoluteError": 1.554312234475219e-14
+        },
+        {
+          "n": 347,
+          "steps": 431,
+          "r": 109,
+          "answer": 455.42195401891496,
+          "absoluteError": 2.3331336862497665e-13
+        },
+        {
+          "n": 1,
+          "steps": 500,
+          "r": 1,
+          "answer": 501,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 1,
+          "r": 499,
+          "answer": 500,
+          "absoluteError": 0
+        }
+      ]
+    },
+    "countsIdenticalNormalAndSanitized": true,
+    "checksum": "7563957929397653268",
+    "counterSemantics": "apiCalls is harness invocations of either public API including invalid attempts; writer internal call not counted twice; checks are require assertions; terminal states are not owner histories.",
+    "compositionOracle": "all labeled weak compositions N1..8/D0..12,104pairs/203489states; direct sorted final weights, exact integer top-r sums forEVERYr0..N",
+    "historyOracle": "every owner sequence N1..5/D0..9,50pairs/2821488histories; exact path numerator multiplies current ownerweight, common denominatorN...(N+D−1); sum exact weights by final state and direct sorted scores, without uniformity assumption",
+    "fullRangeIndependentOracle": "marked-subset threshold counts U_j=C(N,j)*C(N+D−jt−1,D−jt), exact cpp_int binomial inversion; top-r coefficients a1=1,a_j=0 for2<=j<=r,a_j=(-1)^(j−r)*C(j−2,r−1) forj>r; no peeling recurrence/floating alternating arithmetic",
+    "oracleProof": "exact-sizec count=sum_{j>=c}(-1)^(j−c)C(j,c)U_j; summingc>=k yields (-1)^(j−k)C(j−1,k−1); sumk1..min(r,j) gives listedcoefficients. r*Ctotal+sum_t sum_j a_jU_j is exact top-r total.",
+    "oracleSelfValidation": "all small exact-tail rationals cross-multiplied against direct compositions and exact histories before max use",
+    "boundaryScope": "EVERYN1..500,D0..500:rN/r0. EVERYN1..500,r0..N:D0/D1. EVERYD0..500:N2/r1direct uniform split sum.",
+    "metamorphicScope": "180random pairs N2..25/D0..30 allr: decreasing expected sorted marginals, top-r monotone, one extra reinforcement changes top-r by0..1 pathwise",
+    "originalSamplesCompared": 3,
+    "invalidScope": "13parameter triples including INT_MIN/INT_MAX and3non-nearest modes; invalid writer emitszero, no rounding mode mutation",
+    "writerScope": "fixed12/classic decimal point/newline/one scalar/source error; scientificflags,width17,fill# retained",
+    "stateScope": "100interleaved calls with differentn/d/r including singleton/fullsum",
+    "maximumExactComparisons": 13,
+    "largestObservedAbsoluteError": 6.544209618652985e-13,
+    "separationFromInitialResearchProbe": "Initial189corrected recurrence comparisons/5004urn states did not verify stable arithmetic or complete C++. This new checker compiles the published complete API and validates all histories/compositions, independent exact threshold counts, full bounds, numeric environment/format/state, and sanitizers."
+  },
+  "relatedWork": {
+    "fasterProductionInclusionExclusionApiImplemented": false,
+    "scope": "only nonnegativeDP is complete public API; independently derived exact cpp_int threshold formula is a testoracle, not substituted floating implementation or proof that the sketch exercise as printed is implemented",
+    "sourceBaseCorrectionExplicit": true
+  },
+  "initialAuditPreservation": {
+    "auditFile": "data/corpus-audits/icpc-2018-world-finals.json",
+    "rawAuditSha256AtAuthoring": "5bf3d22003312435296fb163db83f9a57c56002918098f7fd9f9208196d1034a",
+    "problemId": "wf2018_d",
+    "initialRecordCanonicalSha256": "1796a052273d3b8c6e7def1e4b625a1d67b7b57565e7bf94873bb142a20bcc55",
+    "initialRecord": {
+      "source": "icpc",
+      "problemId": "wf2018_d",
+      "title": "Gem Island",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "D",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+        "固定回数後の、重みが大きい上位r人の合計の期待値を求める。各人の重みは独立ではない。"
+      ],
+      "constraints": {
+        "inhabitants": "1..500",
+        "nights": "1..500",
+        "topCount": "1..N",
+        "error": "absolute or relative <= 10^-6"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "game-probability",
+      "choices": [
+        "stateful-process"
+      ],
+      "gap": {
+        "id": "polya-urn-uniform-composition-top-r-sum",
+        "features": [
+          "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+          "固定回数後の、重みが大きい上位r人の合計の期待値を求める。各人の重みは独立ではない。"
+        ],
+        "reason": "状態依存の増殖を、全ての正整数組成が等確率という分布へ変える分岐がない。既存の順位期待値記事の二項分布は独立値を要求し、総和が固定された本問には使えない。",
+        "neededTechniqueIds": [
+          "polya-urn-uniform-composition-top-r-sum"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "expectation-order-statistic-tail",
+          "expectation-indicators"
+        ],
+        "proposedFeatureAnswer": "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+        "firstMissingGraphId": "stateful-random-process-features",
+        "firstMissingNodeId": "goal",
+        "currentOptions": [
+          {
+            "id": "restart",
+            "label": "盤上を進み、特定の場所に着くと同じ開始地点へ戻る期待手数"
+          },
+          {
+            "id": "sushi",
+            "label": "皿を一様に選んで一個ずつ食べ、全て空になるまでの期待回数"
+          },
+          {
+            "id": "increasing",
+            "label": "一様に選んだ番号が現在より大きい間だけ続き、訪れた報酬を足す"
+          },
+          {
+            "id": "random-swap",
+            "label": "一様に二つの位置を重複を許して選び、交換を繰り返した一個の値"
+          },
+          {
+            "id": "dice-product",
+            "label": "サイコロの出目の積が、指定の整数にちょうど達する確率"
+          },
+          {
+            "id": "remove-edge",
+            "label": "閉路のない有向グラフのランダム歩行で、一辺を消して期待手数を小さくする"
+          },
+          {
+            "id": "choose-roulette",
+            "label": "毎回ルーレットを選んで費用を払い、合計得点が目標に届くまでの最小期待費用"
+          },
+          {
+            "id": "subtree-delete",
+            "label": "残った頂点を一様に選んで根付き部分木を消し、全頂点が消えるまでの期待回数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "ランダムな操作は、どのように進み、止まりますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "正整数の組成が等確率となることを示し、上位r合計の全組成にわたる総和を計数する。最小値1の人を除き、残り全員から1を引いた小問題へ分ける。",
+        "independentAuditReasoning": [
+          "重み列gへ至る直前の所有者kの寄与は(g_k-1)/(N+D-1)。直前の全組成が等確率なら、その和の分子はDで終状態によらず、帰納的に全組成が等確率。",
+          "独立に再導出した総和S_r(n,d)では、n<=rの基底は(n+d)*C(n+d-1,d)。n>rではr*C(n+d-1,d)に、初めの1を除いた人数別の小問題総和を足す。負の残り増分は0とし、n=0も総和0。",
+          "sketchのSの定義は総和だが、n<=rをn+dとする記載では個数因子が落ちる。例n=2,d=1,r=2の総和は6、記載の基底は3。これは独立解析で補正し、原資料の正確な引用とは区別する。"
+        ],
+        "implementationRequirements": [
+          "総和と期待値を混同せず、正規化か多倍長整数で500までの二項係数と数値誤差を評価する。",
+          "D=0を含む補助状態、r=N、1人、大きな対称ケースを組成全列挙と比較する。"
+        ],
+        "complexity": "補正した総和DPはO(N^2 D)時間、O(ND)空間。公開sketchの高速な包除版は証明が演習とされ、この監査の採用候補にしない。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          7,
+          8
+        ],
+        "editorialPages": [
+          5,
+          6
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "expectation-order-statistic-tail",
+          "file": "src/content/docs/techniques/expectation-order-statistic-tail.mdx",
+          "sha256": "4669816d6f7f0e802133345c90cab4c9669bfd9f9b630e80ef8ea75043f1dc1c",
+          "scopeMismatch": "独立な未知値の閾値超過数を二項分布で計算する。相関するurnの分布は扱えない。"
+        },
+        {
+          "techniqueId": "expectation-indicators",
+          "file": "src/content/docs/techniques/expectation-indicators.mdx",
+          "sha256": "492586eb306a85c9fd730a866670bead17ac08dda8937505c4b515a6486dc70d",
+          "scopeMismatch": "線形性は使えるが、順位を含む依存分布の具体的計数が必要。"
+        }
+      ],
+      "independentResearchCheck": {
+        "correctedRecurrenceComparisons": 189,
+        "exactUrnStates": 5004,
+        "normalizationCounterexample": {
+          "n": 2,
+          "d": 1,
+          "r": 2,
+          "compositions": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "sumOverAllCompositions": 6,
+          "sketchPrintedBase": 3
+        },
+        "note": "小規模の独立検査。大制約の浮動小数安定性や完成実装を検証したものではない。"
+      },
+      "verificationNotes": [
+        "総和の基底の不整合は独立解析で補った。非公式sketch全体が正しいという登録ではない。",
+        "より速い包除式とその二次時間の証明は未確認。採用候補は独立に確認した三次以下の計数DPだけ。"
+      ],
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "stateful-process",
+          "answerLabel": "盤・皿・番号・交換・積・部分木など、状態が変わる確率的な操作"
+        }
+      ],
+      "initialReached": {
+        "graphId": "stateful-random-process-features",
+        "nodeId": "goal",
+        "nodeType": "question",
+        "title": "ランダムな操作は、どのように進み、止まりますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "e76427284c48f9d8be22107c3014148dd3d31e004fdc5aa51dc6e4144981dd9d",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    "allInitialFieldsMustRemainUnchanged": true,
+    "initialResearchPositive": true,
+    "newPositiveResearchReviewRequired": false,
+    "registrationKind": "resolution-only",
+    "initialClassification": "missing-technique",
+    "initialReviewStatus": "verified",
+    "initialExpectedTechniqueIds": [],
+    "initialOfficialEditorialVerified": false,
+    "initialIndependentResearchCheck": {
+      "correctedRecurrenceComparisons": 189,
+      "exactUrnStates": 5004,
+      "normalizationCounterexample": {
+        "n": 2,
+        "d": 1,
+        "r": 2,
+        "compositions": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "sumOverAllCompositions": 6,
+        "sketchPrintedBase": 3
+      },
+      "note": "小規模の独立検査。大制約の浮動小数安定性や完成実装を検証したものではない。"
+    },
+    "initialOptionalPIENoteRetained": [
+      "総和の基底の不整合は独立解析で補った。非公式sketch全体が正しいという登録ではない。",
+      "より速い包除式とその二次時間の証明は未確認。採用候補は独立に確認した三次以下の計数DPだけ。"
+    ],
+    "newResolutionMustNotRewriteInitialImplementationStatus": "not-created-in-this-audit"
+  },
+  "rootTrace": {
+    "initialEntryGraphId": "game-probability",
+    "initialChoices": [
+      "stateful-process"
+    ],
+    "initialSteps": [
+      {
+        "graphId": "game-probability",
+        "nodeId": "game-objective",
+        "question": "手番や確率について何を求めますか？",
+        "answer": "stateful-process",
+        "answerLabel": "盤・皿・番号・交換・積・部分木など、状態が変わる確率的な操作"
+      }
+    ],
+    "initialReached": {
+      "graphId": "stateful-random-process-features",
+      "nodeId": "goal",
+      "nodeType": "question",
+      "title": "ランダムな操作は、どのように進み、止まりますか？",
+      "techniqueIds": []
+    },
+    "initialGap": {
+      "id": "polya-urn-uniform-composition-top-r-sum",
+      "features": [
+        "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+        "固定回数後の、重みが大きい上位r人の合計の期待値を求める。各人の重みは独立ではない。"
+      ],
+      "reason": "状態依存の増殖を、全ての正整数組成が等確率という分布へ変える分岐がない。既存の順位期待値記事の二項分布は独立値を要求し、総和が固定された本問には使えない。",
+      "neededTechniqueIds": [
+        "polya-urn-uniform-composition-top-r-sum"
+      ],
+      "implementationNeeded": true,
+      "existingRelatedTechniqueIds": [
+        "expectation-order-statistic-tail",
+        "expectation-indicators"
+      ],
+      "proposedFeatureAnswer": "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+      "firstMissingGraphId": "stateful-random-process-features",
+      "firstMissingNodeId": "goal",
+      "currentOptions": [
+        {
+          "id": "restart",
+          "label": "盤上を進み、特定の場所に着くと同じ開始地点へ戻る期待手数"
+        },
+        {
+          "id": "sushi",
+          "label": "皿を一様に選んで一個ずつ食べ、全て空になるまでの期待回数"
+        },
+        {
+          "id": "increasing",
+          "label": "一様に選んだ番号が現在より大きい間だけ続き、訪れた報酬を足す"
+        },
+        {
+          "id": "random-swap",
+          "label": "一様に二つの位置を重複を許して選び、交換を繰り返した一個の値"
+        },
+        {
+          "id": "dice-product",
+          "label": "サイコロの出目の積が、指定の整数にちょうど達する確率"
+        },
+        {
+          "id": "remove-edge",
+          "label": "閉路のない有向グラフのランダム歩行で、一辺を消して期待手数を小さくする"
+        },
+        {
+          "id": "choose-roulette",
+          "label": "毎回ルーレットを選んで費用を払い、合計得点が目標に届くまでの最小期待費用"
+        },
+        {
+          "id": "subtree-delete",
+          "label": "残った頂点を一様に選んで根付き部分木を消し、全頂点が消えるまでの期待回数"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ],
+      "currentQuestion": "ランダムな操作は、どのように進み、止まりますか？"
+    },
+    "relatedArticlesReviewed": [
+      {
+        "techniqueId": "expectation-order-statistic-tail",
+        "file": "src/content/docs/techniques/expectation-order-statistic-tail.mdx",
+        "sha256": "4669816d6f7f0e802133345c90cab4c9669bfd9f9b630e80ef8ea75043f1dc1c",
+        "scopeMismatch": "独立な未知値の閾値超過数を二項分布で計算する。相関するurnの分布は扱えない。"
+      },
+      {
+        "techniqueId": "expectation-indicators",
+        "file": "src/content/docs/techniques/expectation-indicators.mdx",
+        "sha256": "492586eb306a85c9fd730a866670bead17ac08dda8937505c4b515a6486dc70d",
+        "scopeMismatch": "線形性は使えるが、順位を含む依存分布の具体的計数が必要。"
+      }
+    ],
+    "existingScopeMismatch": "expectation-order-statistic-tail uses independentvalues to get binomial threshold counts, impossible for fixed-total urn values; expectation-indicators gives linearity but not dependent rank distribution and stable fullrange DP"
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "polya-urn-uniform-composition-top-r-sum"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回positive研究・総和基底補正・停止位置・未作成APIの記録を全て保持。原典全域の安定非負DP、独立誤差証明、完成記事/可視C++、全小履歴と全組成・別の厳密閾値計数・最大・ASan/UBSan・独立レビュー・特徴分岐で解消。新しいpositive研究reviewは加えない。非公式sketchを公式解説と扱わない。"
+  },
+  "integrationGate": {
+    "authorArtifactsComplete": true,
+    "requiredMathNumericAndSourceUnknowns": [],
+    "externalIndependentReviewStillPending": true,
+    "articleFlowAndResolutionNotRegisteredByAuthor": true,
+    "resolutionRequires": "parent independent review and actual feature-flow/root-walk registration; tmp artifacts alone do not assert current coverage"
+  },
+  "preservation": {
+    "sharedFilesModified": false,
+    "initialAuditOrSnapshotModified": false,
+    "degreeTreeArtifactsModified": false,
+    "onlyAuthoredDeliverables": [
+      "/tmp/flowchartcp-polya-top-r-article.mdx",
+      "/tmp/flowchartcp-polya-top-r-checker.py",
+      "/tmp/flowchartcp-polya-top-r-sidecar.json"
+    ],
+    "childAgentsCreated": false,
+    "articleCodeAlwaysVisible": true,
+    "sections": [
+      "使う場面",
+      "考え方",
+      "適用条件",
+      "なぜ正しいか",
+      "計算量",
+      "実装",
+      "関連する手法",
+      "参考資料"
+    ]
+  },
+  "status": "verified-and-integrated",
+  "statusAtAuthorFreeze": "complete-author-artifacts-pending-independent-review-and-registration",
+  "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/polya-urn-uniform-composition-top-r-sum.mdx",
+    "checker": "scripts/check_unit_polya_top_sum_cpp.py",
+    "metadataGroup": "probability-patterns",
+    "entryGraphId": "game-probability",
+    "choices": [
+      "stateful-process",
+      "unit-weight-growth",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Replace title with 多く持つ人ほど増えやすい過程で、上位の合計期待値を求める; use natural Japanese 品物/品物の個数 in prose and metadata.",
+      "Standard entryPoints advanced/complexity/reasoning; exact date/source numeric feature fields.",
+      "Normalize only published/checker/probe paths and implicit tmp output writes. Keep reviewed C++ and all oracle arithmetic unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json"
+  },
+  "artifactSha256": {
+    "authorArticle": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+    "authorChecker": "37a8f64b343056480ef0879bfae2685887a7926aa7a059e415872a0fa4f8eaf7",
+    "authorSidecar": "1550464c56944d1ed9904e6e4d915b8684889bac67999e5e338ef96813e6b6b7",
+    "publishedArticle": "869ea45db8e12b19f5c2c71f70cf2561936568616cb888b221ae62f300638cec",
+    "publishedChecker": "b8369e64dfbdb1550a3a2eddc0555197427e1e007f6893f4a46ef157358a0036"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewedAt": "2026-10-15",
+      "reviewer": "/root",
+      "techniqueId": "polya-urn-uniform-composition-top-r-sum",
+      "sourceVerification": {
+        "statementFullTextRead": true,
+        "statementPages": [
+          7
+        ],
+        "sketchRelevantFullTextRead": true,
+        "sketchPages": [
+          5,
+          6
+        ],
+        "unofficialDisclaimerRead": true,
+        "officialEditorialVerified": false,
+        "officialDateEvidenceRead": true,
+        "contestDate": "2018-04-19",
+        "difficulty": null,
+        "visualOnlyVerificationClaimed": false,
+        "originalNumericBounds": "N,D1..500,1<=r<=N; absolute or relative error<=1e-6"
+      },
+      "proofReview": [
+        "全員1から個体を一様に増やす終状態は、帰納法で各直前状態の確率pにΣ(g_i-1)/(N+D-1)=D/(N+D-1)を掛けて得られ、各ラベル付き弱合成が等確率。",
+        "n<=rの総和基底は(n+d)C(n+d-1,d)。source sketchのn+dだけという式はn2,d1,r2で3対正しい6となるため、原典掲載の非公式資料全体を公式に検証済みとは扱わない。",
+        "n>rでは全員の基底1がr*Cを寄与し、増加量が正のk人を選ぶC(n,k)通りを分離する。k個の正値から1を引くとS(k,d-k)へ可逆に移り、k<rのゼロ補完・同順位・d0も整合。必ずdが減るのでループ順が正しい。",
+        "非負加算乗算のみの誤差経路はPascal999、基底1001、遷移追加<=500+1+500=1001。d<=500からgamma501501、分母gamma1000と除算uを含め相対<5.59e-11、値<=1000から絶対<5.59e-8。fixed12を含め1e-6以下。",
+        "係数<=2^999、総和と非負部分和<=1000*2^999<2^1009、誤差を含め<2^1010。正の中間値は整数>=1、ゼロは正確。FE_TONEAREST/IEEEbinary64検査は誤差証明の前提と一致。"
+      ],
+      "apiAndResourcesReview": [
+        "配列のa,b,people,extra添字は全て確保範囲内で、Pascal a0ではbループが空。k<=stepsなのでchoose(people,k)も表幅内。N+D<=1000、添字積はint安全。",
+        "原典全域に加えD0/r0を明記。パラメータと丸めモードを早期return前に検査し、全表は呼出しローカル。入力変更や呼出し間保持なし。割当例外は標準規則で伝播。",
+        "writerはclassiclocaleの内部ostringstreamにfixed12で完全行を作り、unformatted writeを使うのでcaller flags/width/fill/precision/localeを保つ。invalidは出力前に拒否し、外部stream部分失敗のロールバックは約束しない。",
+        "総時間O((N+D)(D+1)+N^2D+N)、表spaceO((N+D)(D+1))。N小/D大でも二項表D^2を時間から落とさない。最大payload752001double=6016008bytes、allocator/header/streamは別。ASan harness約1.9GBは厳密oracle込みでAPIのみのメモリではない。"
+      ],
+      "normal": {
+        "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+        "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 2292379,
+        "apiCalls": 759821,
+        "compositionParameterPairs": 104,
+        "allWeakCompositions": 203489,
+        "historyParameterPairs": 50,
+        "ownerHistories": 2821488,
+        "historyTerminalStates": 3002,
+        "exactTailOracleCalls": 3653,
+        "exactTailIntegerTerms": 105439,
+        "randomRankQueries": 2834,
+        "metamorphicChecks": 5488,
+        "boundaryApiCalls": 753001,
+        "invalidCases": 16,
+        "maximumAbsoluteError": 6.544209618652985e-13,
+        "checksum": "7563957929397653268",
+        "seconds": 0.665925714,
+        "peakRSSKiB": 56512,
+        "maximumCases": [
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 1,
+            "answer": 10.300789183514535,
+            "absoluteError": 5.340346220794601e-15
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 2,
+            "answer": 19.15876289085194,
+            "absoluteError": 2.105954299835844e-15
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 3,
+            "answer": 27.295060277324545,
+            "absoluteError": 6.050715484207103e-15
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 17,
+            "answer": 115.32790897148946,
+            "absoluteError": 3.5561831257524545e-14
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 250,
+            "answer": 746.723323770303,
+            "absoluteError": 6.544209618652985e-13
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 499,
+            "answer": 999.0000000000003,
+            "absoluteError": 3.410605131648481e-13
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 500,
+            "answer": 1000,
+            "absoluteError": 0
+          },
+          {
+            "n": 500,
+            "steps": 499,
+            "r": 1,
+            "answer": 10.286651364417166,
+            "absoluteError": 3.4807226545474634e-15
+          },
+          {
+            "n": 499,
+            "steps": 500,
+            "r": 17,
+            "answer": 115.43694309125979,
+            "absoluteError": 5.804384750618397e-14
+          },
+          {
+            "n": 250,
+            "steps": 500,
+            "r": 125,
+            "answer": 583.1016570514605,
+            "absoluteError": 1.554312234475219e-14
+          },
+          {
+            "n": 347,
+            "steps": 431,
+            "r": 109,
+            "answer": 455.42195401891496,
+            "absoluteError": 2.3331336862497665e-13
+          },
+          {
+            "n": 1,
+            "steps": 500,
+            "r": 1,
+            "answer": 501,
+            "absoluteError": 0
+          },
+          {
+            "n": 500,
+            "steps": 1,
+            "r": 499,
+            "answer": 500,
+            "absoluteError": 0
+          }
+        ]
+      },
+      "asanUbsan": {
+        "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+        "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 2292379,
+        "apiCalls": 759821,
+        "compositionParameterPairs": 104,
+        "allWeakCompositions": 203489,
+        "historyParameterPairs": 50,
+        "ownerHistories": 2821488,
+        "historyTerminalStates": 3002,
+        "exactTailOracleCalls": 3653,
+        "exactTailIntegerTerms": 105439,
+        "randomRankQueries": 2834,
+        "metamorphicChecks": 5488,
+        "boundaryApiCalls": 753001,
+        "invalidCases": 16,
+        "maximumAbsoluteError": 6.544209618652985e-13,
+        "checksum": "7563957929397653268",
+        "seconds": 9.388945675,
+        "peakRSSKiB": 1965344,
+        "maximumCases": [
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 1,
+            "answer": 10.300789183514535,
+            "absoluteError": 5.340346220794601e-15
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 2,
+            "answer": 19.15876289085194,
+            "absoluteError": 2.105954299835844e-15
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 3,
+            "answer": 27.295060277324545,
+            "absoluteError": 6.050715484207103e-15
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 17,
+            "answer": 115.32790897148946,
+            "absoluteError": 3.5561831257524545e-14
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 250,
+            "answer": 746.723323770303,
+            "absoluteError": 6.544209618652985e-13
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 499,
+            "answer": 999.0000000000003,
+            "absoluteError": 3.410605131648481e-13
+          },
+          {
+            "n": 500,
+            "steps": 500,
+            "r": 500,
+            "answer": 1000,
+            "absoluteError": 0
+          },
+          {
+            "n": 500,
+            "steps": 499,
+            "r": 1,
+            "answer": 10.286651364417166,
+            "absoluteError": 3.4807226545474634e-15
+          },
+          {
+            "n": 499,
+            "steps": 500,
+            "r": 17,
+            "answer": 115.43694309125979,
+            "absoluteError": 5.804384750618397e-14
+          },
+          {
+            "n": 250,
+            "steps": 500,
+            "r": 125,
+            "answer": 583.1016570514605,
+            "absoluteError": 1.554312234475219e-14
+          },
+          {
+            "n": 347,
+            "steps": 431,
+            "r": 109,
+            "answer": 455.42195401891496,
+            "absoluteError": 2.3331336862497665e-13
+          },
+          {
+            "n": 1,
+            "steps": 500,
+            "r": 1,
+            "answer": 501,
+            "absoluteError": 0
+          },
+          {
+            "n": 500,
+            "steps": 1,
+            "r": 499,
+            "answer": 500,
+            "absoluteError": 0
+          }
+        ]
+      },
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "artifactSha256": {
+        "article": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+        "checker": "37a8f64b343056480ef0879bfae2685887a7926aa7a059e415872a0fa4f8eaf7",
+        "sidecar": "1550464c56944d1ed9904e6e4d915b8684889bac67999e5e338ef96813e6b6b7"
+      },
+      "independentReviewSha256": "47f86ca76aadf343155070630bedf235f2d83319fa2f5d68a398e44d42d75942",
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Replace title with 多く持つ人ほど増えやすい過程で、上位の合計期待値を求める; use natural Japanese 品物/品物の個数 in prose and metadata.",
+        "Standard entryPoints advanced/complexity/reasoning; exact date/source numeric feature fields.",
+        "Normalize only published/checker/probe paths and implicit tmp output writes. Keep reviewed C++ and all oracle arithmetic unchanged."
+      ],
+      "sharedFilesModified": false
+    },
+    "normal": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 2292379,
+      "apiCalls": 759821,
+      "compositionParameterPairs": 104,
+      "allWeakCompositions": 203489,
+      "historyParameterPairs": 50,
+      "ownerHistories": 2821488,
+      "historyTerminalStates": 3002,
+      "exactTailOracleCalls": 3653,
+      "exactTailIntegerTerms": 105439,
+      "randomRankQueries": 2834,
+      "metamorphicChecks": 5488,
+      "boundaryApiCalls": 753001,
+      "invalidCases": 16,
+      "maximumAbsoluteError": 6.544209618652985e-13,
+      "checksum": "7563957929397653268",
+      "seconds": 0.665925714,
+      "peakRSSKiB": 56512,
+      "maximumCases": [
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 1,
+          "answer": 10.300789183514535,
+          "absoluteError": 5.340346220794601e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 2,
+          "answer": 19.15876289085194,
+          "absoluteError": 2.105954299835844e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 3,
+          "answer": 27.295060277324545,
+          "absoluteError": 6.050715484207103e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.32790897148946,
+          "absoluteError": 3.5561831257524545e-14
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 250,
+          "answer": 746.723323770303,
+          "absoluteError": 6.544209618652985e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 499,
+          "answer": 999.0000000000003,
+          "absoluteError": 3.410605131648481e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 500,
+          "answer": 1000,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 499,
+          "r": 1,
+          "answer": 10.286651364417166,
+          "absoluteError": 3.4807226545474634e-15
+        },
+        {
+          "n": 499,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.43694309125979,
+          "absoluteError": 5.804384750618397e-14
+        },
+        {
+          "n": 250,
+          "steps": 500,
+          "r": 125,
+          "answer": 583.1016570514605,
+          "absoluteError": 1.554312234475219e-14
+        },
+        {
+          "n": 347,
+          "steps": 431,
+          "r": 109,
+          "answer": 455.42195401891496,
+          "absoluteError": 2.3331336862497665e-13
+        },
+        {
+          "n": 1,
+          "steps": 500,
+          "r": 1,
+          "answer": 501,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 1,
+          "r": 499,
+          "answer": 500,
+          "absoluteError": 0
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 2292379,
+      "apiCalls": 759821,
+      "compositionParameterPairs": 104,
+      "allWeakCompositions": 203489,
+      "historyParameterPairs": 50,
+      "ownerHistories": 2821488,
+      "historyTerminalStates": 3002,
+      "exactTailOracleCalls": 3653,
+      "exactTailIntegerTerms": 105439,
+      "randomRankQueries": 2834,
+      "metamorphicChecks": 5488,
+      "boundaryApiCalls": 753001,
+      "invalidCases": 16,
+      "maximumAbsoluteError": 6.544209618652985e-13,
+      "checksum": "7563957929397653268",
+      "seconds": 9.388945675,
+      "peakRSSKiB": 1965344,
+      "maximumCases": [
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 1,
+          "answer": 10.300789183514535,
+          "absoluteError": 5.340346220794601e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 2,
+          "answer": 19.15876289085194,
+          "absoluteError": 2.105954299835844e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 3,
+          "answer": 27.295060277324545,
+          "absoluteError": 6.050715484207103e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.32790897148946,
+          "absoluteError": 3.5561831257524545e-14
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 250,
+          "answer": 746.723323770303,
+          "absoluteError": 6.544209618652985e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 499,
+          "answer": 999.0000000000003,
+          "absoluteError": 3.410605131648481e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 500,
+          "answer": 1000,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 499,
+          "r": 1,
+          "answer": 10.286651364417166,
+          "absoluteError": 3.4807226545474634e-15
+        },
+        {
+          "n": 499,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.43694309125979,
+          "absoluteError": 5.804384750618397e-14
+        },
+        {
+          "n": 250,
+          "steps": 500,
+          "r": 125,
+          "answer": 583.1016570514605,
+          "absoluteError": 1.554312234475219e-14
+        },
+        {
+          "n": 347,
+          "steps": 431,
+          "r": 109,
+          "answer": 455.42195401891496,
+          "absoluteError": 2.3331336862497665e-13
+        },
+        {
+          "n": 1,
+          "steps": 500,
+          "r": 1,
+          "answer": 501,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 1,
+          "r": 499,
+          "answer": 500,
+          "absoluteError": 0
+        }
+      ]
+    },
+    "additionalReviewFile": "research/probes/unit-polya-top-sum-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

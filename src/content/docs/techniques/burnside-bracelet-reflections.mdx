@@ -1,0 +1,75 @@
+---
+title: "裏返しも同じ環状配置は、反転軸を奇数長と偶数長で分ける"
+description: "回転の固定配置に、反転で残る一箇所と二箇所の組を加え、全2n操作で平均する。"
+techniqueId: burnside-bracelet-reflections
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+環の回転だけでなく、表裏をひっくり返して重なる配置も同じとしたい。回転同値類の数をそのまま2で割ると、反転しても自分自身に戻る配置を誤って半分にする。
+
+## 考え方
+
+回転が固定する列の総数を $R=\sum_{r=0}^{n-1}m^{\gcd(n,r)}$ とする。反転の固定列数は、軸に乗る一箇所の巡回と、対になる二箇所の巡回の個数で決まる。
+
+$n$ が奇数なら、どの軸も一箇所を固定し、残りを二箇所ずつ交換する。反転は $n$ 個なので、固定列の総数は
+
+$$F=n\,m^{(n+1)/2}.$$
+
+$n$ が偶数なら、二箇所を固定する軸が $n/2$ 個、固定箇所を持たず全てを対にする軸が $n/2$ 個ある。
+
+$$F=\frac n2\left(m^{n/2+1}+m^{n/2}\right).$$
+
+答えは $(R+F)/(2n)$。回転だけの答えも必要なら $R/n$ で同時に求められる。
+
+## 適用条件
+
+色は区別し、使用個数を制限せず、回転と全ての反転を同一視する。反転が禁止される向き付きの部品や、色名の置換まで同一視する問題では操作集合が異なる。
+
+実装は整数の正確な答えを `boost::multiprecision::cpp_int` で返す。中間の $m^n$ も多倍長で計算するので、最終結果が小さくても途中で64ビットがあふれない。実装も長さ50以下に制限する。剰余版に変更する場合、法で $2n$ の逆元があることを別に確認する。$n=1,2$ でも同じ式が使える。
+
+## なぜ正しいか
+
+回転と反転を合わせた $2n$ 操作の作用について、同じ配置へ移る同値類ごとに「固定する操作と配置」の組は $2n$ 個になる。これは回転だけの場合と同じ、同値類の大きさと固定操作数の積による二重計数である。
+
+反転の巡回は長さ1か2だけであり、一つの巡回は一色でなければ固定されない。奇数長では巡回数が $(n+1)/2$、偶数長では $n/2+1$ または $n/2$ なので、上の $F$ が得られる。長さ1や2で異なる操作が同じ位置置換になっても、全操作を重複度込みで平均すれば二重計数は変わらない。
+
+## 計算量
+
+全配置とその代表を列挙すると $O(nm^n)$ 時間。実装は $n$ 回の最大公約数と二乗法を使い、$O(n\log n)$ 回程度の多倍長整数乗算で求める。整数の最大ビット長を $B=O(n\log(m+1))$、$B$ ビット整数乗算の費用を $M(B)$ とすれば $O(n\log n\,M(B))$ 時間、補助空間は $O(B)$ ビット。約数でまとめれば回転部分の項数を減らせる。
+
+## 実装
+
+返り値の一つ目が回転だけの個数、二つ目が回転と反転を同一視した個数。`colors=0` も扱う。
+
+```cpp
+#include <boost/multiprecision/cpp_int.hpp>
+#include <numeric>
+#include <stdexcept>
+#include <utility>
+using boost::multiprecision::cpp_int;
+std::pair<cpp_int,cpp_int> count_necklaces_and_bracelets(int n,int colors) {
+    if(n<1 || n>50 || colors<0) throw std::invalid_argument("range");
+    auto power=[](cpp_int x,int exponent) {
+        cpp_int result=1;
+        for(;exponent;exponent>>=1,x*=x) if(exponent&1) result*=x;
+        return result;
+    };
+    cpp_int rotation=0;
+    for(int r=0;r<n;++r) rotation+=power(cpp_int(colors),std::gcd(n,r));
+    cpp_int reflection;
+    if(n%2) reflection=cpp_int(n)*power(cpp_int(colors),(n+1)/2);
+    else reflection=cpp_int(n/2)*(power(cpp_int(colors),n/2+1)+power(cpp_int(colors),n/2));
+    return {rotation/n,(rotation+reflection)/(cpp_int(2)*n)};
+}
+```
+
+## 関連する手法
+
+[回転で同じ色列を、回転の周期の約数ごとに数える](/flowchartcp/techniques/burnside-necklace-divisors/)
+
+## 参考資料
+
+- [UVa：Arif in Dhaka (First Love Part 2)（原典）](https://onlinejudge.org/external/102/10294.pdf)。
+
+<TechniqueReferences techniqueId="burnside-bracelet-reflections" />

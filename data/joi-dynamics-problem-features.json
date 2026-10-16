@@ -1,0 +1,78 @@
+[
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_joitter2",
+    "title": "ジョイッターで友だちをつくろう (Making Friends on Joitter is Fun)",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/joitter2.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/joitter2-review.pdf",
+    "features": [
+      "有向辺を一日一本ずつ追加し、x→yかつy↔zならx→zを繰り返し追加した閉包の辺数を毎日求める。",
+      "相互辺でつながる集団の併合が連鎖し、閉包は単なる有向到達性ではない。"
+    ],
+    "techniqueIds": [
+      "directed-reciprocal-closure-dsu-small-to-large"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "cutoff": "2026-10-14",
+    "publicationDate": "2020-03-21"
+  },
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_sweeping",
+    "title": "掃除 (Sweeping)",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping-review.pdf",
+    "features": [
+      "三角形領域の点を追加し、水平/垂直の掃除で条件を満たす全点の片座標を境界へ移す。",
+      "点の番号ごとに現在座標を答える。二方向の移動と新点追加が混在し、単純な点ごとのシミュレーションはできない。"
+    ],
+    "techniqueIds": [
+      "interval-stabbing-endpoint-contraction-dsu"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "cutoff": "2026-10-14",
+    "publicationDate": "2020-03-20"
+  },
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_ruins3",
+    "title": "最古の遺跡 3",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/ruins3.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/ruins3-review.pdf",
+    "features": [
+      "1..Nが各2回ある長さ2Nの列について、同じ正の高さでは最後の位置だけを守り、それ以外を一斉に1減らす操作をN回行う。",
+      "操作後に正の高さが残る位置集合を指定し、元の重複順列の個数を法10^9+7で数える。"
+    ],
+    "techniqueIds": [
+      "paired-height-survivors-weighted-dyck-dp"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "cutoff": "2026-10-14",
+    "publicationDate": "2020-03-21"
+  },
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_l",
+    "title": "Visual Python++",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=23",
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=11",
+    "features": [
+      "左上の角の集合と右下の角の集合を一対一で組にし、軸に平行な長方形を復元する。",
+      "どの二長方形も一方が他方に含まれるか互いに離れ、境界は接触・交差しない必要がある。"
+    ],
+    "techniqueIds": [
+      "nested-rectangle-corner-sweep-and-validation"
+    ],
+    "verification": "independent-analysis",
+    "reviewStatus": "verified",
+    "publicationDateStatus": "contest-before-cutoff",
+    "cutoff": "2026-10-14",
+    "publicationYear": 2017
+  }
+]

@@ -1,0 +1,81 @@
+---
+title: "静的な区間の回文判定を、中心の最大半径だけで答える"
+description: "奇数長と偶数長の中心を分け、任意の区間の回文判定を定数時間にします。"
+techniqueId: "palindrome-radius-range"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+文字列が変わらず、様々な区間が回文かどうかを何度も判定する場合。回文を列挙するのではなく、問い合わせられた区間の真偽だけが必要なときに向きます。
+
+## 考え方
+
+奇数長の中心 $i$ について、$s[i-d+1,i+d)$ が回文となる最大の $d$ を $\mathrm{odd}[i]$ とします。偶数長では、$i-1$ と $i$ の間を中心として $s[i-d,i+d)$ が回文となる最大の $d$ を $\mathrm{even}[i]$ とします。
+
+区間 $[l,r)$ の長さを $L$、中心を $c=\lfloor(l+r)/2\rfloor$ とすると、判定は
+
+- $L$ が奇数：$\mathrm{odd}[c]\ge (L+1)/2$。
+- $L$ が偶数：$\mathrm{even}[c]\ge L/2$。
+
+半径は Manacher 法でまとめて計算します。既に分かっている回文の中では、対称な位置の半径を境界まで再利用し、その外側だけ文字比較を行います。
+
+## 適用条件
+
+列が静的であること。1 文字の更新でも多くの中心の半径が変わるため、この前計算を動的な更新にそのまま使うことはできません。
+
+回文かどうかだけを判定する方法です。「同じ内容の回文は一度だけ数える」条件や、区間内の回文の総数は半径 1 本の比較だけでは求まりません。空区間は回文とする実装です。
+
+## なぜ正しいか
+
+区間の回文の中心は、その両端で一意に決まります。ある半径で回文なら、それより短い同じ中心の列も全て回文です。よって最大半径が必要な半径を含むかどうかが、問い合わせへの判定と同値になります。
+
+Manacher 法で対称な位置を使う際、既知の回文の外側に達した部分は推測せず比較します。そのため、既知の範囲の再利用は判定を誤らせません。
+
+## 計算量
+
+$Q$ 区間を直接比較する改善前は最悪 $O(NQ)$。改善後は前計算 $O(N)$、1 回の判定 $O(1)$、合計 $O(N+Q)$。空間 $O(N)$。
+
+## 実装
+
+`odd[i]` は中心を含む側の要素数、`even[i]` は片側の要素数です。この定義を混ぜると 1 のずれが生じます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct PalindromeRanges {
+    int n;
+    vector<int> odd,even;
+    explicit PalindromeRanges(const string& s):n(s.size()),odd(n),even(n) {
+        for(int i=0,l=0,r=-1;i<n;++i) {
+            int k=i>r ? 1 : min(odd[l+r-i],r-i+1);
+            while(i-k>=0 && i+k<n && s[i-k]==s[i+k]) ++k;
+            odd[i]=k;
+            if(i+k-1>r) {l=i-k+1;r=i+k-1;}
+        }
+        for(int i=0,l=0,r=-1;i<n;++i) {
+            int k=i>r ? 0 : min(even[l+r-i+1],r-i+1);
+            while(i-k-1>=0 && i+k<n && s[i-k-1]==s[i+k]) ++k;
+            even[i]=k;
+            if(i+k-1>r) {l=i-k;r=i+k-1;}
+        }
+    }
+    bool is_palindrome(int l,int r) const {
+        assert(0<=l && l<=r && r<=n);
+        int length=r-l;
+        if(length==0) return true;
+        int center=(l+r)/2;
+        return length%2 ? odd[center]>=length/2+1 : even[center]>=length/2;
+    }
+};
+```
+
+## 関連する手法
+
+[回文を中心の半径にまとめ、長さごとの出現数を数える](/flowchartcp/techniques/palindrome-center-contribution/)、[回文木](/flowchartcp/techniques/palindromic-tree/)
+
+## 参考資料
+
+- [Codeforces：Palindromic characteristics の問題文](https://codeforces.com/problemset/problem/835/D)
+- [Library Checker：中心ごとの最長回文の仕様](https://github.com/yosupo06/library-checker-problems/blob/master/string/enumerate_palindromes/task.md)
+
+<TechniqueReferences techniqueId="palindrome-radius-range" />

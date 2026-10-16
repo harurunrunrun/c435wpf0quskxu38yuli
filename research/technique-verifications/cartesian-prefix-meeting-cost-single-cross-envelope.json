@@ -1,0 +1,358 @@
+{
+  "techniqueId": "cartesian-prefix-meeting-cost-single-cross-envelope",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-meetings-article.mdx",
+    "checker": "/tmp/flowchartcp-meetings-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/cartesian-prefix-meeting-cost-single-cross-envelope.mdx",
+    "checker": "scripts/check_cartesian_meeting_cost_cpp.py"
+  },
+  "metadata": {
+    "id": "cartesian-prefix-meeting-cost-single-cross-envelope",
+    "title": "区間内の会場を選び、道中の最大高さの合計を最小にする",
+    "summary": "区間の最大位置で会場の左右を分け、左端から各位置までの最適費用をまとめる。二候補が一度だけ交差する性質と、小さい側の併合で多数の区間質問に答える。",
+    "aliases": [
+      "IOI2018 Meetings cartesian prefix single crossing envelope",
+      "maximum along meeting path interval optimal venue small to large offsets",
+      "区間最大高さ和 会場最小化 接頭辞DP 一交差 包絡 破壊的併合"
+    ],
+    "family": "最大位置で分割する区間最適化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "small-to-large",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/LVA-meetings.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "cartesian-prefix-meeting-cost-single-cross-envelope",
+    "source": "IOI",
+    "problemId": "ioi2018_meetings",
+    "title": "Meetings",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+    "evidence": "固定高さ列の各区間で会場xを選び、参加者iとxを含む区間の最大高さを全員分足す費用を最小化する。最大位置で会場の左右を分けると、Cartesian部分木の接頭辞最適費用を加えた候補へ帰着する。右接頭辞のDPは一本の直線と既存関数の一交差包絡になり、区分一次の断片を破壊的に併合して多くの質問をまとめて答えられる。左右反転では同じ元indexを同高さの第二キーとして使う。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-09-05",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に原典3頁、公式Review4頁、Tomasz Idziaszek公開解答をwebで再読。主催LVA/MAC等の原典翻訳検索本文でN/Q1..750000、H1..1e9、0<=L<=R<N、原典質問対は全て異なることを確認し、通常PDF抽出の欠落式を推測で補わなかった。画像目視とは主張しない。日本委員会公式日別一覧で2018-09-05、公式難度不明はnull。公式Reviewと、2019-12公開/2020-03改訂の後年の著者補足はprovenanceを区別。根会場を含む空子/同高のDP、prefix延長の増分<=根高さから一交差、元index固定tieの左右対応、queryを右子DP生存中に回収する時期を独立証明。global mapのkeyはnode_handleで変更し、出生fragment<=2N、元部分木mass倍増でoffset調整O(NlogN)、削除/境界切詰めの寿命、64bit中間<=3NHmax、反復Cartesian構築/後順をコードへ具体化。実MDX単一可視C++20を抽出し-O2 -Wall -Wextra -Werror、通常とASan/UBSanを実行。3値N1..9と{1,2,7,1e9}N1..7の全51367列/全1766247区間を、全会場・全参加者・経路上全高さを直接走査する独立oracleと比較。N<=7では左右候補も1288632件を別々に直接部分区間最適値と比較し、minで一方向の誤りが隠れないようにした。500乱択列/100000query、反転不変性、原典例、[2,1,2]の5、singleton/empty/duplicate拡張、invalid15呼出し、100回交互再呼出しを確認。最大N=Q=750000を同高/単調増加/減少/交互二値/二進階層/一般乱択/二値乱択7構成で実行し、計5250000queryを閉形式/全会場列挙/独立最長低位run treeで比較。各最大構成はRが異なり、原典の全query対相異なる条件も満たす。最大費用750000000000000を達成。10223222 checks、checksum14312679095217143898。通常3.09288秒/RSS123612KiB、ASan+UBSan14.7036秒/RSS880596KiBで同一件数/checksum成功。LeakSanitizerのみptrace環境のため無効。原典全域の完全batch実装まで検証済み、初回audit/sharedは未変更。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2018_meetings",
+    "title": "Meetings",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+    "techniqueIds": [
+      "cartesian-prefix-meeting-cost-single-cross-envelope"
+    ],
+    "features": [
+      "固定高さ列の各区間で会場を選び、各参加者から会場までの両端を含む最大高さを全員分足した費用を最小にする。",
+      "多数の区間queryを全て先読みできる。高さ同値可、最適会場は質問ごとに変わる。単なる区間最大/全区間最大値和ではない。",
+      "原典N/Q1..750000、H1..1e9、0<=L<=R<N、質問対は全て異なる。掲載APIはQ0/重複queryも許す。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-05",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "notes": "固定高さ列の各区間で会場xを選び、参加者iとxを含む区間の最大高さを全員分足す費用を最小化する。最大位置で会場の左右を分けると、Cartesian部分木の接頭辞最適費用を加えた候補へ帰着する。右接頭辞のDPは一本の直線と既存関数の一交差包絡になり、区分一次の断片を破壊的に併合して多くの質問をまとめて答えられる。左右反転では同じ元indexを同高さの第二キーとして使う。",
+    "discoveredBy": "ioi-2018",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest2/LVA-meetings.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+    "statementPages": 3,
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+    "editorialPages": 4,
+    "officialEditorialProvenance": "当該課題のReviewとして主催者/日本委員会が配布するPDF。",
+    "editorialRetrieved": true,
+    "editorialTextReview": true,
+    "editorialFullFormulaTranscriptionVerified": false,
+    "editorialLimitation": "通常web抽出では数学記号が抜けるため、画像目視/全式転記確認とは主張せず、具体式は後年の著者補足を参照して独立に証明/検証した。",
+    "authorSupplement": {
+      "url": "https://www.algonotes.com/en/solutions-ioi2018/",
+      "author": "Tomasz Idziaszek",
+      "published": "2019-12",
+      "lastRevision": "2020-03",
+      "provenance": "本文末に著者/公開年月/改訂年月、冒頭にInternational Committee of IOIの部分支援を明記する著者解答。競技時の公式Reviewとは別資料。",
+      "usedAsOracle": false
+    },
+    "numericBoundsVerified": true,
+    "numericEvidenceUrl": "https://ioi2018.jp/tasks/contest2/LVA-meetings.pdf",
+    "numericAcquisition": "主催配布翻訳のweb検索本文で実際に確認。画像目視とは主張しない。",
+    "sourceBounds": {
+      "N": "1..750000",
+      "Q": "1..750000",
+      "H": "1..1000000000",
+      "queries": "0<=L<=R<N; all endpoint pairs distinct",
+      "costBound": "<=750000000000000, derived as N*maximumHeight, not an extra printed constraint"
+    },
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "date": "2018-09-05",
+    "day": 2,
+    "exactDateVerified": true,
+    "difficulty": null,
+    "apiContainsEntireSourceRange": true,
+    "unconfirmedIndependentLemmas": []
+  },
+  "api": {
+    "function": "std::vector<long long> minimum_interval_meeting_costs(const std::vector<int>& height,const std::vector<std::pair<int,int>>& intervals)",
+    "bounds": "1<=N<=750000,1<=H[i]<=1e9,0<=Q<=750000,0<=L<=R<N",
+    "returns": "質問順の最小費用、64bit long long",
+    "sourceAdapter": "原典のL/R各添字の二値を閉区間pairへまとめる。返却型は64bit費用vector。",
+    "extensions": [
+      "empty batchQ0 (still validates all heights)",
+      "repeated query pairs (answers in original order)"
+    ],
+    "errors": "invalid_argument for empty/oversized height or oversized query count, height outside1..1e9, interval with invalid/negative endpoints or L>R. Standard allocation exceptions propagate.",
+    "state": "全stateは関数local。入力const参照、部分計算やmap offsetは外に公開しない。再利用/例外後の別呼出しで履歴なし。",
+    "timing": "all queries known before computing destructive prefix DP; not an online append-query API",
+    "integerSafety": [
+      "all public sizes checked before int casts",
+      "segment-tree base<=1048576,2base<=2097152; Cartesian indices<=749999",
+      "cost/gamma/offset/products formed in long long before multiplication",
+      "live cohort offset<=original subtree mass*Hmax by induction",
+      "piece slope0..Hmax, start value=actual start cost−offset",
+      "all cost/normalization/evaluation intermediates absolute<=3*N*Hmax<=2250000000000000",
+      "sentinelLLmax is only minimized against actual values, never added"
+    ],
+    "stackSafety": "Cartesian stack and parent-before-child order are vectors; process reverse order. No recursive Cartesian traversal. std::map internal tree has logarithmic height."
+  },
+  "proof": {
+    "status": "independently-complete",
+    "prefixDP": "S_v(t)=opt(lo[v],t). For t<v keep left function; t=v is fullLeftCost+H_v; t>v is min(F=fullLeftCost+(t−v+1)H_v,G=(v−lo[v]+1)H_v+rightPrefix(t)). Empty-left F represents root venue; otherwise root venue costs>=F.",
+    "singleCross": "Adding one new participant to the previous optimum adds at mostH_v, so rightPrefix(t+1)−rightPrefix(t)<=H_v. Hence F−G is nondecreasing globally, even at piece boundaries. Replace its <=0 prefix byF.",
+    "safeCut": "If F<=G at a piece end, entire piece is removed. In first end withF>G, binary search the first strict-positive difference; keep suffix and update via node_handle extract/key/reinsert.",
+    "queryAggregation": "Use fixed maximum original pair(height,index). Right-of-v candidate is (v−L+1)H_v+opt(v+1,R). [v+1,R] is a prefix of the RIGHT Cartesian child. Attach there and read while that DP is alive. Left candidate from reversed array shares same original peak, so together they cover all venues including root boundary.",
+    "tieWitness": "[2,1,2], interval[0,2] has cost5. Choosing different rightmost maxima independently after reversal gives6; fixed original index in both tree and query avoids this.",
+    "offsetInvariant": "Piece actual value = slope*(position−key)+value+cohortOffset. Normalization adds oldOffset−newOffset to stored value, preserving every position.",
+    "amortization": "Each vertex births at most2 pieces, center andF. Each deleted piece dies once; at most one partial key cut per node. For offset normalization compare ORIGINAL masses leftSubtree+root vs rightSubtree, regardless deleted piece counts. Associate each piece with its birth vertex (center/F both root). A normalized piece moves from smaller birth-containing mass to at least doubled mass, so at mostlogN adjustments per birth.",
+    "space": "Live map pieces partition disjoint nonempty processed frontier intervals, at mostN entries. Node arrays and query lists linear.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "time": "O((N+Q)log(N+1)) total for both orientations",
+    "space": "O(N+Q) including output and input",
+    "pieceBirthsPerDirection": "<=2N",
+    "mapLiveEntries": "<=N",
+    "partialCutsPerNode": "<=1",
+    "RMQStorage": "2B ints, B=nextpow2(N)<2N",
+    "passLogicalStorage": "6N ints for children/bounds/order/heads, N long longs for offsets;2Q ints for next/end,Q long longs for base; <=N map nodes. Public peak/answer/input arrays are additional linear storage.",
+    "nativeMemoryScope": "Recorded RSS is the complete checker, including independent expected values and oracles; map node allocation ABI overhead is not asserted portable."
+  },
+  "flowSuggestion": {
+    "entryGraphId": "ranges",
+    "existingChoices": [
+      "aggregate-goals",
+      "static",
+      "aggregate-forms"
+    ],
+    "parentGraphId": "range-static-aggregate-forms",
+    "parentNodeId": "kind",
+    "newAnswerId": "meeting-max-cost",
+    "newAnswerLabel": "会場までの最大高さの費用を最小にする",
+    "guardGraphId": "cartesian-meeting-cost-conditions",
+    "canonicalChoices": [
+      "aggregate-goals",
+      "static",
+      "aggregate-forms",
+      "meeting-max-cost",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "fixed-range-max-cost",
+        "question": "固定の高さ列で、参加者と会場を含む区間の最大高さが一人の費用ですか？"
+      },
+      {
+        "id": "choose-site",
+        "question": "質問区間の中で会場を自由に選び、全員の費用の最小値を求めますか？"
+      },
+      {
+        "id": "bounds",
+        "question": "全質問を先読みでき、N/Q75万以内・高さ1..10億・有効な閉区間ですか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "cartesian-prefix-meeting-cost-single-cross-envelope"
+    ],
+    "preserveExisting": "元の選択肢/旧walkを維持。共有flow/ledger/audit統合はrootが行う。"
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-meetings-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-meetings-checker.py --sanitize",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "checks": 10223222,
+    "smallArrays": 51367,
+    "smallArrayScope": [
+      "all values1,2,3 for every N1..9",
+      "all values1,2,7,1000000000 for every N1..7"
+    ],
+    "allSmallIntervals": 1766247,
+    "separatelyCheckedOrientedCandidates": 1288632,
+    "smallOracle": "Try every meeting site, every participant, every index between them and take literal maximum, then sum and minimize. No Cartesian/DP/envelope. A separate running-max expansion enumerating every site/participant is crosschecked on every small interval.",
+    "orientedOracle": "N<=7 use direct whole-table optimum for the right/left subinterval and fixed peak by literal scan. Compare each directional candidate separately, preventing min from masking a bad direction.",
+    "randomArrays": 500,
+    "randomQueries": 100000,
+    "randomOracle": "Enumerate every site and participant, taking direct running maxima outward from each site; reflected input/queries must give same answers.",
+    "maximumCases": 7,
+    "maximumQueries": 5250000,
+    "maximumN": 750000,
+    "maximumQPerCase": 750000,
+    "maximumCostAttained": 750000000000000,
+    "maximumOriginalDistinctQueryPairs": true,
+    "maximumCaseDescriptions": [
+      "all height1e9, prefix queries; cost1e9*length reaches7.5e14",
+      "strictly increasing; every answer is sum of heights, deepest Cartesian chain",
+      "strictly decreasing near1e9; answer sum, opposite deepest chain",
+      "alternating1/1e9; cost1e9*length−999999999 iff interval contains a1",
+      "binary hierarchical heights1+countr_zero(i+1); balanced mass merging, intervals length<=17 with full site oracle",
+      "arbitrary random heights; intervals length<=17 with full site oracle",
+      "random heights1/1e9 and long random intervals; independent longest1-run segment-tree oracle computes b*length−(b−1)*bestRun"
+    ],
+    "invalidCalls": 15,
+    "otherCases": [
+      "fixed original tie witness[2,1,2]->5",
+      "published example10/12",
+      "singleton height1e9; Q0 and duplicate queries",
+      "empty/750001 height/Q input; H INT_MIN/-1/0/1e9+1/INT_MAX even for empty queries",
+      "negative/range/reversed/INT_MIN/MAX endpoints",
+      "100 interleaved fresh calls, valid call after exceptions"
+    ],
+    "checksum": "14312679095217143898",
+    "normalSeconds": 3.09288,
+    "normalPeakRSSKiB": 123612,
+    "asanUbsan": {
+      "passed": true,
+      "checks": 10223222,
+      "checksum": "14312679095217143898",
+      "seconds": 14.7036,
+      "peakRSSKiB": 880596,
+      "leakSanitizer": false,
+      "note": "Only LeakSanitizer disabled for ptrace environment."
+    },
+    "fullReusableCppValidated": true,
+    "sharedFilesModified": false,
+    "initialAuditSnapshotModified": false,
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "自然な日本語8節・単一の常時表示完全C++20。問題個別解説ページを作らず技巧へ集中。",
+    "調査経緯/検査件数/実測はsidecarへ分離。",
+    "初回研究probeの明示配列DPを完成実装とは扱わず、今回の圧縮map/C++/原典最大N/Q検証を別に記録する。",
+    "生存fragment数を償却の尺度にせず元massを用い、map keyをconst_castで変更しない。",
+    "metadata.sourcesの全URLを本文参考資料へ掲載。初回audit/snapshot/sharedは変更しない。"
+  ],
+  "artifactSha256": {
+    "article": "448064230077f318bab1e4b74473139f509294c57e5f3ef4162b27e0e9ac371f",
+    "checker": "f14460f2027511e0e23ace3848d1d9f725bd17db93fc675f580f264432c141dc",
+    "publishedArticle": "122e845b0ca4fa9350d1bbf0f8378244aba80f60a2cb51f9f5203397163a41d1"
+  },
+  "cppSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/cartesian-prefix-meeting-cost-single-cross-envelope.mdx",
+    "checker": "scripts/check_cartesian_meeting_cost_cpp.py",
+    "metadataGroup": "dp-patterns",
+    "entryGraphId": "ranges",
+    "choices": [
+      "aggregate-goals",
+      "meeting-costs",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normal": {
+      "checks": 10223222,
+      "smallArrays": 51367,
+      "smallQueries": 1766247,
+      "orientedQueries": 1288632,
+      "randomArrays": 500,
+      "randomQueries": 100000,
+      "maximumCases": 7,
+      "maximumQueries": 5250000,
+      "maximumCost": 750000000000000,
+      "invalidCalls": 15,
+      "checksum": "14312679095217143898",
+      "seconds": 3.18094,
+      "peakRSSKiB": 123584,
+      "cppSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 10223222,
+      "smallArrays": 51367,
+      "smallQueries": 1766247,
+      "orientedQueries": 1288632,
+      "randomArrays": 500,
+      "randomQueries": 100000,
+      "maximumCases": 7,
+      "maximumQueries": 5250000,
+      "maximumCost": 750000000000000,
+      "invalidCalls": 15,
+      "checksum": "14312679095217143898",
+      "seconds": 14.6893,
+      "peakRSSKiB": 880624,
+      "cppSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+      "sanitized": true
+    },
+    "primaryScopeAndProofReviewed": true,
+    "additionalReviewFile": "research/probes/cartesian-meeting-cost-independent-review.json",
+    "notes": "公式原典3頁/Review4頁の欠落式は画像確認扱いにせず、主催翻訳の数値と後年の著者補足のprovenanceを区別して独立証明。全本文とAPI/全償却を精読し、掲載コードSHA・全件数・checksumを通常/ASanで再現。"
+  }
+}

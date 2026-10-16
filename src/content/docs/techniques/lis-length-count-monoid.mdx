@@ -1,0 +1,114 @@
+---
+title: "最長増加部分列の個数は、最大の長さと同率の個数を一緒にまとめる"
+description: "遷移元の長さが違えば長い方を選び、同じなら個数を足す集約を作り、値が小さい範囲からLISの長さと個数を求めます。"
+techniqueId: lis-length-count-monoid
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+最長増加部分列（LIS）の長さと、その長さを実現する位置の選び方の個数を求める場面です。長さごとの最小の末尾を残す通常の方法では、同じ長さを実現する別の選び方を捨てるため、そのままでは個数を求められません。
+
+例えば `[1, 2, 2, 3]` には長さ3のLISが2通りあります。値の並びは同じでも、二つの `2` のうちどの位置を選ぶかが違います。
+
+## 考え方
+
+各位置 $i$ に対して、$A_i$ で終わる増加部分列の最長の長さ $d_i$ と、その長さの列の個数 $c_i$ を求めます。遷移元は $j<i$ かつ $A_j<A_i$ を満たす位置です。
+
+遷移元の集まりを、組 $(d,c)$ でまとめます。二つの集まりを統合するときは、次のようにします。
+
+- 長さが異なるなら、長い方の組だけを残す。
+- 長さが同じなら、長さはそのままで個数を足す。
+
+この集約は結合的です。値を座標圧縮し、Fenwick木の各区間にこの組を持たせます。左から位置を処理し、自分の値より小さい範囲の組 $(d,c)$ を取得して、現在の位置の組 $(d+1,c)$ を追加します。
+
+遷移元が一つもなければ、現在の位置だけを選ぶ1通りを作ります。問い合わせ用の単位元は $(0,0)$ とし、問い合わせ結果の長さが0だったときだけ、個数を1にします。単位元を $(0,1)$ にすると、Fenwick木の複数の区間をまとめたときに、空の列を何度も足してしまいます。
+
+## 適用条件
+
+元の添字の順を保ち、値が厳密に増加する列を扱います。問い合わせは自分と同じ値を含めません。同じ値の位置を続けて処理しても、それらが互いの遷移元になることはありません。
+
+添字の選び方が違う列を別々に数えます。値の列が異なるものだけを重複なく数えたい場合は、同じ値で終わる状態間の重複を別途処理する必要があります。
+
+以下の実装は、指定した正の整数 `mod` で割った余りを返します。法が素数である必要はありません。個数の余りが0になっても、その長さの列が存在しないという意味ではないので、存在判定は長さで行います。空列の答えは「長さ0の空の部分列が1通り」と定めます。
+
+## なぜ正しいか
+
+位置 $i$ で終わる長さ2以上の増加部分列は、最後から二つ目の位置 $j$ を一意に持ちます。この $j$ は $j<i$ かつ $A_j<A_i$ を満たします。逆に、そのような $j$ で終わる増加部分列に位置 $i$ を足すと、有効な増加部分列になります。
+
+最長の長さを得るには、遷移元の長さが最大のものだけを使えば十分です。同率の遷移元については、最後から二つ目の位置が異なるので、選び方の集まりは重なりません。その個数を足してよいことが分かります。遷移元がなければ、位置 $i$ のみを選ぶ列が唯一の候補です。
+
+集約は、集まりの中の最大の長さと、その長さを持つ列の個数だけを保持しています。どの順に集まりを統合してもこの情報は同じなので結合的であり、単位元は空の集まりを表す $(0,0)$ です。Fenwick木の問い合わせでは重ならない区間を統合するため、保存のために同じ組が複数の内部節点に置かれても、個数を重複して数えません。
+
+左から処理すると問い合わせに含まれるのは既に処理した添字だけであり、厳密な値の境界も守られます。最後に全ての終点を集約すれば、全体のLIS長とその個数が得られます。
+
+## 計算量
+
+座標圧縮を含めて時間 $O(N\log(N+1))$、追加空間 $O(N)$ です。個数の加算と剰余を定数時間として扱います。
+
+## 実装
+
+`count_lis_mod(a, mod)` は `length` と、個数の余り `count` を返します。`mod` は正の符号付き64ビット整数で、`1` も指定できます。個数の加算には `__int128` を使い、法が大きい場合の途中のオーバーフローを防ぎます。要素数は `int` に収まる範囲とします。
+
+LeetCode 673のように、答えが符号付き32ビット整数に収まる保証がある場合は、`mod = 1LL << 32` とすれば返る個数がそのまま正確な値になります。一般に、答えの上限が法より小さいと保証できないときは余りしか得られません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct LisLengthCount {
+    int length;
+    long long count;
+};
+
+LisLengthCount count_lis_mod(const vector<long long>& a, long long mod) {
+    assert(mod >= 1);
+    assert(a.size() <= static_cast<size_t>(INT_MAX));
+    if (a.empty()) return {0, 1 % mod};
+
+    vector<long long> values = a;
+    sort(values.begin(), values.end());
+    values.erase(unique(values.begin(), values.end()), values.end());
+    int m = static_cast<int>(values.size());
+    auto combine = [mod](LisLengthCount x, LisLengthCount y) {
+        if (x.length != y.length) return x.length > y.length ? x : y;
+        return LisLengthCount{
+            x.length,
+            static_cast<long long>((static_cast<__int128>(x.count) + y.count) % mod)
+        };
+    };
+    vector<LisLengthCount> tree(static_cast<size_t>(m) + 1, {0, 0});
+    auto query = [&](int end) { // 圧縮後の順位 [0, end) を集約。
+        LisLengthCount answer{0, 0};
+        for (size_t p = end; p > 0; p -= p & -p)
+            answer = combine(answer, tree[p]);
+        return answer;
+    };
+
+    for (long long value : a) {
+        int rank = lower_bound(values.begin(), values.end(), value) - values.begin();
+        LisLengthCount best = query(rank);
+        if (best.length == 0) best.count = 1 % mod;
+        LisLengthCount current{best.length + 1, best.count};
+        for (size_t p = static_cast<size_t>(rank) + 1;
+             p < tree.size(); p += p & -p)
+            tree[p] = combine(tree[p], current);
+    }
+    return query(m);
+}
+```
+
+## 関連する手法
+
+- [同じ長さの増加部分列は末尾が小さい状態だけ残す](/flowchartcp/techniques/dp-state-dominance/)
+- [最長増加部分列に使える位置と必須の位置は、前後の長さと同じ段の候補数で分ける](/flowchartcp/techniques/lis-through-each-position/)
+- [Fenwick木](/flowchartcp/techniques/fenwick-tree/)
+- [同じ部分列を重複して数えるときは直前の出現を使う](/flowchartcp/techniques/dp-last-occurrence/)
+
+## 参考資料
+
+- [LeetCode 673：Number of Longest Increasing Subsequence](https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/) — 狭義増加のLISの個数を求める原典。同じ値の異なる位置を別々に数える例と、答えが32ビット整数に収まる保証を確認できます。
+- [Codeforces Round 277：公式解説の486E](https://codeforces.com/blog/entry/14678) — 各位置のLIS長とその個数をFenwick木やセグメント木で計算する考え方。
+
+<TechniqueReferences techniqueId="lis-length-count-monoid" />

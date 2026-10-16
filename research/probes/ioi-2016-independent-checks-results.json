@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "scope": "independent IOI2016 initial fixed-corpus audit review; no production solver validation",
+  "preservation": {
+    "allArtifactHashes": 23,
+    "rawFiles": 1431,
+    "coreFiles": 959,
+    "publicSameEpoch": 472,
+    "vendorLaterEpoch": 105,
+    "oldAudits": 9,
+    "nearestMdxAndCpp": 19,
+    "initialMetadata": 504,
+    "initialWalks": 525,
+    "initialGraphs": 471,
+    "initialResearch": 6,
+    "initialProductionApi": 0,
+    "initialCoverage": 0,
+    "rawLedgerSha256": "dd7151810d712521a5f3f19c206eecb7630c3b9688575c6243dee4b170992a56",
+    "initialRecordsProjectionSha256": "1fd300bf660b59cfe36cf0a9a16c41a83ed05a399e799801fce12a1e6e3f6584",
+    "initialStatusSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialSelectionSha256": "203a4b9f29e2711a5c680ee99496647b0066fec106c3d2393be318c498561c7e",
+    "initialSnapshotSha256": "e8a57e1f82671067c45c714f870c7d4f9e652a885ce79fb258c0c23987ff59ce"
+  },
+  "rawRoutes": {
+    "entryRoots": [
+      "ranges",
+      "dp",
+      "graphs",
+      "flow-matching",
+      "strings",
+      "math",
+      "geometry",
+      "game-probability",
+      "thinking",
+      "heuristic",
+      "condition-check",
+      "set-operations",
+      "interactive-oracles",
+      "grid-arrangements",
+      "fixed-output"
+    ],
+    "canonicalRoutes": 6,
+    "fullQuestionAndAnswerLabels": 8,
+    "existingWalks": 525,
+    "existingWalkSteps": 2781,
+    "genericInteractiveReachedButUncovered": true
+  },
+  "additionalMath": {
+    "railroadHeldKarpCasesN2to12": 220,
+    "railroadPositiveAffineCases": 120,
+    "shortcutArbitraryRotatedRectangleEndpointCases": 209916,
+    "aliensAbstractIntervalSets": 260,
+    "aliensDirectMongeChecks": 17987,
+    "aliensConstructivePathPairExchanges": 44799,
+    "productionApiValidated": false,
+    "sanitizerRun": false
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "elapsedSeconds": 0.8627992759866174
+}

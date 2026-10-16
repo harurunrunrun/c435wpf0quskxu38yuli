@@ -1,0 +1,64 @@
+---
+title: "交換法"
+description: "最適解の選択を取り替えても悪化しないことを示し、貪欲法を証明する。"
+techniqueId: exchange-argument
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+最適解の選択を取り替えても悪化しないことを示し、貪欲法を証明する。
+
+## 使う場面
+
+小さい順、終了時刻の早い順などの貪欲法を思い付いたが、なぜ最適なのか説明したいときに使う。任意の最適解を、貪欲法と同じ選択へ変形できるかを調べる。
+
+## 考え方
+
+最適解を一つ取り、貪欲法と最初に違う選択を見つける。そこを貪欲法の選択に置き換えても、制約を満たし、目的値が悪化しないことを示す。同じ交換を繰り返せば、貪欲法と一致する最適解を得られる。
+
+重ならない区間をできるだけ多く選ぶ例では、最初の区間を最も早く終わる区間に取り替える。終了時刻が早まるので、後続の区間を選ぶ余地は減らない。
+
+## 適用条件
+
+交換後も合法であることと、目的値が悪化しないことの両方が必要になる。選択の数は保てても、重みの合計が減るなら最大利益の証明には使えない。
+
+区間ごとに利益が異なる場合は、終了時刻だけで選ぶ貪欲法では解けないことがある。
+
+## なぜ正しいか
+
+区間の例では、最適解の最初の区間を、より早く終わる貪欲法の区間に置き換えても、後続の区間はすべて選べる。選んだ区間数は変わらない。共通となった最初の区間を除いて同じ議論を繰り返すと、貪欲法で得られる解も最適になる。
+
+## 計算量
+
+区間を終了時刻でソートする時間は $O(N\log N)$、選ぶ走査は $O(N)$。以下の実装は入力をコピーするため、空間は $O(N)$。交換法自体の計算量は、証明するアルゴリズムによって変わる。
+
+## 実装
+
+`maximum_nonoverlapping` は、重ならない区間を選べる最大個数を返す。区間は左端を含み右端を含まないものとし、各区間の左端は右端より小さい。前の区間の右端と次の左端が等しければ、両方を選べる。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <utility>
+#include <vector>
+int maximum_nonoverlapping(std::vector<std::pair<long long, long long>> intervals) {
+    std::sort(intervals.begin(), intervals.end(), [](auto a, auto b) {
+        return a.second != b.second ? a.second < b.second : a.first < b.first;
+    });
+    long long end = std::numeric_limits<long long>::lowest();
+    int count = 0;
+    for (auto [left, right] : intervals) if (left >= end) {
+        ++count; end = right;
+    }
+    return count;
+}
+```
+
+## 関連する手法
+
+[反例探し](../counterexample/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC358 D](https://atcoder.jp/contests/abc358/editorial/10276)
+
+<TechniqueReferences techniqueId="exchange-argument" />

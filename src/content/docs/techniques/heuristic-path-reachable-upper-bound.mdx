@@ -1,0 +1,59 @@
+---
+title: "経路の続きの上界は、到達できる未使用タイルごとの最大得点を足す"
+description: "タイルの使用制限を緩めた到達性から、安全に枝を捨てられる得点上界を作ります。"
+techniqueId: "heuristic-path-reachable-upper-bound"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+タイルを一度だけ使う経路の先頭が決まり、続きを探索するとき。残り全部の得点を足すだけの上界では、先頭が遮断して到達できない領域まで含めてしまいます。
+
+## 考え方
+
+現在の末尾から、使用済みタイルへ入れない条件だけを保って到達性を調べます。この到達性検査では、未使用タイルを繰り返し踏むことは許して制約を緩めます。
+到達できた未使用タイル $t$ ごとに、そのタイル内の到達マスの最大得点 $m_t$ を求めます。続きの得点は $\sum_t\max(0,m_t)$ 以下です。これを先頭の得点へ足し、既知の最良得点以下なら、その先頭からの探索を捨てられます。
+
+## 適用条件
+
+マス得点が加算され、同じタイルを高々一度しか選べないこと。末尾のマスだけは探索の始点として許し、同じ使用済みタイルの別マスは通れません。掲載関数は使用済みフラグが先頭経路と一致している前提です。辺や位置に別の報酬がある場合は、その分も上界へ含める必要があります。
+
+## なぜ正しいか
+
+合法な続きは必ず、制約を緩めた到達領域に含まれます。一タイルから取れる得点は高々一マス分なので、そのタイルの到達マスの最大値以下です。選ばない選択も許すため負の値は0へ丸めます。上界が最良値以下なら改善できないことは証明できますが、上界に到達する経路の存在は保証しません。
+
+## 計算量
+
+一度の上界計算は時間・空間 $O(HW)$。全タイルの和より絞った上界になりますが、毎探索節点での走査が重い場合は候補を絞った後だけ計算します。上界の計算量は探索全体の指数的な最悪時間を消すものではありません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 reachable_tile_upper_bound(int h,int w,const vector<int>& tile,const vector<long long>& point,const vector<char>& used,int endpoint){
+    assert(h>=1 && w>=1 && (int)tile.size()==h*w && point.size()==tile.size() && 0<=endpoint && endpoint<h*w);
+    for(int id:tile){assert(0<=id && id<(int)used.size());}
+    assert(used[tile[endpoint]]);
+    vector<char> seen(h*w);vector<long long> best(used.size());queue<int> q;q.push(endpoint);seen[endpoint]=1;
+    while(!q.empty()){int v=q.front();q.pop();
+        if(!used[tile[v]])best[tile[v]]=max(best[tile[v]],point[v]);
+        int y=v/w,x=v%w;
+        for(auto [dy,dx]:vector<pair<int,int>>{{1,0},{-1,0},{0,1},{0,-1}}){int ny=y+dy,nx=x+dx;
+            if(ny<0 || ny>=h || nx<0 || nx>=w)continue;
+            int u=ny*w+nx;
+            if(!seen[u] && !used[tile[u]]){seen[u]=1;q.push(u);}}
+    }
+    __int128 answer=0;for(long long x:best)answer+=x;return answer;
+}
+```
+
+## 関連する手法
+
+[タイルを一度だけ使う経路は、末尾だけ外して再構築し、失敗したら戻す](/flowchartcp/techniques/heuristic-path-tail-rollback/)、[幅優先探索](/flowchartcp/techniques/bfs/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc002/tasks/ahc002_a)
+
+<TechniqueReferences techniqueId="heuristic-path-reachable-upper-bound" />

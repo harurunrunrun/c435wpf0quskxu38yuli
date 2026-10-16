@@ -1,0 +1,73 @@
+---
+title: "行列累乗"
+description: "同じ線形遷移を繰り返す計算を、行列の二分累乗でまとめます。"
+techniqueId: matrix-exponentiation
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+同じ線形遷移を繰り返す計算を、行列の二分累乗でまとめます。
+
+別名：Matrix Exponentiation / Matrix Power
+
+## 使う場面
+
+有限個の状態の個数を毎回同じ式で更新する場合や、グラフ上の長さ $K$ の歩道の数を求める場合に使います。次の状態が現在の状態の線形結合になっていて、反復回数が大きいときに有効です。
+
+## 考え方
+
+状態を列ベクトル $v$ とし、遷移先 `to`、遷移元 `from` に対する係数を $T[\mathrm{to}][\mathrm{from}]$ に置きます。1回の遷移は $Tv$、$K$ 回後は $T^K v$ です。
+
+単位行列から始め、指数のビットに応じて積を掛けながら、行列を二乗していきます。定数項を持つ式でも、常に1の状態を加えれば行列で表せます。
+
+## 適用条件
+
+遷移行列が各時刻で同じことが前提です。時刻に依存する場合は、周期ごとの積などを別に考えます。行列の向きと状態ベクトルの向きもそろえてください。
+
+隣接行列の累乗で数える歩道は、同じ頂点や辺を繰り返し通れます。単純パスの数ではありません。最小値と和による行列積へ変更すると、辺数を固定した最短距離にも使えますが、無限大の扱いも変更する必要があります。
+
+## なぜ正しいか
+
+行列積の各成分は、中間の状態を固定して、前半の遷移と後半の遷移の寄与を足したものです。そのため、行列の積は連続した遷移の合成に一致します。
+
+行列積の結合法則によって、2回、4回、8回分の遷移をまとめても結果は変わりません。指数のビットで必要な回数分を組み合わせると、ちょうど $K$ 回の遷移になります。
+
+## 計算量
+
+状態数を $D$ とすると、通常の密行列の二分累乗は $O(D^3\log K)$ 時間、$O(D^2)$ 空間です。結果を初期ベクトルへ掛ける処理は $O(D^2)$ です。一歩の行列が疎でも、二乗するうちに密になる場合があります。
+
+## 実装
+
+`matrix_power` は正方行列の累乗を、正の整数 `mod` の下で返します。指数0では単位行列になります。積を128ビットに広げるため、正の `long long` の法も扱えます。
+
+`multiply` を直接使う場合は、同じサイズの正方行列を渡し、各要素を0以上 `mod` 未満にします。以下は通常の加算・乗算による行列積です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std; using Matrix=vector<vector<long long>>;
+Matrix multiply(const Matrix& a,const Matrix& b,long long mod) {
+    int n=a.size(); Matrix c(n,vector<long long>(n));
+    for(int i=0;i<n;++i) for(int k=0;k<n;++k) if(a[i][k])
+        for(int j=0;j<n;++j) c[i][j]=(__int128(c[i][j])+__int128(a[i][k])*b[k][j])%mod;
+    return c;
+}
+Matrix matrix_power(Matrix a,uint64_t exponent,long long mod) {
+    assert(mod>0); int n=a.size(); Matrix r(n,vector<long long>(n));
+    for(int i=0;i<n;++i) {
+        assert(int(a[i].size())==n); r[i][i]=1%mod;
+        for(long long& x:a[i]) { x%=mod; if(x<0) x+=mod; }
+    }
+    for(;exponent;exponent>>=1,a=multiply(a,a,mod))
+        if(exponent&1) r=multiply(r,a,mod);
+    return r;
+}
+```
+
+## 関連する手法
+
+[ダブリング](/flowchartcp/techniques/doubling/) ・ [状態の設計](/flowchartcp/techniques/state-design/) ・ [線形漸化式の高速計算](/flowchartcp/techniques/linear-recurrence/)
+
+## 参考資料
+
+- [cp-algorithms: Binary Exponentiationと行列による遷移](https://cp-algorithms.com/algebra/binary-exp.html)
+
+<TechniqueReferences techniqueId="matrix-exponentiation" />

@@ -1,0 +1,62 @@
+---
+title: "長方形への加算を四隅に記録する"
+description: "二次元の差分配列を使い、長方形の面積に比例する更新を省く。"
+techniqueId: difference-2d-corners
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+二次元の差分配列を使い、長方形の面積に比例する更新を省く。
+
+## 使う場面
+
+高さ $H$、幅 $W$ の整数格子に、多くの長方形への加算を行い、最後の各マスの値を求める。長方形ごとに全マスを塗ると、面積の大きい更新で時間がかかる。
+
+## 考え方
+
+長方形を $[y_1,y_2)\times[x_1,x_2)$ とする。差分配列の左上と右下に $+v$、右上と左下に $-v$ を記録する。すべての更新後、横方向と縦方向の累積和を取る。
+
+重なった長方形の数なら $v=1$ とする。座標圧縮する場合、各マスは幅と高さを持つ区間になるため、面積は元座標の差を掛けて集計する。
+
+## 適用条件
+
+全更新の後の結果が必要な場合に使う。途中の長方形和が必要なら、そのためのデータ構造を別に用意する。区間への代入は、更新順を捨てられないため、この加算だけの方法では扱えない。
+
+## なぜ正しいか
+
+四隅の更新を横に累積すると、上下二つの境界で区間への加算と減算になる。それを縦に累積すると、上端から下端までだけ値が残る。複数の更新は加算として重ねられる。
+
+## 計算量
+
+各長方形の全マスを更新すると最悪 $O(QHW)$。四隅の記録は1件 $O(1)$ で、復元まで時間 $O(Q+HW)$、空間 $O(HW)$。
+
+## 実装
+
+`rectangle_additions` は0の格子に加算した後の配列を返す。`RectAdd` の境界は右端・下端を含まない。差分と復元途中の値が符号付き64ビット整数に収まる必要がある。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct RectAdd { int y1,x1,y2,x2;long long value; };
+std::vector<std::vector<long long>> rectangle_additions(int h,int w,const std::vector<RectAdd>& updates) {
+    std::vector d(h+1,std::vector<long long>(w+1));
+    for(auto [y1,x1,y2,x2,v]:updates) {
+        assert(0<=y1 && y1<=y2 && y2<=h);
+        assert(0<=x1 && x1<=x2 && x2<=w);
+        d[y1][x1]+=v;d[y1][x2]-=v;d[y2][x1]-=v;d[y2][x2]+=v;
+    }
+    for(int y=0;y<=h;++y) for(int x=1;x<=w;++x) d[y][x]+=d[y][x-1];
+    for(int y=1;y<=h;++y) for(int x=0;x<=w;++x) d[y][x]+=d[y-1][x];
+    d.resize(h);for(auto& row:d) row.resize(w);
+    return d;
+}
+```
+
+## 関連する手法
+
+[いもす法](/flowchartcp/techniques/difference-array/)
+
+## 参考資料
+
+- [E869120氏の想定解：競プロ典型90問 028](https://github.com/E869120/kyopro_educational_90/blob/main/sol/028.cpp)
+
+<TechniqueReferences techniqueId="difference-2d-corners" />

@@ -1,0 +1,603 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2017",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "status": "passed-with-explicit-two-unconfirmed-tasks",
+  "materialIssues": [],
+  "changesRequested": [],
+  "scope": {
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "initialAuditOnly": true,
+    "productionApiValidated": false,
+    "fullArticleCoverageConfirmed": false,
+    "allSixFinalRowsRead": true,
+    "allNotesRead": true,
+    "allAuthorResearchCodeRead": true,
+    "allThirteenRelatedArticlesAndCodeRead": true,
+    "finalSidecarAndProposalRead": true
+  },
+  "artifacts": {
+    "audit.json": {
+      "path": "/tmp/flowchartcp-ioi2017-audit.json",
+      "sha256": "112606343ee4912aac10132d0a0e0aea1c062635aa6642acb14a03396379f78e"
+    },
+    "audit-notes.md": {
+      "path": "/tmp/flowchartcp-ioi2017-audit-notes.md",
+      "sha256": "096921befd3eec4a6e0c5751efe2e35037c32d6be86ed7b590ac034aa92e99a6"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2017-sidecar.json",
+      "sha256": "0cb3b1b90899da4c7ce7c6507f36c4e317c5d700b200776a4bf096ef8de05c2d"
+    },
+    "probe.py": {
+      "path": "/tmp/flowchartcp-ioi2017-probe.py",
+      "sha256": "18a76ae16bc2ab3ca68dfa3e74672acb57099a9ad6dbb78679735e387a906993"
+    },
+    "probe.json": {
+      "path": "/tmp/flowchartcp-ioi2017-probe.json",
+      "sha256": "0dd485bd81d30093e810a17dc582fec023eed2b537ca21716b39db4fe26ed41a"
+    },
+    "registration-proposal.json": {
+      "path": "/tmp/flowchartcp-ioi2017-registration-proposal.json",
+      "sha256": "d2299b272c6cbc6d2ca1ce7e8ace7b1b7e6719f71a665fcdf6081e619d519336"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-probe.py",
+      "sha256": "20980f376d48553cb69b5201cf9b790cbfc6d84cba87751f69995ce7a468add5"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-probe.json",
+      "sha256": "1b4059c56389c62f38f798d12890f9dc63db96421ebfd498518c15fe929f2072"
+    },
+    "independent-author-rerun.json": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-author-rerun.json",
+      "sha256": "7c4393c6b36daa790c42617eb78eaf7c297f15945e2ae1b06002bc841644a420"
+    },
+    "independent-helper.json": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-helper.json",
+      "sha256": "b8ccbd6e5c5b76caa904eb1c650bfefc17f29ef994ffd4596951e5a2f81d8975"
+    },
+    "independent-final-checks.py": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-final-checks.py",
+      "sha256": "d6ac6229fcc408fb0bad6be7c2ed9e02fc1500dc7786d5b4ce73c10203d4e686"
+    },
+    "independent-final-checks.json": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-final-checks.json",
+      "sha256": "9f5eadc03c381d816ae0c478aa6815ba8187b037a2b16cb7c5c2dd6aed19e27d"
+    }
+  },
+  "initialCounts": {
+    "articles": 498,
+    "specificTechniques": 420,
+    "graphs": 465,
+    "walks": 519,
+    "references": 519,
+    "entryRoots": 15
+  },
+  "frozenEvidenceReview": {
+    "coreRawFiles": 921,
+    "laterExtension": {
+      "count": 571,
+      "vendorCompilerFiles": 105,
+      "publicFiles": 466,
+      "separateAcquisitionEpoch": true,
+      "notUsedAsInitialDiagramEvidence": true
+    },
+    "totalActualRawFilesIndependentlyHashed": 1492,
+    "eachEpochBeforeEqualsAfter": true,
+    "originalCoreSubsetBytesUnchanged": true,
+    "coreHashJsonRawSha256": "789b309f54c5459b6a03942b09f77d3727ecd823eca263e53c8eaf6164314814",
+    "coreLedgerSha256": "718d89756d8413a1836046b321415fa220edb68718173fb5797039574fa7e71e",
+    "extendedHashJsonRawSha256": "6c1314806f221e7d200837be68ce76874162251db3771d9011f27f7f5c8eb95b",
+    "extendedLedgerSha256": "1c2d89f4e92c6dcf6279b26a1a206082331906385f8be2a866e10f50e0765bac",
+    "manifestSha256": "a9e8a03f631af26f183e9c1839b76226f2857bd8d6b8ffb369285c4d7d40d8e0",
+    "hashSemantics": "coreLedgerSha256 hashes the canonical sorted sha256 + two spaces + relative path + newline ledger; it is not the SHA of core-hashes-before.json. extendedLedgerSha256 is the raw SHA256SUMS file digest. These and the per-file manifests were separately checked.",
+    "selectionFileSha256": "3b93bcdae6d32392e837c062c3db01d16d991abc2c679b59b17624d82cc2e762",
+    "selectionChronologyEvidence": "Parent supplied the already frozen fixed-six selection and original core before task-specific matching. Final selection file and baseline copy preserve those bytes; later dependencies do not replace the core. Hash equality verifies preservation, not an invented common acquisition timestamp."
+  },
+  "primarySourceReview": {
+    "selectionIndex": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "archiveIndex": "https://ioi.te.lv/locations/ioi17/contest/",
+    "fixedProblemCount": 6,
+    "practiceExcluded": 4,
+    "days": {
+      "1": "2017-07-30",
+      "2": "2017-08-01"
+    },
+    "cutoff": "2026-10-14",
+    "allContestDatesBeforeCutoff": true,
+    "numericDifficulty": null,
+    "retrieval": "Independently read primary English statements and the archive-distributed editorials in web text. Missing numeric formulas were checked in indexed primary translations. No unavailable PDF image was counted as visual verification.",
+    "statements": [
+      {
+        "taskId": "nowruz",
+        "problemId": "ioi2017_nowruz",
+        "day": 1,
+        "date": "2017-07-30",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-nowruz-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/nowruz.pdf",
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz/nowruz-BRA.pdf"
+        ],
+        "classification": "unconfirmed",
+        "researchReviewed": false,
+        "productionApiValidated": false,
+        "neededTechniqueIds": [
+          "induced-grid-tree-single-neighbor-leaf-growth"
+        ]
+      },
+      {
+        "taskId": "wiring",
+        "problemId": "ioi2017_wiring",
+        "day": 1,
+        "date": "2017-07-30",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf"
+        ],
+        "classification": "missing-technique",
+        "researchReviewed": true,
+        "productionApiValidated": false,
+        "neededTechniqueIds": [
+          "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+        ]
+      },
+      {
+        "taskId": "train",
+        "problemId": "ioi2017_train",
+        "day": 1,
+        "date": "2017-07-30",
+        "statementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf"
+        ],
+        "classification": "missing-technique",
+        "researchReviewed": true,
+        "productionApiValidated": false,
+        "neededTechniqueIds": [
+          "buchi-owned-graph-repeated-target-attractor-elimination"
+        ]
+      },
+      {
+        "taskId": "prize",
+        "problemId": "ioi2017_prize",
+        "day": 2,
+        "date": "2017-08-01",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf"
+        ],
+        "classification": "unconfirmed",
+        "researchReviewed": false,
+        "productionApiValidated": false,
+        "neededTechniqueIds": [
+          "rank-count-oracle-equal-level-interval-pruning"
+        ]
+      },
+      {
+        "taskId": "simurgh",
+        "problemId": "ioi2017_simurgh",
+        "day": 2,
+        "date": "2017-08-01",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-AZE.pdf"
+        ],
+        "classification": "missing-technique",
+        "researchReviewed": true,
+        "productionApiValidated": false,
+        "neededTechniqueIds": [
+          "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+        ]
+      },
+      {
+        "taskId": "books",
+        "problemId": "ioi2017_books",
+        "day": 2,
+        "date": "2017-08-01",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf"
+        ],
+        "classification": "missing-technique",
+        "researchReviewed": true,
+        "productionApiValidated": false,
+        "neededTechniqueIds": [
+          "permutation-cycle-interval-closure-two-sided-walk-greedy"
+        ]
+      }
+    ],
+    "independentNumericCrosschecks": [
+      {
+        "task": "nowruz",
+        "url": "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz/nowruz-NOR.pdf",
+        "verified": "Rows and columns up to 1024; output-only; only free cells may become uppercase X; retained cells have exactly one simple path between every pair; leaves are degree-one free cells; partial score/full-score threshold distinguished. The ten original inputs and outputs were not acquired or tested.",
+        "query": "site:ioi.te.lv/locations/ioi17/contest/day1/nowruz \"1024\""
+      },
+      {
+        "task": "wiring",
+        "url": "https://ioi.te.lv/locations/ioi17/contest/day1/wiring.pdf",
+        "verified": "Each color has 1..100000 points, distinct coordinates in 0..1e9, input arrays sorted, every point incident to at least one opposite-color connection.",
+        "query": "site:ioi.te.lv/locations/ioi17/contest/day1/wiring \"100\" \"Constraints\""
+      },
+      {
+        "task": "train",
+        "urls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-ITA.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf"
+        ],
+        "verified": "N1..5000, N<=M<=20000, total outgoing graph and nonempty charging set; loops permitted, duplicate ordered edges prohibited. First-visit switches stay fixed; the statement explicitly relates indefinite running to a charging station on the eventual cycle.",
+        "query": "site:ioi.te.lv/locations/ioi17/contest/day1/train \"5000\" \"Constraints\""
+      },
+      {
+        "task": "prize",
+        "url": "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-CHN.pdf",
+        "verified": "N3..200000; unique best prize; each successive type count strictly exceeds the preceding count squared; adaptive grader maintains a consistent completion. Hard limit10000, full score5000; the80-point subtask has70 points above6000 and linear80-(q-5000)/100 from5001to6000.",
+        "query": "site:ioi.te.lv/locations/ioi17/contest/day2/prize \"5000\" \"10000\""
+      },
+      {
+        "task": "simurgh",
+        "urls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-CUB.pdf"
+        ],
+        "verified": "N2..500, connected simple undirected graph with n-1..n(n-1)/2 edges, hidden spanning tree; every query must itself be an actual spanning tree. Full subtask limit8000, complete-graph subtask12000, earlier small cases30000. Sample grader not enforcing legal trees cannot justify illegal forest queries.",
+        "queries": [
+          "site:ioi.te.lv/locations/ioi17/contest \"Simurgh\" \"q\" \"500\"",
+          "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh \"30\" \"Constraints\""
+        ]
+      },
+      {
+        "task": "books",
+        "url": "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+        "verified": "Final contest N1..1000000, start0..n-1, permutation0..n-1, held capacity one, pickup/swap/putdown with walking cost and return to the start. Final minimum_walk(p,s), five subtasks12/10/28/20/30.",
+        "query": "site:ioi.te.lv/locations/ioi17/contest/day2/books \"Constraints\" \"000\""
+      }
+    ],
+    "editorialProvenance": {
+      "allActualArchiveEditorialLinksVerified": true,
+      "sixRetrieved": true,
+      "individualSignaturesNotInvented": true,
+      "booksOldDraft": {
+        "url": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+        "pages": 15,
+        "title": "Library",
+        "signature": "Daniel Graf",
+        "api": "booksort(N,S,order)",
+        "notFinalBoundsOrApiEvidence": true,
+        "finalContestApi": "minimum_walk(p,s)"
+      },
+      "simurgh": "The compressed official ear-decomposition detail remains explicitly unverified. A separately proved fundamental-cycle method is the chosen positive solution; officialEditorialVerified stays false for this row.",
+      "wiringOfficialEditorialVerifiedInterpretation": {
+        "judgment": "Consistent when read with the adjacent explicit provenance and independent-analysis kind.",
+        "officialTextActuallyRead": "The one-page editorial states the consecutive-monochromatic-cluster restriction and an O(n+m) prefix DP with amortized O(1) updates. It does not give the audit's explicit min(D[q-k],D[q-k+1]) recurrence, separated-group star costs, or prefix/suffix-minimum transition proof.",
+        "meaningOfTrue": "materialStatus.officialEditorialVerified=true / retrieved-and-reviewed-with-explicit-independent-supplements records that the official high-level linear-DP method has been verified with the separately identified independent supplement. It is not a claim that all formulas or proofs appeared in the PDF.",
+        "attributionChecked": "The record verification and technicalFindings.verification are independent-analysis. The audit notes explicitly call the concrete formulas an independent supplement. No full-original-text or image claim attributes missing transitions to the source.",
+        "sourceUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+        "sourcePages": 1
+      }
+    }
+  },
+  "independentRootAndGapReview": {
+    "all15RootOptionsRead": true,
+    "rawInterpreterUsesProductWalker": false,
+    "sixRoutes": [
+      {
+        "problemId": "ioi2017_nowruz",
+        "entryGraphId": "fixed-output",
+        "choices": [],
+        "stop": "fixed-output/output-result",
+        "classification": "unconfirmed"
+      },
+      {
+        "problemId": "ioi2017_wiring",
+        "entryGraphId": "flow-matching",
+        "choices": [
+          "quantity-goals",
+          "costs",
+          "yes"
+        ],
+        "stop": "assignment-quantity-goals/mincost",
+        "classification": "missing-technique"
+      },
+      {
+        "problemId": "ioi2017_train",
+        "entryGraphId": "game-probability",
+        "choices": [
+          "win",
+          "other",
+          "no"
+        ],
+        "stop": "game-general/fallback",
+        "classification": "missing-technique"
+      },
+      {
+        "problemId": "ioi2017_prize",
+        "entryGraphId": "interactive-oracles",
+        "choices": [
+          "other"
+        ],
+        "stop": "interactive-oracles/general-result",
+        "classification": "unconfirmed"
+      },
+      {
+        "problemId": "ioi2017_simurgh",
+        "entryGraphId": "interactive-oracles",
+        "choices": [
+          "other"
+        ],
+        "stop": "interactive-oracles/general-result",
+        "classification": "missing-technique"
+      },
+      {
+        "problemId": "ioi2017_books",
+        "entryGraphId": "ranges",
+        "choices": [
+          "sequence-changes",
+          "reorder-cost"
+        ],
+        "stop": "range-sequence-changes/reorder-operation",
+        "classification": "missing-technique"
+      }
+    ],
+    "exactQuestionAnswerLabelsOptionsAndRouteTransitionsMatchFinalAudit": true,
+    "frozenProductRuntimeAlsoCrosscheckedByAuthorProbeRerun": true,
+    "actualGenericTerminalPreserved": true,
+    "futureProposedBranchKeptSeparateFromActualStop": true,
+    "relatedRecords": 15,
+    "uniqueRelatedArticles": 13,
+    "allRelatedExistInFrozenMetadata": true,
+    "allNeededIdsAbsentInFrozenMetadata": true,
+    "allRelatedMdxMetadataAndFenceShaVerified": true,
+    "originalProblemIdOrStatementAlreadyRegistered": false,
+    "generalNamesNotCountedAsCoverage": true,
+    "modelDifferences": "Output file management does not build a leaf-rich induced tree; endpoint-disjoint matching and explicit mincost flow do not supply the linear full-range edge-cover DP; terminal normal-play and SCC are not an owned Büchi game; generic/Fibonacci/subset yes-no oracles do not supply rank-count/tree-overlap strategies; swap-count APIs do not solve one-book walking distance."
+  },
+  "mathematicalReview": {
+    "wiring": {
+      "chosenFullRangeProcedureConfirmed": true,
+      "proof": "A connection jumping three color-block boundaries can be replaced by two shorter adjacent-block connections without uncovering endpoints. An inverted left/right pair inside one block admits a strict 2(v-u) saving, forcing a left prefix and right suffix with at most one overlapping point. The separated-groups edge-cover cost has max(k,j) gap crossings and is attained by boundary stars. min(D[q-k],D[q-k+1]) represents zero/one overlap. Splitting k<=j and k>=j yields two prefix/suffix minima; each monochromatic block is scanned at two adjacent boundaries, so total linear time after merging.",
+      "independentOracle": {
+        "exactCoverageMaskDpComparisons": 4452,
+        "allColorSequencesLengths": "2..10, both colors nonempty, two coordinate profiles",
+        "randomSizes": "400 instances with11..17points, original0..1e9 range",
+        "oracle": "First-uncovered-vertex weighted covering-mask recursion on unrestricted complete bipartite edges. It does not use adjacent blocks, prefix dp, suffix minima, or the author all-edge-subsets enumeration."
+      }
+    },
+    "train": {
+      "chosenFullRangeProcedureConfirmed": true,
+      "proof": "Remove the opponent attractor of the complement of the player charging attractor. Remaining player vertices retain one edge and remaining opponent vertices retain all edges, so the subgame stays total. On the final set, fixed rank-decreasing choices return to charging; on removed sets a lexicographically decreasing removal-round/rank strategy reaches a charging-free trap. Both winning strategies select one permanent edge per owned vertex, meeting the first-visit contract. Queue/counter attractors give O(NM) for M>=N, not a production-performance claim about the research Python sets.",
+      "independentOracle": {
+        "allTotalDirectedGraphsN1to3": 353,
+        "ownerChargerAssignments": 19318,
+        "initialVertices": 57842,
+        "wholeSwitchProfilesAcrossGraphs": 1745,
+        "oracle": "Enumerate complete fixed outgoing switches, group by player1 strategy, take exists(player1)forall(player0), literally follow eventual cycle. No attractor, no first-visit recursive minimax."
+      }
+    },
+    "simurgh": {
+      "chosenFullRangeProcedureConfirmed": true,
+      "proof": "A fundamental-cycle exchange gives membership(e)-membership(f) using an actual spanning-tree query. Unknown reference edges are each queried once, with at most one anchor query per processed cycle; an all-zero-difference cycle must have all memberships zero, because all one would be a hidden-tree cycle. Remaining reference bridges are one. Complete any forest using known reference edges and subtract their known contribution. Incident stars yield hidden degrees; binary search an active leaf star to recover its one hidden edge.",
+      "queryBound": {
+        "formula": "1+2(N-1)+N+(N-1)*ceil(log2(N-1))",
+        "maximumAtN500": 5990,
+        "originalFullScoreLimit": 8000,
+        "onlyLegalSpanningTreeQueries": true
+      },
+      "independentForestOracle": {
+        "allConnectedSimpleGraphsN2to4": 43,
+        "everyHiddenSpanningTree": 135,
+        "everyAcyclicPartialQueryCompletedAndCounted": 2607,
+        "oracle": "Independent DFS cycle/connectivity on every candidate forest and its reference-tree completion, then literal intersection count; no author DSU forest validator."
+      },
+      "newReferenceOrdersAndHiddenTrees": {
+        "uniformPruferHiddenTreeRandomGraphsAndEdgeOrders": 600,
+        "literalTreeQueriesInsideReviewedAuthorFunction": 24852,
+        "maximumQuestions": 93,
+        "maximumN": 23,
+        "universalN500QueryBound": 5990,
+        "sourceFullScoreLimit": 8000,
+        "newOracleClaim": false,
+        "note": "New adversarial inputs/reference-tree orders, reusing reviewed recovery function. Exact-forest oracle above is independently implemented."
+      }
+    },
+    "books": {
+      "chosenFullRangeProcedureConfirmed": true,
+      "proof": "Sum|i-p[i]| is forced book-carrying distance. Cycle splicing is free only after an actual vertex of that cycle lies inside the reachable interval. For a closed interval, compare the paid left/right expansions to their first cycle crossing the opposite boundary: either both exist and produce the same closure, or neither exists and both outside costs are necessary. Until that crossing the two frontier scans are disjoint, so mixing directions cannot beat the cheaper side before the common future state. Advance only newly included endpoints for a linear scan.",
+      "criticalCounterexample": {
+        "p": [
+          2,
+          1,
+          0
+        ],
+        "s": 1,
+        "correct": 6,
+        "incorrectBoundingIntervalOverlapOnly": 4
+      },
+      "independentLiteralProbeReproduced": "All5039 permutations/starts through N6, 201602 physical states; author 0-1 BFS and interval/greedy equality reproduced. No additional independent Books oracle is claimed."
+    },
+    "nowruz": {
+      "chosenFullRangeProcedureConfirmed": false,
+      "verifiedLocalLemma": "A cell with exactly one selected neighbor preserves an induced tree; leaf delta 1+[parentDegree==0]-[parentDegree==1].",
+      "unconfirmed": "Ten original full-score outputs were not acquired or checked. Official heuristic scores86 and99+ and small fixed-order counterexamples do not prove full score.",
+      "classificationRetained": "unconfirmed"
+    },
+    "prize": {
+      "chosenFullRangeProcedureConfirmed": false,
+      "verifiedLocalLemma": "Equal response sums identify equal prize values; equal-level boundary left-count differences count strictly better interior prizes for every transcript-consistent completion. Integer count growth bounds non-cheapest prizes by472.",
+      "independentAdaptiveTranscriptCheck": {
+        "allLegalN8PrizeArrays": 176,
+        "twoAnswerTranscriptClasses": 519,
+        "safeIntervalPruneClasses": 82,
+        "maximumConsistentCompletions": 60,
+        "ambiguousAdaptiveTranscriptWitness": {
+          "asked": [
+            0,
+            1
+          ],
+          "responses": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "possibleDiamondIndices": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "consistentCompletions": 12
+        },
+        "verified": "Within each entire transcript-equivalence class, equal-level/equal-left-count endpoint pruning excludes diamond in every consistent completion. Adaptive changes among those completions cannot invalidate the inference.",
+        "unconfirmed": "No strategy or worst-case5000-call budget is implemented/proved. This finite transcript test does not confirm full-score adaptive correctness."
+      },
+      "unconfirmed": "No complete strategy with all adaptive branches and worst-case5000 questions is proved or implemented. Official4759 claim is not promoted to an independently verified budget.",
+      "classificationRetained": "unconfirmed"
+    }
+  },
+  "authorProbeReproduction": {
+    "file": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-author-rerun.json",
+      "sha256": "7c4393c6b36daa790c42617eb78eaf7c297f15945e2ae1b06002bc841644a420"
+    },
+    "originalFile": {
+      "path": "/tmp/flowchartcp-ioi2017-probe.json",
+      "sha256": "0dd485bd81d30093e810a17dc582fec023eed2b537ca21716b39db4fe26ed41a"
+    },
+    "allFieldsExceptElapsedMatch": true,
+    "elapsedSeconds": 16.243029,
+    "classification": "Independent rerun of the author checks, not a new independent oracle. Actual frozen article fences for matching, retrograde-winning-draw, and permutation-cycle-minimum-swaps are also compiled by that rerun."
+  },
+  "newIndependentChecks": {
+    "script": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-probe.py",
+      "sha256": "20980f376d48553cb69b5201cf9b790cbfc6d84cba87751f69995ce7a468add5"
+    },
+    "results": {
+      "path": "/tmp/flowchartcp-ioi2017-independent-probe.json",
+      "sha256": "1b4059c56389c62f38f798d12890f9dc63db96421ebfd498518c15fe929f2072"
+    },
+    "elapsedSeconds": 1.1107670979981776,
+    "oraclesDistinctFromAuthor": true,
+    "productionApiValidated": false
+  },
+  "helperRecount": {
+    "helperFile": "/home/admin2/flowchartcp/site/scripts/lib/corpus-progress.mjs",
+    "statementReviewed": 6,
+    "solutionReviewed": 4,
+    "solutionIds": [
+      "ioi2017_wiring",
+      "ioi2017_train",
+      "ioi2017_simurgh",
+      "ioi2017_books"
+    ],
+    "isolatedReadCorpusProgress": [
+      {
+        "key": "ioi:ioi2017_nowruz",
+        "source": "ioi",
+        "problemId": "ioi2017_nowruz",
+        "statementVerified": true,
+        "solutionVerified": false
+      },
+      {
+        "key": "ioi:ioi2017_wiring",
+        "source": "ioi",
+        "problemId": "ioi2017_wiring",
+        "statementVerified": true,
+        "solutionVerified": true
+      },
+      {
+        "key": "ioi:ioi2017_train",
+        "source": "ioi",
+        "problemId": "ioi2017_train",
+        "statementVerified": true,
+        "solutionVerified": true
+      },
+      {
+        "key": "ioi:ioi2017_prize",
+        "source": "ioi",
+        "problemId": "ioi2017_prize",
+        "statementVerified": true,
+        "solutionVerified": false
+      },
+      {
+        "key": "ioi:ioi2017_simurgh",
+        "source": "ioi",
+        "problemId": "ioi2017_simurgh",
+        "statementVerified": true,
+        "solutionVerified": true
+      },
+      {
+        "key": "ioi:ioi2017_books",
+        "source": "ioi",
+        "problemId": "ioi2017_books",
+        "statementVerified": true,
+        "solutionVerified": true
+      }
+    ],
+    "negativeChecks": [
+      {
+        "problemId": "ioi2017_nowruz",
+        "negative": "local verified lemma does not promote initial unconfirmed",
+        "accepted": false
+      },
+      {
+        "problemId": "ioi2017_wiring",
+        "negative": "explicit unreviewed material blocks positive kind",
+        "accepted": false
+      },
+      {
+        "problemId": "ioi2017_train",
+        "negative": "explicit unreviewed material blocks positive kind",
+        "accepted": false
+      },
+      {
+        "problemId": "ioi2017_prize",
+        "negative": "local verified lemma does not promote initial unconfirmed",
+        "accepted": false
+      },
+      {
+        "problemId": "ioi2017_simurgh",
+        "negative": "explicit unreviewed material blocks positive kind",
+        "accepted": false
+      },
+      {
+        "problemId": "ioi2017_books",
+        "negative": "explicit unreviewed material blocks positive kind",
+        "accepted": false
+      }
+    ],
+    "sharedFilesModified": false
+  },
+  "acceptedStage": {
+    "firstPassAuditComplete": true,
+    "statementReviewed": 6,
+    "numericBoundsReviewed": 6,
+    "researchReviewed": 4,
+    "missingTechnique": 4,
+    "unconfirmed": 2,
+    "completedApi": 0,
+    "covered": 0,
+    "fixedCorpusResearchComplete": false,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false
+  },
+  "preservationAndNextWork": "Initial selection/snapshot/status/records stay frozen. A future completed article needs full original-range C++20/API, actual-fence oracle/max/sanitizer checks, independent review and feature-root navigation before resolution. Add subsequent positive reviews only when the missing main proof is established; do not promote Nowruz/Prize from local lemmas. Periodic collection and shared registration were not performed by this reviewer.",
+  "originalReviewSha256": "25b9befb8e4f1bbde6c9f9085df6cb2e9c733586116c99fe29bee0b0a8357708",
+  "rootReview": "research/probes/ioi-2017-root-review.json"
+}

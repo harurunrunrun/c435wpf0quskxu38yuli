@@ -1,0 +1,79 @@
+---
+title: "最も近い二点を、左右の境界付近だけ比較して求める"
+description: "横座標で分けた後に縦座標の順序を共有し、左右をまたぐ候補の比較を定数個に抑える。"
+techniqueId: geometry-closest-pair
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+平面上の点が多数あり、ユークリッド距離が最小の二点を求めたい。全点対の比較は $N(N-1)/2$ 回になる。点が一本の直線上に限られない場合、横座標順で隣り合う点だけを比べても足りない。
+
+## 考え方
+
+横座標順の配列を左右に分け、各側の最小距離の二乗を求める。その小さい方を $D$ とする。左右をまたいで改善する組は、分割線からの横方向の距離の二乗が $D$ 未満の帯の中にある。
+
+帯の点を縦座標順に並べ、縦方向の距離の二乗が $D$ 以上になったら比較を打ち切る。再帰の戻り値と同時に各区間を縦座標順にしておき、二つの整列済み列を併合すれば、各段階で並べ直す必要がない。
+
+平方根は計算しない。横・縦の差と距離の二乗を同じ整数型で比較する。
+
+## 適用条件
+
+距離が二次元のユークリッド距離である。点が重なる場合は答えが0になる。横座標が等しい点も、配列の添字で左右に分けてよい。
+
+実装は各座標の絶対値 $10^{12}$ 以下、点数が `int` に収まる範囲を想定する。差を計算する前に128ビットへ変換する。64ビット整数の全範囲の座標は、この上限に含まれない。
+
+## なぜ正しいか
+
+片側だけの組は再帰で調べ尽くしている。左右をまたぐ組で距離を改善できるなら、横の差も縦の差も現在の最小距離未満なので帯の比較から漏れない。
+
+帯の幅と縦方向の比較範囲は最小距離の定数倍である。左右それぞれでは二点間距離がその最小距離以上なので、この小領域をさらに小さい正方形へ分けると、各片側から各小区画に置ける点は高々一つになる。従って一つの点から比較する点数は定数であり、併合一回の仕事は区間の長さに比例する。距離0を見つけた後は比較を省ける。
+
+## 計算量
+
+全点対は $O(N^2)$ 時間。横座標の整列と分割統治は $O(N\log N)$ 時間、補助配列と再帰を合わせて $O(N)$ 空間。各段で帯を再整列する実装では $O(N\log^2N)$ になる。
+
+## 実装
+
+`closest_distance_squared` は最小距離の二乗を128ビット整数で返す。入力順は保存しないが、呼び出し元の配列は値渡しなので変更しない。
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <stdexcept>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+i128 closest_distance_squared(std::vector<Point> p) {
+    int n=p.size();
+    if(n<2) throw std::invalid_argument("at least two points");
+    auto dx2=[](Point a,Point b){i128 x=i128(a.x)-b.x,y=i128(a.y)-b.y;return x*x+y*y;};
+    std::sort(p.begin(),p.end(),[](Point a,Point b){return a.x!=b.x?a.x<b.x:a.y<b.y;});
+    std::vector<Point> tmp(n);
+    const i128 INF=i128(1)<<120;
+    std::function<i128(int,int)> solve=[&](int l,int r)->i128{
+        if(r-l<=3){i128 best=INF;for(int i=l;i<r;++i)for(int j=i+1;j<r;++j)best=std::min(best,dx2(p[i],p[j]));
+            std::sort(p.begin()+l,p.begin()+r,[](Point a,Point b){return a.y<b.y;});return best;}
+        int m=(l+r)/2;long long middle=p[m].x;
+        i128 best=std::min(solve(l,m),solve(m,r));
+        std::merge(p.begin()+l,p.begin()+m,p.begin()+m,p.begin()+r,tmp.begin()+l,[](Point a,Point b){return a.y<b.y;});
+        std::copy(tmp.begin()+l,tmp.begin()+r,p.begin()+l);
+        std::vector<Point> strip;
+        for(int i=l;i<r;++i){i128 x=i128(p[i].x)-middle;if(x*x<best)strip.push_back(p[i]);}
+        for(int i=0;i<int(strip.size());++i)for(int j=i+1;j<int(strip.size());++j){
+            i128 y=i128(strip[j].y)-strip[i].y;if(y*y>=best)break;best=std::min(best,dx2(strip[i],strip[j]));}
+        return best;
+    };
+    return solve(0,n);
+}
+```
+
+## 関連する手法
+
+[最も遠い二点を凸包に絞り、向かい合う頂点を一周させる](/flowchartcp/techniques/convex-diameter-calipers/)
+
+## 参考資料
+
+- [CSES：Minimum Euclidean Distance（原典）](https://cses.fi/problemset/task/2194)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="geometry-closest-pair" />

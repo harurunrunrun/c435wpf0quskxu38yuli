@@ -1,0 +1,69 @@
+---
+title: "座標圧縮"
+description: "値の大小関係を保ちながら、登場する値を小さい整数に置き換える。"
+techniqueId: coordinate-compression
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+値の大小関係を保ちながら、登場する値を小さい整数に置き換える。
+
+## 使う場面
+
+値が $10^9$ などと大きくても、入力に登場する値の種類が少ないときに使う。値を配列やFenwick Treeの添字に使いたい場合に、必要なメモリを入力の大きさに抑えられる。
+
+## 考え方
+
+登場する値を昇順に並べ、重複を取り除く。この配列での位置を、その値の新しい番号とする。例えば $10,100,10,1000$ は $0,1,0,2$ に置き換わる。
+
+元の値への対応も保存しておくと、番号から座標に戻せる。問い合わせの境界が登録した値と一致しなくても、二分探索で「その境界より小さい値の種類数」を求めれば、必要な範囲を切り出せる。
+
+## 適用条件
+
+保たれるのは大小関係と等しいかどうかであり、値の差は保たれない。10と100を0と1に置き換えても、元の距離は90である。長さや面積を求める場合は、元の座標の差を使う。
+
+更新で新しい値が現れる場合は、その値も事前に集める。整数格子上の隙間を扱うときは、必要な隣接座標を加えるか、座標間の区間を管理する。
+
+## なぜ正しいか
+
+異なる値を昇順に並べて番号を付けるため、元の値が小さいほど番号も小さくなる。同じ値は同じ番号に対応する。大小関係と等号だけで決まる処理なら、圧縮によって結果は変わらない。
+
+## 計算量
+
+$N$ 個の値を圧縮する準備に $O(N\log N)$ 時間、$O(N)$ 空間が必要になる。各値の番号は二分探索で $O(\log N)$ 時間で取得できる。
+
+## 実装
+
+`rank(x)` は登録済みの値 `x` の番号を返す。`lower_rank(x)` は `x` より小さい登録値の種類数を返すので、未登録の境界にも使える。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+using namespace std;
+struct Compression {
+    vector<long long> values;
+    explicit Compression(vector<long long> x) : values(move(x)) {
+        sort(values.begin(),values.end());
+        values.erase(unique(values.begin(),values.end()),values.end());
+    }
+    int lower_rank(long long x) const {
+        return lower_bound(values.begin(),values.end(),x)-values.begin();
+    }
+    int rank(long long x) const {
+        int i=lower_rank(x);
+        assert(i<int(values.size()) && values[i]==x);
+        return i;
+    }
+};
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/) ・ [オフラインクエリ](/flowchartcp/techniques/offline-queries/)
+
+## 参考資料
+
+- [USACO Guide: Coordinate Compression](https://usaco.guide/silver/sorting-custom)
+- [USACO公式分析: Rectangular Pasture](https://usaco.org/current/data/sol_prob2_silver_dec20.html)
+
+<TechniqueReferences techniqueId="coordinate-compression" />

@@ -1,0 +1,890 @@
+{
+  "role": "independent fixed-corpus audit review only",
+  "productionApiValidated": false,
+  "authorProbeSha256AtRun": "18a76ae16bc2ab3ca68dfa3e74672acb57099a9ad6dbb78679735e387a906993",
+  "freeze": {
+    "coreRawFiles": 921,
+    "dependencyExtensionFiles": 571,
+    "vendorExtension": 105,
+    "publicExtension": 466,
+    "allRawFilesVerified": 1492,
+    "coreHashJsonRawSha256": "789b309f54c5459b6a03942b09f77d3727ecd823eca263e53c8eaf6164314814",
+    "coreLedgerSha256": "718d89756d8413a1836046b321415fa220edb68718173fb5797039574fa7e71e",
+    "extendedHashJsonRawSha256": "6c1314806f221e7d200837be68ce76874162251db3771d9011f27f7f5c8eb95b",
+    "extendedLedgerSha256": "1c2d89f4e92c6dcf6279b26a1a206082331906385f8be2a866e10f50e0765bac",
+    "mdxCount": 498,
+    "metadataCount": 498,
+    "specificCount": 420,
+    "graphs": 465,
+    "walks": 519,
+    "all15EntryRoots": {
+      "ranges": {
+        "entryGraphId": "ranges",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "type": "question",
+          "title": "数列について、何を求めますか？",
+          "options": [
+            {
+              "id": "aggregate-goals",
+              "label": "連続する区間・利用期間・開催日の得点を集計する"
+            },
+            {
+              "id": "query-times",
+              "label": "多数の問い合わせ・過去の状態・初めて条件を満たす時刻"
+            },
+            {
+              "id": "selected-elements",
+              "label": "複数の値・増加する部分列・順位から要素を選ぶ"
+            },
+            {
+              "id": "sequence-changes",
+              "label": "列の並び・各値・巡回位置を変えて目標の形にする"
+            },
+            {
+              "id": "interval-endpoint-shrink",
+              "label": "指定点を含む区間の片端を縮め、追加と番号ごとの端点照会を行う"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "dp": {
+        "entryGraphId": "dp",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "dp",
+          "nodeId": "defined",
+          "type": "question",
+          "title": "選び方や分け方の特徴はどれですか？",
+          "options": [
+            {
+              "id": "choice-limits",
+              "label": "要素や位置を選ぶときの個数・合計・報酬"
+            },
+            {
+              "id": "sequence-removals",
+              "label": "列の分割・隣接要素の併合や削除"
+            },
+            {
+              "id": "placement-time",
+              "label": "位置・移動時間・仕事の実行条件"
+            },
+            {
+              "id": "linked-groups",
+              "label": "二者の条件・組分け・選択の依存関係"
+            },
+            {
+              "id": "generation-history",
+              "label": "整数や列の生成・前の値や履歴の条件"
+            },
+            {
+              "id": "hidden-partition",
+              "label": "既知の集合と応答から、重ならない三つの集合と残る秘密の候補を求める"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "graphs": {
+        "entryGraphId": "graphs",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "type": "question",
+          "title": "頂点・辺について何を求めますか？",
+          "options": [
+            {
+              "id": "walk-goals",
+              "label": "移動費用・訪れる頂点・辺の通り方"
+            },
+            {
+              "id": "directed-progress",
+              "label": "辺の向き・閉路・進む順番"
+            },
+            {
+              "id": "network-connection",
+              "label": "全体の接続・接続の変化・道路の復元"
+            },
+            {
+              "id": "rooted-tree-goals",
+              "label": "木の各点の答え・部分木・経路"
+            },
+            {
+              "id": "group-constraints",
+              "label": "組分け・割当・変数どうしの条件"
+            },
+            {
+              "id": "timed-arrivals",
+              "label": "次の行き先が一つの移動で、複数の始点からの累積到着を数える"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "flow-matching": {
+        "entryGraphId": "flow-matching",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "type": "question",
+          "title": "対応や割当について、どの条件の答えを求めますか？",
+          "options": [
+            {
+              "id": "pair-goals",
+              "label": "対象を重複して使わずに組を選び、個数・利益・必須の組を求める"
+            },
+            {
+              "id": "place-time-goals",
+              "label": "場所・時刻・商品の条件に従い、行先・担当・割引券を割り当てる"
+            },
+            {
+              "id": "quantity-goals",
+              "label": "割当数量・行列の合計・費用・受取個数を制限する"
+            },
+            {
+              "id": "choice-division-goals",
+              "label": "依存する対象を選ぶ、二つの側に分ける、その他の割当条件"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "strings": {
+        "entryGraphId": "strings",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "strings",
+          "nodeId": "text-task",
+          "type": "question",
+          "title": "文字列から何を求めますか？",
+          "options": [
+            {
+              "id": "comparison",
+              "label": "一致の比較・編集距離"
+            },
+            {
+              "id": "extraction",
+              "label": "連続区間・飛び飛びの取り出し"
+            },
+            {
+              "id": "changes",
+              "label": "文字や桁の変更・追加"
+            },
+            {
+              "id": "order-turns",
+              "label": "連結する順序・単語を使う手番"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "math": {
+        "entryGraphId": "math",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "math",
+          "nodeId": "number-task",
+          "type": "question",
+          "title": "整数や式について何を求めますか？",
+          "options": [
+            {
+              "id": "integer-equations",
+              "label": "整数の等式・約数・余り・累乗"
+            },
+            {
+              "id": "bits-digits",
+              "label": "桁や AND・OR・XOR の条件"
+            },
+            {
+              "id": "counting-totals",
+              "label": "組合せ・式の係数・割り算の総和"
+            },
+            {
+              "id": "representable-sums",
+              "label": "同じ非負の数を繰り返し足し、大きな範囲で作れる合計額を数える"
+            },
+            {
+              "id": "totient-prefix",
+              "label": "非常に大きい上限までのトーティエント関数の総和を求める"
+            },
+            {
+              "id": "sum-divisor",
+              "label": "上限以下で、自分の十進の桁和で割り切れる正整数の個数"
+            },
+            {
+              "id": "real-offset",
+              "label": "全ての分母に同じ実数を足し、正の量を割った和を指定値へ合わせる"
+            },
+            {
+              "id": "series-square",
+              "label": "二乗すると与えた列になる係数列を一つ求め、存在しない場合も判定する"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "geometry": {
+        "entryGraphId": "geometry",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "geometry",
+          "nodeId": "geometry-task",
+          "type": "question",
+          "title": "点や座標から何を求めますか？",
+          "options": [
+            {
+              "id": "point-distances",
+              "label": "点どうしの距離・向き・角度"
+            },
+            {
+              "id": "enclosing-regions",
+              "label": "図形・点集合の形・面積・比較"
+            },
+            {
+              "id": "rectangle-aggregates",
+              "label": "長方形や座標範囲の集計"
+            },
+            {
+              "id": "boundary-relations",
+              "label": "点の内外・交差・接続・壁で区切る領域"
+            },
+            {
+              "id": "travel-partition",
+              "label": "移動・格子経路・長方形の切り分け"
+            },
+            {
+              "id": "circle-harvest",
+              "label": "同速度で円周を歩き、再生する対象を得る個数を指定時刻まで数える"
+            },
+            {
+              "id": "skyline-stars",
+              "label": "ビルを含まない長方形に星を高々一つ残すよう、星を消す費用を最小にする"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "game-probability": {
+        "entryGraphId": "game-probability",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "type": "question",
+          "title": "手番や確率について何を求めますか？",
+          "options": [
+            {
+              "id": "win",
+              "label": "二人が最善を選んだときの勝敗"
+            },
+            {
+              "id": "score",
+              "label": "二人が交互に取り、自分の得点を最大にする"
+            },
+            {
+              "id": "expect",
+              "label": "確率的な操作の期待値"
+            },
+            {
+              "id": "first-repeat",
+              "label": "同じ種類を二つ引くまでの、取り出す回数の期待値"
+            },
+            {
+              "id": "repeated-trials",
+              "label": "独立な試行・移動・時間の確率と期待値"
+            },
+            {
+              "id": "fixed-tournament",
+              "label": "固定した勝ち抜き表で勝敗を選び、勝った回数の報酬合計を最大にする"
+            },
+            {
+              "id": "stateful-process",
+              "label": "盤・皿・番号・交換・積・部分木など、状態が変わる確率的な操作"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "thinking": {
+        "entryGraphId": "thinking",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "thinking",
+          "nodeId": "reason-task",
+          "type": "question",
+          "title": "操作や解の特徴として、どれを調べたいですか？",
+          "options": [
+            {
+              "id": "operation-goals",
+              "label": "操作を戻す・条件に合う形を作る"
+            },
+            {
+              "id": "maintained-conditions",
+              "label": "操作中に保つ量・途中の不足を調べる"
+            },
+            {
+              "id": "next-choice",
+              "label": "次の一手・あり得る状態を絞る"
+            },
+            {
+              "id": "small-examples-counts",
+              "label": "小さい例の答え・各要素の寄与を調べる"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "heuristic": {
+        "entryGraphId": "heuristic",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "heuristic",
+          "nodeId": "offline",
+          "type": "question",
+          "title": "提出する形式と、必要な候補の計算はどれですか？",
+          "options": [
+            {
+              "id": "yes",
+              "label": "固定入力の出力を事前に改善する"
+            },
+            {
+              "id": "no",
+              "label": "実行中に一般の候補を構築・変更する"
+            },
+            {
+              "id": "triplet-packing",
+              "label": "固定入力の格子で、直線の三マスを重ねず多く選ぶ"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "condition-check": {
+        "entryGraphId": "condition-check",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "condition-check",
+          "nodeId": "known",
+          "type": "question",
+          "title": "必要な性質が、問題文の制約に明記されていますか？",
+          "options": [
+            {
+              "id": "yes",
+              "label": "はい"
+            },
+            {
+              "id": "no",
+              "label": "いいえ"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "set-operations": {
+        "entryGraphId": "set-operations",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "set-operations",
+          "nodeId": "set-goal",
+          "type": "question",
+          "title": "集合やグループについて何を求めますか？",
+          "options": [
+            {
+              "id": "merge",
+              "label": "共通要素のある集合を結合し、指定された要素を集める"
+            },
+            {
+              "id": "partition",
+              "label": "少数の要素を、条件を満たすグループへ分割する"
+            },
+            {
+              "id": "subset-total",
+              "label": "ある集合の、すべての部分集合の値を集計する"
+            },
+            {
+              "id": "sum-updates",
+              "label": "固定された集合の全要素へ加算し、集合内の総和を求める"
+            },
+            {
+              "id": "ordered-values",
+              "label": "整数集合の追加・削除、小さい値の個数・k 番目の値"
+            },
+            {
+              "id": "mask-relations",
+              "label": "共通する1ビットがない相手、または選んだ全要素のANDが0になる個数"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "interactive-oracles": {
+        "entryGraphId": "interactive-oracles",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "type": "question",
+          "title": "質問すると何が返ってきますか？",
+          "options": [
+            {
+              "id": "tree-distance",
+              "label": "辺は未知だが、指定した二頂点の木距離"
+            },
+            {
+              "id": "unimodal-value",
+              "label": "隠れた単峰列の、指定位置の値"
+            },
+            {
+              "id": "rectangle-count",
+              "label": "各行列に高々一個の配置の、長方形内の個数"
+            },
+            {
+              "id": "batch-subsets",
+              "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+            },
+            {
+              "id": "navigation",
+              "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+            },
+            {
+              "id": "other",
+              "label": "その他の返答形式・通信条件"
+            },
+            {
+              "id": "changing-color-count",
+              "label": "任意集合の会合で、参加者によって変わる色の種類数"
+            },
+            {
+              "id": "transition-count",
+              "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+            },
+            {
+              "id": "prefix-in-substring",
+              "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+            },
+            {
+              "id": "binary-edge-distances",
+              "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "grid-arrangements": {
+        "entryGraphId": "grid-arrangements",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "grid-arrangements",
+          "nodeId": "goal",
+          "type": "question",
+          "title": "格子で何を求めますか？",
+          "options": [
+            {
+              "id": "pairing-cover",
+              "label": "隣接する組・駒・通路・タイルでマスを覆う"
+            },
+            {
+              "id": "movement-cycles",
+              "label": "経路・収集・全ての使用マスを通る一つの閉路"
+            },
+            {
+              "id": "color-numbers",
+              "label": "色や数を置く条件・選んだマスの外接長方形"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": []
+      },
+      "fixed-output": {
+        "entryGraphId": "fixed-output",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "fixed-output",
+          "nodeId": "output-result",
+          "type": "result",
+          "title": "固定入力の出力を改善する",
+          "options": [],
+          "techniques": [
+            "output-only"
+          ]
+        },
+        "routeTransitions": []
+      }
+    },
+    "sixRoutes": {
+      "nowruz": {
+        "entryGraphId": "fixed-output",
+        "choices": [],
+        "steps": [],
+        "initialReached": {
+          "graphId": "fixed-output",
+          "nodeId": "output-result",
+          "type": "result",
+          "title": "固定入力の出力を改善する",
+          "options": [],
+          "techniques": [
+            "output-only"
+          ]
+        },
+        "routeTransitions": []
+      },
+      "wiring": {
+        "entryGraphId": "flow-matching",
+        "choices": [
+          "quantity-goals",
+          "costs",
+          "yes"
+        ],
+        "steps": [
+          {
+            "graphId": "flow-matching",
+            "nodeId": "purpose",
+            "question": "対応や割当について、どの条件の答えを求めますか？",
+            "answer": "quantity-goals",
+            "answerLabel": "割当数量・行列の合計・費用・受取個数を制限する"
+          },
+          {
+            "graphId": "assignment-quantity-goals",
+            "nodeId": "purpose",
+            "question": "対応や割当について、どの条件の答えを求めますか？",
+            "answer": "costs",
+            "answerLabel": "数量を満たし、割当の費用合計を最小にする"
+          },
+          {
+            "graphId": "assignment-quantity-goals",
+            "nodeId": "cost",
+            "question": "流す量を満たした上で、辺の費用の合計を最小にしますか？",
+            "answer": "yes",
+            "answerLabel": "はい"
+          }
+        ],
+        "initialReached": {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "mincost",
+          "type": "result",
+          "title": "最小費用流",
+          "options": [],
+          "techniques": [
+            "min-cost-flow"
+          ]
+        },
+        "routeTransitions": [
+          {
+            "fromGraphId": "flow-matching",
+            "fromNodeId": "quantity-goals-route",
+            "toGraphId": "assignment-quantity-goals"
+          }
+        ]
+      },
+      "train": {
+        "entryGraphId": "game-probability",
+        "choices": [
+          "win",
+          "other",
+          "no"
+        ],
+        "steps": [
+          {
+            "graphId": "game-probability",
+            "nodeId": "game-objective",
+            "question": "手番や確率について何を求めますか？",
+            "answer": "win",
+            "answerLabel": "二人が最善を選んだときの勝敗"
+          },
+          {
+            "graphId": "game-rules",
+            "nodeId": "ending",
+            "question": "どのように対戦が終わりますか？",
+            "answer": "other",
+            "answerLabel": "その他の終了ルール・合法手"
+          },
+          {
+            "graphId": "game-general",
+            "nodeId": "game",
+            "question": "二人が交互に操作し、勝敗を決めますか？",
+            "answer": "no",
+            "answerLabel": "いいえ"
+          }
+        ],
+        "initialReached": {
+          "graphId": "game-general",
+          "nodeId": "fallback",
+          "type": "result",
+          "title": "確率と手番の状態を定義する",
+          "options": [],
+          "techniques": [
+            "state-design"
+          ]
+        },
+        "routeTransitions": [
+          {
+            "fromGraphId": "game-probability",
+            "fromNodeId": "game-rule-route",
+            "toGraphId": "game-rules"
+          },
+          {
+            "fromGraphId": "game-rules",
+            "fromNodeId": "general-route",
+            "toGraphId": "game-general"
+          }
+        ]
+      },
+      "prize": {
+        "entryGraphId": "interactive-oracles",
+        "choices": [
+          "other"
+        ],
+        "steps": [
+          {
+            "graphId": "interactive-oracles",
+            "nodeId": "response",
+            "question": "質問すると何が返ってきますか？",
+            "answer": "other",
+            "answerLabel": "その他の返答形式・通信条件"
+          }
+        ],
+        "initialReached": {
+          "graphId": "interactive-oracles",
+          "nodeId": "general-result",
+          "type": "result",
+          "title": "返答から次の合法な質問・移動を決める",
+          "options": [],
+          "techniques": [
+            "interactive"
+          ]
+        },
+        "routeTransitions": []
+      },
+      "simurgh": {
+        "entryGraphId": "interactive-oracles",
+        "choices": [
+          "other"
+        ],
+        "steps": [
+          {
+            "graphId": "interactive-oracles",
+            "nodeId": "response",
+            "question": "質問すると何が返ってきますか？",
+            "answer": "other",
+            "answerLabel": "その他の返答形式・通信条件"
+          }
+        ],
+        "initialReached": {
+          "graphId": "interactive-oracles",
+          "nodeId": "general-result",
+          "type": "result",
+          "title": "返答から次の合法な質問・移動を決める",
+          "options": [],
+          "techniques": [
+            "interactive"
+          ]
+        },
+        "routeTransitions": []
+      },
+      "books": {
+        "entryGraphId": "ranges",
+        "choices": [
+          "sequence-changes",
+          "reorder-cost"
+        ],
+        "steps": [
+          {
+            "graphId": "ranges",
+            "nodeId": "updates",
+            "question": "数列について、何を求めますか？",
+            "answer": "sequence-changes",
+            "answerLabel": "列の並び・各値・巡回位置を変えて目標の形にする"
+          },
+          {
+            "graphId": "range-sequence-changes",
+            "nodeId": "updates",
+            "question": "数列について、何を求めますか？",
+            "answer": "reorder-cost",
+            "answerLabel": "列の要素を移動して並べ替える費用の最小値"
+          }
+        ],
+        "initialReached": {
+          "graphId": "range-sequence-changes",
+          "nodeId": "reorder-operation",
+          "type": "question",
+          "title": "列を変えるとき、どの操作を使えますか？",
+          "options": [
+            {
+              "id": "move-position",
+              "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+            },
+            {
+              "id": "swap-and-adjust",
+              "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "techniques": []
+        },
+        "routeTransitions": [
+          {
+            "fromGraphId": "ranges",
+            "fromNodeId": "sequence-changes-route",
+            "toGraphId": "range-sequence-changes"
+          }
+        ]
+      }
+    }
+  },
+  "wiringMaskEdgeCover": {
+    "exactCoverageMaskDpComparisons": 4452,
+    "allColorSequencesLengths": "2..10, both colors nonempty, two coordinate profiles",
+    "randomSizes": "400 instances with11..17points, original0..1e9 range",
+    "oracle": "First-uncovered-vertex weighted covering-mask recursion on unrestricted complete bipartite edges. It does not use adjacent blocks, prefix dp, suffix minima, or the author all-edge-subsets enumeration."
+  },
+  "trainStaticStrategies": {
+    "allTotalDirectedGraphsN1to3": 353,
+    "ownerChargerAssignments": 19318,
+    "initialVertices": 57842,
+    "wholeSwitchProfilesAcrossGraphs": 1745,
+    "oracle": "Enumerate complete fixed outgoing switches, group by player1 strategy, take exists(player1)forall(player0), literally follow eventual cycle. No attractor, no first-visit recursive minimax."
+  },
+  "simurghEveryForest": {
+    "allConnectedSimpleGraphsN2to4": 43,
+    "everyHiddenSpanningTree": 135,
+    "everyAcyclicPartialQueryCompletedAndCounted": 2607,
+    "oracle": "Independent DFS cycle/connectivity on every candidate forest and its reference-tree completion, then literal intersection count; no author DSU forest validator."
+  },
+  "simurghPrufer": {
+    "uniformPruferHiddenTreeRandomGraphsAndEdgeOrders": 600,
+    "literalTreeQueriesInsideReviewedAuthorFunction": 24852,
+    "maximumQuestions": 93,
+    "maximumN": 23,
+    "universalN500QueryBound": 5990,
+    "sourceFullScoreLimit": 8000,
+    "newOracleClaim": false,
+    "note": "New adversarial inputs/reference-tree orders, reusing reviewed recovery function. Exact-forest oracle above is independently implemented."
+  },
+  "prizeAdaptiveTranscriptClasses": {
+    "allLegalN8PrizeArrays": 176,
+    "twoAnswerTranscriptClasses": 519,
+    "safeIntervalPruneClasses": 82,
+    "maximumConsistentCompletions": 60,
+    "ambiguousAdaptiveTranscriptWitness": {
+      "asked": [
+        0,
+        1
+      ],
+      "responses": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "possibleDiamondIndices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "consistentCompletions": 12
+    },
+    "verified": "Within each entire transcript-equivalence class, equal-level/equal-left-count endpoint pruning excludes diamond in every consistent completion. Adaptive changes among those completions cannot invalidate the inference.",
+    "unconfirmed": "No strategy or worst-case5000-call budget is implemented/proved. This finite transcript test does not confirm full-score adaptive correctness."
+  },
+  "elapsedSeconds": 1.1107670979981776
+}

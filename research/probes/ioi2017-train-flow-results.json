@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/tmp/flowchartcp-ioi2017-train-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 4.612959998004953,
+  "testFile": "/tmp/flowchartcp-ioi2017-train-flow.test.mjs",
+  "testSha256": "b0465cd5c29b9182317d716747a9f77c59c38dbbc82728462ef9d12e13562df3",
+  "tapFile": "/tmp/flowchartcp-ioi2017-train-flow-results.tap",
+  "tapSha256": "07c7525b9ac535d68253eaf6785227e159596be46c065251081d8a3dcc18b099",
+  "caseFile": "/tmp/flowchartcp-ioi2017-train-flow-case.json",
+  "caseSha256": "32a5997f12ec3e2694beb3076809736644f8b70f2bcbba763f1bd26b574407dd",
+  "frozenBaseline": {
+    "articles": 504,
+    "graphs": 471,
+    "nodes": 3697,
+    "walks": 525,
+    "corpora": 9,
+    "rawSha256": {
+      "flows": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+      "walks": "2f82ea7563546d93d38cbfd04feaea01cc66beb795d8e9d3893148dc42ce8774",
+      "ioi2017-audit": "eb69a8e7b55d61cc5e1c8cc16494d9a5cd7bfc199072fcac2826238224364710",
+      "audits": "ee186d0656f38dcda48552e19014cb57d2b0e15a5b80100c7cc8b2234ea4c95d"
+    }
+  },
+  "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+  "sharedFilesModified": false,
+  "coveragePolicy": "Initial IOI2017 research4/6 and all9 prior initial audits plus existing Wiring resolution preserved; live coverage>=2, deleting targetTrain evidence reduces coverage by1; an invalid actual MDX fence fails real preflight and makes preflight-dependent corpus coverage0. Additional later corpora and legal same-corpus resolutions are permitted.",
+  "permanentTest": "tests/ioi2017-train-flow.test.mjs"
+}

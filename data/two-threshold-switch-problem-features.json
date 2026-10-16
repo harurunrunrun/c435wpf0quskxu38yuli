@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2018_werewolf",
+    "title": "Werewolf",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+    "techniqueIds": [
+      "two-threshold-component-merge-trees-rectangle-intersection"
+    ],
+    "features": [
+      "固定の単純連結無向グラフで、始点からは番号L以上、終点へは番号R以下だけを通り、頂点で一度切り替える。始点/終点で切り替えてもよい。",
+      "全質問を先に読め、質問ごとに始点・終点・二つのしきい値が変わる。各質問について条件を守って目的地まで移動できるかを求める。",
+      "原典N2..200000、N−1<=M<=400000、Q1..200000、L<=S/E<=R/S!=E/L<=R。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-03",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "notes": "固定の無向グラフで、始点からは番号L以上、終点へは番号R以下の頂点だけを通り、同じ頂点で一度だけ切り替える多数の質問を扱う。前半の制限成分と後半の制限成分が交わることが必要十分。下限降順・上限昇順の有効化で二つの併合木を作り、各質問時点の成分を葉区間へ保存する。同じ元頂点の二つの葉位置を座標点にすると、共通頂点数は両区間の積長方形内の点数になり、オフライン走査とFenwick木で求められる。",
+    "discoveredBy": "ioi-2018",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf"
+  }
+]

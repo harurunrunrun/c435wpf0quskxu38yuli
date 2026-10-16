@@ -1,0 +1,1351 @@
+{
+  "techniqueId": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+  "auditGapId": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2016-shortcut-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2016-shortcut-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2016-shortcut-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/path-shortcut-diameter-rotated-constraints-extrema-sweep.mdx",
+    "checker": "scripts/check_path_shortcut_diameter_cpp.py",
+    "metadata": "data/techniques-specific-graph-extensions.json",
+    "references": "data/references-specific-graph-extensions.json",
+    "feature": "data/path-shortcut-diameter-problem-features.json"
+  },
+  "metadata": {
+    "id": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+    "title": "一本道へ近道を一本足して直径を縮めるなら、遠すぎる駅の組を四つの境界にまとめる",
+    "summary": "枝の付いた道の直径に上限を置き、近道を必要とする駅の組だけを制約へ変える。座標の和と差の四境界を二つの整列順で集約し、駅に限られた近道の端点を線形走査で探す。",
+    "aliases": [
+      "IOI2016 Shortcut find_shortcut",
+      "Path shortcut diameter rotated L1 constraints",
+      "Sort-once two extrema with self-index exclusion",
+      "枝付きの道 固定長の近道 直径判定 和差の四境界"
+    ],
+    "family": "枝付きの道へ固定長の辺を一本追加する直径最小化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "binary-search",
+      "manhattan-transform",
+      "tree-eccentricity-diameter-endpoints"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+    "source": "IOI",
+    "problemId": "ioi2016_shortcut",
+    "title": "Shortcut",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "evidence": "元の距離が直径上限を超える駅対だけに、一本の近道を通る距離の条件を課す。座標の和と差の四境界へ変換し、最大二枝長の下界と自己添字を除く二極値で二つの整列順を走査する。実在する異なる駅への端点制限を折り返し一度の走査で判定し、直径を二分する。",
+    "verificationNotes": "原典3頁/公式17頁Solutions5-7頁/Noticeと日付を確認。全原典N百万/l,c1..1e9/d0..1e9、駅対直径、exact型導出と未読headerを区別。実掲載CPPの通常/ASan8752494checks/checksum11498457106931259831、全端点Floyd152165graph occurrences/4境界7009273/actualpointer233415boxes/N百万14構成/28allocfault/30invalidが成功。初回研究positive6/API0/coverage0を保持し、独立reviewと実article/ref/rootwalk登録後だけresolutionを追加する。 その後rootと独立担当が全原典範囲・証明・全CPPを精読し、通常検査を再現。別の単位辺展開BFSによる82277近道追加グラフ、全閾値、枝の一律追加・整数倍・極端二駅・別の離散boxでも通常ASanが一致した。100万駅の枝一律追加は変換検査でありBFS全列挙とは区別して登録した。"
+  },
+  "problemFeatureProposal": {
+    "source": "IOI",
+    "problemId": "ioi2016_shortcut",
+    "title": "近道 (Shortcut)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "主線は一本道で、各主駅に高々一本の行き止まりの枝が付き、長さ0は枝がない",
+      "異なる二つの主駅へ長さ固定の近道をちょうど一本追加し、駅同士の最大最短距離を最小にする",
+      "主駅2〜100万、主線と近道は長さ1〜10億、枝は長さ0〜10億の整数"
+    ],
+    "entryGraphId": "graphs",
+    "choices": [
+      "network-connection",
+      "path-shortcut-diameter",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+    ],
+    "conditions": [
+      "path-one-branch",
+      "one-main-shortcut",
+      "bounds"
+    ],
+    "date": "2016-08-14",
+    "difficulty": null,
+    "publicationDate": "2016-08-14",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true,
+    "techniqueIds": [
+      "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+    ],
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "verification": "independent-analysis",
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff"
+  },
+  "flowProposal": {
+    "entryGraphId": "graphs",
+    "parentGraphId": "graphs-network-connection",
+    "parentNodeId": "shortest",
+    "currentPrefix": [
+      "network-connection"
+    ],
+    "newAnswerId": "path-shortcut-diameter",
+    "newAnswerLabel": "一本道に長さ固定の近道を一本追加し、最も遠い駅同士の距離を最小にする",
+    "guardGraphId": "path-shortcut-diameter-conditions",
+    "canonicalChoices": [
+      "network-connection",
+      "path-shortcut-diameter",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "path-one-branch",
+        "question": "一本の主線の各駅に、高々一本の行き止まりの枝が付きますか？",
+        "explanation": "主線は正の長さの道です。枝の長さ0は枝がなく、その主駅自体が代表点になることを表します。"
+      },
+      {
+        "id": "one-main-shortcut",
+        "question": "異なる二つの主駅へ長さ固定の一本を追加し、駅同士の最短距離の最大値を最小にしますか？",
+        "explanation": "隣り合う主駅も端点にできます。近道は無向で、最短路が必ず使う必要はありません。辺の途中の任意点は直径の対象にしません。"
+      },
+      {
+        "id": "bounds",
+        "question": "主駅は2〜100万、主線と近道の長さは1〜10億、枝は0〜10億の整数ですか？",
+        "explanation": "最小の直径のみを返します。座標の累積、和と差の境界、答えを64bitで計算します。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+    ]
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+    "statementPages": 3,
+    "statementReadMethod": "Full primary official PDF web text, including formula fragments at page3 reconstructed in reading order. No visual/PDF-local inspection claim.",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "editorialPages": 17,
+    "relevantOneBasedPages": [
+      5,
+      6,
+      7
+    ],
+    "printedAuthor": "Gleb Evstropov",
+    "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "editorialProvenance": "Actual official archive Solutions link1012. Selected bad-pair/rotated-box/sort-once full-score direction read; retained c in all four independently derived bounds. Self exclusion, necessary top-two guard, station-only pointer and API proofs are independent supplements.",
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+    "noticePages": 1,
+    "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "contestDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "originalConstraints": {
+      "N": [
+        2,
+        1000000
+      ],
+      "l_i": [
+        1,
+        1000000000
+      ],
+      "d_i": [
+        0,
+        1000000000
+      ],
+      "c": [
+        1,
+        1000000000
+      ],
+      "mainLineLengths": "N-1 positive integer lengths",
+      "branchModel": "at most one new leaf per main station;d_i=0 denotes no secondary line",
+      "newEdge": "exactly one undirected length-c edge between distinct main stations; neighbours allowed",
+      "distances": "shortest route lengths; all original main and actual leaf stations participate",
+      "diameter": "maximum over station pairs, not arbitrary interior points of edges",
+      "genericApi": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+      "timeSeconds": 2,
+      "memoryGB": 2,
+      "subtaskScores": [
+        9,
+        14,
+        8,
+        7,
+        33,
+        22,
+        4,
+        3
+      ],
+      "subtaskNUpperBounds": [
+        10,
+        100,
+        250,
+        500,
+        3000,
+        100000,
+        300000,
+        1000000
+      ],
+      "examples": [
+        {
+          "n": 4,
+          "l": [
+            10,
+            20,
+            20
+          ],
+          "d": [
+            0,
+            40,
+            0,
+            30
+          ],
+          "c": 10,
+          "answer": 80
+        },
+        {
+          "n": 9,
+          "l": [
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10
+          ],
+          "d": [
+            20,
+            0,
+            30,
+            0,
+            0,
+            40,
+            0,
+            40,
+            0
+          ],
+          "c": 30,
+          "answer": 110
+        },
+        {
+          "n": 4,
+          "l": [
+            2,
+            2,
+            2
+          ],
+          "d": [
+            1,
+            10,
+            10,
+            1
+          ],
+          "c": 1,
+          "answer": 21
+        },
+        {
+          "n": 3,
+          "l": [
+            1,
+            1
+          ],
+          "d": [
+            1,
+            1,
+            1
+          ],
+          "c": 3,
+          "answer": 4
+        }
+      ]
+    },
+    "cppSignatureEvidence": {
+      "statementGeneric": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+      "noticeMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>",
+        "int": "int"
+      },
+      "derivedSignature": "long long find_shortcut(int n,std::vector<int> l,std::vector<int> d,int c)",
+      "actualCppHeaderRetrieved": false,
+      "headerReadNotClaimed": true,
+      "exactDerivedSignatureStaticAssertExecuted": true,
+      "syntheticHeaderNotClaimed": true
+    },
+    "originalFullRangeIncludedByApi": true,
+    "unconfirmedPrincipalLemmas": [],
+    "unconfirmedAlternatives": [
+      "Official alternative dominance-filter linear-decision proof is not used or independently verified."
+    ],
+    "unconfirmedOptionalSourceFacts": [
+      "Actual distributed shortcut.h bytes were not retrieved. The C++ signature is derived from primary generic statement and Notice, then checked by exact-type assertion/real adapter calls."
+    ]
+  },
+  "api": {
+    "class": "PathShortcut",
+    "constructor": "PathShortcut(const std::vector<int>& lengths,const std::vector<int>& branches,int c)",
+    "functions": [
+      "int station_count() const noexcept",
+      "bool can_achieve(std::int64_t diameter) const",
+      "std::int64_t minimum_diameter() const",
+      "std::int64_t minimum_path_shortcut_diameter(const std::vector<int>& lengths,const std::vector<int>& branches,int c)",
+      "long long find_shortcut(int n,std::vector<int> l,std::vector<int> d,int c)"
+    ],
+    "input": "N2..1000000, lengths.size=N-1/l1..1e9, branches.size=N/d0..1e9, c1..1e9.",
+    "output": "Minimum station-pair diameter after adding exactly one shortcut between distinct original main stations; no endpoint witness is returned.",
+    "thresholds": "Nonnegative signed64;0 returnsfalse for legal inputs,INT64_MAX returns true without overflowing rotated-bound expressions. Negative thresholds throw invalid_argument.",
+    "invalid": "invalid_argument for any N/length-vector mismatch/value/c or original explicit-n mismatch, before internal prepared-vector allocation. Original by-value argument copies can allocate before entry.",
+    "inputUnchanged": true,
+    "inputReferencesRetained": false,
+    "persistentGlobalState": false,
+    "reentrant": true,
+    "preparedReadOnly": true,
+    "normalQueriesAllocate": false,
+    "copyMoveAssignment": "Independent default copy; noexcept move swaps with empty default member state; moved-from station_count0 and decision/minimum throwlogic_error. Copy-empty is supported. Assignment takes an independent value then noexcept-swaps, giving strong copy-assignment exception guarantee; self move was executed through aliasing arguments.",
+    "allocationExceptions": "Propagate unchanged with original inputs/source/target state preserved. Copy-parameter failure occurs before entering noexcept assignment body.",
+    "internalHelper": "path_shortcut_detail::station_pair is not a separately supported public validation API: it assumes a sorted distinct position vector fitting int and bounds whose additions/subtractions fit int64. Production calls it only with validated prepared positions and safe bounds. Arbitrary finite small boxes exercise this exact helper separately.",
+    "preparationTime": "O(NlogN): exactly two order sorts once, independent of diameter; no sorting in can_achieve or minimum_diameter.",
+    "decisionTime": "O(N); one b-order sweep with one monotone a-order insertion plus at most2N discrete-pointer moves.",
+    "minimumTime": "O(NlogN+NlogT) including preparation, orO(NlogT) on already-prepared object; T=original tree station diameter.",
+    "extraSpace": "O(N); N int64 positions and twoN-element Station{int64 a,b;int index} orders. Queries useconstant stack and do not allocate.",
+    "maximumPreparedVectorPayloadBytes": 56000000,
+    "preparedPayloadMeaning": "On tested GCC/libstdc++ sizeofStation24/sizeofint4, positions8N+twoorders48N=56N. Excludes allocator overhead/caller input/sort stack. Copying a prepared object requires another56N; adapter input copies add4*(2N-1)<=7999996bytes before preparation.",
+    "integerSafety": {
+      "mainCoordinateUpperBound": 999999000000000,
+      "originalDiameterUpperBound": 1000001000000000,
+      "binaryDecisionsUpperBound": 50,
+      "branchLowerUpperBound": 2000000000,
+      "aRange": "-1e9..999999000000000",
+      "bRange": "0..1e15",
+      "boundaryAndPointerRange": "absolute intermediate sums/differences <1e16 on production path, far belowINT64_MAX",
+      "thresholdOverflowGuard": "diameter>=original_diameter returns true before boundary arithmetic; negative diameter throws before arithmetic",
+      "sizeConversion": "All sizes validated beforeint conversions; index0..999999 and right sentinelN<=1000000",
+      "noCoordinateMultiplication": "Build x by int64 prefix addition; all boundary fields/shortcut/diameter promoted64"
+    },
+    "fullOriginalScopeIncluded": true
+  },
+  "proof": {
+    "representatives": "For each main station take its only leaf if present, otherwise itself. Any station pair with different main indices is bounded by those two representatives. Same-station root/leaf distance d_i is bounded by the representative-to-another-main-station distance. N>=2 and all actual main/shortcut lengths positive. Thus onlyi<j representative pairs are needed, never2d_i forself.",
+    "oneShortcutOrientation": "A positive-weight shortest path uses the sole new edge at mostonce. For xi<xj andy<z, uncrossing |xi-y|+|xj-z|<=|xi-z|+|xj-y| makes the normal orientation no longer than reverse. Direct old-path distance remains an option, so only pairs with olddistance>K constrain the shortcut.",
+    "fourBounds": {
+      "Slo": "b_i+b_j+c-K",
+      "Shi": "a_i+a_j+K-c",
+      "Dlo": "b_j-a_i+c-K",
+      "Dhi": "a_j-b_i+K-c",
+      "derivation": "|p|+|q|=max(|p+q|,|p-q|) withp=y-xi,q=z-xj. All four keepc; negative remaining budget automatically makes a box empty. This is independently derived, not a claim the extracted source formulas visibly includec."
+    },
+    "necessaryBranchGuard": "For distincti,j every possible graph distance between representatives>=d_i+d_j. Compute the largest two values with multiplicity from different indices. IfK<their sum, infeasible.",
+    "eligibleOrientation": "Under that guard, ifi>j then b_j-a_i=d_i+d_j-(x_i-x_j)<d_i+d_j<=K. Therefore a_i<b_j-K can only pick true i<j badpairs orself. Self still may qualify because2d_j>K, so must be excluded explicitly.",
+    "strictness": "Olddistance>K and insertion a_i<b_j-K are strict; equality already meets K and imposes no condition.",
+    "topTwo": "Each index is inserted once. Distinct-index smallest2 a andlargest2 b survive value ties. Removing current index needs only choose first unless it isself, then second. Four separate extrema may use different pairs since the result is intersection of all half-plane bounds.",
+    "sortOnce": "Order by a and order byb depend only on geometry. For fixedK, b_j-K rises during b-order sweep and the inserted a-set only grows. This gives exact extrema inO(N) each decision afterO(NlogN) preparation.",
+    "discreteEndpointCompleteness": "For y=x_left, allowedz is interval[max(Slo-y,y+Dlo),min(Shi-y,y+Dhi)], with rightindex>=left+1. Choosing the first such station is complete. Lower threshold isV-shaped; lower_bound index first decreases then increases. Takingmax with increasing left+1 adds no new turn. Startpointer atN: total leftward/rightward movements each<=N; sentinelN can move left again safely.",
+    "monotonicSearch": "Adding a fixed positive edge cannot increase old station-pair distances and is always legal for some distinct main pair. Original diameter is a feasible upper bound. K constraints monotonically relax, so integer binary search yields the least attainable diameter in<=50decisions.",
+    "copyMoveAndExceptions": "Prepared vectors own all state; const queries keep all working data onstack. Constructor/defaultcopy RAII unwinds partial allocation, assignment copies before swap, move swaps with empty fields. No global mutable product state.",
+    "unconfirmedPrincipalLemmas": []
+  },
+  "validation": {
+    "normal": {
+      "checks": 8752494,
+      "preparedInputs": 10836,
+      "preparedMinimumCalls": 10843,
+      "genericFunctionCalls": 16022,
+      "originalAdapterCalls": 10826,
+      "explicitPredicateCalls": 100861,
+      "allSmallN2to5": 9324,
+      "allBinaryBranchPathsN2to6": 372,
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": 152165,
+      "floydRelaxations": 556286427,
+      "fourBoundaryEquivalences": 7009273,
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 28,
+      "stateChecks": 10023,
+      "maximumPreparedPayloadBytes": 56000000,
+      "checksum": "11498457106931259831",
+      "seconds": 4.35578,
+      "peakRSSKiB": 199244,
+      "maximumCases": [
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000,
+          "prepareAndMinimumSeconds": 0.12776
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 999999,
+          "prepareAndMinimumSeconds": 0.109772
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000500000,
+          "prepareAndMinimumSeconds": 0.126651
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000999999,
+          "prepareAndMinimumSeconds": 0.096292
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 499999000000001,
+          "prepareAndMinimumSeconds": 0.207814
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000000000000,
+          "prepareAndMinimumSeconds": 0.252767
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500001000000001,
+          "prepareAndMinimumSeconds": 0.358306
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500002000000000,
+          "prepareAndMinimumSeconds": 0.254403
+        },
+        {
+          "name": "nonuniform antipodal remainder in homogeneous cycle",
+          "n": 1000000,
+          "answer": 499999770969198,
+          "prepareAndMinimumSeconds": 0.219726
+        },
+        {
+          "name": "random edges/branches, unusably long shortcut",
+          "n": 1000000,
+          "answer": 2050524398,
+          "prepareAndMinimumSeconds": 0.192756
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0459457
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0413433
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0568961
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0387343
+        }
+      ],
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": false,
+      "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "asanUbsan": {
+      "checks": 8752494,
+      "preparedInputs": 10836,
+      "preparedMinimumCalls": 10843,
+      "genericFunctionCalls": 16022,
+      "originalAdapterCalls": 10826,
+      "explicitPredicateCalls": 100861,
+      "allSmallN2to5": 9324,
+      "allBinaryBranchPathsN2to6": 372,
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": 152165,
+      "floydRelaxations": 556286427,
+      "fourBoundaryEquivalences": 7009273,
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 28,
+      "stateChecks": 10023,
+      "maximumPreparedPayloadBytes": 56000000,
+      "checksum": "11498457106931259831",
+      "seconds": 21.7541,
+      "peakRSSKiB": 669376,
+      "maximumCases": [
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000,
+          "prepareAndMinimumSeconds": 0.61631
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 999999,
+          "prepareAndMinimumSeconds": 0.35522
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000500000,
+          "prepareAndMinimumSeconds": 0.607806
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000999999,
+          "prepareAndMinimumSeconds": 0.349884
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 499999000000001,
+          "prepareAndMinimumSeconds": 1.1178
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000000000000,
+          "prepareAndMinimumSeconds": 1.13168
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500001000000001,
+          "prepareAndMinimumSeconds": 1.27242
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500002000000000,
+          "prepareAndMinimumSeconds": 1.11625
+        },
+        {
+          "name": "nonuniform antipodal remainder in homogeneous cycle",
+          "n": 1000000,
+          "answer": 499999770969198,
+          "prepareAndMinimumSeconds": 1.12152
+        },
+        {
+          "name": "random edges/branches, unusably long shortcut",
+          "n": 1000000,
+          "answer": 2050524398,
+          "prepareAndMinimumSeconds": 0.525083
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.272575
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.243836
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.277965
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.235643
+        }
+      ],
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": true,
+      "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "normalCommand": "python3 /tmp/flowchartcp-ioi2016-shortcut-checker.py --output /tmp/flowchartcp-ioi2016-shortcut-normal.json",
+    "asanUbsanCommand": "python3 /tmp/flowchartcp-ioi2016-shortcut-checker.py --sanitize --output /tmp/flowchartcp-ioi2016-shortcut-asan.json",
+    "actualPublishedFenceExtracted": true,
+    "singleAlwaysVisibleCppFence": true,
+    "eightStandardSections": true,
+    "sameCppShaBothNativeRuns": true,
+    "allSemanticFieldsSameAcrossNormalAndSanitizer": true,
+    "oracleIndependence": {
+      "literalFloyd": "Build every original main station and only positive-length actual branch leaves as vertices. Add the candidate undirected edge to each distinct main pair, including parallel neighbouring case. Run full Floyd from the raw adjacency matrix for each graph and take max over actual vertices. No production representative reduction/normal orientation/rotated bound/sweep used.",
+      "fourBoundary": "Explicitly enumerate all i<j olddistance>K pairs and all actual shortcut endpoints. Compare direct absolute-distance expression includingc to allfour transformed inequalities; compare aggregated boxes for each endpoint to its raw Floyd diameter. Uses no production streaming extrema.",
+      "arbitraryBox": "Run actual published detail::station_pair for every sorted subset ofgrid0..5 with>=2points and all ordered sum-range endpoints-1..11/diff-range endpoints-1..7. Directly enumerate every distinct station pair. Includes boxes with continuous half-integer witnesses but no real station pair, andsame-endpoint-only zero-distance boxes.",
+      "largeHomogeneous": "For each possible span k ofequal main edgesL, enumerate shortcut cycle versus two tails. Cycle radius ismax over integerj ofmin(jL,(k-j)L+c), attained atfloor/ceil of clipped antipode. Balance tail lengths to minimize theirmax, and minimize max(tailSum+min(kL,c),maxTail+radius) over everyk. Add2d for uniform branches. Independent of rotated constraints/sweeps/binary search; crosschecked against full endpoint Floyd for1188 smaller homogeneous inputsN2..12,L1..4,d0..2,c1..9.",
+      "metamorphic": "120 main-line reflections and80 all-length scaling cases use exact cost-preserving bijections/scaling; not counted as separate literal optimum derivations."
+    },
+    "counterSemantics": {
+      "checks": "8752494 assertions, including7009273 direct-vs-four-bound endpoint comparisons. Not the count ofdistinct production inputs.",
+      "preparedInputs": "10836 explicitly counted run_case/maximum preparations; excludes API state/fault fixtures and copy constructors.",
+      "preparedMinimumCalls": "10843 calls through counted wrapper; excludes minima internally invoked by generic function/adapter and20 direct nonallocation checks.",
+      "genericFunctionCalls": "16022 successful wrapper calls; includes5000 repeated calls and200 metamorphics. Fault/invalid invocations counted separately.",
+      "originalAdapterCalls": "10826 successful counted wrappers, including4 full-N cases. Separate fault/invalid adapter invocations not added.",
+      "explicitPredicateCalls": "100861 through counted wrapper:100819 independent threshold checks plus42maximum boundary checks. Does not count predicates internal to minimum_diameter or5020state/nonallocation checks.",
+      "allSmallN2to5": "9324 networks: everygap1/2, branch0/1/2,c1/3.",
+      "allBinaryBranchPathsN2to6": "372 networks: unit main gaps, all branch0/1, c1/2/4. Overlaps some first-family cases; not falsely added into a unique-case count.",
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": "152165 endpoint-added graph occurrences across all small/random/example tests plus repeated literal metamorphic bases and homogeneous-formula selfchecks. Original-tree Floyd calls additionally contribute to556286427relaxations. Not152165uniqueinput networks.",
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "stateChecks": "10023 declared state-case units:3empty-state errors+5020valid allocation-free query/minimum checks+5000repeat calls. Other copy/state assertions contribute tochecks but notthiscounter.",
+      "allocationFailuresInjected": "28custom-bad_alloc failures at3preparation/5adapter/3copy/3copyassignment sites for eachN4/N1000000. Counts are observed under tested GCC/libstdc++, not portable allocator API promises."
+    },
+    "maximumOriginalCases": 14,
+    "maximumCases": [
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 500000
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 999999
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 2000500000
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 2000999999
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 499999000000001
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 500000000000000
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 500001000000001
+      },
+      {
+        "name": "homogeneous path/leaf/shortcut",
+        "n": 1000000,
+        "answer": 500002000000000
+      },
+      {
+        "name": "nonuniform antipodal remainder in homogeneous cycle",
+        "n": 1000000,
+        "answer": 499999770969198
+      },
+      {
+        "name": "random edges/branches, unusably long shortcut",
+        "n": 1000000,
+        "answer": 2050524398
+      },
+      {
+        "name": "all a_i equal; largest branches adjacent",
+        "n": 1000000,
+        "answer": 1999998
+      },
+      {
+        "name": "all b_i equal; largest branches adjacent",
+        "n": 1000000,
+        "answer": 1999998
+      },
+      {
+        "name": "all a_i equal; largest branches adjacent",
+        "n": 1000000,
+        "answer": 1999998
+      },
+      {
+        "name": "all b_i equal; largest branches adjacent",
+        "n": 1000000,
+        "answer": 1999998
+      }
+    ],
+    "maximumFamilies": [
+      "8uniform main gap1/1e9, branch0/1e9 andc1/1e9 combinations, independently optimized by span/tail/cycle formula",
+      "One equal main gap999999937, branch123456789,c555555557 noninteger-antipodal remainder",
+      "One random main gap1..100 andrandom branches0..1e9, endpointbranches1e9 andc1e9 exceeding total mainlength, so original diameter2e9+sumgaps cannot improve",
+      "4all-a-equal/all-b-equal cases atc1/1e9; adjacent largest branches give exact2(N-1), testing ties anddistinct indices"
+    ],
+    "zeroDistanceScope": "d_i0 means no added leaf; thresholdK0 is tested and false. Main gaps0 andshortcutc0 are invalid under original contract. Continuous edge-interior points never enter the oracle.",
+    "selfExclusionWitness": {
+      "l": [
+        10,
+        100
+      ],
+      "d": [
+        100,
+        0,
+        0
+      ],
+      "c": 1,
+      "answer": 110,
+      "why": "Optimum110 is beloworiginal210 and2*largestBranch200, so a self-eligible heavy station must be removed during the actual sweep."
+    },
+    "stateAndFault": "Const inputs unchanged; prepared state independent after callers mutate/free input arrays; copy/move/empty/reassignment/selfmove; 5000valid can_achieve+20minima underforced-allocation-failure havezeroallocationattempts; assignment failures preserve targetdecision boundary andsource. Input arrays/live allocatedbytes checked aroundfaults.",
+    "sanitizerOptions": "ASAN_OPTIONS=detect_leaks=0:halt_on_error=1; UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1; -fno-pie -no-pie. Allocation-failure unwinding independentlychecks livebytes.",
+    "timingScope": "Native full checker, not compilation. maximumCases[].prepareAndMinimumSeconds actually includes preparation, minimum andthe three explicit threshold checks(expected-1/expected/INT64_MAX); that conservative timing label is clarified here. PeakRSS includes test oracles, multiple simultaneously owned prepared values/copies, caller inputs andsanitizer quarantine.",
+    "maximumNormalCombinedMeasuredSeconds": 0.358306,
+    "independentReviewPending": true,
+    "researchPrototypeNotReclassifiedAsProductionValidation": true,
+    "unconfirmedPrincipalLemmas": [],
+    "sanitizerCoordination": "Announced start before running after Railroad peer completion, then received root Paint-peer slot message. At nextpoll Shortcut had alreadycompleted successfully21.7541s/RSS669376KiB. Root notified; no furtherlargeASanstarted. Start/end wall times are not available, so no claim that the two agents did not overlap."
+  },
+  "initialAuditPreservation": {
+    "corpusId": "ioi-2016",
+    "problemId": "ioi2016_shortcut",
+    "auditFile": "data/corpus-audits/ioi-2016.json",
+    "frozenInitialAuditPath": "/tmp/flowchartcp-ioi2016-audit.json",
+    "frozenInitialAuditSha256": "d69b49d6672dcbf4145ef36c7d265bc135fb848a3561f4523677bd76d7318b83",
+    "initialRowCanonicalSha256": "653128f6bb85281379e7900f1ec8058a5c69b8482afbdc05b373c8c4c4f634ab",
+    "canonicalHashFormat": "UTF8 ensure_ascii=false sort_keys=true separators=(comma,colon)",
+    "initialStatusCanonicalSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialResearchPositive": true,
+    "initialResearch6Of6Unchanged": true,
+    "initialCoverage0Of6Unchanged": true,
+    "initialCompletedApi0Of6Unchanged": true,
+    "initialRowsAndArtifactsModified": false,
+    "newResearchReviewNeeded": false,
+    "oldResearchProbeSortingPerDecisionNotClaimedProduction": true,
+    "original19FenceScopeChecksRemainScopeOnly": true,
+    "resolutionOnlyAfterIndependentReviewAndRealArticleReferenceRootWalk": true
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回研究positive6/API0/coverage0を保持。事前二整列と各線形判定の全域CPP、自己除外/四境界c/離散端点/64bitの完全証明、実fence独立oracleと通常ASan/別peer/特徴rootwalkとreferenceの実登録後にresolutionのみ追加する。",
+    "notRegistered": true
+  },
+  "artifactSha256": {
+    "article.mdx": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e",
+    "checker.py": "2557fd242836399f93cedd65f997847de166764626940cfa1a7e943a3aab3d32",
+    "normal.json": "e139abfb911dc5bca966235783f824756f9222875674239d9def63b488aeeb58",
+    "asan.json": "8ece46d5e633ed99113dea855def6513cd020c2c73888743aa690766d96d8f71",
+    "authorArticle": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e",
+    "authorChecker": "2557fd242836399f93cedd65f997847de166764626940cfa1a7e943a3aab3d32",
+    "authorSidecar": "ef7439d204bffb1d00f3c69dbfa362a2a2db30d4b56fe2ba82eb819f38525abf",
+    "publishedArticle": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e",
+    "publishedChecker": "3e19e5b0563ed3e9ad6ef4dc6638991d20c5041e85d152945ae0aba72954ee51"
+  },
+  "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+  "sharedFilesModified": false,
+  "editorNotes": {
+    "bodyContainsNoResearchCountersOrAcquisitionHistory": true,
+    "unknownDifficultyNull": true,
+    "contestDatePrecisionHonest": true,
+    "optionalDominanceAlternativeUnconfirmed": true,
+    "noProblemSpecificExplanationPage": true,
+    "noPublishingOrCommit": true
+  },
+  "statusAtAuthorFreeze": "ready-for-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/path-shortcut-diameter-rotated-constraints-extrema-sweep.mdx",
+    "checker": "scripts/check_path_shortcut_diameter_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "network-connection",
+      "path-shortcut-diameter",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": {
+      "article": "none;full MDX/CPP preserved",
+      "checker": "only default article path to repository published file",
+      "independentProbe": "only default article path to repository published file",
+      "feature": "add common url/techniqueIds/evidenceUrl/verification/date/cutoff aliases while keeping author proposal fields",
+      "flow": "case explains structure/legal endpoints;representative and64bit implementation remain in article",
+      "resolution": "protect actual five existing resolutions;all initial six/status preserved",
+      "baseline": "v2 after Messy visual explanation fix;v1 retained separately"
+    },
+    "featureSchemaNormalization": {
+      "techniqueIds": [
+        "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+      ],
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "verification": "independent-analysis",
+      "sourceDate": "2016-08-14",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "cutoffVerification": "contest-before-cutoff"
+    },
+    "flowWordingNormalization": {
+      "originalGuards": [
+        {
+          "id": "path-one-branch",
+          "title": "一本の主線の各駅に、高々一本の行き止まりの枝が付きますか？",
+          "explanation": "主線は正の長さの道です。枝の長さ0は枝がなく、その主駅自体が代表点になることを表します。"
+        },
+        {
+          "id": "bounds",
+          "title": "主駅は2〜100万、主線と近道の長さは1〜10億、枝は0〜10億の整数ですか？",
+          "explanation": "最小の直径のみを返します。座標の累積、和と差の境界、答えを64bitで計算します。"
+        }
+      ],
+      "reason": "Keep representative reduction and64bit implementation in article;graph explains given structure and legal endpoint locations."
+    },
+    "baselineEpochs": {
+      "active": "v2",
+      "unchangedCounts": {
+        "articles": 513,
+        "graphs": 480,
+        "nodes": 3751,
+        "walks": 534,
+        "corpora": 10
+      },
+      "priorFilesPreserved": true,
+      "reason": "Messy newly added bounds description shortened after actual image inspection found ellipsis;no Shortcut registration or former480graph semantic change.",
+      "baselinePrefix": "/tmp/flowchartcp-before-ioi2016-shortcut-v2-",
+      "priorPrefix": "/tmp/flowchartcp-before-ioi2016-shortcut-"
+    }
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "date": "2026-10-15",
+      "allEightSectionsAndEntireCppRead": true,
+      "completeCheckerAndIndependentProbeRead": true,
+      "sourceScopeAndOfficialSelectedProofReviewed": true,
+      "sourceReading": "English original3p/officialSolutions5–7p/Day1Notice1p/taskindex full text. Peer reread Japanese3p. No PDF visual or original header byte inspection claim.",
+      "materialFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "independentReviewSha256": "2649dcd5252a9c4ecc30952c49f45237c18f9bc36e33c325191c318dc70a38c3",
+      "rootNormal": {
+        "checks": 8752494,
+        "preparedInputs": 10836,
+        "preparedMinimumCalls": 10843,
+        "genericFunctionCalls": 16022,
+        "originalAdapterCalls": 10826,
+        "explicitPredicateCalls": 100861,
+        "allSmallN2to5": 9324,
+        "allBinaryBranchPathsN2to6": 372,
+        "randomAllEndpointFloydCases": 1120,
+        "literalAugmentedGraphs": 152165,
+        "floydRelaxations": 556286427,
+        "fourBoundaryEquivalences": 7009273,
+        "decisionThresholds": 100819,
+        "arbitraryDiscreteBoxes": 233415,
+        "literalStationPairsForBoxes": 982800,
+        "metamorphicChecks": 200,
+        "invalidCases": 30,
+        "allocationFailuresInjected": 28,
+        "stateChecks": 10023,
+        "maximumPreparedPayloadBytes": 56000000,
+        "checksum": "11498457106931259831",
+        "seconds": 5.07441,
+        "peakRSSKiB": 199208,
+        "maximumCases": [
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500000,
+            "prepareAndMinimumSeconds": 0.157661
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 999999,
+            "prepareAndMinimumSeconds": 0.136831
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 2000500000,
+            "prepareAndMinimumSeconds": 0.168885
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 2000999999,
+            "prepareAndMinimumSeconds": 0.139788
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 499999000000001,
+            "prepareAndMinimumSeconds": 0.297429
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500000000000000,
+            "prepareAndMinimumSeconds": 0.323914
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500001000000001,
+            "prepareAndMinimumSeconds": 0.256259
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500002000000000,
+            "prepareAndMinimumSeconds": 0.264195
+          },
+          {
+            "name": "nonuniform antipodal remainder in homogeneous cycle",
+            "n": 1000000,
+            "answer": 499999770969198,
+            "prepareAndMinimumSeconds": 0.270149
+          },
+          {
+            "name": "random edges/branches, unusably long shortcut",
+            "n": 1000000,
+            "answer": 2050524398,
+            "prepareAndMinimumSeconds": 0.232424
+          },
+          {
+            "name": "all a_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.069847
+          },
+          {
+            "name": "all b_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.051746
+          },
+          {
+            "name": "all a_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.0664331
+          },
+          {
+            "name": "all b_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.0485463
+          }
+        ],
+        "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+        "sanitized": false,
+        "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+      },
+      "peerAsanUbsan": {
+        "checks": 8752494,
+        "preparedInputs": 10836,
+        "preparedMinimumCalls": 10843,
+        "genericFunctionCalls": 16022,
+        "originalAdapterCalls": 10826,
+        "explicitPredicateCalls": 100861,
+        "allSmallN2to5": 9324,
+        "allBinaryBranchPathsN2to6": 372,
+        "randomAllEndpointFloydCases": 1120,
+        "literalAugmentedGraphs": 152165,
+        "floydRelaxations": 556286427,
+        "fourBoundaryEquivalences": 7009273,
+        "decisionThresholds": 100819,
+        "arbitraryDiscreteBoxes": 233415,
+        "literalStationPairsForBoxes": 982800,
+        "metamorphicChecks": 200,
+        "invalidCases": 30,
+        "allocationFailuresInjected": 28,
+        "stateChecks": 10023,
+        "maximumPreparedPayloadBytes": 56000000,
+        "checksum": "11498457106931259831",
+        "seconds": 21.4792,
+        "peakRSSKiB": 669376,
+        "maximumCases": [
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500000,
+            "prepareAndMinimumSeconds": 0.607686
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 999999,
+            "prepareAndMinimumSeconds": 0.347149
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 2000500000,
+            "prepareAndMinimumSeconds": 0.591654
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 2000999999,
+            "prepareAndMinimumSeconds": 0.337652
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 499999000000001,
+            "prepareAndMinimumSeconds": 1.11221
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500000000000000,
+            "prepareAndMinimumSeconds": 1.09239
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500001000000001,
+            "prepareAndMinimumSeconds": 1.11265
+          },
+          {
+            "name": "homogeneous path/leaf/shortcut",
+            "n": 1000000,
+            "answer": 500002000000000,
+            "prepareAndMinimumSeconds": 1.11211
+          },
+          {
+            "name": "nonuniform antipodal remainder in homogeneous cycle",
+            "n": 1000000,
+            "answer": 499999770969198,
+            "prepareAndMinimumSeconds": 1.10266
+          },
+          {
+            "name": "random edges/branches, unusably long shortcut",
+            "n": 1000000,
+            "answer": 2050524398,
+            "prepareAndMinimumSeconds": 0.526293
+          },
+          {
+            "name": "all a_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.277091
+          },
+          {
+            "name": "all b_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.236687
+          },
+          {
+            "name": "all a_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.273724
+          },
+          {
+            "name": "all b_i equal; largest branches adjacent",
+            "n": 1000000,
+            "answer": 1999998,
+            "prepareAndMinimumSeconds": 0.244388
+          }
+        ],
+        "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+        "sanitized": true,
+        "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+      },
+      "rootAsanReexecuted": false,
+      "allDeterministicAuthorPeerRootNormalFieldsMatch": true,
+      "normalizationAtIntegration": {
+        "article": "none;full MDX/CPP preserved",
+        "checker": "only default article path to repository published file",
+        "independentProbe": "only default article path to repository published file",
+        "feature": "add common url/techniqueIds/evidenceUrl/verification/date/cutoff aliases while keeping author proposal fields",
+        "flow": "case explains structure/legal endpoints;representative and64bit implementation remain in article",
+        "resolution": "protect actual five existing resolutions;all initial six/status preserved",
+        "baseline": "v2 after Messy visual explanation fix;v1 retained separately"
+      },
+      "limitations": [
+        "Actual shortcut.h bytes not retrieved;derived original API exact-type/native checks only.",
+        "Official extracted equations omit c;article independently derives all four correct c-inclusive bounds.",
+        "Unused dominance-filter alternative not claimed verified.",
+        "No unnecessary third sanitizer repeat;frozen author and peer both modes pass,root actual normal reproduced."
+      ]
+    },
+    "normal": {
+      "checks": 8752494,
+      "preparedInputs": 10836,
+      "preparedMinimumCalls": 10843,
+      "genericFunctionCalls": 16022,
+      "originalAdapterCalls": 10826,
+      "explicitPredicateCalls": 100861,
+      "allSmallN2to5": 9324,
+      "allBinaryBranchPathsN2to6": 372,
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": 152165,
+      "floydRelaxations": 556286427,
+      "fourBoundaryEquivalences": 7009273,
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 28,
+      "stateChecks": 10023,
+      "maximumPreparedPayloadBytes": 56000000,
+      "checksum": "11498457106931259831",
+      "seconds": 5.07441,
+      "peakRSSKiB": 199208,
+      "maximumCases": [
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000,
+          "prepareAndMinimumSeconds": 0.157661
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 999999,
+          "prepareAndMinimumSeconds": 0.136831
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000500000,
+          "prepareAndMinimumSeconds": 0.168885
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000999999,
+          "prepareAndMinimumSeconds": 0.139788
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 499999000000001,
+          "prepareAndMinimumSeconds": 0.297429
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000000000000,
+          "prepareAndMinimumSeconds": 0.323914
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500001000000001,
+          "prepareAndMinimumSeconds": 0.256259
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500002000000000,
+          "prepareAndMinimumSeconds": 0.264195
+        },
+        {
+          "name": "nonuniform antipodal remainder in homogeneous cycle",
+          "n": 1000000,
+          "answer": 499999770969198,
+          "prepareAndMinimumSeconds": 0.270149
+        },
+        {
+          "name": "random edges/branches, unusably long shortcut",
+          "n": 1000000,
+          "answer": 2050524398,
+          "prepareAndMinimumSeconds": 0.232424
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.069847
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.051746
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0664331
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0485463
+        }
+      ],
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": false,
+      "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "peerAsanUbsan": {
+      "checks": 8752494,
+      "preparedInputs": 10836,
+      "preparedMinimumCalls": 10843,
+      "genericFunctionCalls": 16022,
+      "originalAdapterCalls": 10826,
+      "explicitPredicateCalls": 100861,
+      "allSmallN2to5": 9324,
+      "allBinaryBranchPathsN2to6": 372,
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": 152165,
+      "floydRelaxations": 556286427,
+      "fourBoundaryEquivalences": 7009273,
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 28,
+      "stateChecks": 10023,
+      "maximumPreparedPayloadBytes": 56000000,
+      "checksum": "11498457106931259831",
+      "seconds": 21.4792,
+      "peakRSSKiB": 669376,
+      "maximumCases": [
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000,
+          "prepareAndMinimumSeconds": 0.607686
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 999999,
+          "prepareAndMinimumSeconds": 0.347149
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000500000,
+          "prepareAndMinimumSeconds": 0.591654
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000999999,
+          "prepareAndMinimumSeconds": 0.337652
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 499999000000001,
+          "prepareAndMinimumSeconds": 1.11221
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000000000000,
+          "prepareAndMinimumSeconds": 1.09239
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500001000000001,
+          "prepareAndMinimumSeconds": 1.11265
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500002000000000,
+          "prepareAndMinimumSeconds": 1.11211
+        },
+        {
+          "name": "nonuniform antipodal remainder in homogeneous cycle",
+          "n": 1000000,
+          "answer": 499999770969198,
+          "prepareAndMinimumSeconds": 1.10266
+        },
+        {
+          "name": "random edges/branches, unusably long shortcut",
+          "n": 1000000,
+          "answer": 2050524398,
+          "prepareAndMinimumSeconds": 0.526293
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.277091
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.236687
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.273724
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.244388
+        }
+      ],
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": true,
+      "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "rootAsanReexecuted": false,
+    "additionalReviewFile": "research/probes/path-shortcut-diameter-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

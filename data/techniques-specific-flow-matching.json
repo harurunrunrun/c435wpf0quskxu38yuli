@@ -1,0 +1,447 @@
+[
+  {
+    "id": "mandatory-matching-lower-bounds",
+    "title": "必ず組ませる頂点を、流量の下限にして満たす",
+    "summary": "任意の頂点を未使用にできる対応でも、指定された頂点だけは確実に一組へ入れる。",
+    "aliases": [
+      "mandatory vertices matching",
+      "lower bounded circulation",
+      "必須頂点のマッチング",
+      "下限付き循環流"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "matching",
+      "lower-bound-flow"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc285/tasks/abc285_g",
+      "https://atcoder.jp/contests/abc285/editorial/5500"
+    ]
+  },
+  {
+    "id": "matrix-margin-lower-offset",
+    "title": "行列の各要素の下限を先に引き、行和と列和を流量で復元する",
+    "summary": "下限のために必ず入る量を行と列の合計から差し引き、残りだけを割り振る。",
+    "aliases": [
+      "bounded matrix reconstruction",
+      "transportation with margins",
+      "行列の和の復元",
+      "下限の差し引き"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "max-flow"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://onlinejudge.org/external/110/11082.pdf"
+    ]
+  },
+  {
+    "id": "vertex-disjoint-through-pivot",
+    "title": "指定頂点を通る単純パスを、頂点を共有しない二本の経路に分ける",
+    "summary": "経由点から両端への経路が重ならないことを、頂点の入口と出口の間の容量で表す。",
+    "aliases": [
+      "vertex splitting",
+      "internally vertex disjoint paths",
+      "経由点の単純パス",
+      "頂点分割"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "max-flow"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc318/tasks/abc318_g",
+      "https://atcoder.jp/contests/abc318/editorial/7086"
+    ]
+  },
+  {
+    "id": "matching-profit-each-cardinality",
+    "title": "組数ごとの最大利益を、一組ずつ増やす残余経路からまとめて求める",
+    "summary": "同じ左右資源を使わない組合せで、正確にk組選ぶ答えをすべて得る。",
+    "aliases": [
+      "cardinality constrained weighted matching",
+      "min cost flow slope",
+      "サイズ別最大重みマッチング",
+      "組数別利益"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "min-cost-flow",
+      "dijkstra-potential-reweight"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc247/tasks/abc247_g",
+      "https://atcoder.jp/contests/abc247/editorial/3770"
+    ]
+  },
+  {
+    "id": "dag-path-cover-vertex-disjoint",
+    "title": "時刻の決まった仕事を、前後に一つずつつなぎ最小人数に分ける",
+    "summary": "一人が続けて実行できる仕事の辺を作り、各仕事の前任と後任を高々一つにする。",
+    "aliases": [
+      "DAG minimum path partition",
+      "minimum staff scheduling",
+      "vertex disjoint path cover",
+      "最小パス被覆",
+      "固定時刻の配送"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "matching"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2251"
+    ]
+  },
+  {
+    "id": "rectangle-rook-flow",
+    "title": "行と列を独立に選べる駒の配置を、駒の中央の容量一本で制限する",
+    "summary": "長方形内の候補マスを全列挙せず、行から駒、駒から列へ割当をつなぐ。",
+    "aliases": [
+      "rectangle token assignment",
+      "two resources one object flow",
+      "矩形候補の駒配置",
+      "行と列の同時割当"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "max-flow"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc205/tasks/abc205_f",
+      "https://atcoder.jp/contests/abc205/editorial/2081"
+    ]
+  },
+  {
+    "id": "translated-point-matching",
+    "title": "移動前後の点を、少数の移動先だけ照合して一対一に対応させる",
+    "summary": "全点対の距離を調べず、許された変位を足した座標だけを辞書で引く。",
+    "aliases": [
+      "sparse geometric matching",
+      "translated point correspondence",
+      "移動前後の対応",
+      "少数変位の照合"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "matching"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/typical90/tasks/typical90_by"
+    ]
+  },
+  {
+    "id": "perfect-matching-forced-scc",
+    "title": "全ての完全対応に共通する組を、入替え可能な閉路から判定する",
+    "summary": "一つの完全対応を基準に、辺を外せるかを交互閉路と強連結成分でまとめて調べる。",
+    "aliases": [
+      "forced edges in perfect matching",
+      "allowed matching edges alternating SCC",
+      "完全対応の必須辺",
+      "交互閉路"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "matching",
+      "scc"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://onlinejudge.org/external/6/663.pdf"
+    ]
+  },
+  {
+    "id": "maximum-profit-closure",
+    "title": "選ぶと別の対象も必要になる利益最大化を、含意を切れないカットへ直す",
+    "summary": "正負の利益を失う費用に変え、選択の依存関係に十分大きい容量を置く。",
+    "aliases": [
+      "maximum weight closure",
+      "profit closure min cut",
+      "最大重み閉包",
+      "含意付き選択"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "max-flow"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/arc085/tasks/arc085_c",
+      "https://img.atcoder.jp/arc085/editorial.pdf"
+    ]
+  },
+  {
+    "id": "grid-corridor-cover-matching",
+    "title": "横か縦の通路で全マスを覆う選択を、二部の頂点被覆へ直す",
+    "summary": "空マスを横通路と縦通路の交点として扱い、各交点のどちらかを選ぶ。",
+    "aliases": [
+      "grid corridor minimum cover",
+      "camera placement vertex cover",
+      "通路の最小被覆",
+      "二部頂点被覆の復元"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "prerequisites": [
+      "matching"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc274/tasks/abc274_g",
+      "https://atcoder.jp/contests/abc274/editorial/5084"
+    ]
+  },
+  {
+    "id": "general-matching-blossom-contraction",
+    "title": "奇閉路を含む組合せで組数を最大にするときは、交互路の奇閉路を縮める",
+    "summary": "同じ頂点を二度使わず辺を選ぶ問題で、二部に分けられない部分を縮約し、増加路の探索を続ける。",
+    "family": "木・グラフ",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "General Graph Maximum Cardinality Matching",
+      "Edmonds Blossom Contraction",
+      "Matching on General Graph",
+      "一般グラフの最大マッチング",
+      "奇閉路縮約による増加路探索"
+    ],
+    "prerequisites": [
+      "matching",
+      "exchange-argument"
+    ],
+    "sources": [
+      "https://judge.yosupo.jp/problem/general_matching",
+      "https://github.com/yosupo06/library-checker-problems/blob/master/graph/general_matching/task.md",
+      "https://www.math.u-szeged.hu/~hajnal/courses/MSc_Diszkret/edmonds65-blossom.pdf"
+    ]
+  },
+  {
+    "id": "maximal-threshold-matching-sweep-dp",
+    "aliases": [
+      "Maximal Threshold Matching Sweep DP",
+      "Sleeping Cows",
+      "Ferrers Graph Maximal Matching Count",
+      "大小条件での極大対応の計数",
+      "未使用の左対象を残したかのフラグ"
+    ],
+    "family": "対応・流量・選択",
+    "prerequisites": [
+      "state-design",
+      "dp-open-groups-gap-cost"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1068",
+      "https://usaco.org/current/data/sol_prob1_platinum_dec20.html"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "大小条件の極大対応を数えるときは、未対応を残したかを一ビットで持つ",
+    "summary": "値の順に対象を処理し、対応を待つ個数と、今後の空きを許さない条件だけを残す。"
+  },
+  {
+    "id": "pareto-pruned-max-rectangle-monotone-partner",
+    "aliases": [
+      "Pareto Pruned Maximum Rectangle Profit",
+      "Money for Nothing Monotone Partner Divide and Conquer",
+      "二差の積の最大利益と支配点除去",
+      "最適な相手の単調性"
+    ],
+    "family": "選択・順序・交換",
+    "prerequisites": [
+      "dp-state-dominance",
+      "dp-monotone-split",
+      "monge-smawk"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=7",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=4"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "二つの差の積で決まる最大利益は、劣る候補を除いて最適な相手の範囲を絞る",
+    "summary": "価格と期間の両方で劣る点を消し、残った二群の最適な組が順序を逆転しないことを使う。"
+  },
+  {
+    "id": "median-ticket-extreme-selection-round-decomposition",
+    "title": "各色から毎回一枚選び、中央値からの絶対差和を最大にする",
+    "summary": "各色の小さい値と大きい値を選び、正側へ交換する非増加の増分を最大ヒープで取り、残り正側枚数の大きい色から各回へ割り振る。",
+    "aliases": [
+      "IOI 2020 Carnival Tickets",
+      "median deviation round allocation",
+      "色別チケット 正負 両端 ヒープ 再配分"
+    ],
+    "family": "対応・流量・選択",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-tickets-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/tickets-solutions-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi20/contest/",
+      "https://ioi.te.lv/locations/ioi20/contest/day1/Tickets/LTU.pdf",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ]
+  },
+  {
+    "id": "two-source-concave-flow-mixture-decomposition",
+    "title": "二始点の混合流は、三つの最大流で配分を決め、同方向の合計流から分解する",
+    "summary": "共有容量と種類別保存則を三本のカット制約へ直し、十進の重みを整数比で保って最適な二種類の流れを構築する。",
+    "aliases": [
+      "ICPC2017 Son of Pipe Stream two source mixture",
+      "two commodity shared capacity no opposing flow",
+      "rational Cobb Douglas maxflow decomposition",
+      "二始点 混合流 幾何平均 正規化 整数比 再分解"
+    ],
+    "family": "ネットワークフロー",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "max-flow",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=19",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=9"
+    ]
+  },
+  {
+    "id": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+    "title": "直線上の全点を異色の点につなぐ最小費用を求める",
+    "summary": "各点を何本にも使える配線で、隣接する同色のまとまりだけを結ぶ。境界の一点共有を許すDPを、二方向の最小値で線形時間にする。",
+    "aliases": [
+      "IOI 2017 Wiring",
+      "line bichromatic edge cover monochromatic blocks",
+      "一点共有を許す境界DP",
+      "直線の赤青点を全て覆う配線"
+    ],
+    "family": "直線上の二色の点を覆う最小費用",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  }
+]

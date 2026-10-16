@@ -1,0 +1,90 @@
+---
+title: "区間ANDを指定する配列は、必要な1だけを置いて0の条件を確かめる"
+description: "区間全体に必要なビットを差分で重ね、最小の候補を作って全ての条件を検査する。"
+techniqueId: range-and-forced-bits
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+未知の非負整数列に対し、「区間の全要素をANDした値」をいくつも指定される。区間ごとに独立して値を置くと、重なった場所で以前の条件を壊してしまう。
+
+## 考え方
+
+一つのビットを取り出す。指定値が1なら、その区間の全ての位置を1にする必要がある。一方、指定値が0なら、区間の少なくとも一か所が0であればよい。
+
+まず1を要求する区間だけを差分配列へ加算する。累積値が正の位置を1、それ以外を0とする。これは、必要な1を全て含み、それ以外の1を置かない候補になる。
+
+次に候補の1の個数の累積和を作る。0を要求する区間が全部1で埋まっていれば不可能。そうでなければ、そのビットの条件は全て満たす。全ビットで同じ処理を行い、位置ごとに結果を合成する。
+
+## 適用条件
+
+条件は非空区間のANDの**等式**であり、任意の成立する配列を一つ求める。数値の和・各要素の上限・1の総数などが別に指定される場合、この最小候補だけで十分とは限らない。解の個数もこの方法では数えられない。
+
+掲載実装は0始まりの半開区間 $[l,r)$、$1\le N\le200000$、条件20万個以下、ビット幅 $1\le B\le64$。各値は $B$ ビットに収まる符号なし整数で、負数は扱わない。条件がなければ全要素0を返す。64ビット幅でも最上位のビットを扱い、64桁のシフトは行わない。
+
+## なぜ正しいか
+
+任意の解を $A$、強制された1だけを持つ候補を $C$ とする。各位置・各ビットで $C$ の1は必ず $A$ でも1なので、$C$ は全ての解に含まれるビットだけを持つ。
+
+1を指定する区間では、全ての位置が強制されるため候補も成立する。0を指定する区間に候補の0が残れば、その条件も成立する。反対に候補で既に全部1なら、その1は全ての解に強制されており、どの解でも0を残せない。したがって候補の失敗は解が存在しないことを意味する。
+
+## 計算量
+
+各条件の区間を直接走査して1を置き、再び走査して検査すると、時間 $O(BNM)$、追加空間 $O(N)$。差分と累積個数で一ビットずつ処理すれば時間 $O(B(N+M))$、追加空間 $O(N)$。全ビット分の二次元差分配列を保存する必要はない。固定64ビットの機械整数ではビット演算を定数時間とする。
+
+## 実装
+
+```cpp
+#include <cstdint>
+#include <optional>
+#include <stdexcept>
+#include <vector>
+struct RangeAndRequirement {
+    int left, right;
+    std::uint64_t value;
+};
+std::optional<std::vector<std::uint64_t>> construct_range_and(
+    int n, const std::vector<RangeAndRequirement>& requirements, int bits=30) {
+    if(n<1 || n>200000 || requirements.size()>200000 || bits<1 || bits>64)
+        throw std::invalid_argument("range");
+    for(const auto& q:requirements) {
+        if(q.left<0 || q.left>=q.right || q.right>n ||
+           (bits<64 && (q.value>>bits)!=0))
+            throw std::invalid_argument("requirement");
+    }
+    std::vector<std::uint64_t> answer(n);
+    for(int b=0;b<bits;++b) {
+        std::vector<int> difference(n+1), prefix(n+1);
+        for(const auto& q:requirements) if((q.value>>b)&1U) {
+            ++difference[q.left]; --difference[q.right];
+        }
+        int active=0;
+        for(int i=0;i<n;++i) {
+            active+=difference[i];
+            bool one=active>0;
+            prefix[i+1]=prefix[i]+one;
+            if(one) answer[i]|=std::uint64_t{1}<<b;
+        }
+        for(const auto& q:requirements) {
+            if(((q.value>>b)&1U)==0 &&
+               prefix[q.right]-prefix[q.left]==q.right-q.left)
+                return std::nullopt;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [長方形への加算を四隅に記録する](/flowchartcp/techniques/difference-2d-corners/)
+- [少数の整数のOR条件は、各ビットの割当数を別々に数えて掛ける](/flowchartcp/techniques/bitwise-or-constraint-count/)
+
+## 参考資料
+
+- [Codeforces — Interesting Array](https://codeforces.com/problemset/problem/482/B)
+- [公式解説の Interesting Array 節](https://codeforces.com/blog/entry/14417)
+
+<TechniqueReferences techniqueId="range-and-forced-bits" />

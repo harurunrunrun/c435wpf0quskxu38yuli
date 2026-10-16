@@ -1,0 +1,90 @@
+---
+title: "区間の種類数で分割するDPは、直前の同値位置から増える候補だけへ加算する"
+description: "各切れ目の前層の値と最後の区間の種類数を持ち、新しい値の直前出現で更新範囲を決める。"
+techniqueId: partition-distinct-range-add
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+列全体をちょうど $K$ 個の非空区間へ分割し、各区間の種類数の合計を最大化したい。全ての切れ目について、最後の区間の種類数を計算し直す部分が重い。
+
+## 考え方
+
+$g$ 個へ分割する層を計算するとき、切れ目 $t$ の候補を
+
+$$V_t=dp_{g-1}(t)+D(t+1,r)$$
+
+として持つ。$D$ は最後の区間の種類数。右端へ値 $a_r$ を追加し、その直前の出現位置を $p$ とする。初出なら $p=0$。
+
+種類数が増えるのは区間の左端が $p$ より後、つまり $p\le t<r$ の候補だけである。この範囲へ1を足す。その後、非空の $g$ 区間を作れる範囲 $g-1\le t<r$ の最大値が $dp_g(r)$ になる。
+
+前の層を一度初期値として入れ、右端を伸ばすたびに範囲加算と最大値問い合わせを行う。
+
+## 適用条件
+
+区間は連続・非空で、全要素をちょうど $K$ 個へ分ける。区間の得点は異なる値の個数そのもの。値ごとの非負な重みを足す場合も、加算量をその値の重みに変えて使えるが、掲載コードは個数のみ。
+
+掲載コードは $1\le N\le35000$、$1\le K\le\min(N,50)$。値は任意の64ビット整数で、整列して同値を圧縮する。全異なる値でも、全同値でも扱う。隣接しない集合の分割や、種類数に非線形の関数を適用する場合は更新式が変わる。
+
+## なぜ正しいか
+
+新要素を含まない区間の候補は作らない。右端を含む各候補区間では、その値が既に含まれていることと $t<p$ が同値なので、種類数の増加は指定範囲に限られる。
+
+初期値を前の層の最適値とし、右端1から順番に増分を加えることで、全切れ目の $V_t$ を正しく維持する。問い合わせ範囲は前の $g-1$ 区間と最後の一区間を非空にできる切れ目を含む。そこで最大を取ることが分割DPの遷移と一致する。
+
+## 計算量
+
+区間の種類数を前計算しても、全切れ目の比較は $O(KN^2)$ 時間、費用表は $O(N^2)$ 空間。増分を候補へ配る方法は圧縮 $O(N\log N)$、DP $O(KN\log(N+1))$ 時間、$O(N)$ 補助空間。
+
+## 実装
+
+`maximum_partition_distinct_sum(a,parts)` は種類数の総和の最大を返す。AtCoder Library の区間加算・最大値を使い、到達不能な前層の値は更新しても到達不能のままにする。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+#include <atcoder/lazysegtree>
+namespace distinct_partition_detail {
+    constexpr long long NEG=-(1LL<<60);
+    long long op(long long a,long long b) {return std::max(a,b);}
+    long long e() {return NEG;}
+    long long mapping(long long f,long long x) {return x==NEG?NEG:x+f;}
+    long long composition(long long f,long long g) {return f+g;}
+    long long additive_identity() {return 0;}
+}
+long long maximum_partition_distinct_sum(const std::vector<long long>& a,int parts) {
+    using namespace distinct_partition_detail;
+    int n=int(a.size());
+    if(n<1 || n>35000 || parts<1 || parts>n || parts>50) throw std::invalid_argument("range");
+    auto values=a;std::sort(values.begin(),values.end());values.erase(std::unique(values.begin(),values.end()),values.end());
+    std::vector<int> previous(n+1),last(values.size());
+    for(int r=1;r<=n;++r) {
+        int id=std::lower_bound(values.begin(),values.end(),a[r-1])-values.begin();
+        previous[r]=last[id];last[id]=r;
+    }
+    std::vector<long long> before(n+1,NEG);before[0]=0;
+    for(int groups=1;groups<=parts;++groups) {
+        atcoder::lazy_segtree<long long,op,e,long long,mapping,composition,additive_identity> tree(before);
+        std::vector<long long> current(n+1,NEG);
+        for(int r=1;r<=n;++r) {
+            tree.apply(previous[r],r,1);
+            if(r>=groups) current[r]=tree.prod(groups-1,r);
+        }
+        before.swap(current);
+    }
+    return before[n];
+}
+```
+
+## 関連する手法
+
+[区間分割DPの最適な切れ目が単調なら分割統治する](/flowchartcp/techniques/dp-monotone-split/) ・ [区間内の同じ値の最短間隔は、連続する出現対を右端順に記録する](/flowchartcp/techniques/offline-range-equal-gap/)
+
+## 参考資料
+
+- [Codeforces：B. The Bakery（原典）](https://codeforces.com/problemset/problem/833/B)
+
+<TechniqueReferences techniqueId="partition-distinct-range-add" />

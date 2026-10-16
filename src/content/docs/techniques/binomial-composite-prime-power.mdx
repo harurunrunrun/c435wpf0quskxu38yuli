@@ -1,0 +1,124 @@
+---
+title: "合成数の法で二項係数を計算するとき、素因数だけ外して割る"
+description: "逆元を持たない階乗から素因数の指数を分離し、素数冪ごとの答えを合わせます。"
+techniqueId: binomial-composite-prime-power
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+法 $m$ が固定で、多数の $\binom nk\bmod m$ を求めます。$n$ は巨大、$m$ は比較的小さく、素数とは限りません。$n!/(k!(n-k)!)$ をそのまま逆元で割ると、分母が法の素因数を含む場合に失敗します。
+
+## 考え方
+
+$m$ を互いに素な素数冪 $q=p^e$ に分けます。各 $q$ で、階乗に含まれる $p$ の指数
+
+$$v_p(n!)=\sum_{j\ge1}\left\lfloor\frac n{p^j}\right\rfloor$$
+
+と、$p$ を全て取り除いた部分 $U(n)$ を別に求めます。指数差 $v=v_p(n!)-v_p(k!)-v_p((n-k)!)$ が $e$ 以上なら答えは 0。それ以外は
+
+$$\binom nk\equiv p^v U(n)U(k)^{-1}U(n-k)^{-1}\pmod q.$$
+
+$U(n)$ は $1,\ldots,q$ のうち $p$ の倍数を飛ばした積を前計算し、$n$ を $p$ で割りながら求めます。最後に中国剰余定理で各 $q$ の答えを合わせます。
+
+## 適用条件
+
+法を素数冪へ分解でき、それぞれ $q+1$ 要素の前計算が可能な場合に使います。掲載実装は $1\le m\le10^6$、$0\le n\le10^{18}$、$k$ は符号なし 64 bit です。$k>n$ なら 0 を返します。
+
+法が大きな素数冪なら、この表の確保はできません。逆元を取るのは $p$ を除いた部分だけです。たとえば法 8 で $\binom42=6$ を求める際、$2!$ の逆元は使えません。
+
+## なぜ正しいか
+
+整数 $1,\ldots,n$ のうち、$p$ の倍数でないものを先に掛けます。$p$ の倍数は一つずつ $p$ を外すと、$1,\ldots,\lfloor n/p\rfloor$ の階乗になります。これを繰り返すと全ての $p$ が取り除かれます。
+
+$p$ の倍数でない積は、法 $q$ の周期ごとに同じです。全周期の積は、各可逆元とその逆元を組にすると二乗が 1 になるので、周期数の偶奇だけで計算できます。残る分母は全て $q$ と互いに素であり逆元が存在します。素数冪どうしも互いに素なので、合同式の答えは法 $m$ の下で一意です。
+
+## 計算量
+
+各問い合わせで階乗の項を列挙すると $O(n)$ で、$n$ が巨大なときに実行できません。前計算は素因数分解を含め $O(\sqrt m+\sum q)$、空間は $O(\sum q)$ です。
+
+一回の問い合わせは $O(\sum_{p\mid m}\log_p(n+2)+\sum_{p\mid m}\log q)$。階乗の再帰ごとに二分累乗する必要はなく、全周期の積の偶奇を使うので、この対数時間を保ちます。
+
+## 実装
+
+`BinomialComposite table(m)` を一度作り、`table.choose(n,k)` を繰り返し呼びます。法 1 の答えは常に 0 です。前計算の内容は問い合わせに依存しません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class BinomialComposite {
+    struct PrimePower {
+        int prime,modulus,exponent;
+        vector<int> unit_prefix;
+        unsigned long long valuation(unsigned long long n) const {
+            unsigned long long total=0;
+            while(n) {n/=prime;total+=n;}return total;
+        }
+        int unit_factorial(unsigned long long n) const {
+            long long result=1;
+            while(n) {
+                if((n/modulus)&1) result=result*unit_prefix[modulus]%modulus;
+                result=result*unit_prefix[n%modulus]%modulus;
+                n/=prime;
+            }
+            return result;
+        }
+    };
+    int modulus_;
+    vector<PrimePower> factors_;
+    static int inverse(int a,int modulus) {
+        long long x=1,y=0,b=modulus;
+        while(b) {
+            long long q=a/b;long long next=a-q*b;a=b;b=next;
+            next=x-q*y;x=y;y=next;
+        }
+        assert(a==1);return (x%modulus+modulus)%modulus;
+    }
+public:
+    explicit BinomialComposite(int modulus):modulus_(modulus) {
+        assert(1<=modulus && modulus<=1000000);
+        int remaining=modulus;
+        for(int p=2;p<=remaining/p;++p) if(remaining%p==0) {
+            int power=1,exponent=0;
+            while(remaining%p==0) {remaining/=p;power*=p;++exponent;}
+            factors_.push_back({p,power,exponent,{}});
+        }
+        if(remaining>1) factors_.push_back({remaining,remaining,1,{}});
+        for(auto& f:factors_) {
+            f.unit_prefix.assign(f.modulus+1,1);
+            for(int i=1;i<=f.modulus;++i)
+                f.unit_prefix[i]=1LL*f.unit_prefix[i-1]*(i%f.prime?i:1)%f.modulus;
+        }
+    }
+    int choose(unsigned long long n,unsigned long long k) const {
+        assert(n<=1000000000000000000ULL);
+        if(k>n || modulus_==1) return 0;
+        long long result=0,combined=1;
+        for(const auto& f:factors_) {
+            auto valuation=f.valuation(n)-f.valuation(k)-f.valuation(n-k);
+            long long residue=0;
+            if(valuation<unsigned(f.exponent)) {
+                residue=f.unit_factorial(n);
+                residue=residue*inverse(f.unit_factorial(k),f.modulus)%f.modulus;
+                residue=residue*inverse(f.unit_factorial(n-k),f.modulus)%f.modulus;
+                for(unsigned long long i=0;i<valuation;++i) residue=residue*f.prime%f.modulus;
+            }
+            long long delta=(residue-result)%f.modulus;
+            if(delta<0) delta+=f.modulus;
+            delta=delta*inverse(combined%f.modulus,f.modulus)%f.modulus;
+            result+=combined*delta;combined*=f.modulus;
+        }
+        return result;
+    }
+};
+```
+
+## 関連する手法
+
+[法が互いに素でない合同式も共通因子を確認して併合する](/flowchartcp/techniques/crt-noncoprime/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/binomial_coefficient/task.md)
+
+<TechniqueReferences techniqueId="binomial-composite-prime-power" />

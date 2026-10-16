@@ -1,0 +1,58 @@
+---
+title: "直前の層しか使わないDPは配列を使い回す"
+description: "遷移の依存範囲を確認し、後で読まない層を保存しないようにします。"
+techniqueId: dp-dimension-rolling
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+遷移の依存範囲を確認し、後で読まない層を保存しないようにします。
+
+## 使う場面
+
+$dp_i[j]$ が $dp_{i-1}$ と現在の層の左側だけから決まる場合です。LCSの長さや編集距離、0-1ナップサックなどで、全層の表を作るとメモリが足りないときに使います。
+
+## 考え方
+
+LCSの長さでは、$D[i][j]$ は2文字列の接頭辞の最長共通部分列長です。文字が等しければ $D[i-1][j-1]+1$、そうでなければ $\max(D[i-1][j],D[i][j-1])$ です。参照するのは前の行と現在の行だけなので、2行を交互に使います。
+
+## 適用条件
+
+捨てる層を後で参照しないことが必要です。答えの経路や部分列を復元したい場合は、親の情報を保存する方法などが必要になります。LCSの列を省メモリで復元するには、[前後の長さから分割位置を探す方法](/flowchartcp/techniques/lcs-hirschberg-reconstruction/)を使えます。1行で更新する場合は、上書き前の左上の値を別変数に保存するなど、依存関係に合った順序で処理します。
+
+## なぜ正しいか
+
+2行版では、前の行を変更せず、現在の行を左から埋めます。各遷移で読む3つの値は、全表を保存する場合と同じ値です。次の行へ進む時点でそれ以前の行は不要なので、交換して使い回しても結果は変わりません。
+
+## 計算量
+
+文字列長が $N,M$ なら、時間は改善前後とも $O(NM)$ です。空間は $O(NM)$ から $O(\min(N,M))$ に減らせます。メモリの削減を目的とする技巧で、状態数や遷移数自体は変えません。
+
+## 実装
+
+`lcs_length(a, b)` は最長共通部分列の長さだけを返します。短い文字列を列側にして、2行の配列を持ちます。文字列そのものの復元は行いません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int lcs_length(string a,string b) {
+    if(a.size()<b.size()) swap(a,b);
+    int m=b.size(); vector<int> prev(m+1),cur(m+1);
+    for(char x:a) {
+        cur[0]=0;
+        for(int j=1;j<=m;++j)
+            cur[j]=x==b[j-1]?prev[j-1]+1:max(prev[j],cur[j-1]);
+        prev.swap(cur);
+    }
+    return prev[m];
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) ・ [ナップサックDP](/flowchartcp/techniques/knapsack/)
+
+## 参考資料
+
+- [AtCoder：E - Knapsack 2の解説・実装](https://atcoder.jp/contests/dp/editorial/17284)
+
+<TechniqueReferences techniqueId="dp-dimension-rolling" />

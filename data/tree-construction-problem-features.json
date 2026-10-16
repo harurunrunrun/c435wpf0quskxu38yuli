@@ -1,0 +1,138 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc165_f",
+    "title": "LIS on Tree",
+    "url": "https://atcoder.jp/contests/abc165/tasks/abc165_f",
+    "techniqueIds": [
+      "tree-root-path-lis-rollback"
+    ],
+    "features": [
+      "頂点に整数の値が書かれた、更新のない木である",
+      "固定した頂点1から各頂点への経路を、始点から順に読む",
+      "値が厳密に増加する最長の部分列の長さを、全ての終点で求める",
+      "頂点数は最大200000で、同じ値が複数現れてよい"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc165/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "問題文でN最大200000・値最大10^9・木・固定始点・狭義増加を確認。原典の開催日は2020年5月2日。公式PDFのF節で最小末尾DPと巻き戻しを確認。掲載コードは値を符号付き64ビット整数全域に拡張し、入退場イベントによる非再帰実装にしている。 掲載C++を抽出し、小規模な全ラベル付き木と全根で経路上の全部分集合によるLIS長と比較。同値・負値・符号付き64ビットの両端・不正木・200000頂点の鎖と星を確認。",
+    "publicationDate": "2020-05-02"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc160_f",
+    "title": "Distributing Integers",
+    "url": "https://atcoder.jp/contests/abc160/tasks/abc160_f",
+    "techniqueIds": [
+      "tree-increasing-label-reroot-ratio"
+    ],
+    "features": [
+      "木の1頂点から始め、選んだ集合に隣接する未選択頂点を一つずつ加える",
+      "全頂点を選び終えるまでの順序の個数を、全ての始点で求める",
+      "頂点を区別し、追加順に1からNの異なる番号を付ける",
+      "木は固定でN最大200000、答えの法はNより大きい素数1000000007である"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc160/tasks/abc160_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "問題文でN最大200000・木・全始点・法10^9+7を確認。原典の開催日は2020年3月28日。公式PDFは部分木の順序を多項係数で混ぜる漸化式と全方位木DPを記載するが、記事の積公式およびF(child)=F(parent)*size/(N-size)そのものは書かれていないため、公式式からの独立導出として分類する。 掲載C++を抽出し、小規模な全ラベル付き木と全根で番号の全順列による数え上げと比較。頂点1個・不正木・法以上の頂点数の拒否・200000頂点の鎖と星を確認。",
+    "publicationDate": "2020-03-28"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "1375D",
+    "title": "Replace by MEX",
+    "url": "https://codeforces.com/problemset/problem/1375/D",
+    "techniqueIds": [
+      "mex-sort-fix-positions"
+    ],
+    "features": [
+      "任意の一要素を、操作直前の配列全体のmexへ代入できる",
+      "長さN、初期値0からN、重複を許す配列を非減少にしたい",
+      "最小回数ではなく2N回以内の合法な操作列が必要"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/1375/D",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次問題で3<=N<=1000、0<=Ai<=N、重複可、操作回数2N以下、最小化不要と難易度1900を確認。公式解説entry79731は取得不能だったため、掲載する恒等列への構築と回数証明は独立導出として登録。正確な開催日は今回確認していない。 掲載C++を抽出し、N=6までの全配列で毎回のmexを素朴に再計算して合法性・恒等列への到達・2N回上限を比較。200000要素の同値列・逆順・巡回シフト、空配列と不正値を確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "612E",
+    "title": "Square Root of Permutation",
+    "url": "https://codeforces.com/problemset/problem/612/E",
+    "techniqueIds": [
+      "permutation-square-root-cycle-pairing"
+    ],
+    "features": [
+      "全要素が一度ずつ現れる順列Pが与えられる",
+      "同じ写像を二度たどった結果がPと一致する順列Qを一つ作る",
+      "解が存在しなければ不可能と答え、Nは1000000以下"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/22299",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次問題で1<=N<=10^6、入力と出力が順列、存在しなければ−1と難易度2200を確認。公式解説entry22299の612E節で、二乗による奇数サイクルの保存・偶数サイクルの二分・同じ偶数長の組分け・O(N)を確認。正確な開催日は今回確認していない。 掲載C++を抽出し、N=8までの全順列Pについて全順列Qの二乗を独立列挙した存在判定と比較。返したQの全単射性とQ[Q[i]]=P[i]、空順列・不正順列・200000要素の組になった偶数長と単独の偶数長・199999要素の奇数長を確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc256_e",
+    "title": "Takahashi's Anguish",
+    "url": "https://atcoder.jp/contests/abc256/tasks/abc256_e",
+    "techniqueIds": [
+      "functional-cycle-minimum-order-cost"
+    ],
+    "features": [
+      "各人に自分以外の相手が一人だけ指定される",
+      "相手が自分より先に呼ばれると非負の罰則を払う",
+      "全員を一度ずつ呼ぶ順序を選び、罰則の合計を最小にする",
+      "他の前後条件や位置制限はなく、人数は最大200000である"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc256/editorial/4145",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典でN最大200000、相手は自分以外、罰則は1以上10^9以下、開催日2022年6月18日を確認。公式解説で有向閉路ごとの最小罰則の和を確認。記事は入次数0の削除により順序も構築し、自己ループは厳密な前後比較に従って罰則0とする拡張を明記。掲載C++を小規模な全写像・全順序の最小罰則と比較し、負でない罰則・自己ループ・128ビット合計・200000頂点の鎖と閉路を確認。",
+    "publicationDate": "2022-06-18"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc282_d",
+    "title": "Make Bipartite 2",
+    "url": "https://atcoder.jp/contests/abc282/tasks/abc282_d",
+    "techniqueIds": [
+      "bipartite-component-edge-addition-count"
+    ],
+    "features": [
+      "重複辺も自己ループもない無向グラフが与えられる",
+      "存在しない辺を一本だけ加え、二部性を保てる頂点対を数える",
+      "各候補は元のグラフへ独立に加え、既存の色を固定する条件はない",
+      "頂点数と辺数は最大200000である"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc282/editorial/5422",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典で単純無向グラフ、NとM最大200000、各追加を元のグラフへ独立に行うこと、開催日2022年12月17日を確認。公式解説で非二部なら0、同じ成分の同色対を除く式を確認。掲載C++を6頂点までの全単純グラフについて各欠辺を実際に追加した二部判定と比較し、空グラフ・孤立点・奇閉路・200000頂点の鎖と星・不正入力を確認。",
+    "publicationDate": "2022-12-17"
+  }
+]

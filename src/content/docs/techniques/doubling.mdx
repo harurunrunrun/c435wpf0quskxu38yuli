@@ -1,0 +1,74 @@
+---
+title: "ダブリング"
+description: "2の累乗回の遷移を前計算し、多数回の反復を短い回数で処理する。"
+techniqueId: doubling
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+2の累乗回の遷移を前計算し、多数回の反復を短い回数で処理する。
+
+## 使う場面
+
+各状態からの次の状態が一つに決まるとき、$K$ 回後の状態を求めるために使う。木の $K$ 個上の祖先や、同じ関数を何度も適用した結果などがこの形になる。開始点や回数が異なる問い合わせをまとめて処理できる。
+
+## 考え方
+
+$jump[b][v]$ を、状態 $v$ から $2^b$ 回進んだ先とする。$2^{b+1}$ 回進む結果は、$2^b$ 回の遷移を二度使って求められる。
+
+問い合わせの回数 $K$ を二進数で表し、1になっているビットに対応する遷移を適用する。到達先に加えて経路の和や最大値も保存しておけば、通った部分の集計もできる。
+
+## 適用条件
+
+遷移が固定されている必要がある。時刻によって次の状態が変わる場合は、必要な時刻の情報も状態に含める。次の状態が複数ある場合は、単純なダブリングの表では扱えない。
+
+表の段数は、頂点数ではなく最大の反復回数で決める。閉路のある関数グラフでは、頂点数を大きく超える回数も指定できるため、$\log N$ 段だけでは足りない。
+
+## なぜ正しいか
+
+同じ関数を $2^b$ 回適用した結果を二度つなぐと、$2^{b+1}$ 回適用した結果になる。これで各段の表を正しく作れる。任意の非負整数 $K$ は、2の累乗の和に分解できるため、それらの遷移を合わせればちょうど $K$ 回進める。
+
+## 計算量
+
+状態数 $N$、最大回数 $K$ に対して、構築の時間・空間は $O(N\log(K+1))$、1件の問い合わせは $O(\log(K+1))$。以下の実装は64段を確保し、符号なし64ビット整数の回数を扱う。
+
+## 実装
+
+`advance(v, k)` は状態 `v` から `k` 回後の状態を返す。遷移先 `-1` は終了を表し、その後も `-1` になる。回数の型には `uint64_t` を使う。
+
+```cpp
+#include <vector>
+#include <array>
+#include <cstdint>
+#include <cassert>
+using namespace std;
+struct Doubling {
+    array<vector<int>,64> jump;
+    explicit Doubling(const vector<int>& next) {
+        int n=next.size();
+        jump[0]=next;
+        for(int u:next) assert(u==-1 || (0<=u && u<n));
+        for(int b=1;b<64;++b) {
+            jump[b].assign(n,-1);
+            for(int v=0;v<n;++v) {
+                int u=jump[b-1][v];
+                if(u!=-1) jump[b][v]=jump[b-1][u];
+            }
+        }
+    }
+    int advance(int v,uint64_t k) const {
+        assert(0<=v && v<int(jump[0].size()));
+        for(int b=0;b<64 && v!=-1;++b) if((k>>b)&1) v=jump[b][v];
+        return v;
+    }
+};
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [USACO Guide: Binary Jumping](https://usaco.guide/plat/binary-jump)
+
+<TechniqueReferences techniqueId="doubling" />

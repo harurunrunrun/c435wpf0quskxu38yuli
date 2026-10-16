@@ -1,0 +1,127 @@
+---
+title: "根から各頂点までのLISは、枝から戻るときに末尾配列を復元する"
+description: "LISの更新が変える1か所だけを記録し、兄弟の枝へ前の状態を持ち込まないようにします。"
+techniqueId: tree-root-path-lis-rollback
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の各頂点に値があり、固定した根から各頂点までの経路について、値を根側から読んだ最長増加部分列（LIS）の長さを求める場面です。各経路は親までの経路に1要素を足したものなので、共通する先頭部分の計算を使い回せます。
+
+例えば、根から分岐点までの値が `[1, 5]` で、二つの子の値が `2` と `3` なら、調べたい列は `[1, 5, 2]` と `[1, 5, 3]` です。どちらのLIS長も2です。一方の子で行った更新を取り消さずに `2` を残すと、後者に存在しない `[1, 2, 3]` を作って長さ3と誤ってしまいます。
+
+## 考え方
+
+現在の経路の値について、`tails[k]` を「長さ $k+1$ の増加部分列が取り得る末尾の最小値」とします。この配列は狭義単調増加です。
+
+頂点の値 $x$ を加えるときは、`lower_bound` で最初の $x$ 以上の位置を探します。その位置があれば $x$ に置き換え、なければ末尾へ追加します。更新後の配列長が、その頂点までのLIS長です。変わるのは1か所だけなので、次を記録します。
+
+- 置き換えたときは、位置と元の値。
+- 末尾へ追加したときは、追加したという印。
+
+子孫を全て処理したら、置き換えなら元の値へ戻し、追加なら末尾を削除します。各頂点に末尾配列全体を保存する必要はありません。
+
+再帰の代わりに「頂点に入る」「頂点から出る」のイベントをスタックに置けます。入るときに答えと復元情報を作り、出るイベントより先に子のイベントを処理します。
+
+## 適用条件
+
+木の形と頂点の値が固定で、全ての経路が同じ根から始まることが条件です。任意の二頂点間の経路や、値の変更を挟む問い合わせは、この1回の探索では扱えません。
+
+掲載実装は狭義増加を扱います。同値を後ろにつないではいけないため、`upper_bound` ではなく `lower_bound` を使います。値は符号付き64ビット整数全域を受け取り、加減算や番兵の値を使わないため、最小値・最大値も扱えます。
+
+求めるのは長さです。LISの個数や実際に選ぶ頂点の復元には、それぞれ追加の情報が必要です。空の木は受け取らず、頂点1個の木では答えは1です。
+
+## なぜ正しいか
+
+1本の列について、ある長さの増加部分列は、末尾が小さいものほど後ろにつなげる候補を多く残せます。そのため、各長さで最小の末尾だけを残せば十分です。
+
+$x$ 以上になる最初の位置を $p$ とします。$p>0$ なら一つ前の末尾は $x$ 未満なので、そこに $x$ をつなげて長さ $p+1$ の列を作れます。より長い列の末尾を $x$ にするには、直前に $x$ 未満の末尾が必要ですが、その位置以降にはありません。従って変更するのは位置 $p$ だけでよく、位置が配列の末尾を超えた場合だけ最長の長さが1増えます。
+
+探索で頂点に入る直前の配列が親までの経路を表すと仮定すると、1回の更新でその頂点までの経路を表します。子の探索後に更新を完全に取り消せば、親の状態に戻ります。これを根から繰り返すので、全頂点の答えが正しく、別の枝の値も混ざりません。
+
+## 計算量
+
+各頂点への経路を作り直して通常のLISを計算すると、一本道では合計 $O(N^2\log N)$ 時間です。末尾配列を枝ごとにコピーする方法も、一本道で $O(N^2)$ 個の要素をコピーします。
+
+復元する方法では、各頂点で二分探索を1回、取り消しを1回行うため $O(N\log(N+1))$ 時間です。隣接リスト・答え・末尾配列・探索スタックを合わせた空間は $O(N)$ です。入力が木かの検査も $O(N)$ 時間・空間に収まります。
+
+## 実装
+
+`root_path_lis(values, edges, root)` は各頂点への答えを返します。頂点番号は0始まり、`edges` は向きのない辺の一覧、`root` の省略時は0です。空の頂点列、不正な根、辺数や端点の不整合、自己ループ、閉路、平行辺、非連結は `invalid_argument` で拒否します。頂点数が `int` の範囲を超える場合は `length_error` です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> root_path_lis(const vector<long long>& values,
+        const vector<pair<int,int>>& edges, int root = 0) {
+    if (values.size() > size_t(numeric_limits<int>::max()))
+        throw length_error("too many vertices");
+    int n = int(values.size());
+    if (n == 0 || root < 0 || root >= n || edges.size() != size_t(n - 1))
+        throw invalid_argument("invalid tree size or root");
+    vector<vector<int>> g(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v)
+            throw invalid_argument("invalid edge");
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    vector<int> parent(n, -2), order{root};
+    parent[root] = -1;
+    for (size_t i = 0; i < order.size(); ++i) {
+        int v = order[i];
+        for (int u : g[v]) if (u != parent[v]) {
+            if (parent[u] != -2)
+                throw invalid_argument("cycle or parallel edge");
+            parent[u] = v;
+            order.push_back(u);
+        }
+    }
+    if (order.size() != size_t(n)) throw invalid_argument("disconnected tree");
+
+    struct Event {
+        int vertex, position;
+        long long old_value;
+        bool leaving, appended;
+    };
+    vector<Event> stack{{root, 0, 0, false, false}};
+    vector<long long> tails;
+    vector<int> answer(n);
+    tails.reserve(n);
+    while (!stack.empty()) {
+        Event event = stack.back();
+        stack.pop_back();
+        if (event.leaving) {
+            if (event.appended) tails.pop_back();
+            else tails[event.position] = event.old_value;
+            continue;
+        }
+        int v = event.vertex;
+        int p = int(lower_bound(tails.begin(), tails.end(), values[v]) - tails.begin());
+        bool appended = p == int(tails.size());
+        long long old_value = appended ? 0 : tails[p];
+        if (appended) tails.push_back(values[v]);
+        else tails[p] = values[v];
+        answer[v] = int(tails.size());
+        stack.push_back({v, p, old_value, true, appended});
+        for (int u : g[v]) if (parent[u] == v)
+            stack.push_back({u, 0, 0, false, false});
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [LISの長さと個数を同時に求める](/flowchartcp/techniques/lis-length-count-monoid/)：長さごとの末尾だけでは個数を保存できない場合。
+- [LISに使える位置と必須の位置を判定する](/flowchartcp/techniques/lis-through-each-position/)：1本の列の各位置を分類する場合。
+- [追加した数のXOR基底を、行の記録で巻き戻す](/flowchartcp/techniques/linear-basis-rollback/)：探索の枝を移る前に、少数の変更を取り消す同じ考え方。
+
+## 参考資料
+
+- [AtCoder ABC165 F：LIS on Tree](https://atcoder.jp/contests/abc165/tasks/abc165_f) — 固定した根から全頂点への経路について、狭義増加部分列の長さを求める原典。
+- [AtCoder ABC165公式解説、F節](https://img.atcoder.jp/abc165/editorial.pdf) — 最小末尾のDPと、変更位置・元の値を記録して戻す方法。
+
+<TechniqueReferences techniqueId="tree-root-path-lis-rollback" />

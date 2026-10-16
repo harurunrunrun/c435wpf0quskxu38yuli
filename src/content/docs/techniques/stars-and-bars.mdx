@@ -1,0 +1,59 @@
+---
+title: "単調な列を差分にして非負整数の和を数える"
+description: "非減少列の両端と差分を取り、和が固定された非負整数列に置き換えます。"
+techniqueId: "stars-and-bars"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$1\le a_1\le\cdots\le a_K\le N$ を満たす列の個数を求めたいとき。順序を区別する一般の列とは違い、各値の出現回数を選ぶ問題です。
+
+## 考え方
+
+$a_1-1,a_2-a_1,\ldots,a_K-a_{K-1},N-a_K$ の $K+1$ 個は非負で、和は $N-1$ です。逆にこれらの差分から元の列を一意に復元できます。
+
+非負整数 $m$ 個の和が $S$ になる個数は、$S$ 個の印と $m-1$ 個の仕切りを並べる $\binom{S+m-1}{m-1}$。この例では $\binom{N+K-1}{K}$ になります。
+
+## 適用条件
+
+各変数に上限があると、そのまま仕切り法だけでは数えられません。正の整数なら各変数から 1 を引きます。空の列 $K=0$ は 1 通りとして別に扱えます。
+
+## なぜ正しいか
+
+印の各区間の個数と非負整数列が一対一に対応します。差分と元の非減少列も一対一なので、二重に数えることがありません。
+
+## 計算量
+
+非減少列の全列挙から、組合せ 1 回へ減らします。下の実装は階乗を作らず、$O(K+\log p)$ 時間、$O(1)$ 追加空間。多数クエリなら逆階乗の前計算が有効です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long nondecreasing_count(long long n, long long k,
+                              long long p = 1000000007) {
+    // p は素数、n>=1、k>=0、n+k-1<p、p<=2^31-1
+    assert(n >= 1 && k >= 0 && n + k - 1 < p);
+    long long numerator = 1, denominator = 1;
+    for (long long i = 1; i <= k; ++i) {
+        numerator = numerator * ((n + i - 1) % p) % p;
+        denominator = denominator * i % p;
+    }
+    long long inv = 1, a = denominator;
+    for (long long e = p-2; e; e >>= 1, a = a*a%p)
+        if (e & 1) inv = inv*a%p;
+    return numerator * inv % p;
+}
+```
+
+## 関連する手法
+
+[全ての指定文字を含む列を、欠ける文字から数える](/flowchartcp/techniques/inclusion-exclusion-forbidden/)
+
+## 参考資料
+
+- [AtCoder：多重ループ の問題文](https://atcoder.jp/contests/abc021/tasks/abc021_d)
+
+<TechniqueReferences techniqueId="stars-and-bars" />

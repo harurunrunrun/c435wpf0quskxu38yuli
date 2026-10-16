@@ -1,0 +1,71 @@
+---
+title: "Fenwick Tree"
+description: "点への加算と区間の和を、どちらも対数時間で処理する。"
+techniqueId: fenwick-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+点への加算と区間の和を、どちらも対数時間で処理する。
+
+## 使う場面
+
+配列の値を更新しながら区間和を求めるときに使う。累積和を更新のたびに作り直す必要がなくなる。値の出現回数の管理、転倒数、オフラインの区間集計にもよく使われる。
+
+## 考え方
+
+配列をいくつかの区間に分け、それぞれの和を保存する。内部の添字 $i$ は1から数え、$i$ の最下位の1ビットで表される長さの区間を担当する。
+
+点への加算では、その点を含む保存区間に加算する。先頭からの和を求めるときは、重ならない区間に分解して足す。任意の区間和は、二つの先頭からの和の差で求まる。BITとも呼ばれる。
+
+## 適用条件
+
+基本形では、加算とその逆演算を使える集計を扱う。点の値を代入したい場合は、現在値との差を加算する。区間の最大値や最小値を求める場合は、通常はセグメント木を使う。
+
+出現回数の累積から何番目の値かを探す拡張では、各頻度が非負である必要がある。負の値を含む配列の和に、この順位検索をそのまま適用してはいけない。
+
+## なぜ正しいか
+
+保存する各区間の和が正しいという条件を保つ。点更新では、その点を含む区間だけに差分を加える。先頭からの和の問い合わせでは、指定範囲を重複なく覆う保存区間を足すため、正しい合計になる。
+
+## 計算量
+
+0での初期化は $O(N)$。点への加算と区間和は各 $O(\log N)$、空間は $O(N)$。全要素を一つずつ加算して設定する場合の構築時間は $O(N\log N)$。
+
+## 実装
+
+外部の添字は0から数える。`add(p, x)` で位置 `p` に加算し、`sum(l, r)` で区間 $[l,r)$ の和を求める。保存する値と途中の和は符号付き64ビット整数に収まる必要がある。
+
+```cpp
+#include <vector>
+#include <cassert>
+using namespace std;
+struct Fenwick {
+    int n;
+    vector<long long> bit;
+    explicit Fenwick(int n):n(n),bit(n+1) {}
+    void add(int p,long long x) {
+        assert(0<=p && p<n);
+        for(int i=p+1;i<=n;i+=i&-i) bit[i]+=x;
+    }
+    long long prefix(int r) const {
+        assert(0<=r && r<=n);
+        long long result=0;
+        for(int i=r;i>0;i-=i&-i) result+=bit[i];
+        return result;
+    }
+    long long sum(int l,int r) const {
+        assert(0<=l && l<=r && r<=n);
+        return prefix(r)-prefix(l);
+    }
+};
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/) ・ [オフラインクエリ](/flowchartcp/techniques/offline-queries/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [AtCoder Library: Fenwick Tree](https://atcoder.github.io/ac-library/production/document_en/fenwicktree.html)
+
+<TechniqueReferences techniqueId="fenwick-tree" />

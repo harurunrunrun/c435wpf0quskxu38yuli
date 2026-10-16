@@ -1,0 +1,27 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2018_a",
+    "title": "Catch the Plane",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+    "techniqueIds": [
+      "stochastic-timetable-reverse-event-dp"
+    ],
+    "features": [
+      "出発・到着時刻が決まった有向の便が独立に運行し、成否はその便を試す時にだけ分かる。",
+      "失敗後は同じ地点で後の便を待てる。同じ出発時刻には一便だけを試し、乗換には到着が次の出発より厳密に早い必要がある。",
+      "待機と便を選び、期限までに目的地へ到着する確率を最大にする。原典は地点・便各100万以下、時刻10^18以下。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "独立な確率で実行される時刻表上で、試行時だけ運行成否を知り、失敗後は待機できる。同時刻は一便だけ、乗換は厳密な時刻差が必要。便の到着時点で後続成功値を保存し、出発時には運行後の値と失敗後の共通待機値を比較して最大の一行動を選ぶ。"
+  }
+]

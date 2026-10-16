@@ -1,0 +1,384 @@
+{
+  "techniqueId": "alternating-switch-bit-reversal-pruned-router",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-doll-article.mdx",
+    "checker": "/tmp/flowchartcp-doll-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/alternating-switch-bit-reversal-pruned-router.mdx",
+    "checker": "scripts/check_alternating_trigger_circuit_cpp.py"
+  },
+  "metadata": {
+    "id": "alternating-switch-bit-reversal-pruned-router",
+    "title": "交互に出口が変わる回路で列を再生し、全ての状態を元に戻す",
+    "summary": "出口が交互に変わる二分木を使い、指定列を再生する。不要な葉の部分木を取り除き、最初に原点へ戻るときに全てのスイッチを初期状態へ戻す。",
+    "aliases": [
+      "IOI2018 Mechanical Doll shared alternating router",
+      "bit reversal pruned complete binary switch circuit",
+      "交互スイッチ ビット反転 不要葉 刈り込み 全状態復元"
+    ],
+    "family": "状態を持つ回路の構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant",
+      "construct-last-operation"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf",
+      "https://ioi2018.jp/tasks/contest2/day2-doll.pdf",
+      "https://ioi2018.jp/tasks/contest2/LVA-doll.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "alternating-switch-bit-reversal-pruned-router",
+    "source": "IOI",
+    "problemId": "ioi2018_doll",
+    "title": "Mechanical Doll",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+    "evidence": "初期Xの二出口スイッチが通過ごとにX/Yを反転し、状態を持たないトリガーの指定列を初回原点復帰まで正確に再現し、その時に全スイッチをXへ戻す構築である。全トリガーと原点の出口を一つの分岐木へ共有し、N+1個の出力A+[0]をビット反転訪問順に置く。不要葉を空間的な先頭へ集め、全葉が不要な部分木を根への辺で置き換えると、残る状態遷移と出力を保ちながらスイッチ数をN+log2N以内へ減らせる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-09-05",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に原典5頁・公式Review2頁・後年のTomasz Idziaszek公開解答をwebで再読。主催SYR原典p4検索本文でM1..100000/N1..200000/A1..M・重複可・満点S<=N+log2Nを確認。hard400000/20000000と有効番号[-S,M]は英語原典/主催英語・LVA p5で確認。SYR p5検索本文には2000000との表記が出たため、その検索表示を20m根拠へ流用していない。画像未読なので翻訳原文の誤植か検索抽出の欠字かは断定しない。日本委員会公式日別一覧で本番2018-09-05、難度不明はnull。公式Reviewの全出口共有と不要葉集約の方針を参照し、bit反転順、削除部分木の動作射影、最後のP−1葉だけを原点へ置く初回停止、全X復元、S=sum ceil((N+1)/2^j)=N−popcount(N)+h、T=sum2^j ceil((N+1)/2^j)<=P*hを独立証明。公式Reviewと後年の著者補足を区別しindependent-analysisとした。実MDX単一可視C++20を抽出し-O2 -Wall -Wextra -Werror、通常/ASan+UBSanで検証。M1..4/N1..8全97738列、二記号N9..16全130560列をliteral toggle simulatorへ渡し、符号付き装置番号と現在出口使用後の反転だけで実行。bit反転/刈込の式を実行oracleに使わない。各回路で2周期を同じ実状態から連続実行し、全出力を逐次比較、初回0までの正確なN到着、全割当スイッチの最終X/正偶数通過、全C/X/Yの参照範囲を確認。全N1..200000では各高さの整数区画数によるS/Tとpopcount恒等式/満点/hard両予算を比較し、全Nの実配線構築を行ったとは主張しない。実配線はN1..2048全長、80二冪近傍、300乱択、最大N200000の定数/昇順周期/逆順周期/乱択4例で構築/シミュレート。最大M100000、未使用トリガー、重複、N1/二冪境界を含む。invalid builder12呼出し、交互50回再構築/値コピーの独立性、全X開始契約とN1開始Y反例を確認。117243125 checks、461464周期、15279956トリガー出力、累計180979888状態変化。最大一周期3836286変化、最大実S200012。checksum17302177393877592427。通常1.03119秒/RSS8332KiB、ASan+UBSan3.19943秒/RSS500952KiB、同一件数/checksumで成功。LeakSanitizerのみptrace環境のため無効。共有/初回auditは未変更。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2018_doll",
+    "title": "Mechanical Doll",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+    "techniqueIds": [
+      "alternating-switch-bit-reversal-pruned-router"
+    ],
+    "features": [
+      "一出口の原点とトリガー、全Xから通過ごとにX/Yを交互選択する二出口スイッチの配線を構築する。同じトリガーの反復、任意個の入口、根への再入が可能。",
+      "初回原点復帰までに指定トリガー列を正確に出し、その時に全スイッチをXへ戻す。",
+      "M1..100000/N1..200000、満点S<=N+log2N、hardS<=400000、初回復帰までの状態変化<=20000000。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-05",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "notes": "初期Xの二出口スイッチが通過ごとにX/Yを反転し、状態を持たないトリガーの指定列を初回原点復帰まで正確に再現し、その時に全スイッチをXへ戻す構築である。全トリガーと原点の出口を一つの分岐木へ共有し、N+1個の出力A+[0]をビット反転訪問順に置く。不要葉を空間的な先頭へ集め、全葉が不要な部分木を根への辺で置き換えると、残る状態遷移と出力を保ちながらスイッチ数をN+log2N以内へ減らせる。",
+    "discoveredBy": "ioi-2018",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+    "statementPages": 5,
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+    "editorialPages": 2,
+    "officialEditorialProvenance": "主催者/日本委員会が当該課題のReviewとして配布するPDF。",
+    "editorialRetrieved": true,
+    "editorialTextReview": true,
+    "editorialFullFormulaTranscriptionVerified": false,
+    "editorialLimitation": "web抽出で数式が抜ける箇所がある。画像目視や全式転記の確認とは主張せず、具体配線と主要補題を独立に証明/検査した。",
+    "authorSupplement": {
+      "url": "https://www.algonotes.com/en/solutions-ioi2018/",
+      "author": "Tomasz Idziaszek",
+      "provenance": "IOI International Committeeの部分支援を明記する後年の著者解答。競技時公式Reviewとは区別。",
+      "usedAsOracle": false
+    },
+    "numericBoundsVerified": true,
+    "numericEvidence": {
+      "MNAandFullScore": "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf#page=4",
+      "hardLimitsAndSerials": [
+        "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf#page=5",
+        "https://ioi2018.jp/tasks/contest2/day2-doll.pdf#page=5",
+        "https://ioi2018.jp/tasks/contest2/LVA-doll.pdf#page=5"
+      ]
+    },
+    "numericAcquisition": "主催配布翻訳の制約/採点検索本文および英語原典のhardlimit失敗条件。画像目視とは主張しない。",
+    "translationSearchDiscrepancy": "SYR p5の検索表示に2000000との表記があるため20mの根拠として使わない。英語原典/LVA等の20000000を採用。翻訳PDF原文と検索抽出のどちらに原因があるかは未確定だが、英語原典に基づく20mは確認済み。",
+    "sourceBounds": {
+      "M": "1..100000",
+      "N": "1..200000",
+      "A": "1..M; repeated/unused triggers allowed",
+      "switches": "hardS<=400000; full scoreS<=N+log2N",
+      "changes": "<=20000000 before first origin return",
+      "C": "M+1 entries, origin0 and trigger1..M",
+      "XandY": "same lengthS, switch-j uses indexj−1",
+      "serials": "[-S,M]",
+      "initialState": "every switchX; use current exit THEN flip",
+      "firstReturn": "exactly N trigger entries equal A; all switchesX"
+    },
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "date": "2018-09-05",
+    "day": 2,
+    "exactDateVerified": true,
+    "difficulty": null,
+    "apiContainsEntireSourceRange": true,
+    "unconfirmedIndependentLemmas": []
+  },
+  "api": {
+    "function": "AlternatingTriggerCircuit build_alternating_trigger_circuit(int trigger_count,const std::vector<int>& sequence)",
+    "result": "AlternatingTriggerCircuit{std::vector<int> trigger_exit,x,y}",
+    "originalAdapter": "build(M,A), then call answer(c.trigger_exit,c.x,c.y) once. The construction function itself performs no I/O or callback.",
+    "bounds": "1<=M<=100000,1<=N<=200000,1<=A[i]<=M",
+    "errors": "invalid_argument for invalid M, empty/oversized N, out-of-range trigger serial; standard allocation exceptions propagate.",
+    "executionContract": "start at origin0 with every switch inX. No execution-state parameter is accepted by the construction API; arbitraryY initial states are outside its guarantee.",
+    "stateReuse": "all construction state local; no static/global caches. Returned vectors are independently owned values.",
+    "numbering": "root-1; trigger_exit[0..M] all-1; switch-j exits x[j−1]/y[j−1]; all refs within[-S,M]",
+    "integerSafety": [
+      "N+1<=200001,P<=262144,h<=18",
+      "bit-reversal accumulator<=P−1; first+last<=2P<=524288",
+      "switch count<=200017; negative serials safely within int",
+      "all index/size conversions occur after source bounds validation",
+      "no large products except state-count proof; T<=4718592, exact validator uses uint64"
+    ],
+    "recursion": "balanced subdivision, at mosth+1<=19 frames; no unbounded recurrence"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "bitReversal": "At root visit t (zero based), first branch is t bit0, next is bit1, etc. Complete-tree leaf is the reversal of h bits.",
+    "projection": "In the complete tree all killed leaves return to root. Every entry into an all-killed subtree emits no trigger and returns to root. Replacing that traversal by a direct root edge removes only deleted switch changes; projected visits and states of retained switches are unchanged.",
+    "firstOrigin": "Last complete-tree visit is leafP−1, always alive. Only that leaf is0; all earlier live leaves positive and dead subtrees negative root. Hence the first origin return is exactly after all P leaf attempts and N outputs.",
+    "reset": "Each retained internal node j levels above leaves is visited2^j times per complete period, an even number. Projection preserves these counts; all retained statesX at first return.",
+    "switchCount": "RightmostK=N+1 leaves intersect exactlyceil(K/2^j) aligned blocks at levelj. S=sumceil(K/2^j)=h+sumfloor(N/2^j)=N−popcount(N)+h.",
+    "fullScore": "h=floorlog2N+1; popcountN>=1 implies S<=N+floorlog2N<=N+log2N for every N>=1.",
+    "stateChanges": "T=sum_j2^j ceil((N+1)/2^j)<=Ph<=262144*18=4718592<20000000.",
+    "hardSwitches": "S<=N+floorlog2N<=200017<400000.",
+    "repeat": "All statesX and ball at origin are the full initial state, so next cycle repeats the same A.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "constructionTime": "O(M+Nlog(N+1)); P<2(N+1), bit reversalPh and tree buildingO(S)",
+    "space": "O(M+N), including output/leaf labels; recursionO(logN)",
+    "S": "N−popcount(N)+floorlog2N+1",
+    "T": "sum(j1..h)2^j ceil((N+1)/2^j)",
+    "allInputBudgets": {
+      "maximumP": 262144,
+      "maximumHeight": 18,
+      "switchBound": 200017,
+      "stateChangeBound": 4718592,
+      "hardSwitchBudget": 400000,
+      "hardStateChangeBudget": 20000000
+    },
+    "edgeTraversalsUntilFirstReturn": "T+N+1; separate from switch changes",
+    "maximumExecuted": {
+      "N": 200000,
+      "M": 100000,
+      "S": 200012,
+      "T": 3836286
+    }
+  },
+  "flowSuggestion": {
+    "entryGraphId": "thinking",
+    "existingChoices": [
+      "operation-goals"
+    ],
+    "parentGraphId": "thinking-operation-goals",
+    "parentNodeId": "reason-task",
+    "newAnswerId": "alternating-switches",
+    "newAnswerLabel": "交互スイッチで指定列を出し、全状態を戻す",
+    "guardGraphId": "alternating-switch-router-conditions",
+    "canonicalChoices": [
+      "operation-goals",
+      "alternating-switches",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "alternating-exits",
+        "question": "各スイッチは全Xから始め、現在の出口を使った後にX/Yが交互に変わりますか？"
+      },
+      {
+        "id": "sequence-reset",
+        "question": "同じトリガーの反復と根への再入が許され、初回原点復帰で指定列と全X復元を満たしますか？"
+      },
+      {
+        "id": "bounds",
+        "question": "M10万・N20万以内で、スイッチ数N+log2Nと状態変化2000万以内を求めますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "alternating-switch-bit-reversal-pruned-router"
+    ],
+    "preserveExisting": "既存thinking-operation-goalsの選択肢/旧walkを全て維持する。共有統合はrootが行う。"
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-doll-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-doll-checker.py --sanitize",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "checks": 117243125,
+    "allSmallSequencesM1to4N1to8": 97738,
+    "allBinarySequencesN9to16": 130560,
+    "singleTriggerAllLengthsActuallyBuiltAndSimulated": 2048,
+    "powerOfTwoBoundaryLengths": 80,
+    "randomCases": 300,
+    "maximumCases": 4,
+    "allNIntegerBudgetChecks": 200000,
+    "allNIntegerBudgetScope": "N1..200000 use independent level block-count arithmetic vs popcount identity, full-score/hard S/T inequalities. This does NOT claim every one of those large circuits was built/simulated.",
+    "periods": 461464,
+    "triggerOutputs": 15279956,
+    "aggregateSwitchChangesAcrossAllPeriods": 180979888,
+    "maximumOnePeriodSwitchChanges": 3836286,
+    "maximumExecutedN": 200000,
+    "maximumExecutedM": 100000,
+    "maximumConstructedS": 200012,
+    "invalidBuilderCalls": 12,
+    "oracle": "Literal ball at serial0 follows C for origin/positive trigger, follows current X/Y for a negative switch then flips it. No bit reversal/pruning/count formula decides the next device. Stop at FIRST return0; compare every emitted trigger to A and every allocated switch state/visit parity. Run2 periods without replacing the machine state.",
+    "maximumCasesDescription": [
+      "M1/N200000 all identical trigger",
+      "M100000/N200000 increasing periodic triggers",
+      "M100000/N200000 decreasing periodic triggers",
+      "M100000/N200000 seeded random triggers"
+    ],
+    "otherChecks": [
+      "all output C/X/Y lengths and valid serial ranges, unused trigger exit assignment",
+      "actual S vs level geometric count, actual state changes vs geometric T",
+      "N1, duplicate labels, all equal labels, rare/unseen labels, every nearby power-of-two length",
+      "invalid M INT_MIN/-1/0/100001/INT_MAX; empty/200001 length; A INT_MIN/-1/0/M+1/INT_MAX",
+      "50 interleaved fresh builds, independently owned copied vectors",
+      "builder has no execution-state input; N1 allY would return origin prematurely, illustrating the explicit allX contract"
+    ],
+    "checksum": "17302177393877592427",
+    "normalSeconds": 1.03119,
+    "normalPeakRSSKiB": 8332,
+    "asanUbsan": {
+      "passed": true,
+      "checks": 117243125,
+      "checksum": "17302177393877592427",
+      "seconds": 3.19943,
+      "peakRSSKiB": 500952,
+      "leakSanitizer": false,
+      "note": "Only LeakSanitizer disabled for ptrace environment."
+    },
+    "fullReusableCppValidated": true,
+    "sharedFilesModified": false,
+    "initialAuditSnapshotModified": false,
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "自然な日本語8節と単一の常時表示完全C++20。個別問題本文/個別問題解説ページは作らない。",
+    "調査履歴/件数/実測はsidecarへ分離し、本文は技巧/証明/予算/API/コードへ集中。",
+    "metadata.sourcesの全URLを本文参考資料にも掲載。",
+    "初回IOI2018 audit/snapshot/sharedは変更せず、後続resolutionはrootで追加する。"
+  ],
+  "artifactSha256": {
+    "article": "95d536213fd20810ae198622fd8acb7edab07d73a27cf348acb5907e39a263eb",
+    "checker": "0723b54ee597ee7b8e3ecad3890e31686c9c3ebb8e73daf7999d72883ffede4f",
+    "publishedArticle": "72fa6695bf06d8e8eb13a8784e72f507c96844c5be76c9d4dfb9539b0ebb8465"
+  },
+  "cppSha256": "ec7888a3cf046dd5d72d48429c83b1113d401c82558d0e36899cb1591be7a973",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/alternating-switch-bit-reversal-pruned-router.mdx",
+    "checker": "scripts/check_alternating_trigger_circuit_cpp.py",
+    "metadataGroup": "construction",
+    "entryGraphId": "thinking",
+    "choices": [
+      "operation-goals",
+      "alternating-switches",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "ec7888a3cf046dd5d72d48429c83b1113d401c82558d0e36899cb1591be7a973",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "normal": {
+      "checks": 117243125,
+      "smallCases": 97738,
+      "binaryExtra": 130560,
+      "singleLengths": 2048,
+      "boundaryCases": 80,
+      "randomCases": 300,
+      "maximumCases": 4,
+      "allLengthBudgets": 200000,
+      "periods": 461464,
+      "outputs": 15279956,
+      "inversions": 180979888,
+      "maximumN": 200000,
+      "maximumM": 100000,
+      "maximumSwitches": 200012,
+      "maximumChanges": 3836286,
+      "invalidBuilderCalls": 12,
+      "checksum": "17302177393877592427",
+      "seconds": 0.983673,
+      "peakRSSKiB": 8320,
+      "cppSha256": "ec7888a3cf046dd5d72d48429c83b1113d401c82558d0e36899cb1591be7a973",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 117243125,
+      "smallCases": 97738,
+      "binaryExtra": 130560,
+      "singleLengths": 2048,
+      "boundaryCases": 80,
+      "randomCases": 300,
+      "maximumCases": 4,
+      "allLengthBudgets": 200000,
+      "periods": 461464,
+      "outputs": 15279956,
+      "inversions": 180979888,
+      "maximumN": 200000,
+      "maximumM": 100000,
+      "maximumSwitches": 200012,
+      "maximumChanges": 3836286,
+      "invalidBuilderCalls": 12,
+      "checksum": "17302177393877592427",
+      "seconds": 3.13163,
+      "peakRSSKiB": 500952,
+      "cppSha256": "ec7888a3cf046dd5d72d48429c83b1113d401c82558d0e36899cb1591be7a973",
+      "sanitized": true
+    },
+    "notes": "主催者配布の原典/Review/翻訳検索の数値を区別して全scopeを確認。全本文と掲載API/最悪予算を独立精読し、通常とASan/UBSanで全件数・checksum・コードSHAを再現。既に確認済みの初回研究へ重複reviewを付加せず、完成実装と証明は研究記録とresolutionへ保存。",
+    "additionalReviewer": "ioi_2020_fixed_corpus_audit",
+    "additionalReviewFile": "research/probes/alternating-switch-independent-review.json",
+    "independentSpatialCases": 200000,
+    "independentSpatialChecksum": "9839057549024960597"
+  }
+}

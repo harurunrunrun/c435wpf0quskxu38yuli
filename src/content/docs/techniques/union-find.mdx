@@ -1,0 +1,72 @@
+---
+title: "Union-Find"
+description: "集合の併合と、二つの要素が同じ集合に属するかの判定を行う。"
+techniqueId: union-find
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+集合の併合と、二つの要素が同じ集合に属するかの判定を行う。
+
+## 使う場面
+
+辺を追加しながらグラフの連結性を調べるときに使う。最小全域木を作るKruskal法で、追加する辺が閉路を作るかの判定にも使える。集合の要素を直接並べ直さず、どの集合に属するかを管理できる。
+
+## 考え方
+
+各要素が親を持つ森を作り、その根を集合の代表とする。代表が同じなら、二つの要素は同じ集合に属する。併合するときは、片方の根をもう片方の根につなぐ。
+
+代表を探した経路の各要素を根へ直接つなぐ経路圧縮と、小さい集合を大きい集合につなぐ工夫を使う。根に集合サイズや合計値を保存すれば、集合全体の情報も管理できる。
+
+## 適用条件
+
+基本的には集合を併合するだけの処理で使う。一度併合した集合を、辺の削除に応じて分割することはできない。削除だけが先に与えられる場合は、操作を逆順にして辺の追加として処理できる場合がある。
+
+併合を取り消す必要がある場合は、変更履歴を持つrollback Union-Findなど、別の拡張を使う。
+
+## なぜ正しいか
+
+初期状態では各要素が一つずつの集合になる。異なる代表同士をつなぐと、二つの集合に属するすべての要素が同じ根に到達する。経路圧縮は途中の親を省くだけで根を変えないため、集合への所属は変わらない。
+
+## 計算量
+
+$N$ 要素、$Q$ 操作に対して、時間は $O((N+Q)\alpha(N))$、空間は $O(N)$。$\alpha$ は逆Ackermann関数で、実用的な入力の大きさでは非常に小さい。これは操作全体を合わせた償却計算量である。
+
+## 実装
+
+根には負の集合サイズ、根以外には親の番号を保存する。`merge` は異なる集合を併合したとき `true` を返す。`same` で所属を比較し、`size` で集合サイズを取得する。代表の番号自体に意味は持たせない。
+
+```cpp
+#include <vector>
+#include <algorithm>
+using namespace std;
+struct DSU {
+    vector<int> p;
+    explicit DSU(int n):p(n,-1) {}
+    int leader(int v) {
+        int r=v;
+        while(p[r]>=0) r=p[r];
+        while(v!=r) { int next=p[v];p[v]=r;v=next; }
+        return r;
+    }
+    bool merge(int a,int b) {
+        a=leader(a);b=leader(b);
+        if(a==b) return false;
+        if(p[a]>p[b]) swap(a,b);
+        p[a]+=p[b];p[b]=a;
+        return true;
+    }
+    bool same(int a,int b) { return leader(a)==leader(b); }
+    int size(int v) { return -p[leader(v)]; }
+};
+```
+
+## 関連する手法
+
+[オフラインクエリ](/flowchartcp/techniques/offline-queries/) ・ [マージテク](/flowchartcp/techniques/small-to-large/) ・ [強連結成分分解](/flowchartcp/techniques/scc/)
+
+## 参考資料
+
+- [AtCoder Library: DSU](https://atcoder.github.io/ac-library/production/document_en/dsu.html)
+- [USACO Guide: Disjoint Set Union](https://usaco.guide/gold/dsu)
+
+<TechniqueReferences techniqueId="union-find" />

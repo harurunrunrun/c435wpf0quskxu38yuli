@@ -1,0 +1,67 @@
+---
+title: "受取と配達の挿入は、先に入れられる最小増分を走査中に持つ"
+description: "二地点を差し込む全組合せを、同じ辺への挿入と異なる辺への挿入に分けます。"
+techniqueId: "heuristic-paired-insertion-prefix"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+他の訪問順を変えずに、一注文の受取と配達を巡回路へ挿入したいとき。最初の構築や、別の注文を外してから差し込む修復に使います。
+
+## 考え方
+
+元の辺 $i$ に受取を入れる増分を $A_i$、辺 $j$ に配達を入れる増分を $B_j$ とします。$i<j$ なら二辺は別々なので増分は $A_i+B_j$。配達の辺を左から走査し、過去の受取増分 $\min_{i<j}A_i$ とその辺番号を保存します。
+$i=j$ の場合は、同じ辺 $u\to v$ を $u\to pickup\to delivery\to v$ にする増分を別に試します。このケースへ $A_i+B_i$ を使うと元の辺を二度引いてしまいます。
+
+## 適用条件
+
+一注文の受取が配達より前、追加の容量・時間窓制約がなく、他の訪問順は固定されること。元の始点と終点を保持します。選択する注文数が固定なら、交換近傍では先に旧注文の二地点を外してから使います。掲載部品は挿入の局所最良位置を求め、注文の選択全体を最適化するものではありません。
+
+## なぜ正しいか
+
+二地点の挿入には、元の異なる辺へ入れるか、同じ辺へ順に入れるかの二通りしかありません。異なる辺の場合は受取先行条件が $i<j$ と同値で、距離の変化は二辺ごとの和です。走査中の最小値は全ての合法な先行辺を含み、同じ辺のケースも別に試すので、近傍内の全候補を網羅します。
+
+## 計算量
+
+全挿入後の巡回路を毎回再評価すると $O(L^3)$、距離差だけでも全辺対列挙は $O(L^2)$。先行辺の最小増分を持つと探索時間 $O(L)$、位置選択の追加空間 $O(1)$。結果の巡回路を作る時間・空間も $O(L)$。
+
+## 実装
+
+辺番号は元の訪問列の0始まりで、`pickup_gap` と `delivery_gap` の辺の直後へ挿入します。同じ辺なら受取、配達の順です。掲載関数は距離と座標列を返します。同じ座標でも注文地点のIDは別なので、次の先行制約検査には、返された挿入位置から受取・配達のID列も作ります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct DeliveryPoint {long long x,y;};
+__int128 delivery_distance(DeliveryPoint a,DeliveryPoint b){
+    __int128 x=(__int128)a.x-b.x,y=(__int128)a.y-b.y;return (x<0 ? -x : x)+(y<0 ? -y : y);
+}
+
+struct PairedInsertion {__int128 delta;int pickup_gap,delivery_gap;vector<DeliveryPoint> route;};
+PairedInsertion best_paired_insertion(const vector<DeliveryPoint>& route,DeliveryPoint pickup,DeliveryPoint delivery){
+    assert(route.size()>=2);const __int128 inf=(__int128)1<<120;
+    __int128 prefix=inf,best=inf;int prefix_gap=-1,pg=-1,dg=-1;
+    auto update=[&](__int128 value,int i,int j){if(value<best){best=value;pg=i;dg=j;}};
+    for(int j=0;j+1<(int)route.size();++j){auto u=route[j],v=route[j+1];
+        __int128 add_delivery=delivery_distance(u,delivery)+delivery_distance(delivery,v)-delivery_distance(u,v);
+        if(prefix_gap>=0)update(prefix+add_delivery,prefix_gap,j);
+        update(delivery_distance(u,pickup)+delivery_distance(pickup,delivery)+delivery_distance(delivery,v)-delivery_distance(u,v),j,j);
+        __int128 add_pickup=delivery_distance(u,pickup)+delivery_distance(pickup,v)-delivery_distance(u,v);
+        if(add_pickup<prefix){prefix=add_pickup;prefix_gap=j;}
+    }
+    vector<DeliveryPoint> result;result.reserve(route.size()+2);
+    for(int i=0;i+1<(int)route.size();++i){result.push_back(route[i]);if(i==pg)result.push_back(pickup);if(i==dg)result.push_back(delivery);}
+    result.push_back(route.back());return {best,pg,dg,move(result)};
+}
+```
+
+## 関連する手法
+
+[受取が配達より先の巡回路では、両地点を含まない区間だけ反転する](/flowchartcp/techniques/heuristic-precedence-two-opt/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc006/tasks/ahc006_a)
+
+<TechniqueReferences techniqueId="heuristic-paired-insertion-prefix" />

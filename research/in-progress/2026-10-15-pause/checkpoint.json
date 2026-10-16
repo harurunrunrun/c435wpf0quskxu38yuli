@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "status": "paused-at-user-requested-checkpoint",
+  "savedAt": "2026-10-15T13:48:11.216050+00:00",
+  "userInstruction": "一旦キリのよいところまでやったら中断してください",
+  "sharedSite": {
+    "articles": 514,
+    "mappings": 535,
+    "graphs": 481,
+    "nodes": 3757,
+    "questions": 1714,
+    "answerEdges": 5592,
+    "verifiedWalks": 531,
+    "pendingWalks": 4,
+    "knownUnresolvedGaps": 14,
+    "registeredCorpora": 10,
+    "globalCoverageComplete": false,
+    "globalProblemDenominator": null,
+    "latestVerification": "research/verification-2026-10-15-ioi2016-shortcut.json",
+    "localBuild": "dist-local/",
+    "published": false,
+    "committedOrPushed": false
+  },
+  "archivesInRestoreOrder": [
+    {
+      "name": "ioi-2014",
+      "archive": "ioi-2014.tar.gz",
+      "manifest": "ioi-2014.json",
+      "sha256": "87f5bed080dbd441bb848012e3af952e0a802609d4ec76f691bf7206d0336054",
+      "files": 1504,
+      "roundTripAllBytesVerified": true
+    },
+    {
+      "name": "ioi-2015",
+      "archive": "ioi-2015.tar.gz",
+      "manifest": "ioi-2015.json",
+      "sha256": "dedbb02ba051bd32458bbdc5ee175b5cee128e8f97c152fab2146b5b7f3484f2",
+      "files": 1617,
+      "roundTripAllBytesVerified": true
+    },
+    {
+      "name": "ioi-2015-stop-delta",
+      "archive": "ioi-2015-stop-delta.tar.gz",
+      "manifest": "ioi-2015-stop-delta.json",
+      "sha256": "4bc78818a61409e02f2b4f65e311f4ad2e696939cb3add222a7588f51e7a9702",
+      "files": 1,
+      "roundTripAllBytesVerified": true,
+      "overlayOf": "ioi-2015",
+      "reason": "One root-observed full-peer pause checkpoint saved after the base archive;all other peer/source artifacts were unchanged."
+    },
+    {
+      "name": "wf2018-triangles",
+      "archive": "wf2018-triangles.tar.gz",
+      "manifest": "wf2018-triangles.json",
+      "sha256": "2ad34634aa25f2f62cc283aea28d2bc256a3ed0e5d8683c93e43d54d4880951c",
+      "files": 9,
+      "roundTripAllBytesVerified": true
+    }
+  ],
+  "temporaryOriginalsRetained": true,
+  "sourceSnapshotsFullyRetained": true,
+  "pending": {
+    "ioi2015": {
+      "initialAuthorFrozen": true,
+      "research": 4,
+      "unconfirmed": 2,
+      "completedApi": 0,
+      "articleCoverage": 0,
+      "fullPeerComplete": false,
+      "fullPeerStoppedByRoot": true,
+      "stopRecord": "artifacts/flowchartcp-ioi2015-full-peer-pause-checkpoint.json",
+      "registered": false
+    },
+    "teams": {
+      "status": "source-and-design-only",
+      "articleCreated": false,
+      "nativeExecuted": false,
+      "checkpoint": "artifacts/flowchartcp-ioi2015-teams-checkpoint.json",
+      "registered": false
+    },
+    "triangles": {
+      "status": "author-draft-native-normal-and-asan-verified-independent-review-pending",
+      "checks": 1391193,
+      "explicitEntryUnits": 1390400,
+      "checksum": "8973799615940748778",
+      "originalSampleWhitespaceVisuallyVerified": false,
+      "checkpoint": "artifacts/flowchartcp-wf2018-triangles-checkpoint.json",
+      "registered": false
+    },
+    "ioi2014": {
+      "status": "fixed-six-selected-and-whole-raw-snapshot-retained-primary-main-text-read-only",
+      "initialArticles": 514,
+      "initialGraphs": 481,
+      "initialWalks": 535,
+      "initialRawFiles": 1494,
+      "semanticTechniqueMatchingStarted": false,
+      "prototypeExecuted": false,
+      "registered": false
+    }
+  },
+  "resumePolicy": "Wait for explicit user resume. Read README and all pause checkpoints;finish pending independent review before shared registration. Preserve all original selection/status/snapshot fields and unknowns. No retry of blocked browser/server/install/collection without new reason.",
+  "backgroundAgents": "Both article agents completed checkpoints;the unfinished full-audit reviewer was interrupted by root. No agent should resume until instructed.",
+  "finalValidation": {
+    "command": "npm run validate",
+    "exitCode": 0,
+    "log": "/tmp/flowchartcp-pause-final-validation.log"
+  }
+}

@@ -1,0 +1,156 @@
+---
+title: "対応する括弧と隣の色に条件があるなら、区間の両端の色で結合する"
+description: "括弧の内側を処理し、両端の三色だけを保存して、外側の括弧と隣の括弧列をつなぎます。"
+techniqueId: bracket-pair-color-boundaries
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+正しい括弧列の各文字を、未着色・赤・青のいずれかにします。「対応する括弧はちょうど片方だけ着色する」「隣接する二文字がどちらも着色されているなら異なる色にする」という条件を満たす塗り方の数を求めます。
+
+対応する括弧は離れていても制約を持ち、隣接条件は括弧対の境界をまたぎます。区間内の塗り方を総数一つへまとめると、外側とつなげられるか分かりません。そこで、外と接する両端の色だけを残します。
+
+## 考え方
+
+色を未着色 $0$、赤 $1$、青 $2$ とします。非空の正しい括弧列 $S$ について、$D_S[a][b]$ を「先頭が $a$、末尾が $b$ となる塗り方の数」とします。表は $3\times3$ です。二色が隣接してよい条件を
+
+$$
+\operatorname{ok}(a,b)=(a=0)\lor(b=0)\lor(a\ne b)
+$$
+
+とします。未着色どうしや、未着色と着色の隣接は許します。
+
+まず、二つの非空列 $A,B$ を並べた $AB$ を考えます。$A$ の末尾 $x$ と $B$ の先頭 $y$ だけが新しく隣接するので、
+
+$$
+D_{AB}[a][b]
+=\sum_{x,y:\operatorname{ok}(x,y)}D_A[a][x]D_B[y][b]
+$$
+
+で結合できます。
+
+次に、列 $S$ を対応する括弧で囲んだ `(S)` を考えます。外側の色 $(a,b)$ は $(0,1),(1,0),(0,2),(2,0)$ の四通りです。$S$ が非空なら、外側と内側の二つの境界を確認して、
+
+$$
+D_{(S)}[a][b]
+=\sum_{x,y:\operatorname{ok}(a,x),\operatorname{ok}(y,b)}D_S[x][y]
+$$
+
+とします。$S$ が空なら `()` の四通りを直接作ります。
+
+左から読んで、`(` で新しい集計表をスタックへ積みます。`)` で内側の表を取り出して括弧で囲み、一つ外の表へ結合します。各表には、同じ深さで既に読み終えた括弧列の集計を持たせます。これで全区間の表や分割位置の探索を作らずに済みます。
+
+## 適用条件
+
+括弧の対応が固定され、離れた位置への制約が対応する括弧対だけにあることが条件です。それ以外の制約は、二つの括弧列を結合するときに両端から判定できる必要があります。任意の離れた二文字の色にも条件がある場合、両端の色だけでは足りません。
+
+**空列と、両端が未着色の非空列は別です。** 非空列の状態 $(0,0)$ は実際に二つの端点を持ちます。空列を同じ状態へ入れると、存在しない境界を検査したり、塗り方を重複させたりします。実装では空かどうかを独立した印で持ち、結合の恒等元にします。
+
+掲載実装は `(` と `)` のみの正しい括弧列を受け取り、空列の答えは1とします。括弧の追加・削除や色指定の更新を挟む問い合わせは扱いません。
+
+## なぜ正しいか
+
+二つの正しい括弧列を結合するとき、それぞれの中の対応関係は変わりません。新しく検査する必要があるのは、境界で隣り合う二文字だけです。両側の塗り方は独立に選べるので個数を掛け、許される境界色ごとに足すと、全ての塗り方を一度ずつ数えられます。
+
+外側に括弧を加える場合も、新たな条件は外側の対の着色と、内側との二つの隣接だけです。外側の四通りを列挙し、内側の両端を確認すれば、それ以外の情報は必要ありません。
+
+正しい括弧列は、直に並ぶ括弧対を左から結合し、各対の内側を同じ方法で処理することで一意に分解できます。空列からこの二操作を順に行うため、スタックの各集計表は常に正しく、最後の九状態の和が求める総数です。
+
+## 計算量
+
+結合は高々 $3^4=81$ 通り、外側の追加は高々 $4\times3^2=36$ 通りを調べます。各括弧対でそれぞれ一度だけ行うため、長さ $N$ に対して $O(81N)=O(N)$ 時間です。
+
+全ての区間や区間の切れ目を列挙する必要はありません。スタックに必要なのは深さごとの九状態で、空間は $O(N)$ です。再帰呼び出しを使わないので、深い入れ子も同じ実装で扱えます。
+
+## 実装
+
+`count_boundary_bracket_colorings(brackets)` は $10^9+7$ で割った余りを返します。長さは0以上200000以下とし、括弧以外の文字、不均衡な括弧列、長さの上限超過は `invalid_argument` にします。各積を加えるたびに余りを取るため、中間値も `long long` に収まります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long count_boundary_bracket_colorings(const string& brackets) {
+    constexpr long long mod = 1000000007;
+    if (brackets.size() > 200000)
+        throw invalid_argument("bracket sequence too long");
+    struct Table {
+        array<array<long long, 3>, 3> ways{};
+        bool empty = true;
+    };
+    auto compatible = [](int a, int b) {
+        return a == 0 || b == 0 || a != b;
+    };
+    auto concatenate = [&](const Table& left, const Table& right) {
+        if (left.empty) return right;
+        if (right.empty) return left;
+        Table result;
+        result.empty = false;
+        for (int a = 0; a < 3; ++a)
+            for (int x = 0; x < 3; ++x)
+                for (int y = 0; y < 3; ++y) {
+                    if (!compatible(x, y)) continue;
+                    for (int b = 0; b < 3; ++b) {
+                        long long product = left.ways[a][x] * right.ways[y][b] % mod;
+                        result.ways[a][b] = (result.ways[a][b] + product) % mod;
+                    }
+                }
+        return result;
+    };
+    auto enclose = [&](const Table& inside) {
+        Table result;
+        result.empty = false;
+        for (int a = 0; a < 3; ++a)
+            for (int b = 0; b < 3; ++b) {
+                if ((a == 0) == (b == 0)) continue;
+                if (inside.empty) {
+                    result.ways[a][b] = 1;
+                    continue;
+                }
+                for (int x = 0; x < 3; ++x)
+                    for (int y = 0; y < 3; ++y) {
+                        if (!compatible(a, x) || !compatible(y, b)) continue;
+                        result.ways[a][b] = (result.ways[a][b] + inside.ways[x][y]) % mod;
+                    }
+            }
+        return result;
+    };
+
+    vector<Table> stack(1);
+    stack.reserve(brackets.size() / 2 + 1);
+    for (char c : brackets) {
+        if (c == '(') {
+            stack.emplace_back();
+        } else if (c == ')') {
+            if (stack.size() == 1)
+                throw invalid_argument("unmatched closing bracket");
+            Table wrapped = enclose(stack.back());
+            stack.pop_back();
+            stack.back() = concatenate(stack.back(), wrapped);
+        } else {
+            throw invalid_argument("unexpected character");
+        }
+    }
+    if (stack.size() != 1)
+        throw invalid_argument("unmatched opening bracket");
+    if (stack[0].empty) return 1;
+    long long answer = 0;
+    for (const auto& row : stack[0].ways)
+        for (long long ways : row) answer = (answer + ways) % mod;
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [区間DP](/flowchartcp/techniques/interval-dp/)：任意の区間の分割を試す必要がある場合。括弧の対応が固定なら、対応する区間だけを処理できます。
+- [木DP](/flowchartcp/techniques/tree-dp/)：括弧対を頂点、直に内側にある括弧対を子とみなすと、同じ計算を木の集計として表せます。
+- [状態設計](/flowchartcp/techniques/state-design/)：外側から区別されない内部情報を、少数の境界状態へまとめる発想。
+
+## 参考資料
+
+- [Codeforces 149D：Coloring Brackets](https://codeforces.com/problemset/problem/149/D) — 対応する括弧と隣接する括弧の色に条件がある原典。
+- [Codeforces Round 106公式Tutorial、149D節](https://codeforces.com/blog/entry/3864) — 両端の色を固定し、直に内側にある括弧対を順に結合するDP。当記事の実装はその境界状態を用い、各括弧対を一度だけ処理します。
+
+<TechniqueReferences techniqueId="bracket-pair-color-boundaries" />

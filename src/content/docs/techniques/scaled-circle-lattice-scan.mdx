@@ -1,0 +1,103 @@
+---
+title: "小数の円に含まれる格子点は、桁をそろえた整数の二乗で数える"
+description: "浮動小数で境界を丸めず、各整数の横座標について縦の範囲を整数平方根で求める。"
+techniqueId: scaled-circle-lattice-scan
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+中心や半径が有限小数の円について、内部と周上の格子点を数える。半径が大きいと円の外接正方形を全探索できず、浮動小数の平方根を丸めるだけでは境界上の点を落としやすい。
+
+## 考え方
+
+小数が4桁までなら、中心と半径を文字列から正確に $S=10000$ 倍して、整数 $X,Y,R$ にする。元の格子点 $(x,y)$ は、拡大後の $(Sx,Sy)$ に対応する。
+
+整数の横座標 $x$ を $\lceil(X-R)/S\rceil$ から $\lfloor(X+R)/S\rfloor$ まで走査する。各列で
+
+$$T=R^2-(Sx-X)^2,\qquad h=\lfloor\sqrt T\rfloor$$
+
+を整数で求める。その列にある点の縦座標は
+
+$$\left\lceil\frac{Y-h}{S}\right\rceil\le y\le\left\lfloor\frac{Y+h}{S}\right\rfloor.$$
+
+整数平方根は、平方が $T$ 以下になる最大の値を二分探索する。負の数の除算は、C++ の0方向への切捨てを床・天井へ補正する。
+
+## 適用条件
+
+小数の桁数に上限があり、その桁をそろえた後の二乗が扱えること。任意の実数や無理数が入力される場合には、この整数化はできない。
+
+掲載実装は小数第4位まで、中心の絶対値と半径が $10^5$ 以下。半径0も扱う。符号付き文字列を受け取り、5桁以上の小数は丸めずエラーにする。`-0.0001` のような負の小数も、符号を最後に適用して正確に読む。
+
+## なぜ正しいか
+
+拡大後の点の条件は $(Sx-X)^2+(Sy-Y)^2\le R^2$。横座標を固定すると、残りは整数 $Sy-Y$ の絶対値が $\sqrt T$ 以下という条件になる。整数の絶対値なので、平方根を床へ変えても集合は変わらない。
+
+床・天井で求めた上下限は、ちょうどこの不等式を満たす全ての整数 $y$ を含む。異なる列は点を共有せず、全ての点が走査範囲内の一つの列に属するため、各列の個数の和が答えになる。境界も非厳密不等号によって含まれる。
+
+## 計算量
+
+外接正方形の全格子点を調べると、元の半径を $r$ として $O((r+1)^2)$ 時間。列走査は $O((r+1)\log(Sr+2))$ 時間、追加空間 $O(1)$。$S$ は小数の桁から決まる倍率で、桁を増やした場合の整数の大きさも確認する。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
+#include <stdexcept>
+#include <string>
+long long parse_decimal4(const std::string& text) {
+    std::size_t i=0;bool negative=false;
+    if(i<text.size() && (text[i]=='-' || text[i]=='+')) negative=text[i++]=='-';
+    long long whole=0,frac=0;int digits=0;bool dot=false,any=false;
+    for(;i<text.size();++i) {
+        char c=text[i];
+        if(c=='.' && !dot) {dot=true;continue;}
+        if(c<'0' || c>'9') throw std::invalid_argument("decimal required");
+        any=true;
+        if(!dot) {whole=whole*10+c-'0';if(whole>100000) throw std::invalid_argument("range");}
+        else {if(++digits>4) throw std::invalid_argument("more than four decimal places");frac=frac*10+c-'0';}
+    }
+    if(!any) throw std::invalid_argument("empty decimal");
+    while(digits++<4) frac*=10;
+    long long value=whole*10000+frac;
+    if(value>1000000000LL) throw std::invalid_argument("range");
+    return negative ? -value : value;
+}
+long long lattice_floor_div(long long a,long long b) {
+    long long q=a/b,r=a%b;return q-(r<0);
+}
+long long lattice_ceil_div(long long a,long long b) {return -lattice_floor_div(-a,b);}
+long long count_decimal_circle_lattice(const std::string& x,const std::string& y,const std::string& radius) {
+    const long long scale=10000;
+    long long X=parse_decimal4(x),Y=parse_decimal4(y),R=parse_decimal4(radius);
+    if(R<0) throw std::invalid_argument("negative radius");
+    long long answer=0;
+    for(long long a=lattice_ceil_div(X-R,scale);a<=lattice_floor_div(X+R,scale);++a) {
+        long long dx=scale*a-X;
+        __int128 remaining=(__int128)R*R-(__int128)dx*dx;
+        long long lo=0,hi=R+1;
+        while(hi-lo>1) {
+            long long mid=lo+(hi-lo)/2;
+            if((__int128)mid*mid<=remaining) lo=mid;else hi=mid;
+        }
+        long long bottom=lattice_ceil_div(Y-lo,scale),top=lattice_floor_div(Y+lo,scale);
+        answer+=std::max(0LL,top-bottom+1);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [円周の交差を二乗距離の上下限へ変える](/flowchartcp/techniques/circle-square-distance/)
+- [格子多角形の面積と格子点](/flowchartcp/techniques/lattice-pick-area/)
+
+## 参考資料
+
+- [AtCoder — Circle Lattice Points](https://atcoder.jp/contests/abc191/tasks/abc191_d)
+- [公式解説](https://atcoder.jp/contests/abc191/editorial/611)
+
+<TechniqueReferences techniqueId="scaled-circle-lattice-scan" />

@@ -1,0 +1,249 @@
+{
+  "artifacts": {
+    "article": "/tmp/flowchartcp-combo-article.mdx",
+    "checker": "/tmp/flowchartcp-combo-checker.py"
+  },
+  "metadata": {
+    "id": "unique-first-symbol-prefix-oracle-multiplexing",
+    "title": "先頭の文字が再び現れない列を、候補を連結した質問で復元する",
+    "summary": "未知列の接頭辞が質問内に現れる最大の長さを使い、三つの候補を一回の質問で区別する。先頭の文字が一度だけ現れる条件を利用する。",
+    "aliases": [
+      "IOI2018 Combo first symbol prefix oracle multiplexing",
+      "unique initial symbol concatenated query ternary response",
+      "先頭文字 一意 接頭辞 部分文字列 対話 連結質問"
+    ],
+    "family": "対話の質問構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "invariant"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/CHE-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/CUB-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/TUR-combo.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "unique-first-symbol-prefix-oracle-multiplexing",
+    "source": "IOI",
+    "problemId": "ioi2018_combo",
+    "title": "Combo",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+    "evidence": "4記号からなる未知列の長さが既知で、先頭記号は以後に再出現しない。質問文字列に部分文字列として現れる未知列の最長接頭辞長が返る。先頭を二質問で確定し、既知接頭辞Pと残る記号a,b,cからPaa+Pab+Pac+Pbを質問すると、中間の次文字を返答|P|+2/|P|+1/|P|で一意に分けられる。末尾だけ最大二質問にしてN+2回以内かつ各質問長4N以内で復元する技巧が適用できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に原典3頁・公式Review2頁と主催公式のCHE/CUB/TUR/IND原典翻訳検索本文を再読。N1..2000、質問長0..4N、hard8000回・満点N+2回、固定の非adaptive秘密列を確認。通常PDFテキストで消えた式は主催者配布翻訳の検索本文と著者解答を区別して補った。視覚確認とは主張しない。四記号の全単射、開始位置の限定、境界を越す一致の阻止、返答三値、N1/2・末尾二質問を独立証明。実MDXの常時表示C++20を抽出し-O2 -Wall -Wextra -Werrorで実行、長さ1..10の全118096合法列を全prefixの直接substring検索oracleと比較。全24記号順序×長さ1..7の104928件、ヌル/高bit記号で長さ1..6全1456件も一致。長さ1..6は候補集合を毎返答で直接oracleにより分割し、合法固定列を一つ以上残す適応返答の全2684節点/2678枝/1456葉を実APIの再実行で検査。原典自身はnonadaptiveであり、この検査はより広い整合返答履歴の検査として区別。長さ1999/2000で全先頭×定数/周期/乱択尾部と独自記号計33件をKMP別実装oracleで評価し、KMP自身も無関係な3000文字列対で直接検索と照合。N2000で2002回・7999文字・総8005993文字を達成。全返却列・質問alphabet/長さ/回数/総長を確認し、不正N/重複記号はcallback前に拒否、不正返答、外部例外伝播、非copy/move-only callback、200回の呼出し状態分離を検査。先頭再出現の契約違反では復元保証が失われる実例を確認し、APIが未知列の契約を一般に検証するとは主張しない。10421309 checks・2252418質問・297911871送信文字、checksum9247008998039105376。通常0.633165秒、ASan/UBSan6.03227秒で同一結果。LeakSanitizerのみptrace環境のため無効。",
+    "sourceDate": "2018-09-03"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2018_combo",
+    "title": "Combo",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+    "techniqueIds": [
+      "unique-first-symbol-prefix-oracle-multiplexing"
+    ],
+    "features": [
+      "四記号からなる長さ既知の固定秘密列に対し、質問内に部分文字列として現れる秘密列の最長接頭辞長を返すoracle。",
+      "秘密列の先頭記号は、その後に再出現しない。既知接頭辞と複数候補を連結し、中間の一文字を三値で決める。",
+      "N1..2000、各質問長0..4N、hard8000回・満点N+2回。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-03",
+    "notes": "4記号からなる未知列の長さが既知で、先頭記号は以後に再出現しない。質問文字列に部分文字列として現れる未知列の最長接頭辞長が返る。先頭を二質問で確定し、既知接頭辞Pと残る記号a,b,cからPaa+Pab+Pac+Pbを質問すると、中間の次文字を返答|P|+2/|P|+1/|P|で一意に分けられる。末尾だけ最大二質問にしてN+2回以内かつ各質問長4N以内で復元する技巧が適用できる。",
+    "discoveredBy": "ioi-2018",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest1/CHE-combo.pdf"
+  },
+  "api": {
+    "function": "template<class Query> std::string recover_unique_initial_sequence(int length,Query&& press,std::array<char,4> symbols={A,B,X,Y})",
+    "callback": "int press(const std::string&)互換。Query&から呼べて戻り型はちょうどint。lvalue・move-only rvalueをコピーしない。",
+    "bounds": "1<=length<=2000、相異なる四char。原典N全域とA/B/X/Yを包含。任意の全単射による記号名替え可。ヌル/高bit記号もstd::stringの長さで扱う。",
+    "oracleContract": "実行開始から固定の秘密列。長さlengthでsymbolsからなり、先頭記号は後半に再出現しない。質問中に部分文字列として現れる最長秘密接頭辞長を返す。",
+    "returns": "復元した秘密列",
+    "errors": "不正N/重複symbolsはcallback前にinvalid_argument。数値範囲外または段階上不可能な返答はlogic_error。内部予算超過もlogic_error。callbackの例外はそのまま伝播。",
+    "validationLimit": "秘密列の先頭一意や返答履歴全体の正しさを一般に判定するAPIではない。固定oracle契約に依存する。",
+    "state": "全状態local。static/globalキャッシュなし。callback自身の秘密列・通信状態は呼出し側が管理。"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "first": "uvに非空秘密接頭辞が現れる iff 先頭∈{u,v}; single queryで二択を確定。常に2回。",
+    "labelRenaming": "四記号の全単射で等値性と先頭再出現禁止を保存するため、a/b/cの名前は任意。",
+    "starts": "先頭dはPの最初のみ。連結質問Qのdは四Pの先頭のみ。非空の秘密接頭辞はこの位置でしか始まらない。",
+    "boundaries": "最初3blockの二追加記号の次はdであり、秘密列の後半にはdがない。末尾blockは一追加記号で終わる。従ってm+2より長い一致はない。",
+    "threeReplies": "m<=N-2。次aなら次々文字a/b/cの対応blockがm+2一致、次bなら末尾Pbだけm+1、次cなら全てm。",
+    "last": "残り一文字ではP+a/P+bの質問長がN、返答N iff 質問自体がS。両失敗ならc。",
+    "induction": "最初の正しい接頭辞から各段で正しさを保ち、長さNで秘密列全体を得る。"
+  },
+  "complexity": {
+    "queryCalls": "N=1は2回。N>=2ではN+1回またはN+2回。",
+    "maximumSingleQueryLength": "N1/2は2。N>=3は4N-1。",
+    "maximumTotalQueryCharacters": "N=1は3。N>=2は2N^2+3N-7。",
+    "time": "O(N^2) local construction; oracle internal cost excluded",
+    "space": "O(N) auxiliary and output",
+    "sourceMaximum": {
+      "length": 2000,
+      "calls": 2002,
+      "singleQueryCharacters": 7999,
+      "totalQueryCharacters": 8005993
+    },
+    "sourceBudget": {
+      "maximumQueryLength": "4N",
+      "hardCalls": 8000,
+      "fullScoreCalls": "N+2"
+    }
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+    "statementPages": 3,
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+    "editorialPages": 2,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "date": "2018-09-03",
+    "day": 1,
+    "exactDateVerified": true,
+    "difficulty": null,
+    "numericBoundsVerified": true,
+    "numericAcquisition": "主催者公式CHE/CUB/TUR/IND翻訳PDFのweb検索本文。通常PDF抽出の数式欠落を推測で補っていない。画像目視とは主張しない。",
+    "numericEvidenceUrls": [
+      "https://ioi2018.jp/tasks/contest1/CHE-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/CUB-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/TUR-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/IND-combo.pdf"
+    ],
+    "sourceBounds": {
+      "length": "1..2000",
+      "queryLength": "0..4N",
+      "alphabet": "A,B,X,Y",
+      "firstSymbolNeverReappears": true,
+      "nonadaptive": true,
+      "hardCalls": 8000,
+      "fullScoreCalls": "<=N+2"
+    },
+    "editorialProvenance": "day1-combo-review.pdfは主催/JP委員会が配布する公式Review。Tomasz IdziaszekのalgonotesとIOIhosted冊子は著者による公開解答であり、当日の公式Reviewとは区別。",
+    "unconfirmedDetails": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "interactive-oracles",
+    "existingAnswer": "other",
+    "featureAnswerId": "prefix-in-substring",
+    "featureAnswerLabel": "先頭が一度だけの秘密列・質問内の最長接頭辞長",
+    "graphId": "unique-initial-prefix-oracle-conditions",
+    "resultTechniqueId": "unique-first-symbol-prefix-oracle-multiplexing",
+    "canonicalChoices": [
+      "prefix-in-substring",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "prefix-oracle",
+        "question": "長さ既知・四記号の固定秘密列について、質問内に部分文字列として現れる最長接頭辞長が返りますか？"
+      },
+      {
+        "id": "unique-initial",
+        "question": "秘密列の先頭記号は、その後には再出現しませんか？"
+      },
+      {
+        "id": "query-budget",
+        "question": "Nは1..2000で、長さ4N以内の質問をN+2回まで送れますか？"
+      }
+    ],
+    "fallback": "各guardのno/unknownはcondition-checkへ。既存other到達は残し、根の既存選択肢/旧walkを保持する。",
+    "initialAuditImmutable": "/tmp/flowchartcp-ioi2018-audit.json と初回snapshotは変更しない。登録後のresolutionは別に追加する。"
+  },
+  "verification": {
+    "checks": 10421309,
+    "allLegalLength1to10": 118096,
+    "all24RenamingsLength1to7": 104928,
+    "binaryAlphabetLength1to6": 1456,
+    "adaptiveResponseTree": {
+      "maximumLength": 6,
+      "nodes": 2684,
+      "edges": 2678,
+      "leaves": 1456,
+      "oracle": "all candidate fixed secrets are partitioned by literal longest-prefix substring answer; every nonempty group is traversed by rerunning the actual API with the same past answers"
+    },
+    "maximumLengthCases": 33,
+    "queries": 2252418,
+    "queryCharacters": 297911871,
+    "invalidCases": 22,
+    "checksum": "9247008998039105376",
+    "normalSeconds": 0.633165,
+    "asanUbsanSeconds": 6.03227,
+    "asanUbsan": "Same checks/counts/checksum passed. LeakSanitizer alone disabled for ptrace environment.",
+    "smallOracle": "Enumerate every prefix length and use std::string::find, without production block decoding.",
+    "longOracle": "Independent KMP over the known hidden string/query; crosschecked with literal search on3000 unrelated pattern/query pairs.",
+    "maximumCases": "N1999/2000, all4 initial symbols times constant-first/constant-third/3-periodic/random tails, plus a binary-symbol N2000 case.",
+    "otherCases": [
+      "N1 and N2 all legal sequences",
+      "all24 label bijections",
+      "null/highbit/whitespace symbols",
+      "first-repeat contract counterexamples",
+      "invalid N INT_MIN/-1/0/2001/INT_MAX beforecallback",
+      "every duplicate symbol pair and null duplicate",
+      "negative/too large/out-of-query-range replies",
+      "middle/last/first locally inconsistent replies",
+      "callback exception propagation",
+      "noncopyable reused callback over200calls",
+      "move-only rvalue callback"
+    ],
+    "sharedFilesEdited": false,
+    "fullReusableCppValidated": true,
+    "unconfirmedMajorLemmas": []
+  },
+  "hashes": {
+    "articleSha256": "b2f47ac5fecfe59ddcb945f9940b42f557d229dd7c13e26f0c22b2784286449c",
+    "checkerSha256": "f2d9231eec0dcbb6b32d95547bb93dd612aa8ad0f29618d01fdd2b62a15d0199",
+    "cppSha256": "de1b771bf52638eec3e39270b39c84a0362e5485d89ffa19b86ac19e76496e28",
+    "publishedArticleSha256": "db429c072c8d692f8b0c1e2af186570493950c10806cf28df685bde83ee72a02"
+  },
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/unique-first-symbol-prefix-oracle-multiplexing.mdx",
+    "checker": "scripts/check_unique_initial_prefix_cpp.py",
+    "entryGraphId": "interactive-oracles",
+    "choices": [
+      "prefix-in-substring",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "de1b771bf52638eec3e39270b39c84a0362e5485d89ffa19b86ac19e76496e28",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "normalSeconds": 0.616942,
+    "asanUbsanSeconds": 5.85841,
+    "checks": 10421309,
+    "checksum": "9247008998039105376",
+    "notes": "原典と公式Review、主催者配布翻訳の検索本文を区別して確認。連結境界を越えない証明、N1/2、全単射、全callback/APIを独立精読。全小列の直接substring検索と最大長の独立KMPで通常とASan/UBSanを再現。数値は検索本文で確認し、画像目視は主張しない。"
+  }
+}

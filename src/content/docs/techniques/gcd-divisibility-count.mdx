@@ -1,0 +1,68 @@
+---
+title: "GCD が d の倍数から、ちょうど d の個数を求める"
+description: "全要素が d の倍数である列を数え、大きい倍数の GCD を持つ列を引きます。"
+techniqueId: "gcd-divisibility-count"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$1$ から $K$ の整数を $N$ 個選ぶ列について、GCD 別の個数や GCD の総和を求めたいとき。列は $K^N$ 個あります。
+
+## 考え方
+
+GCD が $d$ の倍数となる条件は、全要素が $d$ の倍数であることです。その列は $F[d]=\lfloor K/d\rfloor^N$ 個あります。
+
+GCD がちょうど $d$ の個数を $g[d]$ とすると、
+
+$$g[d]=F[d]-\sum_{m=2d,3d,\ldots\le K}g[m].$$
+
+$d$ の大きい順に計算します。総和なら最後に $\sum_d d\,g[d]$ を足します。
+
+## 適用条件
+
+$N\ge1$、$K\ge1$。要素ごとに選べる集合が違う場合、$F[d]$ は各集合にある倍数の個数の積になります。0 を許す場合、全て 0 の列の GCD の扱いを別に決めます。
+
+## なぜ正しいか
+
+GCD が $d$ の倍数の列は、GCD が $d,2d,3d,\ldots$ の列に重複なく分かれます。後ろの項が既知なら、差が GCD ちょうど $d$ の個数になります。
+
+## 計算量
+
+列を列挙する改善前は時間 $O(K^N N)$。改善後は累乗計算を含め $O(K\log N+K\log K)$、空間 $O(K)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> exact_gcd_counts(long long n, int k,
+                                   long long mod = 1000000007) {
+    assert(mod > 0);
+    auto power = [&](long long a, long long e) {
+        long long r = 1;
+        for (; e; e >>= 1, a = (__int128)a * a % mod)
+            if (e & 1) r = (__int128)r * a % mod;
+        return r;
+    };
+    vector<long long> g(k + 1);
+    for (int d = k; d >= 1; --d) {
+        g[d] = power(k / d, n);
+        for (int m = d + d; m <= k; m += d) {
+            g[d] -= g[m];
+            if (g[d] < 0) g[d] += mod;
+        }
+    }
+    return g;
+}
+```
+
+## 関連する手法
+
+[約数ごとの集計を倍数側から配る](/flowchartcp/techniques/divisor-multiple-reversal/)
+
+## 参考資料
+
+- [AtCoder：Sum of gcd of Tuples (Hard) の問題文](https://atcoder.jp/contests/abc162/tasks/abc162_e)
+
+<TechniqueReferences techniqueId="gcd-divisibility-count" />

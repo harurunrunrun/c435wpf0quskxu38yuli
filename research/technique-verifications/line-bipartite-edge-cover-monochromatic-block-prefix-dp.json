@@ -1,0 +1,522 @@
+{
+  "techniqueId": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+  "auditGapId": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2017-wiring-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2017-wiring-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/line-bipartite-edge-cover-monochromatic-block-prefix-dp.mdx",
+    "checker": "scripts/check_line_bichromatic_edge_cover_cpp.py",
+    "metadataGroup": "flow-matching",
+    "metadataFile": "data/techniques-specific-flow-matching.json",
+    "referenceFile": "data/references-specific-flow-matching.json",
+    "feature": "data/line-bichromatic-cover-problem-features.json"
+  },
+  "metadata": {
+    "id": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+    "title": "直線上の全点を異色の点につなぐ最小費用を求める",
+    "summary": "各点を何本にも使える配線で、隣接する同色のまとまりだけを結ぶ。境界の一点共有を許すDPを、二方向の最小値で線形時間にする。",
+    "aliases": [
+      "IOI 2017 Wiring",
+      "line bichromatic edge cover monochromatic blocks",
+      "一点共有を許す境界DP",
+      "直線の赤青点を全て覆う配線"
+    ],
+    "family": "直線上の二色の点を覆う最小費用",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+    "source": "IOI",
+    "problemId": "ioi2017_wiring",
+    "title": "配線 (Wiring)",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+    "evidence": "直線上の赤青各10万点について、異色点の間に何本でも線を張り、全点の次数を1以上にして総長を最小にする。隣接する単色blockだけへ結ぶ交換法と、左右へ結ぶ点を高々一点だけ共有する分割からprefix DPを作る。二つの群の点被覆費用をk<=j/k>=jへ分け、prefix/suffix最小値で併合込みO(R+B)にする。最後のblock全長まで更新し、64bit費用を返す。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2017-07-30",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "contest": {
+      "name": "IOI 2017",
+      "division": "Main competition",
+      "day": 1,
+      "year": 2017,
+      "date": "2017-07-30"
+    },
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "公式英語2頁・公式配布Editorial1頁・Day1 Notice2頁を再読。JPN公式配布原典の検索本文で赤青各1..100000、座標0..1e9、両列厳密昇順、全座標相異、sample10を確認。Editorialの隣接block/線形DP方針へ、一点共有の交換証明・閉式C・prefix/suffix最小値の漸化式を独立補足した。掲載C++20 fenceを抽出しliteral全辺集合/独立coverage-mask指数DP/別二次DP、全小prefix/反転/色交換/原典最大/不正/連続呼出しと通常ASan+UBSanで比較。原典generic署名とNotice型対応からC++adapterを具体化し、実zip header未取得とは区別する。初回監査の研究positive/停止位置/分類は保持し、親側で独立review/実article/ref/rootwalk後にresolutionだけ追加する。"
+  },
+  "problemFeatureProposal": {
+    "source": "IOI",
+    "problemId": "ioi2017_wiring",
+    "title": "配線 (Wiring)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "直線上の二色の点を、異色間の線で全て少なくとも一度覆う",
+      "同じ点を複数本へ使える、距離絶対値の費用",
+      "二色それぞれ座標昇順、全点相異、各10万点"
+    ],
+    "entryGraphId": "flow-matching",
+    "choices": [
+      "quantity-goals",
+      "line-point-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+    ],
+    "conditions": [
+      "line-distance",
+      "cover-all-reuse",
+      "sorted-distinct-bounds"
+    ],
+    "date": "2017-07-30",
+    "difficulty": null
+  },
+  "flowProposal": {
+    "entryGraphId": "flow-matching",
+    "parentGraphId": "assignment-quantity-goals",
+    "parentNodeId": "purpose",
+    "parentChoiceId": "line-point-cover",
+    "parentChoiceLabel": "直線上の二色の全点へ線を接続し、総長を最小にする",
+    "canonicalChoices": [
+      "quantity-goals",
+      "line-point-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "detailGraphId": "line-bichromatic-cover-conditions",
+    "guards": [
+      {
+        "id": "line-distance",
+        "question": "直線上の異色点を結び、線の費用は座標差の絶対値ですか？",
+        "explanation": "二つの色の点の位置は固定で、同色同士へ線を引きません。"
+      },
+      {
+        "id": "cover-all-reuse",
+        "question": "全ての点に一本以上を接続し、同じ点を何本にも使えますか？",
+        "explanation": "点の次数に上限はなく、線同士の交差を禁止する条件もありません。総長だけを最小にします。"
+      },
+      {
+        "id": "sorted-distinct-bounds",
+        "question": "各色1〜10万点・座標0〜10億で、二列は昇順かつ全座標が相異なりますか？",
+        "explanation": "両方の色が存在し、同色内にも異色間にも同じ座標の点はありません。"
+      }
+    ],
+    "yesTarget": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+    "eachNoOrUnknownTarget": "condition-check",
+    "doNotRouteThroughExclusiveMatching": true,
+    "oldCanonicalInitialRoutePreserved": {
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "quantity-goals",
+        "costs",
+        "yes"
+      ],
+      "actualGenericTarget": "min-cost-flow"
+    }
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+    "statementPages": 2,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+    "editorialPages": 1,
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+    "noticePages": 2,
+    "archiveIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/",
+    "officialDateIndexUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "contestDate": "2017-07-30",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "numericEvidenceUrls": [
+      "https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf"
+    ],
+    "reproducibleSearchQueries": [
+      "site:ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf \"100000\"",
+      "site:www2.ioi-jp.org/ioi/2017 \"vector\" \"long long\""
+    ],
+    "numericRetrieval": "Read actual official English/JPN/Notice web text, with indexed primary JPN search text restoring bounds missing from English extraction. No PDF image sight claim.",
+    "originalConstraints": {
+      "redPoints": [
+        1,
+        100000
+      ],
+      "bluePoints": [
+        1,
+        100000
+      ],
+      "coordinate": [
+        0,
+        1000000000
+      ],
+      "eachColorSorted": true,
+      "allCoordinatesDistinct": true,
+      "eachPointDegree": ">=1 with no upper bound",
+      "wiringCost": "absolute coordinate difference",
+      "originalReturnType": "int64",
+      "originalGenericApi": "int64 min_total_length(int[] r,int[] b)",
+      "originalSampleAnswer": 10,
+      "officialNoticeTimeSeconds": 1,
+      "officialNoticeMemoryMB": 256
+    },
+    "cppSignatureEvidence": {
+      "primaryStatementGenericSignature": "int64 min_total_length(int[] r,int[] b)",
+      "primaryNoticeMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>"
+      },
+      "derivedExactCppSignature": "long long min_total_length(std::vector<int> r,std::vector<int> b)",
+      "primaryCppHeaderRetrieved": false,
+      "primaryHeaderStatus": "official wiring.zip web retrieval timed out; no header bytes claimed",
+      "judgeMirrorPublishedSignatureCorroboration": {
+        "url": "https://dmoj.ca/problem/ioi17p2",
+        "method": "search indexed problem specification shows complete C++ value-vector signature; direct page returned403. Used only as corroboration, not an IOI official statement/solution."
+      },
+      "actualJudgeAttachmentUrl": "https://static.oj.uz/problem/3427a722bc216b49c90cb33529fa01e/attachment/4ecc35fa34a3f6c01577c7b4c37631d02efe498179908df4dab6576cc59af87f/public.zip",
+      "actualJudgeAttachmentStatus": "real link read from judge problem page; web cannot decode application/zip, not downloaded/read",
+      "aoiDistributionRepositoryHas2017": false
+    },
+    "editorialProvenance": "IOI official contest archive links the one-page English(ISC) Editorial. It states adjacent monochromatic clusters and linear prefix DP at high level. The exact one-overlap recurrence/C formulas/two directional minima are independent proof supplements, not quotes from missing source formulas. No personal editorial byline inferred from task author.",
+    "apiContainsEntireOriginalRange": true,
+    "initialAuditResearchPositivePreserved": true,
+    "unconfirmedTechniqueLemmas": []
+  },
+  "api": {
+    "signature": "std::int64_t min_line_bichromatic_edge_cover(const std::vector<int>& red, const std::vector<int>& blue)",
+    "originalAdapterSignature": "long long min_total_length(std::vector<int> r, std::vector<int> b)",
+    "input": "Each color1..100000 sorted strictly increasing int coordinates in0..1000000000; all red+blue coordinates distinct. Both colors required.",
+    "empty": "invalid_argument; no feasible edge cover when one color is absent, so do not return0 silently.",
+    "output": "Minimum sum of absolute endpoint differences over all simple bichromatic edge sets covering every point. No selected-edge list is returned.",
+    "errors": "std::invalid_argument for empty/oversized array, coordinate range, nonincreasing same-color coordinates or cross-color coincidence. All contract checks precede internal DP/scratch allocations; wrapper argument copies may allocate before entry. Standard allocation exceptions propagate.",
+    "inputUnchanged": true,
+    "persistentState": false,
+    "reentrant": true,
+    "time": "O(R+B), including validation and sorted merge; original by-value adapter adds O(R+B) copies.",
+    "auxiliarySpace": "O(R+B); coordinates/color/starts/DP plus two max-block scratch arrays; no recursion.",
+    "integerSafety": "Each prefix has a covering with at mostt−1 edges, each<=1e9. Finite D<=199999000000000. Coordinate sums/products<=1e14; transformed P+k*c−SA and all executed arithmetic have absolute value<4e14. int64 infinity2^60 is kept out of finite expressions. Size checked before int casts; compile-time int max>=1e9 and long long digits>=63.",
+    "maximumPerColorExecuted": 100000,
+    "maximumTotalExecuted": 200000,
+    "originalApiContainsEntireSourceRange": true
+  },
+  "proof": {
+    "sortedModel": "Merge pre-sorted distinct colors without O(NlogN) sort. Positive edge lengths permit strict exchange improvements.",
+    "adjacentBlocks": "For x<b<a<y opposite-color x,y and inner b,a, replace xy by xb+ay at savinga−b>0, preserving every required endpoint. Existing duplicate edge need not be re-added.",
+    "oneSharedPoint": "Within one block z<u<v<w, edgesz-v/u-w can be replacedz-u/v-w saving2(v−u)>0. Left neighbors form a prefix, right neighbors a suffix; at most one point can belong to both.",
+    "twoGroupCover": "C=sum(a−A)+sum(B−b)+max(k,j)(b−a), lower by every endpoint covered and edgecount>=max(k,j); attain by assigning surplus edges to nearest boundary point on smaller side. This gives C=SB−SA+(k−j)b for k>=j and ...a for k<=j.",
+    "boundaryDP": "Right block startsq. For suffixk of previous block and prefixj of right block, previous graph coversq−k points orq−k+1 points if first suffix point shared. D[q+j]=min_k(min(D[q−k],D[q−k+1])+C(k,j)). Each q−k+1<=q, so no current right-block feedback.",
+    "initialFinal": "D0=0, nonempty monochromatic first-block prefixes infinity. First finite boundary can usek=A with D0. Every right-prefix is feasible once two colors exist. Final answer exactlyD[N], including right-block prefixes j>A.",
+    "linearization": "P=min earlier D. k<=j uses prefix min of P+k*a−SA plusSB−j*a. k>=j uses suffix min of P+k*b−SA plusSB−j*b. k=j same both. Clamp prefix toA; omit suffix ifj>A.",
+    "amortization": "One boundary O(left length+right length); each maximal block participates in <=2 boundaries. Scratch allocated once to maximum block size. Validation/merge O(N), original wrapper copies O(N)."
+  },
+  "validation": {
+    "normal": {
+      "checks": 579529,
+      "apiCalls": 147985,
+      "originalAdapterCalls": 37985,
+      "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+      "literalAllEdgeSubsetsN2to8": 35358064,
+      "independentExponentialOracleCalls": 59139,
+      "independentQuadraticCells": 106517092,
+      "everySmallCompletedPrefix": 24672,
+      "randomExactCoverCases": 1800,
+      "randomQuadraticCases": 3500,
+      "maximumCases": 10,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 17,
+      "checksum": "14068181790685886015",
+      "seconds": 0.574199,
+      "peakRSSKiB": 10564,
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 579529,
+      "apiCalls": 147985,
+      "originalAdapterCalls": 37985,
+      "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+      "literalAllEdgeSubsetsN2to8": 35358064,
+      "independentExponentialOracleCalls": 59139,
+      "independentQuadraticCells": 106517092,
+      "everySmallCompletedPrefix": 24672,
+      "randomExactCoverCases": 1800,
+      "randomQuadraticCases": 3500,
+      "maximumCases": 10,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 17,
+      "checksum": "14068181790685886015",
+      "seconds": 3.7058,
+      "peakRSSKiB": 986756,
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "sanitized": true
+    },
+    "normalCommand": "python3 /tmp/flowchartcp-ioi2017-wiring-checker.py",
+    "asanUbsanCommand": "python3 /tmp/flowchartcp-ioi2017-wiring-checker.py --sanitize",
+    "codeFromActualPublishedFence": true,
+    "sameFenceShaBothRuns": true,
+    "literalOracle": "Enumerate ALL subsets of every possible red-blue edge for ALL color orders N2..8 in four coordinate profiles, Gray-code degree updates, minimize literal length with every degree>=1. No production structure used.",
+    "independentExponentialOracle": "Memo on remaining uncovered labeled vertices; pick first uncoveredv and every opposite-color partneru, payabs difference, clearv/u. Some partner may already be covered. No spatial block, C formula or sorted-prefix recurrence.",
+    "quadraticOracle": "Separate red-prefix/blue-prefix O(RB) DP, first cross-checked against exact set cover/literal subsets for all small profiles. Used for larger random inputs.",
+    "smallCoordinateProfiles": [
+      "x_i=i",
+      "increasing gaps1+(i²+3i)mod5",
+      "near1e9 x_i=1e9−1000+7i",
+      "spread endpoints0 and1e9, x_i=floor(1e9*i/(N−1))"
+    ],
+    "boundaryCases": [
+      "R0,2/B1 needs same-point overlap and has cost2.",
+      "first monochromatic block only D0 finite; final right block longer than left handlesj>A.",
+      "k=j both transformed formulas coincide; reflection/color exchange every small case.",
+      "Official sample10 and coordinate single edge0..1e9.",
+      "Full coordinate/type/sort/cross-duplicate/alias and oversized input rejection through both core/adapter.",
+      "20,000 reentrant calls after mixed shapes and after exceptions/maximal calls."
+    ],
+    "maximumCases": [
+      "R0..99999/B100000..199999 cost10000000000, color-swapped as second case.",
+      "alternatingR2i/B2i+1 cost100000.",
+      "R0..99999/B999900001..1e9 cost99990000100000.",
+      "singleR0/B1..100000 cost5000050000.",
+      "R0..99999/singleB1e9 cost99995000050000.",
+      "R0,1e9/B1..100000 cost5999850000.",
+      "100000 arbitrary flipped red-blue consecutive pairs, color-swap, plus near1e9 translation; cost100000 by edgecount and integer positive length lower bound."
+    ],
+    "maximumOracleJustification": "Separated groups use elementary all-point offsets plusmax(counts) gap, independent closed-form implementation; one-point color forces every wire. Two extreme reds choose the nearest-blue red-star then pay cheapest required switch. Flipped opposite pairs attain lower bound N/2 positive integer edges.",
+    "counterScope": "checks counts require assertions; API calls count core calls, adapter calls separately. literalAllEdgeSubsets counts every subset, not only valid covers. everySmallCompletedPrefix counts prefixes containing both colors; monochromatic prefixes are only internal infinity. Exponential oracle calls count solved inputinstances, not memo states.",
+    "timingScope": "Native full checker including oracles/all prefixes/random/max, compile excluded. PeakRSS includes caller input, oracle memo and ASan quarantine; not just API scratch.",
+    "asanOptions": "detect_leaks=0:halt_on_error=1; UBSAN halt_on_error=1:print_stacktrace=1; -fno-pie -no-pie",
+    "allocationFailureInjection": false,
+    "independentReviewPending": true,
+    "originalResearchProbeNotReclassifiedAsProductionValidation": true,
+    "unconfirmedLemmas": []
+  },
+  "initialAuditPreservation": {
+    "corpusId": "ioi-2017",
+    "problemId": "ioi2017_wiring",
+    "initialClassification": "missing-technique",
+    "initialResearchSolutionConfirmed": true,
+    "initialRowsModified": false,
+    "newResearchReviewNeeded": false,
+    "initialResearch4Of6Unchanged": true,
+    "initialCoverage0Of6Unchanged": true,
+    "otherUnconfirmedRowsUnchanged": [
+      "ioi2017_nowruz",
+      "ioi2017_prize"
+    ],
+    "nextAction": "Parent registers reviewed article/API/ref/rootwalk and appends resolution only; initial audit fields remain immutable."
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回の研究positive・分類・旧一般結果への停止位置を保持。原典全数値/API包含、隣接block交換、一点共有、二群点被覆の閉式、二方向最小値の線形DPと最後のblock、64bit、実MDX C++20抽出のliteral/指数/二次oracle・最大・例外・反復・通常ASan/UBSan、独立レビューと特徴経路を確認して解消する。実header未取得の取得状況は偽らず、公式generic/Notice型対応と実adapter署名を区別して記録。"
+  },
+  "editorNotes": [
+    "自然な日本語の標準8節、単一常時表示完全C++20、frontmatter title/descriptionとmetadataを厳密一致。",
+    "調査履歴・数値取得経緯・検査カウンター/時間/RSSはsidecarへ分離。本文は場面/条件/証明/計算量/実装/実在関連手法/一次資料。",
+    "公式Editorialは高位方針の一次資料、一点共有/閉式/最小値漸化式は独立補足として明示。",
+    "本番2017-07-30 dayprecision/exacttrue、難度null、IOI main別field。",
+    "共有data/初回audit/flow/記事/ledgerは未編集、公開/commit/server/installなし。"
+  ],
+  "artifactSha256": {
+    "article": "cb5a36092fafe7e70c057537a9ac23ead426a7eaba27b9dc43a6da447d1bbf13",
+    "checker": "88e1c568acbf8d99683df6fe0dda11a88289dc14a0dd40eb00066e5c3b4c81dc",
+    "authorSidecar": "a2eb2b40c7847b2444375b3dfd4ba1f550c984d85ceb81cf50a87d248e28540d",
+    "publishedArticle": "c8ef35ef2096e75db51a6fd2f1211bb5aa571ab81f4f6fb5c2a594386b0d7de2",
+    "publishedChecker": "c97c880fdc0348658da6050f6d276148635142ffb4aa54dcecd76506b2eb08e9"
+  },
+  "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+  "sharedFilesModified": false,
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/line-bipartite-edge-cover-monochromatic-block-prefix-dp.mdx",
+    "checker": "scripts/check_line_bichromatic_edge_cover_cpp.py",
+    "metadataGroup": "flow-matching",
+    "entryGraphId": "flow-matching",
+    "choices": [
+      "quantity-goals",
+      "line-point-cover",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Natural title 直線上の全点を異色の点につなぐ最小費用を求める; preserve body and C++ exactly.",
+      "Normalize author feature proposal to product schema/date/numeric/evidence fields and canonical guarded root walk.",
+      "Normalize only permanent checker/probe paths and implicit tmp output writes; keep oracle logic unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-ioi2017-wiring.json"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewedAt": "2026-10-15",
+      "reviewer": "/root",
+      "techniqueId": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+      "sourceVerification": {
+        "englishStatementPagesRead": [
+          1,
+          2
+        ],
+        "japanesePrimaryTranslationRead": true,
+        "editorialFullOnePageRead": true,
+        "noticePagesRead": [
+          1,
+          2
+        ],
+        "primarySearchNumericSource": "https://ioi.te.lv/locations/ioi17/contest/day1/wiring.pdf",
+        "originalBounds": "Each color1..100000,coordinates0..1e9,all distinct,each color sorted; all point degree>=1,no upper bound.",
+        "signature": "Primary generic int64 min_total_length(int[] r,int[] b) plus Notice mapping to long long/std::vector<int>. Actual header ZIP not acquired/read; no claim of direct header validation.",
+        "officialDay1Date": "2017-07-30",
+        "difficulty": null,
+        "visualOnlyVerificationClaimed": false,
+        "failedPdfScreenshot": "English PDF screenshot returned UnexpectedStatusCode; numeric bounds recovered from primary indexed text, no image verification claimed."
+      },
+      "proofReview": [
+        "Any edge spanning>=3 monochromatic boundaries has internal opposite pair x<b<a<y; replacement xb+ay saves a-b>0 and preserves all previously covered endpoints. Hence adjacent blocks suffice.",
+        "For u<v in one block, a right edge at u and left edge at v are strictly shortened by2(v-u) on exchanging endpoints. Thus left-connected points form a prefix and right-connected points a suffix with at most one shared vertex.",
+        "Two-group edge cover pays each endpoint offset to its boundary plus max(k,j) interboundary gaps. This is attained by exactlymax(k,j) edges with extras assigned to the closest point of the smaller side, giving the two C formulas.",
+        "D[t] is exact optimal prefix. Adjacent block boundary uses left suffixk/right prefixj and previousprefixq-k orq-k+1 depending on one shared point. Decomposing an optimal solution and unioning two candidates proves both inequalities. Previous indices<=q, so no feedback from current right block.",
+        "Finite initial boundary exists throughk=A,D0. Thereafter Dq is finite soP1 is finite. Forj>A prefixallA retains at least one feasible candidate; otherwise suffix/includeskA supplies it. Thus best is finite whenever sum_b+best is evaluated.",
+        "Separatek<=j/k>=j expressions are exactly prefix/suffix minima; equalityk=j matches. Each block participates at most twice, giving totalO(R+B) including sorted merge/validation and adapter copies."
+      ],
+      "apiAndResourcesReview": [
+        "Each size validated before int casts; maxint>=1e9/staticlonglongdigits>=63 imply all N/indices fit. Coordinate/strictsort/crossduplicates checked before DP allocations. const references not changed/retained, all scratchlocal and returnedint64owning.",
+        "k*a andk*b promote to64bit via boundarycoordinate types; coordinate sums and finite candidateabsolute<4e14. Infinity2^60 is excluded before transformed arithmetic; finitebest guaranteed above. No recursion, standardallocation exceptions propagate.",
+        "O(N) scratch allocated once at maximum blocklength; color+coordinates+starts+DP and two scratch arrays. Full original vector-by-value adapter exactly delegates input checks and returns wide result, without I/O or persistentgraderstate.",
+        "General matching/aggregate fixedflowquantity do not cover every reusable endpoint; oldgeneric route is preserved as historicalscope, while new guard explicitly requires all endpoints degree>=1."
+      ],
+      "normal": {
+        "checks": 579529,
+        "apiCalls": 147985,
+        "originalAdapterCalls": 37985,
+        "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+        "literalAllEdgeSubsetsN2to8": 35358064,
+        "independentExponentialOracleCalls": 59139,
+        "independentQuadraticCells": 106517092,
+        "everySmallCompletedPrefix": 24672,
+        "randomExactCoverCases": 1800,
+        "randomQuadraticCases": 3500,
+        "maximumCases": 10,
+        "reentrantBatchCalls": 20000,
+        "invalidCases": 17,
+        "checksum": "14068181790685886015",
+        "seconds": 0.571716,
+        "peakRSSKiB": 10520,
+        "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+        "sanitized": false
+      },
+      "asanUbsan": {
+        "checks": 579529,
+        "apiCalls": 147985,
+        "originalAdapterCalls": 37985,
+        "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+        "literalAllEdgeSubsetsN2to8": 35358064,
+        "independentExponentialOracleCalls": 59139,
+        "independentQuadraticCells": 106517092,
+        "everySmallCompletedPrefix": 24672,
+        "randomExactCoverCases": 1800,
+        "randomQuadraticCases": 3500,
+        "maximumCases": 10,
+        "reentrantBatchCalls": 20000,
+        "invalidCases": 17,
+        "checksum": "14068181790685886015",
+        "seconds": 3.72079,
+        "peakRSSKiB": 986656,
+        "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+        "sanitized": true
+      },
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "artifactSha256": {
+        "article": "cb5a36092fafe7e70c057537a9ac23ead426a7eaba27b9dc43a6da447d1bbf13",
+        "checker": "88e1c568acbf8d99683df6fe0dda11a88289dc14a0dd40eb00066e5c3b4c81dc",
+        "sidecar": "a2eb2b40c7847b2444375b3dfd4ba1f550c984d85ceb81cf50a87d248e28540d"
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Natural title 直線上の全点を異色の点につなぐ最小費用を求める; preserve body and C++ exactly.",
+        "Normalize author feature proposal to product schema/date/numeric/evidence fields and canonical guarded root walk.",
+        "Normalize only permanent checker/probe paths and implicit tmp output writes; keep oracle logic unchanged."
+      ],
+      "sharedFilesModified": false
+    },
+    "normal": {
+      "checks": 579529,
+      "apiCalls": 147985,
+      "originalAdapterCalls": 37985,
+      "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+      "literalAllEdgeSubsetsN2to8": 35358064,
+      "independentExponentialOracleCalls": 59139,
+      "independentQuadraticCells": 106517092,
+      "everySmallCompletedPrefix": 24672,
+      "randomExactCoverCases": 1800,
+      "randomQuadraticCases": 3500,
+      "maximumCases": 10,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 17,
+      "checksum": "14068181790685886015",
+      "seconds": 0.571716,
+      "peakRSSKiB": 10520,
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 579529,
+      "apiCalls": 147985,
+      "originalAdapterCalls": 37985,
+      "allTwoColorOrdersN2to12FourCoordinateProfiles": 32664,
+      "literalAllEdgeSubsetsN2to8": 35358064,
+      "independentExponentialOracleCalls": 59139,
+      "independentQuadraticCells": 106517092,
+      "everySmallCompletedPrefix": 24672,
+      "randomExactCoverCases": 1800,
+      "randomQuadraticCases": 3500,
+      "maximumCases": 10,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 17,
+      "checksum": "14068181790685886015",
+      "seconds": 3.72079,
+      "peakRSSKiB": 986656,
+      "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+      "sanitized": true
+    },
+    "additionalReviewFile": "research/probes/line-bichromatic-cover-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

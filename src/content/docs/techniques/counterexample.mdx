@@ -1,0 +1,67 @@
+---
+title: "反例探し"
+description: "単純な正しい解法と比較して、仮説や実装が失敗する入力を探す。"
+techniqueId: counterexample
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+単純な正しい解法と比較して、仮説や実装が失敗する入力を探す。
+
+## 使う場面
+
+貪欲法や単調性を仮定している場合、サンプルは通るが証明に不安がある場合、境界の処理が複雑な場合に使う。仮説に都合のよい入力だけでなく、仮説を崩す入力を探す。
+
+## 考え方
+
+小さい入力をすべて列挙するか、乱数で生成する。同じ入力を単純な参照解法と候補の解法に渡し、答えを比較する。異なる結果が出たら入力を保存し、要素を削るなどして、原因を調べやすい小さい反例にする。
+
+例えば、硬貨を大きい額から使う貪欲法が常に最小枚数になるかを、金額ごとのDPと比較できる。額面が1、3、4なら、6を作るときに4、1、1の3枚より、3、3の2枚の方が少ない。
+
+## 適用条件
+
+参照解法は、候補の解法と同じ未証明の仮定を使わず、条件をそのまま実装する。最適解が複数ある場合は、出力の一致ではなく、制約を満たすかと評価値を比較する。
+
+乱数を使う場合は初期値を保存すると、失敗した入力を再現できる。
+
+## なぜ正しいか
+
+合法な入力で一つでも反例が見つかれば、すべての入力で成立するという仮説は否定できる。一方、試した入力で一致しても、一般の正しさは証明されない。反例が示した条件を調べ、解法の仮定や状態の不足を修正する。
+
+## 計算量
+
+以下の硬貨の比較では、最大金額 $M$、硬貨の種類数 $K$ に対して、時間は $O(K\log K+MK)$、空間は $O(M+K)$。探索範囲を広げるだけでなく、仮定に関係する境界や重複を含めることも有効である。
+
+## 実装
+
+`first_coin_counterexample` は、調べた範囲で最初に貪欲法とDPの枚数が異なる金額を返す。見つからなければ `None` を返す。硬貨は正の整数で、すべての金額を作れるよう額面1を含める。
+
+```python
+def first_coin_counterexample(coins, max_amount):
+    if 1 not in coins or any(c <= 0 for c in coins):
+        raise ValueError("positive coins including 1 required")
+    coins = sorted(set(coins), reverse=True)
+    dp = [0] + [max_amount + 1] * max_amount
+    for amount in range(1, max_amount + 1):
+        dp[amount] = min(dp[amount-c] + 1 for c in coins if c <= amount)
+        remainder, count = amount, 0
+        for c in coins:
+            copies, remainder = divmod(remainder, c)
+            count += copies
+        if count != dp[amount]:
+            return {"amount": amount, "greedy": count, "optimal": dp[amount]}
+    return None
+
+assert first_coin_counterexample([1, 3, 4], 20) == {
+    "amount": 6, "greedy": 3, "optimal": 2
+}
+```
+
+## 関連する手法
+
+[小さい入力で全探索する](../brute-force-observation/) ・ [交換法](../exchange-argument/) ・ [不変量](../invariant/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC270 D](https://atcoder.jp/contests/abc270/editorial/4850)
+
+<TechniqueReferences techniqueId="counterexample" />

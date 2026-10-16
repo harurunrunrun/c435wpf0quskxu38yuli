@@ -1,0 +1,84 @@
+---
+title: "形式的冪級数"
+description: "係数列を級数として扱い、逆数・対数・指数などを高速に計算します。"
+techniqueId: formal-power-series
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+係数列を級数として扱い、逆数・対数・指数などを高速に計算します。
+
+別名：Formal Power Series / FPS / Newton Iteration / Newton法
+
+## 使う場面
+
+個数ごとの答えを求めるDPに畳み込みが現れる場合や、生成関数の方程式として書くと簡潔になる場合に使います。ここでは $x^N$ 以降を無視し、$N$ 次未満の係数だけを求めます。実数の関数のような収束を考える必要はありません。
+
+## 考え方
+
+逆数を例にすると、$A(x)B(x)=1\pmod{x^m}$ を満たす $B$ から
+
+$$B_{\mathrm{new}}=B(2-AB)\pmod{x^{2m}}$$
+
+を計算します。正しい係数の数を倍にできるので、定数項から始めて、必要な長さまで繰り返します。各段の乗算はNTTで処理し、不要な高次の係数を切り捨てます。
+
+対数は $\log A=\int A'/A$ から計算でき、指数も同様に次数を倍増する更新で求められます。
+
+## 適用条件
+
+逆数には定数項の逆元が必要です。標準的な対数は定数項1、指数は定数項0の級数を扱います。積分では各次数で割るため、法がその整数を割らないことが必要です。
+
+以下は法998244353での逆数のみを実装します。入力の定数項は非零、係数は0以上法未満にします。乗算へ渡すNTTの変換長の上限も守ります。
+
+## なぜ正しいか
+
+誤差を $E=1-AB$ とすると、新しい積は
+
+$$A\cdot B(2-AB)=1-E^2$$
+
+です。$E$ が $m$ 次以降にしか現れなければ、$E^2$ は $2m$ 次以降にしか現れません。したがって、すでに正しい係数を変えずに、正しい範囲を2倍にできます。
+
+## 計算量
+
+長さ $N$ の乗算が $O(N\log N)$ なら、逆数の計算も全体で $O(N\log N)$、空間は $O(N)$ です。長さ1、2、4と倍増する各段の計算量を足しても、最後の段と同じ次数に収まります。単純な二重ループの乗算を使う場合は $O(N^2)$ です。
+
+## 実装
+
+`fps_inverse(a, n, convolution)` は、$a$ の逆数の先頭 $n$ 係数を返します。NTTの記事の実装を渡すなら、`fps_inverse(a, n, ntt998::convolution)` と呼びます。
+
+この組合せでは途中の乗算長も考慮し、$n\le2^{22}$ の範囲で使います。対数・指数などの演算は以下のコードには含まれていません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// multiply(a,b) must return the full convolution modulo 998244353.
+template<class Convolution>
+vector<int> fps_inverse(const vector<int>& a,int n,Convolution multiply) {
+    constexpr int P=998244353; assert(n>=0);
+    if(n==0) return {};
+    assert(!a.empty() && 0<a[0] && a[0]<P);
+    auto power=[&](int x,int k) { int r=1;
+        for(;k;k>>=1,x=1LL*x*x%P) if(k&1) r=1LL*r*x%P;
+        return r;
+    };
+    vector<int> b{power(a[0],P-2)};
+    while(int(b.size())<n) {
+        int m=min(n,int(b.size())*2); vector<int> f(a.begin(),a.begin()+min(m,int(a.size())));
+        auto t=multiply(f,b); t.resize(m);
+        t[0]=(2-t[0]+P)%P;
+        for(int i=1;i<m;++i) t[i]=t[i]?P-t[i]:0;
+        b=multiply(b,t); b.resize(m);
+    }
+    return b;
+}
+```
+
+## 関連する手法
+
+[NTT・畳み込み](/flowchartcp/techniques/ntt/) ・ [線形漸化式の高速計算](/flowchartcp/techniques/linear-recurrence/)
+
+## 参考資料
+
+- [cp-algorithms: Operations on polynomials and series](https://cp-algorithms.com/algebra/polynomial.html)
+- [AtCoder Library: Convolution](https://atcoder.github.io/ac-library/production/document_ja/convolution.html)
+
+<TechniqueReferences techniqueId="formal-power-series" />

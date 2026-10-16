@@ -1,0 +1,87 @@
+---
+title: "同色の隣接数を指定する色列は、同色にする境界を先に選ぶ"
+description: "線形の列では各境界の同色・異色を独立に指定でき、境界位置の二項係数と色の選択数を掛けられる。"
+techniqueId: coloring-equal-adjacencies
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+線形に並ぶ $n$ 箇所を $m$ 色で塗り、隣接する同色の組の数だけを制限したい。直前の色を全て状態に持つ DP では色数が大きいと遅くなる。値そのものではなく、各境界が同色か異色かを先に選ぶ。
+
+## 考え方
+
+同色の境界をちょうど $k$ 個にすると、その境界の選び方は $\binom{n-1}k$ 通り。最初の色は $m$ 通りで、同色の境界では次の色は一通り、異色の境界では直前以外の $m-1$ 通りから選べる。
+
+$$A_k=\binom{n-1}k\,m(m-1)^{n-1-k}.$$
+
+高々 $K$ 個なら $A_0+\cdots+A_K$ を足す。同色の境界を縮めて $n-k$ 個の連続ブロックにし、隣接ブロックは異色に塗ると考えても同じ式になる。
+
+## 適用条件
+
+列は線形で、端と端は隣接しない。全色を同じ条件で使え、色ごとの個数を制限しない。環では最後と最初の色の一致が他の境界に依存するので、この式をそのまま使わない。
+
+掲載実装は $1\le n<P=998244353$、色数は非負の64ビット整数。色数0なら全て0、色数1なら $k=n-1$ だけ1。$n=1$ の境界数は0で、答えは $m$。$0^0=1$ とする通常の累乗初期値がこれらの境界を正しく扱う。
+
+## なぜ正しいか
+
+一つの色列から、同色である境界集合が一意に定まる。逆に境界集合を固定し、最初の色を選んだ後、左から各境界条件に合う色を選べば、その集合を持つ色列がちょうど一回ずつ作られる。
+
+異色境界で選べる色数は、直前の色が何であっても $m-1$。後の条件はさらに次の色との比較だけなので、色の具体名を記憶せず個数を掛けられる。
+
+## 計算量
+
+全塗り方の列挙は $O(nm^n)$ 時間。隣接数 DP は $O(nK)$ 時間まで削れる。全 $k$ の式を作る実装は階乗表と累乗表を含めて $O(n+\log P)$ 時間、$O(n)$ 空間。高々 $K$ の合計はさらに $O(\min(K,n))$ 時間。
+
+## 実装
+
+`equal_adjacency_counts(n, colors)[k]` は同色隣接がちょうど $k$ 個の個数。高々の質問にも配列の累積和を使える。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+constexpr long long COLORING_MOD=998244353;
+std::vector<long long> equal_adjacency_counts(int n,long long colors) {
+    if(n<1 || colors<0) throw std::invalid_argument("range");
+    BinomialTable<COLORING_MOD> combinations(n);
+    long long first=colors%COLORING_MOD;
+    long long different=(first+COLORING_MOD-1)%COLORING_MOD;
+    std::vector<long long> powers(n,1),answer(n);
+    for(int i=1;i<n;++i) powers[i]=powers[i-1]*different%COLORING_MOD;
+    for(int k=0;k<n;++k) answer[k]=combinations.choose(n-1,k)*first%COLORING_MOD*powers[n-1-k]%COLORING_MOD;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/) ・ [環の隣接条件は最初の選択を固定して最後で確認する](/flowchartcp/techniques/cyclic-dp-first-state/)
+
+## 参考資料
+
+- [AtCoder：E - Colorful Blocks（原典）](https://atcoder.jp/contests/abc167/tasks/abc167_e)。
+
+<TechniqueReferences techniqueId="coloring-equal-adjacencies" />

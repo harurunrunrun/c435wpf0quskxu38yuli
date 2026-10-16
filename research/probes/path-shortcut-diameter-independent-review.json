@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+  "problemId": "ioi2016_shortcut",
+  "reviewer": "ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": [
+    "full eight-section Japanese MDX and sole visible C++20 fence",
+    "entire168-line extraction checker and final sidecar",
+    "primary statement English/Japanese3pages,official Solutions5-7pages,Day1Notice,official task/date index",
+    "source inclusion,representative reduction,four bounds includingc,self-index removal and strict eligibility,exact discrete station endpoints,50-step bound",
+    "copy/move/assignment/input ownership/invalid cases/allocation exceptions/nonallocating prepared queries/64-bit arithmetic",
+    "independent native normal+ASan reproduction,physical unit-edge BFS and exact branch-translation/scale/extreme-box supplement"
+  ],
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2016-shortcut-article.mdx",
+      "sha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2016-shortcut-checker.py",
+      "sha256": "2557fd242836399f93cedd65f997847de166764626940cfa1a7e943a3aab3d32"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2016-shortcut-sidecar.json",
+      "sha256": "ef7439d204bffb1d00f3c69dbfa362a2a2db30d4b56fe2ba82eb819f38525abf"
+    }
+  },
+  "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+  "sourceReview": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "pages": 3,
+      "readMethod": "web primary full text;detached math fragments97-106 joined with the corresponding constraint/subtask prose",
+      "japaneseUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-JPN.pdf",
+      "japanesePages": 3,
+      "numericCrossCheck": "JPN detached lines91-102 independently confirm N2..1000000,main gaps1..1e9,branches0..1e9,c1..1e9."
+    },
+    "originalConstraints": {
+      "N": [
+        2,
+        1000000
+      ],
+      "l_i": [
+        1,
+        1000000000
+      ],
+      "d_i": [
+        0,
+        1000000000
+      ],
+      "c": [
+        1,
+        1000000000
+      ],
+      "mainLineLengths": "N-1 positive integer lengths",
+      "branchModel": "at most one new leaf per main station;d_i=0 denotes no secondary line",
+      "newEdge": "exactly one undirected length-c edge between distinct main stations; neighbours allowed",
+      "distances": "shortest route lengths; all original main and actual leaf stations participate",
+      "diameter": "maximum over station pairs, not arbitrary interior points of edges",
+      "genericApi": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+      "timeSeconds": 2,
+      "memoryGB": 2,
+      "subtaskScores": [
+        9,
+        14,
+        8,
+        7,
+        33,
+        22,
+        4,
+        3
+      ],
+      "subtaskNUpperBounds": [
+        10,
+        100,
+        250,
+        500,
+        3000,
+        100000,
+        300000,
+        1000000
+      ],
+      "examples": [
+        {
+          "n": 4,
+          "l": [
+            10,
+            20,
+            20
+          ],
+          "d": [
+            0,
+            40,
+            0,
+            30
+          ],
+          "c": 10,
+          "answer": 80
+        },
+        {
+          "n": 9,
+          "l": [
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10
+          ],
+          "d": [
+            20,
+            0,
+            30,
+            0,
+            0,
+            40,
+            0,
+            40,
+            0
+          ],
+          "c": 30,
+          "answer": 110
+        },
+        {
+          "n": 4,
+          "l": [
+            2,
+            2,
+            2
+          ],
+          "d": [
+            1,
+            10,
+            10,
+            1
+          ],
+          "c": 1,
+          "answer": 21
+        },
+        {
+          "n": 3,
+          "l": [
+            1,
+            1
+          ],
+          "d": [
+            1,
+            1,
+            1
+          ],
+          "c": 3,
+          "answer": 4
+        }
+      ]
+    },
+    "editorial": {
+      "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "pages": 17,
+      "relevantOneBasedPages": [
+        5,
+        6,
+        7
+      ],
+      "author": "Gleb Evstropov",
+      "officialArchiveUrl": "https://ioi.te.lv/locations/ioi16/contest/",
+      "actualSolutionsLinkFollowed": true,
+      "archiveLinkIdAtRead": 1012,
+      "selectedProcedure": "Bad original-distance pairs create a rotated box;intersect pair bounds,iterate b increasing and insert a increasing once;perform the station-only decision in linear time.",
+      "independentSupplements": "Retained positive c in all four bounds,top-two distinct-branch necessary guard,self-index removal preserving ties,explicit V-shaped discrete pointer and all integer/API proofs.",
+      "sourceFormulaLimitation": "The retrieved official formulas omit an explicit c term;the reviewed article independently derives the correct c-inclusive formulas and does not claim those terms were visibly present in the extracted PDF.",
+      "alternativeDominanceMethodVerified": false
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "pages": 1,
+      "arrayType": "std::vector<int>",
+      "int64Type": "long long",
+      "timeSeconds": 2,
+      "memoryGB": 2,
+      "noStandardInputOutput": true
+    },
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "dateUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "signature": {
+      "statementGeneric": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+      "noticeMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>",
+        "int": "int"
+      },
+      "derivedSignature": "long long find_shortcut(int n,std::vector<int> l,std::vector<int> d,int c)",
+      "actualCppHeaderRetrieved": false,
+      "headerReadNotClaimed": true,
+      "exactDerivedSignatureStaticAssertExecuted": true,
+      "syntheticHeaderNotClaimed": true
+    },
+    "originalFullRangeIncluded": true,
+    "imagesClaimedRead": false,
+    "actualHeaderBytesRetrieved": false,
+    "requiredUnknowns": []
+  },
+  "mathematicalReview": [
+    {
+      "obligation": "station representatives and no self-pair",
+      "verdict": "verified",
+      "reason": "For each main index use its sole leaf when present,otherwise the main station. A pair attached to different main indices is bounded by these representatives. A same-index main/leaf distance d_i is bounded by representative i to any other representative because N>=2. Hence only distinct-index pairs determine the diameter;2d_i must not be introduced."
+    },
+    {
+      "obligation": "shortcut orientation and ignoring good old pairs",
+      "verdict": "verified",
+      "reason": "A simple positive-weight shortest path uses the new edge at most once;the direct path and two endpoint orientations exhaust possible walks after removing loops. For ordered original indices and ordered endpoints,the uncrossed orientation is no longer. Thus a pair with olddistance<=K imposes no condition,whereas every olddistance>K pair must satisfy di+dj+c+|xi-y|+|xj-z|<=K."
+    },
+    {
+      "obligation": "four closed inequalities including c",
+      "verdict": "verified",
+      "reason": "Apply |p|+|q|=max(|p+q|,|p-q|) to p=y-xi,q=z-xj. S=y+z lies in[bi+bj+c-K,ai+aj+K-c];D=z-y lies in[bj-ai+c-K,aj-bi+K-c]. Negative residual budget makes these bounds inconsistent. Non-strict closed bounds are correct for distance<=K;oldpair selection alone uses strict>K."
+    },
+    {
+      "obligation": "top-two branch lower bound and eligible orientation",
+      "verdict": "verified",
+      "reason": "Every representative distance is at least di+dj. The two largest branch values from distinct indices,including multiplicity for ties,give a necessary lower bound. Above it,an eligible a_i<b_j-K with i>j is impossible because b_j-a_i=di+dj-(xi-xj)<di+dj<=K. Only i<j orself remains;self may qualify when2d_j>K and is explicitly excluded."
+    },
+    {
+      "obligation": "streaming extrema with duplicate values",
+      "verdict": "verified",
+      "reason": "Sort two index-bearing station arrays once by a andb. As j runs in increasingb,the strict a-threshold only increases;each index is inserted once. Store two minima ofa and two maxima ofb with distinct indices;equal values are retained while slots are populated. Excluding j picks the first retained candidate unless it isj,then the second. Four extrema can be realized by different pairs because bounds are intersected independently."
+    },
+    {
+      "obligation": "station-only endpoints and complete V-shaped pointer",
+      "verdict": "verified",
+      "reason": "For y=x_u,the feasible z interval is[max(Slo-y,y+Dlo),min(Shi-y,y+Dhi)]. Choosing the first original station at orabove the lower bound with index>=u+1 is necessary and sufficient. The lower bound is the max of one decreasing andone increasing line;its lower_bound index is nonincreasing then nondecreasing. Taking max with increasingu+1 can only replace a terminal part of the decreasing phase,hence preserves a single valley. Starting the pointer atN and moving both directions gives atmostN left andN right moves. SentinelN,exact equality,inverted boxes andforbidden equal indices are correctly handled."
+    },
+    {
+      "obligation": "binary search and full-range arithmetic",
+      "verdict": "verified",
+      "reason": "Adding a positive edge never increases a distance;original station diameter is a feasible upper bound for any legal distinct pair. Feasibility is monotone. The original diameter is atmost1000001000000000<2^50,so atmost50binary decisions suffice. Negative K is rejected;K>=original returns before rotated arithmetic. All remaining production boundary/pointer intermediates are less than1e16 in magnitude."
+    },
+    {
+      "obligation": "branch-translation independent check",
+      "verdict": "verified",
+      "reason": "Adding delta to every branch increases each distinct-index representative distance by exactly2delta for every fixed shortcut endpoint pair. The representative lemma holds before andafter,even when a zero branch becomes a real leaf. Consequently both the optimum and every fixed-endpoint diameter increase by2delta. New literal BFS instances independently confirm the effect without using representative reduction in their oracle."
+    }
+  ],
+  "implementationReview": {
+    "api": {
+      "class": "PathShortcut",
+      "constructor": "PathShortcut(const std::vector<int>& lengths,const std::vector<int>& branches,int c)",
+      "functions": [
+        "int station_count() const noexcept",
+        "bool can_achieve(std::int64_t diameter) const",
+        "std::int64_t minimum_diameter() const",
+        "std::int64_t minimum_path_shortcut_diameter(const std::vector<int>& lengths,const std::vector<int>& branches,int c)",
+        "long long find_shortcut(int n,std::vector<int> l,std::vector<int> d,int c)"
+      ],
+      "input": "N2..1000000, lengths.size=N-1/l1..1e9, branches.size=N/d0..1e9, c1..1e9.",
+      "output": "Minimum station-pair diameter after adding exactly one shortcut between distinct original main stations; no endpoint witness is returned.",
+      "thresholds": "Nonnegative signed64;0 returnsfalse for legal inputs,INT64_MAX returns true without overflowing rotated-bound expressions. Negative thresholds throw invalid_argument.",
+      "invalid": "invalid_argument for any N/length-vector mismatch/value/c or original explicit-n mismatch, before internal prepared-vector allocation. Original by-value argument copies can allocate before entry.",
+      "inputUnchanged": true,
+      "inputReferencesRetained": false,
+      "persistentGlobalState": false,
+      "reentrant": true,
+      "preparedReadOnly": true,
+      "normalQueriesAllocate": false,
+      "copyMoveAssignment": "Independent default copy; noexcept move swaps with empty default member state; moved-from station_count0 and decision/minimum throwlogic_error. Copy-empty is supported. Assignment takes an independent value then noexcept-swaps, giving strong copy-assignment exception guarantee; self move was executed through aliasing arguments.",
+      "allocationExceptions": "Propagate unchanged with original inputs/source/target state preserved. Copy-parameter failure occurs before entering noexcept assignment body.",
+      "internalHelper": "path_shortcut_detail::station_pair is not a separately supported public validation API: it assumes a sorted distinct position vector fitting int and bounds whose additions/subtractions fit int64. Production calls it only with validated prepared positions and safe bounds. Arbitrary finite small boxes exercise this exact helper separately.",
+      "preparationTime": "O(NlogN): exactly two order sorts once, independent of diameter; no sorting in can_achieve or minimum_diameter.",
+      "decisionTime": "O(N); one b-order sweep with one monotone a-order insertion plus at most2N discrete-pointer moves.",
+      "minimumTime": "O(NlogN+NlogT) including preparation, orO(NlogT) on already-prepared object; T=original tree station diameter.",
+      "extraSpace": "O(N); N int64 positions and twoN-element Station{int64 a,b;int index} orders. Queries useconstant stack and do not allocate.",
+      "maximumPreparedVectorPayloadBytes": 56000000,
+      "preparedPayloadMeaning": "On tested GCC/libstdc++ sizeofStation24/sizeofint4, positions8N+twoorders48N=56N. Excludes allocator overhead/caller input/sort stack. Copying a prepared object requires another56N; adapter input copies add4*(2N-1)<=7999996bytes before preparation.",
+      "integerSafety": {
+        "mainCoordinateUpperBound": 999999000000000,
+        "originalDiameterUpperBound": 1000001000000000,
+        "binaryDecisionsUpperBound": 50,
+        "branchLowerUpperBound": 2000000000,
+        "aRange": "-1e9..999999000000000",
+        "bRange": "0..1e15",
+        "boundaryAndPointerRange": "absolute intermediate sums/differences <1e16 on production path, far belowINT64_MAX",
+        "thresholdOverflowGuard": "diameter>=original_diameter returns true before boundary arithmetic; negative diameter throws before arithmetic",
+        "sizeConversion": "All sizes validated beforeint conversions; index0..999999 and right sentinelN<=1000000",
+        "noCoordinateMultiplication": "Build x by int64 prefix addition; all boundary fields/shortcut/diameter promoted64"
+      },
+      "fullOriginalScopeIncluded": true
+    },
+    "originalScopeIncluded": true,
+    "validation": "All sizes,N,c,gap andbranch ranges are checked before internal prepared-vector allocation andint conversion. The original by-value adapter copies may allocate before entry;explicitn andtwo vector lengths are checked. Negative can_achieve bounds throwinvalid_argument after checking a live value.",
+    "states": "No mutable globals. Three vectors own the geometry;input lifetimes are not retained. Queries areconst and allocate nothing. Defaultcopy is independent;move swaps with empty default members;station_count is0 on moved-from objects anddecision/minimum throwlogic_error. By-value assignment copies before entering itsnoexcept swap body,so copy failure propagates without modifying target;selfmove restores a valid value.",
+    "bounds": "Coordinates<=999999000000000,original diameter<=1000001000000000,largest-two-branch<=2000000000;all expression operands arepromoted int64. Binary midpoint low+(high-low)/2 cannot overflow. Size<=1000000 is checked beforeint conversions;right may equalN but is never dereferenced atN.",
+    "memory": "On testedABI,Station is24bytes. Three prepared payloads total8N+48N=56N=56000000bytes atN1e6. Copies can add another56N andby-value adapter inputs add4(2N-1);none is claimed as a process-RSS upper bound. Preparation std::sort usesO(logN) stack;queries useconstant stack. No recursion depending on input depth.",
+    "time": "TwoO(NlogN) sorts only inpreparation. Each decision performs atmostN insertions,N b-iterations and2N endpoint moves;prepared binary minimumO(NlogT). FullAPI includespreparationO(NlogN+NlogT).",
+    "internalHelperScope": "detail::station_pair is tested as the actualfence helper but is not presented as a validated separateAPI;it assumes sorted distinctpositions and arithmetic-safe bounds. Public methods establish those assumptions.",
+    "sourceBudgetInterpretation": "Primary2s/2GB is preserved. Full checker times/RSS include hundreds ofmillions oforacle operations,allocation tests/copies andASanquarantine,not single-source-input resource claims."
+  },
+  "reproducedAuthorChecker": {
+    "command": "python3 /tmp/flowchartcp-ioi2016-shortcut-checker.py [--sanitize] --output <result.json>",
+    "normal": {
+      "checks": 8752494,
+      "preparedInputs": 10836,
+      "preparedMinimumCalls": 10843,
+      "genericFunctionCalls": 16022,
+      "originalAdapterCalls": 10826,
+      "explicitPredicateCalls": 100861,
+      "allSmallN2to5": 9324,
+      "allBinaryBranchPathsN2to6": 372,
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": 152165,
+      "floydRelaxations": 556286427,
+      "fourBoundaryEquivalences": 7009273,
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 28,
+      "stateChecks": 10023,
+      "maximumPreparedPayloadBytes": 56000000,
+      "checksum": "11498457106931259831",
+      "seconds": 4.70512,
+      "peakRSSKiB": 199164,
+      "maximumCases": [
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000,
+          "prepareAndMinimumSeconds": 0.147827
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 999999,
+          "prepareAndMinimumSeconds": 0.112238
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000500000,
+          "prepareAndMinimumSeconds": 0.14572
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000999999,
+          "prepareAndMinimumSeconds": 0.123718
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 499999000000001,
+          "prepareAndMinimumSeconds": 0.26572
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000000000000,
+          "prepareAndMinimumSeconds": 0.2476
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500001000000001,
+          "prepareAndMinimumSeconds": 0.251704
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500002000000000,
+          "prepareAndMinimumSeconds": 0.247639
+        },
+        {
+          "name": "nonuniform antipodal remainder in homogeneous cycle",
+          "n": 1000000,
+          "answer": 499999770969198,
+          "prepareAndMinimumSeconds": 0.246481
+        },
+        {
+          "name": "random edges/branches, unusably long shortcut",
+          "n": 1000000,
+          "answer": 2050524398,
+          "prepareAndMinimumSeconds": 0.225231
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0596159
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0560721
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0670006
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.0535805
+        }
+      ],
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": false,
+      "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "asanUbsan": {
+      "checks": 8752494,
+      "preparedInputs": 10836,
+      "preparedMinimumCalls": 10843,
+      "genericFunctionCalls": 16022,
+      "originalAdapterCalls": 10826,
+      "explicitPredicateCalls": 100861,
+      "allSmallN2to5": 9324,
+      "allBinaryBranchPathsN2to6": 372,
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": 152165,
+      "floydRelaxations": 556286427,
+      "fourBoundaryEquivalences": 7009273,
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 28,
+      "stateChecks": 10023,
+      "maximumPreparedPayloadBytes": 56000000,
+      "checksum": "11498457106931259831",
+      "seconds": 21.4792,
+      "peakRSSKiB": 669376,
+      "maximumCases": [
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000,
+          "prepareAndMinimumSeconds": 0.607686
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 999999,
+          "prepareAndMinimumSeconds": 0.347149
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000500000,
+          "prepareAndMinimumSeconds": 0.591654
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 2000999999,
+          "prepareAndMinimumSeconds": 0.337652
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 499999000000001,
+          "prepareAndMinimumSeconds": 1.11221
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500000000000000,
+          "prepareAndMinimumSeconds": 1.09239
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500001000000001,
+          "prepareAndMinimumSeconds": 1.11265
+        },
+        {
+          "name": "homogeneous path/leaf/shortcut",
+          "n": 1000000,
+          "answer": 500002000000000,
+          "prepareAndMinimumSeconds": 1.11211
+        },
+        {
+          "name": "nonuniform antipodal remainder in homogeneous cycle",
+          "n": 1000000,
+          "answer": 499999770969198,
+          "prepareAndMinimumSeconds": 1.10266
+        },
+        {
+          "name": "random edges/branches, unusably long shortcut",
+          "n": 1000000,
+          "answer": 2050524398,
+          "prepareAndMinimumSeconds": 0.526293
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.277091
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.236687
+        },
+        {
+          "name": "all a_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.273724
+        },
+        {
+          "name": "all b_i equal; largest branches adjacent",
+          "n": 1000000,
+          "answer": 1999998,
+          "prepareAndMinimumSeconds": 0.244388
+        }
+      ],
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": true,
+      "articleSha256": "82b486785b0b0fb1616ae94e6462cf58b61af066aae124577442ec0d337c772e"
+    },
+    "allSemanticFieldsMatchAuthorFreeze": true,
+    "counterMeaning": {
+      "checks": "8752494 assertions, including7009273 direct-vs-four-bound endpoint comparisons. Not the count ofdistinct production inputs.",
+      "preparedInputs": "10836 explicitly counted run_case/maximum preparations; excludes API state/fault fixtures and copy constructors.",
+      "preparedMinimumCalls": "10843 calls through counted wrapper; excludes minima internally invoked by generic function/adapter and20 direct nonallocation checks.",
+      "genericFunctionCalls": "16022 successful wrapper calls; includes5000 repeated calls and200 metamorphics. Fault/invalid invocations counted separately.",
+      "originalAdapterCalls": "10826 successful counted wrappers, including4 full-N cases. Separate fault/invalid adapter invocations not added.",
+      "explicitPredicateCalls": "100861 through counted wrapper:100819 independent threshold checks plus42maximum boundary checks. Does not count predicates internal to minimum_diameter or5020state/nonallocation checks.",
+      "allSmallN2to5": "9324 networks: everygap1/2, branch0/1/2,c1/3.",
+      "allBinaryBranchPathsN2to6": "372 networks: unit main gaps, all branch0/1, c1/2/4. Overlaps some first-family cases; not falsely added into a unique-case count.",
+      "randomAllEndpointFloydCases": 1120,
+      "literalAugmentedGraphs": "152165 endpoint-added graph occurrences across all small/random/example tests plus repeated literal metamorphic bases and homogeneous-formula selfchecks. Original-tree Floyd calls additionally contribute to556286427relaxations. Not152165uniqueinput networks.",
+      "decisionThresholds": 100819,
+      "arbitraryDiscreteBoxes": 233415,
+      "literalStationPairsForBoxes": 982800,
+      "metamorphicChecks": 200,
+      "stateChecks": "10023 declared state-case units:3empty-state errors+5020valid allocation-free query/minimum checks+5000repeat calls. Other copy/state assertions contribute tochecks but notthiscounter.",
+      "allocationFailuresInjected": "28custom-bad_alloc failures at3preparation/5adapter/3copy/3copyassignment sites for eachN4/N1000000. Counts are observed under tested GCC/libstdc++, not portable allocator API promises."
+    },
+    "normalAndSanitizerAreSameCasesNotTwoNewOracles": true
+  },
+  "additionalIndependentVerification": {
+    "script": "/tmp/flowchartcp-ioi2016-shortcut-independent-probe.py",
+    "scriptSha256": "9930441c46920eeb05a20e66ccddd0f737b6d48adfa26504ca53b89cd9983912",
+    "command": "python3 /tmp/flowchartcp-ioi2016-shortcut-independent-probe.py [--sanitize] --output <result.json>",
+    "normal": {
+      "checks": 8644858,
+      "apiCalls": 136388,
+      "allSmallN2to4": 9344,
+      "randomPhysicalCases": 480,
+      "unitExpandedShortcutGraphs": 82277,
+      "originalStationBfsRuns": 828659,
+      "bfsVertexVisits": 25506853,
+      "bfsArcScans": 50843762,
+      "allThresholdComparisons": 99922,
+      "literalBranchTranslations": 886,
+      "literalTripleScales": 706,
+      "extremeTwoStationCases": 900,
+      "extremeDiscreteBoxes": 20000,
+      "literalBoxStationPairs": 1399803,
+      "millionStationBranchTranslations": 1,
+      "checksum": "17492186508820992233",
+      "seconds": 0.741374,
+      "peakRSSKiB": 66208,
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 8644858,
+      "apiCalls": 136388,
+      "allSmallN2to4": 9344,
+      "randomPhysicalCases": 480,
+      "unitExpandedShortcutGraphs": 82277,
+      "originalStationBfsRuns": 828659,
+      "bfsVertexVisits": 25506853,
+      "bfsArcScans": 50843762,
+      "allThresholdComparisons": 99922,
+      "literalBranchTranslations": 886,
+      "literalTripleScales": 706,
+      "extremeTwoStationCases": 900,
+      "extremeDiscreteBoxes": 20000,
+      "literalBoxStationPairs": 1399803,
+      "millionStationBranchTranslations": 1,
+      "checksum": "17492186508820992233",
+      "seconds": 3.45079,
+      "peakRSSKiB": 506072,
+      "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+      "sanitized": true
+    },
+    "oracle": "Build raw mainline and positive branch leaf edges as unit-edge paths,with each original station separately tagged. For every distinct mainstation endpoint pair,add the actual c-length unitpath andrun unweightedBFS from every originalstation;take maximum only over originalmain/leafstations,never added subdivisionvertices. Uses no Floyd,representative reduction,absolute-distance shortcut formula,fourbound aggregation,streaming extrema orbinary search for expectedoptimum.",
+    "systematicScope": "AllN2..4,gaps1/2,branches0/1/2/3,c1/2/3/4:9344base inputs. Also480deterministic randomN5..9/gaps1..4/branches0..4/c1..8. Every integer threshold0..originaldiameter+1 is checked for eachbaseinput.",
+    "transformations": "886all-branch+2 instances have literal optimum+4;706triple-edge-scale instances preserve originalstation targetset andliteral optimum*3. These are metamorphic supplements,not additionaluniquebase counts. An independentN2 exactformula checks900combinations ofgaps/c up to1e9 andbranches0..1e9. Twenty thousand irregular/extreme/inverted/exactbound boxes are compared to everydistinctstationpair. OneN1e6heterogeneouspath uses two production calls withallbranches+999998000 andexactoptimum+1999996000;themillioncase is metamorphic,not a literalBFS ofmillionvertices.",
+    "counterSemantics": {
+      "checks": "Every need assertion,including all original station reachability checks insideBFS;not uniqueinputs.",
+      "apiCalls": "Constructor,minimum,predicate,genericfunction andsourceadapter invocations explicitly counted;internal predicates fromminimum are not separatelycounted.",
+      "unitExpandedShortcutGraphs": "82277 endpoint-added graphoccurrences acrossbaseandtransformedinputs;not82277uniquenetworks. Original-tree BFS calls additionallycontribute to828659BFSruns.",
+      "extremeBoxes": "Actual internalhelper is invokedunderitssorted/arithmetic-safe assumptions;publicinputvalidation is not claimed forarbitraryhelpercalls.",
+      "allocationFaults": "No newallocationfault injection;author28failures atN4/1e6 areindependentlyreproduced andkeptseparate."
+    }
+  },
+  "preservation": {
+    "auditFile": "/home/admin2/flowchartcp/site/data/corpus-audits/ioi-2016.json",
+    "auditRawSha256AtReview": "94c7a850190fa8992dce41bf5b4d53bf157467e1ef7180cbe5557d40402ce056",
+    "initialRowCanonicalSha256": "653128f6bb85281379e7900f1ec8058a5c69b8482afbdc05b373c8c4c4f634ab",
+    "initialStatusCanonicalSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialResearchCount": 6,
+    "initialCoveredCount": 0,
+    "initialFullImplementationCount": 0,
+    "initialResearchPositive": true,
+    "initialCompletedApiCoverage": false,
+    "initialRowHadNoResolution": true,
+    "existingResolutionsAtReview": [
+      "ioi2016_molecules",
+      "ioi2016_railroad",
+      "ioi2016_paint",
+      "ioi2016_aliens"
+    ],
+    "authorArtifactsModified": false,
+    "sharedFilesModifiedForThisReview": false,
+    "policy": "Initialsix/status/selection/snapshot andalloldresolutions remain unchanged. Already-positiveShortcut needs resolutiononly after parent registers article,sourceandrealrootwalk. No subsequent researchpositive is proposed."
+  },
+  "limitations": [
+    "Actual distributedshortcut.h bytes are not retrieved;generic source+Notice type derivation is explicitly distinguished fromcompilingtheoriginalheader.",
+    "Official alternative dominance-filter method is not required or claimed verified.",
+    "No formal floating-point issue exists:every calculation isintegral;the finite oracle supports butdoesnotreplace the independent proofs."
+  ],
+  "executionNotes": [
+    "Reviewer supplemental harness first compilation rejected a same-linepair offorloops by-Werror=misleading-indentation;onlynew/tmp harness whitespace wasfixed before anynative run. The authorfence andfrozen3artifacts remainedunchanged.",
+    "LargeASan author reproduction andadditionalprobe wereannounced toroot andstarted onlyafter slot coordination;completion notified separately."
+  ],
+  "conclusion": "Fulloriginalscope,selectedO(NlogN+NlogT) construction/predicate,allrequiredlemmas andownedAPI areindependentlysupported. Nomaterialissue orrequiredunknown. Initialresearchpositive6/coverage0/API0 mustremaininitialhistory;subsequentarticlecoverageisaseparateresolution.",
+  "originalReviewSha256": "2649dcd5252a9c4ecc30952c49f45237c18f9bc36e33c325191c318dc70a38c3",
+  "publishedArticle": "src/content/docs/techniques/path-shortcut-diameter-rotated-constraints-extrema-sweep.mdx",
+  "permanentProbe": {
+    "script": "research/probes/path-shortcut-diameter-independent.py",
+    "normalizedSha256": "0a3a6c7f7aacc2413dd38eecc19d557a63218e1b886adf5153629394969bdd1a",
+    "normalization": "Only default MDX path;physical unit-edge BFS,original station-only targets,thresholds,branch translations,extreme boxes unchanged."
+  }
+}

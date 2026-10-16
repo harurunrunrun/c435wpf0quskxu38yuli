@@ -1,0 +1,77 @@
+---
+title: "同じ重さを c 個まで選ぶときは個数を二進分解する"
+description: "1, 2, 4, … 個と残りの束へ分け、個数制限を 0/1 の選択へ変えます。"
+techniqueId: "subset-sum-repeated-binary"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+同じ重さ $w$ の物を $c$ 個まで使い、和の可否を求めたいとき。一個ずつ別の品物にすると、$c$ が大きい場合に処理数が増えます。
+
+## 考え方
+
+$c$ 個を、1 個、2 個、4 個、… の束と最後の残りに分けます。各束の重さは $w$ と束の個数の積です。各束を一回まで選ぶ部分和の可否に帰着できます。
+
+例えば 13 個は $1,2,4,6$。全ての個数 $0\ldots13$ を作れます。ただし同じ個数を作る束の選び方は一通りとは限らないので、組合せの数を保存する変換ではありません。
+
+## 適用条件
+
+重さが個数に比例し、0 個から上限までどの個数も許されること。使う個数に飛び飛びの制限がある場合は同じ分解では表せません。可否や線形な価値の最適化には使えますが、通り数を数える DP へそのまま流用できません。
+
+## なぜ正しいか
+
+それまでの束で $0\ldots t$ 個を作れ、次の束の個数が $t+1$ 以下なら、追加後に $0\ldots(t+b)$ の全個数を作れます。二倍の束と最後の残りはこの条件を満たし、束の個数の合計が $c$ なので上限も越えません。
+
+## 計算量
+
+一個ずつの部分和 DP は $O(S\sum_i c_i)$。分解後のワード DP は $O(\lceil(S+1)/64\rceil\sum_i\log(c_i+1))$ 時間、$O(\lceil(S+1)/64\rceil)$ ワード空間。重さが正なら $c_i$ を $\lfloor S/w_i\rfloor$ で制限できます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+void shift_or_sum(vector<unsigned long long>& bits,int value,int limit){
+    assert(value>=0 && limit>=0);if(value>limit)return;
+    int words=value/64,shift=value%64;
+    for(int i=(int)bits.size()-1;i>=words;--i){
+        unsigned long long moved=bits[i-words]<<shift;
+        if(shift && i>words)moved|=bits[i-words-1]>>(64-shift);
+        bits[i]|=moved;
+    }
+    int remainder=(limit+1LL)%64;
+    if(remainder)bits.back()&=(1ULL<<remainder)-1;
+}
+vector<unsigned long long> subset_sum_bits(const vector<int>& values,int limit){
+    assert(limit>=0);
+    vector<unsigned long long> bits(limit/64+1);bits[0]=1;
+    for(int value:values)shift_or_sum(bits,value,limit);
+    return bits;
+}
+
+vector<unsigned long long> bounded_subset_sum_bits(
+    const vector<pair<int,long long>>& items,int limit){
+    assert(limit>=0);
+    vector<unsigned long long> bits(limit/64+1);bits[0]=1;
+    for(auto [weight,count]:items){
+        assert(weight>=0 && count>=0);if(weight==0)continue;
+        count=min(count,(long long)limit/weight);
+        for(long long unit=1;count>0;unit*=2){
+            long long take=min(unit,count);count-=take;
+            shift_or_sum(bits,(int)(weight*take),limit);
+        }
+    }
+    return bits;
+}
+```
+
+## 関連する手法
+
+[個数制限付きナップサックを重さの剰余ごとに処理する](/flowchartcp/techniques/bounded-knapsack-deque/)
+
+## 参考資料
+
+- [AtCoder：Money in Hand の問題文](https://atcoder.jp/contests/abc286/tasks/abc286_d)
+
+<TechniqueReferences techniqueId="subset-sum-repeated-binary" />

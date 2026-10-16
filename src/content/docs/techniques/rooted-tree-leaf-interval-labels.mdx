@@ -1,0 +1,75 @@
+---
+title: "部分木の包含と非交差を区間で表すなら、DFS順の葉だけに番号を付ける"
+description: "全頂点へ別番号を与えず、子孫の葉番号の最小・最大で区間を作り、最大番号を葉数までにする。"
+techniqueId: rooted-tree-leaf-interval-labels
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の親子関係を、包含関係のある整数区間として表したい。別の枝は交わらない区間にし、使う最大番号も小さくしたい。各頂点を固有の整数にする必要はなく、一人の子だけを持つ親子は同じ区間を使ってよい。
+
+## 考え方
+
+根から深さ優先で探索し、子のない頂点、すなわち根付き木の葉だけに $1,2,\ldots,L$ と番号を付ける。各頂点の区間は、その部分木内の葉番号の最小値と最大値にする。
+
+DFSは一つの部分木を終えるまで他の枝へ移らない。従って部分木内の葉番号は連続しており、この両端が表す区間には別の枝の葉番号が入らない。
+
+番号を付ける対象が全頂点ではなく葉だけなので、一本道の木なら全区間を $[1,1]$ にできる。親と子で真に異なる区間が必要かを確認するのが手掛かりになる。
+
+## 適用条件
+
+必要なのは祖先・子孫の包含と、異なる枝の非交差である。包含が**真の包含**であることや、全頂点の区間が異なることを求められる場合は、このままでは足りない。
+
+葉は「子がない頂点」。無向木で次数1の頂点と決めつけると、次数1の根まで葉にしてしまう。根だけの木では根を葉として番号1を割り当てる。
+
+## なぜ正しいか
+
+祖先の部分木の葉集合は、子孫の部分木の葉集合を含むので、最小・最大番号で囲んだ区間にも包含が成り立つ。祖先関係のない二部分木の葉は、DFSで別々の連続区間として訪れるので、割り当て区間は交わらない。
+
+一方、異なる葉は互いの部分木と交わらない。そのため各葉へ割り当てる非空の正整数区間は互いに非交差であり、少なくとも $L$ 個の整数が必要になる。最大番号は $L$ 以上でなければならず、構成はちょうど $L$ を使うので最適である。
+
+## 計算量
+
+全祖先・別枝の対を調べながら区間を置くと $O(N^2)$ 以上になる。DFSで葉番号を付け、逆順で最小・最大を集めると時間 $O(N)$、空間 $O(N)$。全頂点へDFS番号を付ける構成も線形だが、最大番号が $N$ となり、葉数までの最適化ができない。
+
+## 実装
+
+`leaf_interval_labels(g, root)` は各頂点の閉区間 `[left,right]` を返す。頂点は0始まり。探索にはLIFOのスタックを使う。幅優先順に葉番号を付けると、部分木内で葉番号が連続する保証がなくなる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<pair<int,int>> leaf_interval_labels(const vector<vector<int>>& g,int root=0) {
+    int n=g.size();assert(n>0 && 0<=root && root<n);
+    vector<int> parent(n,-2),order,stack{root};parent[root]=-1;
+    vector<pair<int,int>> answer(n,{n+1,0});int leaves=0;
+    while(!stack.empty()) {
+        int v=stack.back();stack.pop_back();order.push_back(v);
+        bool has_child=false;
+        for(int u:g[v]) if(u!=parent[v]) {
+            assert(0<=u && u<n && parent[u]==-2);
+            parent[u]=v;stack.push_back(u);has_child=true;
+        }
+        if(!has_child) {++leaves;answer[v]={leaves,leaves};}
+    }
+    assert(int(order.size())==n);
+    for(int i=n-1;i>0;--i) {
+        int v=order[i],p=parent[v];
+        answer[p].first=min(answer[p].first,answer[v].first);
+        answer[p].second=max(answer[p].second,answer[v].second);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[部分木をDFS順の連続区間に変換する](/flowchartcp/techniques/subtree-euler-interval/) ・ [DFS順で隣り合う指定頂点のLCAを加えて補助木を作る](/flowchartcp/techniques/virtual-tree-adjacent-lca/)
+
+## 参考資料
+
+- [AtCoder：Ranges on Tree](https://atcoder.jp/contests/abc240/tasks/abc240_e)
+- [AtCoder公式解説](https://atcoder.jp/contests/abc240/editorial/3447)
+
+<TechniqueReferences techniqueId="rooted-tree-leaf-interval-labels" />

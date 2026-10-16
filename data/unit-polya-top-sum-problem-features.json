@@ -1,0 +1,32 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2018_d",
+    "title": "Gem Island",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+    "techniqueIds": [
+      "polya-urn-uniform-composition-top-r-sum"
+    ],
+    "features": [
+      "全員の初期重み1から、全ての品物を一様に選び、その所有者の重みを1増やす。所有者選択確率は現在重みに比例する。",
+      "固定回数後の上位r人合計の期待値を求める。総和固定で各人は独立ではない。",
+      "原典N,D1..500・r1..N、実数の絶対または相対誤差1e−6以内。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "全員が初期重み1で、全ての品物から一様に一つ選んだ所有者の重みを1増やす過程。固定回数後の相関する値の上位r人合計を求める。増加量のラベル付き弱合成が等確率となることを示し、全員から1を引いて0になった人を除く可逆な分割で、上位合計の総和を非負項のDPにする。最後に弱合成数で割る。",
+    "discoveredBy": "icpc-2018-world-finals",
+    "publicationDate": "2018-04-19",
+    "publicationYear": 2018,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

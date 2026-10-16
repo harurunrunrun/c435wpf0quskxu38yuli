@@ -1,0 +1,299 @@
+{
+  "id": "grid-arrangements",
+  "title": "格子の配置・被覆・経路",
+  "description": "隣接した組、行と列の資源、通路の被覆、盤面全体の敷き詰めを分けます。",
+  "root": "goal",
+  "nodes": [
+    {
+      "id": "goal",
+      "type": "question",
+      "title": "格子で何を求めますか？",
+      "explanation": "置く対象の大きさ、全てのマスを覆う必要、移動方向と経路の条件を選びます。",
+      "answers": {
+        "neighbor-pairs": "pair-target",
+        "rectangle-rooks": "rook-route",
+        "corridor-cover": "corridor-route",
+        "right-down": "path-goal",
+        "other": "fallback",
+        "unknown": "check",
+        "domino-tilings": "tile-shape",
+        "color-separation": "grid-colors-route",
+        "bounding-area": "bounding-box-route",
+        "collect-and-finish": "collect-route",
+        "neighbor-modulo": "neighbor-modulo-route"
+      },
+      "options": [
+        {
+          "id": "neighbor-pairs",
+          "label": "隣接した二マスの組を、重ならずに選ぶ"
+        },
+        {
+          "id": "rectangle-rooks",
+          "label": "駒ごとの長方形内へ置き、行・列を二回使わない"
+        },
+        {
+          "id": "corridor-cover",
+          "label": "障害物で区切られた横・縦の通路で、全ての空きマスを覆う"
+        },
+        {
+          "id": "right-down",
+          "label": "右・下へ進む経路の個数や、経路上の値"
+        },
+        {
+          "id": "other",
+          "label": "その他の格子の配置・被覆"
+        },
+        {
+          "id": "domino-tilings",
+          "label": "長方形全体をタイルで敷き詰める配置の個数"
+        },
+        {
+          "id": "color-separation",
+          "label": "二色のマスが同じ行・列を使わない配置の個数"
+        },
+        {
+          "id": "bounding-area",
+          "label": "一様に選んだ K マスの、外接長方形の期待面積"
+        },
+        {
+          "id": "collect-and-finish",
+          "label": "迷路の少数の得点マスを訪れ、時間内に指定終点へ着く"
+        },
+        {
+          "id": "neighbor-modulo",
+          "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "pair-target",
+      "type": "question",
+      "title": "隣接した二マスの選び方で、何を求めますか？",
+      "explanation": "最大個数を求める場合と、指定マスを必ず二マスの組へ含める場合を分けます。",
+      "answers": {
+        "maximize": "matching-result",
+        "mandatory": "mandatory-route",
+        "other": "fallback",
+        "unknown": "check"
+      },
+      "options": [
+        {
+          "id": "maximize",
+          "label": "使える二マスの組の個数を最大にする"
+        },
+        {
+          "id": "mandatory",
+          "label": "二マスの組に必ず入れるマスと、禁止・任意のマスがある"
+        },
+        {
+          "id": "other",
+          "label": "その他の隣接した組の条件"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "matching-result",
+      "type": "result",
+      "title": "マスの偶奇で二つに分け、重ならない組数を最大にする",
+      "explanation": "",
+      "techniques": [
+        "matching",
+        "max-flow"
+      ],
+      "conditions": [
+        "組は上下左右の隣接二マスで、各マスを高々一回使う。",
+        "禁止マスを除き、行番号と列番号の和の偶奇で二つの側に分ける。"
+      ]
+    },
+    {
+      "id": "mandatory-route",
+      "type": "route",
+      "title": "必ず組へ含める対象",
+      "explanation": "",
+      "graph": "mandatory-pairing"
+    },
+    {
+      "id": "rook-route",
+      "type": "route",
+      "title": "長方形候補からの配置",
+      "explanation": "",
+      "graph": "rectangle-rook-assignments"
+    },
+    {
+      "id": "corridor-route",
+      "type": "route",
+      "title": "障害物で区切られた通路の被覆",
+      "explanation": "",
+      "graph": "grid-corridor-cover"
+    },
+    {
+      "id": "path-goal",
+      "type": "question",
+      "title": "右・下へ進む経路について、どの条件を扱いますか？",
+      "explanation": "障害点の少なさと、経路上の値の条件では、列挙する対象が異なります。",
+      "answers": {
+        "blocked": "geometry-route",
+        "other": "fallback",
+        "unknown": "check",
+        "xor": "xor-route",
+        "earn-before-move": "earning-route"
+      },
+      "options": [
+        {
+          "id": "blocked",
+          "label": "盤面は大きいが、通れないマスが少ない経路数"
+        },
+        {
+          "id": "other",
+          "label": "その他の経路の条件"
+        },
+        {
+          "id": "xor",
+          "label": "通ったマスの値の XOR が指定値になる経路数"
+        },
+        {
+          "id": "earn-before-move",
+          "label": "各場所で稼ぎ、移動費用を払って右・下へ進む最少行動回数"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "geometry-route",
+      "type": "route",
+      "title": "少ない障害点のある経路",
+      "explanation": "",
+      "graph": "sparse-grid-paths"
+    },
+    {
+      "id": "check",
+      "type": "question",
+      "title": "合法な選択と、選ぶ回数・費用の条件を一つずつ確かめられますか？",
+      "explanation": "一対象を何回使えるか、必ず選ぶ対象があるか、経路はどこまで共用できるかを確認します。",
+      "answers": {
+        "yes": "fallback",
+        "no": "uncertain",
+        "unknown": "uncertain"
+      }
+    },
+    {
+      "id": "fallback",
+      "type": "result",
+      "title": "選択の条件と目的値を整理する",
+      "explanation": "",
+      "techniques": [
+        "graph-reduction",
+        "counterexample"
+      ],
+      "conditions": [
+        "選択可能な組と、一対象の使用回数を区別する。",
+        "存在判定、最大個数、最小費用、全ての解での必須条件を分ける。"
+      ]
+    },
+    {
+      "id": "uncertain",
+      "type": "route",
+      "title": "条件を確かめる",
+      "explanation": "",
+      "graph": "condition-check"
+    },
+    {
+      "id": "domino-route",
+      "type": "route",
+      "title": "細い盤面の敷き詰め数",
+      "explanation": "",
+      "graph": "domino-tilings"
+    },
+    {
+      "id": "xor-route",
+      "type": "route",
+      "title": "経路上の XOR と途中の対角線",
+      "explanation": "",
+      "graph": "grid-xor-paths"
+    },
+    {
+      "id": "grid-colors-route",
+      "type": "route",
+      "title": "二色が行・列を共有しない配置",
+      "explanation": "",
+      "graph": "grid-color-rows-cols"
+    },
+    {
+      "id": "bounding-box-route",
+      "type": "route",
+      "title": "選んだマスの外接長方形の期待面積",
+      "explanation": "",
+      "graph": "grid-bounding-expectation"
+    },
+    {
+      "id": "tile-shape",
+      "type": "question",
+      "title": "使えるタイルの形は、どれですか？",
+      "explanation": "部品の高さを制限するか、幅が固定された盤面かを確認します。",
+      "answers": {
+        "domino": "domino-route",
+        "any-rectangles": "rectangle-tile-route",
+        "other": "fallback",
+        "unknown": "check"
+      },
+      "options": [
+        {
+          "id": "domino",
+          "label": "隣接する二マスの長方形だけ"
+        },
+        {
+          "id": "any-rectangles",
+          "label": "幅 2 の盤面に、任意の正整数幅・高さの長方形"
+        },
+        {
+          "id": "other",
+          "label": "その他の部品の形や個数制限"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "rectangle-tile-route",
+      "type": "route",
+      "title": "二列を任意の長方形で敷き詰める",
+      "explanation": "",
+      "graph": "two-column-rectangle-cover"
+    },
+    {
+      "id": "collect-route",
+      "type": "route",
+      "title": "再訪できる迷路の少数収集点",
+      "explanation": "",
+      "graph": "maze-small-waypoints"
+    },
+    {
+      "id": "earning-route",
+      "type": "route",
+      "title": "収入と支払いのある右下への移動",
+      "explanation": "",
+      "graph": "grid-earning-actions"
+    },
+    {
+      "id": "neighbor-modulo-route",
+      "type": "route",
+      "title": "隣接値の余りをそろえる配置",
+      "explanation": "",
+      "graph": "grid-common-neighbor-remainder"
+    }
+  ],
+  "entry": true
+}

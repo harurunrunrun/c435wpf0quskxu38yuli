@@ -1,0 +1,107 @@
+---
+title: "軸に平行な壁で囲まれる面積は、座標の間の長方形を頂点にして探索する"
+description: "座標そのものと隣り合う座標の間を区別し、壁で通行を止めて元の幅と高さを足す。"
+techniqueId: plane-wall-compressed-cells
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+巨大な座標平面に、軸に平行な線分の壁が少数ある。ある点から移動できる領域の面積や、無限に外へ出られるかを求める。圧縮座標の点をそのまま格子マスにすると、壁の両側と面積を取り違えやすい。
+
+## 考え方
+
+壁の端点の横座標と縦座標をそれぞれ集め、整列する。探索するのは座標そのものではなく、隣り合う座標の間にある開いた長方形。セル $(i,j)$ の面積は
+
+$$(X_{i+1}-X_i)(Y_{j+1}-Y_j)$$
+
+になる。横向きの壁は上下セル間の移動を、縦向きの壁は左右セル間の移動を止める。端点を全て座標列に含めれば、セルの辺の途中だけが壁になることはない。
+
+全ての壁より外に補助座標を一つずつ追加する。始点のセルから幅優先探索し、外周のセルへ着いたら無限領域。それ以外なら到達したセルの実面積を足す。原点も座標列に加える場合、原点が壁上でなければ右上のセルを始点にしてよい。
+
+## 適用条件
+
+壁は軸平行な閉線分で、端点も通れないとする。始点は壁上にないこと。斜めの壁や、点同士を結ぶだけで通れる迷路には別の分割が必要。
+
+掲載実装は横壁を $(x_1,x_2,y)$、縦壁を $(x,y_1,y_2)$ として受け取り、原点からの面積を返す。壁の合計は2000本以下、整数座標の絶対値 $10^9$ 以下。重なった壁、交差、T字接続を扱う。無限なら `std::nullopt`。長さ0の壁は受け付けない。
+
+## なぜ正しいか
+
+セルの内部には壁がなく、内部の任意の二点を結べる。隣接セルの共通辺に壁がなければ、その辺の内部を通って行き来できる。壁があれば横断できない。端点を通る経路は許されないため、角だけで接するセルの間に辺は張らない。
+
+連続平面の壁を避けた経路は、微小にずらして格子の頂点を避けることができ、その後はこのセル列として表せる。逆に探索の各辺は実際に通れる境界なので、セルの到達性は元の領域の連結性と一致する。境界線自体の面積は0であり、セルの面積和で領域の面積を求められる。
+
+全ての壁より外の帯に到達すれば、そこから無限遠へ進める。無限の経路があれば必ずその帯を通るため、外周到達の判定も必要十分。
+
+## 計算量
+
+壁の本数を $W$、異なる横・縦座標数を $X,Y$ とする。元の座標値に沿った格子を作ると、座標幅の積に時間と空間が依存する。圧縮後は整列 $O(W\log(W+1))$、壁の記入と探索 $O(XY+W\max(X,Y))$ 時間、追加空間 $O(XY)$。$X,Y=O(W+1)$ なので全体は $O((W+1)^2)$。二次元配列の大きさを確保前に見積もる。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <optional>
+#include <stdexcept>
+#include <vector>
+std::optional<long long> origin_region_area(
+    const std::vector<std::array<long long,3>>& horizontal,
+    const std::vector<std::array<long long,3>>& vertical) {
+    if(horizontal.size()+vertical.size()>2000) throw std::invalid_argument("too many walls");
+    const long long outside=1000000001LL;
+    std::vector<long long> xs={-outside,0,outside},ys=xs;
+    auto valid=[](long long v){return -1000000000LL<=v && v<=1000000000LL;};
+    for(auto [a,b,y]:horizontal) {
+        if(!valid(a)||!valid(b)||!valid(y)||a>=b||(y==0&&a<=0&&0<=b)) throw std::invalid_argument("horizontal wall");
+        xs.push_back(a);xs.push_back(b);ys.push_back(y);
+    }
+    for(auto [x,a,b]:vertical) {
+        if(!valid(x)||!valid(a)||!valid(b)||a>=b||(x==0&&a<=0&&0<=b)) throw std::invalid_argument("vertical wall");
+        xs.push_back(x);ys.push_back(a);ys.push_back(b);
+    }
+    auto compress=[](auto& a){std::sort(a.begin(),a.end());a.erase(std::unique(a.begin(),a.end()),a.end());};
+    compress(xs);compress(ys);
+    auto index=[](const auto& a,long long x){return (int)(std::lower_bound(a.begin(),a.end(),x)-a.begin());};
+    int width=(int)xs.size()-1,height=(int)ys.size()-1;
+    auto cell=[&](int i,int j){return j*width+i;};
+    // bits: left=1, right=2, down=4, up=8
+    std::vector<unsigned char> wall((std::size_t)width*height),seen(wall.size());
+    for(auto [a,b,y]:horizontal) {
+        int j=index(ys,y),end=index(xs,b);
+        for(int i=index(xs,a);i<end;++i) {wall[cell(i,j-1)]|=8;wall[cell(i,j)]|=4;}
+    }
+    for(auto [x,a,b]:vertical) {
+        int i=index(xs,x),end=index(ys,b);
+        for(int j=index(ys,a);j<end;++j) {wall[cell(i-1,j)]|=2;wall[cell(i,j)]|=1;}
+    }
+    int start=cell(index(xs,0),index(ys,0));
+    std::vector<int> queue={start};seen[start]=1;__int128 area=0;
+    const int di[4]={-1,1,0,0},dj[4]={0,0,-1,1};
+    for(std::size_t head=0;head<queue.size();++head) {
+        int id=queue[head],i=id%width,j=id/width;
+        if(i==0||j==0||i==width-1||j==height-1) return std::nullopt;
+        area+=(__int128)(xs[i+1]-xs[i])*(ys[j+1]-ys[j]);
+        for(int d=0;d<4;++d) if(!(wall[id]&(1<<d))) {
+            int next=cell(i+di[d],j+dj[d]);
+            if(!seen[next]) {seen[next]=1;queue.push_back(next);}
+        }
+    }
+    return (long long)area;
+}
+```
+
+## 関連する手法
+
+- [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+- [幅優先探索](/flowchartcp/techniques/bfs/)
+- [長方形の和集合の面積](/flowchartcp/techniques/rectangle-union-sweep/)
+
+## 参考資料
+
+- [AtCoder — . (Single Dot)](https://atcoder.jp/contests/abc168/tasks/abc168_f)
+- [公式解説](https://img.atcoder.jp/abc168/editorial.pdf)
+
+<TechniqueReferences techniqueId="plane-wall-compressed-cells" />

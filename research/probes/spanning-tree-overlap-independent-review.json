@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+  "problemId": "ioi2017_simurgh",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialIssues": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allFrozenCppRead": true,
+    "allCheckerRead": true,
+    "allSidecarRead": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd"
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-article.mdx",
+      "sha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-checker.py",
+      "sha256": "d98c85a722d1aff09ae2268d10dcdbc90ccf8d2bb8d2eac021766c6b1be345ae"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-sidecar.json",
+      "sha256": "28808dabe88e03095112778ea9c6ac4f634dd6e9fdc29deeee63381a495aa61e"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-independent-normal.json",
+      "sha256": "e650a857a6b4cd9957a054ed72b924c30e71035a547552b77f86445c186d843f"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-independent-asan.json",
+      "sha256": "b3d7dc482000aa9db139f37537305daa009032017458bded17381a6bf55c5bcf"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-independent-probe.py",
+      "sha256": "00464d9021886f47e0c93b8069e4ca25120577daee8c527a024bc48408625c31"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2017-simurgh-independent-probe.json",
+      "sha256": "b8df43b3550f390c1216ea7d547d97f1986dbbe7488c625e9271afb22635c847"
+    }
+  },
+  "primarySourceReview": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+      "pages": 3,
+      "method": "Independently read all primary-hosted English PDF web text. Missing numeric math glyphs independently recovered from primary official archive EST indexed text and host English search text. No visual PDF-image inspection claimed.",
+      "model": "Known simple connected undirected graph; one fixed hidden spanning tree; every query must itself be an actual spanning tree of N-1 distinct valid original edge IDs, and returns exact intersection size. Sample-grader acceptance of arbitrary label arrays is explicitly not the submission contract.",
+      "genericSignature": "int[] find_roads(int n,int[] u,int[] v)",
+      "oracleSignature": "int count_common_roads(int[] r)"
+    },
+    "numeric": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+      "queries": [
+        "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf \"8000\" \"500\"",
+        "site:ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf \"30000\" \"12000\""
+      ],
+      "N": [
+        2,
+        500
+      ],
+      "M": [
+        "N-1",
+        "N(N-1)/2"
+      ],
+      "endpoints": "0..N-1",
+      "selfLoops": false,
+      "undirectedParallelPairs": false,
+      "connected": true,
+      "queryLimits": {
+        "firstThree": 30000,
+        "completeGraphSubtask": 12000,
+        "unrestrictedFullScore": 8000
+      },
+      "sampleGrader30000NotUsedAsFullScoreLimit": true,
+      "corroborationUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh.pdf"
+    },
+    "technicalNote": {
+      "statementPage": 3,
+      "verified": "C++ and Pascal pass the oracle query array by reference for efficiency, and the grader does not modify it. This text does not distinguish C++ const-reference from mutable-reference declarations."
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "pages": 1,
+      "typeMapping": "int -> int; int[] -> std::vector<int>",
+      "timeSeconds": 3,
+      "memoryMB": 1024,
+      "noStandardIoOrFileInteraction": true
+    },
+    "adapterProvenance": {
+      "actualOfficialHeaderBytesRetrieved": false,
+      "oracleConstQualificationAssumed": false,
+      "method": "When SIMURGH_ORIGINAL_GRADER is defined, include supplied simurgh.h and pass a mutable local vector lvalue. Either const vector<int>& or vector<int>& oracle declarations accept it. Generic mode has no grader symbol reference and independently compiles/links as a standalone executable.",
+      "syntheticHeadersExplicitlyNotOfficial": true,
+      "testedHeaderVariants": [
+        "int count_common_roads(const std::vector<int>&)",
+        "int count_common_roads(std::vector<int>&)"
+      ],
+      "derivedFindRoads": "std::vector<int> find_roads(int,std::vector<int>,std::vector<int>)"
+    },
+    "editorial": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+      "pages": 2,
+      "provenance": "Actual IOI archive Editorial with IOI2017 Editorials header; personal authorship is not inferred.",
+      "confirmedUse": "Cycle exchange observations plus known-reference forest completion, hidden degrees and leaf reconstruction are independently read. The selected fundamental-cycle reference-classification procedure and exact5990 upper bound are self-contained independent supplements.",
+      "officialEditorialVerifiedRemainsFalse": true,
+      "optionalEarDecompositionProofVerified": false,
+      "notClaimed": "The compressed ear-decomposition paragraph and its printed formula have not been independently proved. The selected procedure does not use ears. No missing formula is represented as visually recovered."
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "date": "2017-08-01",
+      "datePrecision": "day",
+      "difficulty": null
+    }
+  },
+  "independentMathematicalReview": {
+    "referenceConstructionAndLegalExchange": "DSU selects one input-order reference spanning tree T, while sorted endpoint pairs are used only to reject duplicate undirected edges. For any non-tree edge e, iterative depth ascent finds the unique T path. Replacing any path edge f with e is a spanning tree. Relative to the baseline response, delta=w(e)-w(f) exactly, with no assumption about DFS-back-edge order.",
+    "allUnknownCycleZero": "When every path label is unknown, any nonzero delta fixes the added-edge value and hence every path value. If every delta is0, all cycle edges have the same membership. They cannot all be1 because the fixed hidden object is acyclic; therefore they are all0. A deliberately constructed triangle among three leaves of a hidden four-vertex star exercises precisely this branch. Opposite-sign inconsistent deltas force a nonbinary reconstructed label and are rejected; arbitrary false replies need not all be detected.",
+    "knownAnchorAndBridge": "If one path label is already known, one exchange with it fixes w(e); then one exchange per unknown path edge fixes that reference label. Every processed cycle labels at least one previously unknown reference edge. Any reference edge still unknown at the end belonged to no fundamental cycle: if another input edge crossed its reference-tree cut, that edge would create a processed fundamental cycle containing it. Thus it is a bridge and has value1.",
+    "forestCompletionWithoutDoubleCounting": "For any forest F, start DSU with F and add only reference edges whose endpoints lie in different components. Since T connects the entire graph, the process ends as a spanning tree. A reference edge already present in F is skipped by DSU, so it is never subtracted twice. Subtracting exactly the added known memberships leaves the hidden-edge count in F.",
+    "degreesAndPastDeletions": "Every full incident star in a simple graph is a forest, so its count is the exact hidden degree. Active vertices and their remaining hidden edges form a tree. Removing a true leaf leaves a tree and changes only the degree of its unique active neighbor. Search candidates explicitly exclude all edges with an inactive endpoint, while forest completion may use any reference edges, including those involving deleted vertices; their contributions are known and subtracted.",
+    "leafBisectionAndLastVertex": "A residual leaf has exactly one hidden edge among its active incident edges. Either half-star is a forest, so its count is0 or1 and chooses the correct half. Floor/ceil splitting strictly decreases a candidate list of size>1. Each successful edge removes one vertex. The loop stops after N-1 edges before trying to process the last active degree0 vertex; stale leaf queue entries are skipped.",
+    "questionBound": "One baseline; each of N-1 reference labels charged for at most one unknown-edge exchange; at most N-1 processed cycles each charged for at most one known-anchor exchange. Exactly N nonempty incident-star counts. At most N-1 deleted leaves, each requiring ceil(log2(N-1)) half-star counts. Therefore Q<=1+2(N-1)+N+(N-1)ceil(log2(N-1)), monotone on2..500 and5990 at500. Every question length is N-1, so entries<=5990*499=2989010. The worst-case guarantee is the proved charging argument, not the maximum observed test count.",
+    "fixedSecretAndTranscriptUniqueness": "All algebra and degree invariants assume a single fixed hidden spanning tree. For every valid fixed secret the algorithm reconstructs it. Consequently any complete transcript consistent with some fixed hidden tree identifies that tree uniquely; two different completions would force the same deterministic run/output but correctness would require two different outputs. The new consistent-response stress oracle directly checks this implication without falsely attributing an adaptive grader to the original source."
+  },
+  "apiAndComplexityReview": {
+    "fullOriginalRangeIncluded": true,
+    "sourceCallbackAndGenericScopes": "Generic input contains the entire original N2..500/MN-1..N(N-1)/2 simple connected domain. Default8000 budget covers full score. User budgets0..8000 are extensions; too-small budget throws before the next callback. Invalid counts/endpoints/loops/duplicate undirected pairs/disconnected graphs/empty callback/budgets are rejected before any oracle effect.",
+    "integerSafety": "N is validated before N(N-1); maximum249500 and maximum M124750 fit int. Size caps precede int casts. IDs, parent depths499, degree sums998 and configured8000*499=3992000 total entries fit32-bit signed. Intersection and learned memberships are range checked; all graph/path/DSU/leaf loops are iterative.",
+    "time": "Reference path construction costs O(MN), even when a cycle is skipped after all its labels are known. Initial canonical endpoint sort costs O(Mlog(M+1)). Every materialized/legal-checked/forest-completed query costs O(N alpha(N)), with O(NlogN) queries. Incident scanning and half-list storage are within these bounds. Total O(Mlog(M+1)+MN+N²logN alpha(N)); external callback computation is excluded.",
+    "space": "O(N+M). Canonical pairs, reference flags, known labels, incident lists, tree lists and output are linear. Each fundamental path and each single question uses O(N). No transcript is retained by production API. Synthetic/header adapter also materializes a mutable O(N) query copy.",
+    "measuredApiRequestedPayload": {
+      "bytes": 2713370,
+      "construction": "N500 complete graph,input path-reference first,hidden star",
+      "queries": 5229,
+      "scope": "Requested live allocation payload for the actual generic N500 complete graph,path reference,hidden star only. Caller inputs/function object,oracle allocations,allocator headers,compiler and ASan overhead are excluded. No universal maximum-byte claim; source adapter storage is separately covered by supplied-checker reproduction."
+    },
+    "callbackAndOwnership": "Question span is valid only during callback; must not be retained. Const input spans are neither mutated nor retained. Result vectors own their data; calls and result mutations do not share algorithm state. Nested calls are validated by supplied native tests. Callback exception identity and allocation exceptions propagate; prior callback effects cannot be rolled back.",
+    "additionalExceptionChecks": {
+      "allBudgetValues": 32,
+      "allCallbackThrowPositions": 29,
+      "allocationFailures": 276,
+      "maxAlreadyExecutedCallbacksBeforeAllocationFailure": 29,
+      "freshCallAndUnwindingVerifiedAfterEachFailure": true
+    },
+    "falseReplies": "Range/difference/reference sum/forest count/degree/leaf/progress contradictions are checked. No claim is made to detect every adversarial oracle that violates the fixed-secret contract."
+  },
+  "suppliedCheckerIndependentReproduction": {
+    "classification": "Independent rerun of the supplied actual-MDX checker. These711667+1559checks are author-test reproduction, not newly designed reviewer cases.",
+    "normal": {
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "genericWithoutHeaderCompiled": true,
+      "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+      "constReferenceHeaderFull": {
+        "checks": 711667,
+        "recoverCalls": 11275,
+        "literalValidTreeQuestions": 371287,
+        "literalQuestionEntries": 37828515,
+        "exhaustiveConnectedGraphs": 771,
+        "everyHiddenTreeForEverySmallGraph": 8135,
+        "transcriptCompletionComparisons": 453264,
+        "completeN6PruferHiddenTrees": 1296,
+        "randomGraphs": 400,
+        "metamorphicChecks": 1200,
+        "invalidCases": 36,
+        "originalAdapterCalls": 140,
+        "checksum": "14758130767299308416",
+        "seconds": 0.90202,
+        "peakRSSKiB": 21552,
+        "maximumCases": [
+          {
+            "name": "path graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0081639
+          },
+          {
+            "name": "star graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.00594685
+          },
+          {
+            "name": "complete lexicographic reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.0662259
+          },
+          {
+            "name": "complete lexicographic reference,hidden path",
+            "n": 500,
+            "m": 124750,
+            "queries": 5228,
+            "referenceQueries": 997,
+            "queryEntries": 2608772,
+            "twoApiCallsSeconds": 0.0698767
+          },
+          {
+            "name": "complete lexicographic reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5288,
+            "referenceQueries": 997,
+            "queryEntries": 2638712,
+            "twoApiCallsSeconds": 0.0709564
+          },
+          {
+            "name": "complete path reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 5229,
+            "referenceQueries": 997,
+            "queryEntries": 2609271,
+            "twoApiCallsSeconds": 0.169683
+          },
+          {
+            "name": "complete path reference,hidden reference path",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.168271
+          },
+          {
+            "name": "complete permuted reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5030,
+            "referenceQueries": 740,
+            "queryEntries": 2509970,
+            "twoApiCallsSeconds": 0.137198
+          }
+        ]
+      },
+      "mutableReferenceHeaderApiSmoke": {
+        "checks": 1559,
+        "recoverCalls": 127,
+        "literalValidTreeQuestions": 553,
+        "literalQuestionEntries": 1299,
+        "exhaustiveConnectedGraphs": 0,
+        "everyHiddenTreeForEverySmallGraph": 0,
+        "transcriptCompletionComparisons": 0,
+        "completeN6PruferHiddenTrees": 0,
+        "randomGraphs": 0,
+        "metamorphicChecks": 0,
+        "invalidCases": 36,
+        "originalAdapterCalls": 31,
+        "checksum": "141949014370290246",
+        "seconds": 0.000259194,
+        "peakRSSKiB": 21740,
+        "maximumCases": []
+      }
+    },
+    "asanUbsan": {
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "genericWithoutHeaderCompiled": true,
+      "stubContract": "Synthetic test headers cover const vector<int>& and vector<int>& oracle parameters;no claim of obtaining official header bytes.",
+      "constReferenceHeaderFull": {
+        "checks": 711667,
+        "recoverCalls": 11275,
+        "literalValidTreeQuestions": 371287,
+        "literalQuestionEntries": 37828515,
+        "exhaustiveConnectedGraphs": 771,
+        "everyHiddenTreeForEverySmallGraph": 8135,
+        "transcriptCompletionComparisons": 453264,
+        "completeN6PruferHiddenTrees": 1296,
+        "randomGraphs": 400,
+        "metamorphicChecks": 1200,
+        "invalidCases": 36,
+        "originalAdapterCalls": 140,
+        "checksum": "14758130767299308416",
+        "seconds": 9.07606,
+        "peakRSSKiB": 988264,
+        "maximumCases": [
+          {
+            "name": "path graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0799633
+          },
+          {
+            "name": "star graph unique hidden tree",
+            "n": 500,
+            "m": 499,
+            "queries": 501,
+            "referenceQueries": 1,
+            "queryEntries": 249999,
+            "twoApiCallsSeconds": 0.0781224
+          },
+          {
+            "name": "complete lexicographic reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 0.837423
+          },
+          {
+            "name": "complete lexicographic reference,hidden path",
+            "n": 500,
+            "m": 124750,
+            "queries": 5228,
+            "referenceQueries": 997,
+            "queryEntries": 2608772,
+            "twoApiCallsSeconds": 0.661261
+          },
+          {
+            "name": "complete lexicographic reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5288,
+            "referenceQueries": 997,
+            "queryEntries": 2638712,
+            "twoApiCallsSeconds": 0.686225
+          },
+          {
+            "name": "complete path reference,hidden star",
+            "n": 500,
+            "m": 124750,
+            "queries": 5229,
+            "referenceQueries": 997,
+            "queryEntries": 2609271,
+            "twoApiCallsSeconds": 1.53774
+          },
+          {
+            "name": "complete path reference,hidden reference path",
+            "n": 500,
+            "m": 124750,
+            "queries": 4987,
+            "referenceQueries": 997,
+            "queryEntries": 2488513,
+            "twoApiCallsSeconds": 1.40429
+          },
+          {
+            "name": "complete permuted reference,hidden Prufer tree",
+            "n": 500,
+            "m": 124750,
+            "queries": 5030,
+            "referenceQueries": 740,
+            "queryEntries": 2509970,
+            "twoApiCallsSeconds": 1.08344
+          }
+        ]
+      },
+      "mutableReferenceHeaderApiSmoke": {
+        "checks": 1559,
+        "recoverCalls": 127,
+        "literalValidTreeQuestions": 553,
+        "literalQuestionEntries": 1299,
+        "exhaustiveConnectedGraphs": 0,
+        "everyHiddenTreeForEverySmallGraph": 0,
+        "transcriptCompletionComparisons": 0,
+        "completeN6PruferHiddenTrees": 0,
+        "randomGraphs": 0,
+        "metamorphicChecks": 0,
+        "invalidCases": 36,
+        "originalAdapterCalls": 31,
+        "checksum": "141949014370290246",
+        "seconds": 0.00888095,
+        "peakRSSKiB": 21788,
+        "maximumCases": []
+      }
+    },
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-simurgh-checker.py",
+      "python3 /tmp/flowchartcp-ioi2017-simurgh-checker.py --sanitize"
+    ],
+    "sanitizerScope": "AddressSanitizer and UndefinedBehaviorSanitizer, with detect_leaks=0 as in the author driver. Peak988264KiB full-checker RSS includes all oracles and allocation quarantine; it is not ordinary API memory.",
+    "strongScopes": "All771connected simple graphs N2..5 and every8135hidden tree; all1296K6 Prüfer trees;400random+1200metamorphic;36invalid cases; every actual question checked by independent BFS; transcript compatibility filtering;8maximum N500 path/star/dense/reference-order constructions; generic header-free compile plus both explicitly synthetic oracle reference signatures."
+  },
+  "newIndependentValidation": {
+    "classification": "Reviewer-designed coherent-transcript adversary, degree-one tree predicate, targeted zero-cycle/bridge cases, every budget/callback exception, allocation faults and API-only payload window. Separate from native reproduction.",
+    "result": {
+      "checks": 30227,
+      "consistentAdversarialTranscripts": 396,
+      "completeCayleyTreesEnumerated": 35055,
+      "candidateIntersectionInspections": 1051168,
+      "transcriptOracleCalls": 6267,
+      "transcriptOracleEntries": 32939,
+      "independentLeafStrippingTreeChecks": 11917,
+      "maximumSmallTranscriptQueries": 28,
+      "allPerCallBudgetsChecked": 32,
+      "everyCallbackExceptionPosition": 29,
+      "allocationFailureExceptions": 276,
+      "maxPriorCallbackEffectsOnAllocationFailure": 29,
+      "maximumDenseN500ApiRequestedPayloadBytes": 2713370,
+      "maximumDenseN500Queries": 5229,
+      "checksum": "2819309625694043276",
+      "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+      "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+      "secondsIncludingCompilation": 1.6142812359903473,
+      "oracle": "At each query partition every compatible labeled spanning tree by its exact intersection count and keep a nonempty bucket. Try largest bucket, smallest feasible response and largest feasible response on complete N2..7 graphs with12edge/endpoint permutations and60connected N7 subgraphs. No hidden tree is selected beforehand, but the final single candidate is explicitly checked against every prior response, so each entire transcript is consistent with one fixed hidden tree; this is a stress oracle,not a claim that the original grader is adaptive. Queries and final outputs are checked by degree-one leaf stripping,not production DSU or author BFS.",
+      "extraTargetedCases": "An explicit unknown triangle disjoint from the hidden star gives two zero exchange deltas and must label the entire cycle0. Two cyclic blocks joined by a bridge check the unexchanged reference bridge is1. Every budget0..needed+2 and every callback-throw position is exercised on a dense N7 hidden star. Every API allocation is failed in turn,with prior external callback effects allowed to persist and a clean fresh call afterward.",
+      "memoryScope": "Requested live allocation payload for the actual generic N500 complete graph,path reference,hidden star only. Caller inputs/function object,oracle allocations,allocator headers,compiler and ASan overhead are excluded. No universal maximum-byte claim; source adapter storage is separately covered by supplied-checker reproduction.",
+      "additionalProbeSanitized": false,
+      "sharedOrAuthorArtifactsModified": false
+    },
+    "additionalProbeSanitized": false,
+    "scopeNote": "The new supplemental probe ran in ordinary mode; the supplied actual published-fence checker separately passed both normal and ASan/UBSan. No supplemental sanitizer run is claimed.",
+    "fixedSecretCaveat": "The adversary keeps all compatible trees and chooses a feasible response bucket. A final singleton must satisfy every prior query. This models possible fixed-secret transcripts, not a changing hidden tree in the source contract."
+  },
+  "initialAuditPreservation": {
+    "allExistingInitialSimurghFieldsMatchFrozenAuthorRow": true,
+    "initialResearchSolutionConfirmed": true,
+    "initialFullImplementationValidatedStillFalse": true,
+    "initialOfficialEditorialVerifiedStillFalse": true,
+    "optionalEarDecompositionStillUnconfirmed": true,
+    "initialResearchCount": 4,
+    "initialCoverageCount": 0,
+    "additionalPositiveResearchReviewRequired": false,
+    "integrationProposal": "Resolution only after article/reference/feature/flow/canonical walk/native registration. Preserve existing Wiring and Train resolutions and every initial row/status/selection/snapshot."
+  },
+  "publicationAssessment": {
+    "fullRangeApiAndSelectedProofValidated": true,
+    "independentReviewComplete": true,
+    "materialIssues": [],
+    "requiredUnconfirmed": [],
+    "optionalUnconfirmed": [
+      "Official ear-decomposition compression proof; unused by selected5990-query method."
+    ],
+    "actualOfficialHeaderByteInspectionClaimed": false,
+    "registeredCoverageClaimedByReview": false,
+    "sharedEdits": false
+  },
+  "originalReviewSha256": "03c700f3dfc13f24344bd7579f8b9684444e93d174e07612a3357aa668954c32",
+  "publishedArticle": "src/content/docs/techniques/spanning-tree-overlap-oracle-reference-labeling-leaf-peeling.mdx",
+  "permanentProbe": {
+    "script": "research/probes/spanning-tree-overlap-independent.py",
+    "normalizedSha256": "b9fd8efb6f35848e276c0fd316857aedb309f3b10ae81e0f1a1da8531138a787",
+    "normalization": "Only MDX path and removal of implicit tmp result writes; coherent-transcript oracle, leaf-strip legality, budget/callback/allocator faults and measured payload unchanged."
+  }
+}

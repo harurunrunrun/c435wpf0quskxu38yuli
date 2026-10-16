@@ -1,0 +1,70 @@
+---
+title: "連続回文を消す最少回数は、同色の両端を内側の最後の削除に加える"
+description: "左端を一個で消す場合と、同色の相手と一緒に消す場合に分け、内側と右側の区間へ帰着する。"
+techniqueId: palindrome-erasure-boundary
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+列から任意の連続回文を一回で消し、残りを詰めて全て消す最少回数を求めたい。元の列にある回文を選ぶだけでは、途中の削除で新しく隣り合う要素を扱えない。
+
+## 考え方
+
+$D(l,r)$ を元の区間 $[l,r]$ を全て消す最少回数とする。まず左端だけを消す $1+D(l+1,r)$ がある。
+
+左端と同色の位置 $k>l$ を一緒に消す場合、内側 $[l+1,k-1]$ の最後の削除へ両端を加えられる。内側が残った最後の回文を $P$ とすれば、同色 $c$ で挟んだ $cPc$ も回文である。従って候補は
+
+$$\max(1,D(l+1,k-1))+D(k+1,r).$$
+
+内側が空の隣接二要素だけは、削除に一回必要なので0にしない。短い区間から計算する。
+
+## 適用条件
+
+一回の操作で任意の非空の連続回文を消せ、単独要素も消せる。全操作の費用は1。削除後は残る要素が詰まる。長さの下限、色ごとの操作費用、同じ色の連続塊だけを消す条件がある場合は別の遷移が必要。
+
+掲載実装は500要素以下、色は整数の同値関係だけを使う。空列は0。同色の隣接二要素、全回文、全異なる色も扱う。
+
+## なぜ正しいか
+
+候補は全て実現できる。内側を最適に消す操作列の最後だけに両端を加えると、そこまで両端を残したまま内側を削除できる。右側は独立に消せる。
+
+逆に最適な操作列で左端が消える一回を考える。単独なら残りへ帰着する。複数なら、その回文の右端の元の位置を $k$ とすれば同色である。$k$ が残る間、削除操作はその位置をまたいで内側と右側を混ぜられない。左端を消す操作を内側へ制限しても、空の場合を除いて回文の削除になる。従って内側と右側の最少回数の合計は元の操作回数以下となり、上の候補のどれかが最適値以下になる。実現可能性と合わせて最適値と一致する。
+
+## 計算量
+
+現在の列を状態にして削除順を全探索すると、元の要素が残る組合せだけでも最大 $2^N$ 状態になる。区間DPは $O(N^2)$ 状態と各状態 $O(N)$ の相手探索で $O(N^3)$ 時間・$O(N^2)$ 空間。
+
+## 実装
+
+`minimum_palindrome_erasure(a)` は削除回数を返す。空区間は0として参照し、同色の相手が隣なら候補の内側費用を1にする。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+int minimum_palindrome_erasure(const std::vector<int>& a) {
+    int n=int(a.size());if(n>500)throw std::invalid_argument("size");
+    if(n==0)return 0;
+    std::vector<std::vector<int>> dp(n,std::vector<int>(n));
+    auto get=[&](int l,int r){return l>r?0:dp[l][r];};
+    for(int l=n-1;l>=0;--l) for(int r=l;r<n;++r) {
+        dp[l][r]=1+get(l+1,r);
+        for(int k=l+1;k<=r;++k) if(a[l]==a[k])
+            dp[l][r]=std::min(dp[l][r],std::max(1,get(l+1,k-1))+get(k+1,r));
+    }
+    return dp[0][n-1];
+}
+```
+
+## 関連する手法
+
+[隣接二個を消す順序は、区間の個数に二項係数を掛けて混ぜる](/flowchartcp/techniques/interval-pair-removal-interleavings/) ・ [環の隣接条件は最初の選択を固定して最後で確認する](/flowchartcp/techniques/cyclic-dp-first-state/)
+
+## 参考資料
+
+- [Codeforces：B. Zuma（原典）](https://codeforces.com/problemset/problem/607/B)
+- [公式解説](https://codeforces.com/blog/entry/22256)
+
+<TechniqueReferences techniqueId="palindrome-erasure-boundary" />

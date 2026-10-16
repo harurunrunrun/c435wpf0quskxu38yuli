@@ -1,0 +1,222 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "dp_n",
+    "title": "Slimes",
+    "url": "https://atcoder.jp/contests/dp/tasks/dp_n",
+    "techniqueIds": [
+      "knuth-adjacent-merges"
+    ],
+    "features": [
+      "非負の重さが一列に並ぶ",
+      "隣接する塊だけを併合する",
+      "併合費用は二つの塊の重さの合計",
+      "全体を一つにする最小費用"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/dp/tasks/dp_n",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1653",
+    "title": "Elevator Rides",
+    "url": "https://cses.fi/problemset/task/1653",
+    "techniqueIds": [
+      "subset-bin-lexicographic"
+    ],
+    "features": [
+      "20個以下の荷物",
+      "全ての箱が同じ容量",
+      "各荷物は分割できず単独なら入る",
+      "箱の個数だけを最小化"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1653",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2181",
+    "title": "Counting Tilings",
+    "url": "https://cses.fi/problemset/task/2181",
+    "techniqueIds": [
+      "domino-column-transition"
+    ],
+    "features": [
+      "短辺が10以下の長方形",
+      "1×2と2×1で重なりなく敷き詰める",
+      "敷き詰めの個数を数える",
+      "列境界以外の履歴は不要"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2181",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc217_f",
+    "title": "Make Pair",
+    "url": "https://atcoder.jp/contests/abc217/tasks/abc217_f",
+    "techniqueIds": [
+      "interval-pair-removal-interleavings"
+    ],
+    "features": [
+      "偶数個の対象が一列に並ぶ",
+      "相性のよい隣接二個だけ消せる",
+      "削除後は列が詰まる",
+      "ペア分けでなく操作の順番を区別して数える"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc217/tasks/abc217_f",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式解説でモデルと遷移を確認。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc271_f",
+    "title": "XOR on Grid Path",
+    "url": "https://atcoder.jp/contests/abc271/tasks/abc271_f",
+    "techniqueIds": [
+      "grid-xor-antidiagonal"
+    ],
+    "features": [
+      "20×20以下の正方形",
+      "右と下だけに移動",
+      "全通過マスのXORが0",
+      "経路の総数を数える"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc271/tasks/abc271_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc235_f",
+    "title": "Variety of Digits",
+    "url": "https://atcoder.jp/contests/abc235/tasks/abc235_f",
+    "techniqueIds": [
+      "digit-required-count-sum"
+    ],
+    "features": [
+      "最大1万桁の上限",
+      "指定された全数字を含む正の整数",
+      "個数ではなく整数の総和を求める",
+      "先頭に補った0は数字の出現に数えない"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc235/tasks/abc235_f",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式解説でモデルと遷移を確認。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc237_f",
+    "title": "|LIS| = 3",
+    "url": "https://atcoder.jp/contests/abc237/tasks/abc237_f",
+    "techniqueIds": [
+      "lis-tail-three-count"
+    ],
+    "features": [
+      "小さい整数の範囲から長さNの列を選ぶ",
+      "狭義増加部分列の最大長がちょうど3",
+      "列を列挙せず個数を求める",
+      "四つ目の末尾を作る遷移を除く"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc237/tasks/abc237_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "461B",
+    "title": "Appleman and Tree",
+    "url": "https://codeforces.com/problemset/problem/461/B",
+    "techniqueIds": [
+      "tree-one-mark-components"
+    ],
+    "features": [
+      "木の辺を任意に切る",
+      "各連結成分に印付き頂点がちょうど一つ",
+      "切る辺集合の個数を数える",
+      "親とつながる成分だけが未確定"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/461/B",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式解説でモデルと遷移を確認。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "dp_y",
+    "title": "Grid 2",
+    "url": "https://atcoder.jp/contests/dp/tasks/dp_y",
+    "techniqueIds": [
+      "sparse-grid-blocked-points"
+    ],
+    "features": [
+      "縦横が最大10万の格子",
+      "障害物は3000個以下",
+      "右下だけに進む経路の個数",
+      "空き領域の経路数は二項係数で求まる"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/dp/tasks/dp_y",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc298_e",
+    "title": "Unfair Sugoroku",
+    "url": "https://atcoder.jp/contests/abc298/tasks/abc298_e",
+    "techniqueIds": [
+      "independent-race-first-hit"
+    ],
+    "features": [
+      "独立なサイコロで二人が交互に前進",
+      "毎回1以上進み同じ終点へ向かう",
+      "先に振る側が先着する確率",
+      "同じ周回で到着すれば先手の勝ち"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc298/tasks/abc298_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から遷移と正当性を独立に導出。問題条件と帰着を確認。掲載したC++20実装を小規模の全列挙・素朴DPと境界ケースで比較して確認した。 原典の開催日、または大会公式解説の掲載年から基準日以前を確認。"
+  }
+]

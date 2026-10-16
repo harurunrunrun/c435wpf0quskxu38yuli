@@ -1,0 +1,329 @@
+[
+  {
+    "id": "prefix-border-occurrences",
+    "title": "接頭辞の出現回数を、短い一致先へ集約する",
+    "summary": "接頭辞と接尾辞の一致が連鎖する構造を使い、全ての接頭辞の出現回数を一度に求めます。",
+    "prerequisites": [
+      "z-algorithm"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "prefix function occurrence aggregation",
+      "failure tree counts"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/blog/entry/12310"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "period-from-border",
+    "title": "周期の長さを接頭辞と接尾辞の一致から求める",
+    "summary": "末尾が途中で切れてよい周期と、整数回の反復であることが必要な周期を区別します。",
+    "prerequisites": [
+      "prefix-border-occurrences"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "period from border",
+      "prefix period"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1733/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "z-concatenate-boundary",
+    "title": "パターンと本文を区切って、全ての一致位置を求める",
+    "summary": "区切り文字を整数として確保し、パターンとの一致長を一度に計算します。",
+    "prerequisites": [
+      "z-algorithm"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "Z pattern matching",
+      "delimiter boundary"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1753/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "lcp-distinct-substrings",
+    "title": "異なる部分文字列を、直前の接尾辞との差だけ数える",
+    "summary": "接尾辞を辞書順に並べ、既に出ている短い接頭辞を LCP の分だけ除きます。",
+    "prerequisites": [
+      "suffix-array"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "distinct substrings LCP"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2105/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "lcp-repeated-substring",
+    "title": "同じ部分文字列が K 回現れる条件を LCP の区間最小値にする",
+    "summary": "辞書順で隣り合う K 本の接尾辞の共通部分を、K-1 個の LCP の最小値で求めます。",
+    "prerequisites": [
+      "suffix-array",
+      "monotone-queue"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "K repeated substring",
+      "LCP sliding minimum"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2106/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "palindrome-radius-range",
+    "title": "静的な区間の回文判定を、中心の最大半径だけで答える",
+    "summary": "奇数長と偶数長の中心を分け、任意の区間の回文判定を定数時間にします。",
+    "prerequisites": [],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "Manacher palindrome query"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/835/D"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "palindrome-center-contribution",
+    "title": "回文を中心の半径にまとめ、長さごとの出現数を数える",
+    "summary": "一つの中心から生まれる全ての短い回文を、半径の頻度の接尾和で集計します。",
+    "prerequisites": [
+      "palindrome-radius-range",
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "palindrome radius contribution",
+      "palindrome count by length"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/835/D"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "automaton-forbidden-dp",
+    "title": "禁止語を避ける DP に、末尾で一致している接頭辞の長さを持つ",
+    "summary": "直前の全文字を覚える代わりに、禁止語の接頭辞に一致する最長の末尾だけを状態にします。",
+    "prerequisites": [
+      "state-design",
+      "prefix-border-occurrences"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "forbidden word automaton DP",
+      "KMP automaton"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1112/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "aho-failure-aggregation",
+    "title": "多数のパターンの出現回数を failure link で逆向きに集める",
+    "summary": "本文を一度読んで訪問回数だけを記録し、長い一致から短い一致へ後でまとめて配ります。",
+    "prerequisites": [
+      "prefix-border-occurrences"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "Aho Corasick count aggregation",
+      "failure link accumulation"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2103/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "wildcard-convolution",
+    "title": "ワイルドカードの不一致を非負の多項式にして畳み込む",
+    "summary": "文字の不一致を xy(x-y)^2 へ変え、全てのずらし位置を三つの畳み込みで判定します。",
+    "prerequisites": [
+      "ntt"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "wildcard matching convolution",
+      "xy squared difference"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://github.com/yosupo06/library-checker-problems/blob/master/string/wildcard_pattern_matching/task.md",
+      "https://atcoder.jp/contests/abc307/editorial/6666"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "rotation-minimum",
+    "title": "巡回シフトの最小候補を不一致位置までまとめて捨てる",
+    "summary": "二つの開始位置を比較し、初めて異なる文字より前の候補を一度に除きます。",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "Booth algorithm",
+      "minimum cyclic shift"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1110/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "substring-subsequence-next",
+    "title": "部分列の一致を、各文字の次の出現位置で進める",
+    "summary": "固定された本文の次出現表を使い、多数の部分列照合や繰り返し列の照合を進めます。",
+    "prerequisites": [
+      "state-design"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "next occurrence table",
+      "subsequence automaton"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc138/tasks/abc138_e"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "palindrome-recursive-degree",
+    "title": "回文の再帰的な次数を、左半分の次数から求める",
+    "summary": "通常の回文判定と半分への再帰を同じ区間表で管理し、次数ごとの出現数を数えます。",
+    "prerequisites": [
+      "interval-dp"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "palindromic characteristics",
+      "recursive palindrome degree"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/835/D"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "word-boundary-comma-closure",
+    "title": "同じ語の前後へ読点を追加する規則を、一度の探索で処理する",
+    "summary": "語の前と後を別の状態にし、文内の隣接を辺で結ぶ。元の読点からの到達集合で、追加規則の最小の不動点を求める。",
+    "aliases": [
+      "ICPC 2018 Comma Sprinkler",
+      "word boundary comma closure",
+      "before after word bipartite propagation",
+      "同語 前後二状態 読点 最小不動点"
+    ],
+    "family": "文字列の制約伝播",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2"
+    ]
+  }
+]

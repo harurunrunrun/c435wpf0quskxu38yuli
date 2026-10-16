@@ -1,0 +1,59 @@
+---
+title: "円周が交わる条件を二乗距離の上下限に変える"
+description: "中心間距離を平方根で求めず、半径の差と和の二乗で比較します。"
+techniqueId: "circle-square-distance"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+整数座標の円周が接するか交わるかを正確に判定したいとき。円の内部同士が重なるだけでは、円周の間を移動できるとは限りません。
+
+## 考え方
+
+中心間の距離を $d$、半径を $r,s$ とすると、円周に共通点がある条件は $|r-s|\le d\le r+s$。全て非負なので二乗して
+
+$$(r-s)^2\le (x_1-x_2)^2+(y_1-y_2)^2\le(r+s)^2.$$
+
+接する場合を含めるなら等号も許します。点が円周上にあるかは二乗距離が半径の二乗に等しいかで判定します。
+
+## 適用条件
+
+円周同士の共通点を判定する式です。塗りつぶした円盤同士の共通部分なら下限は不要です。中心と半径を整数として正確に持ち、積のオーバーフローを避けます。下の実装は座標・半径の絶対値が $10^9$ 以下向けです。
+
+## なぜ正しいか
+
+交点と二つの中心を結ぶ三角形の辺長は $r,s,d$ で、三角不等式が条件になります。等号のときは三角形が潰れ接点です。二乗は非負の範囲で大小を保つため、平方根を取る判定と同値です。
+
+## 計算量
+
+判定そのものは元も改善後も $O(1)$ 時間・空間です。この変形は漸近計算量を減らすのでなく、平方根と浮動小数点の境界誤差を除きます。全ての円の組を調べる場合は $O(N^2)$ のままです。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct IntegerCircle{long long x,y,r;};
+bool circumference_intersects(IntegerCircle a,IntegerCircle b){
+    assert(a.r>=0 && b.r>=0);
+    __int128 dx=(__int128)a.x-b.x,dy=(__int128)a.y-b.y;
+    __int128 distance=dx*dx+dy*dy;
+    __int128 low=(__int128)a.r-b.r,high=(__int128)a.r+b.r;
+    return low*low<=distance && distance<=high*high;
+}
+bool point_on_circumference(IntegerCircle a,long long x,long long y){
+    __int128 dx=(__int128)a.x-x,dy=(__int128)a.y-y;
+    return dx*dx+dy*dy==(__int128)a.r*a.r;
+}
+```
+
+## 関連する手法
+
+[グラフへの帰着](/flowchartcp/techniques/graph-reduction/)
+
+## 参考資料
+
+- [AtCoder：Circumferences の解説](https://atcoder.jp/contests/abc259/editorial/4280)
+
+<TechniqueReferences techniqueId="circle-square-distance" />

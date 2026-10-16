@@ -1,0 +1,103 @@
+---
+title: "0と1の区間反転と最長連続は、両方の値の接頭・接尾・最大長を持つ"
+description: "反転では0用と1用の要約を交換し、区間の境界をまたぐ連続も併合時に調べる。"
+techniqueId: flip-longest-binary-run
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+反転では0用と1用の要約を交換し、区間の境界をまたぐ連続も併合時に調べる。
+
+## 使う場面
+
+二値の列で区間をまとめて反転し、指定区間の1の最長連続を質問される。1の個数だけでは連続の長さがわからず、最大連続だけでは区間をつなげられない。
+
+## 考え方
+
+各区間に長さと、値0・1それぞれの接頭連続長、接尾連続長、最大連続長を持つ。
+
+左区間 $A$ と右区間 $B$ を結合すると、値 $c$ の最大連続は
+
+$$best_c=\max(A.best_c,B.best_c,A.suffix_c+B.prefix_c).$$
+
+接頭は左が全て $c$ のときだけ右の接頭も足す。接尾も対称に処理する。区間全体を反転すると、0用と1用の三つの値を全て交換するだけでよい。反転を二回すると戻るため、未適用の反転は排他的論理和で合成する。
+
+## 適用条件
+
+二値列で、操作は区間の0と1を全て交換する。列順序を反転する操作とは異なる。質問は連続した同じ値の最長長さであり、飛び飛びに選ぶ部分列ではない。
+
+掲載実装は50万文字以下。区間を半開区間で受け取り、空区間の答えは0。
+
+## なぜ正しいか
+
+結合後の連続部分は、左だけ・右だけ・境界をまたぐ、の三種類。境界をまたぐ場合は左の接尾と右の接頭が同じ値である範囲だけをつなげるので、最大長の式が全候補を表す。接頭・接尾の式も区間全体が同じ値かにより決まる。
+
+反転は全0を1へ、全1を0へ写すため、両値の要約を交換すれば正しい。順序も長さも変わらず、反転フラグの二回分は打ち消される。
+
+## 計算量
+
+列を直接書き換えて質問する方法は一操作 $O(N)$ 時間・$O(N)$ 空間。要約を持つ遅延セグメント木なら準備 $O(N)$、反転・質問とも $O(\log(N+1))$ 時間、空間 $O(N)$。
+
+## 実装
+
+`BinaryRuns::flip(l,r)` が反転、`longest(l,r,bit)` が値0または1の最大連続長。空文字列も扱う。反転中のノードを質問で分けるときも、子へフラグを伝える。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct RunSummary {
+    int length=0;
+    array<int,2> prefix{},suffix{},best{};
+};
+RunSummary join_runs(RunSummary a,RunSummary b) {
+    RunSummary c;c.length=a.length+b.length;
+    for(int bit=0;bit<2;++bit) {
+        c.prefix[bit]=a.prefix[bit]+(a.prefix[bit]==a.length?b.prefix[bit]:0);
+        c.suffix[bit]=b.suffix[bit]+(b.suffix[bit]==b.length?a.suffix[bit]:0);
+        c.best[bit]=max({a.best[bit],b.best[bit],a.suffix[bit]+b.prefix[bit]});
+    }
+    return c;
+}
+struct BinaryRuns {
+    int n;
+    vector<RunSummary> tree;vector<char> pending;
+    explicit BinaryRuns(const string& s):n(s.size()),tree(4*max(n,1)),pending(tree.size()) {
+        if(n>500000) throw invalid_argument("too many characters");
+        for(char c:s) if(c!='0' && c!='1') throw invalid_argument("binary string required");
+        if(n) build(1,0,n,s);
+    }
+    void build(int p,int l,int r,const string& s) {
+        if(r-l==1) {int bit=s[l]-'0';tree[p].length=1;tree[p].prefix[bit]=tree[p].suffix[bit]=tree[p].best[bit]=1;return;}
+        int m=(l+r)/2;build(2*p,l,m,s);build(2*p+1,m,r,s);tree[p]=join_runs(tree[2*p],tree[2*p+1]);
+    }
+    void invert(int p) {
+        swap(tree[p].prefix[0],tree[p].prefix[1]);swap(tree[p].suffix[0],tree[p].suffix[1]);swap(tree[p].best[0],tree[p].best[1]);pending[p]^=1;
+    }
+    void push(int p) {if(pending[p]) {invert(2*p);invert(2*p+1);pending[p]=0;}}
+    void update(int p,int l,int r,int ql,int qr) {
+        if(qr<=l || r<=ql) return;
+        if(ql<=l && r<=qr) {invert(p);return;}
+        push(p);int m=(l+r)/2;update(2*p,l,m,ql,qr);update(2*p+1,m,r,ql,qr);tree[p]=join_runs(tree[2*p],tree[2*p+1]);
+    }
+    RunSummary query(int p,int l,int r,int ql,int qr) {
+        if(qr<=l || r<=ql) return {};
+        if(ql<=l && r<=qr) return tree[p];
+        push(p);int m=(l+r)/2;return join_runs(query(2*p,l,m,ql,qr),query(2*p+1,m,r,ql,qr));
+    }
+    void check(int l,int r) const {if(l<0 || l>r || r>n) throw out_of_range("query range");}
+    void flip(int l,int r) {check(l,r);if(l<r) update(1,0,n,l,r);}
+    int longest(int l,int r,int bit=1) {
+        check(l,r);if(bit<0 || bit>1) throw invalid_argument("bit");
+        return l==r?0:query(1,0,n,l,r).best[bit];
+    }
+};
+```
+
+## 関連する手法
+
+[遅延セグメント木](/flowchartcp/techniques/lazy-segment-tree/) ・ [括弧列の判定を、合計と接頭和の最小値で持つ](/flowchartcp/techniques/prefix-feasibility/)
+
+## 参考資料
+
+- [AtCoder：Vacation Query](https://atcoder.jp/contests/abc322/tasks/abc322_f)
+
+<TechniqueReferences techniqueId="flip-longest-binary-run" />

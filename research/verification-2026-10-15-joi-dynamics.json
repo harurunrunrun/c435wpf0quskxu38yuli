@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "JOI2020のJoitter2・Sweeping・Ruins3とICPC2017Lで不足していた具体技巧を追加",
+  "counts": {
+    "specificTechniques": 388,
+    "foundationArticles": 78,
+    "allArticles": 466,
+    "exampleMappings": 487,
+    "originalUrls": 449,
+    "graphs": 431,
+    "nodes": 3457,
+    "questions": 1564,
+    "answerEdges": 5092,
+    "verifiedWalks": 483,
+    "pendingWalks": 4
+  },
+  "verified": [
+    "公開MDXから4実装を抽出しC++20で厳格コンパイル。独立oracle・境界・最大規模と比較。作成担当の検証に加え別担当が各証明とコードをレビュー。",
+    "相互辺閉包は29504列の289890接頭辞と6000乱択、全N≤3、N=4全4096グラフの複数順序、最大N=100000/M=300000の4構造。別担当が閉包とAPI境界を追加レビュー。",
+    "端点縮小は246575操作履歴と15000乱択を点ごとのシミュレーションと比較。M=500000/Q=1000000、最大座標登録2999998と900万移送も確認。別担当が未計上の座標整列項を指摘しR log Rを追記。",
+    "生存位置数え上げはN≤6の7600417重複順列・1274位置集合をN回同時更新で全列挙。N=7..11の17例は多倍長の別頻度DP、N=600は反射原理の閉形式等と比較。別担当が実checkerを再実行。",
+    "角対応は174460全小配置、46656閉長方形三組、9000乱択、公式4例、最大100000長方形3構造。幅0・高さ0と境界接触を含める。独立担当が原典と証明をレビュー。",
+    "新規登録前の483歩行で手順・到達先変更0。分岐・配置・共有・履歴・調査台帳の全32テスト群PASS。新4記事と5入口の独立6テストもPASS。",
+    "区間変更の入口に新設選択肢が集中した回帰検査を修正。区間そのものの端点操作を配列・区間の入口へ移し、旧選択肢と保存済み履歴は保持。",
+    "npm run build:local は466記事・487対応・431 SVGで成功。新4記事の日英・全角検索21件、数式、使用例、根拠とカタログを照合。",
+    "431 SVGと図専用ページ、5092回答ラベル、404旧共有URLを照合。条件付き一括移動のSVGを画像化して目視確認。",
+    "npm run verify:local は1337 HTML/SVGの27506内部リンク・資産を検査。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 30,
+    "fixedCorpusSolutionsReviewed": 26,
+    "publishedExamplesSolutionsReviewed": 447,
+    "allDistinctSolutionsReviewed": 457,
+    "usacoCovered": "3/6",
+    "icpcCovered": "6/12",
+    "joiCovered": "7/12",
+    "remainingKnownGaps": 15
+  },
+  "limitations": [
+    "世界全体の問題母数は未確定で網羅未完了。",
+    "IOI2020全6題の公式一覧を次の固定群として先に確定。全問の解法・特徴経路を別途調査中。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは環境上の失敗後に再試行しておらず未検証。",
+    "外部リンクの全件生存確認は行っていない。",
+    "push・アップロード・公開は行っていない。"
+  ],
+  "inProgress": [
+    "xor-bounded-triples-intervals",
+    "grid-rectangle-components-euler-boundary"
+  ]
+}

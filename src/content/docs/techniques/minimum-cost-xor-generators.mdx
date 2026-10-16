@@ -1,0 +1,95 @@
+---
+title: "部分集合XORで全ての値を作る最小費用は、安い順に新しい値だけを加える"
+description: "既に作れるマスクを買わず、作れる範囲を広げるマスクだけを採用する。"
+techniqueId: minimum-cost-xor-generators
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+各ビットマスクに購入費用がある。選んだマスクをそれぞれ高々一回使う部分集合XORで、$B$ ビットの全ての値を作れるようにしたい。購入費用の合計を最小化する。生成できる値の個数だけを求める場合から、一歩進んで重み付きの選択を扱う。
+
+## 考え方
+
+安い順に候補を見て、今まで選んだマスクのXORで表現できるものは採用しない。表現できないものだけを加える。
+
+表現可否はXOR基底で判定する。上位の1を基底の行で順に消し、0になれば表現可能。新しい最上位の1が残れば、その行を登録する。選択した元のマスクの番号も残しておく。階数が $B$ に達すれば全 $2^B$ 個の値を生成できる。
+
+## 適用条件
+
+生成演算はXORで、費用は候補ごとの**非負**の購入費用の和。購入したマスクを複数の値の生成へ使い回せる。各目標を同時に互いに重ならない材料から作る、といった消費制約は扱わない。負の費用があると、従属な候補も購入した方がよい場合があり、この実装の範囲外。
+
+掲載実装は候補20万個以下、幅 $1\le B\le64$、各費用 $0\le c\le10^{12}$。候補マスク0や重複も許す。全域を生成できなければ空の `optional`、可能なら費用と採用した入力位置を返す。費用は高々 $B\cdot10^{12}$ で64ビットに収まる。負数のマスクは扱わず、64ビット最上位も符号なしで操作する。
+
+## なぜ正しいか
+
+任意の生成集合から従属なマスクを除いても生成範囲は変わらない。費用が非負なので、最適解の中に $B$ 個の独立なマスクからなる基底を選べる。
+
+これまでの貪欲選択 $S$ を全て含む最適基底 $T$ があるとする。次に選ぶマスク $v$ が $T$ にない場合、$v$ を $T$ で表したXORには $S$ の外のマスク $u$ が含まれる。そうでなければ $v$ は既に $S$ で作れてしまう。さらに $T$ は独立なので、この表現の $u$ は $S$ だけで作れない。安い順の選択より $c_v\le c_u$。
+
+$T$ の $u$ を $v$ に置き換えても、元の表現から $u$ を復元できるため全域を生成する。費用も増えず、$S\cup\{v\}$ を含む最適基底が得られる。この交換を繰り返すと貪欲解の最適性が従う。最後まで階数が足りない場合は、全候補を使っても全域を生成できない。
+
+## 計算量
+
+$M$ 候補の購入集合を全て試すと $2^M$ 通りとなる。各候補を安い順に並べ、XOR基底へ挿入する方法は時間 $O(M\log M+MB)$、追加空間 $O(M+B)$。全 $2^B$ 個の生成値を保存しないため、ビット幅が大きく候補だけが少ない場合にも使える。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <numeric>
+#include <optional>
+#include <stdexcept>
+#include <vector>
+struct PricedXorMask {std::uint64_t mask,cost;};
+struct XorGeneratorSelection {
+    std::uint64_t total_cost=0;
+    std::vector<std::size_t> selected;
+};
+std::optional<XorGeneratorSelection> minimum_xor_generators(
+    int bits, const std::vector<PricedXorMask>& candidates) {
+    if(bits<1 || bits>64 || candidates.size()>200000)
+        throw std::invalid_argument("range");
+    for(const auto& item:candidates)
+        if(item.cost>1000000000000ULL || (bits<64 && (item.mask>>bits)!=0))
+            throw std::invalid_argument("candidate");
+    std::vector<std::size_t> order(candidates.size());
+    std::iota(order.begin(),order.end(),0);
+    std::sort(order.begin(),order.end(),[&](auto i,auto j) {
+        if(candidates[i].cost!=candidates[j].cost)
+            return candidates[i].cost<candidates[j].cost;
+        return i<j;
+    });
+    std::array<std::uint64_t,64> basis{};
+    XorGeneratorSelection result;
+    for(auto i:order) {
+        std::uint64_t value=candidates[i].mask;
+        for(int b=bits-1;b>=0;--b) if((value>>b)&1U) {
+            if(basis[b]) value^=basis[b];
+            else {
+                basis[b]=value;
+                result.total_cost+=candidates[i].cost;
+                result.selected.push_back(i);
+                break;
+            }
+        }
+        if(result.selected.size()==static_cast<std::size_t>(bits)) return result;
+    }
+    return std::nullopt;
+}
+```
+
+## 関連する手法
+
+- [部分集合XORの異なる値を、基底の係数順に並べる](/flowchartcp/techniques/xor-basis-kth/)
+- [追加した数のXOR基底を、行の記録で巻き戻す](/flowchartcp/techniques/linear-basis-rollback/)
+
+## 参考資料
+
+- [AtCoder — Spices](https://atcoder.jp/contests/abc236/tasks/abc236_f)
+- [公式解説](https://atcoder.jp/contests/abc236/editorial/3306) — 同じ費用順の貪欲法と交換を示し、生成値の集合を直接管理する実装を扱う。ここでは表現可否を基底で判定している。
+
+<TechniqueReferences techniqueId="minimum-cost-xor-generators" />

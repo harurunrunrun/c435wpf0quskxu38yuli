@@ -1,0 +1,110 @@
+---
+title: "再訪できる道の一回限りの報酬は、相互到達する頂点をまとめて足す"
+description: "同じ部屋の報酬を重複させず、自由に巡れる成分の報酬を一つにしてから経路を選ぶ。"
+techniqueId: scc-collect-once-reward
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+同じ部屋の報酬を重複させず、自由に巡れる成分の報酬を一つにしてから経路を選ぶ。
+
+## 使う場面
+
+部屋を何度も訪ねられる有向グラフで、各部屋の報酬を一度だけ受け取りたい。単純経路を選ぶ問題と同じように扱うと、互いに行き来できる部屋の寄り道を取り逃す。
+
+## 考え方
+
+互いに到達できる頂点を一つの強連結成分にまとめる。成分内では、入口から必要な頂点を順に訪れ、最後に好きな出口へ進める。報酬が非負なら、成分の報酬は全頂点の合計でよい。
+
+成分間の辺だけを残すとDAGになる。成分 $C$ の合計を $w_C$ とし、開始位置も自由なら $dp_C=w_C$ で始める。辺 $C\to D$ について
+
+$$dp_D\gets\max(dp_D,dp_C+w_D)$$
+
+を依存順に更新し、全成分の最大値を取る。
+
+## 適用条件
+
+同じ頂点・辺を再訪でき、報酬は頂点ごとに一回限りで非負。開始と終了は自由。負の報酬を通過するたび強制的に支払う問題や、頂点を二度使えない単純経路問題では、成分合計を取る帰着は成立しない。
+
+開始・終了が指定される場合は、初期状態と終点へ届く成分を限定する。掲載実装は開始・終了自由の版で、報酬和を128ビット整数で持つ。
+
+## なぜ正しいか
+
+強連結性から、成分内の入口と任意の報酬頂点、任意の出口を順に結ぶ経路を作れる。再訪は許され、同じ報酬は再び加えないため、非負報酬を全て回収することが最善になる。
+
+成分間に巡回があれば、それらは相互到達できるので一成分のはずである。従って縮約グラフはDAG。一つの経路が成分を出た後に同じ成分へ戻ることはなく、獲得報酬は縮約上の経路の成分和と一致する。
+
+## 計算量
+
+訪問済み頂点集合を持つ探索は $O((N+M)2^N)$ 時間、$O(N2^N+M)$ 空間を要する。成分分解、縮約、DAG上の集計は全て合わせて $O(N+M)$ 時間・空間。探索は反復で行い、長い有向鎖にも対応する。
+
+## 実装
+
+`maximum_once_reward` は全頂点の非負報酬と有向グラフを受け取り、最大合計を返す。成分間の平行辺は残してよく、入次数もその本数に合わせて減らす。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct Components {int count;vector<int> id;};
+Components strong_components(const vector<vector<int>>& g) {
+    int n=g.size();vector<vector<int>> reverse_graph(n);
+    for(int v=0;v<n;++v) for(int u:g[v]) reverse_graph[u].push_back(v);
+    vector<char> seen(n);vector<int> finish;
+    for(int start=0;start<n;++start) if(!seen[start]) {
+        vector<pair<int,int>> stack{{start,0}};seen[start]=true;
+        while(!stack.empty()) {
+            int v=stack.back().first;int& i=stack.back().second;
+            if(i==int(g[v].size())) {finish.push_back(v);stack.pop_back();continue;}
+            int u=g[v][i++];
+            if(!seen[u]) {seen[u]=true;stack.push_back({u,0});}
+        }
+    }
+    vector<int> component(n,-1);int count=0;
+    for(int i=n-1;i>=0;--i) {
+        int start=finish[i];if(component[start]!=-1) continue;
+        vector<int> stack{start};component[start]=count;
+        while(!stack.empty()) {
+            int v=stack.back();stack.pop_back();
+            for(int u:reverse_graph[v]) if(component[u]==-1) {
+                component[u]=count;stack.push_back(u);
+            }
+        }
+        ++count;
+    }
+    return {count,move(component)};
+}
+
+__int128 maximum_once_reward(const vector<vector<int>>& g,const vector<long long>& reward) {
+    int n=g.size();assert(n>0 && int(reward.size())==n);
+    for(long long x:reward) if(x<0) throw invalid_argument("nonnegative reward required");
+    auto component=strong_components(g);int count=component.count;
+    vector<__int128> weight(count);
+    for(int v=0;v<n;++v) weight[component.id[v]]+=reward[v];
+    vector<vector<int>> dag(count);vector<int> indegree(count);
+    for(int v=0;v<n;++v) for(int u:g[v]) {
+        int a=component.id[v],b=component.id[u];
+        if(a!=b) {dag[a].push_back(b);++indegree[b];}
+    }
+    vector<int> order;
+    for(int c=0;c<count;++c) if(indegree[c]==0) order.push_back(c);
+    vector<__int128> dp=weight;
+    __int128 answer=0;
+    for(int i=0;i<int(order.size());++i) {
+        int c=order[i];answer=max(answer,dp[c]);
+        for(int next:dag[c]) {
+            dp[next]=max(dp[next],dp[c]+weight[next]);
+            if(--indegree[next]==0) order.push_back(next);
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[強連結成分分解](/flowchartcp/techniques/scc/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [CSES：Coin Collector](https://cses.fi/problemset/task/1686)
+
+<TechniqueReferences techniqueId="scc-collect-once-reward" />

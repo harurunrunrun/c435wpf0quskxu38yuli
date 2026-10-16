@@ -1,0 +1,218 @@
+[
+  {
+    "source": "CSES",
+    "problemId": "2209",
+    "title": "Counting Necklaces",
+    "url": "https://cses.fi/problemset/task/2209",
+    "techniqueIds": [
+      "burnside-necklace-divisors"
+    ],
+    "features": [
+      "環状の n 箇所を m 色で塗る",
+      "回転だけを同じ配置とみなす。裏返しは別",
+      "各位置の色は自由で、n≤10^6、法10^9+7"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2209",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。原典に公開日を確認できないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "UVa",
+    "problemId": "10294",
+    "title": "Arif in Dhaka (First Love Part 2)",
+    "url": "https://onlinejudge.org/external/102/10294.pdf",
+    "techniqueIds": [
+      "burnside-bracelet-reflections"
+    ],
+    "features": [
+      "環状の全位置を自由に塗る",
+      "回転と鏡映を同一視する",
+      "長さの奇偶で反転の巡回数が異なる。整数の個数が必要"
+    ],
+    "evidenceUrl": "https://onlinejudge.org/external/102/10294.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。原典に公開日を確認できないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2187",
+    "title": "Bracket Sequences II",
+    "url": "https://cses.fi/problemset/task/2187",
+    "techniqueIds": [
+      "ballot-prefix-reflection"
+    ],
+    "features": [
+      "長さ n の正しい括弧列を数える",
+      "接頭辞が固定され、残りの長さと現在の高さが決まる",
+      "以後も高さを負にせず最後に0へ戻る"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2187",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。原典に公開日を確認できないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1717",
+    "title": "Christmas Party",
+    "url": "https://cses.fi/problemset/task/1717",
+    "techniqueIds": [
+      "derangement-fixed-count"
+    ],
+    "features": [
+      "全員へ品物を一つずつ配る一対一対応",
+      "自分の品物を受け取る人を禁止する",
+      "同じ位置に残る数をちょうど k へ拡張できる"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1717",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。原典に公開日を確認できないため、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc151_e",
+    "title": "E - Max-Min Sums",
+    "url": "https://atcoder.jp/contests/abc151/tasks/abc151_e",
+    "techniqueIds": [
+      "subset-extrema-rank"
+    ],
+    "features": [
+      "添字を区別する配列からちょうど K 個を選ぶ",
+      "全選択について最大値と最小値の差を合計する",
+      "負の値や重複した値がある"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc151/tasks/abc151_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。大会日が基準日以前である。",
+    "publicationDate": "2020-01-12"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc156_e",
+    "title": "E - Roaming",
+    "url": "https://atcoder.jp/contests/abc156/tasks/abc156_e",
+    "techniqueIds": [
+      "redistribution-zero-count"
+    ],
+    "features": [
+      "区別する n 箱に最初一個ずつ入っている",
+      "一個を任意の別の箱へ移せる",
+      "総数 n の最終個数だけを数える。原典 n≥3、移動回数 k≥2"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc156/tasks/abc156_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。大会日が基準日以前である。",
+    "publicationDate": "2020-02-22"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc172_e",
+    "title": "E - NEQ",
+    "url": "https://atcoder.jp/contests/abc172/tasks/abc172_e",
+    "techniqueIds": [
+      "injective-coordinate-avoidance"
+    ],
+    "features": [
+      "二本とも列内の値は重複しない",
+      "同じ位置の二値は異なる",
+      "長さ n、値域 m、n≤m。二本の組を数える"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc172/tasks/abc172_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。大会日が基準日以前である。",
+    "publicationDate": "2020-06-27"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc242_f",
+    "title": "F - Black and White Rooks",
+    "url": "https://atcoder.jp/contests/abc242/tasks/abc242_f",
+    "techniqueIds": [
+      "grid-active-rows-cols"
+    ],
+    "features": [
+      "黒白の駒が互いに攻撃しない盤面",
+      "同じ行・列を二色で共有できない",
+      "同色駒は区別せず、各マス高々一個。N,M≤50"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc242/tasks/abc242_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。大会日が基準日以前である。",
+    "publicationDate": "2022-03-05"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc297_f",
+    "title": "F - Minimum Bounding Box 2",
+    "url": "https://atcoder.jp/contests/abc297/tasks/abc297_f",
+    "techniqueIds": [
+      "subset-bounding-box-expectation"
+    ],
+    "features": [
+      "H×W の異なる K マスを一様に選ぶ",
+      "選択マスを含む最小の軸平行長方形の面積",
+      "1≤K≤HW、H,W≤1000、法998244353"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc297/tasks/abc297_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。大会日が基準日以前である。",
+    "publicationDate": "2023-04-09"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc167_e",
+    "title": "E - Colorful Blocks",
+    "url": "https://atcoder.jp/contests/abc167/tasks/abc167_e",
+    "techniqueIds": [
+      "coloring-equal-adjacencies"
+    ],
+    "features": [
+      "長さ n の線形の色列を m 色で塗る",
+      "隣接する同色の組をちょうど k または高々 k に制限する",
+      "色ごとの使用数に制限がなく、使わない色もよい"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc167/tasks/abc167_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次資料の問題条件を確認。手法を独立に証明し、本文の C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。大会日が基準日以前である。",
+    "publicationDate": "2020-05-10"
+  }
+]

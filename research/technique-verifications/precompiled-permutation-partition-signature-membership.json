@@ -1,0 +1,3295 @@
+{
+  "techniqueId": "precompiled-permutation-partition-signature-membership",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2016-messy-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2016-messy-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2016-messy-sidecar.json",
+    "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+    "checkerSha256": "2bde8894a26f14644b210045e482a1d8b0c2edea4b372f2ca04ff5fb681b6254",
+    "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+    "authorArticleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+    "authorCheckerSha256": "2bde8894a26f14644b210045e482a1d8b0c2edea4b372f2ca04ff5fb681b6254",
+    "authorSidecarSha256": "6cc40fff6223ea6619008f79122afa44609b36d67838c6ea91d4ad2a67fa1939",
+    "publishedArticleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+    "publishedCheckerSha256": "b6142046232a5c59f38758913579554f8aa2b5904af577cc7999f51a8d6fb9fe"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/precompiled-permutation-partition-signature-membership.mdx",
+    "techniqueGroup": "data/techniques-specific-games.json",
+    "referenceGroup": "data/references-specific-games.json",
+    "feature": "data/precompiled-permutation-problem-features.json",
+    "checker": "scripts/check_precompiled_permutation_cpp.py",
+    "verification": "research/technique-verifications/precompiled-permutation-partition-signature-membership.json"
+  },
+  "metadata": {
+    "id": "precompiled-permutation-partition-signature-membership",
+    "title": "一度だけ並べ替わるビットの対応を、集合への所属質問で復元する",
+    "summary": "区間の外を1、左半分の一点だけを1にした文字列を先に登録し、並べ替え後の所属判定で位置集合を二分する。",
+    "aliases": [
+      "Precompiled permutation partition signature membership",
+      "IOI2016 Messy restore_permutation",
+      "二値文字列集合 未知ビット置換 一括compile 所属質問 全対応復元"
+    ],
+    "family": "対話前の集合設計と置換の復元",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "precompiled-permutation-partition-signature-membership",
+    "source": "IOI",
+    "problemId": "ioi2016_messy",
+    "title": "Unscrambling a Messy Bug",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "evidence": "二値文字列を集合へ登録した後、全要素のビット位置へ同じ未知置換が一回作用し、その後は所属だけを質問できる。各区間の外を1、左半分の一点だけを1にした文字列を全て先に登録すると、深さごとの1の個数と同深さの0の位置集合で部分問題を区別し、出力位置集合を左右へ分類して置換全体を復元できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に日本委員会配布の英語原典4頁/日本語原典3頁、公式17頁Solutionsの第11〜13頁、Day2 Notice、公式課題一覧をwebで再読。全5小課題の実予算は8bit256/256（高々2移動）、32bit320/1024・1024/320、128bit1792/1792・896/896である。単一balanced法は32bit80writes/160reads、128bit448writes/896readsで全原典予算を満たし、別の非対称手順は原典coverageに不要。全write→compile1回→全read、p固定、outbit[i]=oldbit[p[i]]、文字列先頭がMSB、重複挿入は集合で無効果（呼出しは消費）、generic署名と2秒/2GB、2016-08-16を確認。元grader header bytes未取得を維持し、generic+Noticeから型対応を導いたadapterは配布headerへ条件付きで接続する。実MDX単一可視C++20のgenericはgrader stub無しでリンクし、値渡し/const&/mutable&の合成headerを別compile（mutable版は引数を書換え）して検査。通常/ASan+UBSanとも総95249053checks/42080restoreAPI、generic77823670checks/41705API/checksum4045640110253301528、3adapter各5808461checks/125API/checksum16364191081451181720成功。N1/2/4/8全40347置換・全実現transcript、N<=4全261返答bit列からcompatible27/矛盾234、原典全5予算830case・乱択1000・generic不正39・callback例外7・nested1・各adapter不正5/preflight callback0を確認。通常generic .207961秒/RSS21668KiB、ASan2.03293秒/RSS379864KiB。合成headerの実績を原典header取得と呼ばず、研究prototypeを完成APIへ読み替えない。初回6positive/status/selection/snapshotと既存resolutionを保持し、追加はresolution-only。 その後rootと独立担当が全原典範囲・証明・実fenceを精読し、通常検査を再現。別の整数zero-support oracle・全小群作用・全転置・510割当fault・全callback前後194例外も通常ASan双方で一致。原典header bytes未取得を維持して登録した。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2016_messy",
+    "title": "Unscrambling a Messy Bug",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+    "techniqueIds": [
+      "precompiled-permutation-partition-signature-membership"
+    ],
+    "features": [
+      "最初に空の集合へ同じ長さの0/1文字列を登録し、全登録後に一回だけcompileする。",
+      "compileで全要素へ同じ固定の未知ビット位置置換が作用し、その後は所属判定だけを行える。",
+      "全出力位置から元の位置への対応pを復元する。outbit[i]=oldbit[p[i]]であり、逆置換を返さない。",
+      "原典N8/32/128の全5予算を、一つのbalanced構成で満たす。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "notes": "二値文字列を集合へ登録した後、全要素のビット位置へ同じ未知置換が一回作用し、その後は所属だけを質問できる。各区間の外を1、左半分の一点だけを1にした文字列を全て先に登録すると、深さごとの1の個数と同深さの0の位置集合で部分問題を区別し、出力位置集合を左右へ分類して置換全体を復元できる。",
+    "discoveredBy": "ioi-2016",
+    "publicationDate": "2016-08-16",
+    "publicationDatePrecision": "day",
+    "publicationYear": 2016,
+    "originalNumericBoundsVerified": true,
+    "cutoffVerification": "contest-before-cutoff"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+    "japaneseStatementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf",
+    "statementPages": 4,
+    "japaneseStatementPages": 3,
+    "sourceContractVerified": true,
+    "numericBoundsVerified": true,
+    "originalNumericBoundsVerified": true,
+    "originalBounds": {
+      "N": "Power of two;scored cases8,32,128;maximum128.",
+      "permutation": "p contains each0..N-1 once and is fixed before restore_permutation is called.",
+      "transform": "new_string[i]=old_string[p[i]],position0 is the most significant bit.",
+      "initialSet": "empty",
+      "duplicateInsertion": "No set change,but each add_element invocation counts toward w.",
+      "phaseOrder": "All add_element calls;exactly one compile_set;all check_element calls.",
+      "allScoredSubtasks": [
+        {
+          "score": 20,
+          "N": 8,
+          "w": 256,
+          "r": 256,
+          "promise": "At most two indices satisfy p[i]!=i.",
+          "actualWrites": 12,
+          "actualReads": 24
+        },
+        {
+          "score": 18,
+          "N": 32,
+          "w": 320,
+          "r": 1024,
+          "actualWrites": 80,
+          "actualReads": 160
+        },
+        {
+          "score": 11,
+          "N": 32,
+          "w": 1024,
+          "r": 320,
+          "actualWrites": 80,
+          "actualReads": 160
+        },
+        {
+          "score": 21,
+          "N": 128,
+          "w": 1792,
+          "r": 1792,
+          "actualWrites": 448,
+          "actualReads": 896
+        },
+        {
+          "score": 30,
+          "N": 128,
+          "w": 896,
+          "r": 896,
+          "actualWrites": 448,
+          "actualReads": 896
+        }
+      ],
+      "answer": "Return p indexed by output position."
+    },
+    "allSourceBudgetCombinationsCovered": true,
+    "asymmetricMethodRequiredForOriginal": false,
+    "budgetCoverageReason": "N32 uses80/160,which fits320/1024 and1024/320;N128 uses448/896,which fits both1792/1792 and896/896. No undocumented w80/r320 orw320/r80 source budget is claimed.",
+    "sourceSeconds": 2,
+    "sourceMemoryGB": 2,
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+    "genericSignatures": {
+      "restore": "int[] restore_permutation(int n,int w,int r)",
+      "add": "void add_element(string x)",
+      "compile": "void compile_set()",
+      "check": "boolean check_element(string x)"
+    },
+    "noticeCppTypes": {
+      "array": "std::vector<int>",
+      "string": "std::string",
+      "boolean": "bool"
+    },
+    "noticeProhibitsStandardInputOutput": true,
+    "derivedCppRestoreSignature": "std::vector<int> restore_permutation(int n,int w,int r)",
+    "cppHeaderBytesRetrieved": false,
+    "actualOriginalHeaderVerified": false,
+    "primaryPdfImagesClaimedRead": false,
+    "readMethod": "web primary PDF full text;displaced transformation formula atEnglishp1lines48..53 andallscoretableformulas atp3lines154..159 assembled;JPNp3lines143..148 cross-check.",
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "editorialPages": [
+      11,
+      12,
+      13
+    ],
+    "editorialAuthor": "Shi-Chun Tsai",
+    "chosenOfficialProcedure": "Recursive bipartition with outside-one signatures and one marker in the original left half;membership classifies every output position.",
+    "independentDetailsNotClaimedVerbatim": [
+      "Exact writes are(N/2)log2N,rather than the editorial's looser O(NlogN) upper bound.",
+      "Separate Hamming weights across levels and nonempty disjoint zero support at equal levels prevent all cross-subproblem collisions.",
+      "Leaves record answer[outputPosition]=originalIndex,following the literal source transformation.",
+      "All buffers and callback objects are local/references;conditional adapter uses a local string value so reference-qualified synthetic headers can be tested without altering the generic query buffer."
+    ],
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "difficulty": null,
+    "unconfirmedRequiredSourceFacts": [],
+    "unconfirmedRequiredLemmas": [],
+    "optionalUnknowns": [
+      "Actual original messy.h declaration bytes/qualifiers remain unacquired.",
+      "Editorial randomized/swap-search subtask alternatives are unnecessary and are not claimed as completed implementations."
+    ]
+  },
+  "api": {
+    "namespace": "partition_membership",
+    "functions": [
+      "Budget required_budget(int n)",
+      "template<class Add,class Compile,class Check> std::vector<int> restore(int n,int max_writes,int max_reads,Add&& add,Compile&& compile,Check&& check)"
+    ],
+    "adapter": "std::vector<int> restore_permutation(int n,int w,int r),enabled by PARTITION_MEMBERSHIP_USE_GRADER and the provided messy.h",
+    "publicBounds": {
+      "N": [
+        1,
+        128
+      ],
+      "powerOfTwo": true,
+      "writeBudget": "0..INT_MAX and >=(N/2)log2N",
+      "readBudget": "0..INT_MAX and >=Nlog2N"
+    },
+    "sourceN8_32_128Covered": true,
+    "singleton": "N1 accepts zero writes/reads,returns[0],and still invokes compile once.",
+    "extensions": "Other powers1/2/4/16/64 are supported;N4 is also the statement example. Counts are not asserted to be optimal for smaller arbitrary budgets.",
+    "callbackTypes": "Add/Check accept const string& or a compatible by-value signature;Add and Compile return void exactly,Check returns bool exactly. Objects are invoked by reference,including move-only callbacks.",
+    "callbackContract": "Initially empty independent set with one fixed permutation;callbacks correctly implement source operations and phase rules. No standard IO.",
+    "invalid": "invalid_argument before any callback for unsupported N,negative budgets,or budgets below this method's sufficient bound. This does not prove all smaller budgets impossible.",
+    "inconsistentReplies": "runtime_error when a partition does not contain exactly its two required half sizes. The oracle's full truthfulness contract remains required.",
+    "callbackExceptions": "Propagated unchanged,including the custom exception tested at7 write/compile/read points. There is no automatic external-set rollback;use a fresh/reset oracle session after failure.",
+    "allocationFailure": "Standard allocation exceptions propagate;no explicit allocation-fault injection is claimed in this checker.",
+    "state": "No static mutable state;all lists/strings/output are call-local. Nested calls against independent oracle objects are verified.",
+    "answer": "answer[output position]=original position p[output],never inverse",
+    "adapterHeaders": "Without macro,the entire fence links standalone without grader symbols. With macro,the real provided header is used;three synthetic declarations test value,const&,and mutable& compatibility. These are not original header acquisition.",
+    "reentrancyVerified": true,
+    "sourceComplete": true
+  },
+  "proof": {
+    "requiredUnconfirmedLemmas": [],
+    "lemmas": [
+      "For an original block I of size m,write every string with ones outside I,zeros inside,and one marker at each original left-half position.",
+      "Signature Hamming weight isN-m+1,so distinct recursion levels cannot collide.",
+      "At a fixed level,blocks are disjoint and each signature has nonempty zero support inside its own block(m>=2),so different blocks cannot collide.",
+      "If current output setS is exactly p^{-1}(I),querying outsideS ones/insideS zeros plus marker atv is the permutation of the original signature with markerp[v]. It belongs iff p[v] is in I's original left half.",
+      "Classification preserves the correct output-position set for each child;leaves assign p directly rather than its inverse.",
+      "Every level hasN/2 writes andN reads,and there arelog2N levels;the calls do not depend on the unknown permutation.",
+      "All source asymmetric budgets are simultaneously satisfied by this single method;no budget-specific randomization or strategy is needed."
+    ],
+    "compileOrder": "All recursive write calls finish before one compile invocation;the read recursion starts only afterward.",
+    "deterministic": true
+  },
+  "complexity": {
+    "oracleCalls": {
+      "writes": "(N/2)log2N",
+      "compile": 1,
+      "reads": "Nlog2N",
+      "maximumWrites": 448,
+      "maximumReads": 896
+    },
+    "characterCommunication": {
+      "formula": "(W+R)N=3N^2log2N/2",
+      "maximumCharacters": 172032,
+      "maximumRegisteredCharacters": 57344,
+      "semantics": "Counts string element lengths per successful call,excluding library set representation and incidental copies."
+    },
+    "ownTimeExcludingCallbackBodies": "O(N^2+NlogN),because oneN-character buffer is initialized at each ofN-1 internal nodes in each traversal,and each position is classified once per level.",
+    "timeIncludingLinearLengthArgumentCopies": "O(N^2logN);external library set operations remain a separate callback cost.",
+    "ownSpace": "O(N) including output and O(logN) stack. Strings are destroyed before child recursion;active position-vector lengths form geometric series.",
+    "maxDepthEdges": 7,
+    "maxRecursiveFrames": 8,
+    "integer": "All positions/counts are int after1<=N<=128 validation;largest required count896 and largest communication172032 are far below32bit limits.",
+    "sourceBudget": {
+      "seconds": 2,
+      "memoryGB": 2
+    },
+    "observedNative": "Times/RSS below include literal set oracles and all regression calls. They are environment measurements,not a universal runtime bound."
+  },
+  "flowSuggestion": {
+    "entryGraphId": "interactive-oracles",
+    "parentGraphId": "interactive-oracles",
+    "parentNodeId": "response",
+    "newAnswerId": "precompiled-permutation",
+    "newAnswerLabel": "二値文字列を書き込み、一回の未知置換後に所属だけ質問する",
+    "guardGraphId": "precompiled-permutation-conditions",
+    "canonicalChoices": [
+      "precompiled-permutation",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "fixed-shared-permutation",
+        "question": "全ての二値文字列に、同じ固定のビット位置置換が一回だけ作用しますか？",
+        "explanation": "長さは全てNで、置換は最初から固定です。各要素の値を別々に変えたり、質問の途中で置換を変えたりしません。"
+      },
+      {
+        "id": "precompile-membership",
+        "question": "全書き込みの後に一回だけ並べ替え、その後は所属だけを質問して全対応を返しますか？",
+        "explanation": "集合は最初に空です。書き込みは返答を見る前に全て終えます。出力位置iに来た元の位置p[i]を返します。"
+      },
+      {
+        "id": "bounds-budget",
+        "question": "長さは128以下の二冪で、登録N log₂N/2回・質問N log₂N回の予算がありますか？",
+        "explanation": "原典N32の予算320/1024と1024/320には80/160、N128の厳しい896/896には448/896で収まります。N1は登録・質問0回でも並べ替えを一回行います。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "precompiled-permutation-partition-signature-membership"
+    ],
+    "oldGuardPreservation": "Append one feature answer/route while preserving all old root options/answers/relative order and the old other->general-result path;do not rewrite the initial stop or its generic interactive result."
+  },
+  "verification": {
+    "actualSingleVisibleMdxFence": true,
+    "naturalJapaneseEightSections": true,
+    "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+    "checkerSha256": "2bde8894a26f14644b210045e482a1d8b0c2edea4b372f2ca04ff5fb681b6254",
+    "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2016-messy-checker.py",
+      "python3 /tmp/flowchartcp-ioi2016-messy-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "genericWithoutGraderStub": {
+        "checks": 77823670,
+        "apiCalls": 41705,
+        "allSmallPermutations": 40347,
+        "allSmallReplyBitstrings": 261,
+        "compatibleCompleteTranscripts": 27,
+        "sourceBudgetCases": 830,
+        "extensionCases": 205,
+        "randomCases": 1000,
+        "invalidApiCalls": 39,
+        "oracleGuardTests": 5,
+        "callbackFailures": 7,
+        "nestedCalls": 1,
+        "writes": 685019,
+        "compiles": 41403,
+        "reads": 1369940,
+        "callbackCharacters": 75559262,
+        "checksum": "4045640110253301528",
+        "seconds": 0.207961,
+        "peakRSSKiB": 21668,
+        "sourceStructuredCases": [
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 2.514e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.963e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.707e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.452e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.629e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.764e-06
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.7718e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.5749e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3184e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3727e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.4102e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.4656e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.1756e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3468e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.1205e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.1875e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3389e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3043e-05
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00021607
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000217028
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000206864
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000210951
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000223006
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000232242
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000208703
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000217002
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000214036
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000219893
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000230328
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000227517
+          }
+        ]
+      },
+      "syntheticHeaderAdapters": [
+        {
+          "syntheticHeaderKind": "Notice-derived string value",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0148541,
+          "peakRSSKiB": 21856
+        },
+        {
+          "syntheticHeaderKind": "const string reference",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0146721,
+          "peakRSSKiB": 21856
+        },
+        {
+          "syntheticHeaderKind": "mutable string reference with argument modification",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0145365,
+          "peakRSSKiB": 21856
+        }
+      ],
+      "checks": 95249053,
+      "apiCalls": 42080
+    },
+    "asanUbsan": {
+      "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "genericWithoutGraderStub": {
+        "checks": 77823670,
+        "apiCalls": 41705,
+        "allSmallPermutations": 40347,
+        "allSmallReplyBitstrings": 261,
+        "compatibleCompleteTranscripts": 27,
+        "sourceBudgetCases": 830,
+        "extensionCases": 205,
+        "randomCases": 1000,
+        "invalidApiCalls": 39,
+        "oracleGuardTests": 5,
+        "callbackFailures": 7,
+        "nestedCalls": 1,
+        "writes": 685019,
+        "compiles": 41403,
+        "reads": 1369940,
+        "callbackCharacters": 75559262,
+        "checksum": "4045640110253301528",
+        "seconds": 2.03293,
+        "peakRSSKiB": 379864,
+        "sourceStructuredCases": [
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 3.4469e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 2.6185e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 2.0206e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.7774e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.8804e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.9761e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000318391
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000457859
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.00019497
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000198548
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000192023
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000190935
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.0002643
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000202765
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000197015
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000216107
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000218211
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.00023325
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00228382
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00210316
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00239689
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00222067
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00217928
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00196504
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00300944
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00254006
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00245961
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00263175
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00212934
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00282171
+          }
+        ]
+      },
+      "syntheticHeaderAdapters": [
+        {
+          "syntheticHeaderKind": "Notice-derived string value",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.101195,
+          "peakRSSKiB": 57440
+        },
+        {
+          "syntheticHeaderKind": "const string reference",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.091696,
+          "peakRSSKiB": 46416
+        },
+        {
+          "syntheticHeaderKind": "mutable string reference with argument modification",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0902484,
+          "peakRSSKiB": 46396
+        }
+      ],
+      "checks": 95249053,
+      "apiCalls": 42080
+    },
+    "counterSemantics": {
+      "checks": "95249053 total require assertions:77823670 generic+3*5808461 synthetic-adapter checks. Individual query characters each have a binary-format assertion;this is not unique input count.",
+      "apiCalls": "42080 restore/restore_permutation invocations:41705 generic+3*125 adapters. Calls to the budget helper are not included.",
+      "allSmallPermutations": "Every permutation atN1/2/4/8:1+2+24+40320=40347. All observed full reply transcripts are distinct. The unrestrictedN8 tests are stronger than the first scored promise.",
+      "allSmallReplyBitstrings": "All2^R reply bitstrings atN1/2/4:1+4+256=261. A separate literal transformed-set enumeration across every permutation finds27 compatible complete transcripts and234 impossible scripts. Rejected scripts may stop before consuming their unused suffix.",
+      "sourceBudgetCases": "5 exact scored budget triples times(6structured+160random)=830. N8 instances in this explicitly tagged group are identity or one transposition.",
+      "extensionCases": "205 explicitly tagged extension calls:five budget/API cases atN1/2/4/16/64 plus200 randomN16/64 cases. This field does not count every extension call elsewhere.",
+      "randomCases": "1000 generic random calls:800 inside sourceBudgetCases and200 extension cases. Do not add1000 to830 as independent disjoint inputs.",
+      "invalidApiCalls": "39 generic malformed/small-method-budget calls with zero callback preflight,plus5 per synthetic adapter=54 total invalid entries. Unsupported budgets are rejected for this construction,not proved impossible in general.",
+      "oracleGuardTests": "Five manual simulator calibration failures:read-before-compile,write-budget exhaustion,second compile,write-after-compile,and read-budget exhaustion. They are not generic invalid API invocations.",
+      "callbackFailures": "Seven custom exceptions at first/middle/last write,compile,and first/middle/last read positions;each is followed by a correct fresh-session call.",
+      "nestedCalls": "One inner generic call with a different fixed oracle during an outer write;both outputs remain correct. A move-only callback invocation is separately checked.",
+      "literalOracleCounters": "writes/reads/compiles/characters inside each native result count successful Oracle method entries,including manual set-semantics calibration. They exclude scripted-transcript callbacks and callback attempts that throw before entering Oracle. Source worst counts are checked per completed oracle instance,not inferred from these aggregate totals.",
+      "syntheticHeaderAdapters": "Three independently compiled/link-tested binaries:Notice-derived value,const reference,and mutable reference with argument modification. Each has120 valid calls+5 invalid preflights;120 comprises16singleton extensions,24N4 permutations,and80 source-budget calls. They are counted as executions,not120 distinct permutations at each size.",
+      "checksum": "generic4045640110253301528;each adapter16364191081451181720. Both are stored as strings to preserve64bit values in JS."
+    },
+    "oracleIndependence": "Literal std::set<string> stores all source strings;compile explicitly computes y[i]=x[p[i]] for each element,and reads do exact string membership. This uses no partition signature theorem. A separate exhaustive reply-script oracle enumerates every hidden permutation and literal transformed registered set consistent with the actual adaptive queries,without relying on side sizes or the construction's recurrence.",
+    "genericStandaloneWithoutGraderStubVerified": true,
+    "syntheticHeaderKinds": [
+      "Notice-derived value",
+      "const reference",
+      "mutable reference whose function modifies the local argument"
+    ],
+    "actualOriginalHeaderRetrieved": false,
+    "allocationFaultInjectionPerformed": false,
+    "independentExternalReviewStatus": "pending"
+  },
+  "relatedArticleReview": [
+    {
+      "techniqueId": "interactive",
+      "file": "src/content/docs/techniques/interactive.mdx",
+      "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+      "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "compile-only protocol signature; no IO performed",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "対話問題の質問設計",
+      "scopeMismatch": "掲載コードは標準入出力のask_intervalで、原典で禁止されたstdioを行う。precompile書込/一compile/所属callback/全置換復元と予算保証を実装しない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-reasoning.json",
+          "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+        }
+      ]
+    },
+    {
+      "techniqueId": "interactive-bit-group-testing",
+      "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+      "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+      "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+      "scopeMismatch": "隠れ対象一つをbinarycodeで当てるAPIで、compileが全ビットへ同時に及ぶ未知置換全体を復元しない。入力cap100も原典128を含まない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-specific-games.json",
+          "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+        }
+      ]
+    },
+    {
+      "techniqueId": "state-design",
+      "file": "src/content/docs/techniques/state-design.mdx",
+      "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+      "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "状態の設計",
+      "scopeMismatch": "掲載APIは偶奇BFS。phase付きの署名集合と未知bit対応の再帰復元ではない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-reasoning.json",
+          "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+        }
+      ]
+    }
+  ],
+  "rootTrace": {
+    "initialReached": {
+      "graphId": "interactive-oracles",
+      "nodeId": "general-result",
+      "type": "result",
+      "title": "返答から次の合法な質問・移動を決める",
+      "options": [],
+      "techniques": [
+        "interactive"
+      ],
+      "conditions": [
+        "返答形式と質問・移動の上限を原典で確認する。",
+        "取得した情報だけで次の行動を決める。",
+        "flush、失敗返答、到着時の終了規則を守る。"
+      ]
+    },
+    "initialSteps": [
+      {
+        "graphId": "interactive-oracles",
+        "nodeId": "response",
+        "question": "質問すると何が返ってきますか？",
+        "answer": "other",
+        "answerLabel": "その他の返答形式・通信条件",
+        "target": "general-result"
+      }
+    ],
+    "initialNavigationReplay": {
+      "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+      "stepsSha256": "71790d17c507fed6e2ea4ffec39b70da23ef8264b114ca82d23746cdcf790f54",
+      "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+      "choicesConsumed": 1,
+      "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+      "routeBoundaries": [],
+      "all15EntryDomainsConsidered": [
+        "ranges",
+        "dp",
+        "graphs",
+        "flow-matching",
+        "strings",
+        "math",
+        "geometry",
+        "game-probability",
+        "thinking",
+        "heuristic",
+        "condition-check",
+        "set-operations",
+        "interactive-oracles",
+        "grid-arrangements",
+        "fixed-output"
+      ],
+      "originalReferenceAlreadyRegistered": false
+    },
+    "currentReadFlowSha256": "3f7560040a56df9fe0152527e203246581b19cbcb01deef58cae8b998774e26e",
+    "currentSteps": [
+      {
+        "graphId": "interactive-oracles",
+        "nodeId": "response",
+        "question": "質問すると何が返ってきますか？",
+        "answer": "other",
+        "answerLabel": "その他の返答形式・通信条件",
+        "target": "general-result"
+      }
+    ],
+    "currentStop": {
+      "id": "general-result",
+      "type": "result",
+      "title": "返答から次の合法な質問・移動を決める",
+      "explanation": "",
+      "techniques": [
+        "interactive"
+      ],
+      "conditions": [
+        "返答形式と質問・移動の上限を原典で確認する。",
+        "取得した情報だけで次の行動を決める。",
+        "flush、失敗返答、到着時の終了規則を守る。"
+      ]
+    },
+    "currentTraceMatchesInitial": true,
+    "chosenEntry": "interactive-oracles",
+    "reason": "The decisive feature is precompile writes and postcompile exact membership after one shared unknown permutation. The generic other result contains interactive only and supplies no matching callbacks/signature design/full-budget permutation API.",
+    "oldOtherPathToRemainUnchanged": true
+  },
+  "initialAuditPreservation": {
+    "auditFile": "data/corpus-audits/ioi-2016.json",
+    "auditShaAtAuthorRead": "fbe26d18e4ffca7442d6f5f78df173087b646cc8ef305371b3cfd6778c096cf1",
+    "originalAuditArchive": "research/snapshots/ioi-2016-original-audit.json.gz",
+    "originalAuditSha256": "d69b49d6672dcbf4145ef36c7d265bc135fb848a3561f4523677bd76d7318b83",
+    "initialRow": {
+      "source": "ioi",
+      "problemId": "ioi2016_messy",
+      "officialTaskId": "messy",
+      "title": "バグの解読",
+      "englishTitle": "Unscrambling a Messy Bug",
+      "day": 2,
+      "date": "2016-08-16",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day2/messy.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 2,
+        "date": "2016-08-16",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "書き込んだ0/1文字列集合が一度のcompileで同じ未知のbit置換を受け、その後の所属判定だけから置換全体を復元する。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "power of two; scored input cases N8,32,128",
+          "maximumN": 128,
+          "permutation": "p of0..N−1, fixed before restore_permutation call",
+          "transform": "output bit i=original bit p[i]",
+          "writesBeforeCompileOnly": true,
+          "compileExactlyOnce": true,
+          "readsAfterCompileOnly": true,
+          "strictFullBudget": {
+            "N": 128,
+            "w": 896,
+            "r": 896
+          },
+          "allScoredBudgets": [
+            {
+              "N": 8,
+              "w": 256,
+              "r": 256,
+              "extra": "at most2 moved positions"
+            },
+            {
+              "N": 32,
+              "w": 320,
+              "r": 1024
+            },
+            {
+              "N": 32,
+              "w": 1024,
+              "r": 320
+            },
+            {
+              "N": 128,
+              "w": 1792,
+              "r": 1792
+            },
+            {
+              "N": 128,
+              "w": 896,
+              "r": 896
+            }
+          ],
+          "answer": "p output-position to original-position; not inverse",
+          "duplicateWrites": "set insertion duplicate has no effect"
+        },
+        "genericApi": "int[] restore_permutation(int n,int w,int r)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 4,
+        "subtaskScores": [
+          20,
+          18,
+          11,
+          21,
+          30
+        ],
+        "subtaskBounds": [
+          "N8,w/r256,atmost2moved",
+          "N32,w320,r1024",
+          "N32,w1024,r320",
+          "N128,w/r1792",
+          "N128,w/r896"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件",
+          "target": "general-result"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ],
+        "conditions": [
+          "返答形式と質問・移動の上限を原典で確認する。",
+          "取得した情報だけで次の行動を決める。",
+          "flush、失敗返答、到着時の終了規則を守る。"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ],
+        "conditions": [
+          "返答形式と質問・移動の上限を原典で確認する。",
+          "取得した情報だけで次の行動を決める。",
+          "flush、失敗返答、到着時の終了規則を守る。"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ],
+        "conditions": [
+          "返答形式と質問・移動の上限を原典で確認する。",
+          "取得した情報だけで次の行動を決める。",
+          "flush、失敗返答、到着時の終了規則を守る。"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "precompiled-permutation-partition-signature-membership",
+        "features": [
+          "書き込んだ0/1文字列集合が一度のcompileで同じ未知のbit置換を受け、その後の所属判定だけから置換全体を復元する。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "currentOptions": [],
+        "reason": "otherで一般interactive記事へ届くが、compile前の符号設計と後の所属判定による全置換復元API/予算がない。一般記事への到達をcoverageに数えない。",
+        "neededTechniqueIds": [
+          "precompiled-permutation-partition-signature-membership"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-bit-group-testing",
+          "state-design"
+        ],
+        "proposedFeatureAnswer": "一度だけ置換される文字列集合を書き込み、後の所属判定で全ビットの対応を復元する",
+        "proposedBranchAt": {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "currentOptions": [
+            {
+              "id": "tree-distance",
+              "label": "辺は未知だが、指定した二頂点の木距離"
+            },
+            {
+              "id": "unimodal-value",
+              "label": "隠れた単峰列の、指定位置の値"
+            },
+            {
+              "id": "rectangle-count",
+              "label": "各行列に高々一個の配置の、長方形内の個数"
+            },
+            {
+              "id": "batch-subsets",
+              "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+            },
+            {
+              "id": "navigation",
+              "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+            },
+            {
+              "id": "other",
+              "label": "その他の返答形式・通信条件"
+            },
+            {
+              "id": "changing-color-count",
+              "label": "任意集合の会合で、参加者によって変わる色の種類数"
+            },
+            {
+              "id": "transition-count",
+              "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+            },
+            {
+              "id": "prefix-in-substring",
+              "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+            },
+            {
+              "id": "binary-edge-distances",
+              "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "区間を二分し、その区間外を1/内を0にして左半分の一点だけ1のsignatureをcompile前に書く。compile後はその区間に対応する出力位置集合で同じsignatureを質問し、左右の候補へ分けて再帰する。",
+        "complexity": "writes=(N/2)log2N、reads=Nlog2N、compile1回。文字列長Nの生成/通信はO(N²logN)、N<=128。",
+        "independentProofSupplement": [
+          "各size mの区間に対し、区間外を全1、区間内は左半分の一点だけ1のm/2個をinsertする。compile前に全recursive partitionを確定するので応答を見たwriteは不要。",
+          "異なる深さのmはsignatureの重みN−m+1が異なる。同じ深さの異なる区間は非emptyzero supportが互いに異なる区間内にあり一致しない。従って別のsubproblemのinsertと誤照合しない。",
+          "現在区間の出力位置集合が正しいと仮定し、外を全1/内0/候補一点1で質問すると、その元位置が左半分にある時だけinsert済集合へ属す。これで左右を分離でき、葉でanswer[outputPosition]=originalIndexを返す。",
+          "各levelでwrites N/2/reads N、深さlog2N。N128で448/896であり896/896以下。N32で80/160なので双方の非対称予算も満たす。固定された未知pに関係なく同数である。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            11,
+            12,
+            13
+          ],
+          "printedAuthor": "Shi-Chun Tsai",
+          "independentDetailsNotClaimedVerbatim": "Oracle callsと長さNの文字列作成/格納時間を分ける。全p復元方向はcompileを文字どおりシミュレートして確認。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Editorial randomized subtask3 scheme not required; chosen balanced scheme also fits that budget."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allPermutationsN1_2_4_8": 40347,
+          "randomOriginalN32_128": 400,
+          "exactCounts": {
+            "32": {
+              "writes": 80,
+              "reads": 160
+            },
+            "128": {
+              "writes": 448,
+              "reads": 896
+            }
+          },
+          "verified": "Literal compile maps output bit i to original bit p[i]; restored output is p, not inverse. Fixed precompile partition masks use outside ones and one left-half marker. Different levels have different weights, same-level blocks have disjoint zero supports. Exactly one compile after all writes; reads only later; worst448writes/896reads at128 fits strict full limits.",
+          "unconfirmed": "No callback-template C++20/state/error/source-scale resource validation yet; character operations O(N²logN), oracle calls O(NlogN)."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "compile-only protocol signature; no IO performed",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "対話問題の質問設計",
+          "scopeMismatch": "掲載コードは標準入出力のask_intervalで、原典で禁止されたstdioを行う。precompile書込/一compile/所属callback/全置換復元と予算保証を実装しない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        },
+        {
+          "techniqueId": "interactive-bit-group-testing",
+          "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+          "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+          "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+          "scopeMismatch": "隠れ対象一つをbinarycodeで当てるAPIで、compileが全ビットへ同時に及ぶ未知置換全体を復元しない。入力cap100も原典128を含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ]
+        },
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "状態の設計",
+          "scopeMismatch": "掲載APIは偶奇BFS。phase付きの署名集合と未知bit対応の再帰復元ではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "71790d17c507fed6e2ea4ffec39b70da23ef8264b114ca82d23746cdcf790f54",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 1,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ]
+    },
+    "initialRowSha256": "c102afaaff6a82f653ea2a576315e99668e9ca77b7d9762392192fcb7b91fe7e",
+    "initialStatus": {
+      "fixedProblemListComplete": true,
+      "firstPassAuditComplete": true,
+      "fixedCorpusResearchComplete": true,
+      "fixedCorpusCoverageComplete": false,
+      "globalCoverageComplete": false,
+      "globalLearningComplete": false,
+      "recordCount": 6,
+      "statementVerifiedCount": 6,
+      "numericBoundsVerifiedCount": 6,
+      "numericBoundsUnconfirmedCount": 0,
+      "officialEditorialRetrievedCount": 6,
+      "officialEditorialVerifiedCount": 6,
+      "solutionReviewedCount": 6,
+      "coveredCount": 0,
+      "missingRouteCount": 0,
+      "missingTechniqueCount": 6,
+      "unconfirmedCount": 0,
+      "unavailableCount": 0,
+      "unconfirmedPrincipalDetailsCount": 0,
+      "fullImplementationValidatedCount": 0,
+      "articleResolutionComplete": false,
+      "fixedCorpusResearchCompleteDefinition": "固定6題の選定した原典全域手順と主要補題が一次資料+独立証明で確認できた状態。全別解や完成API/記事の存在を意味しない。",
+      "articleResolutionNotes": "研究6/6、完成API/記事対応/原典walk/coverage0/6。今後のresolutionを初回へ遡及しない。"
+    },
+    "initialStatusSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialSelectionSha256": "203a4b9f29e2711a5c680ee99496647b0066fec106c3d2393be318c498561c7e",
+    "initialSixRecordsSha256": "1fd300bf660b59cfe36cf0a9a16c41a83ed05a399e799801fce12a1e6e3f6584",
+    "initialSnapshotSha256": "e8a57e1f82671067c45c714f870c7d4f9e652a885ce79fb258c0c23987ff59ce",
+    "registeredSnapshotSha256": "ad1e3b69580b58a72b4fd627f1bd165a47ed372d166d106e8e505e7169959d68",
+    "snapshotNormalization": "Root normalized only original snapshotRoot to research/snapshots/ioi-2016-manifest.json at registration. Other original fields remain unchanged.",
+    "hashEncoding": "UTF8 json.dumps(sort_keys=True,separators=(',',':'),ensure_ascii=False);Python numeric-key lexical order explicitly retained. Original raw SHA is authoritative.",
+    "allInitialSixFieldsUnchanged": true,
+    "initialResearchPositivePreserved": true,
+    "initialFullImplementationFalsePreserved": true,
+    "initialResearchCount": 6,
+    "initialCoverageCount": 0,
+    "additionalPositiveResearchReviewsProposed": 0,
+    "resolutionOnly": true,
+    "existingResolutionsAtRead": [
+      {
+        "problemId": "ioi2016_molecules",
+        "resolution": {
+          "status": "verified",
+          "reviewedAt": "2026-10-15",
+          "techniqueIds": [
+            "bounded-spread-subset-sum-sorted-window-witness"
+          ],
+          "rootWalkFile": "data/problem-walks.json",
+          "sourceVerification": {
+            "checkedAt": "2026-10-15",
+            "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+            "statementPages": 3,
+            "sourceContractVerified": true,
+            "originalNumericBoundsVerified": true,
+            "numericBoundsVerified": true,
+            "originalBounds": {
+              "N": [
+                1,
+                200000
+              ],
+              "weights": [
+                1,
+                2147483647
+              ],
+              "lower": [
+                1,
+                2147483647
+              ],
+              "upper": [
+                1,
+                2147483647
+              ],
+              "rangeOrder": "l<=u",
+              "width": "u-l>=max(w)-min(w)",
+              "selection": "each original index at most once,cardinality free,return any one witness",
+              "answerOrder": "any order",
+              "noSolution": "empty vector",
+              "emptySubsetValid": false
+            },
+            "sourceSeconds": 1,
+            "sourceMemoryGB": 2,
+            "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+            "noticeCppArrayType": "std::vector<int>",
+            "noticeProhibitsStandardInputOutput": true,
+            "cppHeaderBytesRetrieved": false,
+            "primaryPdfImagesClaimedRead": false,
+            "readMethod": "web primary PDF text; displaced full numeric formulas read at original lines97/98; primary indexed archive API full text",
+            "officialEditorialRetrieved": true,
+            "officialEditorialVerified": true,
+            "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+            "editorialPages": [
+              1,
+              2
+            ],
+            "editorialAuthor": "Shi-Chun Tsai",
+            "chosenOfficialProcedure": "Greedy2: sorted contiguous segment with two pointers",
+            "editorialTypoNotUsed": "p1 Greedy1 prints maxSum[k]<=l; correct necessary suffix endpoint is >=l. This implementation and proof use Greedy2 and do not assume that typo.",
+            "apiEditions": {
+              "japaneseCommitteeISC": {
+                "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+                "generic": "int[] solve(int l,int u,int[] w)",
+                "pages": [
+                  1,
+                  2
+                ]
+              },
+              "officialArchiveApiISC": {
+                "url": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+                "generic": "int[] find_subset(int l,int u,int[] w)",
+                "readMethod": "primary indexed search text Country:api-ISC; actual direct open may time out",
+                "exactQuery": "site:ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf \"find_subset\""
+              },
+              "relativePublicationChronologyVerified": false,
+              "derivedCppSignatureEvidence": "Generic signatures plus Day1 Notice type mapping,not actual header bytes.",
+              "actualCppHeadersVerified": false
+            },
+            "sourceDate": "2016-08-14",
+            "datePrecision": "day",
+            "exactDateVerified": true,
+            "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+            "difficulty": null,
+            "unconfirmedRequiredSourceFacts": [],
+            "unconfirmedRequiredLemmas": [],
+            "optionalUnknowns": [
+              "Relative publication order of solve and find_subset editions.",
+              "Actual original grader header bytes and any qualifiers beyond the generic statement/Notice derivation.",
+              "Other two greedy variants are not used or fully reviewed."
+            ]
+          },
+          "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、既存Aliensresolutionを保持し、Moleculesへresolutionだけ追加。任意k個の解をソート後k窓へ移す飛び幅補題、正の二端点完全性、元添字復元と64bit一時和を証明。原典全域C++20、solve/find_subsetの版差を保った二adapter、全小順序配列・literal部分集合・全適合範囲・最大N20万・不正・反復・通常ASanと独立の個数別生成多項式/large-offset/割当faultを確認。header未取得・版の年代未確認を維持し、研究positiveを二重加算しない。"
+        }
+      },
+      {
+        "problemId": "ioi2016_railroad",
+        "resolution": {
+          "status": "verified",
+          "reviewedAt": "2026-10-15",
+          "techniqueIds": [
+            "directed-line-balance-euler-augmentation-mst"
+          ],
+          "rootWalkFile": "data/problem-walks.json",
+          "sourceVerification": {
+            "checkedAt": "2026-10-15",
+            "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+            "statementPages": 3,
+            "statementReadMethod": "Full official primary PDF web text; extracted formula fragments at page2 were read together to recover all integer ranges. No image inspection or local PDF retrieval claimed.",
+            "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+            "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+            "editorialPages": 17,
+            "relevantOneBasedPages": [
+              3,
+              4
+            ],
+            "printedAuthor": "Kento Nikaido",
+            "editorialProvenance": "Actual official archive Solutions link to IOI2016_analysis.pdf; Railroad heading/author and full selected subtask4 balance/MST approach read. Physical acceptance interpretation and both augmentation inequalities are explicit independent details, not quoted as source text.",
+            "officialEditorialRetrieved": true,
+            "officialEditorialVerified": true,
+            "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+            "noticePages": 1,
+            "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+            "contestDate": "2016-08-14",
+            "datePrecision": "day",
+            "exactDateVerified": true,
+            "difficulty": null,
+            "originalNumericBoundsVerified": true,
+            "originalConstraints": {
+              "N": [
+                2,
+                200000
+              ],
+              "s_i": [
+                1,
+                1000000000
+              ],
+              "t_i": [
+                1,
+                1000000000
+              ],
+              "initialSpeed": 1,
+              "slowdownPerMeter": 1,
+              "positiveSpeedThroughout": true,
+              "connectingLengths": "nonnegative integers; zero allowed",
+              "allSpecialSections": "each exactly once, arbitrary ordering",
+              "entry": "speed <=s_i",
+              "exit": "exactly t_i, independent of entry speed",
+              "finalReturnCostIncluded": false,
+              "objective": "minimum total length of connections between consecutive special sections",
+              "genericApi": "int64 plan_roller_coaster(int[] s,int[] t)",
+              "CLanguageSignatureIsDifferent": "int64 plan_roller_coaster(int n,int[] s,int[] t); not used as the C++ signature",
+              "sample": {
+                "s": [
+                  1,
+                  4,
+                  5,
+                  6
+                ],
+                "t": [
+                  7,
+                  3,
+                  8,
+                  6
+                ],
+                "answer": 3
+              },
+              "subtaskScores": [
+                11,
+                23,
+                30,
+                36
+              ],
+              "subtaskBounds": [
+                "N2..8",
+                "N2..16",
+                "N2..200000; only zero/nonzero required",
+                "N2..200000; exact minimum"
+              ],
+              "timeSeconds": 2,
+              "memoryGB": 2
+            },
+            "cppSignatureEvidence": {
+              "statementGeneric": "int64 plan_roller_coaster(int[] s,int[] t)",
+              "noticeMapping": {
+                "int64": "long long",
+                "int[]": "std::vector<int>"
+              },
+              "derivedSignature": "long long plan_roller_coaster(std::vector<int> s,std::vector<int> t)",
+              "actualCppHeaderRetrieved": false,
+              "headerReadNotClaimed": true,
+              "adapterUsesExactDerivedCppTypes": true,
+              "noSyntheticHeaderClaim": true
+            },
+            "originalFullRangeIncludedByApi": true,
+            "unconfirmedPrincipalLemmas": [],
+            "unconfirmedOptionalSourceFacts": [
+              "Actual distributed railroad.h bytes were not retrieved. Generic primary signature plus Notice determine the C++ types; standalone exact-type assertions and real adapter calls were executed."
+            ]
+          },
+          "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、Aliens/Molecules resolutionsを保持し、Railroadへresolutionだけ追加。max(t_i−s_next,0)の物理費用と補助(max全s,t,1)閉路化、無料上向きの入口許容解釈、隣接境界の強制下降費と零balance成分接続MST、弱連結平衡からEulerを得て実順序へ戻す両方向を作者/root/独立reviewで確認。原典全域C++20を全小physical順列・HeldKarp・最大N20万21構成・不正・22割当fault・2万反復・通常ASanで確認。別の直接degree補完列挙と67084 Euler→物理構成が一致。実header未取得を保持し、研究を二重加算しない。"
+        }
+      },
+      {
+        "problemId": "ioi2016_aliens",
+        "resolution": {
+          "status": "verified",
+          "reviewedAt": "2026-10-15",
+          "techniqueIds": [
+            "diagonal-square-union-cover-monge-penalty-cht"
+          ],
+          "rootWalkFile": "data/problem-walks.json",
+          "sourceVerification": {
+            "checkedAt": "2026-10-15",
+            "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+            "statementPages": 3,
+            "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+            "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+            "editorialPages": 17,
+            "relevantOneBasedPages": [
+              14,
+              15,
+              16,
+              17
+            ],
+            "printedAuthor": "Chethiya Abeysinghe",
+            "editorialProvenance": "Official IOI archive actual Solutions link1012; same source as frozen audit. High-level proof and formulas read as primary text, independent supplements identified separately.",
+            "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+            "noticePages": 1,
+            "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+            "contestDate": "2016-08-16",
+            "datePrecision": "day",
+            "exactDateVerified": true,
+            "difficulty": null,
+            "originalNumericBoundsVerified": true,
+            "originalConstraints": {
+              "N": [
+                1,
+                100000
+              ],
+              "M": [
+                1,
+                1000000
+              ],
+              "K": "1..N",
+              "r_i": "0..M−1",
+              "c_i": "0..M−1",
+              "duplicatesAllowed": true,
+              "photoShape": "axis-aligned complete integer cells with opposite corners on main diagonal",
+              "objective": "covered-cell union cardinality",
+              "photoLimit": "at most K",
+              "timeSeconds": 2,
+              "memoryGB": 2,
+              "originalGenericApi": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+              "originalExamples": [
+                {
+                  "N": 5,
+                  "M": 7,
+                  "K": 2,
+                  "answer": 25
+                },
+                {
+                  "N": 2,
+                  "M": 6,
+                  "K": 2,
+                  "answer": 16
+                }
+              ]
+            },
+            "cppSignatureEvidence": {
+              "statementGeneric": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+              "noticeMapping": {
+                "int64": "long long",
+                "int[]": "std::vector<int>"
+              },
+              "derivedSignature": "long long take_photos(int n,int m,int k,std::vector<int> r,std::vector<int> c)",
+              "actualCppHeaderRetrieved": false,
+              "headerReadNotClaimed": true
+            },
+            "originalFullRangeIncludedByApi": true,
+            "unconfirmedPrincipalLemmas": [],
+            "unconfirmedAlternatives": [
+              "Editorial smaller-subtask Knuth optimization is neither used nor claimed verified."
+            ]
+          },
+          "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置を保持し、Aliensへresolutionだけ追加。包含除去・連続群の完全性と全unionの隣接重複控除、Monge二経路均衡交換・枚数離散凸、整数罰金境界・少数枚tie・128bit単調CHTを作者/root/独立reviewで確認。原典全域take_photosと実fenceをliteral全photo集合・別DP・全小順序点列・最大30構成・例外・再入・ASanで確認。別constructive交換969547組とliteral全分割・座標拡大を追加。実header未取得を維持し、同一研究positiveを二重加算しない。"
+        }
+      }
+    ],
+    "sharedFilesEdited": []
+  },
+  "resolutionProposal": {
+    "problemId": "ioi2016_messy",
+    "status": "verified",
+    "techniqueIds": [
+      "precompiled-permutation-partition-signature-membership"
+    ],
+    "reviewedAt": "2026-10-15",
+    "verification": "independent-analysis",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "notes": "初回positive研究6行/status/selection/snapshotを保持し、完全記事/C++20/全原典予算とcallback API/実掲載fenceの全小置換・全compatible transcript・最大・不正・通常ASanと別peerreviewが揃った後にresolutionだけを追加する。subsequentSolutionReviewsは追加せず、既存Molecules/Railroad/Aliens resolutionも全field保持する。",
+    "sourceVerificationTarget": "research/technique-verifications/precompiled-permutation-partition-signature-membership.json"
+  },
+  "integrationGate": {
+    "authorArticleAndFullApiValidationComplete": true,
+    "sourceBoundsVerified": true,
+    "allScoredBudgetCombinationsCovered": true,
+    "unconfirmedRequiredLemmas": [],
+    "independentPeerReviewRequired": true,
+    "independentPeerReviewCompleted": false,
+    "sharedRegistrationPerformed": false
+  },
+  "preservation": {
+    "sharedDataOrArticleOrAuditOrFlowModified": false,
+    "initialSixRowsUnchanged": true,
+    "formerResearchPrototypeNotRelabeled": true,
+    "externalPushOrPublication": false,
+    "envFileRead": false,
+    "status": "author-frozen-awaiting-independent-review"
+  },
+  "statusAtAuthorFreeze": "author-frozen-awaiting-independent-review",
+  "status": "verified-and-integrated",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/precompiled-permutation-partition-signature-membership.mdx",
+    "checker": "scripts/check_precompiled_permutation_cpp.py",
+    "metadataGroup": "games",
+    "entryGraphId": "interactive-oracles",
+    "choices": [
+      "precompiled-permutation",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": {
+      "article": "none;entire MDX/CPP preserved",
+      "checker": "only default article path to repository published MDX",
+      "independentProbe": "only default article path to repository published MDX",
+      "metadata": "entryPoints order advanced/complexity/reasoning",
+      "feature": "add primary-confirmed common date/year/bounds/cutoff aliases",
+      "resolutionNotes": "protect actual four existing resolutions;initial six/status unchanged"
+    },
+    "independentReviewFile": "research/probes/precompiled-permutation-independent-review.json",
+    "independentProbe": "research/probes/precompiled-permutation-independent.py",
+    "featureSchemaNormalization": {
+      "publicationDate": "2016-08-16",
+      "publicationDatePrecision": "day",
+      "publicationYear": 2016,
+      "originalNumericBoundsVerified": true,
+      "cutoffVerification": "contest-before-cutoff"
+    },
+    "flowWordingNormalization": {
+      "guard": "bounds-budget",
+      "authorWording": {
+        "id": "bounds-budget",
+        "title": "長さは128以下の二冪で、登録N log₂N/2回・質問N log₂N回の予算がありますか？",
+        "explanation": "原典N32の予算320/1024と1024/320には80/160、N128の厳しい896/896には448/896で収まります。N1は登録・質問0回でも並べ替えを一回行います。"
+      },
+      "reason": "Full visual inspection found the long explanation truncated. State positive bounds explicitly and keep just the actual required calls;full source budgets and N1 extension remain in article."
+    }
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "date": "2026-10-15",
+      "allEightSectionsAndEntireCppRead": true,
+      "completeCheckerAndIndependentProbeRead": true,
+      "sourceScopeAndOfficialSelectedProofReviewed": true,
+      "sourceReading": "Full English4p/Japanese3p/official Solutions11–13p/Day2 Notice1p/official task index text;no PDF image or original header byte inspection claimed.",
+      "materialFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "independentReviewSha256": "b975136ca86ef19644b3c5d409166bf3543c89ae3c1a1f9f42c8a759548d343c",
+      "rootNormal": {
+        "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+        "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "genericWithoutGraderStub": {
+          "checks": 77823670,
+          "apiCalls": 41705,
+          "allSmallPermutations": 40347,
+          "allSmallReplyBitstrings": 261,
+          "compatibleCompleteTranscripts": 27,
+          "sourceBudgetCases": 830,
+          "extensionCases": 205,
+          "randomCases": 1000,
+          "invalidApiCalls": 39,
+          "oracleGuardTests": 5,
+          "callbackFailures": 7,
+          "nestedCalls": 1,
+          "writes": 685019,
+          "compiles": 41403,
+          "reads": 1369940,
+          "callbackCharacters": 75559262,
+          "checksum": "4045640110253301528",
+          "seconds": 0.189421,
+          "peakRSSKiB": 21660,
+          "sourceStructuredCases": [
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 2.474e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.771e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.635e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.488e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.641e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.603e-06
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.417e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.5987e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.3486e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.3312e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.4155e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.4175e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.1659e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.4085e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.1449e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.209e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.2819e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.2931e-05
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00022132
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000234543
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00020873
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000210926
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000241249
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00027665
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000216377
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000219018
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000209488
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00020994
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000223525
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000230707
+            }
+          ]
+        },
+        "syntheticHeaderAdapters": [
+          {
+            "syntheticHeaderKind": "Notice-derived string value",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.0150459,
+            "peakRSSKiB": 21788
+          },
+          {
+            "syntheticHeaderKind": "const string reference",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.0149586,
+            "peakRSSKiB": 21788
+          },
+          {
+            "syntheticHeaderKind": "mutable string reference with argument modification",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.0148349,
+            "peakRSSKiB": 21788
+          }
+        ],
+        "checks": 95249053,
+        "apiCalls": 42080
+      },
+      "peerAsanUbsan": {
+        "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+        "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "genericWithoutGraderStub": {
+          "checks": 77823670,
+          "apiCalls": 41705,
+          "allSmallPermutations": 40347,
+          "allSmallReplyBitstrings": 261,
+          "compatibleCompleteTranscripts": 27,
+          "sourceBudgetCases": 830,
+          "extensionCases": 205,
+          "randomCases": 1000,
+          "invalidApiCalls": 39,
+          "oracleGuardTests": 5,
+          "callbackFailures": 7,
+          "nestedCalls": 1,
+          "writes": 685019,
+          "compiles": 41403,
+          "reads": 1369940,
+          "callbackCharacters": 75559262,
+          "checksum": "4045640110253301528",
+          "seconds": 1.94878,
+          "peakRSSKiB": 379888,
+          "sourceStructuredCases": [
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 8.5361e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.6809e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.5544e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 2.2599e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.2918e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.7169e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000335024
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000218868
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.00024934
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.00020916
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000207926
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000191313
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000257554
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000192362
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.0001884
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000215817
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000194264
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000182977
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00242644
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00225295
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00196367
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.001858
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00183004
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00184664
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00205845
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00200488
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00272864
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00234824
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00206322
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00200436
+            }
+          ]
+        },
+        "syntheticHeaderAdapters": [
+          {
+            "syntheticHeaderKind": "Notice-derived string value",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.119337,
+            "peakRSSKiB": 57440
+          },
+          {
+            "syntheticHeaderKind": "const string reference",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.101374,
+            "peakRSSKiB": 46144
+          },
+          {
+            "syntheticHeaderKind": "mutable string reference with argument modification",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.105324,
+            "peakRSSKiB": 46420
+          }
+        ],
+        "checks": 95249053,
+        "apiCalls": 42080
+      },
+      "rootAsanReexecuted": false,
+      "allDeterministicAuthorPeerRootNormalFieldsMatch": true,
+      "normalizationAtIntegration": {
+        "article": "none;entire MDX/CPP preserved",
+        "checker": "only default article path to repository published MDX",
+        "independentProbe": "only default article path to repository published MDX",
+        "metadata": "entryPoints order advanced/complexity/reasoning",
+        "feature": "add primary-confirmed common date/year/bounds/cutoff aliases",
+        "resolutionNotes": "protect actual four existing resolutions;initial six/status unchanged"
+      },
+      "limitations": [
+        "Actual messy.h bytes not retrieved;conditional adapter compatibility tested against three synthetic declarations.",
+        "Supplemental assertions include repeated per-character validations and are not a unique-problem count.",
+        "Root did not unnecessarily repeat a third sanitizer run;both frozen author and independent peer normal/ASan modes passed,CPP unchanged."
+      ]
+    },
+    "normal": {
+      "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "genericWithoutGraderStub": {
+        "checks": 77823670,
+        "apiCalls": 41705,
+        "allSmallPermutations": 40347,
+        "allSmallReplyBitstrings": 261,
+        "compatibleCompleteTranscripts": 27,
+        "sourceBudgetCases": 830,
+        "extensionCases": 205,
+        "randomCases": 1000,
+        "invalidApiCalls": 39,
+        "oracleGuardTests": 5,
+        "callbackFailures": 7,
+        "nestedCalls": 1,
+        "writes": 685019,
+        "compiles": 41403,
+        "reads": 1369940,
+        "callbackCharacters": 75559262,
+        "checksum": "4045640110253301528",
+        "seconds": 0.189421,
+        "peakRSSKiB": 21660,
+        "sourceStructuredCases": [
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 2.474e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.771e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.635e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.488e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.641e-06
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 1.603e-06
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.417e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.5987e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3486e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.3312e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.4155e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.4175e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.1659e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.4085e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.1449e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.209e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.2819e-05
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 2.2931e-05
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00022132
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000234543
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00020873
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000210926
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000241249
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00027665
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000216377
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000219018
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000209488
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00020994
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000223525
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.000230707
+          }
+        ]
+      },
+      "syntheticHeaderAdapters": [
+        {
+          "syntheticHeaderKind": "Notice-derived string value",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0150459,
+          "peakRSSKiB": 21788
+        },
+        {
+          "syntheticHeaderKind": "const string reference",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0149586,
+          "peakRSSKiB": 21788
+        },
+        {
+          "syntheticHeaderKind": "mutable string reference with argument modification",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.0148349,
+          "peakRSSKiB": 21788
+        }
+      ],
+      "checks": 95249053,
+      "apiCalls": 42080
+    },
+    "peerAsanUbsan": {
+      "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "genericWithoutGraderStub": {
+        "checks": 77823670,
+        "apiCalls": 41705,
+        "allSmallPermutations": 40347,
+        "allSmallReplyBitstrings": 261,
+        "compatibleCompleteTranscripts": 27,
+        "sourceBudgetCases": 830,
+        "extensionCases": 205,
+        "randomCases": 1000,
+        "invalidApiCalls": 39,
+        "oracleGuardTests": 5,
+        "callbackFailures": 7,
+        "nestedCalls": 1,
+        "writes": 685019,
+        "compiles": 41403,
+        "reads": 1369940,
+        "callbackCharacters": 75559262,
+        "checksum": "4045640110253301528",
+        "seconds": 1.94878,
+        "peakRSSKiB": 379888,
+        "sourceStructuredCases": [
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 8.5361e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 3.6809e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 3.5544e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 2.2599e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 3.2918e-05
+          },
+          {
+            "n": 8,
+            "w": 256,
+            "r": 256,
+            "actualWrites": 12,
+            "actualReads": 24,
+            "coreAndOracleSeconds": 3.7169e-05
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000335024
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000218868
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.00024934
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.00020916
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000207926
+          },
+          {
+            "n": 32,
+            "w": 320,
+            "r": 1024,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000191313
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000257554
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000192362
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.0001884
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000215817
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000194264
+          },
+          {
+            "n": 32,
+            "w": 1024,
+            "r": 320,
+            "actualWrites": 80,
+            "actualReads": 160,
+            "coreAndOracleSeconds": 0.000182977
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00242644
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00225295
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00196367
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.001858
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00183004
+          },
+          {
+            "n": 128,
+            "w": 1792,
+            "r": 1792,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00184664
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00205845
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00200488
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00272864
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00234824
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00206322
+          },
+          {
+            "n": 128,
+            "w": 896,
+            "r": 896,
+            "actualWrites": 448,
+            "actualReads": 896,
+            "coreAndOracleSeconds": 0.00200436
+          }
+        ]
+      },
+      "syntheticHeaderAdapters": [
+        {
+          "syntheticHeaderKind": "Notice-derived string value",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.119337,
+          "peakRSSKiB": 57440
+        },
+        {
+          "syntheticHeaderKind": "const string reference",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.101374,
+          "peakRSSKiB": 46144
+        },
+        {
+          "syntheticHeaderKind": "mutable string reference with argument modification",
+          "actualOriginalHeaderRetrieved": false,
+          "checks": 5808461,
+          "apiCalls": 125,
+          "validCases": 120,
+          "invalidPreflight": 5,
+          "writes": 17184,
+          "compiles": 120,
+          "reads": 34368,
+          "callbackCharacters": 5756544,
+          "checksum": "16364191081451181720",
+          "seconds": 0.105324,
+          "peakRSSKiB": 46420
+        }
+      ],
+      "checks": 95249053,
+      "apiCalls": 42080
+    },
+    "rootAsanReexecuted": false,
+    "additionalReviewFile": "research/probes/precompiled-permutation-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

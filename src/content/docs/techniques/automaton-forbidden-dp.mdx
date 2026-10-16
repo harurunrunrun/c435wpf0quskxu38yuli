@@ -1,0 +1,86 @@
+---
+title: "禁止語を避ける DP に、末尾で一致している接頭辞の長さを持つ"
+description: "直前の全文字を覚える代わりに、禁止語の接頭辞に一致する最長の末尾だけを状態にします。"
+techniqueId: "automaton-forbidden-dp"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+長さ $N$ の文字列で、特定の連続した文字並びが一度も現れないものを数える場合。「一度以上現れる」なら、全体の $\sigma^N$ から避ける個数を引けます。
+
+## 考え方
+
+禁止語 $P$ の長さを $M$ とします。読んだ列の末尾が $P$ の接頭辞に一致する最大長 $q$ を状態にします。まだ禁止語が現れていないなら $0\le q<M$ です。
+
+文字 $c$ を付けた後の状態 $g(q,c)$ は、接頭辞関数の一致先をたどって求められます。遷移表を先に作り、
+
+$$\mathrm{dp}_{i+1}[g(q,c)]\mathrel{+}=\mathrm{dp}_i[q]$$
+
+を行います。$g(q,c)=M$ は禁止語が完成する遷移なので捨てます。末尾の全 $M-1$ 文字を状態にする必要はありません。
+
+## 適用条件
+
+禁止するものが**連続部分文字列**であること。部分列として現れることを禁止する条件では、読み飛ばせる文字の扱いが変わります。
+
+以下は禁止語が一つの場合です。複数の禁止語では、トライと failure link によって「いずれかの禁止語が完成した状態」を管理します。文字数が非常に大きい $N$ なら、同じ遷移表から行列累乗へ進めます。
+
+## なぜ正しいか
+
+読んだ列の末尾から将来の禁止語に伸ばせる一致は、最長の一致長とその短い一致先の連鎖に全て含まれます。よって最長一致の長さだけが、次の文字を読んだときの状態を決めます。
+
+完成した禁止語の状態を除くことで、禁止語を一度でも含む列はその最初の完成時点で数えられなくなります。残る列は全て一度も含まない列です。
+
+## 計算量
+
+全列の生成による改善前は $\Theta(\sigma^N)$ 本を処理します。改善後は遷移表 $O(M\sigma)$、DP $O(NM\sigma)$ 時間、$O(M\sigma+M)$ 空間です。
+
+## 実装
+
+アルファベットには同じ文字を重複させません。空の禁止語は全ての列に含まれると定義して 0 を返します。法は $10^9+7$。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int count_avoiding_word(int n,const string& alphabet,const string& pattern) {
+    constexpr int MOD=1000000007;
+    assert(n>=0);
+    set<char> symbols(alphabet.begin(),alphabet.end());
+    assert(symbols.size()==alphabet.size());
+    int m=int(pattern.size()),sigma=int(alphabet.size());
+    if(m==0) return 0;
+    vector<int> pi(m);
+    for(int i=1;i<m;++i) {
+        int q=pi[i-1];
+        while(q>0 && pattern[q]!=pattern[i]) q=pi[q-1];
+        if(pattern[q]==pattern[i]) ++q;
+        pi[i]=q;
+    }
+    vector<vector<int>> go(m,vector<int>(sigma));
+    for(int q=0;q<m;++q) for(int c=0;c<sigma;++c)
+        go[q][c]=pattern[q]==alphabet[c] ? q+1 : (q==0 ? 0 : go[pi[q-1]][c]);
+    vector<int> dp(m),next(m);
+    dp[0]=1;
+    for(int i=0;i<n;++i) {
+        fill(next.begin(),next.end(),0);
+        for(int q=0;q<m;++q) for(int c=0;c<sigma;++c) {
+            int to=go[q][c];
+            if(to==m) continue;
+            next[to]=(next[to]+dp[q])%MOD;
+        }
+        dp.swap(next);
+    }
+    int answer=0;
+    for(int x:dp) answer=(answer+x)%MOD;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[多数のパターンの出現回数を failure link で逆向きに集める](/flowchartcp/techniques/aho-failure-aggregation/)、[行列累乗](/flowchartcp/techniques/matrix-exponentiation/)
+
+## 参考資料
+
+- [CSES：Required Substring の問題文](https://cses.fi/problemset/task/1112/)
+
+<TechniqueReferences techniqueId="automaton-forbidden-dp" />

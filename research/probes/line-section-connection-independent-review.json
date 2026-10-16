@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "directed-line-balance-euler-augmentation-mst",
+  "problemId": "ioi2016_railroad",
+  "reviewer": "independent agent /root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allPublishedCppRead": true,
+    "completeSuppliedCheckerRead": true,
+    "completeSidecarRead": true,
+    "primarySourcesReadIndependently": true,
+    "authorArtifactsModified": false,
+    "sharedFilesModified": false,
+    "noNewSubagents": true
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-article.mdx",
+      "sha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c",
+      "unchanged": true
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-checker.py",
+      "sha256": "fc6874ad88d92d422e676b5eca718642685e6b62f5933b0d606f198dfaf3370a",
+      "unchanged": true
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-sidecar.json",
+      "sha256": "e40966d61eebfcae859ab71a3973886f3fc5a3e3694db7bb3f7fcfdab791be3b",
+      "unchanged": true
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-independent-normal.json",
+      "sha256": "b4a1c03a03e812b1706e5a7b2cf8b5a78e8e724837586b4a1aeaa457dee88f07"
+    },
+    "independent-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-independent-sanitize.json",
+      "sha256": "3f8977f2cfa8af612fec63753dfa2437a24ed6790f572cb389a3430c9396b320"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-independent-probe.py",
+      "sha256": "4ee826af36b6d04f8a37446f9c29ea7e98165d0d59d8135f2118511b6ac007c1"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-independent-probe.json",
+      "sha256": "e21048979f745f893765c45cf1707f20525b7d3cdb046025db1a3283055f61b6"
+    },
+    "independent-probe-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-railroad-independent-probe-sanitize.json",
+      "sha256": "be85ddff9b679925d03d39daebf7f7f12b561476f60b7226ae5e66981914cf1e"
+    }
+  },
+  "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+  "sourceReview": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+      "pages": 3,
+      "readMethod": "Full primary web PDF text including displaced mathematical/numeric fragments on page2;no screenshot or local-PDF inspection claimed",
+      "confirmed": {
+        "N": [
+          2,
+          200000
+        ],
+        "s_i": [
+          1,
+          1000000000
+        ],
+        "t_i": [
+          1,
+          1000000000
+        ],
+        "initialSpeed": 1,
+        "entry": "any positive speed<=s_i accepted",
+        "exit": "exact t_i independent of entry speed",
+        "allSections": "each exactly once,in arbitrary order",
+        "connector": "nonnegative integer length,slowdown1 per meter,strictly positive speed throughout",
+        "finalReturnCharged": false,
+        "sampleAnswer": 3,
+        "subtaskScores": [
+          11,
+          23,
+          30,
+          36
+        ],
+        "subtask3": "zero/nonzero sufficient;exact answer also valid"
+      },
+      "genericSignature": "int64 plan_roller_coaster(int[] s,int[] t)",
+      "CLanguageSignatureSeparate": true
+    },
+    "solutions": {
+      "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "officialArchive": "https://ioi.te.lv/locations/ioi16/contest/",
+      "totalPages": 17,
+      "relevantOneBasedPages": [
+        3,
+        4
+      ],
+      "printedAuthor": "Kento Nikaido",
+      "confirmedDirection": "mandatory velocity arcs plus an auxiliary max->1 arc,cut net crossings,forced downward cost,remaining component connection by MST",
+      "independentSupplements": "Both reductions are justified using entry as an upper bound rather than pretending actual acceleration;cut normalization,degrees,connectivity lower/upper bounds and Euler sufficiency independently rederived below.",
+      "unrelatedTaskPagesNotClaimedReReviewed": true
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "pages": 1,
+      "mapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>"
+      },
+      "timeSeconds": 2,
+      "memoryGB": 2,
+      "standardInputOutputProhibited": true
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+      "day": 1,
+      "contestDate": "2016-08-14",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "difficulty": null
+    },
+    "header": {
+      "actualBytesRetrieved": false,
+      "typesDerivedFromGenericAndNotice": true,
+      "signature": "long long plan_roller_coaster(std::vector<int>,std::vector<int>)",
+      "noSyntheticHeaderOrDownloadedHeaderClaim": true
+    },
+    "originalEntireRangeIncluded": true
+  },
+  "mathematicalReview": [
+    {
+      "step": "physical transition",
+      "verdict": "verified",
+      "reason": "From exit speed x to next entry upper bound y,the shortest connector has length max(x-y,0),leaves min(x,y)>=1,and is accepted. Every original entry accepts the initial1. No final return term belongs to the objective."
+    },
+    {
+      "step": "closure and free upward abstraction",
+      "verdict": "verified",
+      "reason": "Set U=max of both entries and exits. Adding required U->1 after the original last section and before the first costs0 at both joins. An abstract free x->y with x<=y records acceptance by a larger upper limit,not physical acceleration. Conversely,cut any augmented Euler cycle after the auxiliary and retain original required arcs in order;total downward variation of a connector path from x to y is at least max(x-y,0). Replacing it by a direct legal slowdown and dropping auxiliary-adjacent joins cannot increase cost. These two inequalities make the optima equal."
+    },
+    {
+      "step": "coordinate normalization",
+      "verdict": "verified",
+      "reason": "Every connector between endpoint speeds expands monotonically along consecutive compressed coordinates with exactly the same downward length and zero upward cost. Intermediate vertices may be visited but required arcs are still taken whole. A mandatory long arc joins its two endpoints only for weak connectivity; it does not automatically join all intermediate speeds."
+    },
+    {
+      "step": "forced cut cost and per-vertex balance",
+      "verdict": "verified",
+      "reason": "For each cut,closed traversal requires added downward minus upward count equal the mandatory right-minus-left crossing count b. Thus every solution has d=max(b,0)+z,u=max(-b,0)+z,integer z>=0. Base cost sum max(b,0)*gap is unavoidable. Zero net cut balances imply each individual vertex degree balance by adjacent prefix subtraction,total mandatory degree difference being0."
+    },
+    {
+      "step": "component connection lower bound",
+      "verdict": "verified",
+      "reason": "Required endpoints and every nonzero-b minimum correction already connect their boundary endpoints in the base graph. An additional opposite pair on such a cut cannot merge distinct base components. Only zero-b gaps can merge components,and every connected solution must supply a connected set of these quotient edges. Each chosen pair pays its gap;with nonnegative costs it contains a spanning tree costing at least the minimum spanning tree."
+    },
+    {
+      "step": "construction and Euler sufficiency",
+      "verdict": "verified",
+      "reason": "Add a pair of opposite adjacent connectors for every Kruskal-selected zero cut. Degree equality is unchanged and all base components join. Candidate edges together with already connected gaps cover the full coordinate line,so spanning is possible. A weakly connected directed multigraph balanced at every nonzero-degree vertex has an Euler circuit:otherwise its SCC condensation would have a nontrivial source with positive net outflow,contradicting balance. This achieves the lower bound and maps back to a feasible physical ordering."
+    },
+    {
+      "step": "duplicates,equality and endpoint extrema",
+      "verdict": "verified",
+      "reason": "Repeated sections are separate required arcs and contribute multiplicity to delta. Equal s=t gives a loop,zero local delta and an active endpoint component that may still require connection. With all speeds1 there is one vertex,no gaps,and answer0. Including maximal exits in U is necessary;using only entries is not the implemented method."
+    }
+  ],
+  "implementationReview": {
+    "publicApi": "std::int64_t minimum_section_connection_length(const std::vector<std::pair<int,int>>& sections)",
+    "adapter": "long long plan_roller_coaster(std::vector<int> s,std::vector<int> t)",
+    "fullOriginalScopeIncluded": true,
+    "validation": "Original N2..200000,all s/t1..1e9 validated before core scratch allocations. Adapter validates equal sizes,original N and both complete arrays before pair conversion;its by-value parameter copying can itself allocate before function entry. No empty/singleton extension is claimed.",
+    "integerBounds": {
+      "maxVertices": 400001,
+      "maxAbsCutBalance": 200001,
+      "maxGap": 999999999,
+      "minDsuSize": -400001,
+      "maxAnswer": 199998999800001,
+      "safeIntermediate": "(N+2)*(U-1)<2.00002e14"
+    },
+    "integerReasoning": "N validated before int cast and 2*N+1 reserve. static_assert enforces int>=1e9. Delta and negative DSU sizes fit this int. int64 conversion precedes balance*gap. Every adjacency gap and coordinate subtraction fits int. Result type and Notice-derived adapter long long safely contain all costs.",
+    "complexity": "O(N log N) time and O(N) auxiliary space;coordinate sort and lower_bounds,candidate sort,iterative union-by-size/path compression. Expanded correction multiplicities are not materialized. No recursion in production except the standard sort implementation stack.",
+    "stateAndExceptions": "All production state local,core input const,adapter input by value. Allocation exceptions propagate with RAII;author independently injects22 exact allocation failures at all tested4 core/7 adapter sites for small and maximum inputs,checks live bytes/input retention and fresh recovery. Full20k alternating calls isolate state.",
+    "memory": "Observed four core vector payloads maximum8000012B;by-value source copies plus pair conversion and full core additional11200012B. These are measured32bit-int GCC/libstdc++ vector capacities,excluding caller input/allocator/sort stack,not portable allocation or RSS guarantees. Sanitizer RSS includes instrumentation/quarantine.",
+    "returnContract": "Returns only minimum distance,not a permutation or materialized Euler tour. Additional review harness constructs orders independently to validate the existence argument."
+  },
+  "reproducedAuthorChecker": {
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2016-railroad-checker.py --output /tmp/flowchartcp-ioi2016-railroad-independent-normal.json",
+      "python3 /tmp/flowchartcp-ioi2016-railroad-checker.py --sanitize --output /tmp/flowchartcp-ioi2016-railroad-independent-sanitize.json"
+    ],
+    "normal": {
+      "checks": 67533397,
+      "apiCalls": 93460,
+      "originalAdapterCalls": 76252,
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "randomHeldKarpCases": 360,
+      "metamorphicCases": 1208,
+      "maximumN200000Cases": 21,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 22,
+      "reentrantBatchCalls": 20000,
+      "maximumCoreVectorPayloadBytes": 8000012,
+      "maximumAdapterAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783",
+      "seconds": 2.00545,
+      "peakRSSKiB": 21608,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": false,
+      "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+    },
+    "asanUbsan": {
+      "checks": 67533397,
+      "apiCalls": 93460,
+      "originalAdapterCalls": 76252,
+      "allArraysN2to5Speeds1to3": 66420,
+      "allArraysN2to6Speeds1to2": 5456,
+      "literalPhysicalPermutations": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "randomHeldKarpCases": 360,
+      "metamorphicCases": 1208,
+      "maximumN200000Cases": 21,
+      "invalidCases": 30,
+      "allocationFailuresInjected": 22,
+      "reentrantBatchCalls": 20000,
+      "maximumCoreVectorPayloadBytes": 8000012,
+      "maximumAdapterAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783",
+      "seconds": 6.93963,
+      "peakRSSKiB": 449904,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": true,
+      "articleSha256": "1a151a4a19b2d905b8421898687ee27e6eab4ad590c42a074f3f4a72eea7699c"
+    },
+    "allDeterministicFieldsMatchAuthorFinal": true,
+    "counterScope": "67533397 assertions include per-section physical feasibility in11911144 complete orders. core93460 and adapter76252 are separate successful direct wrappers;adapter calls internally call core but are not added twice. Binary-speed arraysN2..5 overlap the speeds1..3 family;only4096 N6 binary arrays are new. Do not sum family sizes as unique inputs. Normal/ASan rerun the same test cases,not twice the distinct checks.",
+    "independence": "Author exact physical permutations and Held-Karp do not use cutbalance/DSU/MST. Exact bound/max/exception evidence reproduced,not claimed as a new reviewer oracle."
+  },
+  "additionalIndependentVerification": {
+    "script": "/tmp/flowchartcp-ioi2016-railroad-independent-probe.py",
+    "command": "python3 /tmp/flowchartcp-ioi2016-railroad-independent-probe.py [--sanitize]",
+    "normal": {
+      "checks": 2752841,
+      "apiCalls": 67084,
+      "allThreeSpeedMultisetsN2to7": 11430,
+      "allFourSpeedMultisetsN2to4": 4828,
+      "randomFourSpeedMultisetsN5to10": 512,
+      "connectorCountSearchStates": 14475224,
+      "balancedConnectorConfigurations": 1250748,
+      "connectedBalancedConfigurations": 1249599,
+      "constructedEulerWitnesses": 67084,
+      "constructedEulerEdges": 697962,
+      "restoredPhysicalSections": 376580,
+      "checksum": "16174261861575450891",
+      "seconds": 0.138505,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": false,
+      "peakRSSKiB": 4360
+    },
+    "asanUbsan": {
+      "checks": 2752841,
+      "apiCalls": 67084,
+      "allThreeSpeedMultisetsN2to7": 11430,
+      "allFourSpeedMultisetsN2to4": 4828,
+      "randomFourSpeedMultisetsN5to10": 512,
+      "connectorCountSearchStates": 14475224,
+      "balancedConnectorConfigurations": 1250748,
+      "connectedBalancedConfigurations": 1249599,
+      "constructedEulerWitnesses": 67084,
+      "constructedEulerEdges": 697962,
+      "restoredPhysicalSections": 376580,
+      "checksum": "16174261861575450891",
+      "seconds": 1.01323,
+      "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+      "sanitized": true,
+      "peakRSSKiB": 193896
+    },
+    "allDeterministicFieldsIdentical": true,
+    "independence": "No cut-prefix balance formula,DSU,component contraction,Kruskal or precomputed permutation optimum. Enumerate every adjacent upward/downward connector count0..N+1,pruning only when a completed vertex direct outdegree-minus-indegree cannot be0. Check weak connectivity of nonzero-degree vertices directly by bitset reachability. Among connected balanced assignments,minimize actual downward-distance cost for four coordinate placements,including highly asymmetric gaps near1e9.",
+    "finiteOracleCompleteness": "After closure there are N+1 connections between N original and one auxiliary required section. Every original ordering maps to monotone adjacent connections crossing each cut at most N+1 times in either direction,so the finite count domain includes an optimum without relying on the production cut-balance formula. The artificial oracle U may exceed all source endpoints but is still a legitimate free-entry auxiliary. Unused intermediate velocity vertices are allowed as Steiner points and ignored only if they have zero degree.",
+    "constructiveCertificate": "For each minimum,materialize all required/auxiliary/connector edges,check all degree equalities,run iterative Hierholzer,check every edge used once and cycle incidence,cut after the unique tagged auxiliary,restore every original section exactly once,and simulate initialspeed1/positive accepted entry/fixed exit. Physical connector cost equals enumerated minimum and actual API for all67084 runs. This independently validates both lower-bound completeness and Euler-to-physical achievability.",
+    "families": "All11430 three-level arc multisetsN2..7;all4828 four-level arc multisetsN2..4;512 random four-level multisetsN5..10;one explicit duplicate triangle-quotient witness. Four coordinate layouts each. The explicit triangle is already in the exhaustive family and random cases may overlap;16771 profile executions or67084 API calls are not claimed as unique physical inputs.",
+    "limits": "Exhaustive finite enumeration is restricted to these small symbolic endpoint profiles and count bounds;the general mathematical proof and reproduced maximum-original tests support the full source domain. No additional allocation test is falsely claimed:the22 faults belong to reproduced author validation."
+  },
+  "preservation": {
+    "auditFile": "/home/admin2/flowchartcp/site/data/corpus-audits/ioi-2016.json",
+    "auditRawSha256AtIndependentReview": "61080103392ea9cce3755f1359277586e2306763e9def5b3413d161396cabb89",
+    "initialRowCanonicalSha256": "bfb1a1f64cf413b0381fd497be05f7480b9a13a74ba16dc6c4521322c83e179c",
+    "initialStatusCanonicalSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialResearchCount": 6,
+    "initialCoveredCount": 0,
+    "initialFullImplementationCount": 0,
+    "initialResearchPositive": true,
+    "initialCompletedApiCoverage": false,
+    "initialRowHadNoResolution": true,
+    "previousResolutionsAtReview": [
+      "ioi2016_molecules",
+      "ioi2016_aliens"
+    ],
+    "authorArtifactsModified": false,
+    "sharedFilesModified": false,
+    "policy": "Preserve every initial row/status/selection/snapshot and prior Aliens/Molecules resolutions. Already-positive Railroad needs no subsequent research review;parent appends only resolution after actual article/source/root-walk integration."
+  },
+  "limitations": [
+    "Actual distributed railroad.h bytes not retrieved;standalone exact adapter signature is derived from generic primary and Notice.",
+    "No visual PDF reading claim;source formulas recovered from primary text.",
+    "LeakSanitizer disabled per platform;address/undefined checks and explicit author live-byte fault accounting are separate."
+  ],
+  "executionNotes": {
+    "coordination": "Author checker normal/ASan finished first. Parent temporarily gave the released ASan slot to Paint while this new harness was being written. After Paint finished,parent permitted new probe ASan;it finished and root was notified before starting root Railroad ASan. No intentional large sanitizer overlap.",
+    "sharedOrAuthorEdits": false
+  },
+  "conclusion": "No material issue or required unconfirmed lemma/source fact found. Source fullrange/API,physical reduction,both circulation/MST bounds and Euler construction are independently supported. Frozen3author artifacts remain unchanged;coverage registration remains parent work.",
+  "originalReviewSha256": "b957d47313afa91d62f384db61cc0265d898bde42f8473476207428bd9970ee4",
+  "publishedArticle": "src/content/docs/techniques/directed-line-balance-euler-augmentation-mst.mdx",
+  "permanentProbe": {
+    "script": "research/probes/line-section-connection-independent.py",
+    "normalizedSha256": "70ae6fb05edf202dc72828542a9a0dce485326fe31027e12c8f33135b0d160be",
+    "normalization": "Only MDX path; direct per-vertex degree equations, exhaustive connector counts, connectivity reachability, Hierholzer and restored physical simulation unchanged."
+  }
+}

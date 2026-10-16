@@ -1,0 +1,8 @@
+---
+import { techniques } from '../lib/content';
+import { renderHome } from '../lib/presentation.mjs';
+---
+<Fragment set:html={renderHome(techniques, import.meta.env.BASE_URL, { showTitle: false })} />
+<script>
+  import '../lib/technique-filter';
+</script>

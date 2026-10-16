@@ -1,0 +1,472 @@
+[
+  {
+    "id": "shortest-absent-subsequence",
+    "title": "部分列にできない最短の文字列を、次の出現位置から逆算する",
+    "summary": "各接尾辞で最短の失敗までの長さを求め、同じ長さを保つ文字を辞書順に選ぶ。",
+    "prerequisites": [
+      "substring-subsequence-next"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "shortest absent subsequence",
+      "lexicographically smallest missing subsequence"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/arc081/tasks/arc081_c"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "forbidden-abc-segment-summary",
+    "title": "部分列 abc を消す最小費用を、区間の六つの値で併合する",
+    "summary": "一文字の個数と ab・bc・abc を避ける費用を持ち、文字更新後の最小置換数を求める。",
+    "prerequisites": [
+      "segment-tree",
+      "state-design"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "dynamic forbidden abc subsequence",
+      "six field segment summary",
+      "William The Oblivious"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/1609/E"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "aho-active-failure-subtree",
+    "title": "有効な語の切り替えを、末尾一致の木の部分木加算にする",
+    "summary": "固定した辞書の語を有効・無効にし、本文を読む各状態で有効な接尾辞の数を得る。",
+    "prerequisites": [
+      "aho-failure-aggregation",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "dynamic Aho Corasick activation",
+      "failure tree subtree add",
+      "active dictionary matching"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/163/E",
+      "https://codeforces.com/blog/entry/4187"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "sam-kth-distinct-substring",
+    "title": "異なる部分文字列の辞書順 K 番目を、遷移先の個数で選ぶ",
+    "summary": "部分文字列を全列挙せず、同じ最初の文字を持つ候補の個数をまとめて飛ばす。",
+    "prerequisites": [
+      "suffix-automaton"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "suffix automaton kth distinct substring",
+      "Substring Order I"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2108"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "sam-kth-occurrence-substring",
+    "title": "部分文字列の辞書順 K 番目を、出現回数ぶんの停止で選ぶ",
+    "summary": "同じ文字列を出現回数だけ並べる順序統計では、各状態で止まる重みを1から出現回数へ変える。",
+    "prerequisites": [
+      "suffix-automaton"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "suffix automaton kth substring occurrences",
+      "Substring Order II"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2109"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "sam-length-distribution",
+    "title": "異なる部分文字列を、状態が受け持つ長さの区間へ一つずつ足す",
+    "summary": "一状態に含まれる文字列の長さは連続するので、差分配列で全ての長さの個数を求める。",
+    "prerequisites": [
+      "suffix-automaton",
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "substring count by length",
+      "suffix automaton length interval distribution"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2110"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "palindrome-update-hash-monoid",
+    "title": "文字更新と区間回文判定を、正順・逆順ハッシュの併合で扱う",
+    "summary": "区間長と両方向のハッシュを持ち、順序を保って併合する。衝突の可能性を許す判定に用いる。",
+    "prerequisites": [
+      "rolling-hash",
+      "segment-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "dynamic palindrome queries",
+      "forward reverse hash monoid",
+      "palindrome point update"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2420"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "subsequence-nonadjacent-last-range",
+    "title": "隣り合う位置を選べない部分列の重複を、二つ前までの総数で除く",
+    "summary": "選べる接頭辞を一つ短くし、同じ末尾文字を以前に作れた範囲との差を取る。",
+    "prerequisites": [
+      "dp-last-occurrence"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "nonadjacent distinct subsequences",
+      "subsequence no adjacent positions last occurrence"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc214/tasks/abc214_f",
+      "https://atcoder.jp/contests/abc214/editorial/2447"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "subsequence-waiting-buckets",
+    "title": "多数の部分列照合を、次に待っている文字ごとの列で進める",
+    "summary": "本文の一文字で進められる単語だけを取り出し、各単語の文字を一度ずつ消費する。",
+    "prerequisites": [
+      "state-design"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "matching subsequences waiting buckets",
+      "offline subsequence batching"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://leetcode.com/problems/number-of-matching-subsequences/description/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "subsequence-delete-gap",
+    "title": "残す部分列を前後に分け、最早・最遅の一致位置の間を消す",
+    "summary": "接頭辞をできるだけ左へ、接尾辞をできるだけ右へ寄せ、一つの連続区間の削除長を最大にする。",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "subsequence maximum removable substring",
+      "earliest prefix latest suffix gap"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/1203/D2"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "sam-common-all-strings",
+    "title": "複数の文字列に共通する最長部分文字列を、状態ごとの一致長の最小値で求める",
+    "summary": "最短の文字列だけで状態を作り、各文字列での最大一致長を接尾辞へ伝えてから最小値を取る。",
+    "prerequisites": [
+      "suffix-automaton"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "longest common substring of multiple strings",
+      "suffix automaton all strings minimum matched length",
+      "SPOJ LCS2"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://www.spoj.com/problems/LCS2/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "palindrome-two-disjoint-product",
+    "title": "重ならない二つの奇数長回文を、端点ごとの最長長と切れ目で組み合わせる",
+    "summary": "奇数長回文の最大半径を端点へ置き、両端を一文字ずつ縮めて各接頭辞・接尾辞の最長長を作る。",
+    "prerequisites": [
+      "palindrome-radius-range"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "文字列",
+    "aliases": [
+      "maximum product of two disjoint odd palindromic substrings",
+      "Manacher endpoint shrinking prefix suffix maximum",
+      "LeetCode 1960"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://leetcode.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "eertree-palindrome-length-frequency",
+    "title": "回文の長さと出現回数の積は、各末尾の最長回文に印を付けて求める",
+    "summary": "同じ内容の回文を一つの頂点にまとめ、出現回数を接尾辞リンクへ集めてから評価する。",
+    "family": "文字列",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Eertree Palindrome Length Frequency",
+      "Palindromic Refrain",
+      "Palindrome Occurrence Value",
+      "回文の長さと頻度の積",
+      "回文接尾辞の出現回数集計"
+    ],
+    "prerequisites": [
+      "palindromic-tree"
+    ],
+    "sources": [
+      "https://www.luogu.com.cn/problem/P3649",
+      "https://archive.algo.is/ioi/apio/2014/apio2014_problemset.pdf",
+      "https://arxiv.org/html/1506.04862v2"
+    ]
+  },
+  {
+    "id": "shortest-common-unique-substring",
+    "title": "二文字列に一回ずつ現れる最短部分文字列は、出現先別の回数と状態の最小長で探す",
+    "summary": "終了位置が同じ部分文字列をまとめ、二つの本文での出現回数を別々に集計する。",
+    "family": "文字列",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Shortest Common Unique Substring",
+      "Generalized Suffix Automaton Occurrence Counts",
+      "Match and Catch",
+      "両方に一度だけ現れる部分文字列",
+      "本文別の終了位置集計"
+    ],
+    "prerequisites": [
+      "suffix-automaton"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/427/D",
+      "https://codeforces.com/blog/entry/12082"
+    ]
+  },
+  {
+    "id": "wildcard-pattern-overlap-automaton",
+    "title": "文字を補って同じ語の出現数を最大化するときは、一致後も接尾辞の一致を残す",
+    "summary": "末尾とパターンの接頭辞が一致する長さを状態にし、一致の完成を得点に変えて重複する出現を数える。",
+    "family": "文字列",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Wildcard Pattern Overlap Automaton DP",
+      "KMP Maximum Pattern Occurrences DP",
+      "Anthem of Berland",
+      "ワイルドカード補完と重複出現の最大化",
+      "一致後に失敗辺へ戻す最大値DP"
+    ],
+    "prerequisites": [
+      "automaton-forbidden-dp",
+      "prefix-border-occurrences"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/808/G"
+    ]
+  },
+  {
+    "id": "palindrome-adjacent-pair-inversions",
+    "aliases": [
+      "Palindrome Adjacent Swap Pair Inversions",
+      "Minimum Number of Moves to Make Palindrome",
+      "Stable Palindrome Pairing Fenwick Inversions",
+      "隣接交換による回文の最少回数",
+      "文字の両端対応と行き先の転倒数"
+    ],
+    "family": "文字列",
+    "prerequisites": [
+      "fenwick-tree",
+      "exchange-argument"
+    ],
+    "sources": [
+      "https://leetcode.com/problems/minimum-number-of-moves-to-make-palindrome/"
+    ],
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "隣接交換で回文にする最少回数は、同じ文字を両端から組にして転倒数へ直す",
+    "summary": "同じ文字の対応を外側から決め、残った組の左端順に回文の位置を割り当てる。"
+  },
+  {
+    "id": "lcs-bit-parallel-length",
+    "title": "二文字列のLCSの長さだけなら、DP行の増分をビット列にしてまとめて更新する",
+    "summary": "隣の列との差が0か1になる性質を使い、一致位置と桁借りで一行分の遷移を並列に進める。",
+    "family": "文字列",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Bit Parallel LCS Length",
+      "Allison Dix Longest Common Subsequence",
+      "LCS Row Difference Bitset",
+      "最長共通部分列のビット並列化",
+      "LCSの行差分と多倍長減算"
+    ],
+    "prerequisites": [
+      "state-design",
+      "dp-dimension-rolling",
+      "knapsack-bitset-shift"
+    ],
+    "sources": [
+      "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_10_C",
+      "https://curiouscoding.nl/papers/hyyro04-revisited.pdf"
+    ]
+  },
+  {
+    "id": "independent-letter-rewrite-reachability",
+    "title": "位置ごとに独立な文字置換は、文字の有向到達性を調べる",
+    "summary": "任意回使える一文字置換を文字のグラフにし、同じ長さの二語を各位置で照合する。",
+    "aliases": [
+      "Independent Letter Rewrite Reachability",
+      "Secret Chamber at Mount Rushmore",
+      "位置ごとに独立な文字変換",
+      "文字規則の推移的到達性"
+    ],
+    "family": "文字列・変換",
+    "prerequisites": [
+      "bfs",
+      "graph-reduction"
+    ],
+    "level": "中級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=17",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=9"
+    ]
+  }
+]

@@ -1,0 +1,234 @@
+---
+title: "頂点の所有者が移動先を決めるゲームで、目標を繰り返し訪れられるか調べる"
+description: "目標への到達を強制できない領域と、相手がそこへ誘導できる領域を繰り返し除く。残る側と除かれる側の固定辺戦略を作り、初回訪問で辺を永久に決める規則にも戻す。"
+techniqueId: buchi-owned-graph-repeated-target-attractor-elimination
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+有向グラフの各頂点をAかBが所有し、現在頂点の所有者が次の移動先を選ぶ。Aは指定された目標頂点を無限回訪れたい。Bは、ある時点以降は目標を一度も訪れなくしたい。各開始点について、どちらが相手の選択によらず勝てるか求める。
+
+所有者は頂点ごとに決まるので、二人が交互に操作するとは限らない。また、一度目標へ到達できるだけでは足りない。到達後に目標のない領域へ追い出される場合も調べる必要がある。この反復訪問の条件をBüchi条件と呼ぶ。
+
+## 考え方
+
+現在残している頂点集合を $W$ とする。プレイヤー $P$ が、相手の選択によらず集合 $S$ へ有限回で到達できる頂点を $\operatorname{Attr}_P(S)$ と書く。初めに $S$ を入れ、次の条件で頂点を追加する。
+
+- $P$ の頂点なら、既に入った頂点へ向かう出辺が一つでもある。
+- 相手の頂点なら、$W$ 内の全ての出辺が既に入った頂点へ向かう。
+
+目標集合を $R$ とし、まず $Z=\operatorname{Attr}_A(R\cap W)$ を求める。$Z=W$ なら、残った全頂点でAが目標を繰り返し訪れられる。
+
+そうでなければ $X=W\setminus Z$ とする。$X$ からはBが目標への到達を避け続けられる。さらに $Y=\operatorname{Attr}_B(X)$ からもBが勝てるので、$Y$ を削除して繰り返す。初めの $W$ は全頂点で、最後まで残った頂点がAの勝ちになる。
+
+到達集合の計算には逆辺とキューを使う。相手の頂点では、まだ集合へ入っていない出先の個数を持ち、逆辺から一つずつ減らす。毎回全頂点を走査して一個ずつ追加する実装を避け、一回の到達集合を $O(N+M)$ で求める。
+
+## 適用条件
+
+有限の有向グラフで、全頂点に少なくとも一本の出辺がある。二人はグラフ全体と過去の移動を知り、確率的な移動はない。Aは目標を無限回訪れること、Bは目標を有限回しか訪れないことを目的とする。
+
+掲載APIは頂点1〜5000、辺数は頂点数以上20000以下、自己ループ可、同じ順序の端点を持つ平行辺なしを扱う。逆向きの二辺は別の辺として許す。一般APIでは目標が空の場合も拡張として受け付け、その場合は全頂点でBの勝ちになる。
+
+辺を毎回選び直す規則に加えて、初めて訪れた頂点で出辺を永久固定する規則も扱える。単に二つのゲームが同じだと仮定せず、以下で両者に使える頂点ごとの固定戦略を構成する。
+
+充電に読み替える場合は、全充電で $N$ 辺まで走れ、最後の充電から $N+1$ 本目に入ると停止するものとする。永久固定した辺をたどる走行は有限の先頭部分と単純な周期になり、周期に目標があれば目標間隔は高々 $N$ 辺。最初の目標にも高々 $N$ 辺で着く。従って反復訪問と無限走行が同値になる。
+
+## なぜ正しいか
+
+まず到達集合の計算を示す。集合へ追加される順番を順位とする。$P$ の頂点では、既に追加された出先を一つ記録する。相手の頂点が追加されるのは、全ての出先が既に追加された後だけである。集合 $S$ の外では、記録した辺を選ぶと、相手がどう動いても順位が下がり、有限回で $S$ へ到達する。
+
+逆に、追加されなかった $P$ の頂点からは、集合内へ向かう辺がない。追加されなかった相手の頂点には、集合外へ向かう辺が少なくとも一つある。相手がそれを固定すれば、集合外から $S$ へ入らない。これで到達集合の必要十分性が分かる。
+
+次に、削除後も残存グラフに出辺が残ることを示す。$Y=\operatorname{Attr}_B(X)$ の外では、Aの頂点に $Y$ の外へ向かう辺が一つ以上あり、Bの頂点の $W$ 内の出辺は全て $Y$ の外へ向かう。従って残存グラフにも出辺がある。さらに、残存B頂点から過去に削除した頂点へ向かう辺もない。初めには自明で、削除するたびに同じ性質が保たれる。
+
+削除した側でのBの固定戦略を作る。$X$ は目標を含まない。$X$ 内のA頂点の残存出先は全て $X$ 内にあり、B頂点には $X$ 内へ向かう辺が一つ以上あるので、Bはそれを選ぶ。$Y\setminus X$ のB頂点では、Bの到達集合を作る際に記録した辺を選ぶ。
+
+元のグラフでこの戦略を使うと、同じ削除回の中では $X$ へ向かって到達順位が下がるか、$X$ にとどまる。Aが既に削除された頂点へ出た場合は、削除回そのものが小さくなる。削除回は無限には下がらないため、やがて一つの回の $X$ にとどまり、以降目標を訪れない。各頂点の辺はその頂点が削除された回に決めるだけなので、永久固定でよい。
+
+終了時の残存側では、目標でないA頂点から、Aの到達集合で記録した順位を下げる辺を選ぶ。目標のA頂点では、残存する辺を一つ選ぶ。残存B頂点の元の出辺は全て残存領域内にある。従ってどちらが動いても領域外へ出ず、目標の外では順位が下がる。目標へ着いた後も同じ議論を繰り返せるので、目標を無限回訪れる。
+
+両側の戦略は、相手が毎回辺を選び直す場合にも有効である。従って、より制限の強い初回訪問時の永久固定でも同じ勝敗になる。全頂点がいずれかの側へ分類されるので、引分や未判定の頂点は残らない。
+
+## 計算量
+
+一つの到達集合では各頂点を高々一回キューへ入れ、逆辺を高々一回ずつ処理するため $O(N+M)$。削除する回には必ず一頂点以上を除くので、反復は高々 $N$ 回である。各回の残存出次数の集計も含めて、時間は $O(N(N+M))=O(NM)$、空間は逆辺・出辺・配列を合わせて $O(N+M)$ となる。
+
+掲載コードは平行辺を拒否するため、初めに辺を整列する $O(M\log(M+1))$ 時間も使う。合法な入力では $M\le N^2$ かつ $M\ge N$ なので、この項も全体の $O(NM)$ に含まれる。到達集合の中で毎回整列することはない。
+
+頂点番号、出次数、キューの添字、削除回は掲載上限で32ビット符号付き整数に収まる。探索は全て反復処理で、長い鎖でも再帰スタックを増やさない。
+
+## 実装
+
+`solve_repeated_target_game(owner, target, arcs)` は、A所有を1、B所有を0とした配列と、目標を1とした配列を受け取る。`winning[v]` はAが勝てるとき1、Bが勝てるとき0。`move[v]` は有効な出先であり、所有者がその頂点の勝者である場合、その所有者の固定勝利戦略を表す。それ以外の頂点の値も合法な出先だが、勝利戦略として使う必要はない。`deletion_rounds` は実際に削除した回数である。
+
+空入力、サイズの不一致、範囲外の0/1値や端点、頂点数・辺数上限違反、重複した有向辺、出辺のない頂点は `invalid_argument`。入力を変更せず、参照を保持しない。返値の配列はコピー・移動でき、呼び出し間で状態を共有しない。割り当て例外はそのまま伝播する。
+
+末尾の `who_wins(a, r, u, v)` は原典用のアダプターで、公式の `int[]` をC++の `std::vector<int>` に対応させた署名である。こちらは原典に合わせ、充電頂点が一つもない入力も拒否する。標準入力を読んだり出力したりせず、全開始点の勝敗配列を返す。
+
+```cpp
+#include <algorithm>
+#include <span>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace repeated_target {
+using Arc = std::pair<int, int>;
+struct Solution {
+    std::vector<int> winning;
+    std::vector<int> move;
+    int deletion_rounds;
+};
+
+Solution solve_repeated_target_game(std::span<const int> owner,
+                                    std::span<const int> target,
+                                    std::span<const Arc> arcs) {
+    if (owner.empty() || owner.size() > 5000 || target.size() != owner.size()) {
+        throw std::invalid_argument("vertex arrays");
+    }
+    const int n = static_cast<int>(owner.size());
+    if (arcs.size() < owner.size() || arcs.size() > 20000 ||
+        arcs.size() > owner.size() * owner.size()) {
+        throw std::invalid_argument("arc count");
+    }
+    for (int v = 0; v < n; ++v) {
+        if ((owner[v] != 0 && owner[v] != 1) ||
+            (target[v] != 0 && target[v] != 1)) {
+            throw std::invalid_argument("binary vertex flags");
+        }
+    }
+    for (auto [u, v] : arcs) {
+        if (u < 0 || u >= n || v < 0 || v >= n) {
+            throw std::invalid_argument("arc endpoint");
+        }
+    }
+    std::vector<Arc> ordered(arcs.begin(), arcs.end());
+    std::sort(ordered.begin(), ordered.end());
+    if (std::adjacent_find(ordered.begin(), ordered.end()) != ordered.end()) {
+        throw std::invalid_argument("parallel ordered arcs");
+    }
+    std::vector<std::vector<int>> out(n), reverse(n);
+    for (auto [u, v] : ordered) {
+        out[u].push_back(v);
+        reverse[v].push_back(u);
+    }
+    std::vector<int> move(n);
+    for (int v = 0; v < n; ++v) {
+        if (out[v].empty()) throw std::invalid_argument("missing outgoing arc");
+        move[v] = out[v][0];
+    }
+    std::vector<char> alive(n, true);
+    struct Attraction {
+        std::vector<char> inside;
+        std::vector<int> chosen;
+    };
+    auto attract = [&](int player, const std::vector<char>& seeds,
+                       const std::vector<int>& degree) {
+        Attraction result{std::vector<char>(n, false), std::vector<int>(n, -1)};
+        std::vector<int> remaining = degree;
+        std::vector<int> queue;
+        queue.reserve(n);
+        for (int v = 0; v < n; ++v) {
+            if (alive[v] && seeds[v]) {
+                result.inside[v] = true;
+                queue.push_back(v);
+            }
+        }
+        for (std::size_t head = 0; head < queue.size(); ++head) {
+            const int v = queue[head];
+            for (int u : reverse[v]) {
+                if (!alive[u] || result.inside[u]) continue;
+                if (owner[u] == player || --remaining[u] == 0) {
+                    result.inside[u] = true;
+                    result.chosen[u] = v;
+                    queue.push_back(u);
+                }
+            }
+        }
+        return result;
+    };
+
+    int active_count = n;
+    int rounds = 0;
+    while (active_count > 0) {
+        std::vector<int> degree(n, 0);
+        for (auto [u, v] : ordered) {
+            if (alive[u] && alive[v]) ++degree[u];
+        }
+        std::vector<char> targets(n, false);
+        for (int v = 0; v < n; ++v) targets[v] = alive[v] && target[v];
+        const auto reached = attract(1, targets, degree);
+        std::vector<char> avoid(n, false);
+        bool has_avoid = false;
+        for (int v = 0; v < n; ++v) {
+            avoid[v] = alive[v] && !reached.inside[v];
+            has_avoid = has_avoid || avoid[v];
+        }
+        if (!has_avoid) {
+            for (int v = 0; v < n; ++v) if (alive[v] && owner[v] == 1) {
+                if (!target[v]) {
+                    move[v] = reached.chosen[v];
+                } else {
+                    for (int w : out[v]) if (alive[w]) {
+                        move[v] = w;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+        const auto lost = attract(0, avoid, degree);
+        for (int v = 0; v < n; ++v) {
+            if (!alive[v] || !lost.inside[v] || owner[v] != 0) continue;
+            if (avoid[v]) {
+                for (int w : out[v]) if (avoid[w]) {
+                    move[v] = w;
+                    break;
+                }
+            } else {
+                move[v] = lost.chosen[v];
+            }
+        }
+        for (int v = 0; v < n; ++v) if (alive[v] && lost.inside[v]) {
+            alive[v] = false;
+            --active_count;
+        }
+        ++rounds;
+    }
+    return {std::vector<int>(alive.begin(), alive.end()), std::move(move), rounds};
+}
+} // namespace repeated_target
+
+std::vector<int> who_wins(std::vector<int> a, std::vector<int> r,
+                          std::vector<int> u, std::vector<int> v) {
+    if (a.empty() || a.size() > 5000 || r.size() != a.size() ||
+        u.size() != v.size() || u.size() < a.size() || u.size() > 20000 ||
+        u.size() > a.size() * a.size()) {
+        throw std::invalid_argument("train array sizes");
+    }
+    if (std::find(r.begin(), r.end(), 1) == r.end()) {
+        throw std::invalid_argument("at least one charging vertex required");
+    }
+    std::vector<repeated_target::Arc> arcs;
+    arcs.reserve(u.size());
+    for (std::size_t i = 0; i < u.size(); ++i) arcs.emplace_back(u[i], v[i]);
+    return repeated_target::solve_repeated_target_game(a, r, arcs).winning;
+}
+```
+
+## 関連する手法
+
+[無限継続を引分にする後退解析](/flowchartcp/techniques/retrograde-winning-draw/)では、出辺のない状態を起点に勝敗を広げる。今回は全頂点に出辺があり、無限継続の中で目標を繰り返す側が勝つため、目標への到達集合と相手の回避領域を反復する。
+
+[強連結成分分解](/flowchartcp/techniques/scc/)は、辺を固定した後の周期を調べる助けになる。ただし元グラフに目標を含む閉路が存在するだけでは、相手の選択を越えてそこへ進めるとは限らない。
+
+## 参考資料
+
+- [IOI 2017 Toy Train 公式原典](https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf)、[日本委員会の公式訳](https://www2.ioi-jp.org/ioi/2017/tasks/day1-train-JPN.pdf)。頂点の所有、初回訪問時の永久固定、周期内の充電頂点、`who_wins` の適用根拠。
+- [IOI 2017 Toy Train 公式解説](https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf)（[公式アーカイブの課題一覧](https://ioi.te.lv/locations/ioi17/contest/index.shtml)から公開）。二種類の到達集合と反復除去。順位・削除回による固定戦略の証明と検証付きAPIは本文で補った。
+- [公式配布UZB版](https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf)、[公式配布TWN版](https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf)。頂点数・辺数、出次数、充電頂点、自己ループと重複辺の数値・入力条件。
+- [公式Day 1 実装上の注意](https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf)。C++の配列型 `std::vector<int>` と、2秒・256MBの原典制限。
+- [日本委員会公式・IOI 2017 課題一覧](https://www2.ioi-jp.org/ioi/2017/tasks/index.html)。競技日1の2017年7月30日と対象課題。
+
+<TechniqueReferences techniqueId="buchi-owned-graph-repeated-target-attractor-elimination" />

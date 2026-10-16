@@ -1,0 +1,83 @@
+---
+title: "回文の再帰的な次数を、左半分の次数から求める"
+description: "通常の回文判定と半分への再帰を同じ区間表で管理し、次数ごとの出現数を数えます。"
+techniqueId: "palindrome-recursive-degree"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+「回文である」ことに加えて、「左右半分が同じ回文」「その半分も同じ回文」という再帰的な条件を数える場合。同じ文字列でも、現れる区間が異なれば別の出現として数えます。
+
+## 考え方
+
+通常の非空回文を 1 次以上とします。$k\ge2$ 次である条件は、長さ $\lfloor L/2\rfloor$ の左右半分が非空で同じ文字列であり、それぞれ $k-1$ 次以上となることです。奇数長の中央の一文字は、左右半分のどちらにも含めません。
+
+区間 $[l,r)$ の最大次数を $D[l,r)$ とし、非回文なら 0 とします。長さ 1 では 1。長さ $L\ge2$ の通常の回文では
+
+$$D[l,r)=1+D[l,l+\lfloor L/2\rfloor).$$
+
+左右半分をもう一度照合する必要はありません。全体が回文なら、右半分は左半分を反転したものです。左半分も回文なら、左右半分は同じになります。
+
+通常の回文判定も同じ表で行えます。両端の文字が等しく、内側が空か $D[l+1,r-1)>0$ なら、その区間は回文です。短い区間から計算し、各最大次数の頻度を最後に接尾和へ変えます。
+
+## 適用条件
+
+左右半分がどちらも $\lfloor L/2\rfloor$ 文字であり、奇数長の中央は読み飛ばす定義です。左右半分の長さが違う定義や、中央を両側へ含める定義では、同じ式になりません。
+
+単に左右半分が等しいだけでは不足します。例えば `abab` の左右半分はともに `ab` ですが、全体も半分も回文ではないので次数は 0 です。一方、`aba` は通常の回文で、半分が同じ `a` なので次数は 2 です。
+
+以下は $N\le5000$ の静的な列を対象とします。通常の回文数だけが必要なら、中心の半径による線形時間の集計の方が速く、区間表は不要です。
+
+## なぜ正しいか
+
+$k$ 次以上なら通常の回文でもあります。$k\ge2$ では左右半分が同じ回文なので、その二つの間に任意の中央文字を置いても全体は回文です。この性質は定義の再帰から成り立ちます。
+
+逆に全体が回文で、左半分が $k-1$ 次以上なら、左半分自身が回文です。右半分は左半分の反転なので、左右半分は同じ文字列となり、右半分も $k-1$ 次以上です。これで定義の全条件を満たすため、全体の最大次数は左半分の最大次数に 1 を足した値になります。
+
+各次数の頻度を $f[d]$ とすると、少なくとも $k$ 次の出現数は $\sum_{d\ge k}f[d]$ です。各区間を最大次数で一度だけ数えた後に接尾和を取るため、出現数を重複させません。
+
+## 計算量
+
+各区間で再帰的な文字照合を行う方法は、最悪 $O(N^3)$ 時間。長さ順の区間 DP にすると、各区間が定数時間で計算でき、時間・空間ともに $O(N^2)$ です。最後の接尾和は $O(N)$。
+
+次数は半分へ進むたびに 1 増えるため、最大でも $\lfloor\log_2N\rfloor+1$。$N\le5000$ では 13 以下なので、区間表の要素は `uint8_t` で足ります。5000 文字の表は約 25 MB です。出現数は $N(N+1)/2$ まで増えるので、集計には別の整数型を使います。
+
+## 実装
+
+返り値の添字 $k$ は「少なくとも $k$ 次」の出現数です。添字 0 は使わず、空列なら長さ 1 のゼロ配列を返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> palindrome_degree_counts(const string& s) {
+    int n=int(s.size());
+    assert(n<=5000);
+    vector<uint8_t> degree(size_t(n)*n);
+    vector<long long> answer(n+1);
+    auto at=[&](int l,int r)->uint8_t& {
+        return degree[size_t(l)*n+(r-1)];
+    };
+    for(int length=1;length<=n;++length) {
+        for(int l=0;l+length<=n;++l) {
+            int r=l+length;
+            if(length==1) at(l,r)=1;
+            else if(s[l]==s[r-1] && (length==2 || at(l+1,r-1)>0))
+                at(l,r)=uint8_t(1+at(l,l+length/2));
+            if(at(l,r)>0) ++answer[at(l,r)];
+        }
+    }
+    for(int k=n-1;k>=1;--k) answer[k]+=answer[k+1];
+    return answer;
+}
+```
+
+## 関連する手法
+
+[静的な区間の回文判定を、中心の最大半径だけで答える](/flowchartcp/techniques/palindrome-radius-range/)、[回文を中心の半径にまとめ、長さごとの出現数を数える](/flowchartcp/techniques/palindrome-center-contribution/)、[区間DP](/flowchartcp/techniques/interval-dp/)
+
+## 参考資料
+
+- [Codeforces：Palindromic characteristics の問題文](https://codeforces.com/problemset/problem/835/D)
+
+<TechniqueReferences techniqueId="palindrome-recursive-degree" />

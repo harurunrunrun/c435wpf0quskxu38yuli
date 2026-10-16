@@ -1,0 +1,87 @@
+---
+title: "一辺だけ費用を変える最短路は、始点距離と終点への距離で挟む"
+description: "変更する辺を全て試すとき、前後の最短距離を二回の探索で使い回す。"
+techniqueId: shortest-one-edge-discount
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+変更する辺を全て試すとき、前後の最短距離を二回の探索で使い回す。
+
+## 使う場面
+
+有向グラフの移動中に、一回だけ一辺の費用を半分にできる。どの辺を割引するかで結果が変わるため、全候補の前後の費用をまとめて評価したい。
+
+## 考え方
+
+始点から各頂点への通常の最短距離を $d_s$、各頂点から終点への通常の最短距離を $d_t$ とする。後者は全辺を逆向きにしたグラフで、終点を始点にして求める。
+
+辺 $(u,v,w)$ だけを割引する候補は
+
+$$d_s(u)+\lfloor w/2\rfloor+d_t(v)$$
+
+になる。前後が到達可能な辺を全て調べ、その最小値を取る。
+
+割引の式を別の非負費用へ変えても、変更した辺の前後に依存しないなら同じ分解を使える。複数の割引率を試す場合も、通常距離を計算し直す必要はない。
+
+## 適用条件
+
+通常費用も変更後の費用も非負。変更は選んだ一辺を通る一回にだけ適用され、前後の移動には他の条件が付かない。掲載実装は一回の割引を使う歩道の最小費用を返す。使用回数が高々一回なら、通常の始点終点距離との最小値も取る。
+
+使用後に通れない辺が変わる、複数回の変更がある、資源の残量と組み合わさる場合は、この一辺だけの分解では足りない。全ての必要な距離・候補費用が `INF` 未満に収まることを要する。
+
+## なぜ正しいか
+
+最適な歩道で割引した一回の辺を取り出す。前半の通常費用は $d_s(u)$ 以上、後半は $d_t(v)$ 以上なので、その歩道の費用は候補以上。逆に二つの最短歩道とその辺をつなぎ、選んだ辺の一回だけを割引すれば、候補と同じ費用の歩道を作れる。候補全体の最小が最適値になる。
+
+## 計算量
+
+辺の選択ごとに探索する $O(M(N+M)\log N)$ を、二回の最短距離探索と全辺走査 $O((N+M)\log N)$ に減らす。空間は $O(N+M)$。割引済みかの二状態で探索する方法と計算量の次数は同じだが、前後の距離を変更式ごとに再利用できる。
+
+## 実装
+
+`one_discount` は一回割引を使う候補がなければ `nullopt`。始点と終点が同じ場合も、一辺以上を通る歩道として計算する。平行辺や自己ループもそれぞれ候補に含める。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+constexpr long long INF=(1LL<<62);
+struct Flight {int from,to;long long cost;};
+vector<long long> distances(const vector<vector<pair<int,long long>>>& g,int source) {
+    vector<long long> d(g.size(),INF);
+    priority_queue<pair<long long,int>,vector<pair<long long,int>>,greater<pair<long long,int>>> queue;
+    d[source]=0;queue.push({0,source});
+    while(!queue.empty()) {
+        auto [distance,v]=queue.top();queue.pop();if(distance!=d[v]) continue;
+        for(auto [u,w]:g[v]) if(w<INF-distance && distance+w<d[u]) {
+            d[u]=distance+w;queue.push({d[u],u});
+        }
+    }
+    return d;
+}
+optional<long long> one_discount(int n,const vector<Flight>& edges,int source,int target) {
+    assert(n>0 && 0<=source && source<n && 0<=target && target<n);
+    vector<vector<pair<int,long long>>> forward(n),backward(n);
+    for(auto e:edges) {
+        if(e.cost<0 || e.cost>=INF) throw invalid_argument("nonnegative cost required");
+        forward[e.from].push_back({e.to,e.cost});backward[e.to].push_back({e.from,e.cost});
+    }
+    auto from=distances(forward,source),to=distances(backward,target);
+    long long best=INF;
+    for(auto e:edges) if(from[e.from]!=INF && to[e.to]!=INF) {
+        __int128 candidate=(__int128)from[e.from]+e.cost/2+to[e.to];
+        if(candidate<best) best=(long long)candidate;
+    }
+    if(best==INF) return nullopt;
+    return best;
+}
+```
+
+## 関連する手法
+
+[ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [移動で消費・回復する資源を持ち、不要な所持量を切る](/flowchartcp/techniques/dijkstra-expanded-resource/)
+
+## 参考資料
+
+- [CSES：Flight Discount](https://cses.fi/problemset/task/1195)
+
+<TechniqueReferences techniqueId="shortest-one-edge-discount" />

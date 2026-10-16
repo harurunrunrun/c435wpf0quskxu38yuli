@@ -1,0 +1,73 @@
+---
+title: "区間和とXORが等しい区間は、同じ1ビットが二度現れない窓を保つ"
+description: "新しい値と現在の使用ビットが重なった間だけ左端を進める。"
+techniqueId: carryfree-subarray-window
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+非負整数列の連続区間について、通常の和とXORが等しくなる区間数を求める。区間和の上限を使う方法ではなく、繰り上がりの原因となるビットの衝突を直接管理できる。
+
+## 考え方
+
+各ビットが区間内で高々一個の要素にしか現れなければ、加算時の繰り上がりはなく、和とXORが等しい。現在の窓で使っている1ビットの集合を `used` とする。
+
+新しく右端へ $x$ を加えるとき、`used & x` が0なら衝突しない。0でなければ左端の値を取り除き、衝突がなくなるまで左端を進める。成立している窓内では各1ビットが一個だけなので、取り除く値とのXORでそのビットを消せる。
+
+右端 $r$ に対する最も左の成立位置が $l$ なら、開始位置 $l,l+1,\ldots,r$ は全て成立するため、$r-l+1$ を答えへ加える。
+
+## 適用条件
+
+配列の要素は非負で、区間全体の和とXORの一致を調べる。負数を含む整数の通常の加算や、固定幅で桁あふれさせた和の一致には、このビット非交差の条件を流用できない。
+
+掲載実装は200万要素以下、各要素は符号なし64ビット全域。数学的な和を実際に計算しないので、素朴に足すと64ビットを超える入力も扱える。0はビットを使わず、0だけの長い窓も成立する。空の列の答えは0で、空区間は数えない。原典の制約は20万要素、各値20ビット未満。
+
+## なぜ正しいか
+
+ビット $b$ が1の要素数を $c_b$ とすると、和とXORの差は
+
+$$\sum_b2^b\bigl(c_b-(c_b\bmod2)\bigr).$$
+
+各項は非負で、0になるのは $c_b\le1$ のときだけ。よって和とXORの一致は全ビットの重複がないことと同値になる。
+
+右端を延ばすと衝突は増えることがあっても、以前成立しなかったより左の開始位置が新たに成立することはない。左端を衝突がなくなる直前まで動かすことで、毎回最長の成立窓を得る。その部分区間も成立するので、右端ごとに列挙せず個数を加えられる。
+
+## 計算量
+
+各左端から和とXORを更新しながら全右端を試すと、時間 $O(N^2)$、追加空間 $O(1)$。窓なら各要素は一度加わり、高々一度取り除かれるため、時間 $O(N)$、追加空間 $O(1)$。固定64ビットのAND・XORを定数時間とする。答えは最大 $N(N+1)/2$ で、実装の上限では64ビットに収まる。
+
+## 実装
+
+```cpp
+#include <cstdint>
+#include <stdexcept>
+#include <vector>
+std::uint64_t count_carryfree_subarrays(const std::vector<std::uint64_t>& values) {
+    if(values.size()>2000000) throw std::invalid_argument("length");
+    std::uint64_t used=0, answer=0;
+    std::size_t left=0;
+    for(std::size_t right=0;right<values.size();++right) {
+        while((used&values[right])!=0) {
+            used^=values[left];
+            ++left;
+        }
+        used|=values[right];
+        answer+=right-left+1;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [和とXORが等しい二数は、繰り上がりを禁止して和の上限だけを追う](/flowchartcp/techniques/carryfree-sum-xor-bound/)
+- [区間をずらしながら値の種類数を更新する](/flowchartcp/techniques/sliding-distinct-count/)
+
+## 参考資料
+
+- [AtCoder — Xor Sum 2](https://atcoder.jp/contests/abc098/tasks/arc098_b)
+- [公式解説 D 節](https://img.atcoder.jp/arc098/editorial.pdf)
+
+<TechniqueReferences techniqueId="carryfree-subarray-window" />

@@ -1,0 +1,140 @@
+[
+  {
+    "source": "Luogu",
+    "problemId": "P3649",
+    "title": "[APIO2014] 回文串",
+    "url": "https://www.luogu.com.cn/problem/P3649",
+    "techniqueIds": [
+      "eertree-palindrome-length-frequency"
+    ],
+    "features": [
+      "更新のない英小文字列で、長さは最大300000である",
+      "連続区間として現れる非空の回文を一種類選ぶ",
+      "同じ内容の回文の出現を数え、出現位置が重なっていても全て数える",
+      "選んだ回文の長さと出現回数の積を最大化する"
+    ],
+    "evidenceUrl": "https://arxiv.org/html/1506.04862v2",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2014-05-04",
+    "notes": "APIO公式問題集保存版の開催期間2014年5月3〜4日の最終日を日付とした。回文の種類を選ぶことと、重なった出現を含む頻度を区別し、原著論文の同じ目的への解法を対応付けた。個別区間の頻度や重ならない出現数を問う問題ではない。掲載C++は独立checkerの全列挙と上限入力で確認済み。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "427D",
+    "title": "Match & Catch",
+    "url": "https://codeforces.com/problemset/problem/427/D",
+    "techniqueIds": [
+      "shortest-common-unique-substring"
+    ],
+    "features": [
+      "更新のない二つの英小文字列で、各長さは最大5000である",
+      "文字を飛ばさない非空の連続部分文字列を選ぶ",
+      "選ぶ文字列は一方だけでなく、両方の本文にちょうど一回ずつ現れる",
+      "条件を満たす最短長を求め、存在しなければ-1を返す"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/427/D",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2014-05-02",
+    "notes": "原典とcontest427の同日付公式アナウンスを確認。合計二回ではなく本文別に一回ずつという制約が必要。公式解説はSAMの使用を言及するが詳細を示さないため、状態の終了位置集合からの独立導出として扱う。掲載C++は独立checkerで本文別map計数と比較済み。"
+  },
+  {
+    "source": "Luogu",
+    "problemId": "P2048",
+    "title": "[NOI2010] 超级钢琴",
+    "url": "https://www.luogu.com.cn/problem/P2048",
+    "techniqueIds": [
+      "top-k-bounded-subarray-sums"
+    ],
+    "features": [
+      "負の値も含む、更新のない整数列である",
+      "選べる連続区間の長さはL以上R以下である",
+      "異なる区間をK個選び、それらの区間和の合計を最大化する",
+      "区間が重なってよく、同じ和でも端点が違えば別の候補である"
+    ],
+    "evidenceUrl": "https://www.luogu.com.cn/problem/P2048",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "洛谷の原典本文で負の値、長さ制限、区間を端点の組で区別する条件、K個の異なる区間の和を確認。取得本文のデータ表は画像で、画像の閲覧は取得不能だったため、NとKの上限を原典確認済みとはしていない。解法対応は候補範囲の分割不変条件から独立に導出。開催日は未確認。掲載APIはNとKを500000以下とし、全signed64値に拡張する。掲載フェンスをC++20で抽出コンパイルし、全3値配列N<=6・全長条件・全Kを全区間ソートと比較。signed64両端の混在、N/K500000、128bit総和、例外契約も独立checkerで確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc155_d",
+    "title": "Pairs",
+    "url": "https://atcoder.jp/contests/abc155/tasks/abc155_d",
+    "techniqueIds": [
+      "kth-signed-pair-product"
+    ],
+    "features": [
+      "負数と0を含み、同じ値が複数現れてよい整数列である",
+      "異なる添字i<jから選んだ二要素を掛ける",
+      "添字の組ごとに積を並べ、重複を残して小さい順のK番目を求める",
+      "要素数は最大200000で、全ての積の列挙は二次になる"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc155/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "問題文でN最大200000、値の絶対値最大10^9、1始まりK、異なる添字の無順序対を確認。原典の開催日は2020-02-16。公式PDFのD節（日本語5ページ目・英語12ページ目）で符号分割、二分探索、尺取り計数を確認。掲載APIは全signed64値へ拡張し、128bitへ昇格してから絶対値を作る。掲載フェンスをC++20で抽出コンパイルし、5値の全配列N<=5とsigned64極値を含む9値の全配列N<=4の全順位を全pairソートと比較。N200000の符号混在で32bitを超えるK、各符号の境界順位、例外契約も独立checkerで確認。",
+    "publicationDate": "2020-02-16"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc336_e",
+    "title": "Digit Sum Divisible",
+    "url": "https://atcoder.jp/contests/abc336/tasks/abc336_e",
+    "techniqueIds": [
+      "digit-sum-divides-value"
+    ],
+    "features": [
+      "上限N以下の正整数を数え、Nは最大10^14である",
+      "割る数は、その整数自身の十進の桁和である",
+      "整数が自分の桁和で割り切れることが条件である",
+      "桁和の候補は桁数の9倍以下に収まる"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc336/editorial/9055",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2024-01-14",
+    "notes": "一次原典で上限1以上10^14以下、正整数、十進桁和による可除性、開催日2024年1月14日を確認。公式解説9055で最終桁和を先に固定する状態設計と計算量を確認。掲載C++を抽出し、100万以下の整数の直接判定・公式入力例・10^14前後の個数差と直接判定・不正引数を独立checkerで比較。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc356_e",
+    "title": "Max/Min",
+    "url": "https://atcoder.jp/contests/abc356/tasks/abc356_e",
+    "techniqueIds": [
+      "pair-floor-ratio-frequency"
+    ],
+    "features": [
+      "全ての値が1以上10^6以下の正整数列である",
+      "全ての異なる添字対i<jが対象で、重複する値も別の要素とする",
+      "各対について大きい値を小さい値で割った商の床を足す",
+      "値は更新されず、要素数は最大200000である"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc356/editorial/10116",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2024-06-01",
+    "notes": "一次原典でN最大200000、値1以上10^6以下、i<jの全添字対、開催日2024年6月1日を確認。公式解説10116で商ごとの区間集計と頻度の累積和を確認。同値対の除外と組合せへの付け替えを明示。掲載C++を抽出し、全小配列の全添字対による床除算・最大値10^6・200000要素・空列・不正引数を独立checkerで比較。"
+  }
+]

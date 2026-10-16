@@ -1,0 +1,69 @@
+---
+title: "k 番目の値の期待値を、閾値以上の個数から求める"
+description: "値そのものの分布を作らず、各閾値以上になる確率を二項分布で計算します。"
+techniqueId: "expectation-order-statistic-tail"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+独立に決まる整数を並べたときの $k$ 番目の期待値を求め、値域が小さいとき。未知の値を全て決めてから並べると組合せが指数的になります。
+
+## 考え方
+
+$1\le Y\le M$ なら $E[Y]=\sum_{t=1}^{M}P(Y\ge t)$。昇順の $k$ 番目が $t$ 以上である条件は、$t$ 以上の要素が $N-k+1$ 個以上あることです。既知の値からその個数を引き、未知の $U$ 個が閾値以上になる個数を二項分布で求めます。
+各未知値が $1,\ldots,M$ の一様分布なら $p=(M-t+1)/M$、必要個数を $r$ として確率は $\sum_{j=\max(0,r)}^{U}\binom Uj p^j(1-p)^{U-j}$。
+
+## 適用条件
+
+未知値が独立で同じ分布であること。同じ $p$ でなければ二項分布にはならず、成功個数の DP が必要です。掲載実装は 0 を未知の印とし、既知値は $1\ldots M$。法が素数で $N,M$ が法未満の範囲を使います。
+
+## なぜ正しいか
+
+整数 $Y$ は $\sum_{t=1}^{M}[Y\ge t]$ と書けるので期待値を足せます。順位の条件は閾値以上の個数だけで決まり、同じ値が重複していても成立します。未知値を閾値の上下へ分けた確率は、独立性から二項分布です。
+
+## 計算量
+
+全代入は $M^U$ 通り。既知値を整列し、二項係数を一列だけ前計算すると、時間 $O(N\log N+M(U+\log(N+1)))$、空間 $O(N+U)$。各閾値でべき配列を作るので、確率 0 や 1 の逆元を取る必要もありません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long expected_kth_uniform(const vector<int>& a,int m,int k){
+    constexpr long long mod=998244353;
+    int n=a.size();assert(1<=k && k<=n && n<mod && 1<=m && m<mod);
+    auto power=[&](long long x,long long e){long long y=1;for(;e;e>>=1,x=x*x%mod)if(e&1)y=y*x%mod;return y;};
+    vector<int> fixed;int u=0;
+    for(int x:a){assert(0<=x && x<=m);if(x==0)++u;else fixed.push_back(x);}
+    sort(fixed.begin(),fixed.end());
+    vector<long long> fac(u+1,1),invfac(u+1,1),choose(u+1),pows(u+1),qows(u+1);
+    for(int i=1;i<=u;++i)fac[i]=fac[i-1]*i%mod;
+    invfac[u]=power(fac[u],mod-2);
+    for(int i=u;i>0;--i)invfac[i-1]=invfac[i]*i%mod;
+    for(int j=0;j<=u;++j)choose[j]=fac[u]*invfac[j]%mod*invfac[u-j]%mod;
+    long long invm=power(m,mod-2),answer=0;
+    for(int t=1;t<=m;++t){
+        int high=fixed.end()-lower_bound(fixed.begin(),fixed.end(),t);
+        int need=n-k+1-high;
+        if(need<=0){answer=(answer+1)%mod;continue;}
+        if(need>u)continue;
+        long long p=(m-t+1)*invm%mod,q=(1-p+mod)%mod;
+        pows[0]=qows[0]=1;
+        for(int j=1;j<=u;++j){pows[j]=pows[j-1]*p%mod;qows[j]=qows[j-1]*q%mod;}
+        for(int j=need;j<=u;++j)answer=(answer+choose[j]*pows[j]%mod*qows[u-j])%mod;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)、[総数の期待値を、各組が成立する確率に分ける](/flowchartcp/techniques/expectation-indicators/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc295/editorial/6056)
+
+<TechniqueReferences techniqueId="expectation-order-statistic-tail" />

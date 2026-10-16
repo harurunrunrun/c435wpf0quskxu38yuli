@@ -1,0 +1,27 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2019_vision",
+    "title": "Vision Program",
+    "url": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+    "techniqueIds": [
+      "rotated-manhattan-two-mark-boolean-circuit"
+    ],
+    "features": [
+      "H×Wの二値画像に黒画素がちょうど二つあり、両者のマンハッタン距離がKかを全画像で判定する。",
+      "画像を読む前にNOT/AND/OR/XORゲート列を生成し、画像の入力セルまたは既に生成したゲートの出力だけを参照する。最後のゲート出力が答え。",
+      "原典H/W1..200、HW>=2、K1..H+W−2。10000ゲート・全1000000入力端子以内、NOTは1端子、空入力は禁止。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-08",
+    "notes": "黒画素がちょうど二つの未知画像に対して、マンハッタン距離がKかを判定するNOT/AND/OR/XOR列を、画像を見る前に生成する。ゲート数と全入力端子数の両方に制約があり、各ゲートは画像入力または以前の出力だけを参照し、最後の出力が答えになる。和と差の対角線番号の占有幅で距離を表し、接頭ORを共有して幅>Kの条件を二方向で構成し、B(K−1) AND NOT B(K)を最終ゲートにすれば適用できる。",
+    "discoveredBy": "ioi-2019",
+    "difficulty": null,
+    "exactDateVerified": true
+  }
+]

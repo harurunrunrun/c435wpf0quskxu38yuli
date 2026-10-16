@@ -1,0 +1,64 @@
+---
+title: "二分探索"
+description: "単調な判定結果が切り替わる位置を、探索範囲を半分にしながら求める。"
+techniqueId: binary-search
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+単調な判定結果が切り替わる位置を、探索範囲を半分にしながら求める。
+
+## 使う場面
+
+昇順の配列から値の位置を探すときや、条件を満たす最小値・最大値を求めるときに使う。
+
+最適な値を直接求めるのが難しくても、「答えを $x$ 以下にできるか」の判定はできる場合がある。$x$ を大きくするほど条件が緩くなるなら、成立し始める境界を二分探索できる。これを答えの二分探索と呼ぶ。
+
+## 考え方
+
+整数の探索範囲を $[l,r)$ とする。判定結果が、不成立の後に成立へ一度だけ切り替わる場合を考える。中央の値が成立するなら答えは中央以下にあるので右半分を捨てる。不成立なら中央より大きい側を残す。
+
+判定の意味を先に決め、値を増やしたときに成立しやすくなるのかを確認する。実数を探す場合は、必要な精度に合わせて反復回数や終了する区間幅を決める。
+
+## 適用条件
+
+判定結果が単調であることと、答えを含む探索範囲が必要になる。「合計がちょうど $x$ になるか」のような条件は、一般には単調でない。
+
+判定関数は同じ値に対して常に同じ結果を返す必要がある。判定中に配列を書き換える場合は、次回にその変更が残らないようにする。中点の計算だけでなく、判定内の積や和のオーバーフローにも注意する。
+
+## なぜ正しいか
+
+成立し始める位置は、現在の探索区間かその右端にあるという条件を保つ。中央が成立した場合は、その右側に最初の成立位置はない。中央が不成立の場合は、中央以下に成立位置はない。このため、捨てる側に答えを取り残すことはない。区間が空になるまで繰り返すと、残った位置が境界になる。
+
+## 計算量
+
+探索範囲の幅を $U$、1回の判定時間を $T$ とすると、時間は $O(T\log U)$。二分探索自体の追加空間は $O(1)$ で、判定関数が使う空間は別に必要になる。
+
+## 実装
+
+`first_true(lo, hi, good)` は区間 $[lo,hi)$ で `good` が初めて成立する位置を返す。一度も成立しない場合は、呼び出し時の `hi` を返す。この右端の値は判定しない。中点にはC++20の `std::midpoint` を使う。
+
+```cpp
+#include <numeric>
+#include <cassert>
+using namespace std;
+template<class Predicate>
+long long first_true(long long lo, long long hi, Predicate good) {
+    assert(lo<=hi);
+    while(lo<hi) {
+        long long mid=midpoint(lo,hi); // C++20: overflow-safe
+        if(good(mid)) hi=mid;
+        else lo=mid+1;
+    }
+    return lo;
+}
+```
+
+## 関連する手法
+
+[尺取り法](/flowchartcp/techniques/two-pointers/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [USACO Guide: Binary Search](https://usaco.guide/silver/binary-search)
+
+<TechniqueReferences techniqueId="binary-search" />

@@ -1,0 +1,133 @@
+---
+title: "繰り返し足して作れる合計額を、剰余ごとの最小値から数える"
+description: "使える最小の正数を法にすると、各剰余で作れる額は最小値からの等差数列になります。金額の上限ではなく、法の大きさだけを状態数にします。"
+techniqueId: residue-shortest-representable-count
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+非負整数 $a_1,\ldots,a_K$ をそれぞれ何度でも足せます。作れる合計額のうち、区間 $[L,R]$ に入る**異なる合計額の個数**を求めます。合計額の上限が大きく、通常の到達可能性 DP をその上限まで作れないときに使います。
+
+見るべき小さい量は、使える最小の正数 $m$ です。例えば上限が $10^{12}$ でも、$m$ が数十万なら、金額を $m$ で割った余りだけを状態にできます。足し方の個数を求める問題とは区別します。
+
+## 考え方
+
+剰余 $r$ ごとに、その剰余を持つ作れる合計額の最小値 $d_r$ を求めます。合計額 0 は作れるので $d_0=0$ です。
+
+頂点を $0,1,\ldots,m-1$ とし、各数 $a_i$ について
+
+$$
+r\longrightarrow (r+a_i)\bmod m
+$$
+
+という重み $a_i$ の辺を考えます。始点 0 からの最短距離が $d_r$ です。全ての辺の重みが非負なので Dijkstra 法で計算します。辺を全て保存せず、取り出した頂点から $K$ 種類の足し算を試します。
+
+$m$ 自体を何度でも足せるため、剰余 $r$ で作れる合計額は、到達できる場合に限り
+
+$$
+d_r,\ d_r+m,\ d_r+2m,\ldots
+$$
+
+の全てです。したがって $X$ 以下の個数は
+
+$$
+F(X)=\sum_{r:\ d_r\le X}
+\left(\left\lfloor\frac{X-d_r}{m}\right\rfloor+1\right)
+$$
+
+となり、答えは $F(R)-F(L-1)$ です。$X<0$ なら $F(X)=0$ とします。
+
+## 適用条件
+
+- 同じ数を無制限に使え、足し算だけで合計額が決まります。使用回数の上限や「ちょうど何個使う」という条件は、この状態から復元できません。
+- 使う数は非負です。0 は到達可能な合計額を増やさないので除けます。正数が一つもなければ作れる合計額は 0 だけです。
+- 最小の正数 $m$ 個の状態を保存でき、$Km$ 本相当の遷移を処理できることを確認します。金額の上限が大きいことだけでは、この方法が速いとは限りません。
+- 数の最大公約数が 1 である必要はありません。到達できない剰余は無限大のままにして数えません。
+
+掲載実装は各数と区間端を符号付き 64 bit 整数で受け取り、最小の正数を 500000 以下に制限します。負の区間端にも対応します。距離・個数・`L-1` の計算には `__int128` を使います。例えば数が 1 で区間が $[0,2^{63}-1]$ なら、答えは $2^{63}$ であり、符号付き 64 bit 整数には収まりません。
+
+## なぜ正しいか
+
+辺を一つ進む操作は、使える数を一つ足す操作と一致します。従って 0 から剰余 $r$ に至る道の重みは全て作れる合計額であり、任意の作れる合計額も、その足し算を順に辿る道の重みになります。最短距離 $d_r$ は、その剰余で作れる合計額の最小値です。
+
+$d_r$ を作った後に $m$ を何回でも足せるので、$d_r+tm$ は全て作れます。逆に、同じ剰余の作れる合計額 $b$ は、最小性から $b\ge d_r$ であり、剰余が等しいので $b-d_r$ は $m$ の非負整数倍です。従って、この等差数列は作れる合計額を過不足なく表します。
+
+異なる剰余の等差数列は交わりません。それぞれについて区間内の項数を数えて足せば、同じ合計額を重複して数えません。
+
+## 計算量
+
+通常の金額 DP は、非負の上限 $R$ まで調べるなら $O(KR)$ 時間、$O(R)$ 空間です。
+
+剰余のグラフは頂点数 $m$、辺数 $Km$ です。掲載の優先度付きキューを使う実装は $O(Km\log(Km+1)+K)$ 時間です。距離が改善するたびに古い要素を残してキューへ追加するため、距離配列以外も含めた補助空間の上限は $O(Km+K)$ です。辺そのものを保存する必要はありません。頂点の減少キーを扱うヒープなら、キューの領域を $O(m)$ にできます。
+
+距離を求めた後は、一つの区間の個数を $O(m)$ 時間で求めます。区間が複数あっても距離は使い回せますが、掲載関数は一回の問い合わせごとに距離から作ります。正数がなければ入力の確認だけで $O(K)$ 時間です。
+
+## 実装
+
+`count_representable_sums(coins, left, right)` は、両端を含む区間で作れる合計額の個数を返します。空の `coins` も、0 だけの場合と同じです。負の数や逆転した区間は `invalid_argument`、最小の正数が上限を超える場合は `length_error` にします。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+__int128 count_representable_sums(const vector<long long>& coins,
+                                  long long left, long long right) {
+    using i128 = __int128;
+    if (left > right) throw invalid_argument("left > right");
+    long long minimum = LLONG_MAX;
+    bool has_positive = false;
+    for (long long coin : coins) {
+        if (coin < 0) throw invalid_argument("negative coin");
+        if (coin > 0) {
+            has_positive = true;
+            minimum = min(minimum, coin);
+        }
+    }
+    if (!has_positive) return left <= 0 && 0 <= right ? 1 : 0;
+    if (minimum > 500000) throw length_error("modulus exceeds 500000");
+    const int modulus = int(minimum);
+    const i128 infinity = i128(1) << 120;
+    vector<i128> distance(modulus, infinity);
+    using State = pair<i128, int>;
+    priority_queue<State, vector<State>, greater<State>> queue;
+    distance[0] = 0;
+    queue.emplace(0, 0);
+    while (!queue.empty()) {
+        auto [cost, from] = queue.top();
+        queue.pop();
+        if (distance[from] != cost) continue;
+        for (long long coin : coins) {
+            if (coin == 0) continue;
+            int to = (from + int(coin % modulus)) % modulus;
+            i128 candidate = cost + i128(coin);
+            if (candidate < distance[to]) {
+                distance[to] = candidate;
+                queue.emplace(candidate, to);
+            }
+        }
+    }
+    auto prefix_count = [&](i128 upper) {
+        i128 result = 0;
+        if (upper < 0) return result;
+        for (i128 first : distance) {
+            if (first <= upper) result += (upper - first) / modulus + 1;
+        }
+        return result;
+    };
+    return prefix_count(i128(right)) - prefix_count(i128(left) - 1);
+}
+```
+
+距離は、一つの単純路に含まれる高々 $m-1$ 本の辺の重み以下です。掲載条件では $m\le500000$、各重みは符号付き 64 bit の正数なので、距離の上限は `__int128` と掲載の無限大より十分小さくなります。到達不能な剰余を、区間内の値と取り違えることもありません。
+
+## 関連する手法
+
+- [Dijkstra法](/flowchartcp/techniques/dijkstra/)
+- [商が変わらない範囲をまとめる](/flowchartcp/techniques/quotient-blocks/)
+
+## 参考資料
+
+- [洛谷 P2371「墨墨的等式」原典](https://www.luogu.com.cn/problem/P2371)
+
+<TechniqueReferences techniqueId="residue-shortest-representable-count" />

@@ -1,0 +1,92 @@
+---
+title: "各位置で異なる値を置く並べ替えは、等値区間から安全な巡回ずらしを選ぶ"
+description: "値の頻度の和を確認し、整列した二列の等値区間が重ならないずらし量を一回で決める。"
+techniqueId: unequal-multiset-cyclic-shift
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+列 $A$ を固定し、もう一つの多重集合 $B$ を並べ替えて、全ての位置で値を異ならせたい。値は重複してよく、$A$ と $B$ の多重集合自体も同じとは限らない。各要素を一つずつ対応させる一般の二部グラフを作ると、辺数が二次になる。
+
+## 考え方
+
+ある値 $v$ が $A$ に $a_v$ 個、$B$ に $b_v$ 個あるなら、$B$ の $v$ を置ける位置は $N-a_v$ 個。従って $a_v+b_v\le N$ を全値で確認する。
+
+両列を昇順に並べ、共通する値 $v$ の区間を $[l_A(v),r_A(v))$、$[l_B(v),r_B(v))$ とする。安全なずらしを
+
+$$s=\max\left(0,\max_v(r_B(v)-l_A(v))\right)$$
+
+として、整列後の位置 $i$ へ $B_{(i+s)\bmod N}$ を置く。$A$ の元の添字を残しておけば、最後に元の位置へ戻せる。$s=N$ になっても巡回ずらしは0として使う。
+
+## 適用条件
+
+全位置の禁止条件は、その位置の $A_i$ と同じ値だけで、$B$ は自由に並べ替えられる。同じ値の $B$ 同士は区別しない。位置ごとに別の禁止集合がある場合や、位置間の条件もある場合は、同じずらしの証明を使えない。
+
+実装は $N\le2\times10^5$、任意の64ビット値を扱う。入力は未整列でもよい。空の入力は空の並べ替え、実現不能なら `nullopt`。頻度条件は必要なだけでなく、この構築によって十分でもある。
+
+## なぜ正しいか
+
+等値が位置 $i$ と $j$ でぶつかるずらしは、整数区間
+
+$$l_B-r_A+1\le j-i\le r_B-l_A-1$$
+
+の値を $N$ で割った余りである。選んだ $s$ は全値で右端より大きい。
+
+さらに、共通値 $v,w$ の任意の組について
+
+$$r_B(v)-l_A(v)\le N+l_B(w)-r_A(w)$$
+
+が成り立つ。$v=w$ なら頻度条件そのもの。$v<w$ なら $r_B(v)\le l_B(w)$、$v>w$ なら $r_A(w)\le l_A(v)$ を使える。0も右辺以下なので、$s$ は全値で $N+l_B-r_A$ 以下となる。
+
+従って $s$ も $s-N$ も禁止区間に入らず、巡回しても等値はぶつからない。必要な頻度条件を満たす入力全てについて、合法な並べ替えを得られる。
+
+## 計算量
+
+全並べ替えの列挙は $O(NN!)$ 時間。一般の対応グラフには $O(N^2)$ 辺があり得る。等値区間と巡回ずらしなら、未整列入力で $O(N\log N)$ 時間・$O(N)$ 空間。原典のように整列済みなら、区間の走査と出力を $O(N)$ 時間で行える。
+
+## 実装
+
+返り値は元の $A$ の位置に対応する $B$ の並べ替え。共通する値の区間だけからずらしを決める。
+
+```cpp
+#include <algorithm>
+#include <optional>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+std::optional<std::vector<long long>> rearrange_to_unequal_values(const std::vector<long long>& a,
+                                                                std::vector<long long> b) {
+    int n=int(a.size());
+    if(a.size()!=b.size() || n>200000) throw std::invalid_argument("size");
+    if(n==0) return std::vector<long long>{};
+    std::vector<std::pair<long long,int>> sorted_a;
+    for(int i=0;i<n;++i) sorted_a.push_back({a[i],i});
+    std::sort(sorted_a.begin(),sorted_a.end());std::sort(b.begin(),b.end());
+    int left_a=0,left_b=0,shift=0;
+    while(left_a<n && left_b<n) {
+        long long va=sorted_a[left_a].first,vb=b[left_b];
+        if(va<vb) {while(left_a<n && sorted_a[left_a].first==va)++left_a;continue;}
+        if(va>vb) {while(left_b<n && b[left_b]==vb)++left_b;continue;}
+        int right_a=left_a+1,right_b=left_b+1;
+        while(right_a<n && sorted_a[right_a].first==va) ++right_a;
+        while(right_b<n && b[right_b]==vb) ++right_b;
+        if((right_a-left_a)+(right_b-left_b)>n) return std::nullopt;
+        shift=std::max(shift,right_b-left_a);
+        left_a=right_a;left_b=right_b;
+    }
+    std::vector<long long> answer(n);
+    for(int i=0;i<n;++i) answer[sorted_a[i].second]=b[(i+shift)%n];
+    return answer;
+}
+```
+
+## 関連する手法
+
+[重複しない二本の列の同位置一致を、強制する一致数で包除する](/flowchartcp/techniques/injective-coordinate-avoidance/) ・ [二部マッチング](/flowchartcp/techniques/matching/)
+
+## 参考資料
+
+- [AtCoder：F - Contrast（原典）](https://atcoder.jp/contests/abc178/tasks/abc178_f)。
+
+<TechniqueReferences techniqueId="unequal-multiset-cyclic-shift" />

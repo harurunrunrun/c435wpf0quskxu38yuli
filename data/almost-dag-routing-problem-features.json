@@ -1,0 +1,33 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1141",
+    "title": "Routing Schemes",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+    "techniqueIds": [
+      "almost-dag-edge-routing-pairing-frontier-cycle-count"
+    ],
+    "features": [
+      "複数の送り手から異なる受け手へ道を一本ずつ作り、全有向辺を合計一回ずつ使う経路分解の個数を求める。送り手と受け手の対応も別に数える。",
+      "頂点は再訪でき、送り手や受け手も道の途中で通ってよい。独立した閉じた成分は禁止するが、道が元グラフの有向サイクルを通り抜けることは許す。",
+      "自己ループ・多重辺なしの0/1有向グラフ。番号が減る辺は高々二本。原典N2..100、法1e9+7、T1..20、総N²<=20000。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021",
+    "publicationYear": 2021,
+    "publicationDatePrecision": "year",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "notes": "既存Euler一経路構築・頂点素DAG path coverとは別scope。法は一般APIで任意の正の32bitへ拡張。"
+  }
+]

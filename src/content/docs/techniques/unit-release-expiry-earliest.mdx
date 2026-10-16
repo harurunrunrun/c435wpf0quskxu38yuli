@@ -1,0 +1,72 @@
+---
+title: "利用できる時間帯がある一単位の仕事は、最も早く期限が来るものから処理する"
+description: "待機中の仕事を終了時刻順に管理し、何も処理できない時間は次の開始時刻まで飛ばします。"
+techniqueId: unit-release-expiry-earliest
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+仕事ごとに「今から処理できる時刻」と「最後に処理できる時刻」があり、各仕事の処理間隔は同じ。仕事の数は少なく、時刻だけが非常に大きい。
+
+## 考え方
+
+現在時刻までに利用可能になった仕事を、期限の最小ヒープへ追加する。期限が現在時刻より前の仕事を捨て、残っていれば最も期限の早い一件を処理して時刻を一つ進める。残っていなければ、次の未到着の仕事の開始時刻まで飛ぶ。
+
+閉区間 $[r_i,d_i]$ の仕事なら、$d_i=t$ は時刻 $t$ に処理できる。失効条件は $d_i<t$ とする。時刻が連続で印字自体は一瞬という設定でも、整数端点と一単位の間隔なら、整数時刻だけを考えてよい。
+
+## 適用条件
+
+全仕事が同じ一単位の処理間隔を使い、得る利益も一件ぶんで等しい。複数時間かかる仕事や、重要度が異なる仕事にはそのまま適用できない。開始・期限は非負整数。実装の上限は $2\times10^{18}$ として、最後の時刻に1を足せる余裕を残す。
+
+## なぜ正しいか
+
+固定した処理順を、最初から「開始時刻以上、かつ直前の処理から一単位後」の最早時刻へ寄せる。元の実数時刻より遅くならず、再帰的に整数時刻になるので、整数の最適解が存在する。
+
+時刻 $t$ に利用できる最早期限の仕事を $a$ とする。最適解がここで別の仕事 $b$ を処理し、後で $a$ を処理するなら交換する。$b$ は既に利用可能で、期限は $a$ 以上なので、後の時刻でも処理できる。$a$ を処理しない解なら、$b$ と置き換えて件数を保てる。何も処理しない解も、後の $a$ を前へ寄せるか一件追加できる。よって最早期限を処理する選択が安全である。
+
+処理可能な仕事がなければ次の開始まで何もできないので、空時間を飛ばしてよい。
+
+## 計算量
+
+全時刻を走査すると時間 $O(U+N\log N)$、空間 $O(N)$ で、最大時刻 $U$ が大きいと実行できない。到着・失効・処理の回数はいずれも高々 $N$ 回なので、時刻を飛ばすと時間 $O(N\log N)$、追加空間 $O(N)$。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <queue>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+int maximum_unit_jobs(std::vector<std::pair<long long,long long>> windows) {
+    if (windows.size()>200000) throw std::invalid_argument("too many jobs");
+    for (auto [r,d]:windows) if (r<0 || d<r || d>2000000000000000000LL)
+        throw std::invalid_argument("window bounds");
+    std::sort(windows.begin(),windows.end());
+    std::priority_queue<long long,std::vector<long long>,std::greater<long long>> available;
+    std::size_t next=0; long long time=0; int answer=0;
+    while (next<windows.size() || !available.empty()) {
+        if (available.empty() && next<windows.size()) time=std::max(time,windows[next].first);
+        while (next<windows.size() && windows[next].first<=time)
+            available.push(windows[next++].second);
+        while (!available.empty() && available.top()<time) available.pop();
+        if (available.empty()) continue;
+        available.pop(); ++answer; ++time;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder — Printing Machine](https://atcoder.jp/contests/abc325/tasks/abc325_d)
+- [公式解説](https://atcoder.jp/contests/abc325/editorial/7482)
+
+<TechniqueReferences techniqueId="unit-release-expiry-earliest" />

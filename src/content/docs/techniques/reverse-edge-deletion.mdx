@@ -1,0 +1,76 @@
+---
+title: "辺の削除を逆順の追加に変える"
+description: "連結性を壊す操作を反転し、成分サイズから頂点対の数を更新する。"
+techniqueId: reverse-edge-deletion
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+連結性を壊す操作を反転し、成分サイズから頂点対の数を更新する。
+
+## 使う場面
+
+無向グラフの辺が決まった順序ですべて削除される。各削除後に、互いに到達できない頂点対の個数を求めたい。削除のたびにグラフを探索し直す処理を省く。
+
+## 考え方
+
+すべて削除した辺のない状態から始め、辺を最後から戻す。初めの非連結な頂点対は $N(N-1)/2$ 個。サイズ $a,b$ の異なる成分を結ぶと、その間の $ab$ 組が新しく連結になるので、答えから $ab$ を引く。
+
+辺 $i$ を戻す直前の状態が、順方向で辺 $i$ までを削除した直後の状態に対応する。この時点の答えを元の位置へ保存する。
+
+## 適用条件
+
+削除列が先に分かり、辺を逆方向で追加だけとして扱える場合に使う。同じ成分内の辺を戻しても、新しく連結になる頂点対はない。成分サイズの積は32ビットを超える場合がある。
+
+## なぜ正しいか
+
+逆順で辺 $i$ を戻す前には、辺 $i+1$ 以降だけが存在する。これは順方向で辺 $i$ を削除した後と同じグラフである。異なる成分の頂点対は、辺を追加するとすべて到達可能になり、その他の関係は変わらない。
+
+## 計算量
+
+毎回探索すると $O(Q(N+Q))$ 時間。逆順のUnion-Findでは $O((N+Q)\alpha(N))$ 時間、$O(N+Q)$ 空間で処理できる。
+
+## 実装
+
+`disconnected_pairs_after_deletions` は、与えられた順にすべての辺を削除した直後の答えを返す。頂点番号は0から。辺が初期グラフをすべて表していることを前提にする。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+struct SizeDSU {
+    std::vector<int> p;
+    explicit SizeDSU(int n):p(n,-1) {}
+    int root(int v) { return p[v]<0?v:p[v]=root(p[v]); }
+    int size(int v) { return -p[root(v)]; }
+    bool merge(int a,int b) {
+        a=root(a);b=root(b);
+        if(a==b) return false;
+        if(p[a]>p[b]) std::swap(a,b);
+        p[a]+=p[b];p[b]=a;
+        return true;
+    }
+};
+#include <utility>
+std::vector<long long> disconnected_pairs_after_deletions(int n,const std::vector<std::pair<int,int>>& edges) {
+    SizeDSU dsu(n);long long disconnected=1LL*n*(n-1)/2;
+    std::vector<long long> answer(edges.size());
+    for(int i=int(edges.size())-1;i>=0;--i) {
+        answer[i]=disconnected;
+        auto [u,v]=edges[i];
+        if(dsu.root(u)!=dsu.root(v)) {
+            disconnected-=1LL*dsu.size(u)*dsu.size(v);dsu.merge(u,v);
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[逆順処理](/flowchartcp/techniques/reverse-thinking/) ・ [Union-Find](/flowchartcp/techniques/union-find/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC120 D](https://img.atcoder.jp/abc120/editorial.pdf)
+
+<TechniqueReferences techniqueId="reverse-edge-deletion" />

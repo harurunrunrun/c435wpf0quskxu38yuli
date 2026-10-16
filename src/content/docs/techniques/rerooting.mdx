@@ -1,0 +1,75 @@
+---
+title: "全方位木DP"
+description: "一つの木で根を変えたときの答えを、辺の両方向の情報からまとめて求める。"
+techniqueId: rerooting
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+一つの木で根を変えたときの答えを、辺の両方向の情報からまとめて求める。
+
+## 使う場面
+
+各頂点からの距離の合計や最遠距離など、すべての頂点について同じ種類の答えを求めるときに使う。頂点ごとに木DPをやり直すと二乗時間になるが、根を隣へ動かしたときの変化を使えば、結果を共有できる。
+
+## 考え方
+
+まず一つの頂点を根として、子の部分木から来る情報を計算する。次に親側から来る情報を子へ渡し、すべての方向の情報をそろえる。
+
+距離の合計を求める例では、子の部分木の頂点数を $s$、木全体を $N$ とする。親から子へ根を移すと、部分木の $s$ 個は距離が1減り、残りの $N-s$ 個は1増える。したがって距離の合計は $N-2s$ だけ変わる。
+
+## 適用条件
+
+各辺の向こう側の情報を定義し、一つの隣接部分木を除いた合成を効率よく求められることが必要になる。一般には、隣接辺の列に対する先頭からと末尾からの累積を使う。
+
+最大値から一つを除く操作や、法を取った積から一つを割る操作は、単純な引き算・割り算ではできない場合がある。順序に依存する合成では、隣接辺の順序も保つ。
+
+## なぜ正しいか
+
+最初の走査で子側の情報が求まり、二回目の走査では確定した親側の情報を子に渡せる。子へ送る際にその子からの情報を除くことで、情報の循環を避けられる。
+
+距離和の更新式は、頂点を子の部分木とそれ以外に分け、それぞれの距離の増減を足したものなので、根を移した後の正しい答えになる。
+
+## 計算量
+
+各方向の合成を定数時間で行えるなら、時間・空間ともに $O(N)$。次数の大きい頂点で「一つを除く」計算を毎回やり直すと、二乗時間になる場合がある。
+
+## 実装
+
+`all_distance_sums` は、各頂点から全頂点への距離の合計を返す。入力は各辺の長さが1の連結な無向木とする。長さ $w$ の辺を越えて根を移す場合は、距離和の変化が $w(N-2s)$ になる。
+
+```cpp
+#include <vector>
+using namespace std;
+vector<long long> all_distance_sums(const vector<vector<int>>& g) {
+    int n=g.size();
+    if(n==0) return {};
+    vector<int> parent(n,-1),order{0},size(n,1);
+    vector<long long> down(n),answer(n);
+    parent[0]=0;
+    for(int i=0;i<int(order.size());++i)
+        for(int u:g[order[i]]) if(u!=parent[order[i]]) {
+            parent[u]=order[i]; order.push_back(u);
+        }
+    for(int i=n-1;i>0;--i) {
+        int v=order[i],p=parent[v];
+        size[p]+=size[v];
+        down[p]+=down[v]+size[v];
+    }
+    answer[0]=down[0];
+    for(int i=1;i<n;++i) {
+        int v=order[i];
+        answer[v]=answer[parent[v]]+n-2LL*size[v];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [USACO Guide: DP on Trees — All Roots](https://usaco.guide/gold/all-roots)
+
+<TechniqueReferences techniqueId="rerooting" />

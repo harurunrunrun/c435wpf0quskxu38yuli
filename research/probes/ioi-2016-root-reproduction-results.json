@@ -1,0 +1,86 @@
+{
+  "scope": "IOI2016 fixed six competition tasks; independent research prototypes only",
+  "productionImplementationValidated": false,
+  "baseline": {
+    "rawFilesVerified": 1431,
+    "coreRawFiles": 959,
+    "publicRawFiles": 472,
+    "initialCounts": {
+      "allTechniqueMdx": 504,
+      "metadataRecords": 504,
+      "referenceRecords": 525,
+      "flowcharts": 471,
+      "walks": 525,
+      "oldCorpusAudits": 9
+    },
+    "ledgerSha256": "dd7151810d712521a5f3f19c206eecb7630c3b9688575c6243dee4b170992a56"
+  },
+  "molecules": {
+    "allSortedWeightArraysN1to8Weights1to6": 3002,
+    "allSubsetAssignmentsRepresented": 471040,
+    "validRangeCases": 234228,
+    "missingGapGuardCounterexample": {
+      "w": [
+        2,
+        3,
+        7
+      ],
+      "l": 9,
+      "u": 9,
+      "arbitrarySubset": [
+        0,
+        2
+      ],
+      "sortedContiguousWindowExists": false
+    },
+    "verified": "Positive sorted window search equals independent exact all-subset sum-set DP existence for all tested valid-width ranges. Cardinality window sums are monotone and jump by at most max−min<=u−l. Sorting retains original indices in future API.",
+    "unconfirmed": "Complete reusable C++20/API/invalid/overflow/full-scale checker not created."
+  },
+  "railroad": {
+    "allSectionArraysN2to4Speeds1to3": 7371,
+    "randomN2to8": 160,
+    "literalSectionPermutations": 1174270,
+    "verified": "Auxiliary maxspeed→1 edge, per-coordinate-cut balance correction and component MST equal ALL literal section orderings. Repeated endpoints/self-sections are included.",
+    "unconfirmed": "No production Euler/sweep/DSU C++ API, source-scale resource/overflow/exception/sanitizer validation yet."
+  },
+  "shortcut": {
+    "allSmallNetworksN2to4": 1548,
+    "randomN2to10": 1800,
+    "decisionThresholdsCompared": 21861,
+    "verified": "All actual augmented-graph Floyd diameters over EVERY legal express endpoint pair equal rotated-square constraints AND independent O(N) decision sweep. GuardK>=topTwoBranchLengths implies eligible distinct i automatically i<j; exclude self with two extrema by different indices. Keep c in all four bounds. Discrete distinct endpoints use V-shaped lower-bound pointer. Sort x−d/x+d once, then binary answer in O(NlogN+NlogDiameter).",
+    "unconfirmed": "Research prototype sorts sweep order per invocation; production must cache sorting once. No full N1million implementation, exception/64bit/sanitizer/API validation yet."
+  },
+  "paint": {
+    "allConsistentCluesAndPartialRowsN1to8": 62701,
+    "literalFullSolutionRevealPairs": 86870,
+    "verified": "Prefix/suffix feasibility and per-block range marking equal color intersection/union across every literal full binary solution consistent with each observation, including mandatory black/white separation sentinels. O(NK), full K100/N200000 state bound identified.",
+    "unconfirmed": "No production reusable memory-bounded C++20/API, inconsistent-input policy, maximum/sanitizer validation yet."
+  },
+  "messy": {
+    "allPermutationsN1_2_4_8": 40347,
+    "randomOriginalN32_128": 400,
+    "exactCounts": {
+      "32": {
+        "writes": 80,
+        "reads": 160
+      },
+      "128": {
+        "writes": 448,
+        "reads": 896
+      }
+    },
+    "verified": "Literal compile maps output bit i to original bit p[i]; restored output is p, not inverse. Fixed precompile partition masks use outside ones and one left-half marker. Different levels have different weights, same-level blocks have disjoint zero supports. Exactly one compile after all writes; reads only later; worst448writes/896reads at128 fits strict full limits.",
+    "unconfirmed": "No callback-template C++20/state/error/source-scale resource validation yet; character operations O(N²logN), oracle calls O(NlogN)."
+  },
+  "aliens": {
+    "allNonemptyIntervalInterestSubsetsM1to4": 1094,
+    "literalSquarePhotoSubsets": 437,
+    "requestedPhotoLimitsCompared": 7432,
+    "discreteConvexityChecks": 1038,
+    "exactPenaltyAndTieComparisons": 23532,
+    "randomM1to49": 1400,
+    "verified": "Literal UNION of actual square cell bitmaps matches containment-filtered overlap-subtracted partition DP, monotone lower hull penalty DP, and integer penalty search. Pairwise Monge nested-edge exchange proves discrete convexity via rebalancing q−1/q+1 paths toq/q; lex encoded count selects fewer photos; integer slopes justify G(lambda)−lambda*k even count jumps.",
+    "unconfirmed": "No production 1e5/N/m1e6 API/128-bit cross arithmetic/tie/maximum/sanitizer validation yet. Research DP quadratic, penalty prototype linear hull, no completed article."
+  },
+  "elapsedSeconds": 8.469273338996572
+}

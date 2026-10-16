@@ -1,0 +1,81 @@
+---
+title: "XORと二数の1の個数を指定した構築は、異なる桁と共通の1へ分ける"
+description: "XORで決まる不一致の個数から、両方1になる桁数を引き出す。"
+techniqueId: xor-popcount-construction
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+$B$ ビットの二数 $X,Y$ を構築し、$\operatorname{popcount}(X)=a$、$\operatorname{popcount}(Y)=b$、$X\mathbin{\mathrm{XOR}}Y=C$ を同時に満たす必要がある。数値を試す代わりに、桁の種類ごとの必要個数を求めたい。
+
+## 考え方
+
+$c=\operatorname{popcount}(C)$ とする。$C$ の1の桁は、$X,Y$ の一方だけが1である。0の桁は両方0か両方1になる。
+
+両方1の桁数を $t$ とすると、二数の1の合計は $a+b=c+2t$。よって
+
+$$t=\frac{a+b-c}{2},\qquad X\text{ だけ1の個数}=a-t,\qquad Y\text{ だけ1の個数}=b-t.$$
+
+これらが非負整数で、$t\le B-c$ なら構築できる。$C$ の1の桁を $a-t$ 個だけ $X$ に割り当て、残りを $Y$ に割り当てる。$C$ の0の桁から $t$ 個を選び、両方1にする。
+
+## 適用条件
+
+二数の上限は $2^B$ という共通のビット幅だけで、任意の成立する組を一つ求める。任意の上限 $K$ や大小制約があると、桁の個数だけでは十分でない。辞書順最小の組も、この実装は保証しない。
+
+掲載実装は $1\le B\le64$、$0\le a,b\le B$、$C$ は $B$ ビットの符号なし整数。0、全て1、64ビット最上位の1を扱う。入力が範囲外なら例外、範囲内だが構築不能なら空の `optional` を返す。原典の幅は60ビット。
+
+## なぜ正しいか
+
+任意の解は、異なる $c$ 桁で1を一個ずつ使い、両方1の各桁で1を二個ずつ使う。このため $t$ の式と各個数の非負性は必要で、共通の1を置くには0の桁が少なくとも $t$ 個必要になる。
+
+条件が成立すれば、異なる桁の二群の大きさは $(a-t)+(b-t)=c$ で全てを過不足なく埋められる。共通の1はそれ以外の桁へ置くためXORを変えない。完成した二数の1の個数はそれぞれ $a,b$ となり、全条件が成立する。
+
+## 計算量
+
+$X$ を全て試し、$Y=X\mathbin{\mathrm{XOR}}C$ を調べると時間 $O(B2^B)$、追加空間 $O(1)$。必要個数を計算して桁を埋めれば時間 $O(B)$、追加空間 $O(1)$。固定幅の `popcount` 自体を定数時間としても、構築に $B$ 桁の走査が必要。
+
+## 実装
+
+```cpp
+#include <bit>
+#include <cstdint>
+#include <optional>
+#include <stdexcept>
+#include <utility>
+std::optional<std::pair<std::uint64_t,std::uint64_t>> construct_xor_popcounts(
+    int a, int b, std::uint64_t c, int bits=60) {
+    if(bits<1 || bits>64 || a<0 || a>bits || b<0 || b>bits ||
+       (bits<64 && (c>>bits)!=0)) throw std::invalid_argument("range");
+    int different=std::popcount(c);
+    int twice_common=a+b-different;
+    if(twice_common<0 || twice_common%2) return std::nullopt;
+    int common=twice_common/2;
+    int only_x=a-common, only_y=b-common;
+    if(only_x<0 || only_y<0 || common>bits-different) return std::nullopt;
+    std::uint64_t x=0,y=0;
+    for(int k=0;k<bits;++k) {
+        std::uint64_t bit=std::uint64_t{1}<<k;
+        if(c&bit) {
+            if(only_x>0) {x|=bit;--only_x;}
+            else {y|=bit;--only_y;}
+        } else if(common>0) {
+            x|=bit; y|=bit; --common;
+        }
+    }
+    return std::pair{x,y};
+}
+```
+
+## 関連する手法
+
+- [二数のANDと和を指定するなら、共通の1を二回引いて残りとの重なりを調べる](/flowchartcp/techniques/and-sum-disjoint-remainder/)
+- [少数の整数のOR条件は、各ビットの割当数を別々に数えて掛ける](/flowchartcp/techniques/bitwise-or-constraint-count/)
+
+## 参考資料
+
+- [AtCoder — Popcount and XOR](https://atcoder.jp/contests/abc347/tasks/abc347_d)
+- [公式解説](https://atcoder.jp/contests/abc347/editorial/9691)
+
+<TechniqueReferences techniqueId="xor-popcount-construction" />

@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "allNSpatialStructureCases": 200000,
+  "oracle": "suffix subtree split: S=1+Sleft+Sright,T=span+Tleft+Tright; all-dead child contributes zero",
+  "maxS": {
+    "value": 200012,
+    "firstN": 200000
+  },
+  "maxT": {
+    "value": 3836286,
+    "firstN": 200000
+  },
+  "negativeControls": {
+    "wrongTimePrefixPruningN4": {
+      "switches": 7,
+      "fullScoreIntegerBound": 6,
+      "correctSpatialPruningSwitches": 6
+    }
+  },
+  "checksum": "9839057549024960597",
+  "memoStates": 331089,
+  "seconds": 0.8766709799965611,
+  "articleSha256": "95d536213fd20810ae198622fd8acb7edab07d73a27cf348acb5907e39a263eb"
+}

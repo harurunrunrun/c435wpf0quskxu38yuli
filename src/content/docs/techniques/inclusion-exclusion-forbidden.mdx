@@ -1,0 +1,65 @@
+---
+title: "全ての指定文字を含む列を、欠ける文字から数える"
+description: "必須文字が少ないとき、使われない文字の集合について包除を行います。"
+techniqueId: "inclusion-exclusion-forbidden"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$A$ 種類の文字で長さ $N$ の列を作り、指定された $R$ 種類を全て少なくとも一度含めたいとき。文字の順序や隣接に制約がない場合です。
+
+## 考え方
+
+必須文字の集合の部分集合 $S$ が全て使われない列は $(A-|S|)^N$ 個です。答えは
+
+$$\sum_{S\subseteq\{1,\ldots,R\}}(-1)^{|S|}(A-|S|)^N.$$
+
+$R=2$ なら $A^N-2(A-1)^N+(A-2)^N$。部分集合ではなく大きさごとにまとめれば $\sum_{s=0}^R(-1)^s\binom Rs(A-s)^N$ にもできます。
+
+## 適用条件
+
+法は正整数とします。必須文字は互いに異なり、$0\le R\le A$。下の部分集合実装は $R\le20$ 向け。文字ごとの使用回数制限や禁止する隣接関係がある場合、単純な累乗で補集合を数えられません。
+
+## なぜ正しいか
+
+必須文字が $t$ 種類欠けた列の係数は $\sum_{s=0}^t(-1)^s\binom ts=(1-1)^t$。全部含む列だけが係数 1 で残ります。
+
+## 計算量
+
+使用済み集合を持つ DP は $O(N A 2^R)$。包除の部分集合版は $O(2^R\log(N+1))$ 時間、$O(1)$ 空間。大きさ別の版は組合せの準備後 $O(R\log(N+1))$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long include_all_symbols(int alphabet, int required, long long n,
+                              long long mod = 1000000007) {
+    assert(0 <= required && required <= 20 && required <= alphabet);
+    auto power = [&](long long a) {
+        long long out=1;
+        for (long long e=n; e; e>>=1, a=(__int128)a*a%mod)
+            if(e&1) out=(__int128)out*a%mod;
+        return out;
+    };
+    assert(mod > 0);
+    long long ans=0;
+    for (unsigned mask=0; mask<(1u<<required); ++mask) {
+        int count=__builtin_popcount(mask);
+        long long v=power(alphabet-count);
+        ans=((__int128)ans+(count%2 ? mod-v : v))%mod;
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [AtCoder：Ubiquity の公式解説](https://atcoder.jp/contests/abc178/editorial/104)
+
+<TechniqueReferences techniqueId="inclusion-exclusion-forbidden" />

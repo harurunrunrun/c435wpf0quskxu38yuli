@@ -1,0 +1,666 @@
+{
+  "techniqueId": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+  "auditGapId": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2017-books-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2017-books-checker.py",
+    "normalResult": "/tmp/flowchartcp-ioi2017-books-normal.json",
+    "asanUbsanResult": "/tmp/flowchartcp-ioi2017-books-asan.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/permutation-cycle-interval-closure-two-sided-walk-greedy.mdx",
+    "checker": "scripts/check_permutation_single_book_walk_cpp.py",
+    "metadataGroup": "range-patterns",
+    "metadataFile": "data/techniques-specific-range-patterns.json",
+    "referenceFile": "data/references-specific-range-patterns.json",
+    "feature": "data/single-book-sort-walk-problem-features.json"
+  },
+  "metadata": {
+    "id": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+    "title": "一冊だけ持って並べ替える歩行距離を、サイクルの閉包で求める",
+    "summary": "本を一冊だけ持って直線上を歩き、置換を完成して開始位置へ戻る。運搬距離の下界に、サイクルを取り込むための往復距離を足し、左右の探索を線形時間で比較する。",
+    "aliases": [
+      "IOI 2017 Ancient Books",
+      "一冊持ちの棚の並べ替え",
+      "cycle interval closure first-cross greedy",
+      "旧Libraryの線形歩行距離解法"
+    ],
+    "family": "順列のサイクルと直線上の運搬距離",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "permutation-cycle-minimum-swaps"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+    "source": "IOI",
+    "problemId": "ioi2017_books",
+    "title": "古文書 (Ancient Books)",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+    "evidence": "一冊だけを持って直線上の順列を直し、開始位置へ戻る最小歩行距離。各本の必要運搬距離和を下界とし、実頂点に触れたサイクルだけを区間閉包へ取り込む。閉包外へ一歩出る往復費用を、左右で初めて反対側へ広がるサイクルまで比較する。同じ閉包へ合流する場合は安い側、合流しない場合は両側の費用を払う。新しい境界位置だけを走査し、原典100万位置をO(N)時間・空間、64bitで扱う。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "contest": {
+      "name": "IOI 2017",
+      "division": "Main competition",
+      "year": 2017,
+      "day": 2,
+      "date": "2017-08-01"
+    },
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "最終ISC原典3頁・公式翻訳KOR/MNGのindexed primary numeric本文・Day2 Notice1頁を再読。公式アーカイブのEditorialはDaniel Graf署名のLibrary旧稿15頁で、同じ一冊運搬モデルの下界/閉包/線形手順を確認し、旧booksort(N,S,order)と旧制約表を現行minimum_walk(p,s)と区別。実頂点条件、切れ目ごとの追加費用下界、最初の橋の共通閉包、線形償却を独立補足。実MDX C++20を物理0-1BFS/別指数cycle-subset DP/別全interval DP、全小順列/反転と逆順列/最大/例外/反復/通常ASan+UBSanで検証。公式generic署名とNotice型対応からby-value C++adapterを導出、実zip header未取得を明示。初回研究positiveを変更せず、実article/ref/rootwalkと独立review後にresolutionだけ追加する。"
+  },
+  "problemFeatureProposal": {
+    "source": "IOI",
+    "problemId": "ioi2017_books",
+    "title": "古文書 (Ancient Books)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "直線上の各位置に本が一冊ずつあり、それぞれの移動先が順列で与えられる。",
+      "一度に一冊だけ持ち、交換・拾う・置く操作は無料。並べ替えて開始位置へ戻るまでの最小歩行距離を求める。",
+      "位置間隔は1、位置数は1〜100万。開始位置と順列は0始まりで、答えは64bitで求める。"
+    ],
+    "entryGraphId": "ranges",
+    "choices": [
+      "sequence-changes",
+      "reorder-cost",
+      "single-book-walk",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "permutation-cycle-interval-closure-two-sided-walk-greedy"
+    ],
+    "conditions": [
+      "permutation-line",
+      "one-held-return",
+      "bounds"
+    ],
+    "date": "2017-08-01",
+    "difficulty": null,
+    "publicationDate": "2017-08-01",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "flowProposal": {
+    "entryGraphId": "ranges",
+    "parentGraphId": "range-sequence-changes",
+    "parentNodeId": "reorder-operation",
+    "parentChoiceId": "single-book-walk",
+    "parentChoiceLabel": "一つだけ持って直線上を歩き、並べ替えて開始位置へ戻る",
+    "canonicalChoices": [
+      "sequence-changes",
+      "reorder-cost",
+      "single-book-walk",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "detailGraphId": "single-book-sort-walk-conditions",
+    "guards": [
+      {
+        "id": "permutation-line",
+        "question": "直線上の全位置に一つずつ物があり、移動先は同じ位置集合の順列ですか？",
+        "explanation": "各位置の間隔は1で、位置iからjへ歩く距離は絶対値|i−j|です。物や目的位置の重複・欠落はありません。"
+      },
+      {
+        "id": "one-held-return",
+        "question": "一度に一つだけ持ち、拾う・交換・置く操作は無料で、開始位置へ戻るまでの最小歩行距離を求めますか？",
+        "explanation": "物を置く先は空き位置である必要があります。手持ちとその位置の物は交換でき、歩行だけを費用として数えます。"
+      },
+      {
+        "id": "bounds",
+        "question": "位置数は1〜100万で、順列と開始位置を0始まりで与えられますか？",
+        "explanation": "答えは32bitを超え得るため、64bitで返します。完成済みの順列でも開始位置は範囲内で指定します。"
+      }
+    ],
+    "yesTarget": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+    "eachNoOrUnknownTarget": "condition-check",
+    "oldCanonicalInitialRoutePreserved": {
+      "entryGraphId": "ranges",
+      "choices": [
+        "sequence-changes",
+        "reorder-cost"
+      ],
+      "actualStopGraphId": "range-sequence-changes",
+      "actualStopNodeId": "reorder-operation",
+      "actualStopType": "question",
+      "existingOptions": [
+        "move-position",
+        "swap-and-adjust",
+        "unknown"
+      ]
+    },
+    "note": "分岐案のみ。最終canonicalやmetadata groupの接続は親が選び、旧回答/手順を保持する。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+    "statementPages": 3,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+    "editorialPages": 15,
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+    "noticePages": 1,
+    "archiveIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/",
+    "officialDateIndexUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "contestDate": "2017-08-01",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "numericEvidenceUrls": [
+      "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-MNG.pdf"
+    ],
+    "reproducibleSearchQueries": [
+      "site:ioi.te.lv/locations/ioi17/contest/day2/books \"Constraints\" \"000\""
+    ],
+    "numericRetrieval": "Read official ISC/Notice text and primary archive KOR/MNG indexed search text restoring numeric extraction loss. No unread PDF image sight claim.",
+    "originalConstraints": {
+      "N": [
+        1,
+        1000000
+      ],
+      "start": "0..N−1",
+      "p": "permutation of0..N−1, p[i] is initial book label and its destination position",
+      "heldCapacity": 1,
+      "freeOperations": [
+        "pick up when empty-handed",
+        "swap held/current books",
+        "put down into empty position"
+      ],
+      "cost": "absolute difference of positions walked; finish at same initial position",
+      "originalGenericApi": "int64 minimum_walk(int[] p,int s)",
+      "sample": {
+        "p": [
+          0,
+          2,
+          3,
+          1
+        ],
+        "s": 0,
+        "answer": 6
+      },
+      "finalSubtaskScores": [
+        12,
+        10,
+        28,
+        20,
+        30
+      ],
+      "officialNoticeTimeSeconds": 2,
+      "officialNoticeMemoryMB": 1024
+    },
+    "cppSignatureEvidence": {
+      "primaryStatementGenericSignature": "int64 minimum_walk(int[] p,int s)",
+      "primaryNoticeMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>",
+        "int": "int"
+      },
+      "derivedExactCppSignature": "long long minimum_walk(std::vector<int> p,int s)",
+      "primaryCppHeaderRetrieved": false,
+      "primaryHeaderStatus": "No official books.zip/header bytes retrieved or claimed. Exact C++ adapter is derived from final generic statement and primary Day2 Notice, not guessed from old draft."
+    },
+    "editorialProvenance": {
+      "distribution": "Official IOI2017 contest archive links this 15-page PDF as Editorial.",
+      "signedAuthor": "Daniel Graf",
+      "documentTitle": "Library",
+      "oldApi": "booksort(N,S,order)",
+      "oldCppApi": "long long int booksort(int N,int S,vector<int> order)",
+      "oldSubtaskCount": 6,
+      "oldBoundsNotUsedForFinalCoverage": true,
+      "finalTaskApi": "minimum_walk(p,s)",
+      "finalSubtaskCount": 5,
+      "relevantPages": "12–14 describe interval closure and give the linear two-sided first-cross reference implementation.",
+      "independentSupplements": [
+        "Use actual cycle vertices, not hull-overlap, for initial/free activation.",
+        "Per-cut extra-crossing lower bound and insertion construction give equivalence to paid interval steps.",
+        "Closest left/right bridge vertices give the same idempotent closure, justifying min; absent bridges require both side costs.",
+        "Trial union closes over every scanned vertex, so newly scanned boundary positions are never revisited in later rounds."
+      ]
+    },
+    "apiContainsEntireOriginalRange": true,
+    "initialAuditResearchPositivePreserved": true,
+    "unconfirmedTechniqueLemmas": []
+  },
+  "api": {
+    "signature": "std::int64_t minimum_single_book_sort_walk(const std::vector<int>& destination,int start)",
+    "originalAdapterSignature": "long long minimum_walk(std::vector<int> p,int s)",
+    "input": "N1..1000000; destination is a permutation of0..N−1; start in0..N−1. Equal-spaced line positions, holding one book, free pickup/swap/putdown, return to start.",
+    "output": "Minimum total walking distance; no operation sequence is returned.",
+    "empty": "invalid_argument for N0; original requires at least one position.",
+    "errors": "invalid_argument for empty/oversized size, invalid start, any out-of-range value or duplicate. Size/start checked before seen allocation; then every permutation entry checked before following permutation indices or creating endpoint arrays. Standard allocation exceptions propagate. Adapter by-value copies may allocate before function entry.",
+    "inputUnchanged": true,
+    "persistentState": false,
+    "reentrant": true,
+    "time": "O(N) including full validation, two passes per cycle and both trial boundary scans; original by-value adapter adds O(N) copy.",
+    "auxiliarySpace": "O(N), no recursion; seen N bytes + leftmost/rightmost two int arrays.",
+    "integerSafety": "N checked before int conversion; static_assert int max>=1000000 and long long digits>=63. Base<=N(N−1), extra<=2(N−1), each total<1000001000000 at N<=1000000. abs differences are promoted before arithmetic; costs/base/return are int64. Endpoint movement stays in0..N−1.",
+    "maximumNExecuted": 1000000,
+    "maximumCorePayloadBytesOn32BitInt": 9000000,
+    "valueAdapterAdditionalInputCopyBytes": 4000000,
+    "memoryNotes": "Payload excludes vector overhead/caller/oracle. seen is reused after validation. Already sorted input returns after the N-byte validation array. Checker RSS includes full oracle states and ASan quarantine, not just API working memory.",
+    "originalApiContainsEntireSourceRange": true
+  },
+  "proof": {
+    "transportLowerBound": "Every book travels from i to p[i], so D=sumabs is a lower bound; one held book prevents counting transport for two books on the same step. Each cycle attains its D by following destinations back to the original blank. Another cycle can be inserted at an actual visited vertex while the suspended held book waits in that slot, then recovered at the same slot.",
+    "actualVertexClosure": "Repeatedly add the hull of every cycle with an actual vertex in the visited interval. Hull-overlap alone is false: p2,1,0/start1 gives6, not4. Free cycle tours visit their full spatial interval, allowing cascading insertion.",
+    "paidBoundaryEquivalence": "At first physical exit from an optimistically granted closed interval, the held book has its original position and target inside. The outward crossing is extra to mandatory book transport. Equal required counts in both cut directions and equal closed-tour crossings force >=2 excess. Paid boundary cuts are distinct. Conversely inserting a one-step out-and-back excursion and all newly contacted cycle tours attains this additional2.",
+    "firstCross": "An uncontacted cycle either wholly left, wholly right, or has actual vertices on both sides. For a bridge, closest actual left/right bridge vertices exist together. First left bridge reaches past the closest right bridge vertex and conversely. Monotonic/idempotent closure makes both trial closures identical. Left/right-only cycles cannot assist the opposite side before a bridge, so minimum first-bridge cost is optimal; all partially explored vertices lie in the common closure.",
+    "noCross": "Without a bridge, each cycle is wholly on one side, so neither side expansion helps the other. Both deterministic maximally-closed costs are necessary and sufficient.",
+    "finalCondition": "Stop when all moved positions and start lie in interval. Identity tails outside need no visit; a sorted input gives0 from any valid start.",
+    "linearAmortization": "Each extend only scans new endpoints, its interior already checked. Each trial is monotonic; every scanned vertex belongs to the committed union of the two closed intervals. The union overlaps in old I and is closed, so no interior rescan next round. Each vertex at most once in each trial plus O(1) endpoint rechecks per paid/new-boundary step. Cycle construction O(N), no recursion."
+  },
+  "validation": {
+    "normal": {
+      "checks": 5166352,
+      "apiCalls": 430576,
+      "originalAdapterCalls": 371400,
+      "allPermutationsAndStartsN1to8": 362879,
+      "physicalInputsN1to7": 40319,
+      "physicalShelfHeldPositionStates": 2177282,
+      "cycleSubsetOracleCalls": 368879,
+      "cycleSubsetTransitions": 210151,
+      "exhaustiveIntervalOracleCalls": 8500,
+      "randomSubsetCases": 6000,
+      "randomIntervalCases": 2500,
+      "reflectionInverseChecks": 33176,
+      "maximumN1millionCases": 14,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 16,
+      "checksum": "11819723664200185900",
+      "seconds": 0.638555,
+      "peakRSSKiB": 28488,
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 5166352,
+      "apiCalls": 430576,
+      "originalAdapterCalls": 371400,
+      "allPermutationsAndStartsN1to8": 362879,
+      "physicalInputsN1to7": 40319,
+      "physicalShelfHeldPositionStates": 2177282,
+      "cycleSubsetOracleCalls": 368879,
+      "cycleSubsetTransitions": 210151,
+      "exhaustiveIntervalOracleCalls": 8500,
+      "randomSubsetCases": 6000,
+      "randomIntervalCases": 2500,
+      "reflectionInverseChecks": 33176,
+      "maximumN1millionCases": 14,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 16,
+      "checksum": "11819723664200185900",
+      "seconds": 4.43831,
+      "peakRSSKiB": 1014952,
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": true
+    },
+    "normalCommand": "python3 /tmp/flowchartcp-ioi2017-books-checker.py",
+    "asanUbsanCommand": "python3 /tmp/flowchartcp-ioi2017-books-checker.py --sanitize",
+    "codeFromActualPublishedFence": true,
+    "sameFenceShaBothRuns": true,
+    "literalOracle": "For every N1..7, every start and permutation, exact reversible0-1 BFS over literal full shelf+one held book+position state. Held/current swap is zero (pickup/putdown/exchange), adjacent walk is one. Finish sorted shelf with empty hand at same start. 2177282 state/start instances; no cycle/interval/greedy assumptions.",
+    "independentExponentialOracle": "For all N1..8 permutations/starts and6000 random N<=30, exponential DP over subsets of activated nontrivial cycles. A transition selects any next cycle and pays twice the distance to any actual vertex, then literal vertex scanning computes closure. Enumerates every cycle ordering; does not use first-cross or two-sided greedy. Cross-checked against full physical BFS.",
+    "independentIntervalOracle": "8500 random inputs N<=120: all possible next left/right interval steps, full interior closure rescanning and memoized O(N²) intervals. No first-cross exchange or boundary-only extend.",
+    "metamorphic": "Reflection of shelf/start and inverse permutation (reverse the physical closed sorting walk), 33176 checks across all small inputs plus deterministic sampling.",
+    "maximumCases": [
+      "N1million identity at both endpoints (2 cases).",
+      "N1million one cyclic shift, exact transport2(N−1).",
+      "N1million reversal at endpoint/center/quarter, transport5e11 plus independent nearest-outer-cycle steps (3).",
+      "N1million only two extreme books swapped, center and endpoint; must walk to actual endpoint (2).",
+      "N1million adjacent disjoint pairs;2(N−1), many no-cross blocks.",
+      "N1million only last adjacent pair swapped, start0 and last (2).",
+      "N1million three-cycle then two fixed slots repeated, both endpoints (2), validates long fixed gaps.",
+      "N1million one shuffled Hamilton permutation cycle, exact transport sum."
+    ],
+    "boundaryCases": [
+      "Official final sample6; N1 identity; arbitrary-start identity.",
+      "p2,1,0/start1=6 rejects hull-only activation.",
+      "Nested bridge cycles and equal left/right first-cross cost.",
+      "N1..8 all permutations and all starts cover both-cross/no-cross, containment and block endpoints.",
+      "All value/type/start/duplicate/oversize invalid cases through both APIs preserve caller input.",
+      "20000 alternating fresh calls and fresh calls after invalid/maximum buffers."
+    ],
+    "counterScope": "checks count assertions including all reachable physical states. apiCalls counts direct core calls; adapterCalls counted separately. physicalInputs count initial full-shelf-empty-hand permutations/start, physicalStates counts BFS shelf+held+position slots summed over starts. cycleSubsetOracleCalls count input instances, transitions count reachable nonterminal subset transitions, not an original runtime claim.",
+    "timingScope": "Native full checker only, compilation excluded; includes all independent oracles/metamorphic/max cases. PeakRSS includes caller inputs, BFS/subset/interval oracles and sanitizer quarantine.",
+    "asanOptions": "detect_leaks=0:halt_on_error=1; UBSAN halt_on_error=1:print_stacktrace=1; -fno-pie -no-pie",
+    "allocationFailureInjection": false,
+    "independentReviewPending": true,
+    "originalResearchProbeNotReclassifiedAsProductionValidation": true,
+    "unconfirmedLemmas": []
+  },
+  "initialAuditPreservation": {
+    "corpusId": "ioi-2017",
+    "problemId": "ioi2017_books",
+    "initialClassification": "missing-technique",
+    "initialResearchSolutionConfirmed": true,
+    "initialRowsModified": false,
+    "newResearchReviewNeeded": false,
+    "initialResearch4Of6Unchanged": true,
+    "initialCoverage0Of6Unchanged": true,
+    "otherUnconfirmedRowsUnchanged": [
+      "ioi2017_nowruz",
+      "ioi2017_prize"
+    ],
+    "nextAction": "Parent registers reviewed article/API/ref/rootwalk and appends resolution only. All initial audit fields remain immutable; current live coverage may increase only after actual registration and independent review."
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "permutation-cycle-interval-closure-two-sided-walk-greedy"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回6records/status、研究positive4/6・API0/coverage0、Books停止位置とtechnicalFindings、既存Wiring/Train resolutionsを保持し、Booksへresolutionだけ追加。最終原典と旧Library稿のAPI/制約を区別。実頂点によるサイクル閉包、切れ目ごとの追加費用下界、左右の最初の橋の共通閉包と線形償却を作者/root/別review者で証明。全小の物理0-1BFS・別指数/全intervalDP、独立有向全域木oracle、原典100万・通常ASan+UBSanと割当失敗で検証。実配布header未取得は維持し研究reviewの二重加算をしない。",
+    "sourceVerification": {
+      "checkedAt": "2026-10-15",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+      "statementPages": 3,
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+      "editorialPages": 15,
+      "noticeUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "noticePages": 1,
+      "archiveIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/",
+      "officialDateIndexUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "contestDate": "2017-08-01",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "difficulty": null,
+      "originalNumericBoundsVerified": true,
+      "numericEvidenceUrls": [
+        "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+        "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-MNG.pdf"
+      ],
+      "reproducibleSearchQueries": [
+        "site:ioi.te.lv/locations/ioi17/contest/day2/books \"Constraints\" \"000\""
+      ],
+      "numericRetrieval": "Read official ISC/Notice text and primary archive KOR/MNG indexed search text restoring numeric extraction loss. No unread PDF image sight claim.",
+      "originalConstraints": {
+        "N": [
+          1,
+          1000000
+        ],
+        "start": "0..N−1",
+        "p": "permutation of0..N−1, p[i] is initial book label and its destination position",
+        "heldCapacity": 1,
+        "freeOperations": [
+          "pick up when empty-handed",
+          "swap held/current books",
+          "put down into empty position"
+        ],
+        "cost": "absolute difference of positions walked; finish at same initial position",
+        "originalGenericApi": "int64 minimum_walk(int[] p,int s)",
+        "sample": {
+          "p": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "s": 0,
+          "answer": 6
+        },
+        "finalSubtaskScores": [
+          12,
+          10,
+          28,
+          20,
+          30
+        ],
+        "officialNoticeTimeSeconds": 2,
+        "officialNoticeMemoryMB": 1024
+      },
+      "cppSignatureEvidence": {
+        "primaryStatementGenericSignature": "int64 minimum_walk(int[] p,int s)",
+        "primaryNoticeMapping": {
+          "int64": "long long",
+          "int[]": "std::vector<int>",
+          "int": "int"
+        },
+        "derivedExactCppSignature": "long long minimum_walk(std::vector<int> p,int s)",
+        "primaryCppHeaderRetrieved": false,
+        "primaryHeaderStatus": "No official books.zip/header bytes retrieved or claimed. Exact C++ adapter is derived from final generic statement and primary Day2 Notice, not guessed from old draft."
+      },
+      "editorialProvenance": {
+        "distribution": "Official IOI2017 contest archive links this 15-page PDF as Editorial.",
+        "signedAuthor": "Daniel Graf",
+        "documentTitle": "Library",
+        "oldApi": "booksort(N,S,order)",
+        "oldCppApi": "long long int booksort(int N,int S,vector<int> order)",
+        "oldSubtaskCount": 6,
+        "oldBoundsNotUsedForFinalCoverage": true,
+        "finalTaskApi": "minimum_walk(p,s)",
+        "finalSubtaskCount": 5,
+        "relevantPages": "12–14 describe interval closure and give the linear two-sided first-cross reference implementation.",
+        "independentSupplements": [
+          "Use actual cycle vertices, not hull-overlap, for initial/free activation.",
+          "Per-cut extra-crossing lower bound and insertion construction give equivalence to paid interval steps.",
+          "Closest left/right bridge vertices give the same idempotent closure, justifying min; absent bridges require both side costs.",
+          "Trial union closes over every scanned vertex, so newly scanned boundary positions are never revisited in later rounds."
+        ]
+      },
+      "apiContainsEntireOriginalRange": true,
+      "initialAuditResearchPositivePreserved": true,
+      "unconfirmedTechniqueLemmas": []
+    }
+  },
+  "editorNotes": [
+    "自然な日本語の共通8節・単一の常時表示完全C++20・frontmatter title/descriptionとmetadataを厳密一致。",
+    "本文は場面/条件/証明/計算量/実装/実在関連手法/一次資料に集中。取得経緯・検査件数/時間/RSSはsidecarへ分離。",
+    "本番2017-08-01 dayprecision/exacttrue、難度null、IOI mainは別field。",
+    "既存監査/normalizedcandidateを含む共有data/MDX/flow/test/ledgerは未編集、公開/commit/server/installなし。",
+    "ASan開始前にrootへ通知した。開始後rootからTrainの実行待ち依頼が届いた時点で完了済みとpeak RSSを報告し、追加の大メモリnativeは予定しない。"
+  ],
+  "artifactSha256": {
+    "article": "3d2d4989099faf6f190c3b63b06ea8411e99e12c80dbf7574c00702a1374060a",
+    "checker": "3af53fdfbaacdba1f289cc60dfa435b8a5d605701aebb6391e2fec54d63661dd",
+    "authorArticle": "3d2d4989099faf6f190c3b63b06ea8411e99e12c80dbf7574c00702a1374060a",
+    "authorChecker": "3af53fdfbaacdba1f289cc60dfa435b8a5d605701aebb6391e2fec54d63661dd",
+    "authorSidecar": "94cc3280036474434b42ae8c099d7ea52be706909fec6155535bb833b5a3c1f3",
+    "publishedArticle": "4479734b4b15a08f09fb5fdd615080dd2074ccc3ca02d3e42446082ea070b00b",
+    "publishedChecker": "bc03404f60b2a7acfba27492d347a32de62039dfd68f52991dbc2743d0abf28e"
+  },
+  "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+  "sharedFilesModified": false,
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/permutation-cycle-interval-closure-two-sided-walk-greedy.mdx",
+    "checker": "scripts/check_permutation_single_book_walk_cpp.py",
+    "metadataGroup": "range-patterns",
+    "entryGraphId": "ranges",
+    "choices": [
+      "sequence-changes",
+      "reorder-cost",
+      "single-book-walk",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Natural title 一冊だけ持って並べ替える歩行距離を、サイクルの閉包で求める; frontmatter andmetadata match.",
+      "Standardproduct feature/source/date fields and final guardcase, C++/allarticleproofbodyunchanged.",
+      "Onlypermanentchecker/probepaths andimplicit tmpresultwritesnormalized; alloraclelogicunchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-ioi2017-books.json"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewedAt": "2026-10-15",
+      "reviewer": "/root",
+      "techniqueId": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+      "sourceVerification": {
+        "finalEnglishStatementPagesRead": [
+          1,
+          2,
+          3
+        ],
+        "finalNumericPrimary": "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+        "numericAcquisition": "Primary indexed KOR/MNG/LTU text restores missing formulas; direct KOR refetch cache miss. No PDF image inspection claimed.",
+        "originalN": "1..1000000",
+        "originalStart": "0..N-1",
+        "permutationDestinationRead": true,
+        "heldCapacity": 1,
+        "returnToStart": true,
+        "finalSampleAnswer": 6,
+        "day2NoticeRead": true,
+        "sourceLimits": {
+          "seconds": 2,
+          "memoryMB": 1024
+        },
+        "cppSignature": "long long minimum_walk(std::vector<int> p,int s), from finalgeneric+Day2Noticetypemapping; officialheaderbytesnotretrieved.",
+        "oldLibraryDraft": "15page DanielGraf Library distributedasEditorial, oldbooksort(N,S,order) andsixsubtasks are not finalAPI/fivesubtask/numeric evidence. Relevantmath/linearimplementation read; no use ofoldN1e8 bound.",
+        "date": "2017-08-01",
+        "difficulty": null
+      },
+      "proofReview": [
+        "Base sumabs(i-pi) is necessary becauseonlyoneheldbook, andonepermutationcycle attainsit by forwardingto destinations. Aforeigncyclecanbespliced at an actualvertexbyexchangingheldbook, completingcycle, andrestoringforeignheldbook.",
+        "Initialfreeactivationrequiresactualcyclevertex, notjustitsboundinginterval. p[2,1,0],s1 witnesses6vswrong4. Foralreadyactivatedcycles, theirtransporttraversals covereveryintegerpositionofeachcycleinterval, so everyactualvertexinthatcoveredintervalcanactivateitscycle.",
+        "A closedinterval containsentirecyclesofall originalbookswhoseinitialpositionsitcontains. Atfirststepout, anyheldbookhasdestinationinside, so thatdirectionalcutcrossingisnonessential relative tobasetransport. Bookandwalkerflowsacrosseachcutarebalanced; oneextraout forcesatleasttwoextrasintotal. Distinctpaidcuts giveadditivelowerbound; spliceout/back constructsupperbound.",
+        "UntouchedcyclesbridgingbothsidesofclosedI haveactualverticesoutsideI. Firstleftbridgevertex andfirstrightbridgevertex each liesinclosureofother, henceclosurescoincidebymonotonicity/idempotence. Prebridgeonesidedcycles cannotassistotherside, so anysolutionpaysatleastoneofleft/righttrialcost; cheapertrialreachescommonclosure andcanreplaceinterleavedprefix.",
+        "Ifnobridgeexists, neitheronesidecanexpandother, so bothcostsnecessaryandattainable. Unionoftwointersectingclosedintervalsisclosed, becauseeachcyclemeetingunionmeetsoneclosedmember.",
+        "extend scansonlynewendpoints, itsinterioralreadychecked. Eachtrialmonotonicallyexpands; allscannedpositionsabsorbedintoacceptedunionbeforethenextround. Constantendpointrechecksarechargedtopaidnewpositions. Thusatmostconstantnumberofscansperposition overbothtrialdirections,O(N)."
+      ],
+      "apiAndResourcesReview": [
+        "N/startcheckedbeforeintcast/seenallocation, allpvaluescheckedbeforecycleindexfollowing. Fullpermutationensurescyclewalkreturnsfirstwithoutinvalidindex; twopassespercycle deriveendpoints; no inputdepthrecursion.",
+        "base promotedbeforeabsdifference, costsint64; base<=N(N-1), extra<=2(N-1), total<1000001000000. Endpoints stayin0..N-1 andtrialonlyexpandswhilerequiredtargetexists.",
+        "Constinputnotchangedorretained, localvectorsownscratch. Adapterbyvalueinputcopies mayallocatebeforeentry; noIOorgraderglobal. Standardallocationexceptionspropagate; allcalls/resultsindependent.",
+        "Workingpayload9Nbyteson32bitint(seen+twoendpoints), pluscaller andadaptercopy4N. Normal/ASanharnessRSS includesoracleandquarantine; source1024MBordinarymemorynotjudgedfromASanpeak."
+      ],
+      "normal": {
+        "checks": 5166352,
+        "apiCalls": 430576,
+        "originalAdapterCalls": 371400,
+        "allPermutationsAndStartsN1to8": 362879,
+        "physicalInputsN1to7": 40319,
+        "physicalShelfHeldPositionStates": 2177282,
+        "cycleSubsetOracleCalls": 368879,
+        "cycleSubsetTransitions": 210151,
+        "exhaustiveIntervalOracleCalls": 8500,
+        "randomSubsetCases": 6000,
+        "randomIntervalCases": 2500,
+        "reflectionInverseChecks": 33176,
+        "maximumN1millionCases": 14,
+        "reentrantBatchCalls": 20000,
+        "invalidCases": 16,
+        "checksum": "11819723664200185900",
+        "seconds": 0.648034,
+        "peakRSSKiB": 28484,
+        "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+        "sanitized": false
+      },
+      "asanUbsan": {
+        "checks": 5166352,
+        "apiCalls": 430576,
+        "originalAdapterCalls": 371400,
+        "allPermutationsAndStartsN1to8": 362879,
+        "physicalInputsN1to7": 40319,
+        "physicalShelfHeldPositionStates": 2177282,
+        "cycleSubsetOracleCalls": 368879,
+        "cycleSubsetTransitions": 210151,
+        "exhaustiveIntervalOracleCalls": 8500,
+        "randomSubsetCases": 6000,
+        "randomIntervalCases": 2500,
+        "reflectionInverseChecks": 33176,
+        "maximumN1millionCases": 14,
+        "reentrantBatchCalls": 20000,
+        "invalidCases": 16,
+        "checksum": "11819723664200185900",
+        "seconds": 4.3451,
+        "peakRSSKiB": 1014928,
+        "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+        "sanitized": true
+      },
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "artifactSha256": {
+        "article": "3d2d4989099faf6f190c3b63b06ea8411e99e12c80dbf7574c00702a1374060a",
+        "checker": "3af53fdfbaacdba1f289cc60dfa435b8a5d605701aebb6391e2fec54d63661dd",
+        "sidecar": "94cc3280036474434b42ae8c099d7ea52be706909fec6155535bb833b5a3c1f3"
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Natural title 一冊だけ持って並べ替える歩行距離を、サイクルの閉包で求める; frontmatter andmetadata match.",
+        "Standardproduct feature/source/date fields and final guardcase, C++/allarticleproofbodyunchanged.",
+        "Onlypermanentchecker/probepaths andimplicit tmpresultwritesnormalized; alloraclelogicunchanged."
+      ],
+      "sharedFilesModified": false
+    },
+    "normal": {
+      "checks": 5166352,
+      "apiCalls": 430576,
+      "originalAdapterCalls": 371400,
+      "allPermutationsAndStartsN1to8": 362879,
+      "physicalInputsN1to7": 40319,
+      "physicalShelfHeldPositionStates": 2177282,
+      "cycleSubsetOracleCalls": 368879,
+      "cycleSubsetTransitions": 210151,
+      "exhaustiveIntervalOracleCalls": 8500,
+      "randomSubsetCases": 6000,
+      "randomIntervalCases": 2500,
+      "reflectionInverseChecks": 33176,
+      "maximumN1millionCases": 14,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 16,
+      "checksum": "11819723664200185900",
+      "seconds": 0.648034,
+      "peakRSSKiB": 28484,
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 5166352,
+      "apiCalls": 430576,
+      "originalAdapterCalls": 371400,
+      "allPermutationsAndStartsN1to8": 362879,
+      "physicalInputsN1to7": 40319,
+      "physicalShelfHeldPositionStates": 2177282,
+      "cycleSubsetOracleCalls": 368879,
+      "cycleSubsetTransitions": 210151,
+      "exhaustiveIntervalOracleCalls": 8500,
+      "randomSubsetCases": 6000,
+      "randomIntervalCases": 2500,
+      "reflectionInverseChecks": 33176,
+      "maximumN1millionCases": 14,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 16,
+      "checksum": "11819723664200185900",
+      "seconds": 4.3451,
+      "peakRSSKiB": 1014928,
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": true
+    },
+    "additionalReviewFile": "research/probes/single-book-sort-walk-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

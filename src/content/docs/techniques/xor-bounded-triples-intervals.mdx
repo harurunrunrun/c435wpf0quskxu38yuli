@@ -1,0 +1,205 @@
+---
+title: "どの二数のXORも上限以下となる三数を、区間集合から数える"
+description: "同じ半分から三つ選ぶ場合と一対二でまたぐ場合を分け、各一数の許容相手数の二項係数を区間のまま合計する。"
+techniqueId: xor-bounded-triples-intervals
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+候補となる非負整数の集合が、重ならない整数区間の和で与えられる。その中から異なる三数を順序を区別せず選び、三つの全ての組のXORが $K$ 以下になる選び方を数えたい。区間数は少なくても候補の総数は巨大で、候補を一つずつトライへ入れる方法は使えない。
+
+二数のXORに上限があることから、上位のビットで候補を二分する。三数の分かれ方は「同じ側に三つ」と「一方に一つ、他方に二つ」だけになる。後者を、固定した一数に対する許容相手の数へ直すのがこの技巧の中心である。
+
+## 考え方
+
+まず $T=K+1$ とし、条件を $x\oplus y<T$ にそろえる。$P$ を **$T$ より大きい** 最小の二冪、$H=P/2$、$R=T-H$ と置く。すると $0\le R<H$。以降、実装内の区間は半開区間とする。
+
+三数は同じ $[tP,(t+1)P)$ に属する必要がある。異なるブロックの数同士のXORは $P$ 以上となるからである。各ブロックの共通の上位ビットを除き、候補を $[0,H)$ の集合 $A$ と $[H,P)$ の集合を $H$ だけずらした集合 $B$ に分ける。
+
+- 同じ半分から三つ選べば、どのXORも $H$ 未満なので、$\binom{|A|}{3}+\binom{|B|}{3}$ を加える。
+- $x\in A$ を一つ選び、$B$ から二つ選ぶ場合、二つ同士の条件は自動的に成立する。必要なのは、それぞれが $x$ と下位ビットのXOR $<R$ を満たすこと。許容相手数を $d_B(x)$ とすれば、寄与は $\binom{d_B(x)}2$ になる。左右を交換した分も加える。
+
+許容相手数を各 $x$ について列挙する代わりに、次の合計をビット再帰で計算する。
+
+$$
+F(A,B,w,q,c)=\sum_{x\in A}\binom{c+|\{y\in B:x\oplus y<q\}|}{2}.
+$$
+
+$A,B\subseteq[0,w)$、$w$ は二冪、$0\le q<w$。$c$ は、既に上位のビットで条件が確定した相手数である。半分の幅を $h=w/2$ として、それぞれの集合を次の桁で $A_0,A_1,B_0,B_1$ に分け、1側からは $h$ を引く。
+
+$q<h$ ならXORの次の桁は0でなければならず、$A_i$ は $B_i$ だけと再帰する。$q\ge h$ なら、$B_i$ は $A_i$ のどの数に対しても既に上限未満となるので、その個数を $c$ に加える。等しい接頭辞を保つ $B_{i\oplus1}$ とだけ、残りの上限 $q-h$ で再帰する。
+
+$A$ が空なら寄与は0。$q=0$ または $B$ が空なら $|A|\binom c2$ となる。$B=[0,w)$ が完全に埋まっていれば、XORはそのブロックの置換なので、どの $x$ にも相手がちょうど $q$ 個ある。したがって $|A|\binom{c+q}2$ を一括で加えられる。
+
+入力の一つの長い区間が多数の $P$ ブロックを覆う場合も、中央の完全なブロックを列挙しない。一ブロックの寄与は
+
+$$
+2\binom H3+P\binom R2
+$$
+
+なので、完全なブロック数を掛ける。両端のブロックだけを保存する。昇順の入力を走査すれば、同じ境界ブロックに入る断片を順番にまとめられる。
+
+## 適用条件
+
+候補は集合であり、同じ整数を二度含めない。三数は相異なり、順序を区別しない。全ての組が同じXOR上限を満たす必要がある。個々の組ごとに異なる上限がある場合には、この二分と相手数の集約をそのまま使えない。
+
+掲載APIは昇順で互いに重ならない **閉区間** を受け取る。隣接区間は許し、内部で統合する。区間数は20000以下、端点は $0$ 以上 $10^9$ 以下、$1\le K\le10^9$、返り値は法 $10^9+7$。空の区間列は0を返す。逆転・重複・順序違反・範囲外は `std::invalid_argument` とする。
+
+$P$ の選び方は $T$ と等しい二冪も一段上へ進める。例えば $K=2^b-1$ なら $T=2^b$、$H=T$、$R=0$ となり、半分をまたぐ選び方は0になる。$K=2^b$ なら $R=1$ となる。この境界も同じ再帰で扱える。
+
+## なぜ正しいか
+
+異なる $P$ ブロックをまたぐ三数は、少なくとも一組のXORが $P$ 以上、従って $T$ より大きくなり除外される。同じブロック内では共通の上位ビットがXORで消える。同じ半分の三数は常に条件を満たす。それ以外の三数には、一つだけ置かれた側が一意に定まる。その一数 $x$ と反対側の許容相手二つを選べばよいので、$\binom{d(x)}2$ がちょうどその個数になる。左右の寄与を加えても同じ三数を二度数えず、追加の3や6による除算は不要である。
+
+再帰では、既に上限より小さくなった相手と、まだ上限と同じ接頭辞を持つ相手を分けている。前者は下位桁によらず全て使えるので個数 $c$ だけを保持できる。後者の次のビットを調べると、$q<h$ のときは同じ側だけが残り、$q\ge h$ のときは同じ側が全採用、反対側だけが比較を続ける。この分割は全ての許容相手を重複なく含む。停止条件でも同じ相手数を求めるため、帰納的に $F$ は正しい。
+
+完全な $P$ ブロックでは両側の候補数が $H$、各一数の許容相手数が $R$。その寄与は前述の式となる。入力区間の中央の完全ブロックと両端の断片は互いに重ならず、同じ境界ブロックの断片はまとめてから計算するため、区間の分割位置を変えても答えは変わらない。
+
+## 計算量
+
+候補総数を $M$ とすると、三数の直接列挙は時間 $O(M^3)$。掲載実装は区間数を $N$、$B=\log_2P\le30$ として、時間 $O(NB)$、追加空間の上界は $O(NB)$。空入力では定数領域で終わる。
+
+入力の検査・隣接区間の統合・境界ブロックへの振り分けは $O(N)$ 時間で、辞書や整列は使わない。一入力区間から保存する境界断片は高々二つで、内部の完全ブロックは一式で加算する。
+
+再帰の同じ深さでは、相手側のブロックは重ならず、ビットに従う対応も一対一である。再帰を続けるブロックは空でも完全充満でもないため、元の区間の境界を含み、その個数は $O(N)$。それらへ候補側を切断した区間断片も合わせて $O(N)$ 個なので、各深さの切断と集計は $O(N)$ 時間となる。親と子の `vector` を再帰中に保持する実装のため、追加空間は深さ分を含めて $O(NB)$ と見積もる。呼出しの深さ自体は $O(B)$。
+
+区間長と採用済み相手数は整数のまま保持し、二項係数を求めるときだけ法を取る。乗算は毎回法を取り、$2^{-1}=500000004$、$6^{-1}=166666668$ を使う。制約内の長さ・端点・法を取る前の各乗算は符号付き64ビットに収まる。
+
+## 実装
+
+`count_xor_bounded_triples(intervals, limit)` が再利用用API。各 `pair` は閉区間の両端であり、返り値は異なる三数の順序なしの個数である。候補の各整数や、区間に覆われた全ての二冪ブロックを展開しない。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace xor_triples_detail {
+using Int = std::int64_t;
+constexpr Int MOD = 1000000007;
+struct Range { Int lo, hi; }; // [lo, hi)
+struct Set {
+    std::vector<Range> ranges;
+    Int size = 0;
+    void append(Int lo, Int hi) {
+        if (lo >= hi) return;
+        size += hi - lo;
+        if (!ranges.empty() && ranges.back().hi == lo)
+            ranges.back().hi = hi;
+        else ranges.push_back({lo, hi});
+    }
+};
+Int choose2(Int n) {
+    if (n < 2) return 0;
+    return (n % MOD) * ((n - 1) % MOD) % MOD * 500000004 % MOD;
+}
+Int choose3(Int n) {
+    if (n < 3) return 0;
+    return (n % MOD) * ((n - 1) % MOD) % MOD * ((n - 2) % MOD)
+        % MOD * 166666668 % MOD;
+}
+std::array<Set, 2> halves(const Set& set, Int half) {
+    std::array<Set, 2> result;
+    for (const auto& [lo, hi] : set.ranges) {
+        result[0].append(lo, std::min(hi, half));
+        result[1].append(std::max(lo, half) - half, hi - half);
+    }
+    return result;
+}
+// Sum over x in a of C(accepted + |{y in b : x XOR y < bound}|, 2).
+// a,b are subsets of [0,width); width is a power of two; 0 <= bound < width.
+Int mixed(const Set& a, const Set& b, Int width, Int bound, Int accepted) {
+    if (a.size == 0) return 0;
+    if (bound == 0 || b.size == 0)
+        return a.size % MOD * choose2(accepted) % MOD;
+    if (b.size == width) // XOR by any x permutes this complete block.
+        return a.size % MOD * choose2(accepted + bound) % MOD;
+    const Int half = width / 2;
+    auto left = halves(a, half);
+    auto right = halves(b, half);
+    Int answer = 0;
+    for (int bit = 0; bit < 2; ++bit) {
+        if (bound >= half)
+            answer += mixed(left[bit], right[bit ^ 1], half, bound - half,
+                            accepted + right[bit].size);
+        else
+            answer += mixed(left[bit], right[bit], half, bound, accepted);
+        answer %= MOD;
+    }
+    return answer;
+}
+Int partial_block(const Set& set, Int width, Int residual) {
+    auto side = halves(set, width / 2);
+    Int answer = (choose3(side[0].size) + choose3(side[1].size)) % MOD;
+    answer += mixed(side[0], side[1], width / 2, residual, 0);
+    answer %= MOD;
+    answer += mixed(side[1], side[0], width / 2, residual, 0);
+    return answer % MOD;
+}
+} // namespace xor_triples_detail
+
+// Closed intervals, strictly increasing and disjoint. Adjacent intervals are allowed.
+// Empty input is allowed. Returns an unordered count of three distinct values.
+std::int64_t count_xor_bounded_triples(
+    const std::vector<std::pair<std::int64_t, std::int64_t>>& intervals,
+    std::int64_t limit) {
+    using namespace xor_triples_detail;
+    if (intervals.size() > 20000 || limit < 1 || limit > 1000000000)
+        throw std::invalid_argument("interval count or XOR limit");
+    Set input;
+    Int previous = -1;
+    for (const auto& [lo, hi] : intervals) {
+        if (lo < 0 || lo > hi || hi > 1000000000 || lo <= previous)
+            throw std::invalid_argument("interval bounds or order");
+        input.append(lo, hi + 1);
+        previous = hi;
+    }
+    const Int strict_limit = limit + 1;
+    Int width = 1;
+    while (width <= strict_limit) width *= 2;
+    const Int half = width / 2, residual = strict_limit - half;
+    const Int full = (2 * choose3(half) + width % MOD * choose2(residual)) % MOD;
+    struct Bucket { Int index; Set values; };
+    std::vector<Bucket> buckets;
+    auto add_boundary = [&](Int index, Int lo, Int hi) {
+        if (buckets.empty() || buckets.back().index != index)
+            buckets.push_back({index, {}});
+        buckets.back().values.append(lo, hi);
+    };
+    Int answer = 0;
+    for (const auto& [lo, hi] : input.ranges) {
+        const Int first = lo / width, last = (hi - 1) / width;
+        if (first == last) {
+            add_boundary(first, lo % width, (hi - 1) % width + 1);
+        } else {
+            answer += (last - first - 1) % MOD * full % MOD;
+            answer %= MOD;
+            add_boundary(first, lo % width, width);
+            add_boundary(last, 0, (hi - 1) % width + 1);
+        }
+    }
+    for (const auto& bucket : buckets) {
+        answer += partial_block(bucket.values, width, residual);
+        answer %= MOD;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [共通XORでの最大値最小化を上位ビットで分ける](/flowchartcp/techniques/xor-minimax-bit-partition/) — 上位の異なる桁で候補を二分する点が共通する。
+- [桁DP](/flowchartcp/techniques/digit-dp/) — 上限と同じ接頭辞と、既に小さい接頭辞を区別する。ここでは後者を相手の個数へまとめる。
+- [上限付きの一数とのXOR和を最大化する](/flowchartcp/techniques/bounded-xor-sum-maximum/) — 上限との比較を上位から追う点が共通するが、こちらは三数の計数を相手数の二項係数でまとめる。
+
+## 参考資料
+
+- [USACO — Cowmistry](https://usaco.org/index.php?page=viewproblem2&cpid=1070) — 区間集合から、全三組のXORに上限がある三数を数える適用例。2020年12月のPlatinum問題で、日単位の公開日はここでは確定しない。
+- [Benjamin Qiによる公式解説](https://usaco.org/current/data/sol_prob3_platinum_dec20.html) — 二冪ブロックへの分解と、相手数の二項係数を区間のまま集計する方法。
+
+<TechniqueReferences techniqueId="xor-bounded-triples-intervals" />

@@ -1,0 +1,138 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "895C",
+    "title": "Square Subsets",
+    "url": "https://codeforces.com/problemset/problem/895/C",
+    "techniqueIds": [
+      "square-product-subsets-parity-mask"
+    ],
+    "features": [
+      "配列の各値は1から70の正整数で、Nは100000以下",
+      "任意の非空の添字集合を選び、選んだ値の積が完全平方数になる方法を数える",
+      "同じ値でも選んだ添字が異なれば別の選び方とし、選択数などの追加制約はない"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/56028",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "2026年10月15日に原典を確認。Nは1以上100000以下、各値は1以上70以下、同じ値でも添字集合が違えば別の選び方、答えは非空で法1000000007。原典に掲載される難易度は2000。原典からリンクされた公式Tutorial 56028のC節で、19素数の指数の偶奇、値ごとの偶数個・奇数個の選択数、値域にまとめるDPを確認した。空集合の除外と偶奇選択数の一対一対応は記事で明示して証明する。原典の開催日の絶対日時は未確認。実MDXのC++を独立checkerで抽出・コンパイルし、小規模全列挙と最大入力・契約違反を検証済み。平方積は全部分集合の直接判定およびGF(2)階数に基づく独立計数とも一致。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc281_f",
+    "title": "Xor Minimization",
+    "url": "https://atcoder.jp/contests/abc281/tasks/abc281_f",
+    "techniqueIds": [
+      "xor-minimax-bit-partition"
+    ],
+    "features": [
+      "全ての要素は0以上2^30未満の整数で、Nは150000以下",
+      "一つの非負整数Xを自由に選び、全要素へ同じXORをかける",
+      "変換後の最大値を最小化する。総和の最適化やXの上限制約はない"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc281/editorial/5377",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "2026年10月15日に原典と公式解説5377を確認。開催日は2022年12月10日。原典のNは1以上150000以下、値は0以上2^30未満、Xに追加制約なし。公式解説で、上位桁が両方あれば片側のみ最大値候補に残し、両側を再帰して小さい値へ2^bitを加える遷移を確認。記事実装は入力をソートして連続範囲を再帰分割し、再帰ごとのグループ配列確保を省く。Nの上限200000および空配列の0という返り値は再利用向けに拡張した契約である。実MDXのC++を独立checkerで抽出・コンパイルし、小規模全列挙と最大入力・契約違反を検証済み。3ビットの全多重集合を全ての共通Xとの比較で照合。",
+    "publicationDate": "2022-12-10"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc175_e",
+    "title": "Picking Goods",
+    "url": "https://atcoder.jp/contests/abc175/tasks/abc175_e",
+    "techniqueIds": [
+      "grid-row-pick-reset"
+    ],
+    "features": [
+      "高さと幅がそれぞれ最大3000の格子で、左上から右下へ右か下だけで進む",
+      "通ったマスにある品物を、拾うか拾わないか選べる",
+      "各行で拾える品物は高々三個で、他の行の使用数とは独立している",
+      "品物の価値の合計を最大化する"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc175/editorial/75",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典で高さ・幅は1以上3000以下、品物の価値は1以上10^9以下、一行で高々三個、品物を拾わない選択も可能と確認。公式解説75は現在行の個数を加えた三次元DPと、下移動時に個数0へ戻す遷移を説明する。開催日2020年8月15日を原典で確認。掲載実装は上限個数0から3、全マスの価値を持つ盤面、空盤面・幅0を扱う契約へ拡張する。実MDXのC++を抽出し、3x3以下の全二値盤面で経路と採取集合を直接列挙。quota0..3、3000x3000、形・値・寸法・quotaの例外を確認。",
+    "publicationDate": "2020-08-15"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "808G",
+    "title": "Anthem of Berland",
+    "url": "https://codeforces.com/problemset/problem/808/G",
+    "techniqueIds": [
+      "wildcard-pattern-overlap-automaton"
+    ],
+    "features": [
+      "英小文字と疑問符からなる文字列で、疑問符を各々独立に英小文字へ置き換える",
+      "一つの固定された非空の語が、連続部分文字列として現れる回数を最大化する",
+      "出現同士は重なってもよく、同じ文字を隣の出現で再利用できる",
+      "文字列とパターンの長さは各最大10^5、長さの積は最大10^7である"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/808/G",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典で文字列とパターンの長さは各1以上10^5以下、長さの積は10^7以下、出現の重複を許すこと、公式rating2300を確認。原典がリンクするeditorial52010は本文がTutorial is loadingとなり読めないため、解説確認済みとはせず、一致長を状態とする最大値DPと一致後の失敗辺遷移を独立導出する。contest808の告知欄には2017年5月15日の日付があるが、開催日そのものの確認としては扱わずundated-archiveに残す。掲載実装は原典の上限を満たし、空のtextも0として受け付ける。遷移表は短い状態の完成済みの表を参照してO(26M)で作る。実MDXのC++を抽出し、短い本文の全置換と出現の直接集計、長さ100000と長さ積10000000、重複する出現・不正文字・空text・上限例外を確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "446C",
+    "title": "DZY Loves Fibonacci Numbers",
+    "url": "https://codeforces.com/problemset/problem/446/C",
+    "techniqueIds": [
+      "fibonacci-range-sequence-lazy"
+    ],
+    "features": [
+      "配列長と操作数はそれぞれ最大300000",
+      "区間の左端からF1=1,F2=1のフィボナッチ数を順に加算する",
+      "更新と区間和の質問が混在する",
+      "全ての答えを法1000000009で求める"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/446/C",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典で配列長・操作数各300000以下、左端からF1=F2=1を加算、区間和の法1000000009、rating2400を確認。公式解説13036は等比数列への変形を扱うため、記事の先頭二項による加算列・和・子区間へのシフトは独立導出に分類。絶対開催日は未確認。記事APIは空配列・空範囲とsigned64の任意初期値を許す。実MDXのC++を抽出し、直接配列更新による全区間和照合、重複更新、signed64最小最大、300000要素の更新と独立フィボナッチ倍加法、不正範囲・上限・例外で確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "2193",
+    "title": "Minimum Number of Moves to Make Palindrome",
+    "url": "https://leetcode.com/problems/minimum-number-of-moves-to-make-palindrome/",
+    "techniqueIds": [
+      "palindrome-adjacent-pair-inversions"
+    ],
+    "features": [
+      "英小文字からなる長さ2000以下の文字列が与えられる",
+      "隣り合う二文字の交換だけで任意の回文へ並べ替える",
+      "交換一回の費用は1であり、交換回数を最小化する",
+      "原典では回文にできることが保証される"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/minimum-number-of-moves-to-make-palindrome/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典で英小文字の長さ2000以下、隣接交換一回の費用1、作る回文は自由、回文にできる保証、難易度Hardを確認。公式ヒントは左右を合わせる貪欲を示すが、組の包含関係による最適性とFenwickによる転倒数化は独立導出に分類。公式editorial本文と絶対公開日は未確認。掲載実装は長さ200000、空文字列0、不可なら-1へ拡張。実MDXのC++を抽出し、三文字で長さ8以下の全列を隣接交換multisource BFSおよび全対象回文への安定対応転倒数と比較。200000文字で5000000000回、同文字列、不可能な偶奇、文字と長さの例外で確認。",
+    "cutoffVerification": "undated-archive"
+  }
+]

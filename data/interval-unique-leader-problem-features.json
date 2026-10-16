@@ -1,0 +1,33 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1140",
+    "title": "United Cows of Farmer John (Platinum)",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+    "techniqueIds": [
+      "interval-unique-endpoints-singleton-middle-active-lazy"
+    ],
+    "features": [
+      "固定数列から区間を選び、両端と内部一点の三位置を選ぶ。三位置の各値は非選択位置も含む区間全体で一度だけ現れなければならない。",
+      "区間も内部の選択位置も異なれば別に数え、全ての選択の総数を求める。選ばない値の重複は許す。",
+      "原典N1..200000、breed1..N。掲載APIは任意int64ラベルと空列も扱い、位置は0始まりで処理する。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021",
+    "publicationDatePrecision": "year",
+    "exactDateVerified": false,
+    "exactMonthVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "notes": "cpid1140/Platinumを対象にし、同名Gold版の二leader等の条件へ読み替えない。各leader同士が異なるだけでは不足。active左端の内側singleton数を足す専用更新が必要。"
+  }
+]

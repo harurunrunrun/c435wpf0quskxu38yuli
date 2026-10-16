@@ -1,0 +1,65 @@
+---
+title: "単調キュー"
+description: "最大値や最小値になり得る候補だけを残して、移動する区間を処理する。"
+techniqueId: monotone-queue
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+最大値や最小値になり得る候補だけを残して、移動する区間を処理する。
+
+## 使う場面
+
+左右の端点が右にしか動かない区間について、最大値や最小値を求めるときに使う。DPで参照する範囲が少しずつずれる場合にも使える。平衡木よりも速く、線形時間で処理できる。
+
+## 考え方
+
+最大値を求める場合は、両端から追加・削除できる `deque` に添字を保存する。値が大きい順に並ぶよう、新しい値以下の要素を末尾から取り除いてから、新しい添字を加える。
+
+区間の左端より前になった添字は先頭から取り除く。残った先頭の要素が現在の最大値になる。最小値を求める場合は、末尾から取り除く比較の向きを逆にする。
+
+## 適用条件
+
+新しい候補の方が値として優れ、区間から出る時刻も古い候補より遅い場合に、古い候補を捨てられる。この二つが成立することが重要になる。
+
+左端が後戻りすると、捨てた値が再び必要になる。問い合わせごとに候補の評価が変わる処理にも、そのまま使えない。値が同じ場合は新しい添字を残すと、区間内により長く残る。
+
+## なぜ正しいか
+
+末尾から取り除いた候補は、それ以上の値を持つ新しい候補が区間内に残っている間、最大値として必要ない。新しい候補は古い候補より後に区間から出るので、古い候補を今後も使う必要はない。残った候補は値の降順に並んでおり、区間内にある先頭が最大値を表す。
+
+## 計算量
+
+各要素は一度追加され、高々一度削除されるため、全体の時間は $O(N)$。長さ $K$ の区間では、キューの空間は $O(K)$。結果を全部保存する空間は別に必要になる。
+
+## 実装
+
+`window_max(a, k)` は、長さ `k` の各区間の最大値を返す。値だけでなく添字を保存することで、同じ値が複数あっても区間から出る位置を判定できる。
+
+```cpp
+#include <vector>
+#include <deque>
+#include <cassert>
+using namespace std;
+vector<long long> window_max(const vector<long long>& a,int k) {
+    assert(1<=k && k<=int(a.size()));
+    deque<int> q;
+    vector<long long> ans;
+    for(int r=0;r<int(a.size());++r) {
+        while(!q.empty() && q.front()<=r-k) q.pop_front();
+        while(!q.empty() && a[q.back()]<=a[r]) q.pop_back();
+        q.push_back(r);
+        if(r+1>=k) ans.push_back(a[q.front()]);
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[スライディングウィンドウ](/flowchartcp/techniques/sliding-window/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [USACO Guide: Sliding Window Maximum](https://usaco.guide/gold/sliding-window)
+
+<TechniqueReferences techniqueId="monotone-queue" />

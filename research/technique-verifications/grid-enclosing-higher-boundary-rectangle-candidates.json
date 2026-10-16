@@ -1,0 +1,454 @@
+{
+  "techniqueId": "grid-enclosing-higher-boundary-rectangle-candidates",
+  "status": "implementation-complete-awaiting-independent-review",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-rect-article.mdx",
+    "checker": "/tmp/flowchartcp-rect-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/grid-enclosing-higher-boundary-rectangle-candidates.mdx",
+    "checker": "scripts/check_enclosed_rectangle_candidates_cpp.py"
+  },
+  "metadata": {
+    "id": "grid-enclosing-higher-boundary-rectangle-candidates",
+    "title": "各行・各列で両端が内部より高い長方形を数える",
+    "summary": "内部の最大セルから候補を作り、各行・各列で同じ外側の二位置が条件を満たし続けるかを確かめる。等しい候補をまとめ、厳密な高さの条件を満たすものを数える。",
+    "aliases": [
+      "IOI2019 Rectangles maximum cell nearest greater candidates",
+      "strict higher enclosing border rectangle good pairs runs radix",
+      "高い外側セル 格子長方形 四方向厳密境界 候補列挙"
+    ],
+    "family": "境界から候補を絞る格子の数え上げ",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "subarray-extremum-contribution",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem3.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "grid-enclosing-higher-boundary-rectangle-candidates",
+    "source": "IOI",
+    "problemId": "ioi2019_rect",
+    "title": "Rectangles",
+    "url": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+    "evidence": "格子内部の長方形について、各内部セルが同じ行の左右外側セルと同じ列の上下外側セルの四つ全てより真に低いことを求める。内部最大セルの四方向nearest-strictly-greaterが外境界に一致するため全有効長方形をセル数以下の候補に含められる。四座標の重複を除き、各行・列で両端が内部最大より真に高い区間の連続出現runを照合する。固定48bit radix sortと三角直接表を使い原典全域をO(NM+N²+M²)時間で扱う。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2019-08-06",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に原典/公式Reviewをwebで再確認。JP日本語/TWN公式配布の検索本文で1<=N,M<=2500、0<=a<=7000000を実際に取得し、JP公式日別一覧で2019-08-06を確認、難度null。通常PDF抽出の欠落式/指数や16構造を画像目視済みとはしない。公式good pair方針とは対応を記録し、最大セルによる候補完全性、同値をpopする厳密境界、全good pair列挙、連続出現の必要十分性、候補重複除去、radix/直接pair表の時間空間を独立に証明してindependent-analysisとした。実MDX単一可視完全C++20を抽出、全binary n,m1..4の74954盤、全ternary3x3/3x4/4x3の1082565盤、literal内部長方形5096743件、乱択1000盤を比較。oracleは全長方形を列挙し各内部セルと四外側セルを直接比較し、nearest/good pair/runを使わない。最初の高い位置/同値の全小列、run全1024出現bitmapと重複同一行更新、48bit radix対stdsortも別に照合。転置/反転/順位圧縮の不変性、原典例6・outer corner無関係・同値境界拒否、invalid11と例外後/交互再呼出しを確認。最大2500x2500は同値0/高い外枠と0内部/市松/単調/乱択加法分離/谷加法分離/二値乱択の7構成を、閉形式・quadratic1D区間最大計算の積・0の4近傍成分bbox充足性で独立比較。最大高さ7000000を含み、原典byvalue入口も最大外枠で実行。通常/ASan+UBSanとも2884927 checks/checksum16899164946917607117成功。通常2.67096s/RSS199372KiB、san18.6546s/RSS1102708KiB。初回unconfirmed/sharedは未変更。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2019_rect",
+    "title": "Rectangles",
+    "url": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "techniqueIds": [
+      "grid-enclosing-higher-boundary-rectangle-candidates"
+    ],
+    "features": [
+      "固定高さの格子で、盤面の外周に触れない空でない長方形を重複なく数える。",
+      "各内部セルは、同じ行の左右外側二セルと同じ列の上下外側二セルの全てより真に低い。高さ同値と0があり、外側の四隅は条件外。",
+      "原典は行数/列数1..2500、高さ0..7000000。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-06",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "notes": "格子内部の長方形について、各内部セルが同じ行の左右外側セルと同じ列の上下外側セルの四つ全てより真に低いことを求める。内部最大セルの四方向nearest-strictly-greaterが外境界に一致するため全有効長方形をセル数以下の候補に含められる。四座標の重複を除き、各行・列で両端が内部最大より真に高い区間の連続出現runを照合する。固定48bit radix sortと三角直接表を使い原典全域をO(NM+N²+M²)時間で扱う。",
+    "discoveredBy": "ioi-2019",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "statementPages": 3,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+    "editorialPages": 2,
+    "officialEditorialProvenance": "IOI2019主催配布English(HSC) Rect Review。同じReviewが当該課題公式アーカイブへ直接掲載されている。",
+    "editorialRetrieved": true,
+    "editorialFullFormulaTranscriptionVerified": false,
+    "numericBoundsVerified": true,
+    "numericEvidenceUrls": [
+      "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf"
+    ],
+    "numericAcquisition": "公式配布の日本語/台湾語原典の検索本文で実際に確認。PDF画像の目視は未実施。",
+    "sourceBounds": {
+      "rows": "1..2500",
+      "columns": "1..2500",
+      "height": "0..7000000",
+      "validArea": "1<=top<=bottom<=N-2;1<=left<=right<=M-2; every cell strictly lower than corresponding same-row/same-column four outer cells; outer corners unused"
+    },
+    "date": "2019-08-06",
+    "day": 1,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "apiContainsEntireSourceRange": true,
+    "officialEditorialVerified": false,
+    "editorialLimitation": "good pair/stack方針と別の16構造の存在は読めるが、PDF抽出の欠落式/指数の全転記・画像目視・16場合の完全確認は行っていない。掲載手順自身を独立に証明/実装検証した。",
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedIndependentLemmas": []
+  },
+  "api": {
+    "function": "long long count_strictly_enclosed_rectangles(const std::vector<std::vector<int>>& grid)",
+    "originalAdapter": "long long count_rectangles(std::vector<std::vector<int>> grid) is included in the same visible fence and calls the reusable const-reference core. No unresolved grader symbols. Passing an lvalue to the original byvalue entry may copy the caller input.",
+    "bounds": "1<=rows,columns<=2500, all rows same nonzero length;0<=height<=7000000",
+    "result": "64bit count of distinct valid nonempty internal rectangles; <=(N-2)(M-2) if both dimensions>=3, otherwise0",
+    "errors": "invalid_argument for empty grid/row, ragged rows, dimensions>2500, heights<0 or>7000000; all input validated even when a dimension<3 and answer0. Standard allocation exceptions propagate.",
+    "state": "All mutable state local, input const and unchanged. Fresh invocation after exceptions, no persistent cache or borrowed result storage.",
+    "integerSafety": [
+      "Source dimensions checked before int conversion. Cells<=6250000; row-major arithmetic starts in size_t.",
+      "Original int target asserted to represent7000000. Heights compared directly, no difference/product of heights.",
+      "Each coordinate<=2499, each stamp<=2500; fields12bits, keys48bits in uint64. Missing neighboruint16_max=65535 disjoint from valid coordinates.",
+      "pair_index=right*(right-1)/2+left in size_t; largest table3123750 entries. Only valid enclosing endpoint pairs are indexed.",
+      "run packs start12bits and last12bits in uint32; zero is never a real stamp; same-line duplicate updates ignored.",
+      "Answer long long, actual count<=6240004 by the independent maximum-cell injection."
+    ],
+    "stackSafety": "No recursion. Working neighbor arrays and index stack length<=2500; radix counter256 size_t entries."
+  },
+  "proof": {
+    "status": "independently-complete",
+    "candidateCompleteness": "For a maximum interior cell of any valid rectangle, every interior cell in its row/column is<=it and all corresponding outer boundary cells are>it. Hence nearest strictly greater in each direction equals that outer boundary. Each source cell generates at most one rectangle; all valid rectangles included; duplicates are harmless until unique keys.",
+    "strictNeighbors": "Pop every stack height<=current, including equality; remaining top is first strictly greater. Between the two first-greater neighbors all heights<=anchor, so their open interval is a good pair.",
+    "allGoodPairs": "For any pair of endpoints strictly above all nonempty open-interior values, choose an interior maximum. Its first strictly greater neighbors are exactly those endpoints. Thus per-cell neighbor pairs enumerate every needed good pair, even with ties.",
+    "runEquivalence": "Horizontal validity iff the same boundary pair occurs in every interior row. At the bottom row, lastSeen==bottom and consecutiveStart<=top is necessary and sufficient. Vertical validity is the same condition across interior columns. Four original inequalities iff both passes accept.",
+    "deduplication": "Packed coordinates are injective in the source range; first radix sort and unique retain each candidate once. Axis-field permutation between passes is bijective; filtering never creates duplicates. Count accepted candidates once.",
+    "sweepLifetime": "All pairs of the current row/column are recorded before checking rectangles ending there. Stale records retain their last stamp and cannot falsely match current end. Multiple cells emitting the same pair in a line update once. In-place filter writes only at an index<=the already consumed read index.",
+    "complexity": "Neighbors totalO(NM), at mostNM candidates, two fixed6-pass48bit radix sortsO(NM), pair table initializationsO(M²+N²). OverallO(NM+N²+M²), not a restored missing official exponent. Each table sequential; overallO(NM+max(N²,M²)) space.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "time": "O(NM+N^2+M^2)",
+    "space": "O(NM+max(N^2,M^2)) auxiliary, caller input separate",
+    "maxCandidates": 6240004,
+    "maxPairSlots": 3123750,
+    "maxCoreMajorAuxiliaryPayloadBytes": 125000000,
+    "payloadScope": "Flat4C + original candidate capacity8P + radix scratch8P is largest major-array phase; row neighbor arrays2C each are freed before sorting. Add O(N+M) line buffers/stack and256 counters. Caller grid elements25MB, vector/allocator metadata, and an optional original-adapter lvalue copy are separate. RSS measures whole checker, not a portable payload allocation claim.",
+    "recursion": "none"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "geometry",
+    "existingChoices": [
+      "rectangle-aggregates"
+    ],
+    "parentGraphId": "geometry-rectangle-aggregates",
+    "parentNodeId": "geometry-task",
+    "newAnswerId": "higher-enclosed-rectangles",
+    "newAnswerLabel": "外側四方向が真に高い格子の長方形を数える",
+    "guardGraphId": "higher-boundary-rectangle-conditions",
+    "guards": [
+      {
+        "id": "strict-four-borders",
+        "question": "各内側セルは、同じ行・列の外側四セルより真に低い必要がありますか？"
+      },
+      {
+        "id": "static-internal-rectangles",
+        "question": "固定された高さの格子で、外周に触れない長方形を重複なく数えますか？"
+      },
+      {
+        "id": "bounds",
+        "question": "縦横2500以内・高さ0〜7000000で、全盤面をまとめて処理できますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "grid-enclosing-higher-boundary-rectangle-candidates"
+    ],
+    "groupSuggestion": "planar-patterns",
+    "note": "共有flow/registrationはrootが決定。初回gap/choices/optionsは保存し後続確認で解消する。"
+  },
+  "initialAuditPolicy": {
+    "file": "data/corpus-audits/ioi-2019.json",
+    "problemId": "ioi2019_rect",
+    "originalClassification": "unconfirmed",
+    "originalReviewStatus": "unconfirmed",
+    "originalNumericBoundsVerified": false,
+    "originalOfficialEditorialVerified": false,
+    "modified": false,
+    "candidateImplementationComplete": true,
+    "coverageStatus": "not-registered; independent review and root registration pending"
+  },
+  "subsequentSourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "numericBoundsVerified": true,
+    "numericEvidenceUrls": [
+      "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf"
+    ],
+    "sourceBounds": {
+      "rows": "1..2500",
+      "columns": "1..2500",
+      "height": "0..7000000",
+      "validArea": "1<=top<=bottom<=N-2;1<=left<=right<=M-2; every cell strictly lower than corresponding same-row/same-column four outer cells; outer corners unused"
+    },
+    "date": "2019-08-06",
+    "exactDateVerified": true,
+    "notes": "初回numericBoundsVerified:falseを保持し、今回実取得の公式配布検索本文で全数値を別途確認。画像目視とは主張しない。"
+  },
+  "subsequentSolutionReview": {
+    "reviewedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "evidenceUrls": [
+      "https://ioinformatics.org/files/ioi2019problem3.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf"
+    ],
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "solution": "retrieved-and-reviewed",
+      "officialEditorialVerified": false
+    },
+    "notes": "2026-10-15に原典/公式Reviewをwebで再確認。JP日本語/TWN公式配布の検索本文で1<=N,M<=2500、0<=a<=7000000を実際に取得し、JP公式日別一覧で2019-08-06を確認、難度null。通常PDF抽出の欠落式/指数や16構造を画像目視済みとはしない。公式good pair方針とは対応を記録し、最大セルによる候補完全性、同値をpopする厳密境界、全good pair列挙、連続出現の必要十分性、候補重複除去、radix/直接pair表の時間空間を独立に証明してindependent-analysisとした。実MDX単一可視完全C++20を抽出、全binary n,m1..4の74954盤、全ternary3x3/3x4/4x3の1082565盤、literal内部長方形5096743件、乱択1000盤を比較。oracleは全長方形を列挙し各内部セルと四外側セルを直接比較し、nearest/good pair/runを使わない。最初の高い位置/同値の全小列、run全1024出現bitmapと重複同一行更新、48bit radix対stdsortも別に照合。転置/反転/順位圧縮の不変性、原典例6・outer corner無関係・同値境界拒否、invalid11と例外後/交互再呼出しを確認。最大2500x2500は同値0/高い外枠と0内部/市松/単調/乱択加法分離/谷加法分離/二値乱択の7構成を、閉形式・quadratic1D区間最大計算の積・0の4近傍成分bbox充足性で独立比較。最大高さ7000000を含み、原典byvalue入口も最大外枠で実行。通常/ASan+UBSanとも2884927 checks/checksum16899164946917607117成功。通常2.67096s/RSS199372KiB、san18.6546s/RSS1102708KiB。初回unconfirmed/sharedは未変更。"
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-rect-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-rect-checker.py --sanitize",
+    "checks": 2884927,
+    "allBinaryGridsDimensions1to4": 74954,
+    "allTernaryGrids3x3_3x4_4x3": 1082565,
+    "literalRectangles": 5096743,
+    "randomGrids": 1000,
+    "maximumCases": 7,
+    "maximumRows": 2500,
+    "maximumColumns": 2500,
+    "maximumHeight": 7000000,
+    "invalidCalls": 11,
+    "literalOracle": "Enumerate every internal nonempty rectangle, every interior cell; compare directly with same-row two outside cells and same-column two outside cells. Does not use candidates/stack/goodpair/runs/radix.",
+    "primitiveTests": [
+      "all ternary lines length1..9: first higher in each direction versus literal scan",
+      "all1024 occurrence bitmaps length10: run covers versus literal all-occurrence; duplicate per-line emission unchanged",
+      "300 full48bit radix arrays of1000..1999 random coordinates plus duplicates versus stdsort"
+    ],
+    "metamorphic": [
+      "transpose",
+      "vertical and both reflections",
+      "strictly increasing rank compression preserves equality and strict order"
+    ],
+    "maximumOracles": [
+      "all zero ->0",
+      "high outer frame and zero interior ->1; worst duplicate candidate/radix scratch, original grader adapter called",
+      "checkerboard ->each internal zero singleton only",
+      "strict row-major increasing ->0",
+      "random additive row+column profiles: independent quadratic1D good-interval count product",
+      "symmetric valley additive profiles: same independent product oracle",
+      "random0/7000000: independently enumerate4-neighbor zero components; count only fully internal filled bounding boxes"
+    ],
+    "otherChecks": [
+      "published example6",
+      "outer corners do not matter",
+      "equal boundary invalidates strictness",
+      "all input unchanged, including large input digests",
+      "100 interleaved fresh calls",
+      "invalid empty/oversized/ragged/heights inclINT_MIN/MAX; valid call after exceptions",
+      "single row/column with the other dimension2500 still validated"
+    ],
+    "checksum": "16899164946917607117",
+    "normalSeconds": 2.67096,
+    "normalPeakRSSKiB": 199372,
+    "asanUbsan": {
+      "passed": true,
+      "checks": 2884927,
+      "checksum": "16899164946917607117",
+      "seconds": 18.6546,
+      "peakRSSKiB": 1102708,
+      "leakSanitizer": false,
+      "note": "Only LeakSanitizer disabled in ptrace environment."
+    },
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "sharedFilesModified": false,
+    "initialAuditModified": false,
+    "unconfirmedIndependentLemmas": []
+  },
+  "editorNotes": [
+    "自然な日本語8節・単一常時表示完全C++20。",
+    "公式Reviewの16構造や欠落指数を目視したとはせず、別の完全候補/連続run手順を独立証明した。",
+    "原始unconfirmed/numericfalseを保持し、今回の原典数値確認/独立証明/原典最大native検証を後続の明示資料として扱う。",
+    "独立reviewとroot登録前にcoveredとはしない。共有未編集。",
+    "独立レビューで関連する手法の3リンクへ公開base /flowchartcp/ を補完。C++/checker不変。",
+    "独立reviewの文言整理: 計算量のP上界はN,M>=3へ明示限定、小さい形の検査O(NM)を追記。公式抽出履歴の本文記述をsidecarへ集約。C++不変。"
+  ],
+  "artifactSha256": {
+    "article": "15b1f1dcc9a09313b7f09e71419babf0d2dd01fb4c12bdce885bad7866eb270d",
+    "checker": "70f6bef274ce108cfd5acb736b2658f3094c684bc7a50ecb4d5718527ae9b7fd",
+    "publishedArticle": "f67319d85f6403bc302779f5a9a987d2ba0f10c19a6b82a721fb855d3d7ecb45"
+  },
+  "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/grid-enclosing-higher-boundary-rectangle-candidates.mdx",
+    "checker": "scripts/check_enclosed_rectangle_candidates_cpp.py",
+    "metadataGroup": "planar-patterns",
+    "entryGraphId": "geometry",
+    "choices": [
+      "rectangle-aggregates",
+      "higher-enclosed-rectangles",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": false,
+    "separatePositiveReviewAdded": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "date": "2026-10-15",
+      "techniqueId": "grid-enclosing-higher-boundary-rectangle-candidates",
+      "reviewer": "root",
+      "sourceReview": [
+        "https://ioinformatics.org/files/ioi2019problem3.pdf",
+        "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+        "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+        "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+      ],
+      "primaryScope": "原典3頁と公式Review2頁。英語通常抽出の欠落式や16構造を全確認/画像目視したとはせず、具体手順は独立証明。日本委員会原典検索本文で全数値、日別一覧で2019-08-06を再確認。",
+      "sourceDate": "2019-08-06",
+      "exactDateVerified": true,
+      "difficulty": null,
+      "codeSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+      "reviewedArticleSha256": "e498bcfb4ee9088237a8fca8bd2b3ca100c9394e1fcdc6d11e127d7eb97db05d",
+      "proofReview": [
+        "Every valid rectangle has an interior maximum cell; no interior point in that row/column is strictly greater, while the four required corresponding border cells are strictly greater. Thus all four nearest-strict-greater neighbors exactly determine it. Each cell emits at most one candidate, so every rectangle is generated and count<=interior cell count. Ties do not change completeness.",
+        "Every one-dimensional good pair is generated by any maximum in its interior, and every generated enclosing pair is good. Excluding centers at line boundaries loses no pair with a nonempty interior. Equal heights must be popped when finding STRICT neighbors.",
+        "The last occurrence stamp and start of its consecutive run per endpoint pair are necessary and sufficient for presence on every required row/column. Repeated occurrences on the same row do not restart a run; absent rows are recognized from stamps without clearing the table. Both horizontal and vertical predicates together equal all four literal inequalities.",
+        "Keys pack(bottom,top,right,left), deduplicate, then scan bybottom; transformed retained keys pack(right,left,bottom,top). In-place writes are always at indices already read, so cannot corrupt a future candidate. The coordinate permutation is bijective and preserves uniqueness. Six stable8-bit radix passes order all48 used bits.",
+        "All input is validated even for dimension<3; source dims checked before casts. Flattened indices and triangular pair products use size_t. Coordinates<2500 and stamps<=2500 fit12bits; absence65535 and stamp0 are disjoint. Covers requires last stamp match before testing run start. All counts fit the conservative documented64bit return.",
+        "Two boundary arrays are freed before sorting; row and column dense tables are separate lifetimes. Max principal auxiliary payload<=4C+16P<=125000000bytes, with input vectors/allocator/adapter lvalue copy explicitly additional. Each line stack is iterative; totalO(nm+n²+m²)time andO(nm+max(n²,m²))space.",
+        "Reusable const-reference core contains the original domain; byvalue count_rectangles adapter matches the original callable signature. Inputs unchanged, all mutable state local, allocation exceptions propagate and future calls have no cache dependence."
+      ],
+      "normal": {
+        "checks": 2884927,
+        "binaryGrids": 74954,
+        "ternaryGrids": 1082565,
+        "literalRectangles": 5096743,
+        "randomGrids": 1000,
+        "maximumCases": 7,
+        "maximumRows": 2500,
+        "maximumColumns": 2500,
+        "maximumHeight": 7000000,
+        "invalidCalls": 11,
+        "checksum": "16899164946917607117",
+        "seconds": 2.67218,
+        "peakRSSKiB": 199372,
+        "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+        "sanitized": false
+      },
+      "asanUbsan": {
+        "checks": 2884927,
+        "binaryGrids": 74954,
+        "ternaryGrids": 1082565,
+        "literalRectangles": 5096743,
+        "randomGrids": 1000,
+        "maximumCases": 7,
+        "maximumRows": 2500,
+        "maximumColumns": 2500,
+        "maximumHeight": 7000000,
+        "invalidCalls": 11,
+        "checksum": "16899164946917607117",
+        "seconds": 18.8081,
+        "peakRSSKiB": 1102700,
+        "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+        "sanitized": true
+      },
+      "materialFindings": [],
+      "unconfirmedLemmas": [],
+      "editorialChangesForIntegration": [
+        "Replace title with natural feature-based wording such as 各行・各列で両端が内部より高い長方形を数える.",
+        "Remove PDF extraction history sentence from 計算量; keep source limitations only in research sidecar.",
+        "Replace payload/run where unnecessary with Japanese and remove stray space before 原典; leave C++ identical."
+      ],
+      "integrationStatus": "not registered; separate independent review, subsequent source/solution records and final flow regression pending"
+    },
+    "normal": {
+      "checks": 2884927,
+      "binaryGrids": 74954,
+      "ternaryGrids": 1082565,
+      "literalRectangles": 5096743,
+      "randomGrids": 1000,
+      "maximumCases": 7,
+      "maximumRows": 2500,
+      "maximumColumns": 2500,
+      "maximumHeight": 7000000,
+      "invalidCalls": 11,
+      "checksum": "16899164946917607117",
+      "seconds": 2.67218,
+      "peakRSSKiB": 199372,
+      "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 2884927,
+      "binaryGrids": 74954,
+      "ternaryGrids": 1082565,
+      "literalRectangles": 5096743,
+      "randomGrids": 1000,
+      "maximumCases": 7,
+      "maximumRows": 2500,
+      "maximumColumns": 2500,
+      "maximumHeight": 7000000,
+      "invalidCalls": 11,
+      "checksum": "16899164946917607117",
+      "seconds": 18.8081,
+      "peakRSSKiB": 1102700,
+      "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+      "sanitized": true
+    },
+    "additionalReviewFile": "research/probes/higher-boundary-rectangle-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

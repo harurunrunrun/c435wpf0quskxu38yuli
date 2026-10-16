@@ -1,0 +1,192 @@
+---
+title: "集合の色数から辺を探し、三頂点の質問で同色の組を残す"
+description: "未知の二部グラフを独立集合への二分探索で復元し、辺の種類を少数の追加質問で判別します。"
+techniqueId: "interactive-hidden-bipartite-edge-color-pair-recovery"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+集合を渡すと色の種類数が返り、その減少から未知の辺の存在を判定できるとき。辺の有無を全頂点対に質問する代わりに、既知部分を独立集合に分け、新しい頂点の隣接先だけを二分探索します。辺数が少ない未知の二部グラフの復元に使えます。
+
+原典例は [JOI 2019/2020「カメレオンの恋」](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon.pdf) です。以下では、同色の完全対応を $g$、相手の参加によって色が変わる一対一の好みを $f$ と書きます。目標は $g$ の組の復元です。
+
+## 考え方
+
+二頂点の質問が1色になる組を辺とします。同色の辺と、相互でない好みの辺を合わせた二部グラフになります。各頂点の次数は1か3で、相互の好みは色を交換するだけなので辺に入りません。
+
+頂点を一つずつ追加します。既に調べた部分を BFS で二色に分けると、各色の頂点集合 $S$ は独立集合です。新頂点 $v$ と $S$ をまとめて質問し、返答が $|S|+1$ なら隣接先はなく、それより小さければ少なくとも一つあります。後者なら $S$ の半分に同じ質問をして一つの隣接先を特定し、それを候補から取り除いて繰り返します。二色の向きは連結成分ごとに自由で、未知の性別を確定させる必要はありません。
+
+辺を全て見つけたら、次数3の頂点 $v$ の三近傍から二つを選んで質問します。返答が1になるのは、選ばなかった近傍が $f(v)$ の場合だけです。高々二回で各頂点の好む相手が分かります。どちらかの端点が相手を好む辺を除けば、同色の完全対応だけが残ります。
+
+## 適用条件
+
+辺の探索部分には、固定された未知の二部グラフと、独立集合 $S$ に対して隣接先の有無を返す正確な質問が必要です。一般グラフの既知部分を二群に分けることや、辺のある集合をそのまま候補にすることは保証できません。
+
+色数からこの質問を作るには、各色が両側に一つずつあり、好みが異なる色の反対側への全単射であることを使います。三頂点で辺の種類を判別する部分にも同じ条件が必要です。任意の色変更規則まで扱う実装ではありません。
+
+## なぜ正しいか
+
+まず二頂点の色が一致するのは、元の色が同じか、一方だけが他方を好む場合です。相互に好む二頂点は異なる元の色を交換し、返答は2です。同色の相手は好まないので、同色の辺と好みの辺は重なりません。好みは全単射のため、相互なら次数1、そうでなければ同色・好む相手・自分を好む相手の異なる三近傍を持ちます。
+
+独立集合 $S$ では元の色は全て異なります。内部の好みは相互の組に限られ、その色交換も色集合を変えません。新頂点 $v$ が相互でない好みを持つ場合、好む相手 $b$ が $S$ にいれば $v,b$ の色が重なります。$b$ がいなくても、自分を好む相手 $c$ がいれば $v,c$ の色が重なります。どちらもいないときは $S$ の色集合が保たれ、同色の相手がいる場合だけ $v$ の色が重なります。好みが相互なら、相手との交換は色集合を保つため、やはり同色の相手の有無だけで決まります。従って返答が $|S|+1$ より小さいことと、$v$ から $S$ に辺があることは同値です。
+
+追加前の辺を全て復元していれば、二色の各群は実際にも独立です。二分探索は隣接先を含む候補を常に残し、一つ見つけた後の残りも独立です。従って帰納的に全ての辺を復元できます。
+
+次数3の頂点について、同色の相手を $a$、好む相手を $b$、自分を好む相手を $c$ とします。三近傍は同じ側なので互いに辺はありません。$\{v,a,c\}$ の三頂点は全て $v$ の元の色になります。$\{v,a,b\}$ と $\{v,b,c\}$ はそれぞれ2色です。よって二回の質問で $b$ を特定でき、各好み辺をその始点から除くと同色辺が残ります。次数1の辺は最初から同色辺です。
+
+## 計算量
+
+以下の回数評価は実装に合わせた独立の評価です。頂点数を $2N$ とすると辺数 $E\le3N$。同色の完全対応があるので、どの独立集合も大きさは高々 $N$ です。一辺の発見に、存在確認1回と高々 $\lceil\log_2N\rceil$ 回の二分質問を使います。各頂点の二群それぞれの最後の不在確認は全体で高々 $4N$ 回、好みの判別は高々 $4N$ 回です。従って総質問数は
+
+$$
+E(1+\lceil\log_2N\rceil)+8N
+\le N\bigl(3(1+\lceil\log_2N\rceil)+8\bigr).
+$$
+
+$N\le500$ では高々19000回で、原典の20000回に収まります。空の候補には質問しません。各探索で作る集合の長さは二分ごとに半減するため、送る頂点番号の総数と質問以外の処理時間は $O(N^2)$、追加空間は $O(N)$ です。質問の応答を計算する側の時間は含めません。
+
+## 実装
+
+C++20 の API は0始まりです。`recover_hidden_color_pairs(N, ask, budget)` の `ask(ids)` は参加者の番号を重複なく受け取り、現在の色数を返します。戻り値は同色の組 `pairs`、復元した無向グラフ `graph`、質問回数 `query_count` です。原典の範囲 $2\le N\le500$ を受け付け、予算が上の保証値より小さければ質問前に拒否します。通信失敗は `ask` 側から例外などで伝えてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct HiddenColorPairs {
+    vector<pair<int,int>> pairs;
+    vector<vector<int>> graph;
+    int query_count;
+};
+
+int hidden_color_pair_query_bound(int n) {
+    if (n < 2 || n > 500) throw invalid_argument("N must be in [2,500]");
+    int lg = 0;
+    while ((1 << lg) < n) ++lg;
+    return n * (3 * (1 + lg) + 8);
+}
+
+template<class Ask>
+HiddenColorPairs recover_hidden_color_pairs(int n, Ask ask, int budget = 20000) {
+    const int bound = hidden_color_pair_query_bound(n);
+    if (budget < bound) throw invalid_argument("query budget is too small");
+    const int vertices = 2 * n;
+    int used = 0;
+    vector<int> stamp(vertices, 0);
+    auto query = [&](const vector<int>& ids) {
+        if (ids.empty()) throw logic_error("empty internal query");
+        if (used >= budget) throw runtime_error("query budget exceeded");
+        ++used;
+        for (int x : ids) {
+            if (x < 0 || x >= vertices || stamp[x] == used)
+                throw logic_error("invalid internal query");
+            stamp[x] = used;
+        }
+        int result = ask(ids);
+        if (result < 1 || result > int(ids.size()))
+            throw runtime_error("invalid color count");
+        return result;
+    };
+    auto has_neighbor = [&](int v, const vector<int>& candidates) {
+        vector<int> ids = candidates;
+        ids.push_back(v);
+        return query(ids) < int(ids.size());
+    };
+
+    vector<vector<int>> graph(vertices);
+    for (int v = 0; v < vertices; ++v) {
+        vector<int> color(v, -1);
+        array<vector<int>, 2> groups;
+        for (int root = 0; root < v; ++root) if (color[root] == -1) {
+            queue<int> bfs;
+            color[root] = 0;
+            bfs.push(root);
+            while (!bfs.empty()) {
+                int u = bfs.front(); bfs.pop();
+                groups[color[u]].push_back(u);
+                for (int w : graph[u]) {
+                    if (color[w] == -1) {
+                        color[w] = color[u] ^ 1;
+                        bfs.push(w);
+                    } else if (color[w] == color[u]) {
+                        throw runtime_error("graph is not bipartite");
+                    }
+                }
+            }
+        }
+        for (auto& candidates : groups) {
+            while (!candidates.empty() && has_neighbor(v, candidates)) {
+                int lo = 0, hi = int(candidates.size());
+                while (hi - lo > 1) {
+                    int mid = lo + (hi - lo) / 2;
+                    vector<int> left(candidates.begin() + lo,
+                                     candidates.begin() + mid);
+                    if (has_neighbor(v, left)) hi = mid;
+                    else lo = mid;
+                }
+                int u = candidates[lo];
+                graph[v].push_back(u);
+                graph[u].push_back(v);
+                candidates.erase(candidates.begin() + lo);
+            }
+        }
+    }
+
+    vector<int> outgoing(vertices, -1);
+    for (int v = 0; v < vertices; ++v) {
+        if (graph[v].size() == 1) continue;
+        if (graph[v].size() != 3)
+            throw runtime_error("vertex degree must be 1 or 3");
+        int a = graph[v][0], b = graph[v][1], c = graph[v][2];
+        int first = query(vector<int>{v, a, b});
+        if (first == 1) outgoing[v] = c;
+        else {
+            if (first != 2) throw runtime_error("invalid triple response");
+            int second = query(vector<int>{v, a, c});
+            if (second != 1 && second != 2)
+                throw runtime_error("invalid triple response");
+            outgoing[v] = (second == 1 ? b : a);
+        }
+    }
+    vector<pair<int,int>> pairs;
+    for (int v = 0; v < vertices; ++v) {
+        int mate = -1;
+        for (int u : graph[v]) if (outgoing[v] != u && outgoing[u] != v) {
+            if (mate != -1) throw runtime_error("multiple remaining partners");
+            mate = u;
+        }
+        if (mate == -1) throw runtime_error("missing partner");
+        if (v < mate) pairs.emplace_back(v, mate);
+    }
+    if (int(pairs.size()) != n) throw runtime_error("invalid pair count");
+    if (used > bound) throw logic_error("proved query bound exceeded");
+    return {move(pairs), move(graph), used};
+}
+```
+
+原典では標準入出力を使わず、`chameleon.h` の関数を呼びます。上のコードに次の変換を加えると、質問と回答の番号を1始まりにできます。`Solve` の呼び出しごとに状態を作り直します。
+
+```cpp
+#include "chameleon.h"
+void Solve(int N) {
+    auto result = recover_hidden_color_pairs(N, [](const vector<int>& ids) {
+        vector<int> one_based;
+        one_based.reserve(ids.size());
+        for (int x : ids) one_based.push_back(x + 1);
+        return Query(one_based);
+    });
+    for (auto [a, b] : result.pairs) Answer(a + 1, b + 1);
+}
+```
+
+## 関連する手法
+
+[対話問題の質問設計](/flowchartcp/techniques/interactive/)、[一個だけの不良を二進符号で特定する](/flowchartcp/techniques/interactive-bit-group-testing/)、[二部グラフの偶奇制約](/flowchartcp/techniques/bipartite-parity-constraints/)、[二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [原典例：JOI 2019/2020 カメレオンの恋](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon.pdf)
+- [公式解説：未知の二部グラフと三頂点の判別](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon-review.pdf)
+
+<TechniqueReferences techniqueId="interactive-hidden-bipartite-edge-color-pair-recovery" />

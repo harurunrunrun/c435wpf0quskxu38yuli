@@ -1,0 +1,143 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_e",
+    "title": "Need for Speed",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=9",
+    "techniqueIds": [
+      "positive-denominator-offset-real-bisection"
+    ],
+    "features": [
+      "全区間の測定速度へ同じ未知の実数を足し、距離を正の補正後速度で割った合計を既知の時間へ合わせる。",
+      "補正は負にもなり、下端c=-min(s)は定義域に含まれない。",
+      "Nは1..1000、距離は1..1000、測定速度の絶対値は1000以下、合計時間は1..10^6である。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=5",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公開sketchのEで二分探索と探索境界を確認した。掲載記事では合計時間の厳密単調減少、一意解、開いた下端、上界Σd/Tを独立に導出し、境界からの距離で探索するコードを掲載。実MDXのC++20を抽出し、1項の閉形式と生成した既知の補正による5064ケース、負補正、極近傍、1001000の補正、非有限値・範囲外の拒否を検証した。 解法PDFはICPC公式サイトに置かれているが、著者Per Austrin・Jakub Onufry Wojtaszczykが文書冒頭でunofficial analysisと明記するため、公式解説とは呼ばない。2017年の大会資料でcutoff 2026-10-14以前と確認し、開催日の絶対日は未確認として記載しない。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "publicationYear": 2017
+  },
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_f",
+    "title": "Posterize",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=11",
+    "techniqueIds": [
+      "weighted-squared-quantization-interval-dp"
+    ],
+    "features": [
+      "0..255の整数値と頻度から、最大K個の整数代表値を選ぶ。",
+      "各値を最も近い代表値へ置き換え、頻度付きの二乗誤差の総和を最小にする。",
+      "出現値は最大256種類、Kは出現値数以下、各正頻度は2^26以下である。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=5",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公開sketchのFで一群の二乗費用とO(KD²)の分割DPを確認した。掲載記事では最寄り割当てと連続分割の同値性、平均の床・天井、三つの累積和を独立に説明。実MDXのC++20を抽出し、小値域の全代表集合による直接最近値割当てを含む6434比較、0頻度、同率丸め、K境界、全256値の頻度2^26と64ビット費用、例外を検証した。 解法PDFはICPC公式サイトに置かれているが、著者Per Austrin・Jakub Onufry Wojtaszczykが文書冒頭でunofficial analysisと明記するため、公式解説とは呼ばない。2017年の大会資料でcutoff 2026-10-14以前と確認し、開催日の絶対日は未確認として記載しない。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "publicationYear": 2017
+  },
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_c",
+    "title": "Mission Improbable",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=5",
+    "techniqueIds": [
+      "row-column-maxima-height-matching"
+    ],
+    "features": [
+      "非負整数の高さ表で、行・列それぞれの最大値と0か正かの支持を保つ。",
+      "正のセル間では積み替えてよく、最終高さを元セルの高さ以下に制限しない。",
+      "残す高さの総和を最小化し、取り除ける総量を最大化する。",
+      "非零セルの基礎費用1と、同じ最大高さの行列が共有する証拠を分ける。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=3",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式問題冊子とICPC公式サイト掲載の公開スケッチを2026-10-15に再確認した。公開スケッチはPer Austrin・Jakub Onufry Wojtaszczykによる文書で、unofficial analysisと自称しており、公式解説としては登録しない。大会年2017は基準日2026-10-14以前だが、開催日の日単位は未確認。難易度は原典にないためnullとする。 原典は残る箱の積み直しを許す。図C.1/C.2にも高さ1から2に増えるセルがあり、元セルの高さは上限としない。正セルの基礎高さ1と各行列の追加量を分け、同じ最大高さの共有証拠を最大対応にする費用式を独立に証明した。実MDXから抽出したC++20を-O2 -Wall -Wextra -Werrorでコンパイルし、縦横3以下・6セル以下・各値0..3の全入力について、支持と行列最大を直接検査する全合法最終高さ配置列挙と比較した。3x3ランダム300例、疎支持、積み増しが必要な11から10の例、値1、空、公式例、100x100と64bit、不整形・負値・上限違反を確認済み。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "publicationYear": 2017
+  },
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_i",
+    "title": "Secret Chamber at Mount Rushmore",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=17",
+    "techniqueIds": [
+      "independent-letter-rewrite-reachability"
+    ],
+    "features": [
+      "一文字を別の一文字へ変える有向規則を、各位置で独立に0回以上適用できる。",
+      "挿入・削除・並べ替えはなく、語長が等しく各位置の文字が到達可能なら変換できる。",
+      "同じ文字の全出現を一括置換する操作とは異なる。",
+      "共通の26文字の到達表を前処理し、複数の語対に再利用する。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=9",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式問題冊子とICPC公式サイト掲載の公開スケッチを2026-10-15に再確認した。公開スケッチはPer Austrin・Jakub Onufry Wojtaszczykによる文書で、unofficial analysisと自称しており、公式解説としては登録しない。大会年2017は基準日2026-10-14以前だが、開催日の日単位は未確認。難易度は原典にないためnullとする。 各位置への0回以上の適用、同長条件、有向規則を原典17ページで確認。規則は原典最大500個・語長最大50だが、APIは676規則(重複・自己規則可)と各語200000文字・空語へ拡張した。位置の独立性を必要十分条件として証明した。実MDXから抽出したC++20を-O2 -Wall -Wextra -Werrorでコンパイルし、3文字上の全512規則集合と長さ0..3の全語対について、語全体を状態とする独立なBFSと比較した。循環、連鎖、同じ元文字の別々の行き先、0回、複数クエリ、空、長さ違い、非法文字・規則/語長の上限も確認済み。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "publicationYear": 2017
+  },
+  {
+    "source": "USACO",
+    "problemId": "1069",
+    "title": "Spaceship",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1069",
+    "techniqueIds": [
+      "hierarchical-reset-walk-count"
+    ],
+    "features": [
+      "有向グラフの各滞在頂点で番号を一つ使い、同じ番号の再使用の間により大きい番号が必要",
+      "始点・最初の番号・終点・最後の番号を指定する複数の問い合わせ",
+      "歩数は指定せず、合法な頂点列と番号列の組を数える。頂点再訪と自己ループを許す",
+      "初期頂点での押下直後に停止でき、空の押下列は数えない",
+      "頂点数・番号上限・問い合わせ数は各60以下、法1000000007"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob2_platinum_dec20.html",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典のUSACO 2020 December Platinum第2問とDanny Mittalによる公式解説をwebで確認。開催年月2020-12は基準日2026-10-14以前。日単位の開催日は未確認。原典はN,K,Qが各1..60、自己ループ可・重複辺なし、mod 1000000007。初期頂点で指定番号を押して直後に停止できるため、移動0回・押下1回を数えるが空の押下列は数えない。同じ最初・最後番号でも、間により大きい番号を使えば再使用可能。掲載実装はQ=0にも対応。実MDXの唯一のC++ fenceをC++20 -O2 -Wall -Wextra -Werrorでコンパイルし、全3公式例、3頂点以下の全有向グラフと小番号上限・乱数240例を含む2380ケースについて全始終条件を使用不可番号マスクの直接DPと照合した。10番号の公式例は剰余値も独立DPで一致。N=K=Q=60では三層DAGの長さ3以下の全移動列を直接数え、辺なし・自己ループを含む完全有向グラフも検証。空問い合わせ・重複問い合わせ・不正入力の例外も確認。",
+    "discoveredBy": "usaco-2020-dec-2021-jan-platinum",
+    "publicationMonth": "2020-12"
+  },
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_d",
+    "title": "Money for Nothing",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=7",
+    "techniqueIds": [
+      "pareto-pruned-max-rectangle-monotone-partner"
+    ],
+    "features": [
+      "生産者と消費者から一つずつ選び、価格差と取引可能日数の積を最大化する。",
+      "両群が最大500000件あり、全ての二者の組を調べられない。利益が正でないときは取引しなくてよい。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=4",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "固定済みICPC2017 World Finals全12題の監査で、明示された候補辺では扱えない暗黙の全組の利益という不足を確認した。一次原典で両群最大500000、価格と時刻1..10^9、終了日は最後の取引日の翌日、正利益がなければ0と確認。公式サイト掲載のPer Austrin/Jakub Onufry Wojtaszczykの解法sketchは文書自身がunofficial analysisと明記するため、公式解説とは呼ばない。年2017は確定し基準日以前、開催日の日単位は未確認。支配の同値、四点の差、入替後の合法性、空行除去と最小最適添字の不変条件を本文で証明した。実MDXのC++を抽出し、3x3点集合の全部分集合対、18000件の乱数全組比較、500000点の全前線と同値群、両差が負の不正利益、最大約10^18、空・例外で検証済み。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "publicationYear": 2017
+  }
+]

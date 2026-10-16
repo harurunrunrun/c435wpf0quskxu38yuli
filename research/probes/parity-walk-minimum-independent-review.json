@@ -1,0 +1,157 @@
+{
+  "techniqueId": "parity-walk-profile-layer-greedy-realization",
+  "problemId": "1117",
+  "reviewer": "/root/usaco_mincost_flow_tests",
+  "reviewedAt": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "conclusion": "全歩数言語の偶奇最短距離への圧縮、許容A/B/C辺と前駆の必要十分性、層greedy/根例外/末端丸上げ、単純辺での実現、完全APIの全域・整数・時間空間に実質的問題なし。",
+  "reviewedArtifacts": {
+    "article": {
+      "path": "/tmp/flowchartcp-minedges-article.mdx",
+      "sha256": "ac23c38de4d68ec4bf81a46b0fe9b882ad452aaff1c9f392d8b33dc9ff5c0c48"
+    },
+    "checker": {
+      "path": "/tmp/flowchartcp-minedges-checker.py",
+      "sha256": "3d7d20b42d257cc1e4ff2a085aa7a9eb746c2394161a597b254141619e97ed2f"
+    },
+    "sidecar": {
+      "path": "/tmp/flowchartcp-minedges-sidecar.json",
+      "sha256": "90cf2febaf90fa0e6b1f591a1fcd93d7c498e387b78b06efb7ca94c6b35ecdaf"
+    }
+  },
+  "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e",
+  "artifactShaMatchesSidecar": true,
+  "alwaysVisibleCppFences": 1,
+  "sectionCount": 8,
+  "sources": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_feb21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=feb21results",
+    "originalFullTextAndAllBoundsReread": true,
+    "editorialAuthors": [
+      "Benjamin Qi",
+      "Danny Mittal"
+    ],
+    "editorialProvenance": "公式February2021 resultsのPlatinum第2問Minimizing Edgesから原典/Solutionへ直接リンクし、公式解説Analysis著者名とgreedy第二手順・末端/根コードを再確認。",
+    "sourceBounds": {
+      "N": "2..100000",
+      "M": "N-1..N(N+1)/2, with sumM<=200000",
+      "T": "1..50000",
+      "sumN": "<=100000",
+      "sumM": "<=200000",
+      "graph": "connectedundirected, loopsallowed, noparalleledges",
+      "walk": "allb>=0, verticesandedgesmayrepeat, labeledtargetsfromrootvertex1",
+      "newEdges": "explicitlyallowed, notjustdeletinginputedges"
+    },
+    "date": "2021-02",
+    "datePrecision": "month",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "dateEvidence": "Officialstatement/resultsheader says2021February. Noexactdayinferred.",
+    "noStatementReproduction": true
+  },
+  "proofReview": {
+    "allWalkLengths": "ConnectedN>=2guaranteeseveryvertexhasanincidentnonloopedge; insertonebacktracktoextendanywalkby2, includingroot0. Hence eachparitylanguage isemptyorallvalues>=itsfiniteparityminimumwithsameparity. Rootoddunreachableiffconnectedgraphisbipartite; BFS-treepreservesfiniteordinarydistancesandbipartiteness, optimumN-1. Loopsareoddcyclesandnonbipartitecaseall2Nstatesreachable.",
+    "allowedEdgeAlgebra": "Allfourswapped-parityendpointinequalitiesboundcorrespondingdistancesby1. Ifsmallerminimaatendpointsoppositeparity, small-smallandlarge-largeeachdiffer1, givingAorB. Ifsmallerminimasameparity, crossboundsandstricta<bforceequalprofile(a,a+1), givingC. Aloopallowedonlyb=a+1. Thusclassificationisnecessaryandexhaustive, includingtiesequalprofilecase.",
+    "predecessorSufficiency": "Everypositivetargetparitydistancehasaneighborwithopposite-paritytargetexactlyonebelow. Thosepredecessorsinductivelyconstructalltargetminimumwalksfromuniquerootdistance0. Endpointinequalitiesalonganywalkforbidshorterparityarrival. Root0istheonlypredecessorexception.",
+    "layerIndependence": "Ahelpsonlyhigher(a+b)endpoint; lowerendpointcannotuseitforaminus-onepredecessor. B/Cstayinfixeda+blayer. Allgroupsbuiltbeforegreedy; lex(a,b)processessoleleftneighbor(a-1,b+1)earlier, sointerleavingdifferentlayersissafe.",
+    "spreadAndSimpleEdges": "OutgoingBcanuseadistinctoriginvertexforeachinitialedgeandmaximizedistinctdestinationcoverage. NewleftBlandsonpreviouslyuncovereddestination, sonoduplicateunorderedpair. Allowedbucketpairsarecompletebipartite; terminalCusesdisjointpairsplusatmostoneunmatchedloop. Laterextraoutgoingedgesdonotdestroyearlierpredecessors.",
+    "greedyExchange": "Forx=min(f,p)left-coveredverticeswithAavailable, equal-costoutgoingBdominatesAbyalsohelpingnextbucket. ForotherverticesAoneedgedominatesleft+rightBtwoedges; iflaterneeded, arightBcanbeaddedatthesamecostandhelpsthecurrentvertexnolessthanbefore. WithoutAeveryonehasbothBpredecessors, sofillmissingf-xleftandallfright. ExtraBcannotimprovealreadyfulfilledconditionsenoughtobeattheseexchanges.",
+    "terminal": "WithA, onlyapairofleft-coveredverticescansaveoneedgethroughC, givingf-floor(x/2). MakinganuncoveredvertexeligiblecostsanextraleftB,sopairingitcannotimproveoverA. WithoutAaddf-xleftBthenatleastceil(f/2)Cedges, achievedbydisjointpairsplusloop. Rootterminal(0,1)hasf1andoneforcedloop.",
+    "rootAndMissingRight": "Rootisuniquebucketa0. Ifitsoddminb>1, shortestoddclosedwalkhasafirstneighborwithprofile(1,b-1), sorootfindisguaranteedandoneBedgefulfillsonlypositiveoddpredecessor. Ifnonterminalrightbucketisabsent,AexistsbyprofilefeasibilityandallfverticesneedA. Nouncheckedfindcanfailundervalidatedconnectedsourcegraph."
+  },
+  "implementationReview": {
+    "api": "intminimum_edges_preserving_root_walk_lengths(intn,constvector<pair<int,int>>&edges,introot=0). Returnminimumcount, notanedgeconstruction; thisexactlymeetssourceoutput. Arbitraryroot/edgeorientation/orderareextensions.",
+    "sourceAdapter": "Subtract1fromoriginalvertexindicesandcalloncepercasewithroot0. SourcebatchlimitsT/sumN/sumMareallincluded, singlegraphM<=200000fromglobalsum. Loopcount1correctlyusesoneCSRselfarc, sufficientforparityBFS.",
+    "validation": "n/Mlimitsbeforeallocations,root/endpointsbeforeindexing, copiednormalizedpairssortedforduplicateunorderededges/reversedcopies/repeatedloops. BFSthenrejectseveryunreachablevertexBEFOREbipartitereturn. EmptyedgesdisconnectedforN>=2. Constinputuntouched; vector/mapallocationexceptionspropagate; nopersistertstate.",
+    "integers": "Onverified32bitinttarget: CSRoffset/cursor<=2M<=400000;2Nstates<=200000;finiteparitydistance<=2N-1<=199999andinfinity2N+1<=200001. 2*v+parity<=199999. counts<=N,2f<=200000. Greedyanswerisnonnegativeaccumulation<=min(M,2N-1),soallintsfit. SourceN²upperboundisnotcomputedinAPI. mapusespaircomparisonratherthansubtractingcoordinates.",
+    "mapSafety": "groupsneverinsertsduringgreedy; find/containsreadexistingprofiles, incomingassignupdatesonlyvalue. Eachbuckethasatmostoneincomingneighbor(a-1,b+1), soassignmentratherthan+=iscorrect. Rootchildexistenceprovedabove.",
+    "time": "O(Mlog(M+1)+N+M+Nlog(N+1)); includesnormalizationduplicate-checksort, parityBFS, balancedmapaggregate/lookups. IgnoringMlogMwouldmisdescribethisAPIbutarticleincludestheterm.",
+    "space": "O(N+M)extra includingnormalizedcopy,CSRoffset/cursor/neighbors,two-paritydistances,queue,map. Iterativegraphtraversal; nographrecursionon100000path."
+  },
+  "publishedCheckerReproduction": {
+    "scope": "Thisisreproductionoftheexistingnativeactual-MDXfencechecker, separatefromthenewN6oracle.",
+    "normalCommand": "python3 /tmp/flowchartcp-minedges-checker.py",
+    "sanitizerCommand": "python3 /tmp/flowchartcp-minedges-checker.py --sanitize",
+    "normal": {
+      "checks": 292700,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "completeInfiniteLanguageGroups": 932,
+      "rootRelabelingCases": 23940,
+      "independentDpComparisons": 25540,
+      "randomCases": 1600,
+      "maximumN100000Cases": 7,
+      "maximumBatchCalls": 50000,
+      "invalidCalls": 14,
+      "checksum": "18056148866444260320",
+      "seconds": 0.223795,
+      "peakRSSKiB": 25588,
+      "sanitized": false,
+      "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e"
+    },
+    "asanUbsan": {
+      "checks": 292700,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "completeInfiniteLanguageGroups": 932,
+      "rootRelabelingCases": 23940,
+      "independentDpComparisons": 25540,
+      "randomCases": 1600,
+      "maximumN100000Cases": 7,
+      "maximumBatchCalls": 50000,
+      "invalidCalls": 14,
+      "checksum": "18056148866444260320",
+      "seconds": 1.53485,
+      "peakRSSKiB": 314240,
+      "sanitized": true,
+      "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e"
+    },
+    "allAuthorDeterministicCountersMatch": true,
+    "leakSanitizerEnabled": false,
+    "flags": "g++C++20-O2-Wall-Wextra-Werror;sanadds-O1-g-fsanitize=address,undefined-fno-omit-frame-pointer-fno-pie-no-pie",
+    "maxScope": "SevenN100000casesincludeM200000,root/leafloops,bipartiteandoddcycle,finiteoddreturn2N-1;T50000andtotalN100000batch;invalid14. Originalsourcebatchbudgetisnotthewholecheckerworkload."
+  },
+  "additionalIndependentProbe": {
+    "script": "/tmp/flowchartcp-minedges-independent-probe.py",
+    "scriptSha256": "241d4ea27f050d135b6f07aec2cdafc4afee642eb7f7a06826c328334f2c792f",
+    "resultFile": "/tmp/flowchartcp-minedges-independent-probe.json",
+    "resultSha256": "940e141f0be85bdde2e141e10e1d71ae263a2f085418ee786b960b5cad0a7b38",
+    "command": "python3 /tmp/flowchartcp-minedges-independent-probe.py",
+    "result": {
+      "checks": 1717587,
+      "allConnectedLoopGraphsN6": 1709056,
+      "completeInfiniteLanguageGroups": 10263,
+      "extraNonzeroRootCases": 4265,
+      "reachableSetStatesProcessed": 14415046,
+      "maximumObservedPrefixCycleStates": 11,
+      "checksum": "13145737057088314510",
+      "seconds": 1.00254,
+      "peakRSSKiB": 5624,
+      "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e"
+    },
+    "oracle": "EnumerateALL2^21loopoptionalundirectedsix-vertexgraphs. Evolveexactreachablevertexsetsfromroot0untilfirstrepeatedset. Sinceoutputsetequalsdeterministicstate, storefullcanonicalpreperiod/periodwordwithoutfinitecutofforassumedparityclassification. Groupall1709056connectedgraphsbythatcompletewordandminimizeactualedgepopcountoverEVERYgraphinthegroup. Secondpassenumeratesagainandcomparesactualpublishedfunctiontothatglobalminimum.",
+    "scope": "10263exactinfinite-languagegroups,1709056root0APIcomparisons;4265additionalnonzero-rootcasesindependentlyswaprootlabelsintowhole-root0oracleandreverseallinputendpoints/order. 1717587checks,checksum13145737057088314510.",
+    "independence": "NewC++harnesswrittenread-onlyfrompublishedfence; noA/B/Cclassification,greedyruleorlayerDPentersoracle. ThisextendsauthorN2..5globalminimumexhaustiontoN6; conceptualoraclefamilyisthesamecomplete-languagegroundtruthandisnotclaimedasanunrelatedmathematicalmethod. Newprobeisnormalonly;publishedcheckerwasreproducedbothnormalandASan."
+  },
+  "separationAndPreservation": {
+    "sharedFilesModified": false,
+    "authorFilesModifiedByReviewer": false,
+    "initialFixedAuditModified": false,
+    "fixedAuditFile": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+    "initialRecordsObserved": "1117and1118bothremainmissing-technique/reviewverified/fullImplementationValidatedfalseinthesavedinitialtechnicalFindings; sourceDate2021-02. Rootwillappendlaterreview/resolutionwithinitialfieldsretained.",
+    "countingGraphs": "1118CountingGraphsusesrelatedparityprofilesbutcountsallrealizationsmodulo, adifferentAPI/technique. Thisreviewconcerns1117minimumedgecountonly.",
+    "researchVersusImplementation": "InitialPythonsmallproofprobeisnotthiscompletedC++API. Currentnativecheckerextractsactualfence; newindependentN6probealsoexecutesexactfrozenfence.",
+    "registration": "Parentownsmetadata/reference/feature/flow/walkandlaterresolution; passingreviewdoesnotitselfassertsharedregistrationcomplete."
+  },
+  "originalReviewSha256": "10367ba28625e3d68ff7c49f295324b8bed1c42b6fc1540f9ece28134d4c69d3",
+  "publishedArticle": "src/content/docs/techniques/parity-walk-profile-layer-greedy-realization.mdx",
+  "permanentProbe": {
+    "script": "research/probes/parity-walk-minimum-independent.py",
+    "originalScriptSha256": "241d4ea27f050d135b6f07aec2cdafc4afee642eb7f7a06826c328334f2c792f",
+    "normalizedScriptSha256": "8c42d8444ff621cceb4ae247c0259f697b0ecfa67cbfe3571ee13d74c80d4b8f",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Algorithm and assertions unchanged."
+  }
+}

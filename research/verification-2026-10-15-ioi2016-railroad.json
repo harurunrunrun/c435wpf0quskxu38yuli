@@ -1,0 +1,223 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed-current-scope-global-incomplete",
+  "scope": "IOI2016 Railroad full-range reusable line-transition ordering, physical circulation/MST proof, guarded feature route and resolution-only registration.",
+  "counts": {
+    "specificTechniques": 433,
+    "foundationArticles": 78,
+    "allArticles": 511,
+    "exampleMappings": 532,
+    "originalUrls": 494,
+    "graphs": 478,
+    "nodes": 3739,
+    "questions": 1705,
+    "answerEdges": 5562,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 528,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "directed-line-balance-euler-augmentation-mst",
+    "title": "全ての速度変換区間を並べる費用は、境界の流量差と連結費用に分ける",
+    "verificationRecord": "research/technique-verifications/directed-line-balance-euler-augmentation-mst.json",
+    "cppSha256": "0f96903e638b431fec50f4261e87e6b30738a0a5ccb741757fbd2a90baae9529",
+    "normalization": "Repository checker/probe paths, standard aliases on the new research feature, and private reference provenance follow-up; article and C++ unchanged."
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2016-railroad-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 5739.560731
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 5780.981,
+      "record": "research/probes/ioi2016-railroad-flow-results.json",
+      "initialFailureAndFix": "First run9/10 found omitted standard aliases in the new feature record. Root added aliases; identical assertions/test SHA then passed10/10."
+    },
+    "targetedRegression": {
+      "groups": 11,
+      "passed": 11,
+      "failed": 0,
+      "durationMs": 28939.344979,
+      "scope": "ledger/domain/viewer/continuation/legacy/layout, IOI2016+2017 fixed corpora, Molecules, Aliens and specific-expansion flows. Separate new10-case suite protects all531prior full walks/477graphs/all79data JSON/all10audit initial fields and2 old resolutions.",
+      "newFeatureAliasCorrection": "Final validate and new10-case flow suite separately cover the research-feature normalization; broad groups were not unnecessarily repeated for non-rendered aliases.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 511,
+      "mappings": 532,
+      "diagrams": 478,
+      "passed": true,
+      "finalAliasNormalizedRebuild": {
+        "generatedFiles": 1573,
+        "allBytesIdenticalToTestedOutput": true
+      }
+    },
+    "localSearch": {
+      "articlesIndexed": 511,
+      "recentArticlesChecked": 41,
+      "japaneseEnglishFullWidthQueries": 169,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 478,
+      "completeAnswerLabels": 5562,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized graphs-walk-goals and line-transition-connection-conditions. New route/full detail guards/explanations have no node overlap. Existing parent is wide with shared-tail edges and uses wheel-zoom viewer; no actual browser or fit-size readability claim."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1476,
+      "linksAssets": 29838,
+      "diagrams": 478,
+      "passed": true,
+      "externalRequests": false,
+      "finalRebuildBytesIdentical": true
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": {
+    "source": "N2..200000,all entry/exit speeds1..1e9;initial1,positive speed,all sections once and no final return charge. Original generic+Notice-derived plan_roller_coaster adapter; actual header bytes unacquired.",
+    "proof": [
+      "physical entry-upper-bound transition cost max(exit−nextentry,0)",
+      "auxiliary max over both endpoints ->1 closes open order for free",
+      "free upward abstract connectors express acceptance slack rather than acceleration",
+      "adjacent connector cut balance gives forced downward lower bound",
+      "zero-balance opposite pairs connect quotient components,with MST lower bound",
+      "balanced weakly connected directed graph admits Euler circuit,which restores a legal physical order",
+      "64bit bounds and iterative allocation/multiplicity-free implementation"
+    ],
+    "authorRootAndPeerNormalAsan": {
+      "checks": 67533397,
+      "coreCalls": 93460,
+      "adapterCalls": 76252,
+      "literalPhysicalOrders": 11911144,
+      "heldKarpCases": 5816,
+      "heldKarpRelaxations": 167264334,
+      "smallSpeed3OrderedArrays": 66420,
+      "smallSpeed2OrderedArrays": 5456,
+      "counterNote": "The two small families overlap and are not summed as unique instances. Normal/ASan repeat the same cases.",
+      "maximumN200000Cases": 21,
+      "invalidCalls": 30,
+      "allocationFaults": 22,
+      "reentrantBatch": 20000,
+      "corePayloadBytes": 8000012,
+      "adapterIncludingCoreAdditionalPayloadBytes": 11200012,
+      "checksum": "10479858278086570783"
+    },
+    "independentAdditional": {
+      "checks": 2752841,
+      "apiCalls": 67084,
+      "threeSpeedMultisetsN2to7": 11430,
+      "fourSpeedMultisetsN2to4": 4828,
+      "randomFourSpeedProfiles": 512,
+      "connectorCountSearchStates": 14475224,
+      "balancedConfigurations": 1250748,
+      "connectedBalancedConfigurations": 1249599,
+      "constructedEulerWitnesses": 67084,
+      "EulerEdges": 697962,
+      "restoredPhysicalSections": 376580,
+      "checksum": "16174261861575450891",
+      "ordinaryAndAsanPassed": true,
+      "executionAttributedToPeer": true,
+      "independence": "Direct per-vertex equations/connectivity/exhaustive connector counts and actual Hierholzer-to-physical simulation; no cut-balance formula/DSU/MST."
+    }
+  },
+  "reviewCounters": {
+    "verifiedMappings": 532,
+    "reviewedProblems": 492,
+    "corpusStatementsReviewed": 77,
+    "corpusSolutionsReviewed": 70,
+    "allSolutionsReviewed": 501
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "5/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2016",
+      "research": "6/6",
+      "covered": "3/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 17,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual official railroad.h bytes not retrieved; generic signature+Notice-derived standalone adapter tested.",
+    "ASan/UBSan pass with detect_leaks=0; no LeakSanitizer claim.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures. No install/server/browser retried.",
+    "External example-link liveness not checked. No commit/push/upload/publication."
+  ],
+  "inProgress": [
+    "Paint author complete, under independent review.",
+    "Messy author implementation/checking.",
+    "Shortcut author implementation/checking."
+  ]
+}

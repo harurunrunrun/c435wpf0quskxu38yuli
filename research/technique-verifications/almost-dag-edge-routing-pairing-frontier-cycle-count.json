@@ -1,0 +1,515 @@
+{
+  "techniqueId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+  "auditGapId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+  "status": "verified-and-integrated",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-routing-article.mdx",
+    "checker": "/tmp/flowchartcp-routing-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/almost-dag-edge-routing-pairing-frontier-cycle-count.mdx",
+    "checker": "scripts/check_almost_dag_routing_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "metadataFile": "data/techniques-specific-graph-extensions.json",
+    "referenceFile": "data/references-specific-graph-extensions.json",
+    "feature": "data/almost-dag-routing-problem-features.json"
+  },
+  "metadata": {
+    "id": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+    "title": "戻る辺が二本以下の有向グラフで、道の端を追って全辺の経路分解を数える",
+    "summary": "各頂点で入辺と出辺を対応させ、戻る辺を含む未完成の道だけを二組の端点で管理する。閉じた循環を作る対応を除き、残りの局所対応を階乗でまとめて数える。",
+    "aliases": [
+      "USACO 2021 US Open Routing Schemes Platinum",
+      "almost DAG edge routing pairing frontier cycle count",
+      "二本の戻る辺 局所入出対応 全辺経路分解"
+    ],
+    "family": "ほぼDAGの全辺経路分解の数え上げ",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "state-design",
+      "topological-sort"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+      "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ]
+  },
+  "reference": {
+    "techniqueId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+    "source": "USACO",
+    "problemId": "1141",
+    "title": "Routing Schemes",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+    "evidence": "各送り手から異なる受け手へ、全有向辺を全体で一度だけ使う経路分解の個数を数える。頂点再訪と役割頂点の途中通過を許す。番号が減る辺が高々二本の単純有向グラフについて、仮想入出辺で次数をそろえ、局所全単射と閉じた成分を除く二道の端点DPをO(N^3)時間・O(N^2)追加領域で実装する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "division": "Platinum",
+    "sourceDate": "2021",
+    "datePrecision": "year",
+    "exactDateVerified": false,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "公式原典1141とresults Platinum第2問のSolution直リンクを再読。N2..100、K0..2、T1..20、総N²<=20000、法1e9+7、0/1隣接行列・対角0、少なくとも一分解の存在保証を確認。選定O(N^3)frontierの局所対応/識別子固定/合併/自己閉鎖/二本cross/送り手接続時除外を独立証明。実MDXの完全C++20を新checkerで全小graph×全legalroles、全local permutationsとliteral trails、原典全sample、N100最大構成と通常/ASan+UBSan比較。公式末尾の別O(N²)PIEの相殺/BEST規約は今回未確認として保持。原典日付は2021年精度のみで月日を補わず、難度null/Platinum別field。"
+  },
+  "problemFeature": {
+    "source": "USACO",
+    "problemId": "1141",
+    "title": "Routing Schemes",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+    "techniqueIds": [
+      "almost-dag-edge-routing-pairing-frontier-cycle-count"
+    ],
+    "features": [
+      "複数の送り手から異なる受け手へ道を一本ずつ作り、全有向辺を合計一回ずつ使う経路分解の個数を求める。送り手と受け手の対応も別に数える。",
+      "頂点は再訪でき、送り手や受け手も道の途中で通ってよい。独立した閉じた成分は禁止するが、道が元グラフの有向サイクルを通り抜けることは許す。",
+      "自己ループ・多重辺なしの0/1有向グラフ。番号が減る辺は高々二本。原典N2..100、法1e9+7、T1..20、総N²<=20000。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021",
+    "publicationYear": 2021,
+    "publicationDatePrecision": "year",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "notes": "既存Euler一経路構築・頂点素DAG path coverとは別scope。法は一般APIで任意の正の32bitへ拡張。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "officialEditorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+    "statementFullTextAndNumericBoundsVerified": true,
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "officialEditorialAuthors": [
+      "Benjamin Qi"
+    ],
+    "officialEditorialProvenance": "公式resultsのPlatinum第2問Routing SchemesのSolution直接リンク。Analysis by Benjamin Qiを確認。採用した固定二識別子のO(N³)解法は本文K>1説明と公式掲載C++の対応を読み、欠けた状態不変条件/端点規則を独立に証明した。",
+    "chosenMethod": "O(N³) fixed two-slot frontier DP, rolled to O(N²) storage",
+    "sourceBounds": {
+      "N": "2..100",
+      "K": "0..2 backward arcs u>v; every other actual arc u<v",
+      "T": "1..20",
+      "sumN2": "<=20000",
+      "modulus": 1000000007,
+      "input": "NxN bit matrix, diagonal all0; hence no parallel same-direction arcs or selfloops; antiparallel arcs allowed",
+      "roles": "each vertex exactly S/R/.; #S=#R>=1, so endpoints distinct and source!=sink for every trail",
+      "routes": "exactly one trail per sender to distinct receiver, every original directed arc used exactly once globally, repeated vertices/intermediate S/R allowed",
+      "guarantee": "at least one valid scheme",
+      "emptyPaths": "impossible under disjoint S/R roles; no API extension to both-role vertices"
+    },
+    "date": "2021",
+    "datePrecision": "year",
+    "exactDateVerified": false,
+    "dateEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "dateLimitation": "Official source/results confirm2021USOpen. Exactmonth/day were not verified and are not inferred from remembered schedules/sidebar/crawl dates.",
+    "originalFullRangeContained": true,
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedOptionalApproaches": [
+      "Official final O(N²) PIE/determinant cancellation proof is explicitly left to reader; not independently completed here.",
+      "General-K determinant/BEST formulation and exact Euler-tour conventions remain unverified. These are separate nextWork, not part of completed O(N³) API."
+    ],
+    "visualInspectionClaimed": false
+  },
+  "api": {
+    "signature": "int count_almost_dag_edge_routings(const std::vector<std::string>& matrix,const std::string& roles,int modulus=1000000007)",
+    "input": "N2..100, NxN binary matrix with zero diagonal and <=2 lower-triangular ones, roles S/R/. with equal positive sender/receiver counts; positive32bit int modulus",
+    "result": "Canonical residue0<=answer<modulus of sender-labelled full-arc trail decompositions with distinct receivers. Endpoint assignment counts; no path-set factorial division. A legitimate positive count can have residue0.",
+    "originalAdapter": "For each legal original case read N,K,roles,matrix, call function on matrix/roles with defaultmodulus. N is matrix.size and K inferred from lowertriangle; original valid source K equals this redundant derivedvalue. One-based sourcevertex1 corresponds to APIindex0. Independent calls contain T<=20 and sumN²<=20000.",
+    "extensions": [
+      "Returns0 for structurally valid degree-unbalanced graphs, although source guarantees existence.",
+      "Returns0 for balanced local pairings that unavoidably leave a closed component.",
+      "Accepts prime/composite/modulus1 up to2147483647 with no inverse/division."
+    ],
+    "invalid": "std::invalid_argument for N<2/N>100, roles length or invalid character/equal-positive counts violation, ragged/nonbinary/diagonal1 matrix, >2 backward edges, modulus<=0. Every structural matrix/role check finishes before any return0 caused by local degree imbalance.",
+    "allocationErrors": "Standard allocation exceptions propagate. All buffers automatic RAII, input const and unchanged, no global mutable state; no fault-injection claim.",
+    "state": "Every graph/factorial/DP allocated per call. Interleaving sizes, zero answers, modulus1, INT_MAX and defaultmodulus leaves no stale state.",
+    "integerSafety": [
+      "Verified toolchain has32bit int and64bit int64_t; C++staticassert intmax>=2147483647. N validated before cast/products; n*n<=10000, (n+1)^2<=10201.",
+      "Each original indegree/outdegree<=99, augmenteddegree<=100; factorial indexed0..N. Empty local matching contributes0! =1%modulus.",
+      "Every multiplication is one pair of residues or residue times degree. For modulus<=2147483647, residue product<2^62<INT64_MAX; addition also explicitint64; reduce after every multiplication/addition.",
+      "No exact enormous factorial is stored in C++; exact Python bigints are checker expected-values only. No floating point."
+    ],
+    "time": "O(N³), includes O(N²) full validation and dense scan/clear; K<=2 required",
+    "space": "O(N²) additional, rolling two DP layers; matrix input and one residue output",
+    "recursion": "none"
+  },
+  "proof": {
+    "localBijection": "Attach one distinguishable virtual incoming port per sender and outgoing port per receiver. All incident pairings split into source-anchored trails and closed edge components. The valid pairing/trail decomposition bijection preserves sender-receiver assignments; paths are distinguished bysender, not arbitrary enumeration order.",
+    "closedComponents": "Reject closed components in the paired-edge successor graph, not every directed cycle of the original graph. Example0->1,1->0,0->2 with S.R has product localfactorials2 but exactly one valid trail0,1,0,2.",
+    "stateInvariant": "Before vertexi, track exactly the contracted path segments with both starting outgoing port and ending incoming port at unprocessed vertices, each containing a backwardarc. Each starts with some backwardedge; fixedslot is that upstream edge identity. At most2 such disjoint segments. Remember terminalvertex only, with its startingtail fixed. Components already attached to sender or receiver cannot create an isolated cycle later.",
+    "tailExpiry": "After processing vertexi, any slot whose fixedtail<=i can be forgotten. If no tracked prefix entered that tail, its prefix is source-anchored. If a tracked prefix enters it, transition explicitly merges to upstreamidentity before dropping downstreamslot. Receiverdummy drops a terminally anchored path.",
+    "factorial": "For c tracked arriving inputports choose c DISTINCT outgoing ports in orderedslotidentity order. Untracked d-c incoming ports match remaining outputs in (d-c)! ways. Multiple histories with same endpoints have same continuation counts; actual edge/port identity already reflected in history multiplicity.",
+    "closuresAndMergers": "Matching a tracked input to its own backwardedge closes its whole segment. Matching to other slot starts concatenates segments; if both arrive, follow through the other selected output. Mutualcross of two tracked segments closes one jointcomponent and is rejected. These cases exhaust K<=2.",
+    "final": "Every closed component contains a backwardedge and is detected at its final processed pairing. All rejected transitions actually create such a closedcomponent. Endstate(n,n) therefore counts exactly valid full schemes.",
+    "timeBound": "Pervertex nohit O(N²)states×O(1), exactlyonehit O(N)states×O(N), bothhit single(i,i)state×O(N²); totalO(N²) pervertex andO(N³) overall. Source sumN³<=100sumN²<=2000000."
+  },
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "initialChoices": [
+      "walk-goals"
+    ],
+    "parentGraphId": "graphs-walk-goals",
+    "parentNodeId": "shortest",
+    "initialMissingGraphId": "graphs-walk-goals",
+    "initialMissingNodeId": "shortest",
+    "proposedAnswerId": "edge-route-count",
+    "proposedAnswerLabel": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数",
+    "guardGraphId": "almost-dag-routing-conditions",
+    "guards": [
+      {
+        "id": "directed-simple-roles",
+        "question": "自己ループと多重辺のない有向グラフで、送り手と受け手を同数指定しますか？",
+        "description": "役割はS/R/どちらでもないの一つで、送り手・受け手は各一人以上。同じ頂点は兼ねない。"
+      },
+      {
+        "id": "all-edge-trails",
+        "question": "各送り手から異なる受け手へ、全辺を合計一回ずつ使う経路分解の個数を求めますか？",
+        "description": "頂点の再訪と役割頂点の途中通過を許す。送り手・受け手の対応も数える。"
+      },
+      {
+        "id": "almost-dag-bounds",
+        "question": "頂点は100以下で、番号が減る辺は二本以下、正の32bit法の剰余を求めますか？",
+        "description": "N>=2、その他の辺は番号が増える。既定法1e9+7を含み、O(N³)時間・O(N²)追加領域。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "almost-dag-edge-routing-pairing-frontier-cycle-count"
+    ],
+    "canonicalNotYetRegistered": true,
+    "notes": "Parent finalizes IDs/wording/navigation. Preserve original graph walk branch and all initial fixedauditfields."
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-routing-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-routing-checker.py --sanitize",
+    "normal": {
+      "checks": 8888553,
+      "apiCalls": 2955941,
+      "allSmallGraphs": 58812,
+      "balancedSmallCases": 9288,
+      "positiveOracleCases": 10004,
+      "zeroOracleCases": 297,
+      "literalLocalPairings": 86720,
+      "validLiteralPairings": 46563,
+      "literalTrailRecursions": 296988,
+      "literalTrailSchemes": 46563,
+      "randomCases": 1000,
+      "maximumCalls": 84,
+      "unbalancedRoleCalls": 2883600,
+      "originalBatchCalls": 22,
+      "invalidCalls": 18,
+      "checksum": "12131375425186710056",
+      "seconds": 0.626109,
+      "maxRssKiB": 5032,
+      "sanitizers": null
+    },
+    "asanUbsan": {
+      "checks": 8888553,
+      "apiCalls": 2955941,
+      "allSmallGraphs": 58812,
+      "balancedSmallCases": 9288,
+      "positiveOracleCases": 10004,
+      "zeroOracleCases": 297,
+      "literalLocalPairings": 86720,
+      "validLiteralPairings": 46563,
+      "literalTrailRecursions": 296988,
+      "literalTrailSchemes": 46563,
+      "randomCases": 1000,
+      "maximumCalls": 84,
+      "unbalancedRoleCalls": 2883600,
+      "originalBatchCalls": 22,
+      "invalidCalls": 18,
+      "checksum": "12131375425186710056",
+      "seconds": 10.6106,
+      "maxRssKiB": 603036,
+      "sanitizers": "address,undefined"
+    },
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "sanitizerEnvironment": {
+      "ASAN_OPTIONS": "detect_leaks=0",
+      "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+    },
+    "oracleIndependence": [
+      "Enumerate EVERY directed simple graph N2..5 with <=2 backward arcs:58812. Enumerate ALL roles S/R/. with equalpositive counts. Only9288 graph/role pairs satisfy local conservation; all others2883600 return0.",
+      "For EVERY balanced pair independently enumerate ALL pervertex incoming/outgoing port permutations, then globally trace sources and require every realedge seen. No frontier/numbering/backward DP or closure formula in this oracle.",
+      "For EVERY balanced pair also enumerate literal trails directly from senders in fixed order, optional stopping at each unused receiver or continuing, repeatedvertices and roleintermediate allowed. Accept only after allreceivers and alledges used. This oracle builds no localpairing and uses no frontierDP.",
+      "N6..9 accepted random1000balanced cases bounded by literal permutationproduct<=100000 andedgecount<=20. Seed151052603, atmost500000 attempts; observed exact1000 accepted asserted.",
+      "All9 originalsamples independently checked by both fulloracles, not just expected output.",
+      "Simple wide-feedback family verified for p1..4 and one/two feedbackarcs against both literaloracles before using its combinatorial N100 expectation. Pathreversal+indexreversal swaps commonhead into commontail and preserves answer."
+    ],
+    "maximumFamilies": [
+      "N100 padded sender49->hub->receiver49:49!",
+      "N100 two32-degree hubs with32 intermediate paths:(32!)²",
+      "N100 long increasing source-receiver path:1",
+      "N100 only99->0 with R0/S99 and98isolatedvertices:1",
+      "N100 disjoint valid onefeedback gadget(count1) and48way star:48!",
+      "N100 count3 onefeedback gadget and47way star:3*47!",
+      "N100 twofeedback gadget(count1) and46way star:46!",
+      "N100 twofeedback gadget(count6) and47way star:6*47!",
+      "N100 widehub with32 sender paths plus one distinct feedbackexcursion:32*32!",
+      "N100 widehub with31 sender paths plus two distinct feedbackexcursions:31*32*31!; one sender takes both in eitherorder or two senders eachtakeone",
+      "Reversed previous N100 instance: same count, two backedges share tail instead of head",
+      "N100 25senders/10layers of5vertices/25receivers, eachlayerv localdegree5: (5!)^50",
+      "N100 full increasingmatrix plus2backedges, roles50S/50R:0 dueconservation; structuralextensiontest, outside sourceexistencepromise",
+      "N100 valid source-receiver edge plus separate balanced2cycle:0; outside sourceexistencepromise"
+    ],
+    "maximumNotes": "14 N100 configurations x6moduli=84calls. Expected exactPythonbigint closedforms, not productionfrontier. A source-legal batch of2 N100 positive cases reaches sumN²=20000; separate20 N2 calls reachesT20. Other testfamilies are separate calls, not claimed asone source-legal batch.",
+    "moduli": [
+      1,
+      2,
+      6,
+      97,
+      1000000007,
+      2147483647
+    ],
+    "invalidCases": 18,
+    "stateChecks": "Every successful call checks constinputs and canonicalresidue. Interleave50times modulus1/INT_MAX and default after invalids; valid positive family can be0mod2.",
+    "oldResearchProbeSeparate": {
+      "file": "research/probes/usaco-2021-spring-research-checks.py",
+      "description": "Initial Python frontier/literaltrail research of1468graphs/574balancedroles/1481schemes is retained as research evidence, not claimed as this compiled fullAPI. Newchecker extracts current visiblefence and uses new all-pairings plus literaltrail oracles."
+    }
+  },
+  "initialAuditPolicy": {
+    "file": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+    "problemId": "1141",
+    "allSixResearchPositiveAlreadyRegistered": true,
+    "appendNewResearchReview": false,
+    "preserveInitialSixRecords": true,
+    "originalClassification": "missing-technique",
+    "originalProductionImplementationValidated": false,
+    "notes": "No shared audit/source/flow/MDX written. Parent will add only future implementation resolution after independent review and navigation/walk regression; leave separate optional O(N²)/BEST nextWork unconfirmed."
+  },
+  "resolutionSuggestion": {
+    "techniqueId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+    "articleImplementationValidated": true,
+    "originalFullRangeContained": true,
+    "independentReviewPending": true,
+    "navigationConnectionPending": true,
+    "registerNow": false,
+    "notes": "Selected O(N³) frontier only; optional O(N²)PIE/determinant/BEST not completed. Initial research6/6 not incremented again."
+  },
+  "nextWork": [
+    {
+      "approach": "O(N²)PIE/small determinant",
+      "verified": false,
+      "reason": "Independent proof of cancellation when proposed cycles intersect has not been completed; officialtext leaves this proof to reader."
+    },
+    {
+      "approach": "arbitrary-K BEST/Euler circuits",
+      "verified": false,
+      "reason": "Circuit normalization, sender/receiver correspondence factor and determinant convention not independently established here."
+    }
+  ],
+  "editorNotes": [
+    "Natural Japanese8standardsections; no acquisitionhistory/countermetatext inbody. Complete visibleC++20. Frontmatter title==metadata.title anddescription==metadata.summary.",
+    "All prerequisites andrelatedarticlehref IDs exist incurrentmetadata; entryPoints useadvanced/complexity/reasoning.",
+    "No publishing, server, install, commits or shared edits."
+  ],
+  "artifactSha256": {
+    "article": "a4a07f1ffc4911b4ff20279776afcadeb6b2c0fc968fec69135a3ab11ffe9f37",
+    "checker": "e85c65e143bc2ca978cd227e18d60e3f9df6ecc55c420e5dc56309dd67feb12a",
+    "publishedArticle": "6578214b29b96e4152c6b15d8ab5174f2fd6a51109d023b78834b953d6c1a36e",
+    "publishedChecker": "b811be9c5ed73e08041c1166b192e4caea17e1c62e2badb7f3ddc8a673a4d791"
+  },
+  "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+  "statusAtAuthorFreeze": "author-verified-pending-independent-review-and-registration",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/almost-dag-edge-routing-pairing-frontier-cycle-count.mdx",
+    "checker": "scripts/check_almost_dag_routing_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "walk-goals",
+      "edge-route-count",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "proseNormalization": "掲載時に32bitを32ビットへ。C++変更なし。",
+    "verificationRecord": "research/verification-2026-10-15-routing-line.json",
+    "navigationConnectionVerified": true,
+    "flowRegression": {
+      "test": "tests/routing-line-flow.test.mjs",
+      "sha256": "1adcd413c2c66928c297bf9c0a50ae1fe8290e57a5cb1d3826d8fd91ec8f9f6e",
+      "results": "research/probes/routing-line-flow-results.json"
+    }
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "reviewedAt": "2026-10-15",
+      "reviewer": "/root",
+      "status": "passed",
+      "techniqueId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+      "artifactSha256": {
+        "article": "a4a07f1ffc4911b4ff20279776afcadeb6b2c0fc968fec69135a3ab11ffe9f37",
+        "checker": "e85c65e143bc2ca978cd227e18d60e3f9df6ecc55c420e5dc56309dd67feb12a",
+        "sidecar": "66164f9990628a195a276af8a8360e932f02cc6bee8eb8421644005cf5bdc658"
+      },
+      "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "normal": {
+        "checks": 8888553,
+        "apiCalls": 2955941,
+        "allSmallGraphs": 58812,
+        "balancedSmallCases": 9288,
+        "positiveOracleCases": 10004,
+        "zeroOracleCases": 297,
+        "literalLocalPairings": 86720,
+        "validLiteralPairings": 46563,
+        "literalTrailRecursions": 296988,
+        "literalTrailSchemes": 46563,
+        "randomCases": 1000,
+        "maximumCalls": 84,
+        "unbalancedRoleCalls": 2883600,
+        "originalBatchCalls": 22,
+        "invalidCalls": 18,
+        "checksum": "12131375425186710056",
+        "seconds": 0.646525,
+        "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+        "maxRssKiB": 4844,
+        "sanitizers": null
+      },
+      "asanUbsan": {
+        "checks": 8888553,
+        "apiCalls": 2955941,
+        "allSmallGraphs": 58812,
+        "balancedSmallCases": 9288,
+        "positiveOracleCases": 10004,
+        "zeroOracleCases": 297,
+        "literalLocalPairings": 86720,
+        "validLiteralPairings": 46563,
+        "literalTrailRecursions": 296988,
+        "literalTrailSchemes": 46563,
+        "randomCases": 1000,
+        "maximumCalls": 84,
+        "unbalancedRoleCalls": 2883600,
+        "originalBatchCalls": 22,
+        "invalidCalls": 18,
+        "checksum": "12131375425186710056",
+        "seconds": 10.7765,
+        "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+        "maxRssKiB": 604396,
+        "sanitizers": "address,undefined"
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "sharedMutationAtReview": false,
+      "sourceVerification": {
+        "statementRead": true,
+        "chosenOfficialK0K1K2Read": true,
+        "officialCodeThroughK2Read": true,
+        "statement": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+        "editorial": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+        "allOriginalBoundsVerified": true,
+        "sourceDatePrecision": "year",
+        "difficulty": null,
+        "optionalFasterAndBestNotVerified": true
+      },
+      "proofReview": [
+        "局所入出ポートの全単射はsender識別のtrailと独立閉路成分へ一意分解される。仮想S/Rを逆に除けばschemeと一対一、S!の除算なし。S/R排他により空trailなし。",
+        "閉じ得る縮約道は両端未来側で少なくとも一つ戻る辺を含む。先頭の元戻る辺の固定tailを識別子として最大二つだけ保存し、合併では上流識別子を残す。",
+        "元tail処理後の未合併道はsource-connected、受け手仮想出辺へ着いた道はreceiver-terminatedで、その後孤立閉路へ変化しない。absent識別子へ入る場合も同じ。",
+        "tracked入辺0/1/2本で異なる出辺を順序付き選択し、残り(d-c)!。自己識別子出辺と二本の相互crossだけが閉路を完成させ、全閉路は戻る辺を含むので必ず捕捉される。元グラフのcycleを通る有効trailは許される。",
+        "futureの同じvertexに二道が来ても入辺は異なるので同終点状態を保持。tail==endpointも頂点局所対応時まで保持し早く閉路判定しない。",
+        "各頂点でno-hit N²定数処理、one-hit N状態×N出辺、two-hit一状態×N²出辺。合計N³、rolled二層N²。"
+      ],
+      "apiReview": [
+        "全structuralvalidation後にdegree不一致0。N2..100、正32bit法、mod1/合成数/最大INT、行寸法/文字/role/loop/backwards全検査。",
+        "拡張次数<=N、factorial配列N+1、状態添字<=(N+1)^2-1、n*n安全。64bit剰余積<2^62、和<2m。mod0残差省略は線形計数で正当。入力const/局所状態/再帰なし。"
+      ],
+      "proseNormalization": "掲載時に32bitを32ビットへ。C++変更なし。"
+    },
+    "normal": {
+      "checks": 8888553,
+      "apiCalls": 2955941,
+      "allSmallGraphs": 58812,
+      "balancedSmallCases": 9288,
+      "positiveOracleCases": 10004,
+      "zeroOracleCases": 297,
+      "literalLocalPairings": 86720,
+      "validLiteralPairings": 46563,
+      "literalTrailRecursions": 296988,
+      "literalTrailSchemes": 46563,
+      "randomCases": 1000,
+      "maximumCalls": 84,
+      "unbalancedRoleCalls": 2883600,
+      "originalBatchCalls": 22,
+      "invalidCalls": 18,
+      "checksum": "12131375425186710056",
+      "seconds": 0.646525,
+      "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "maxRssKiB": 4844,
+      "sanitizers": null
+    },
+    "asanUbsan": {
+      "checks": 8888553,
+      "apiCalls": 2955941,
+      "allSmallGraphs": 58812,
+      "balancedSmallCases": 9288,
+      "positiveOracleCases": 10004,
+      "zeroOracleCases": 297,
+      "literalLocalPairings": 86720,
+      "validLiteralPairings": 46563,
+      "literalTrailRecursions": 296988,
+      "literalTrailSchemes": 46563,
+      "randomCases": 1000,
+      "maximumCalls": 84,
+      "unbalancedRoleCalls": 2883600,
+      "originalBatchCalls": 22,
+      "invalidCalls": 18,
+      "checksum": "12131375425186710056",
+      "seconds": 10.7765,
+      "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "maxRssKiB": 604396,
+      "sanitizers": "address,undefined"
+    },
+    "additionalReviewFile": "research/probes/almost-dag-routing-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,69 @@
+---
+title: "同じ地点へ戻される期待値は、一試行の費用を成功確率で割る"
+description: "前へ進む区間と開始地点へのリセットを分け、一試行の成功確率と所要回数を後ろから計算する。"
+techniqueId: "restart-board-trial-expectation"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+すごろくで、通常の移動は前向きなのに、特定のマスからだけ開始地点へ戻されるとき。位置ごとの期待値を直接書くと循環します。戻されるまで、またはゴールするまでを一試行とすると、試行の中は前向きになります。
+
+## 考え方
+
+位置 $i$ から一試行で成功する確率を $p_i$、試行が終わるまでの移動回数の期待値を $c_i$ とします。リセットマスでは $(p_i,c_i)=(0,0)$、ゴール以上では $(1,0)$ です。通常のマスでは
+$$p_i=\frac1M\sum_{j=1}^M p_{i+j},\qquad c_i=1+\frac1M\sum_{j=1}^M c_{i+j}.$$
+求める期待値は $c_0/p_0$。後ろから幅 $M$ の和を更新すれば、各マスで $M$ 通りを調べずに済みます。
+
+## 適用条件
+
+移動は毎回独立で、戻される先が全て同じ開始地点であること。元の盤面は変化せず、ゴールの超過を許します。ゴールより前にリセットマスが $M$ 個連続すると通過できません。それ以外は成功経路があり、有限の期待値を持ちます。
+
+下の実装は原典の $N,M\le10^5$、リセット10個以下を対象にします。成功確率を直接計算し、$1-\text{失敗確率}$ の桁落ちを避けます。リセットが非常に多い別の設定では、成功確率の精度を改めて評価する必要があります。
+
+## なぜ正しいか
+
+一試行の後、成功なら終了し、失敗なら元と同じ確率過程をやり直します。全体の期待値を $E$ とすると $E=c_0+(1-p_0)E$。$p_0>0$ なら $E=c_0/p_0$ です。試行内部の再帰は常に添字が増えるので、上の境界条件から一意に計算できます。連続した $M$ 個のリセットがなければ、最後の安全なマスから次の安全なマスまたはゴールへ正の確率で進めます。
+
+## 計算量
+
+時間 $O(N+M)$、空間 $O(N+M)$。幅 $M$ の遷移を毎回足す $O(NM)$ を移動する和で減らします。無限かどうかは盤面の連続区間で判定し、浮動小数点のしきい値では決めません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<long double> restart_board_expectation(int n,int m,const vector<int>& reset){
+    if(n<1||n>100000||m<1||m>100000||reset.size()>10)
+        throw invalid_argument("board limits");
+    vector<bool> bad(n);
+    for(int x:reset){
+        if(x<=0||x>=n||bad[x])throw invalid_argument("reset square");
+        bad[x]=true;
+    }
+    int run=0;
+    for(int i=1;i<n;++i){run=bad[i]?run+1:0;if(run>=m)return nullopt;}
+    vector<long double> p(n+m,1),cost(n+m);
+    long double probability_sum=m,cost_sum=0;
+    for(int i=n-1;i>=0;--i){
+        p[i]=bad[i]?0:probability_sum/m;
+        cost[i]=bad[i]?0:1+cost_sum/m;
+        probability_sum+=p[i]-p[i+m];
+        cost_sum+=cost[i]-cost[i+m];
+    }
+    return cost[0]/p[0];
+}
+```
+
+## 関連する手法
+
+- [同じ状態に戻る確率を期待値の式から除く](/flowchartcp/techniques/expectation-self-loop/)
+- [スライディングウィンドウ](/flowchartcp/techniques/sliding-window/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/abc189/tasks/abc189_f)
+- [出典の解説](https://atcoder.jp/contests/abc189/editorial/589)
+
+<TechniqueReferences techniqueId="restart-board-trial-expectation" />

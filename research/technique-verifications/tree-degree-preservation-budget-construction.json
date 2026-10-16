@@ -1,0 +1,1133 @@
+{
+  "techniqueId": "tree-degree-preservation-budget-construction",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-degree-tree-article.mdx",
+    "checker": "/tmp/flowchartcp-degree-tree-checker.py",
+    "sidecar": "/tmp/flowchartcp-degree-tree-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/tree-degree-preservation-budget-construction.mdx",
+    "checker": "scripts/check_tree_degree_preservation_cpp.py",
+    "metadata": "data/techniques-specific-construction.json",
+    "reference": "data/references-specific-construction.json",
+    "feature": "data/tree-degree-preservation-problem-features.json"
+  },
+  "metadata": {
+    "id": "tree-degree-preservation-budget-construction",
+    "title": "元の次数を保つ頂点をできるだけ多くして、木を作り直す",
+    "summary": "全頂点に次数1を与えた残りを予算とし、次数を保つ費用が小さい頂点から選ぶ。残りを一頂点へ置き、Prüfer列で任意の新しい木を構成する。",
+    "aliases": [
+      "ICPC2018 World Finals K Wireless is the New Fiber degree-preserving tree",
+      "次数を保つ頂点数を最大化する 木の次数列 保存費用 N−2 Prüfer列",
+      "minimum changed vertex degrees arbitrary tree reconstruction"
+    ],
+    "family": "次数の保存数を最適化する木の構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "exchange-argument",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+      "https://news.icpc.global/wf2018/"
+    ]
+  },
+  "reference": {
+    "techniqueId": "tree-degree-preservation-budget-construction",
+    "source": "ICPC",
+    "problemId": "wf2018_k",
+    "title": "Wireless is the New Fiber",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+    "evidence": "同じラベルの頂点で任意の新しい木を作り、元の連結多重グラフと次数が異なる頂点数を最小にする。木の正の次数和2N−2から保存費用d_i−1と予算N−2へ帰着し、安い費用から保存する。残りを最初の未選択頂点に置いても保存数が変わらないことを示し、正の新次数列をPrüfer列で実現する。新辺は元辺の部分集合に限らない。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-04-19",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にICPC公式原典21/22頁、公式ドメイン掲載のPer Austrin・Jakub Onufry Wojtaszczyk非公式sketch12/13頁と冒頭disclaimer、公式newsの競技日2018-04-19をwebで再確認。原典N2..10000/M1..100000・連結・無向・平行辺可・自己loop禁止、出力変更数→N N−1→全辺を確認。予算上界、同価値費用順選択、残予算の置き先、全保存時余り0、正次数列のPrüfer実現と葉安全性を独立証明。実MDXの唯一の常時表示C++20 fenceを抽出し通常/ASan+UBSan成功、両4721765checks/263049API/checksum9025324404316664252。完全グラフのN−1辺部分集合57501件を独立列挙して全labeledtrees18248本を得て、希望次数列142073件と連結多重graph59139件の真の最適値を比較。さらに全新次数選択DPで2000乱択、400metamorphic、最大原典graph8構成と最大int64次数列2構成、invalid31、全2sample/出力format/N1拡張/独立呼出し・copy/moveを確認。通常0.19461秒/RSS21416KiB、ASan+UBSan3.43823秒/RSS629008KiB。元研究probe5345列とは別の完成公開C++検査。公式editorialという出所は主張せず、初回positiveを保持してresolution-onlyを提案。"
+  },
+  "problemFeature": {
+    "source": "ICPC",
+    "problemId": "wf2018_k",
+    "title": "Wireless is the New Fiber",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+    "techniqueIds": [
+      "tree-degree-preservation-budget-construction"
+    ],
+    "features": [
+      "連結な無向多重グラフの次数を参照し、同じラベルの頂点に任意の新しい単純木を作る。",
+      "元と次数が異なる頂点数を最小にする。元の辺の一部を選ぶ問題ではなく、新しい頂点対も結べる。",
+      "原典N2..10000/M1..100000、平行辺可・自己ループ禁止。次数の保存価値は全頂点で同じ。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "同じラベルの頂点で任意の新しい木を作り、元の連結多重グラフと次数が異なる頂点数を最小にする。木の正の次数和2N−2から保存費用d_i−1と予算N−2へ帰着し、安い費用から保存する。残りを最初の未選択頂点に置いても保存数が変わらないことを示し、正の新次数列をPrüfer列で実現する。新辺は元辺の部分集合に限らない。",
+    "discoveredBy": "icpc-2018-world-finals",
+    "publicationDate": "2018-04-19",
+    "publicationYear": 2018,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+    "statementPages": [
+      21,
+      22
+    ],
+    "statementReadMethod": "web PDF full extraction, K lines537..620; no native PDF download or visual-only verification is claimed",
+    "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+    "publicSketchPages": [
+      12,
+      13
+    ],
+    "publicSketchAuthors": [
+      "Per Austrin",
+      "Jakub Onufry Wojtaszczyk"
+    ],
+    "publicSketchReadMethod": "web PDF full extraction K lines592..617 and disclaimer lines0..7",
+    "publicSketchIsOfficiallyHosted": true,
+    "publicSketchSelfDescribesAsUnofficial": true,
+    "officialEditorialVerified": false,
+    "solutionVerification": "independent-analysis",
+    "fullOriginalContractVerified": true,
+    "numericBoundsVerified": true,
+    "originalBounds": {
+      "nMin": 2,
+      "nMax": 10000,
+      "mMin": 1,
+      "mMax": 100000,
+      "timeLimitSeconds": 2,
+      "vertexLabels": "0..n−1",
+      "graph": "connected, undirected, parallel edges allowed, self loops forbidden",
+      "selfLoopDegreeConvention": "source excludes self loops by distinct endpoints; graph API rejects them rather than applying an extension convention",
+      "output": "minimum changed vertex count, then n and n−1, then any valid tree edges; original-edge restriction absent"
+    },
+    "contestDate": "2018-04-19",
+    "datePrecision": "day",
+    "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "dateEvidenceMeaning": "official ICPC news explicitly dates the World Finals contest to April19,2018; not inferred from the broader event span",
+    "difficulty": null,
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedRequiredSourceFacts": []
+  },
+  "api": {
+    "namespace": "degree_tree",
+    "result": "Result { int changed_vertices; vector<int> degree; vector<pair<int,int>> edges; }",
+    "functions": [
+      "Result closest_tree_degrees(span<const int64_t> original)",
+      "Result rebuild_tree_preserving_degrees(int n, span<const Edge> edges)",
+      "void write_rebuilt_tree(ostream& output, int n, span<const Edge> edges)"
+    ],
+    "degreeContract": {
+      "n": "1..10000",
+      "singleton": "only [0], returns changed0/degree[0]/empty edges",
+      "nAtLeast2": "every degree positive int64 and sum>=2N−2; not required to be graphical or even-sum",
+      "largeValues": "all positive int64 values allowed; capped sum at2N−2 and safe d−1",
+      "target": "positive simple-tree degree sequence, each <=N−1, sum2N−2"
+    },
+    "graphContract": {
+      "n": "1..10000",
+      "m": "0..100000; n>=2 connected forces m>=n−1; n1 requires m0",
+      "edge": "0-based unordered pair a!=b, either endpoint orientation, repeats counted separately",
+      "connectivity": "iterative path-halving DSU, union by size",
+      "coverage": "all source cases; singleton and arbitrary nongraphical desired-degree vectors are explicitly documented extensions"
+    },
+    "invalid": "invalid_argument on size, degree, sum, endpoint, self-loop, or connectivity violations; checks degree validity before subtracting1 and n/m before allocating graph state",
+    "writer": "construct/validate completely before writing changed count then n and n−1 then all edges; invalid input emits no bytes",
+    "state": "no global mutable state; const spans are not retained or modified; returned vectors own storage and support copy/move",
+    "allocationAndStreamExceptions": "propagate normally"
+  },
+  "proof": {
+    "preservationUpperBound": "For any preserved set S, all other tree degrees>=1 implies sum_{i in S}(d_i−1)<=N−2. The smallest r+1 costs have minimum sum among all r+1 sets, so the affordable prefix gives a cardinality upper bound.",
+    "remainder": "If j is the first rejected vertex, remaining b<d_j−1; target_j=1+b<d_j. All later vertices have cost>0 and stay1, so none is accidentally preserved.",
+    "allSelected": "Source connectivity, or the degree API sum contract, gives sumd>=2N−2. If every cost fits, sumd<=2N−2 too; equality implies remainder0.",
+    "realization": "A positive target sequence with sum2N−2 makes a Pruefer word repeating i exactlytarget_i−1 times. Remaining degree equals remaining multiplicity+1; each chosen leaf is distinct from the current word letter. Deletion/attachment ensures connected simple tree and exact degrees.",
+    "generalizationLimit": "Different preservation rewards or original-edge constraints change the optimization; this API does not apply the cheap-cost rule to those variants.",
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "degreeTime": "O(N log(N+1))",
+    "graphTime": "O(M alpha(N)+N log(N+1)), includes validation",
+    "additionalSpace": "O(N) including result and all API temporary storage, excluding caller-owned edge input",
+    "codeWordLength": "N−2 exactly, independent of original degree magnitudes",
+    "stack": "no recursion in either public API or DSU",
+    "originalIntegerBounds": "original degree<=M<=100000, total<=200000; target<=N−1; budget<=N−2",
+    "generalIntegerSafety": "positive int64 d makes d−1 safe; capped_sum<=2N−2; adding min(d,required_sum−capped_sum) cannot exceed the cap; casts of preserved original degrees occur only when d−1<=remaining budget<=N−2",
+    "measuredRssScope": "reported RSS is for the complete checker including independent oracles, input copies, and sanitizer quarantine, not a tight API-only allocation bound"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "thinking",
+    "parentGraphId": "thinking-operation-goals",
+    "parentNodeId": "reason-task",
+    "newAnswerId": "degree-preserving-tree",
+    "newAnswerLabel": "元の次数を変える頂点を最少にして、木へ作り直す",
+    "guardGraphId": "tree-degree-preservation-conditions",
+    "canonicalChoices": [
+      "operation-goals",
+      "degree-preserving-tree",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "connected-multigraph",
+        "question": "自己ループのない連結無向グラフで、平行辺も一本ずつ次数に数えますか？"
+      },
+      {
+        "id": "free-tree-rebuild",
+        "question": "同じ頂点のまま任意の辺を使う木にして、次数が変わる頂点数を最小にしますか？"
+      },
+      {
+        "id": "bounds",
+        "question": "グラフ全体が分かり、頂点は2〜1万、辺は10万以内ですか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "tree-degree-preservation-budget-construction"
+    ],
+    "oldRoutePreservation": "add a new feature answer; do not change graph-build route, distance-two question or any old option/answer/label"
+  },
+  "verification": {
+    "checkerReadsActualSingleVisibleMdxFence": true,
+    "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+    "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+    "checkerSha256": "e0a9614e90e26c2dc508980c35397956e3f0e375d4e4f597f2a0ad973cd2ba89",
+    "commands": [
+      "python3 /tmp/flowchartcp-degree-tree-checker.py",
+      "python3 /tmp/flowchartcp-degree-tree-checker.py --sanitize"
+    ],
+    "compiler": "g++ -std=c++20 -O2 -Wall -Wextra -Werror; sanitized adds -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-pie -no-pie",
+    "sanitizerEnvironment": "ASAN_OPTIONS=detect_leaks=0:halt_on_error=1; UBSAN_OPTIONS=halt_on_error=1",
+    "normalSeconds": 0.19461,
+    "normalPeakRssKiB": 21416,
+    "asanUbsanSeconds": 3.43823,
+    "asanUbsanPeakRssKiB": 629008,
+    "checks": 4721765,
+    "apiCalls": 263049,
+    "checksum": "9025324404316664252",
+    "completeGraphEdgeSubsets": 57501,
+    "allLabeledTreesN2to7": 18248,
+    "desiredDegreeVectors": 142073,
+    "literalUniqueTreeDegreeVectorComparisons": 24486515,
+    "allConnectedSmallMultigraphs": 59139,
+    "randomCases": 2000,
+    "independentFullDegreeAssignmentDPStates": 22546158,
+    "metamorphicChecks": 400,
+    "invalidCases": 31,
+    "literalOracle": "Enumerate all (N−1)-edge subsets of the complete graph for N2..7, BFS-test connectivity, independently count literal degrees, and retain every labeled tree. Dedupe identical degree vectors only for objective comparison; no greedy budget or Pruefer decoder is used in this oracle. Counts match Cayley independently. Compare all desired vectors in1..N+1 forN2..6 and1..4 forN7 whose sum>=2N−2, including non-graphical and odd-sum inputs permitted by the degree API.",
+    "multigraphEnumeration": "Every unordered-pair multiplicity0..3 forN2..4 and0..2 forN5, retaining every connected graph; independent BFS, actual edge degree, and literal all-tree optimum.",
+    "additionalOracle": "Choose each target vertex degree from1..N−1 in a sum DP, minimizing literal mismatch subject to exact sum2N−2. No preserved-set budget selection, sorting, or Pruefer decoding;2000 random graph/desired-degree cases, DP crosschecked against literal all-tree oracle whenN<=7.",
+    "metamorphic": "200 edge-order/orientation changes return identical canonical results;200 label permutations preserve objective and validate actual reconstructed graph.",
+    "maximumCases": [
+      {
+        "name": "two vertices,100000 parallel links",
+        "n": 2,
+        "m": 100000,
+        "changed": 2
+      },
+      {
+        "name": "maximum path",
+        "n": 10000,
+        "m": 9999,
+        "changed": 0
+      },
+      {
+        "name": "maximum star",
+        "n": 10000,
+        "m": 9999,
+        "changed": 0
+      },
+      {
+        "name": "maximum star with parallel hub pair",
+        "n": 10000,
+        "m": 100000,
+        "changed": 2
+      },
+      {
+        "name": "maximum cycle",
+        "n": 10000,
+        "m": 10000,
+        "changed": 2
+      },
+      {
+        "name": "maximum100000edge family0",
+        "n": 10000,
+        "m": 100000,
+        "changed": 9141
+      },
+      {
+        "name": "maximum100000edge family1",
+        "n": 10000,
+        "m": 100000,
+        "changed": 2
+      },
+      {
+        "name": "maximum100000edge family2",
+        "n": 10000,
+        "m": 100000,
+        "changed": 9473
+      },
+      {
+        "name": "10000 maximal int64 desired degrees",
+        "n": 10000,
+        "m": null,
+        "changed": 10000
+      },
+      {
+        "name": "one maximal int64 desired degree",
+        "n": 10000,
+        "m": null,
+        "changed": 1
+      }
+    ],
+    "sourceSamples": 2,
+    "singletonExtension": true,
+    "resultCopyMoveAndReinitialization": true,
+    "writerAndInvalidBeforeOutput": true,
+    "strictOriginalEdgeWitness": {
+      "n": 4,
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "originalDegrees": [
+        5,
+        2,
+        2,
+        1
+      ],
+      "onlyOriginalTree": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "originalEdgeRestrictedMinimum": 3,
+      "arbitraryTreeMinimum": 1,
+      "verifiedByActualReturnedGraphAndLiteralOldTree": true
+    },
+    "separationFromInitialResearchProbe": "The initial audit proved small mathematical degree-vector claims only (5345 target vectors). This checker newly compiles the complete article C++ APIs and validates emitted trees, global literal optima, source bounds, extensions, invalids, output format, state, and sanitizers. The original probe is not renamed or claimed as production code."
+  },
+  "initialAuditPreservation": {
+    "auditFile": "data/corpus-audits/icpc-2018-world-finals.json",
+    "rawAuditSha256AtAuthoring": "54314a33268feb8b20e15d864a6c100c663320db601a8bc3da2492af89fdae8d",
+    "problemId": "wf2018_k",
+    "initialRecordCanonicalSha256": "13cb500819095002dd0d190134528b9266c2ca2e2c87f174ae24458675b3b877",
+    "initialRecord": {
+      "source": "icpc",
+      "problemId": "wf2018_k",
+      "title": "Wireless is the New Fiber",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "K",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+        "元と異なる次数を持つ頂点の個数を最小にする。新しい辺を元の辺集合から選ぶ必要はない。"
+      ],
+      "constraints": {
+        "vertices": "2..10000",
+        "edges": "1..100000",
+        "inputGraph": "connected, undirected; parallel edges allowed; no self loops",
+        "outputGraph": "any simple tree on same labeled vertices"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "thinking",
+      "choices": [
+        "operation-goals",
+        "graph-build"
+      ],
+      "gap": {
+        "id": "tree-degree-preservation-budget-construction",
+        "features": [
+          "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+          "元と異なる次数を持つ頂点の個数を最小にする。新しい辺を元の辺集合から選ぶ必要はない。"
+        ],
+        "reason": "グラフ構成の枝は距離2の頂点対数に限定され、次数を保存する予算配分と任意の木次数列の実現の枝がない。固定された木から辺を選ぶ次数上限DPは別問題。",
+        "neededTechniqueIds": [
+          "tree-degree-preservation-budget-construction"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "construct-star-distance-two",
+          "tree-dp-degree-capacity"
+        ],
+        "proposedFeatureAnswer": "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+        "firstMissingGraphId": "graph-distance-construction",
+        "firstMissingNodeId": "distance-two",
+        "currentOptions": [
+          {
+            "id": "yes",
+            "label": "はい"
+          },
+          {
+            "id": "no",
+            "label": "いいえ"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "単純連結な無向グラフで、辺の長さは 1、距離 2 の頂点対を指定しますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "全頂点に次数1を与えた残りN-2を、元次数d_iの保存に要るd_i-1の費用が小さい頂点から使う。残りを不一致頂点へ置いた正の次数列を作り、Pruefer列の重複回数d_i-1または残次数の貪欲な接続で木を復元する。",
+        "independentAuditReasoning": [
+          "木の次数は正で和2N-2。保存する頂点集合には合計Σ(d_i-1)<=N-2が必要。全保存の価値が1なので最小費用から選ぶことで保存数の上界を達成する。",
+          "独立確認: 次に保存できない最小費用は残予算より大きい。余りをその一頂点に与えても元次数に達しない。他の未選択頂点の次数1も元次数と異なり、得た保存数は変わらない。全保存なら総和条件から余りは0。",
+          "任意の正次数列で和が2N-2なら、各頂点をd_i-1回含めた長さN-2のPruefer列で実現できる。多重入力でd_i>N-1でも、保存費用が予算を超すので木次数へ強制しない。"
+        ],
+        "implementationRequirements": [
+          "平行辺も次数へ重複して足す。入力の接続確認と出力N-1辺・連結・非巡回・次数一致数を比較する。",
+          "N=2、既に木、星、高い平行次数、残予算0と正、同コスト順を検証する。"
+        ],
+        "complexity": "入力O(M)、整列とPruefer復元ならO(N log N)、O(N)補助空間。残次数貪欲の復元でも同じ次数列を実現できる。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          21,
+          22
+        ],
+        "editorialPages": [
+          12,
+          13
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "construct-star-distance-two",
+          "file": "src/content/docs/techniques/construct-star-distance-two.mdx",
+          "sha256": "29557faafb016f05a7eb89e6d8b1d385edd698db19ffdef8acf970925064a5da",
+          "scopeMismatch": "距離2の組数を指定し、星へ辺を足す。次数の一致数と木の次数列を指定できない。"
+        },
+        {
+          "techniqueId": "tree-dp-degree-capacity",
+          "file": "src/content/docs/techniques/tree-dp-degree-capacity.mdx",
+          "sha256": "d6a3c4d5f9d3dd4d5046edaa427b62bc647b41d2d785e967ef2d7c724b41f606",
+          "scopeMismatch": "与えられた木の辺を選択する。新しい任意の木を構成するのではない。"
+        }
+      ],
+      "independentResearchCheck": {
+        "degreeTargetVectorsCompared": 5345,
+        "maxN": 6,
+        "targetDegreeValues": "1..4",
+        "note": "目標次数の総和が2N-2以上の小規模ベクトルと、全ての木次数列を比較。完成木の出力実装は未作成。"
+      },
+      "steps": [
+        {
+          "graphId": "thinking",
+          "nodeId": "reason-task",
+          "question": "操作や解の特徴として、どれを調べたいですか？",
+          "answer": "operation-goals",
+          "answerLabel": "操作を戻す・条件に合う形を作る"
+        },
+        {
+          "graphId": "thinking-operation-goals",
+          "nodeId": "reason-task",
+          "question": "操作や解の特徴として、どれを調べたいですか？",
+          "answer": "graph-build",
+          "answerLabel": "距離や個数の条件を満たすグラフを出力する"
+        }
+      ],
+      "initialReached": {
+        "graphId": "graph-distance-construction",
+        "nodeId": "distance-two",
+        "nodeType": "question",
+        "title": "単純連結な無向グラフで、辺の長さは 1、距離 2 の頂点対を指定しますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 2,
+        "stepsSha256": "bf0b51c5ddf0e5fb01aa696baf9a4a16073ffcec108864153b4d09c7de1b0836",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "truthfulGuardContinuation": {
+        "answer": "no",
+        "reachedGraphId": "graph-distance-construction",
+        "reachedNodeId": "fallback",
+        "techniqueIds": [
+          "state-design",
+          "counterexample"
+        ],
+        "note": "距離2の頂点対指定という条件は本問に該当せず、一般の再確認結果へ止まる。"
+      }
+    },
+    "allInitialFieldsMustRemainUnchanged": true,
+    "initialResearchPositive": true,
+    "newPositiveResearchReviewRequired": false,
+    "registrationKind": "resolution-only",
+    "initialClassification": "missing-technique",
+    "initialReviewStatus": "verified",
+    "initialExpectedTechniqueIds": [],
+    "initialMaterialSolution": "retrieved-and-reviewed",
+    "initialOfficialEditorialVerified": false,
+    "initialIndependentResearchCheck": {
+      "degreeTargetVectorsCompared": 5345,
+      "maxN": 6,
+      "targetDegreeValues": "1..4",
+      "note": "目標次数の総和が2N-2以上の小規模ベクトルと、全ての木次数列を比較。完成木の出力実装は未作成。"
+    },
+    "newResolutionMustNotRewriteInitialImplementationStatus": "not-created-in-this-audit"
+  },
+  "rootTrace": {
+    "initialEntryGraphId": "thinking",
+    "initialChoices": [
+      "operation-goals",
+      "graph-build"
+    ],
+    "initialSteps": [
+      {
+        "graphId": "thinking",
+        "nodeId": "reason-task",
+        "question": "操作や解の特徴として、どれを調べたいですか？",
+        "answer": "operation-goals",
+        "answerLabel": "操作を戻す・条件に合う形を作る"
+      },
+      {
+        "graphId": "thinking-operation-goals",
+        "nodeId": "reason-task",
+        "question": "操作や解の特徴として、どれを調べたいですか？",
+        "answer": "graph-build",
+        "answerLabel": "距離や個数の条件を満たすグラフを出力する"
+      }
+    ],
+    "initialReached": {
+      "graphId": "graph-distance-construction",
+      "nodeId": "distance-two",
+      "nodeType": "question",
+      "title": "単純連結な無向グラフで、辺の長さは 1、距離 2 の頂点対を指定しますか？",
+      "techniqueIds": []
+    },
+    "initialGap": {
+      "id": "tree-degree-preservation-budget-construction",
+      "features": [
+        "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+        "元と異なる次数を持つ頂点の個数を最小にする。新しい辺を元の辺集合から選ぶ必要はない。"
+      ],
+      "reason": "グラフ構成の枝は距離2の頂点対数に限定され、次数を保存する予算配分と任意の木次数列の実現の枝がない。固定された木から辺を選ぶ次数上限DPは別問題。",
+      "neededTechniqueIds": [
+        "tree-degree-preservation-budget-construction"
+      ],
+      "implementationNeeded": true,
+      "existingRelatedTechniqueIds": [
+        "construct-star-distance-two",
+        "tree-dp-degree-capacity"
+      ],
+      "proposedFeatureAnswer": "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+      "firstMissingGraphId": "graph-distance-construction",
+      "firstMissingNodeId": "distance-two",
+      "currentOptions": [
+        {
+          "id": "yes",
+          "label": "はい"
+        },
+        {
+          "id": "no",
+          "label": "いいえ"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ],
+      "currentQuestion": "単純連結な無向グラフで、辺の長さは 1、距離 2 の頂点対を指定しますか？"
+    },
+    "truthfulContinuation": {
+      "answer": "no",
+      "reachedGraphId": "graph-distance-construction",
+      "reachedNodeId": "fallback",
+      "techniqueIds": [
+        "state-design",
+        "counterexample"
+      ],
+      "note": "距離2の頂点対指定という条件は本問に該当せず、一般の再確認結果へ止まる。"
+    },
+    "relatedArticlesReviewed": [
+      {
+        "techniqueId": "construct-star-distance-two",
+        "file": "src/content/docs/techniques/construct-star-distance-two.mdx",
+        "sha256": "29557faafb016f05a7eb89e6d8b1d385edd698db19ffdef8acf970925064a5da",
+        "scopeMismatch": "距離2の組数を指定し、星へ辺を足す。次数の一致数と木の次数列を指定できない。"
+      },
+      {
+        "techniqueId": "tree-dp-degree-capacity",
+        "file": "src/content/docs/techniques/tree-dp-degree-capacity.mdx",
+        "sha256": "d6a3c4d5f9d3dd4d5046edaa427b62bc647b41d2d785e967ef2d7c724b41f606",
+        "scopeMismatch": "与えられた木の辺を選択する。新しい任意の木を構成するのではない。"
+      }
+    ],
+    "existingCoverageIsInsufficient": "distance-two construction specifies a pair count and permits extra cycles; fixed-tree degree DP selects old edges. Neither optimizes equal degrees over arbitrary new labeled trees."
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "tree-degree-preservation-budget-construction"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回のpositive研究・未作成API・停止位置を全て保持。原典全域のAPI、独立証明、完成記事と可視C++、全小木による独立最適値比較・最大・ASan/UBSan・独立レビュー・特徴分岐で解消。非公式sketchを公式解説とせず、追加のpositive研究reviewは作らない。"
+  },
+  "integrationGate": {
+    "authorArtifactsComplete": true,
+    "requiredMathOrNumericUnknowns": [],
+    "externalIndependentReviewStillPending": true,
+    "articleFlowAndResolutionNotRegisteredByAuthor": true,
+    "resolutionProposalRequires": "parent independent review and actual feature-flow/root-walk integration; no current coverage assertion is made by these tmp artifacts"
+  },
+  "preservation": {
+    "sharedFilesModified": false,
+    "initialAuditOrSnapshotModified": false,
+    "onlyAuthoredDeliverables": [
+      "/tmp/flowchartcp-degree-tree-article.mdx",
+      "/tmp/flowchartcp-degree-tree-checker.py",
+      "/tmp/flowchartcp-degree-tree-sidecar.json"
+    ],
+    "childAgentsCreated": false,
+    "articleCodeAlwaysVisible": true,
+    "sections": [
+      "使う場面",
+      "考え方",
+      "適用条件",
+      "なぜ正しいか",
+      "計算量",
+      "実装",
+      "関連する手法",
+      "参考資料"
+    ]
+  },
+  "status": "verified-and-integrated",
+  "statusAtAuthorFreeze": "complete-author-artifacts-pending-independent-review-and-registration",
+  "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/tree-degree-preservation-budget-construction.mdx",
+    "checker": "scripts/check_tree_degree_preservation_cpp.py",
+    "metadataGroup": "construction",
+    "entryGraphId": "thinking",
+    "choices": [
+      "operation-goals",
+      "degree-preserving-tree",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Remove nonexistent prerequisite greedy; retain exchange-argument/invariant.",
+      "Use standard entryPoints order advanced/complexity/reasoning.",
+      "Ensure related article URLs keep trailing slashes; final author copy already has them. C++ unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json"
+  },
+  "artifactSha256": {
+    "authorArticle": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+    "authorChecker": "e0a9614e90e26c2dc508980c35397956e3f0e375d4e4f597f2a0ad973cd2ba89",
+    "authorSidecar": "e80b4770664e17c5518a8c0a22ef70146dcc107a3b8bf3ce21794e5f76643e82",
+    "publishedArticle": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+    "publishedChecker": "1635d4581554c1001fed63a20ed56bcd39a10f06d8156df49847a65e8dfa8a76"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewedAt": "2026-10-15",
+      "reviewer": "/root",
+      "techniqueId": "tree-degree-preservation-budget-construction",
+      "sourceVerification": {
+        "statementFullTextRead": true,
+        "statementPages": [
+          21,
+          22
+        ],
+        "allNumericBoundsAndOutputContractVerified": true,
+        "sketchRelevantFullTextRead": true,
+        "sketchPages": [
+          12,
+          13
+        ],
+        "unofficialDisclaimerRead": true,
+        "officialEditorialVerified": false,
+        "officialDateEvidenceRead": true,
+        "contestDate": "2018-04-19",
+        "difficulty": null,
+        "visualOnlyVerificationClaimed": false
+      },
+      "proofReview": [
+        "木で各次数>=1と総和2N-2より、次数保存集合はΣ(d_i-1)<=N-2。等価値1の候補を費用順に選べば、最小r+1費用が予算を超すことによって全木の保存数上界rを得る。",
+        "最初の未選択jの費用は残予算bより大きいので、残りbをそこへ配っても新次数1+b<d_jで不一致のまま。他の未選択はcost>0で次数1と異なる。全保存時は総和>=2N-2と予算内から等号/余り0。",
+        "全正次数・和2N-2の新列は各iをt_i-1回含む長さN-2のPrüfer列で実現できる。残次数=残列出現数+1の不変条件で少なくとも葉があり、先頭iは葉と異なる。葉を一つずつ除くので重複辺/自己loop/閉路なし、最後の二点を結んで各次数を実現。保存上界を達成するので最適。",
+        "元の辺配置は必要条件にも実現証明にも使わず、新辺を自由に張れる契約が必要。原辺限定star反例は最少変更3、任意木なら1となり、記事のguardを裏付ける。",
+        "N1は[0]/辺なしのみの明示拡張。原典N2..10000/M1..100000・連結・無向多重・自己loop禁止はグラフwrapperが全域を包含。一般希望次数coreは正64bit全域・総和>=2N-2を扱い、グラフ実現可能性は要求しないことを明記。"
+      ],
+      "apiAndResourcesReview": [
+        "vertexcount/mcountは割当前、正次数はd-1前に検査。capped_sumはrequired_sumで飽和するのでINT64_MAXを何個与えても和が溢れない。cost<=budget時だけintへcastするので新次数<=N-1。target和2N-2からPrüfer長N-2、添字/edgecount全部int安全。",
+        "辺端点/loopをDSU前に検査し、逆向き表記/平行辺はそれぞれ次数へ加える。n>=2/M0や不足辺など非連結を拒否。n1に有効辺を置けないので拡張は空辺のみ。",
+        "union by size/path halvingでDSU安全、キューのtopはPrüfer不変条件で非空。const spanを保持/変更せず、返すvectorは所有権独立、ローカル状態で次呼出しへ影響しない。writerは全検査構築後に出力し、不正入力では途中出力なし。",
+        "次数core O(Nlog(N+1))/O(N)、graph wrapper O(M alpha(N)+Nlog(N+1))/O(N)入力辺を除く。元の次数の大きさに応じた列を確保せず、新次数だけを使う。探索/DSUに線形再帰なし。"
+      ],
+      "artifactSha256": {
+        "article": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+        "checker": "e0a9614e90e26c2dc508980c35397956e3f0e375d4e4f597f2a0ad973cd2ba89",
+        "sidecar": "e80b4770664e17c5518a8c0a22ef70146dcc107a3b8bf3ce21794e5f76643e82"
+      },
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "normal": {
+        "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+        "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 4721765,
+        "apiCalls": 263049,
+        "completeGraphEdgeSubsets": 57501,
+        "labeledTrees": 18248,
+        "degreeVectors": 142073,
+        "literalTreeVectorComparisons": 24486515,
+        "connectedMultigraphs": 59139,
+        "randomCases": 2000,
+        "fullDegreeAssignmentDPStates": 22546158,
+        "metamorphicChecks": 400,
+        "invalidCalls": 31,
+        "checksum": "9025324404316664252",
+        "seconds": 0.195237,
+        "peakRSSKiB": 21528,
+        "maximumCases": [
+          {
+            "name": "two vertices,100000 parallel links",
+            "n": 2,
+            "m": 100000,
+            "changed": 2
+          },
+          {
+            "name": "maximum path",
+            "n": 10000,
+            "m": 9999,
+            "changed": 0
+          },
+          {
+            "name": "maximum star",
+            "n": 10000,
+            "m": 9999,
+            "changed": 0
+          },
+          {
+            "name": "maximum star with parallel hub pair",
+            "n": 10000,
+            "m": 100000,
+            "changed": 2
+          },
+          {
+            "name": "maximum cycle",
+            "n": 10000,
+            "m": 10000,
+            "changed": 2
+          },
+          {
+            "name": "maximum100000edge family0",
+            "n": 10000,
+            "m": 100000,
+            "changed": 9141
+          },
+          {
+            "name": "maximum100000edge family1",
+            "n": 10000,
+            "m": 100000,
+            "changed": 2
+          },
+          {
+            "name": "maximum100000edge family2",
+            "n": 10000,
+            "m": 100000,
+            "changed": 9473
+          },
+          {
+            "name": "10000 maximal int64 desired degrees",
+            "n": 10000,
+            "m": -1,
+            "changed": 10000
+          },
+          {
+            "name": "one maximal int64 desired degree",
+            "n": 10000,
+            "m": -1,
+            "changed": 1
+          }
+        ]
+      },
+      "asanUbsan": {
+        "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+        "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 4721765,
+        "apiCalls": 263049,
+        "completeGraphEdgeSubsets": 57501,
+        "labeledTrees": 18248,
+        "degreeVectors": 142073,
+        "literalTreeVectorComparisons": 24486515,
+        "connectedMultigraphs": 59139,
+        "randomCases": 2000,
+        "fullDegreeAssignmentDPStates": 22546158,
+        "metamorphicChecks": 400,
+        "invalidCalls": 31,
+        "checksum": "9025324404316664252",
+        "seconds": 3.31553,
+        "peakRSSKiB": 628968,
+        "maximumCases": [
+          {
+            "name": "two vertices,100000 parallel links",
+            "n": 2,
+            "m": 100000,
+            "changed": 2
+          },
+          {
+            "name": "maximum path",
+            "n": 10000,
+            "m": 9999,
+            "changed": 0
+          },
+          {
+            "name": "maximum star",
+            "n": 10000,
+            "m": 9999,
+            "changed": 0
+          },
+          {
+            "name": "maximum star with parallel hub pair",
+            "n": 10000,
+            "m": 100000,
+            "changed": 2
+          },
+          {
+            "name": "maximum cycle",
+            "n": 10000,
+            "m": 10000,
+            "changed": 2
+          },
+          {
+            "name": "maximum100000edge family0",
+            "n": 10000,
+            "m": 100000,
+            "changed": 9141
+          },
+          {
+            "name": "maximum100000edge family1",
+            "n": 10000,
+            "m": 100000,
+            "changed": 2
+          },
+          {
+            "name": "maximum100000edge family2",
+            "n": 10000,
+            "m": 100000,
+            "changed": 9473
+          },
+          {
+            "name": "10000 maximal int64 desired degrees",
+            "n": 10000,
+            "m": -1,
+            "changed": 10000
+          },
+          {
+            "name": "one maximal int64 desired degree",
+            "n": 10000,
+            "m": -1,
+            "changed": 1
+          }
+        ]
+      },
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Remove nonexistent prerequisite greedy; retain exchange-argument/invariant.",
+        "Use standard entryPoints order advanced/complexity/reasoning.",
+        "Ensure related article URLs keep trailing slashes; final author copy already has them. C++ unchanged."
+      ],
+      "sharedFilesModified": false
+    },
+    "normal": {
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 4721765,
+      "apiCalls": 263049,
+      "completeGraphEdgeSubsets": 57501,
+      "labeledTrees": 18248,
+      "degreeVectors": 142073,
+      "literalTreeVectorComparisons": 24486515,
+      "connectedMultigraphs": 59139,
+      "randomCases": 2000,
+      "fullDegreeAssignmentDPStates": 22546158,
+      "metamorphicChecks": 400,
+      "invalidCalls": 31,
+      "checksum": "9025324404316664252",
+      "seconds": 0.195237,
+      "peakRSSKiB": 21528,
+      "maximumCases": [
+        {
+          "name": "two vertices,100000 parallel links",
+          "n": 2,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum path",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star with parallel hub pair",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum cycle",
+          "n": 10000,
+          "m": 10000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family0",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9141
+        },
+        {
+          "name": "maximum100000edge family1",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family2",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9473
+        },
+        {
+          "name": "10000 maximal int64 desired degrees",
+          "n": 10000,
+          "m": -1,
+          "changed": 10000
+        },
+        {
+          "name": "one maximal int64 desired degree",
+          "n": 10000,
+          "m": -1,
+          "changed": 1
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 4721765,
+      "apiCalls": 263049,
+      "completeGraphEdgeSubsets": 57501,
+      "labeledTrees": 18248,
+      "degreeVectors": 142073,
+      "literalTreeVectorComparisons": 24486515,
+      "connectedMultigraphs": 59139,
+      "randomCases": 2000,
+      "fullDegreeAssignmentDPStates": 22546158,
+      "metamorphicChecks": 400,
+      "invalidCalls": 31,
+      "checksum": "9025324404316664252",
+      "seconds": 3.31553,
+      "peakRSSKiB": 628968,
+      "maximumCases": [
+        {
+          "name": "two vertices,100000 parallel links",
+          "n": 2,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum path",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star with parallel hub pair",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum cycle",
+          "n": 10000,
+          "m": 10000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family0",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9141
+        },
+        {
+          "name": "maximum100000edge family1",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family2",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9473
+        },
+        {
+          "name": "10000 maximal int64 desired degrees",
+          "n": 10000,
+          "m": -1,
+          "changed": 10000
+        },
+        {
+          "name": "one maximal int64 desired degree",
+          "n": 10000,
+          "m": -1,
+          "changed": 1
+        }
+      ]
+    },
+    "additionalReviewFile": "research/probes/tree-degree-preservation-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "artifacts": {
+    "article": "/tmp/flowchartcp-vision-article.mdx",
+    "checker": "/tmp/flowchartcp-vision-checker.py"
+  },
+  "metadata": {
+    "id": "rotated-manhattan-two-mark-boolean-circuit",
+    "title": "二つの黒画素の距離を判定する論理回路を作る",
+    "summary": "対角線ごとの占有と接頭ORを共有し、位置が未知の二画素のマンハッタン距離を少数のゲートで判定する。",
+    "aliases": [
+      "IOI2019 Vision Program rotated diagonal prefix OR circuit",
+      "two unknown marked pixels Manhattan exact-distance Boolean network",
+      "回転座標 対角線 占有幅 接頭OR 論理ゲート 回路生成"
+    ],
+    "family": "論理回路の構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "manhattan-transform",
+      "prefix-sum",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem5.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/statement/vision-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/grader/grader.cpp",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "rotated-manhattan-two-mark-boolean-circuit",
+    "source": "IOI",
+    "problemId": "ioi2019_vision",
+    "title": "Vision Program",
+    "url": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+    "evidence": "黒画素がちょうど二つの未知画像に対して、マンハッタン距離がKかを判定するNOT/AND/OR/XOR列を、画像を見る前に生成する。ゲート数と全入力端子数の両方に制約があり、各ゲートは画像入力または以前の出力だけを参照し、最後の出力が答えになる。和と差の対角線番号の占有幅で距離を表し、接頭ORを共有して幅>Kの条件を二方向で構成し、B(K−1) AND NOT B(K)を最終ゲートにすれば適用できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にIOI公式原典4ページ・HSC Review2ページ・JOI委員会の競技日一覧をwebで再確認。競技日2は2019-08-08、難度は公式値不明のためnull。テキスト抽出から消えた数値は推測せず、AOI配布repoの原典vision-en.pdfを公開GitHub read connectorからbase64で取得して復号し、pdftoppmで2/3ページを描画してview_imageで実際に確認した。H/W1..200、HW>=2、K1..H+W−2、10000ゲート・1000000端子を目視。PDFのGit blob SHA1=a0bcc84674f5d83d213415706229baa85581e5b0、raw SHA256=9b1737c0540382e8e0c4f0bda17a2526633100f6fe97ebf91f820d7cfea43f96。配布grader/attachment/checker C++で同じ予算、NOT単一入力、AND/OR一入力以上、前番号限定、最後の出力、重複参照の扱いも確認した。HSC Reviewの回転座標補題を参照し、掲載のprefix-OR構築、B(d)の必要十分性、K境界、厳密gate/端子式は独立に証明。実MDXの唯一の常時表示C++20を抽出し-O2 -Wall -Wextra -Werrorでコンパイル。H/W1..8・HW>=2の全2黒画素配置を全K0..H+W+1で逐次gate interpreterと独立直接L1で比較(297360画像)。別実装のuint64 lane interpreterでも実ゲートを評価。1x200/200x1は全二画素対×全K0..201、200x200は全K0..400ごとに境界/同対角/同一行列/乱択256配置、200x199/199x200/2x200/200x2/最小2画素/INT_MAX Kも検査した。回路1858件、bitpacked画像8485484件、callback gate17078件。全gateの非空入力、NOT入力数、前出力参照、最終出力、独立の端子数をチェックし、G=4D+4R+1+[R>=2],T=2HW+4D+12R−4を実測と比較。最大3190ゲート・86368端子・最終ID43189を達成し原典予算を満たす。不正H/W/K/INT_MIN/MAXと不正callback ID、callbackを呼ぶ前の不正引数拒否も確認。55810190 checks、checksum15915287276903946258、通常0.437363秒・ASan/UBSan2.96732秒で成功。ptrace環境のためLeakSanitizerのみ無効。",
+    "sourceDate": "2019-08-08"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2019_vision",
+    "title": "Vision Program",
+    "url": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+    "techniqueIds": [
+      "rotated-manhattan-two-mark-boolean-circuit"
+    ],
+    "features": [
+      "H×Wの二値画像に黒画素がちょうど二つあり、両者のマンハッタン距離がKかを全画像で判定する。",
+      "画像を読む前にNOT/AND/OR/XORゲート列を生成し、画像の入力セルまたは既に生成したゲートの出力だけを参照する。最後のゲート出力が答え。",
+      "原典H/W1..200、HW>=2、K1..H+W−2。10000ゲート・全1000000入力端子以内、NOTは1端子、空入力は禁止。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-08",
+    "notes": "黒画素がちょうど二つの未知画像に対して、マンハッタン距離がKかを判定するNOT/AND/OR/XOR列を、画像を見る前に生成する。ゲート数と全入力端子数の両方に制約があり、各ゲートは画像入力または以前の出力だけを参照し、最後の出力が答えになる。和と差の対角線番号の占有幅で距離を表し、接頭ORを共有して幅>Kの条件を二方向で構成し、B(K−1) AND NOT B(K)を最終ゲートにすれば適用できる。",
+    "discoveredBy": "ioi-2019",
+    "difficulty": null,
+    "exactDateVerified": true
+  },
+  "api": {
+    "builder": "TwoMarkCircuit build_two_mark_manhattan_circuit(int height,int width,int distance)",
+    "emitter": "template<class NotFunction,class AndFunction,class OrFunction> int emit_two_mark_manhattan_circuit(int height,int width,int distance,NotFunction add_not,AndFunction add_and,OrFunction add_or)",
+    "types": [
+      "enum class TwoMarkGateKind{Not,And,Or}",
+      "TwoMarkGate{kind,vector<int> inputs}",
+      "TwoMarkCircuit{int input_count,vector<TwoMarkGate> gates,int output,size_t input_uses}"
+    ],
+    "bounds": "1<=height,width<=200、height*width>=2、distance>=0。原典の全域を包含。distance=0またはdistance>height+width−2は2gate/3端子のfalse。",
+    "imageContract": "生成APIは画素値を引数に取らない。後から評価する画像は黒がちょうど二つであることを要求する。",
+    "numbering": "画像r*W+cが0..HW−1、gate出力がHWから連番、outputは最後のgate出力。全参照は既存番号のみ。",
+    "callbackContract": "add_not(int), add_and(vector<int>), add_or(vector<int>)互換。生成順にgateを追加し、出力セル番号を返す。build時点で不正引数を検査しcallback前に拒否。",
+    "errors": "H/W範囲・HW<2・K<0でinvalid_argument。callback戻りIDが期待連番と不一致ならlogic_error。",
+    "budget": "source 10000 gates / 1000000 input uses。実装最大3190 / 86368。",
+    "maxCellId": 43189
+  },
+  "proof": {
+    "status": "independently-complete",
+    "rotation": "L1=max(abs(delta(r+c)),abs(delta(r−c)))。定数W−1のシフトは差を変えない。",
+    "prefixMeaning": "q_iは対角線占有、P_i=OR(q_0..q_i)。",
+    "spanExceeds": "幅>d iff 存在i>=d+1:q_i AND P_(i−d−1)。同対角の二画素は幅0で個数信号なしに扱える。",
+    "exactDistance": "二方向の超過ORをB(d)とすると、整数距離K iff B(K−1) AND NOT B(K)。",
+    "constantFalse": "pixel0 AND NOT pixel0。空ORの代用に既存falseゲートを参照する。",
+    "boundary": "相異なる二画素の距離は1..H+W−2なのでK0/それより大きいKはfalse。",
+    "validGates": "各長方形盤面では両方向の全D対角線が非空。接頭と幅の参照は既に生成済み。最後に答えANDを追加。"
+  },
+  "complexity": {
+    "pixels": "P=HW",
+    "diagonals": "D=H+W−1",
+    "remaining": "R=D−K, 1<=K<=D−1",
+    "exactGates": "4D+4R+1+[R>=2]",
+    "exactInputUses": "2P+4D+12R−4",
+    "outsideDistanceRange": {
+      "gates": 2,
+      "inputUses": 3
+    },
+    "maximumGates": 3190,
+    "maximumInputUses": 86368,
+    "maximumOutputId": 43189,
+    "buildTime": "O(P+D)=O(HW)",
+    "space": "O(P+D)=O(HW)。返すgate列と端子参照、対角線ID列・prefixを含む。",
+    "evaluateOneImage": "O(P+D)時間・空間。ゲートの入力参照を各一回処理。",
+    "emitTime": "O(P+D)、callbackへ送る端子コピーを含む。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem5.pdf",
+    "statementPages": 4,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Vision/review.pdf",
+    "editorialPages": 2,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "date": "2019-08-08",
+    "day": 2,
+    "exactDateVerified": true,
+    "difficulty": null,
+    "numericBoundsVerified": true,
+    "numericBoundsVisuallyVerified": true,
+    "sourceBounds": {
+      "height": [
+        1,
+        200
+      ],
+      "width": [
+        1,
+        200
+      ],
+      "minimumPixels": 2,
+      "distance": "1..H+W−2",
+      "maximumGates": 10000,
+      "maximumInputUses": 1000000
+    },
+    "pdfMirrorUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/statement/vision-en.pdf",
+    "pdfBytes": 474619,
+    "pdfGitBlobSha1": "a0bcc84674f5d83d213415706229baa85581e5b0",
+    "pdfSha256": "9b1737c0540382e8e0c4f0bda17a2526633100f6fe97ebf91f820d7cfea43f96",
+    "numericVisualPages": [
+      2,
+      3
+    ],
+    "acquisition": "公開AOI配布repoからGitHub read connector fetch_file encoding=base64で取得し、ローカル復号/描画/view_imageで数値を実際に読んだ。主催PDFの欠落テキストを目視読了と偽らない。",
+    "graderUrls": [
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/grader/grader.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/attachment/grader.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-vision/checker/checker.cpp"
+    ],
+    "graderCppGitBlobSha1": "a2ed0898357acb1c42249cf2027c60323f17b612",
+    "semanticsVerified": [
+      "NOT exactly one input",
+      "AND/OR/XOR at least one input",
+      "no empty instruction",
+      "only input or previous gate outputs",
+      "sequential IDs starting at HW",
+      "last gate is output",
+      "NOT contributes one input use",
+      "10000 gates and 1000000 total input uses"
+    ],
+    "officialEditorialMethod": "diagonal blocks and one/two black signals",
+    "independentImplementationRefinement": "prefix-OR span exceeds checks instead of diagonal block summation",
+    "nativeNetworkApprovalWaited": false
+  },
+  "flowSuggestion": {
+    "entryGraphId": "math",
+    "proposedChoices": [
+      "bits-digits",
+      "two-mark-distance-circuit"
+    ],
+    "firstMissingGraphId": "math-bits-digits",
+    "firstMissingNodeId": "number-task",
+    "proposedAnswerId": "two-mark-distance-circuit",
+    "proposedAnswerLabel": "画像を読む前に、二つの黒画素のマンハッタン距離がKかを判定するゲート列を作る",
+    "proposedGuardGraphId": "two-mark-manhattan-circuit-conditions",
+    "guards": [
+      {
+        "id": "two-unknown-marks",
+        "feature": "矩形二値画像に黒画素がちょうど二つ。生成時には位置を見られず、H/W/Kだけで全配置用の回路を作る。"
+      },
+      {
+        "id": "sequential-gates",
+        "feature": "NOT/AND/ORが使え、空入力は禁止。画像入力と前gate出力を参照し、最後のgateが判定結果。多入力OR/ANDと接頭ORの共有が許される。"
+      },
+      {
+        "id": "size",
+        "feature": "1<=H,W<=200、HW>=2。掲載回路は最大3190gate/86368端子で、原典予算10000/1000000以内。"
+      }
+    ],
+    "techniqueId": "rotated-manhattan-two-mark-boolean-circuit"
+  },
+  "verification": {
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-vision-checker.py /tmp/flowchartcp-vision-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-vision-checker.py /tmp/flowchartcp-vision-article.mdx --sanitize",
+    "checks": 55810190,
+    "circuits": 1858,
+    "scalarImages": 297360,
+    "batchImages": 8485484,
+    "callbackGates": 17078,
+    "checksum": "15915287276903946258",
+    "normalSeconds": 0.437363,
+    "asanUbsanSeconds": 2.96732,
+    "asanUbsan": "All55810190 checks passed; LeakSanitizer alone disabled because this ptrace environment does not support it.",
+    "maximumHeightExecuted": 200,
+    "maximumWidthExecuted": 200,
+    "maximumGatesObserved": 3190,
+    "maximumInputUsesObserved": 86368,
+    "maximumOutputIdObserved": 43189,
+    "exhaustiveSmallDomain": "H/W=1..8, HW>=2、全異なる2画素配置、全K=0..H+W+1。逐次gate interpreterと直接L1を比較。",
+    "exhaustiveSlenderDomain": "1x200と200x1の全19900画素対、全K=0..201をbitpacked実ゲートinterpreterで直接L1と比較。",
+    "maximumDomain": "200x200、全K=0..400、それぞれ境界/同対角/行列/乱択256配置。追加でINT_MAX Kと200x199/199x200/2x200/200x2/最小2画素。",
+    "oracleIndependence": "oracleは画素番号から行列を復元してabs(rowdiff)+abs(coldiff)==Kを判定。生成回路は別途逐次またはuint64 laneで各gateを実行し、対角線/prefix/B式をoracle側では使わない。",
+    "validation": "全gateの非空/NOT arity/全参照が前番号/last output/独立端子数/両予算。callbackを模擬graderへ実際に追加し再simulate。不正全API引数、悪いcallback ID、無効入力時callback0回。"
+  },
+  "editorNotes": [
+    "共有ファイル未編集。指定/tmp prefixのMDX/checker/sidecarのみを成果物として残す。取得PDF/描画PNGは確認後に削除する。",
+    "技巧8節/常時表示C++20。原画像から座標を読む通常プログラムではなくgate列の生成とemitterを実装。",
+    "原典numericの未確認は実物の2/3ページ視覚確認と配布grader照合により解消。",
+    "数学補題/ゲート予算/全小simulation/max source dimensionsまで確認済み。実際のflow接続とrefs登録は親が担当。",
+    "reference evidenceは適用根拠のみ。テストと資料取得の記録はverificationNotesへ。"
+  ],
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/rotated-manhattan-two-mark-boolean-circuit.mdx",
+    "checker": "scripts/check_two_mark_manhattan_circuit_cpp.py",
+    "featureFile": "data/two-mark-manhattan-circuit-problem-features.json",
+    "entryGraphId": "math",
+    "choices": [
+      "bits-digits",
+      "two-mark-distance-circuit",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "50eae8df8ece76c7df4925ee99de4f637bdb5b9b3699644c3e62dd3ceac00f39",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true
+  }
+}

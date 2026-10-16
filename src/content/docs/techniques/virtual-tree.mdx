@@ -1,0 +1,73 @@
+---
+title: "補助木"
+description: "少数の指定頂点と、そのLCAだけを残した小さな木を作ります。"
+techniqueId: virtual-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+少数の指定頂点と、そのLCAだけを残した小さな木を作ります。
+
+別名：Virtual Tree / Auxiliary Tree / 虚木
+
+## 使う場面
+
+大きな木に対して、1回の問い合わせで使う頂点が $K$ 個だけの場合に使います。指定頂点をつなぐ経路には、何も分岐しない長い部分が含まれます。途中の効果を一つの辺にまとめられれば、指定頂点と必要な分岐点だけでDPなどを行えます。
+
+## 考え方
+
+指定頂点を元の木のDFS訪問順に並べ、隣り合う頂点のLCAを加えます。再びソートして重複を除き、祖先関係をスタックで管理しながら、残った頂点の最も近い祖先へ辺を張ります。
+
+新しい辺は元の木の経路を表します。距離なら経路長、経路の最小値が必要ならその最小値など、圧縮する経路の情報を辺に持たせます。
+
+## 適用条件
+
+DFS訪問時刻、祖先判定、LCAを求める前処理が必要です。途中の頂点を取り除いても、必要な計算を再現できることを確認してください。単に辺を長さ1として扱うと、元の距離は保存されません。
+
+問い合わせごとに元の木の全頂点を初期化すると利点が失われるため、補助木に使った頂点だけを初期化します。
+
+## なぜ正しいか
+
+指定頂点を含む異なる枝が合流する点は、DFS順で隣り合う2頂点のLCAとして得られます。そのため、追加したLCAと指定頂点だけで必要な分岐を表せます。
+
+これらを最も近い祖先につなぐと、元の木の祖先関係と分岐が保たれます。異なる指定頂点が $K$ 個なら追加するLCAは高々 $K-1$ 個なので、補助木の頂点数は高々 $2K-1$ です。
+
+## 計算量
+
+構築は $O(K\log K+K T_{\mathrm{LCA}})$、空間は $O(K)$ です。倍増法でLCAを求めるなら $T_{\mathrm{LCA}}=O(\log N)$ です。補助木上での線形のDPは $O(K)$ で行えます。
+
+## 実装
+
+返す `nodes` と `edges` は、元の木の頂点番号を使います。空でなければ `nodes[0]` が補助木の根です。重みなしの経路長は `depth[child] - depth[parent]`、重み付きの経路長は根からの距離の差から求めます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct VirtualTree { vector<int> nodes; vector<pair<int,int>> edges; };
+// tin/tout use DFS intervals; lca(a,b) returns original vertex id.
+template<class LCA>
+VirtualTree make_virtual(vector<int> v,const vector<int>& tin,
+                         const vector<int>& tout,LCA lca) {
+    if(v.empty()) return {};
+    auto less=[&](int a,int b) { return tin[a]<tin[b]; };
+    sort(v.begin(),v.end(),less); v.erase(unique(v.begin(),v.end()),v.end());
+    int k=v.size(); for(int i=1;i<k;++i) v.push_back(lca(v[i-1],v[i]));
+    sort(v.begin(),v.end(),less); v.erase(unique(v.begin(),v.end()),v.end());
+    VirtualTree out; out.nodes=v; vector<int> st;
+    for(int u:v) {
+        while(!st.empty() && !(tin[st.back()]<=tin[u] && tin[u]<tout[st.back()])) st.pop_back();
+        if(!st.empty()) out.edges.push_back({st.back(),u});
+        st.push_back(u);
+    }
+    return out;
+}
+```
+
+## 関連する手法
+
+[ダブリング](/flowchartcp/techniques/doubling/) ・ [木DP](/flowchartcp/techniques/tree-dp/)
+
+## 参考資料
+
+- [USACO Guide: Virtual Tree（構築と使用例）](https://usaco.guide/plat/VT)
+
+<TechniqueReferences techniqueId="virtual-tree" />

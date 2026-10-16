@@ -1,0 +1,189 @@
+---
+title: "複数の文字列に共通する最長部分文字列を、状態ごとの一致長の最小値で求める"
+description: "最短の文字列だけで状態を作り、各文字列での最大一致長を接尾辞へ伝えてから最小値を取る。"
+techniqueId: sam-common-all-strings
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+複数の文字列の全てに、連続する区間として現れる最長の文字列を求めたい。二つずつ最長共通部分文字列を求め、その答えだけを次へ渡す方法では、同じ長さの別の候補を捨ててしまう。
+
+例えば `abxxcd`、`abyycd`、`cd` では、最初の二つの答えとして `ab` だけを残すと、全てに共通する `cd` を失う。各文字列との比較が終わるまで、候補をまとめて保持する必要がある。
+
+## 考え方
+
+最短の入力文字列を基準にして suffix automaton を作る。状態 $v$ の最長長を $len_v$、suffix link を $link(v)$ とする。根以外の状態は、ある一つの文字列の接尾辞のうち、長さ
+
+$$len_{link(v)}+1,\ldots,len_v$$
+
+のものを受け持つ。
+
+他の文字列を一つずつ読み、読んだ部分の末尾と基準文字列との最長一致を追う。現在の状態と一致長を $(v,L)$ とし、次の文字を読めなければ suffix link をたどる。このとき一致長も
+
+$$L\leftarrow\min(L,len_{link(v)})$$
+
+まで縮める。状態だけを戻して長さをそのままにすると、実際には一致していない長さを記録してしまう。
+
+一つの文字列を読み終えたら、各状態で記録した最大一致長を $best_v$ とする。長い状態から短い状態へ
+
+$$best_{link(v)}\leftarrow\max\bigl(best_{link(v)},\min(best_v,len_{link(v)})\bigr)$$
+
+を伝える。長い一致には、その接尾辞の一致も含まれるからである。この処理を終えた後でだけ、全ての文字列に共通する長さを
+
+$$common_v\leftarrow\min(common_v,best_v)$$
+
+で更新する。`best` は文字列ごとにゼロへ戻す。最後に $\max_v common_v$ を選べばよい。基準文字列における各状態の代表的な終了位置も持てば、長さだけでなく実際の文字列も取り出せる。
+
+## 適用条件
+
+全ての文字列が固定され、求めるのが連続する部分文字列であること。間の文字を飛ばして選べる共通部分列では、この状態のまとめ方は使えない。「全て」ではなく「少なくとも何個かに現れる」という条件も、単純な最小値とは別の集計になる。
+
+実装は文字を1バイトとして比較する。UTF-8の一文字を一要素として扱いたい場合は、先に符号位置などへ変換する。戻り値は最長のものの一つで、辞書順最小は保証しない。入力がゼロ個、または空文字列を含む場合は空文字列を返す。
+
+基準の長さを $B$ とすると、状態番号を `int` で持つため $B\le(\mathrm{INT\_MAX}-1)/2$ とする。入力文字列そのものはコピーしない。
+
+## なぜ正しいか
+
+走査中の $(v,L)$ は、読んだ文字列の接尾辞のうち、基準文字列にも現れる最長のものを表す。次の文字を付けられないとき、候補となる短い接尾辞は suffix link の鎖に含まれる。各移動で長さを移動先の上限まで縮め、文字を付けられる最長の候補を使えば、この性質が保たれる。
+
+ある状態で一致した文字列の接尾辞も同じ本文中に現れる。そのため、一致長を親の最長長で切って suffix link へ伝える処理は正しい。長さの降順で行えば、子から受け取った一致もさらに親へ届く。逆に、この処理が作る文字列は全て実際の一致の接尾辞なので、存在しない一致は増えない。
+
+一つの状態の候補は、同じ代表文字列の長さ違いの接尾辞であり、短い候補は長い候補に含まれる。したがって、各本文で存在する長さの上限の最小値が、全ての本文で存在する上限になる。基準文字列の非空部分文字列は全ていずれかの状態に属するため、その最大値が求める最長長である。
+
+## 計算量
+
+入力数を $K$、入力の長さの合計を $T$、最短の長さを $B$、文字の種類数を $\Sigma$ とする。順序付きの連想配列を使う構築・走査は $O(T\log(\Sigma+1))$ 時間、文字列ごとの初期化と伝播は合計 $O(KB)$ 時間。
+
+最短の文字列を基準にすれば $KB\le T$ なので、合計は入力数の確認も含めて $O(K+T\log(\Sigma+1))$ 時間になる。最初の文字列を無条件に基準にすると、この $KB$ が大きくなり得る。補助空間は $O(B)$ で、入力の保存領域を含まない。固定バイト文字なら $\Sigma\le256$ である。
+
+## 実装
+
+状態の長さ順は計数ソートで一度だけ作る。クローン状態には元の状態の終了位置を引き継ぎ、最後の復元に使う。
+
+```cpp
+#include <algorithm>
+#include <cassert>
+#include <climits>
+#include <map>
+#include <string>
+#include <vector>
+
+std::string longest_common_substring_all(
+    const std::vector<std::string>& texts) {
+    if (texts.empty()) return {};
+    std::size_t base_index = 0;
+    for (std::size_t i = 1; i < texts.size(); ++i) {
+        if (texts[i].size() < texts[base_index].size()) base_index = i;
+    }
+    const std::string& base = texts[base_index];
+    if (base.empty()) return {};
+    assert(base.size() <= std::size_t((INT_MAX - 1) / 2));
+    const int n = int(base.size());
+
+    struct State {
+        std::map<unsigned char, int> next;
+        int link = -1;
+        int length = 0;
+        int end_position = -1;
+    };
+    std::vector<State> state;
+    state.reserve(2 * base.size());
+    state.emplace_back();
+    int last = 0;
+    for (int position = 0; position < n; ++position) {
+        const unsigned char c = static_cast<unsigned char>(base[position]);
+        const int current = int(state.size());
+        state.emplace_back();
+        state[current].length = state[last].length + 1;
+        state[current].end_position = position;
+        int p = last;
+        while (p != -1 && !state[p].next.contains(c)) {
+            state[p].next[c] = current;
+            p = state[p].link;
+        }
+        if (p == -1) {
+            state[current].link = 0;
+        } else {
+            const int q = state[p].next.at(c);
+            if (state[p].length + 1 == state[q].length) {
+                state[current].link = q;
+            } else {
+                const int clone = int(state.size());
+                state.push_back(state[q]);
+                state[clone].length = state[p].length + 1;
+                while (p != -1) {
+                    auto it = state[p].next.find(c);
+                    if (it == state[p].next.end() || it->second != q) break;
+                    it->second = clone;
+                    p = state[p].link;
+                }
+                state[q].link = state[current].link = clone;
+            }
+        }
+        last = current;
+    }
+
+    const int size = int(state.size());
+    std::vector<int> count(n + 1), order(size), common(size);
+    for (int v = 0; v < size; ++v) {
+        ++count[state[v].length];
+        common[v] = state[v].length;
+    }
+    for (int length = 1; length <= n; ++length) {
+        count[length] += count[length - 1];
+    }
+    for (int v = size - 1; v >= 0; --v) {
+        order[--count[state[v].length]] = v;
+    }
+
+    std::vector<int> best(size);
+    for (std::size_t index = 0; index < texts.size(); ++index) {
+        if (index == base_index) continue;
+        std::fill(best.begin(), best.end(), 0);
+        int v = 0, matched = 0;
+        for (unsigned char c : texts[index]) {
+            while (v != 0 && !state[v].next.contains(c)) {
+                v = state[v].link;
+                matched = std::min(matched, state[v].length);
+            }
+            auto it = state[v].next.find(c);
+            if (it == state[v].next.end()) {
+                v = 0;
+                matched = 0;
+            } else {
+                v = it->second;
+                ++matched;
+                best[v] = std::max(best[v], matched);
+            }
+        }
+        for (int i = size - 1; i > 0; --i) {
+            v = order[i];
+            const int parent = state[v].link;
+            best[parent] = std::max(
+                best[parent], std::min(best[v], state[parent].length));
+        }
+        for (v = 0; v < size; ++v) {
+            common[v] = std::min(common[v], best[v]);
+        }
+    }
+
+    int answer_state = 0;
+    for (int v = 1; v < size; ++v) {
+        if (common[v] > common[answer_state]) answer_state = v;
+    }
+    const int length = common[answer_state];
+    if (length == 0) return {};
+    return base.substr(state[answer_state].end_position - length + 1, length);
+}
+```
+
+## 関連する手法
+
+[Suffix Automaton](/flowchartcp/techniques/suffix-automaton/) ・ [異なる部分文字列を長さごとに数える](/flowchartcp/techniques/sam-length-distribution/) ・ [LCSを少ない作業領域で復元する](/flowchartcp/techniques/lcs-hirschberg-reconstruction/)
+
+## 参考資料
+
+- [SPOJ：Longest Common Substring II（原典）](https://www.spoj.com/problems/LCS2/)。複数の文字列の全てに現れる最長部分文字列の長さを求める問題。
+
+<TechniqueReferences techniqueId="sam-common-all-strings" />

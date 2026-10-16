@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2020_plants",
+    "title": "植物の比較 (Comparing Plants)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+    "techniqueIds": [
+      "cyclic-window-height-poset-two-neighbor-doubling"
+    ],
+    "features": [
+      "円周上の各位置について、時計回りの次のK−1位置のうち自分より厳密に高い個数だけが与えられる。窓幅Kは全位置で同じ。",
+      "高さは全て相異なり、観測と整合する配置が存在する。その全配置で二位置の大小が確定するか、多数の質問に答える。",
+      "原典は2<=K<=N<=200000、質問200000回以下、個数0..K−1。掲載APIはK1と同添字も明示的に拡張して扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-16",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "discoveredBy": "ioi-2020",
+    "notes": "円周の固定長K窓にある自分より高い個数から、全整合高さ順で共通する大小を答える。残余0と直前窓の0依存を解いて一つの順位を復元すると、距離K未満の対の向きは全配置で不変となる。整合配置はこの近距離DAGの線形拡張であり、左右の最高下位候補と距離の二冪表で、その到達性を質問ごと対数時間で判定できる。",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf"
+  }
+]

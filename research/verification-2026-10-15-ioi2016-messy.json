@@ -1,0 +1,1062 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed-current-scope-global-incomplete",
+  "scope": "IOI2016 Messy full-range deterministic precompiled-set permutation reconstruction, signature proof and all source budgets, feature route and resolution-only registration.",
+  "counts": {
+    "specificTechniques": 435,
+    "foundationArticles": 78,
+    "allArticles": 513,
+    "exampleMappings": 534,
+    "originalUrls": 496,
+    "graphs": 480,
+    "nodes": 3751,
+    "questions": 1711,
+    "answerEdges": 5582,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 530,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "precompiled-permutation-partition-signature-membership",
+    "title": "一度だけ並べ替わるビットの対応を、集合への所属質問で復元する",
+    "verificationRecord": "research/technique-verifications/precompiled-permutation-partition-signature-membership.json",
+    "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+    "normalization": "Article/CPP byte-identical;repository checker/probe defaults,metadata order and primary-confirmed common feature aliases normalized. New graph budget explanation shortened after visual ellipsis finding."
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2016-messy-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 10691.662115
+    },
+    "newFlow": {
+      "passed": 14,
+      "failed": 0,
+      "durationMs": 5794.91853,
+      "record": "research/probes/ioi2016-messy-flow-results.json",
+      "testHistory": "Prior draft failed one overly specific English substring expectation;test checked the actual two proof phrases separately and then14/14 passed. Product/author unaffected by that test correction. Separate new graph explanation shortened after raster inspection;final suite uses corrected case."
+    },
+    "targetedRegression": {
+      "groups": 11,
+      "passed": 11,
+      "failed": 0,
+      "durationMs": 28387.746235,
+      "scope": "ledger/domain/viewer/continuation/legacy/layout, IOI2016+2017 fixed corpora, Paint/Railroad and specific-expansion flows. Separate new14-case suite protects all533prior complete raw walks/479graphs3745nodes/all79dataJSON/all10audit initial fields and4oldresolutions.",
+      "newFeatureAliasCorrection": "Common aliases supplied before first suite. Final graph wording validated by new14-case suite,final local build and full SVG checks;old broad groups not unnecessarily repeated for a new explanation-only edit.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 513,
+      "mappings": 534,
+      "diagrams": 480,
+      "passed": true,
+      "visualRebuild": {
+        "files": 1579,
+        "changed": [
+          "assets/flow.js",
+          "flowcharts/index.html",
+          "diagrams/precompiled-permutation-conditions.svg",
+          "diagrams/precompiled-permutation-conditions/index.html"
+        ],
+        "reason": "Only newly added Messy guard wording shortened to eliminate ellipsis;mandatory positive N bound explicit."
+      }
+    },
+    "localSearch": {
+      "articlesIndexed": 513,
+      "recentArticlesChecked": 43,
+      "japaneseEnglishFullWidthQueries": 177,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 480,
+      "completeAnswerLabels": 5582,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Viewed rasterized interactive-oracles and precompiled-permutation-conditions. First new detail image showed trailing ellipsis in budget explanation;shortened only new wording and viewed again,now every guard/explanation fully visible without node overlap. Existing parent is wide/shared-tail dense and needs zoom;no browser or fit-size readability claim."
+    },
+    "localLinks": {
+      "command": "node scripts/check-links.mjs --local",
+      "htmlSvgFiles": 1482,
+      "linksAssets": 29939,
+      "diagrams": 480,
+      "passed": true,
+      "externalRequests": false,
+      "reexecutedAfterVisualRebuild": true
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": {
+    "source": [
+      {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+        "pages": 4,
+        "read": "complete primary PDF web extraction; displaced formulas assembled across original p1 and p3",
+        "verified": [
+          "p is fixed before restore; new[i]=old[p[i]] and the returned vector is p, not inverse",
+          "initial empty set; duplicate insertion has set semantics but invocation consumes budget",
+          "all writes before exactly one compile; all membership queries afterward",
+          "generic restore/add/compile/check types; first character is most significant bit",
+          "five scored N/write/read budgets exactly 8/256/256,32/320/1024,32/1024/320,128/1792/1792,128/896/896; first group moves at most two positions"
+        ]
+      },
+      {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf",
+        "pages": 3,
+        "read": "complete Japanese primary web extraction",
+        "verified": [
+          "independent crosscheck of transform direction, phase order and all five score-table rows"
+        ]
+      },
+      {
+        "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+        "relevantOneBasedPages": [
+          11,
+          12,
+          13
+        ],
+        "read": "complete selected divide/conquer procedure and adjacent alternatives; official archive actual Solutions link",
+        "verified": [
+          "outside-one original-block signatures and marker in left half; memberships split current output positions",
+          "printed author Shi-Chun Tsai; this is official, unlike public unofficial sketches from other corpora",
+          "balanced method suffices for all actual original budgets; unused random/asymmetric alternatives are not needed"
+        ]
+      },
+      {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "pages": 1,
+        "verified": [
+          "int[] -> vector<int>,string -> string,boolean -> bool",
+          "2 seconds,2 GB; no standard IO; exact declaration qualifiers still belong to the supplied language template"
+        ]
+      },
+      {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+        "verified": [
+          "Day2 held 2016-08-16; day precision justified, difficulty null"
+        ]
+      }
+    ],
+    "proof": {
+      "collisionExclusion": "For size m blocks, each signature has N-m+1 ones. Distinct depths therefore cannot collide. Equal-depth disjoint blocks have nonempty zero supports contained in disjoint blocks, so their signatures cannot collide either; the shared bijection preserves these distinctions.",
+      "induction": "Current output set is p^{-1}(I). Pulling its query back to original coordinates leaves exactly one marker p[v] inside I, which was registered iff p[v] is in the original left half. Inductively the two child sets are exact, and a leaf writes answer[output]=original=p[output].",
+      "fixedCounts": "Each depth has N/2 writes and N reads; no query result is used to change a registration. All registration recursion finishes before one compile, and decoding only starts afterward.",
+      "sourceBudgets": {
+        "N32": [
+          80,
+          160
+        ],
+        "N128": [
+          448,
+          896
+        ],
+        "allFiveOriginalBudgetsCovered": true
+      },
+      "complexity": "Own operations excluding callback bodies O(N^2+NlogN), linear-length callback argument copies O(N^2logN). Parent/sibling candidate-vector lengths on one active branch form a geometric series; buffers are destroyed before descending, so O(N) own space and depth 7 edges/8 frames for N128. All integer counts fit int.",
+      "api": "All N/power-of-two and sufficient-method budget checks precede callbacks. N1 still compiles once with no write/read. Function-local lists/buffers and referenced callback objects support independent nested/repeated calls. Concepts require exact void/void/bool return types. Inconsistent side sizes throw; callbacks must still implement the fixed truthful set contract.",
+      "adapter": "The by-value adapter string creates its own mutable local before calling the header-declared function, so value/const-reference/mutable-reference library signatures all work without modifying the generic buffer. The actual header is not claimed retrieved; synthetic declarations are only compatibility tests.",
+      "exceptions": "Callback and standard allocation exceptions propagate; external side effects are not rolled back. No external session is reused after a failure in the independent recovery checks."
+    },
+    "authorAndPeerNormalAsan": {
+      "commands": [
+        "python3 /tmp/flowchartcp-ioi2016-messy-checker.py",
+        "python3 /tmp/flowchartcp-ioi2016-messy-checker.py --sanitize"
+      ],
+      "allSemanticFieldsMatchAuthorSidecarAndBothModes": true,
+      "checks": 95249053,
+      "apiCalls": 42080,
+      "generic": {
+        "checks": 77823670,
+        "apiCalls": 41705,
+        "allSmallPermutations": 40347,
+        "allSmallReplyBitstrings": 261,
+        "compatibleCompleteTranscripts": 27,
+        "sourceBudgetCases": 830,
+        "extensionCases": 205,
+        "randomCases": 1000,
+        "invalidApiCalls": 39,
+        "oracleGuardTests": 5,
+        "callbackFailures": 7,
+        "nestedCalls": 1,
+        "writes": 685019,
+        "compiles": 41403,
+        "reads": 1369940,
+        "callbackCharacters": 75559262,
+        "checksum": "4045640110253301528"
+      },
+      "syntheticAdapterCountsEach": {
+        "checks": 5808461,
+        "apiCalls": 125,
+        "checksum": "16364191081451181720",
+        "variants": [
+          "value",
+          "const reference",
+          "mutable reference with argument modification"
+        ]
+      },
+      "measurements": {
+        "normalGeneric": {
+          "seconds": 0.184338,
+          "peakRSSKiB": 21724
+        },
+        "asanGeneric": {
+          "seconds": 1.94878,
+          "peakRSSKiB": 379888
+        },
+        "normalAdapters": [
+          {
+            "seconds": 0.0156016,
+            "peakRSSKiB": 21724
+          },
+          {
+            "seconds": 0.0148802,
+            "peakRSSKiB": 21724
+          },
+          {
+            "seconds": 0.0183293,
+            "peakRSSKiB": 21724
+          }
+        ],
+        "asanAdapters": [
+          {
+            "seconds": 0.119337,
+            "peakRSSKiB": 57440
+          },
+          {
+            "seconds": 0.101374,
+            "peakRSSKiB": 46144
+          },
+          {
+            "seconds": 0.105324,
+            "peakRSSKiB": 46420
+          }
+        ]
+      },
+      "counterCaveat": "The 95,249,053 assertions include each query/write character binary check; they are not unique inputs. This reproduction is distinct from the additional oracle below."
+    },
+    "rootActualNormalAndReview": {
+      "status": "passed",
+      "date": "2026-10-15",
+      "allEightSectionsAndEntireCppRead": true,
+      "completeCheckerAndIndependentProbeRead": true,
+      "sourceScopeAndOfficialSelectedProofReviewed": true,
+      "sourceReading": "Full English4p/Japanese3p/official Solutions11–13p/Day2 Notice1p/official task index text;no PDF image or original header byte inspection claimed.",
+      "materialFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "independentReviewSha256": "b975136ca86ef19644b3c5d409166bf3543c89ae3c1a1f9f42c8a759548d343c",
+      "rootNormal": {
+        "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+        "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "genericWithoutGraderStub": {
+          "checks": 77823670,
+          "apiCalls": 41705,
+          "allSmallPermutations": 40347,
+          "allSmallReplyBitstrings": 261,
+          "compatibleCompleteTranscripts": 27,
+          "sourceBudgetCases": 830,
+          "extensionCases": 205,
+          "randomCases": 1000,
+          "invalidApiCalls": 39,
+          "oracleGuardTests": 5,
+          "callbackFailures": 7,
+          "nestedCalls": 1,
+          "writes": 685019,
+          "compiles": 41403,
+          "reads": 1369940,
+          "callbackCharacters": 75559262,
+          "checksum": "4045640110253301528",
+          "seconds": 0.189421,
+          "peakRSSKiB": 21660,
+          "sourceStructuredCases": [
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 2.474e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.771e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.635e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.488e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.641e-06
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 1.603e-06
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.417e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.5987e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.3486e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.3312e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.4155e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.4175e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.1659e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.4085e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.1449e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.209e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.2819e-05
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 2.2931e-05
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00022132
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000234543
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00020873
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000210926
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000241249
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00027665
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000216377
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000219018
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000209488
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00020994
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000223525
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.000230707
+            }
+          ]
+        },
+        "syntheticHeaderAdapters": [
+          {
+            "syntheticHeaderKind": "Notice-derived string value",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.0150459,
+            "peakRSSKiB": 21788
+          },
+          {
+            "syntheticHeaderKind": "const string reference",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.0149586,
+            "peakRSSKiB": 21788
+          },
+          {
+            "syntheticHeaderKind": "mutable string reference with argument modification",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.0148349,
+            "peakRSSKiB": 21788
+          }
+        ],
+        "checks": 95249053,
+        "apiCalls": 42080
+      },
+      "peerAsanUbsan": {
+        "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+        "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "genericWithoutGraderStub": {
+          "checks": 77823670,
+          "apiCalls": 41705,
+          "allSmallPermutations": 40347,
+          "allSmallReplyBitstrings": 261,
+          "compatibleCompleteTranscripts": 27,
+          "sourceBudgetCases": 830,
+          "extensionCases": 205,
+          "randomCases": 1000,
+          "invalidApiCalls": 39,
+          "oracleGuardTests": 5,
+          "callbackFailures": 7,
+          "nestedCalls": 1,
+          "writes": 685019,
+          "compiles": 41403,
+          "reads": 1369940,
+          "callbackCharacters": 75559262,
+          "checksum": "4045640110253301528",
+          "seconds": 1.94878,
+          "peakRSSKiB": 379888,
+          "sourceStructuredCases": [
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 8.5361e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.6809e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.5544e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 2.2599e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.2918e-05
+            },
+            {
+              "n": 8,
+              "w": 256,
+              "r": 256,
+              "actualWrites": 12,
+              "actualReads": 24,
+              "coreAndOracleSeconds": 3.7169e-05
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000335024
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000218868
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.00024934
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.00020916
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000207926
+            },
+            {
+              "n": 32,
+              "w": 320,
+              "r": 1024,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000191313
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000257554
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000192362
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.0001884
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000215817
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000194264
+            },
+            {
+              "n": 32,
+              "w": 1024,
+              "r": 320,
+              "actualWrites": 80,
+              "actualReads": 160,
+              "coreAndOracleSeconds": 0.000182977
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00242644
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00225295
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00196367
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.001858
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00183004
+            },
+            {
+              "n": 128,
+              "w": 1792,
+              "r": 1792,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00184664
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00205845
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00200488
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00272864
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00234824
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00206322
+            },
+            {
+              "n": 128,
+              "w": 896,
+              "r": 896,
+              "actualWrites": 448,
+              "actualReads": 896,
+              "coreAndOracleSeconds": 0.00200436
+            }
+          ]
+        },
+        "syntheticHeaderAdapters": [
+          {
+            "syntheticHeaderKind": "Notice-derived string value",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.119337,
+            "peakRSSKiB": 57440
+          },
+          {
+            "syntheticHeaderKind": "const string reference",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.101374,
+            "peakRSSKiB": 46144
+          },
+          {
+            "syntheticHeaderKind": "mutable string reference with argument modification",
+            "actualOriginalHeaderRetrieved": false,
+            "checks": 5808461,
+            "apiCalls": 125,
+            "validCases": 120,
+            "invalidPreflight": 5,
+            "writes": 17184,
+            "compiles": 120,
+            "reads": 34368,
+            "callbackCharacters": 5756544,
+            "checksum": "16364191081451181720",
+            "seconds": 0.105324,
+            "peakRSSKiB": 46420
+          }
+        ],
+        "checks": 95249053,
+        "apiCalls": 42080
+      },
+      "rootAsanReexecuted": false,
+      "allDeterministicAuthorPeerRootNormalFieldsMatch": true,
+      "normalizationAtIntegration": {
+        "article": "none;entire MDX/CPP preserved",
+        "checker": "only default article path to repository published MDX",
+        "independentProbe": "only default article path to repository published MDX",
+        "metadata": "entryPoints order advanced/complexity/reasoning",
+        "feature": "add primary-confirmed common date/year/bounds/cutoff aliases",
+        "resolutionNotes": "protect actual four existing resolutions;initial six/status unchanged"
+      },
+      "limitations": [
+        "Actual messy.h bytes not retrieved;conditional adapter compatibility tested against three synthetic declarations.",
+        "Supplemental assertions include repeated per-character validations and are not a unique-problem count.",
+        "Root did not unnecessarily repeat a third sanitizer run;both frozen author and independent peer normal/ASan modes passed,CPP unchanged."
+      ]
+    },
+    "additionalIndependentOracle": {
+      "script": "/tmp/flowchartcp-ioi2016-messy-independent-extra.py",
+      "commands": [
+        "python3 /tmp/flowchartcp-ioi2016-messy-independent-extra.py --output /tmp/flowchartcp-ioi2016-messy-independent-extra-normal.json",
+        "python3 /tmp/flowchartcp-ioi2016-messy-independent-extra.py --sanitize --output /tmp/flowchartcp-ioi2016-messy-independent-extra-asan.json"
+      ],
+      "oracle": "Integer two-word masks; reply pulls the output query back with old[p[out]]=query[out]. Membership is decided without consulting stored insertions: there must be exactly m-1 zeros in one aligned power-of-two block of size m, with the unique one inside that block lying in its left half. Writes independently satisfy this characterization; total count and uniqueness prove the registered set equals the characterized set.",
+      "oracleSelfcheck": "168726 mask checks against a separately enumerated complete source-word set: all 65814 bitstrings for N1/2/4/8/16, then all signatures and all one-bit neighbours plus 10000 random words each at N32/64/128.",
+      "permutations": "All 40347 permutations at N1/2/4/8. For N8, all 40320 compiled sets in the permutation orbit are separately built as sorted integer-code arrays and are distinct, proving the registered set has no nontrivial automorphism. Additionally 2859 affine permutation occurrences, all 10760 transpositions at N16/32/64/128, and 256 arbitrary random N128 permutations.",
+      "allocationFaults": "All 510 observed allocation failure points of a complete N128 call, plus the first successful allocation budget. The oracle itself uses a fixed-size array during injection. Each unwind restores exact live allocation bytes; a new independent full call succeeds immediately afterward. The number 510 describes the tested GCC implementation and is not a portable API contract.",
+      "callbackExceptions": "At N16 every 97 write/compile/read event is tested immediately before and immediately after its side effect: 194 unchanged custom exceptions. Each failed session is followed by a fresh successful one.",
+      "callableTypes": "All three callbacks move-only with lvalue-qualified call operators and deleted rvalue operators, passed as rvalues and via reference_wrapper; additional const lvalue callbacks with INT_MAX budgets.",
+      "normal": {
+        "checks": 1803910389,
+        "apiCalls": 55634,
+        "allSmallPermutations": 40347,
+        "affinePermutations": 2859,
+        "allTranspositions": 10760,
+        "randomFull128": 256,
+        "allocationFailures": 510,
+        "callbackExceptionsBeforeAfter": 194,
+        "callbackTypeCases": 3,
+        "oracleSelfchecks": 168726,
+        "checksum": "5007159836349817482",
+        "seconds": 2.81055,
+        "peakRSSKiB": 21780,
+        "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+        "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+        "sanitize": false
+      },
+      "asanUbsan": {
+        "checks": 1803910389,
+        "apiCalls": 55634,
+        "allSmallPermutations": 40347,
+        "affinePermutations": 2859,
+        "allTranspositions": 10760,
+        "randomFull128": 256,
+        "allocationFailures": 510,
+        "callbackExceptionsBeforeAfter": 194,
+        "callbackTypeCases": 3,
+        "oracleSelfchecks": 168726,
+        "checksum": "5007159836349817482",
+        "seconds": 13.9666,
+        "peakRSSKiB": 618072,
+        "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+        "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+        "sanitize": true
+      },
+      "allSemanticFieldsMatch": true,
+      "counterCaveat": "1,803,910,389 assertions are dominated by per-character binary checks over repeated callback strings. 55,634 restore invocations are separately counted; they include failing/recovery calls and overlap across named families. No sum of family counts is advertised as unique hidden arrays."
+    },
+    "publishedNativeRerun": true
+  },
+  "reviewCounters": {
+    "verifiedMappings": 534,
+    "reviewedProblems": 494,
+    "corpusStatementsReviewed": 77,
+    "corpusSolutionsReviewed": 70,
+    "allSolutionsReviewed": 501
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "5/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2016",
+      "research": "6/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 15,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual official messy.h bytes not retrieved; generic signature+Notice-derived standalone adapter tested.",
+    "ASan/UBSan pass with detect_leaks=0; no LeakSanitizer claim.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures. No install/server/browser retried.",
+    "External example-link liveness not checked. No commit/push/upload/publication."
+  ],
+  "inProgress": [
+    "Shortcut frozen source/proof/normal+ASan and independent BFS review completed;shared registration next.",
+    "IOI2015 fixed six/511article epoch preserved;source numeric gaps remain and Towns majority proof is under independent verification."
+  ]
+}

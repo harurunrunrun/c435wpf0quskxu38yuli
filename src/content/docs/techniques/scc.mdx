@@ -1,0 +1,84 @@
+---
+title: "強連結成分分解"
+description: "互いに行き来できる頂点をまとめ、有向グラフを閉路のない構造に縮約する。"
+techniqueId: scc
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+互いに行き来できる頂点をまとめ、有向グラフを閉路のない構造に縮約する。
+
+## 使う場面
+
+有向グラフに閉路があり、循環する範囲を一つにまとめて考えたいときに使う。到達関係の整理や2-SAT、成分ごとのDPなどの前処理になる。
+
+## 考え方
+
+二つの頂点が相互に到達できるとき、同じ強連結成分に入れる。Kosaraju法では、まず元のグラフを深さ優先探索し、処理を終えた順を記録する。次に、すべての辺を逆向きにしたグラフで、その順序の逆から探索する。二回目の一度の探索で、一つの成分が得られる。
+
+各成分を一頂点とみなし、異なる成分の間の辺を残すと、閉路のない有向グラフになる。
+
+## 適用条件
+
+一方向に到達できるだけでは、同じ成分にはならない。無向グラフの連結成分とも異なる。
+
+成分の内部を常に自由に扱えるわけではない。頂点の再訪を禁じる単純路や、辺の費用がある問題では、成分内にも解くべき問題が残る。経路の個数を数える場合は、縮約後の多重辺をまとめてよいかも確認する。
+
+## なぜ正しいか
+
+相互到達可能な関係は推移的であり、頂点を重複なく成分に分けられる。縮約後に閉路があると、その閉路上の成分同士は相互に到達できるため、別成分に分かれていることに矛盾する。
+
+最初の深さ優先探索では、成分間の辺に対して、その始点側の成分の終了時刻の最大値が大きくなる。この逆順で逆グラフを探索すると、未処理の別成分へ進まずに一つの成分を取り出せる。
+
+## 計算量
+
+時間・空間ともに $O(V+E)$。明示的なスタックで深さ優先探索を行えば、深いグラフでも言語の再帰スタックを使わずに処理できる。
+
+## 実装
+
+`scc_ids` は各頂点の成分番号を返す。以下の実装では、異なる成分間の辺は小さい番号から大きい番号へ向く。成分番号を利用して、その順にDPを行える。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+using namespace std;
+vector<int> scc_ids(const vector<vector<int>>& g) {
+    int n=g.size();
+    vector<vector<int>> reverse(n);
+    for(int v=0;v<n;++v) for(int u:g[v]) reverse[u].push_back(v);
+    vector<bool> seen(n);
+    vector<int> order;
+    for(int start=0;start<n;++start) if(!seen[start]) {
+        vector<pair<int,int>> stack{{start,0}};
+        seen[start]=true;
+        while(!stack.empty()) {
+            auto& [v,i]=stack.back();
+            if(i<int(g[v].size())) {
+                int u=g[v][i++];
+                if(!seen[u]) { seen[u]=true;stack.push_back({u,0}); }
+            } else { order.push_back(v);stack.pop_back(); }
+        }
+    }
+    vector<int> id(n,-1);
+    int count=0;
+    for(auto it=order.rbegin();it!=order.rend();++it) if(id[*it]<0) {
+        vector<int> stack{*it}; id[*it]=count;
+        while(!stack.empty()) {
+            int v=stack.back();stack.pop_back();
+            for(int u:reverse[v]) if(id[u]<0) { id[u]=count;stack.push_back(u); }
+        }
+        ++count;
+    }
+    return id;
+}
+```
+
+## 関連する手法
+
+[DAG上のDP](/flowchartcp/techniques/dag-dp/) ・ [トポロジカルソート](/flowchartcp/techniques/topological-sort/) ・ [Union-Find](/flowchartcp/techniques/union-find/)
+
+## 参考資料
+
+- [AtCoder Library: SCC](https://atcoder.github.io/ac-library/production/document_en/scc.html)
+
+<TechniqueReferences techniqueId="scc" />

@@ -1,0 +1,256 @@
+[
+  {
+    "id": "tree-path-edge-difference",
+    "title": "多数の経路の辺通過回数は、端点とLCAに差分を置いて下から足す",
+    "summary": "経路を一本ずつたどらず、端点に加算し、共通祖先で二方向の寄与を止める。",
+    "aliases": [
+      "Tree Edge Difference",
+      "Tree Path Usage",
+      "木の辺いもす"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc222/tasks/abc222_e"
+    ]
+  },
+  {
+    "id": "tree-path-vertex-difference",
+    "title": "多数の経路の頂点通過回数は、LCAとその親で差分を止める",
+    "summary": "端点を含む経路加算では、共通祖先を一度だけ残す差分式にする。",
+    "aliases": [
+      "Tree Vertex Difference",
+      "Node Path Count",
+      "木の頂点いもす"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1136"
+    ]
+  },
+  {
+    "id": "tree-path-kth-persistent",
+    "title": "木の経路のk番目の値は、根からの頻度を四つの版で引き合わせる",
+    "summary": "値の頻度を親の版から一個ずつ増やし、経路の頻度を引き算して順位を探す。",
+    "aliases": [
+      "Persistent Tree Path Kth",
+      "Four Roots",
+      "Count on a Tree",
+      "木のパス第k小"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "doubling",
+      "persistent-segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.spoj.com/problems/COT/en/"
+    ]
+  },
+  {
+    "id": "centroid-nearest-marked",
+    "title": "木の印付き最寄り点は、重心ごとの最短距離を追加時に更新する",
+    "summary": "印を消さないなら、各重心への最小距離だけを保ち、少数の重心を経由して答える。",
+    "aliases": [
+      "Centroid Nearest Marked",
+      "Xenia and Tree",
+      "重心分解で最近傍"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "centroid-decomposition"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/342/E"
+    ]
+  },
+  {
+    "id": "subtree-mode-sack",
+    "title": "全部分木の最頻色は、重い子の頻度だけ残して軽い子を足し直す",
+    "summary": "頻度配列を一つ共有し、小さい部分木の再走査回数を対数に抑える。",
+    "aliases": [
+      "DSU on Tree Sack",
+      "Subtree Color Mode",
+      "Lomsat gelral",
+      "重い子の保持"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/600/E"
+    ]
+  },
+  {
+    "id": "tree-path-directed-composition",
+    "title": "向きのある木の経路集計は、正順と逆順の要約を両方持つ",
+    "summary": "一次関数の合成など順序を変えられない集計を、両端から順序を保ってつなぐ。",
+    "aliases": [
+      "Noncommutative Tree Path",
+      "Directed HLD Composition",
+      "Vertex Set Path Composite",
+      "正逆の経路合成"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "heavy-light-decomposition"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/tree/vertex_set_path_composite/task.md"
+    ]
+  },
+  {
+    "id": "reroot-subtree-complement",
+    "title": "根が変わる部分木は、固定根の区間か全体から一つの子を除いた集合にする",
+    "summary": "根の変更ごとに探索し直さず、祖先関係に応じて高々二つのDFS区間に直す。",
+    "aliases": [
+      "Rerooted Subtree Complement",
+      "Dynamic Root LCA",
+      "Jamie and Tree",
+      "根変更の部分木"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "doubling",
+      "subtree-euler-interval"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/916/E"
+    ]
+  },
+  {
+    "id": "subtree-path-last-write",
+    "title": "部分木の設定と祖先への上書きは、影響する最新時刻を比較する",
+    "summary": "祖先を消す操作は、その頂点の子孫で最後に起きた消去を調べればよい。",
+    "aliases": [
+      "Tree Last Write Timestamps",
+      "Water Tree",
+      "部分木設定・祖先消去"
+    ],
+    "family": "木・経路の集計",
+    "level": "上級",
+    "prerequisites": [
+      "subtree-euler-interval"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/343/D"
+    ]
+  },
+  {
+    "id": "shortest-tight-dag-statistics",
+    "title": "最短路の個数と辺数は、正の辺からなる最短距離の順でまとめる",
+    "summary": "最短距離を保つ辺だけを使い、経路数・最小辺数・最大辺数を同時に伝播する。",
+    "aliases": [
+      "Shortest Tight DAG Statistics",
+      "Investigation",
+      "最短路数・辺数最小最大"
+    ],
+    "family": "最短路の条件分解",
+    "level": "上級",
+    "prerequisites": [
+      "dijkstra"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1202"
+    ]
+  },
+  {
+    "id": "shortest-one-edge-discount",
+    "title": "一辺だけ費用を変える最短路は、始点距離と終点への距離で挟む",
+    "summary": "変更する辺を全て試すとき、前後の最短距離を二回の探索で使い回す。",
+    "aliases": [
+      "One Edge Discount Forward Reverse",
+      "Flight Discount",
+      "一辺割引・逆グラフ距離"
+    ],
+    "family": "最短路の条件分解",
+    "level": "上級",
+    "prerequisites": [
+      "dijkstra"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1195"
+    ]
+  }
+]

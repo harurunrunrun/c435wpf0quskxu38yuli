@@ -1,0 +1,178 @@
+---
+title: "時刻の決まった仕事を、前後に一つずつつなぎ最小人数に分ける"
+description: "一人が続けて実行できる仕事の辺を作り、各仕事の前任と後任を高々一つにする。"
+techniqueId: dag-path-cover-vertex-disjoint
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+全仕事に場所と実施時刻が決まり、一人で何件も担当できる。最初の場所は自由。必要人数は、仕事を実行可能な列へ分けた列数になる。
+
+## 考え方
+
+仕事 $i$ の後に $j$ を実行できれば $i\to j$ を張る。固定時刻の移動では $t_i<t_j$ かつ $\operatorname{dist}(p_i,p_j)\le t_j-t_i$ が条件。時刻が厳密に増えるのでDAGになる。
+
+仕事を左右に複製し、$i\to j$ を左 $i$ と右 $j$ の候補辺にする。対応は「$i$ の直後を $j$ にする」約束。最大対応の辺数を $M$ とすると列数は $N-M$。前任のない仕事から後任を辿って担当列を復元する。
+
+## 適用条件
+
+各仕事をちょうど一度実行し、一人の担当は一本の道になる。候補辺は次に直接実行してよい関係。一般のDAGで到達可能な全対を勝手に足すと、元の辺による頂点素なパス分割とは別の問題になる。
+
+配送版は非負時刻・正の道路長・同じ場所と時刻の依頼の重複なしを要求する。作業時間が必要なら辺条件に加える。道路は非連結でもよい。距離と時刻およびその和は $10^{15}$ 以下とする。
+
+## なぜ正しいか
+
+$K$ 本のパス分割に使う辺は $N-K$ 本。各頂点の前任・後任が高々一つなので、その辺は複製グラフの対応になる。
+
+逆に対応を戻すと入次数・出次数が高々一つ。DAGなので巡回はなく、全頂点を一度ずつ使うパスに分かれる。辺数最大と列数最小は同じ。初期位置が自由なので、列数が担当人数に一致する。
+
+## 計算量
+
+担当の割当を全探索すると指数時間。一般のDAGの $N$ 頂点・$E$ 候補辺から $O((N+E)\sqrt N)$ 時間、$O(N+E)$ 空間で分割する。
+
+配送版は場所数 $P$ として、全場所間距離 $O(P^3)$、候補生成 $O(N^2)$、対応 $O((N+E)\sqrt N)$。空間は $O(P^2+N+E)$。
+
+## 実装
+
+minimum_path_partition は元の候補辺による分割を返し、閉路があれば例外にする。delivery_chains は道路と依頼から担当列を作り、各列へ依頼の入力番号を入れる。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+#include <stdexcept>
+#include <tuple>
+std::vector<std::vector<int>> minimum_path_partition(
+    int n,const std::vector<std::pair<int,int>>& edges) {
+    std::vector<std::vector<int>> adjacent(n); std::vector<int> degree(n);
+    for(auto [u,v]:edges) { adjacent[u].push_back(v); ++degree[v]; }
+    std::vector<int> q;
+    for(int v=0;v<n;++v) if(degree[v]==0) q.push_back(v);
+    for(int at=0;at<int(q.size());++at)
+        for(int u:adjacent[q[at]]) if(--degree[u]==0) q.push_back(u);
+    if(int(q.size())!=n) throw std::invalid_argument("a DAG is required");
+    int s=2*n,t=s+1; FlowNetwork g(t+1);
+    for(int v=0;v<n;++v) { g.add(s,v,1); g.add(n+v,t,1); }
+    std::vector<int> ids;
+    for(auto [u,v]:edges) ids.push_back(g.add(u,n+v,1));
+    g.flow(s,t);
+    std::vector<int> next(n,-1),previous(n,-1);
+    for(int i=0;i<int(edges.size());++i) if(g.used(ids[i])) {
+        auto [u,v]=edges[i]; next[u]=v; previous[v]=u;
+    }
+    std::vector<std::vector<int>> paths;
+    for(int v=0;v<n;++v) if(previous[v]<0) {
+        std::vector<int> path;
+        for(int u=v;u>=0;u=next[u]) path.push_back(u);
+        paths.push_back(std::move(path));
+    }
+    return paths;
+}
+std::vector<std::vector<int>> delivery_chains(int places,
+    const std::vector<std::tuple<int,int,long long>>& roads,
+    const std::vector<std::pair<int,long long>>& requests) {
+    const long long inf=std::numeric_limits<long long>::max()/4;
+    std::vector<std::vector<long long>> d(places,std::vector<long long>(places,inf));
+    for(int v=0;v<places;++v) d[v][v]=0;
+    for(auto [u,v,w]:roads) d[u][v]=d[v][u]=std::min(d[u][v],w);
+    for(int k=0;k<places;++k) for(int i=0;i<places;++i) for(int j=0;j<places;++j)
+        if(d[i][k]!=inf && d[k][j]!=inf)
+            d[i][j]=std::min(d[i][j],d[i][k]+d[k][j]);
+    int n=requests.size(); std::vector<std::pair<int,int>> edges;
+    for(int i=0;i<n;++i) for(int j=0;j<n;++j) {
+        auto [a,ta]=requests[i]; auto [b,tb]=requests[j];
+        if(ta<tb && d[a][b]!=inf && d[a][b]<=tb-ta) edges.push_back({i,j});
+    }
+    return minimum_path_partition(n,edges);
+}
+```
+
+## 関連する手法
+
+[二部マッチング](/flowchartcp/techniques/matching/)
+
+## 参考資料
+
+- [Aizu Online Judge：Merry Christmas（原典）](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2251)
+
+<TechniqueReferences techniqueId="dag-path-cover-vertex-disjoint" />

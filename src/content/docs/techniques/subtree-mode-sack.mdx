@@ -1,0 +1,103 @@
+---
+title: "全部分木の最頻色は、重い子の頻度だけ残して軽い子を足し直す"
+description: "頻度配列を一つ共有し、小さい部分木の再走査回数を対数に抑える。"
+techniqueId: subtree-mode-sack
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+頻度配列を一つ共有し、小さい部分木の再走査回数を対数に抑える。
+
+## 使う場面
+
+全頂点について、その部分木で最も多く出る色を求める。最多の色が複数ある場合、その色番号を全部足したい。色は処理中に変わらない。
+
+## 考え方
+
+部分木サイズが最大の子を「重い子」とする。頂点 $v$ を処理するときは、軽い子の答えを求めてその頻度を消し、重い子の頻度だけを残す。その上で軽い子の各部分木をDFS順に一度ずつ走査して足し、$v$ 自身も加える。
+
+共有する頻度配列と、現在の最大頻度 $m$、その頻度に達する色番号の和 $s$ を管理する。一色の頻度を増やしたとき、新しい最大なら $s$ をその色に置き換え、最大と同じなら足す。
+
+この方法では子ごとの辞書を併合しない。全体で一つの頻度配列を使い、消す処理も部分木の走査で行う。
+
+## 適用条件
+
+全頂点の部分木への質問が静的に与えられ、色は変わらない。色を圧縮して一色の追加・削除を $O(1)$ にできる。掲載実装は任意の64ビット色番号を圧縮し、答えは色番号の和が64ビットに収まることを要する。
+
+削除中には答えを取り出さず、部分木を全部消した後に最大頻度と和を0へ戻す。この条件を外すと、削除のたびに次の最大頻度を求める管理が必要になる。
+
+## なぜ正しいか
+
+頂点 $v$ の答えを記録するとき、共有頻度にあるのは重い子、全ての軽い子、$v$ 自身であり、ちょうど $v$ の部分木になる。頻度の増加に対する最大値と色の和の更新も、その定義を保つ。
+
+ある頂点が足し直されるのは、その祖先への経路で軽い辺を越えるとき。軽い子の部分木サイズは親の部分木の半分未満なので、その回数は $O(\log N)$。消す処理も同じ回数の範囲に収まる。
+
+## 計算量
+
+部分木ごとの全走査 $O(N^2)$ を、色圧縮を含め $O(N\log N)$ に減らす。空間は $O(N)$。辞書を小さい方から大きい方へ併合する方法は、辞書操作の計算量を別に数える必要がある。
+
+## 実装
+
+`subtree_mode_sums` は根を0として最頻色の合計を返す。DFS順の生成、子の処理、頻度の消去を全て反復で行い、長い鎖にも対応する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> subtree_mode_sums(const vector<vector<int>>& g,
+        const vector<long long>& color) {
+    int n=g.size();assert(n>0 && int(color.size())==n);
+    vector<int> parent(n,-1),tin(n),tout(n),order,size(n,1),heavy(n,-1);
+    parent[0]=0;
+    vector<pair<int,int>> dfs{{0,0}};
+    while(!dfs.empty()) {
+        int v=dfs.back().first;int& i=dfs.back().second;
+        if(i==0) {tin[v]=order.size();order.push_back(v);}
+        if(i==int(g[v].size())) {tout[v]=order.size();dfs.pop_back();continue;}
+        int u=g[v][i++];if(u==parent[v]) continue;
+        parent[u]=v;dfs.push_back({u,0});
+    }
+    for(int i=n-1;i>0;--i) {
+        int v=order[i],p=parent[v];size[p]+=size[v];
+        if(heavy[p]==-1 || size[v]>size[heavy[p]]) heavy[p]=v;
+    }
+    vector<long long> palette=color;
+    sort(palette.begin(),palette.end());palette.erase(unique(palette.begin(),palette.end()),palette.end());
+    vector<int> rank(n),frequency(palette.size());
+    for(int v=0;v<n;++v) rank[v]=lower_bound(palette.begin(),palette.end(),color[v])-palette.begin();
+    int maximum=0;long long sum=0;
+    auto add=[&](int v) {
+        int f=++frequency[rank[v]];
+        if(f>maximum) {maximum=f;sum=color[v];}
+        else if(f==maximum) sum+=color[v];
+    };
+    vector<long long> answer(n);
+    struct Task {int v;bool keep,finish;};
+    vector<Task> tasks{{0,true,false}};
+    while(!tasks.empty()) {
+        auto [v,keep,finish]=tasks.back();tasks.pop_back();
+        if(!finish) {
+            tasks.push_back({v,keep,true});
+            if(heavy[v]!=-1) tasks.push_back({heavy[v],true,false});
+            for(int u:g[v]) if(parent[u]==v && u!=v && u!=heavy[v]) tasks.push_back({u,false,false});
+        } else {
+            for(int u:g[v]) if(parent[u]==v && u!=v && u!=heavy[v])
+                for(int i=tin[u];i<tout[u];++i) add(order[i]);
+            add(v);answer[v]=sum;
+            if(!keep) {
+                for(int i=tin[v];i<tout[v];++i) --frequency[rank[order[i]]];
+                maximum=0;sum=0;
+            }
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[部分木をDFS順の連続区間に変換する](/flowchartcp/techniques/subtree-euler-interval/)
+
+## 参考資料
+
+- [Codeforces：Lomsat gelral](https://codeforces.com/problemset/problem/600/E)
+
+<TechniqueReferences techniqueId="subtree-mode-sack" />

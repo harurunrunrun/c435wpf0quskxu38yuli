@@ -1,0 +1,177 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc189_f",
+    "title": "F - Sugoroku2",
+    "url": "https://atcoder.jp/contests/abc189/tasks/abc189_f",
+    "features": [
+      "0から1..Mの等確率で前進し、N以上で終了する",
+      "指定マスに着くと直ちに0へ戻る。リセットは同じ開始地点だけ",
+      "N,M≤100000、リセットマスは10個以下。終了までの期待回数"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "restart-board-trial-expectation"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc189/editorial/589",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から導いた式を掲載コードと独立な計算で比較。",
+    "publicationDate": "2021-01-23"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "dp_j",
+    "title": "J - Sushi",
+    "url": "https://atcoder.jp/contests/dp/tasks/dp_j",
+    "features": [
+      "N枚の皿を毎回一様に一枚選び、中身があれば一個減らす",
+      "各皿の初期個数は1..3、N≤300。空の皿も選ばれる",
+      "全て空になるまでの操作回数の期待値"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "sushi-count-state-rolling"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/dp/tasks/dp_j",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から導いた式を掲載コードと独立な計算で比較。",
+    "publicationDate": "2019-01-06"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc326_e",
+    "title": "E - Revenge of \"The Salary of AtCoder Inc.\"",
+    "url": "https://atcoder.jp/contests/abc326/tasks/abc326_e",
+    "features": [
+      "初期添字0から1..Nを独立一様に引く",
+      "引いた添字が現在より大きければその報酬を得て更新、そうでなければ終了",
+      "N≤300000、報酬0..998244352。期待報酬を998244353で求める"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "increasing-record-reward-probability"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc326/editorial/7547",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から導いた式を掲載コードと独立な計算で比較。",
+    "publicationDate": "2023-10-28"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc360_e",
+    "title": "E - Random Swaps of Balls",
+    "url": "https://atcoder.jp/contests/abc360/tasks/abc360_e",
+    "features": [
+      "N個の位置から二つの添字を独立一様に選び、その球を交換する",
+      "同じ添字を二回選んだ場合は変化なし。印付き球は初め位置1",
+      "N<998244353、K回後の印付き球の位置の期待値を法で求める"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "random-swap-symmetry-two-state"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc360/tasks/abc360_e",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式解説10459は取得時429。原典の復元抽出の条件から二状態の式と閉形式を独立に導出した。",
+    "publicationDate": "2024-06-30"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc300_e",
+    "title": "E - Dice Product 3",
+    "url": "https://atcoder.jp/contests/abc300/tasks/abc300_e",
+    "features": [
+      "1から公平な1..6の出目を掛け、N以上で終了する",
+      "最終値がNにちょうど等しい確率を求める",
+      "2≤N≤10^18。998244353を法として出力する"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "dice-product-prime-exponents"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc300/editorial/6291",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から導いた式を掲載コードと独立な計算で比較。",
+    "publicationDate": "2023-04-29"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc144_f",
+    "title": "F - Fork in the Road",
+    "url": "https://atcoder.jp/contests/abc144/tasks/abc144_f",
+    "features": [
+      "有向非巡回グラフで各頂点の出辺を等確率に選んで進む",
+      "終点以外は出次数が正。移動前に高々一辺を削除できる",
+      "全経路の終了を保ちながら移動回数の期待値を最小化。N≤600"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "dag-edge-removal-expectation"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc144/tasks/abc144_f",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典のDAG・一様選択・一辺削除の条件から到達確率による感度の式を独立に導出した。",
+    "publicationDate": "2019-10-27"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc314_e",
+    "title": "E - Roulettes",
+    "url": "https://atcoder.jp/contests/abc314/tasks/abc314_e",
+    "features": [
+      "料金と出目が異なる複数のルーレットを毎回選べる",
+      "出目は固定分布で独立、非負点。0点でも料金を払う",
+      "合計が目標以上になるまでの最小期待料金。台数・目標・各出目数≤100"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "roulette-choice-zero-outcomes"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc314/editorial/6966",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から導いた式を掲載コードと独立な計算で比較。",
+    "publicationDate": "2023-08-12"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "280C",
+    "title": "C. Game on Tree",
+    "url": "https://codeforces.com/problemset/problem/280/C",
+    "features": [
+      "根付き木の残っている頂点から一様に一つ選ぶ",
+      "選んだ頂点とその子孫を全て削除し、木が空になるまで繰り返す",
+      "N≤100000、操作回数の期待値。根は1"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "random-subtree-removal-ancestor-priority"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/280/C",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典本文と難易度2200を確認。リンク先の公式記事はPDFへの案内であり、式は原典から独立に証明した。"
+  }
+]

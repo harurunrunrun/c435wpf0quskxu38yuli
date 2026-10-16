@@ -1,0 +1,70 @@
+---
+title: "区間加算と閾値個数を、並べた小区間で両立させる"
+description: "完全に覆う小区間は加算値だけを持ち、端の小区間だけを並べ直す。"
+techniqueId: range-add-count-less
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+連続区間へ一様な値を加え、別の区間に閾値以上・未満の値が何個あるかを尋ねる。閾値が毎回変わるため、総和や最大値だけを保存した木では個数を直接得られない。
+
+## 考え方
+
+配列を幅Bの小区間に分け、各小区間に元の順の値、ソート済みの値、全体へ加えたlazyを持つ。完全に覆われる小区間への加算はlazyだけを変更する。端で一部だけ覆う場合はその要素を書き換え、その小区間を並べ直す。
+
+完全に含まれる小区間で閾値C未満の個数は、ソート済みの基礎値が $C-lazy$ 未満の個数になる。端の小区間は実際の値を直接比較する。以上の個数は区間長から未満の個数を引けばよい。
+
+## 適用条件
+
+加算が小区間内で一様なとき、ソート順は変わらないことを使う。乗算で符号が反転する更新や部分代入は別の管理が必要。端点と閾値の等号を区別する。「C以下」ならupper_boundへ変更する。負の値・負の加算でも成立する。
+
+## なぜ正しいか
+
+各位置の実値は基礎値と所属小区間のlazyの和に等しい。全体加算はこの式と基礎値の順序を保ち、部分加算後の並べ直しは新しい基礎値の順序を復元する。完全区間でC-lazyを二分探索する判定は実値とCの比較と同値であり、端の直接比較と合わせて全要素を一回ずつ数える。
+
+## 計算量
+
+毎操作の全区間走査 $O(N)$ に対し、加算は $O(B\log B+N/B)$、個数質問は $O(B+(N/B)\log B)$。構築は $O(N\log B)$ 時間、空間 $O(N)$。幅を平方根程度に選び、更新と質問の比率に応じて調整できる。
+
+## 実装
+
+`AddCountBuckets(a)` の `add(l,r,delta)`、`count_less(l,r,C)`、`count_at_least(l,r,C)`。半開区間で空区間も許す。基礎値・lazy・閾値を128ビットで計算する。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+struct AddCountBuckets {
+    int n,block,blocks;std::vector<__int128> a,lazy;std::vector<std::vector<__int128>> sorted;
+    explicit AddCountBuckets(const std::vector<long long>& input,int width=0):n(int(input.size())),
+        block(width>0?width:std::max(1,int(std::sqrt(std::max(1,n))))),blocks((n+block-1)/block),
+        a(input.begin(),input.end()),lazy(blocks),sorted(blocks) {for(int b=0;b<blocks;++b) rebuild(b);}
+    void rebuild(int b) {int l=b*block,r=std::min(n,l+block);sorted[b].assign(a.begin()+l,a.begin()+r);std::sort(sorted[b].begin(),sorted[b].end());}
+    void add(int l,int r,long long delta) {
+        assert(0<=l&&l<=r&&r<=n);
+        while(l<r) {int b=l/block,end=std::min(n,(b+1)*block);
+            if(l==b*block&&end<=r) {lazy[b]+=delta;l=end;}
+            else {int stop=std::min(r,end);for(int p=l;p<stop;++p) a[p]+=delta;rebuild(b);l=stop;}}
+    }
+    int count_less(int l,int r,__int128 threshold) const {
+        assert(0<=l&&l<=r&&r<=n);int answer=0;
+        while(l<r) {int b=l/block,end=std::min(n,(b+1)*block);
+            if(l==b*block&&end<=r) {answer+=int(std::lower_bound(sorted[b].begin(),sorted[b].end(),threshold-lazy[b])-sorted[b].begin());l=end;}
+            else {int stop=std::min(r,end);for(int p=l;p<stop;++p) answer+=a[p]+lazy[b]<threshold;l=stop;}}
+        return answer;
+    }
+    int count_at_least(int l,int r,__int128 threshold) const {return r-l-count_less(l,r,threshold);}
+};
+```
+
+## 関連する手法
+
+[重なる集合への加算を、大きい集合だけ遅らせる](/flowchartcp/techniques/sqrt-heavy-light-sets/) ・ [区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/) ・ [区間の上限更新を第二最大値でまとめて処理する](/flowchartcp/techniques/range-chmin-second-maximum/)
+
+## 参考資料
+
+- [洛谷：教主的魔法（原典の条件）](https://www.luogu.com.cn/problem/P2801)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="range-add-count-less" />

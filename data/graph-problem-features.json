@@ -1,0 +1,337 @@
+[
+  {
+    "source": "CSES",
+    "problemId": "2076",
+    "title": "Necessary Roads",
+    "url": "https://cses.fi/problemset/task/2076",
+    "techniqueIds": [
+      "bridge-edge-failure"
+    ],
+    "features": [
+      "無向グラフ",
+      "連結",
+      "単一辺の削除で切断される辺を列挙",
+      "原典は単純グラフ",
+      "N≤10^5,M≤2×10^5"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2076",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated",
+    "notes": "問題文を一次資料で確認。公開日が本文にない出典は基準日以前の掲載を断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1705",
+    "title": "Forbidden Cities",
+    "url": "https://cses.fi/problemset/task/1705",
+    "techniqueIds": [
+      "block-cut-path"
+    ],
+    "features": [
+      "無向グラフ",
+      "連結",
+      "aからbへ禁止頂点cを避ける",
+      "禁止頂点はクエリごとに一つ",
+      "N,Q≤10^5,M≤2×10^5"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1705",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated",
+    "notes": "問題文を一次資料で確認。公開日が本文にない出典は基準日以前の掲載を断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc327_d",
+    "title": "Good Tuple Problem",
+    "url": "https://atcoder.jp/contests/abc327/tasks/abc327_d",
+    "techniqueIds": [
+      "bipartite-parity-constraints"
+    ],
+    "features": [
+      "二値変数",
+      "二者の値が異なる制約",
+      "自己対と重複制約を許す",
+      "N,M≤2×10^5"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc327/editorial/7578",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "practice2_h",
+    "title": "Two SAT",
+    "url": "https://atcoder.jp/contests/practice2/tasks/practice2_h",
+    "techniqueIds": [
+      "two-sat-forbidden-pairs"
+    ],
+    "features": [
+      "各旗二つの候補座標",
+      "二旗の距離はD以上",
+      "距離D未満の候補組を禁止",
+      "N≤1000"
+    ],
+    "evidenceUrl": "https://atcoder.github.io/ac-library/production/document_en/twosat.html",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc328_f",
+    "title": "Good Set Query",
+    "url": "https://atcoder.jp/contests/abc328/tasks/abc328_f",
+    "techniqueIds": [
+      "dsu-potential-differences"
+    ],
+    "features": [
+      "整数変数間の差Xa−Xb=d",
+      "制約を順次追加",
+      "矛盾する条件は採用しない",
+      "N,Q≤2×10^5,|d|≤10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc328/editorial/7664",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc164_e",
+    "title": "Two Currencies",
+    "url": "https://atcoder.jp/contests/abc164/tasks/abc164_e",
+    "techniqueIds": [
+      "dijkstra-expanded-resource"
+    ],
+    "features": [
+      "無向グラフ",
+      "辺で銀貨を消費",
+      "頂点で時間を払って銀貨回復",
+      "移動と回復の時間は正",
+      "最大辺消費量A≤50,N≤50"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc164/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "786B",
+    "title": "Legacy",
+    "url": "https://codeforces.com/problemset/problem/786/B",
+    "techniqueIds": [
+      "dijkstra-range-edges"
+    ],
+    "features": [
+      "有向グラフ",
+      "点から点・点から添字区間・区間から点の辺",
+      "一指定内の移動コストは同じ",
+      "辺コスト正",
+      "N,Q≤10^5"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/786/B",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "Aizu Online Judge",
+    "problemId": "GRL_1_C",
+    "title": "All Pairs Shortest Path",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C",
+    "techniqueIds": [
+      "dijkstra-potential-reweight"
+    ],
+    "features": [
+      "有向グラフ",
+      "負辺を許す",
+      "全点対最短距離",
+      "グラフ全体の負閉路検出",
+      "N≤100"
+    ],
+    "evidenceUrl": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated",
+    "notes": "問題文を一次資料で確認。公開日が本文にない出典は基準日以前の掲載を断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc167_d",
+    "title": "Teleporter",
+    "url": "https://atcoder.jp/contests/abc167/tasks/abc167_d",
+    "techniqueIds": [
+      "functional-graph-cycle-tail"
+    ],
+    "features": [
+      "各頂点の移動先が一つ",
+      "出発点固定",
+      "ちょうどK回後の位置",
+      "N≤2×10^5,K≤10^18"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc167/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc235_e",
+    "title": "MST + 1",
+    "url": "https://atcoder.jp/contests/abc235/tasks/abc235_e",
+    "techniqueIds": [
+      "mst-replacement-edge"
+    ],
+    "features": [
+      "無向連結グラフ",
+      "仮の新辺追加はクエリ間で独立",
+      "新辺が最小全域木に入るか",
+      "元辺と追加辺の重みは異なる",
+      "自己ループと多重辺を許す"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc235/editorial/3263",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1693",
+    "title": "Teleporters Path",
+    "url": "https://cses.fi/problemset/task/1693",
+    "techniqueIds": [
+      "euler-degree-connectivity"
+    ],
+    "features": [
+      "有向グラフ",
+      "指定始点1・終点N",
+      "各辺をちょうど一回使用",
+      "頂点の再訪を許す",
+      "N≤10^5,M≤2×10^5"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1693",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated",
+    "notes": "問題文を一次資料で確認。公開日が本文にない出典は基準日以前の掲載を断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc302_f",
+    "title": "Merge Set",
+    "url": "https://atcoder.jp/contests/abc302/tasks/abc302_f",
+    "techniqueIds": [
+      "zero-one-bfs-supernodes"
+    ],
+    "features": [
+      "集合の結合",
+      "共通要素がある集合だけ結合可能",
+      "指定二要素を含む集合を作る最小結合回数",
+      "N,M≤2×10^5,所属数総和≤5×10^5"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc302/editorial/6508",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開催済みコンテストの問題文と根拠資料を確認。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "160D",
+    "title": "D - Edges in MST",
+    "url": "https://codeforces.com/problemset/problem/160/D",
+    "techniqueIds": [
+      "mst-equal-weight-edge-classification"
+    ],
+    "features": [
+      "固定された連結な無向重み付きグラフ",
+      "各辺を、全ての最小全域木で必要・一部で使用・全てで不使用に分類する",
+      "同じ重みの辺があり得る"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/4108?mobile=true",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "各辺を全ての最小全域木に必要・一部に使用・全てで不使用に分類する。公式解説が同じ重みの辺の一括処理、軽い辺の成分縮約、補助グラフの橋による分類を示している。 問題原典の掲載日は確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "1489",
+    "title": "Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree",
+    "url": "https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/",
+    "techniqueIds": [
+      "mst-equal-weight-edge-classification"
+    ],
+    "features": [
+      "固定された連結な無向重み付きグラフ",
+      "各辺を、全ての最小全域木で必要・一部で使用・全てで不使用に分類する",
+      "同じ重みの辺があり得る"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は連結な無向重み付きグラフで全最小全域木に必要な critical 辺と、一部だけに入る pseudo-critical 辺を列挙する。同重みの縮約補助グラフで橋と非橋を区別する三分類がそのまま両出力に対応する。 問題原典の掲載日は確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Luogu",
+    "problemId": "P4180",
+    "title": "[BJWC2010] 严格次小生成树",
+    "url": "https://www.luogu.com.cn/problem/P4180",
+    "techniqueIds": [
+      "strict-second-mst-two-maxima"
+    ],
+    "features": [
+      "固定された無向重み付きグラフ",
+      "最小総重みと等しい別の全域木は答えに含めない",
+      "最小総重みより厳密に大きい全域木の最小総重みを求める",
+      "同じ重みの辺と自己ループがあり得る"
+    ],
+    "evidenceUrl": "https://www.luogu.com.cn/article/tdx97f1b",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "最小総重みより厳密に大きい全域木の最小総重みを要求する。公開解答は非木辺を追加し、経路最大との交換で総重みが変わらない場合は次に小さい重みを外すため、ダブリングで異なる上位二重みを持つ。 公開解答の掲載日2019-10-12を確認したが、問題原典の掲載日は未確認。"
+  }
+]

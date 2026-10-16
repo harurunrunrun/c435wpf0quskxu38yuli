@@ -1,0 +1,71 @@
+---
+title: "同じ桁数内の順位の総和は、十の冪で区切って三角数を足す"
+description: "桁数の変わる境界だけを調べ、各区間の順位1から長さまでをまとめて足します。"
+techniqueId: decimal-length-rank-sum
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+大きな整数範囲で、各値の桁数や、その桁数内での順位を足したい。桁数が変わる場所は十の冪だけなので、全整数を一つずつ見なくても同じ式の区間へ分けられる。
+
+## 考え方
+
+桁区間の始まりを $L=10^d$、終わりを $R=\min(N,10L-1)$ とする。同じ桁数の正整数は $L$ から始まるので、値 $x$ の順位は $x-L+1$。
+
+区間の長さ $C=R-L+1$ に対し、寄与は
+
+$$1+2+\cdots+C=\frac{C(C+1)}2.$$
+
+$L$ を1から十倍ずつ進めて、この三角数を足す。$N$ が桁区間の途中なら、その最後の区間だけを短くする。
+
+法が奇数かに依存せず使えるよう、$C,C+1$ の偶数側を整数として先に2で割り、その後に剰余を取る。
+
+## 適用条件
+
+正整数の通常の十進表記で、先頭0はない。桁数ごとに順位が1へ戻る量を求める。法の下で2の逆元があると仮定せず、掛ける前の整数除算を使う。
+
+実装は $0\le N\le10^{18}$、$1\le\mathrm{mod}\le10^9$ を扱う。$N=0$ は空の和として0。十倍にするときと、二つの剰余の積に128bit整数を使い、桁境界と最後の部分区間のオーバーフローを避ける。
+
+## なぜ正しいか
+
+桁区間 $[10^d,10^{d+1})$ は全ての正整数を重複なく覆う。各区間内で順位は1ずつ増えるため、その全寄与は区間長の三角数になる。最後の上限だけを $N$ で切れば、求める範囲を過不足なく含む。
+
+隣接する二整数のどちらかは偶数なので、先に正確な整数として2で割れる。その後に剰余を掛ける計算は、元の整数の積を法で割った余りと一致し、偶数の法でも逆元を必要としない。
+
+## 計算量
+
+値を全部調べる方法は少なくとも $O(N)$ 時間。桁区間は $O(\log_{10}(N+1))$ 個なので、時間 $O(\log(N+1))$、追加空間 $O(1)$。入力の数を十進文字列へ変える表や桁DPを用意する必要はない。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <stdexcept>
+long long decimal_length_rank_sum(std::uint64_t n,long long mod=998244353) {
+    if(n>1000000000000000000ULL || mod<1 || mod>1000000000LL) throw std::invalid_argument("range");
+    long long answer=0;
+    for(__int128 left=1;left<=n;left*=10) {
+        __int128 right=std::min<__int128>(n,left*10-1);
+        __int128 a=right-left+1,b=a+1;
+        if(a%2==0) a/=2;else b/=2;
+        long long contribution=static_cast<long long>((a%mod)*(b%mod)%mod);
+        answer=(answer+contribution)%mod;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [寄与の数え上げ](/flowchartcp/techniques/contribution/)
+- [床関数の商が同じ区間をまとめる](/flowchartcp/techniques/quotient-blocks/)
+
+## 参考資料
+
+- [AtCoder — digitnum](https://atcoder.jp/contests/abc238/tasks/abc238_c)
+- [公式解説](https://atcoder.jp/contests/abc238/editorial/3365)
+
+<TechniqueReferences techniqueId="decimal-length-rank-sum" />

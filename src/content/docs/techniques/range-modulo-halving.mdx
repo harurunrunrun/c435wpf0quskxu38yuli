@@ -1,0 +1,93 @@
+---
+title: "区間の剰余更新は、最大値で省略し、変わる値が半分未満になる回数だけ降りる"
+description: "剰余を遅延写像にせず、変わらない区間を飛ばし、値の減少量で総更新回数を抑える。"
+techniqueId: range-modulo-halving
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+剰余を遅延写像にせず、変わらない区間を飛ばし、値の減少量で総更新回数を抑える。
+
+## 使う場面
+
+区間の各値を正の数で割った余りへ変え、区間和も質問したい。一点の代入もあり、各剰余更新を全要素へ行うと遅い。
+
+## 考え方
+
+各区間に和と最大値を保存する。法 $m$ の剰余更新では、区間最大が $m$ 未満なら全ての値が変わらないので、その区間を丸ごと飛ばす。そうでなければ子へ降り、葉に着いたら剰余を取る。
+
+非負値 $a$ が実際に変わるのは $a\ge m$ のとき。その場合
+
+$$a\bmod m<a/2$$
+
+になる。従って一つの値が変わる回数は、最初の値や新しい代入値のビット数で抑えられる。
+
+## 適用条件
+
+値は非負整数、法は正。値を増やす操作は一点代入だけで、その値の上限も決まっている。区間全体へ大きな値を加える操作があると、各要素の減少回数を一点代入だけで数える評価は使えない。
+
+掲載実装は $1\le N\le200000$、初期値・代入値は $0..10^9$。法が1なら対象は全て0になる。
+
+## なぜ正しいか
+
+区間最大が法未満なら、区間中の全値が既に余りなので省略してよい。それ以外は葉まで降りて正しい剰余を書き、和と最大を下から計算し直す。
+
+$a\ge m$ とする。$m>a/2$ なら $a\bmod m=a-m<a/2$。$m\le a/2$ なら余りは $m$ 未満なのでやはり $a/2$ 未満。一度の実変更が少なくとも一ビット分の可能な減少回数を消費し、一点代入だけがその回数を補充する。
+
+## 計算量
+
+直接配列を更新・集計すると一操作 $O(N)$ 時間・$O(N)$ 空間。値上限を $A$、点代入数を $U$ とすると、実変更の総数は $O((N+U)\log(A+1))$。範囲境界を降りる分と合わせ、全 $Q$ 操作で $O(N+Q\log N+(N+U)\log(A+1)\log N)$ 時間、空間 $O(N)$。
+
+一回の剰余更新自体は $O(N)$ になり得る。保証するのは一連の操作全体の計算量であり、各更新が最悪 $O(\log N)$ という意味ではない。
+
+## 実装
+
+`ModuloSum` は `modulo(l,r,m)`、`set(pos,value)`、`sum(l,r)` を持つ。区間は半開区間。最大値の確認は、対象外の区間の確認とともに下降前に行う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct ModuloSum {
+    int n;vector<long long> total,maximum;
+    explicit ModuloSum(const vector<long long>& a):n(a.size()),total(4*max(n,1)),maximum(total.size()) {
+        if(n<1 || n>200000) throw invalid_argument("element count");
+        for(auto x:a) validate_value(x);
+        build(1,0,n,a);
+    }
+    static void validate_value(long long x) {if(x<0 || x>1000000000LL) throw invalid_argument("value bounds");}
+    void pull(int p) {total[p]=total[2*p]+total[2*p+1];maximum[p]=max(maximum[2*p],maximum[2*p+1]);}
+    void build(int p,int l,int r,const vector<long long>& a) {
+        if(r-l==1) {total[p]=maximum[p]=a[l];return;}
+        int mid=(l+r)/2;build(2*p,l,mid,a);build(2*p+1,mid,r,a);pull(p);
+    }
+    void update_mod(int p,int l,int r,int ql,int qr,long long mod) {
+        if(qr<=l || r<=ql || maximum[p]<mod) return;
+        if(r-l==1) {total[p]%=mod;maximum[p]=total[p];return;}
+        int mid=(l+r)/2;update_mod(2*p,l,mid,ql,qr,mod);update_mod(2*p+1,mid,r,ql,qr,mod);pull(p);
+    }
+    void update_set(int p,int l,int r,int pos,long long value) {
+        if(r-l==1) {total[p]=maximum[p]=value;return;}
+        int mid=(l+r)/2;
+        if(pos<mid) update_set(2*p,l,mid,pos,value);else update_set(2*p+1,mid,r,pos,value);
+        pull(p);
+    }
+    long long query(int p,int l,int r,int ql,int qr) const {
+        if(qr<=l || r<=ql) return 0;
+        if(ql<=l && r<=qr) return total[p];
+        int mid=(l+r)/2;return query(2*p,l,mid,ql,qr)+query(2*p+1,mid,r,ql,qr);
+    }
+    void check(int l,int r) const {if(l<0 || l>r || r>n) throw out_of_range("query range");}
+    void modulo(int l,int r,long long mod) {check(l,r);if(mod<1) throw invalid_argument("positive modulo required");if(l<r) update_mod(1,0,n,l,r,mod);}
+    void set(int pos,long long value) {if(pos<0 || pos>=n) throw out_of_range("position");validate_value(value);update_set(1,0,n,pos,value);}
+    long long sum(int l,int r) const {check(l,r);return l==r?0:query(1,0,n,l,r);}
+};
+```
+
+## 関連する手法
+
+[区間の上限更新を第二最大値でまとめて処理する](/flowchartcp/techniques/range-chmin-second-maximum/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [Codeforces：The Child and Sequence](https://codeforces.com/problemset/problem/438/D)
+
+<TechniqueReferences techniqueId="range-modulo-halving" />

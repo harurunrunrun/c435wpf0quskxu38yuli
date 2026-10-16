@@ -1,0 +1,50 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1070",
+    "title": "Cowmistry",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1070",
+    "techniqueIds": [
+      "xor-bounded-triples-intervals"
+    ],
+    "features": [
+      "候補の非負整数集合が、互いに重ならない昇順の整数閉区間の和で与えられ、全要素を列挙できない。",
+      "異なる三数を順序を区別せず選び、三つの全ての組のXORが同じK以下になるものを数える。",
+      "N<=20000、端点0..10^9、K=1..10^9、答えは法10^9+7。"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob3_platinum_dec20.html",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "候補集合が互いに重ならない整数区間の和で与えられ、異なる三数の全三組に同じXOR上限がある。二冪ブロックの同じ半分から三つ選ぶ場合と、一対二でまたぐ場合を分け、後者を各一数の許容相手数の二項係数として区間のまま集計できる。",
+    "publicationYearMonth": "2020-12"
+  },
+  {
+    "source": "USACO",
+    "problemId": "1094",
+    "title": "Paint by Letters",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1094",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob3_platinum_jan21.html",
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "techniqueIds": [
+      "grid-rectangle-components-euler-boundary"
+    ],
+    "features": [
+      "色が固定された格子の部分長方形について、同じ色のマスの上下左右のつながりの個数を求める。",
+      "一回で同じ色のつながったマスを塗り、上書きも外側への塗り足しもできないため、この成分数が最少回数になる。",
+      "多数の問い合わせは独立で、長方形の外だけを通ってつながる同色マスは別々に数える。"
+    ],
+    "difficulty": "USACO Platinum",
+    "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1094",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceYearMonth": "2021-01",
+    "exactDateVerified": false,
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=jan21results",
+    "publicationNotes": "公式原典と結果一覧でUSACO 2021 January Contest, Platinum第3問と確認。2021-01は基準日以前。日単位の開催日・公開日は確定しない。",
+    "publicationYearMonth": "2021-01"
+  }
+]

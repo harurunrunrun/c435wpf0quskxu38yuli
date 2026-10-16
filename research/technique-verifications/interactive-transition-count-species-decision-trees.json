@@ -1,0 +1,367 @@
+{
+  "techniqueId": "interactive-transition-count-species-decision-trees",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-mushrooms-article.mdx",
+    "checker": "/tmp/flowchartcp-mushrooms-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/interactive-transition-count-species-decision-trees.mdx",
+    "checker": "scripts/check_transition_species_cpp.py",
+    "metadata": "data/techniques-specific-interactive.json",
+    "reference": "data/references-specific-interactive.json"
+  },
+  "metadata": {
+    "id": "interactive-transition-count-species-decision-trees",
+    "title": "隣接する種類の変化回数から、二種類の個数を少ない質問で数える",
+    "summary": "少数を決定木で識別して既知の対象を増やし、その後は個々の種類を確定せず一括して数える。適応的な返答にも最悪226問を保証する。",
+    "aliases": [
+      "IOI2020 Counting Mushrooms",
+      "Adaptive transition-count species decision trees",
+      "Five-unknown decision trees and majority batches",
+      "隣接変化回数 同種既知 適応的grader 226問"
+    ],
+    "family": "対話と質問設計",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "brute-force-observation",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "interactive-transition-count-species-decision-trees",
+    "source": "IOI",
+    "problemId": "ioi2020_mushrooms",
+    "title": "キノコを数えよう (Counting Mushrooms)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+    "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+    "evidence": "同種既知と未知を交互に並べると返答は端の逆種bit+内部の逆種数の2倍となり、個数と次の既知一個を同時に得られる。5未知の二つの識別木で多数派110まで訓練し、残りを多数派で一括計数する。全整合配置で不変な個数/既知を保ち、原典全域で226問・総長40306以下を保証する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2020-09-19",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に公式原典3ページ・公式解説2ページ・AOI国委員会の配布原典PDF/モデル解/manager/task設定を確認した。通常web抽出で欠ける原典数値は、GitHub read connectorのbase64 PDFを復号しpdftoppmで全3ページを描画してview_imageで実際に読んだ。N2..20000、列長2..N、番号0..N−1相異、総質問長100000、ハード20000問、満点Q<=226、各返答後の履歴整合性を確認し、配布managerの同じ規則・採点と照合した。2つの局所5未知決定木と多数派110切替は配布モデル解decision-tree-endagorion.cppを参照し、全32割当の葉一意性と基準反転を独立literal oracleで確認した。訓練t<=44/質問<=2t+1、後半容量max(110,ceil((1+5t+j)/2))、平方の床関数による整数和から最悪226問を独立に証明。総長17t+2(n−1−5t)<=40306、各列相異性/2..Nと全可変状態localも証明した。実MDX単一C++20 fenceを抽出して、macroあり原典adapterとmacro無し/stub無しcallbackの別実行ファイルを通常/ASan/UBSanで検証した。原典adapter側23642187検査・131304静的実行・局所128割当・適応5586状態/3814葉・訓練counts DP2611訪問状態・実現226問witness・936843質問・総列長10341444、checksum17036070644408443896、max実測総長40295。standalone側4099例・314871検査、checksum7379661480237581096。通常0.150602秒/4836KiB、ASan/UBSan1.97564秒/448900KiB（計測は原典adapter側、LeakSanitizerのみptrace環境のため無効）。原典全域と適応的最悪予算を確認済みで、主要補題未確認なし。公式解説の抽出で欠けた式を読めたとはせずverificationはindependent-analysis。初回auditのunconfirmed/数値falseは書換えず後続証拠として提出する。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2020_mushrooms",
+    "title": "キノコを数えよう (Counting Mushrooms)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+    "techniqueIds": [
+      "interactive-transition-count-species-decision-trees"
+    ],
+    "features": [
+      "A/Bの二種類があり、0番だけがAと既知。相異なる番号の列を質問すると、隣接する種類の変化回数が返る。",
+      "履歴と整合する配置を選び続ける適応的graderにも、Aの総数が全整合配置で共通と保証して返す。",
+      "原典N2..20000、各質問長2..N・全番号相異、総質問長100000以下、満点は全入力で226問以下。掲載実装は最悪226問・総長40306以下。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "sourceBoundsEvidenceUrl": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+    "originalNumericBoundsVerified": true,
+    "notes": "同種既知と未知を交互に並べると返答は端の逆種bit+内部の逆種数の2倍となり、個数と次の既知一個を同時に得られる。5未知の二つの識別木で多数派110まで訓練し、残りを多数派で一括計数する。全整合配置で不変な個数/既知を保ち、原典全域で226問・総長40306以下を保証する。"
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "solution": "retrieved-and-reviewed",
+      "officialEditorialVerified": false
+    },
+    "evidenceUrls": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ],
+    "originalNumericBoundsVerified": true,
+    "originalProblemScopeVerified": true,
+    "notes": "2026-10-15に公式原典3ページ・公式解説2ページ・AOI国委員会の配布原典PDF/モデル解/manager/task設定を確認した。通常web抽出で欠ける原典数値は、GitHub read connectorのbase64 PDFを復号しpdftoppmで全3ページを描画してview_imageで実際に読んだ。N2..20000、列長2..N、番号0..N−1相異、総質問長100000、ハード20000問、満点Q<=226、各返答後の履歴整合性を確認し、配布managerの同じ規則・採点と照合した。2つの局所5未知決定木と多数派110切替は配布モデル解decision-tree-endagorion.cppを参照し、全32割当の葉一意性と基準反転を独立literal oracleで確認した。訓練t<=44/質問<=2t+1、後半容量max(110,ceil((1+5t+j)/2))、平方の床関数による整数和から最悪226問を独立に証明。総長17t+2(n−1−5t)<=40306、各列相異性/2..Nと全可変状態localも証明した。実MDX単一C++20 fenceを抽出して、macroあり原典adapterとmacro無し/stub無しcallbackの別実行ファイルを通常/ASan/UBSanで検証した。原典adapter側23642187検査・131304静的実行・局所128割当・適応5586状態/3814葉・訓練counts DP2611訪問状態・実現226問witness・936843質問・総列長10341444、checksum17036070644408443896、max実測総長40295。standalone側4099例・314871検査、checksum7379661480237581096。通常0.150602秒/4836KiB、ASan/UBSan1.97564秒/448900KiB（計測は原典adapter側、LeakSanitizerのみptrace環境のため無効）。原典全域と適応的最悪予算を確認済みで、主要補題未確認なし。公式解説の抽出で欠けた式を読めたとはせずverificationはindependent-analysis。初回auditのunconfirmed/数値falseは書換えず後続証拠として提出する。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+    "statementPages": 3,
+    "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+    "editorialPages": 2,
+    "originalNumericBoundsVerified": true,
+    "officialEditorialFormulaExtractionComplete": false,
+    "nationalCommitteeOriginalPdf": {
+      "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+      "gitBlobSha1": "70a05a842d3859c5accb4fa97bfa7ad828612c91",
+      "rawSha256": "1e5ea5ef9d943a97f7409041dd5ffbf4a3a778bc21c2018479a08de27f110885",
+      "retrieval": "GitHub connector fetch_file encoding=base64, decode, pdftoppm, view_image of all pages1,2,3",
+      "visualInspectionSucceeded": true,
+      "path": "/tmp/flowchartcp-mushrooms-source.pdf",
+      "pageImages": [
+        "/tmp/flowchartcp-mushrooms-source-1.png",
+        "/tmp/flowchartcp-mushrooms-source-2.png",
+        "/tmp/flowchartcp-mushrooms-source-3.png"
+      ]
+    },
+    "modelSolution": {
+      "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+      "gitBlobSha1": "96cf80d13a3440f94215a5dbf4869f5dad885540",
+      "author": "Mikhail Tikhomirov",
+      "readCompletely": true,
+      "referencedContent": "The two five-unknown query trees and majority cutoff110; no model globals/macros copied into the reusable API."
+    },
+    "graderManager": {
+      "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+      "gitBlobSha1": "0d36ad37a7fc76116fa33b1b136f17380963d628",
+      "rulesVerified": [
+        "n2..20000",
+        "query length2..n",
+        "all IDs distinct and in0..n-1",
+        "sum lengths<=100000",
+        "hard queries<=20000",
+        "full score iff queries<=226",
+        "literal adjacent type changes",
+        "adaptive answers must remain globally consistent"
+      ]
+    },
+    "taskConfiguration": {
+      "url": "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml",
+      "gitBlobSha1": "143ff0725f36fcfca8078b6e66f5e00dd31a6906",
+      "modelSolutionListedScore": 100
+    },
+    "contestDate": "2020-09-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "unconfirmedTechniqueLemmas": []
+  },
+  "subsequentSourceVerifications": [
+    {
+      "checkedAt": "2026-10-15",
+      "status": "verified",
+      "kind": "national-committee-statement-distribution",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+      "originalNumericBoundsVerified": true,
+      "evidenceUrls": [
+        "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+        "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+        "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+        "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml"
+      ],
+      "originalConstraints": {
+        "n": {
+          "minimum": 2,
+          "maximum": 20000
+        },
+        "anchor": "species[0]=A",
+        "queryLength": "2..n",
+        "queryIndices": "distinct integers0..n-1",
+        "oracleResponse": "number of adjacent unequal species",
+        "hardQueryLimit": 20000,
+        "fullScoreQueryLimit": 226,
+        "totalQueryLengthLimit": 100000,
+        "adaptive": "after every interaction at least one fixed species sequence is consistent with the whole transcript"
+      },
+      "apiContainsEntireOriginalRange": true,
+      "apiExtraSingleton": true,
+      "initialAuditUnconfirmedAndNumericFalsePreserved": true,
+      "notes": "全3ページの原典画像と配布managerで確認。初回auditのconstraints/reviewStatus/technicalFindingsは書換えず後続に追記する。"
+    }
+  ],
+  "originalProblemCoverage": {
+    "status": "verified",
+    "apiContainsEntireOriginalRange": true,
+    "originalNumericBoundsVerified": true,
+    "fullScoreWorstCaseProved": true,
+    "maximumQueries": 226,
+    "maximumTotalQueryLengthUpperBound": 40306,
+    "initialAuditUnchanged": true,
+    "solutionVerification": "independent-analysis",
+    "publicationAndFlowPending": true
+  },
+  "api": {
+    "signature": "template<class Machine> TwoSpeciesCount count_two_species_from_transition_queries(int n,Machine machine)",
+    "result": "TwoSpeciesCount{int count_a,size_t queries,size_t total_query_length}",
+    "domain": "n1..20000; species[0]=A; machine(vector<int>) returns adjacent species changes and is consistent with the entire transcript. Original n2..20000 fully included.",
+    "singleton": "n1 returns count1/queries0/length0 without callback.",
+    "queryContract": "Each sequence has length2..n, uses distinct0-based IDs, and refers only to actual unknown/known objects. Repeated same-type anchor symbols map to different physical IDs.",
+    "errors": "invalid_argument for n outside1..20000 before callback. runtime_error for out-of-range reply or no surviving local assignment. Callback exceptions propagate. logic_error diagnoses an impossible internal query/budget invariant.",
+    "originalAdapter": "Define TWO_SPECIES_IOI_GRADER to enable int count_mushrooms(int n) and the use_machine declaration for original-grader linking. Without the macro the complete visible fence links with a plain callback and no machine stub.",
+    "integerSafety": "n/count/IDs<=20000; response<query length; bitmask candidates use uint32 shifts0..31. Query stats and stamps use size_t, checked before addition/callback. No unchecked signed narrowing outside these bounds.",
+    "maximumQueries": 226,
+    "maximumTotalQueryLengthUpperBound": 40306,
+    "maximumTotalQueryLengthObserved": 40295,
+    "time": "O(n) excluding oracle work; local32-mask search and at most44 training rounds are bounded constants.",
+    "space": "O(n)",
+    "callIndependence": "All mutable labels, known pools, stamps and counters are local. Rule arrays are immutable constexpr. No recursion or randomization."
+  },
+  "proofInvariants": [
+    "Each training group has exactly five new unknown IDs; local32 candidates contain every assignment consistent with its full local transcript. Each leaf is unique for both reference species.",
+    "Mixed tree uses at most3 distinct same-type and1 opposite anchor, at most2 queries and total length17. Single-anchor tree uses one anchor, at most3 queries and length16; all-zero mask needs1 query.",
+    "The only training round that can exceed2 queries is the first round revealing the opposite species. Hence t rounds cost at most2t+1.",
+    "After t rounds known T=1+5t. Majority reaches111 by t44. If fewer than5 remain, at most4 later queries suffice.",
+    "In bulk, r=d0+2*sum_{i>=1}di. Opposite count=ceil(r/2), endpoint type=reference XOR(r&1). Count the whole batch once and add the endpoint to known without recounting it.",
+    "After j bulk queries known total=T+j and majority is at leastmax(110,ceil((T+j)/2)). This lower bound holds for every adaptive transcript.",
+    "For q=225−2t,22<=t<=43: capacity−(20000−T)=floor((9t²−824t+19040)/4)>=62; for t44 margin52. Total queries<=226.",
+    "Each new unknown is processed once. Training total length<=17t; bulk length2(n−1−5t); total<=2n−2+7t<=40306.",
+    "Per-query distinctness follows from disjoint known and new IDs and distinct anchor slots. Bulk2k<=n because k<=known and k<=remaining.",
+    "Every count and added known endpoint is common to all currently consistent worlds, so adaptive grading cannot invalidate earlier inferences."
+  ],
+  "flowSuggestion": {
+    "entryGraphId": "interactive-oracles",
+    "existingChoices": [],
+    "firstMissingGraphId": "interactive-oracles",
+    "firstMissingNodeId": "response",
+    "proposedAnswerId": "transition-count-species",
+    "proposedAnswerLabel": "相異なる番号を並べると、隣り合う種類が変わる回数が返る",
+    "guardGraphId": "transition-count-species-conditions",
+    "guards": [
+      {
+        "id": "two-types-anchor",
+        "feature": "二種類の対象があり、0番だけがAと既知で、Aの総数を数える。"
+      },
+      {
+        "id": "distinct-sequence-transitions",
+        "feature": "相異なる番号の列を質問し、隣接する種類の変化回数が返る。適応的な返答も全履歴と整合する。"
+      },
+      {
+        "id": "full-score-budget",
+        "feature": "Nは2..20000、各質問長2..N。226問・総質問長100000以内でよい。掲載実装は最悪226問・総長40306以下。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "interactive-transition-count-species-decision-trees"
+    ]
+  },
+  "verification": {
+    "result": "passed",
+    "actualArticleFenceCompiled": true,
+    "normalCommand": "python3 /tmp/flowchartcp-mushrooms-checker.py /tmp/flowchartcp-mushrooms-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-mushrooms-checker.py /tmp/flowchartcp-mushrooms-article.mdx --sanitize",
+    "flags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "graderAdapterMacro": "TWO_SPECIES_IOI_GRADER",
+    "checks": 23642187,
+    "staticCases": 131304,
+    "localAssignments": 128,
+    "adaptiveStates": 5586,
+    "adaptiveLeaves": 3814,
+    "budgetStates": 2611,
+    "budgetStatesDefinition": "reachable training-DP states visited in totals1,6,...,216; every reached terminal state (including total221) is separately checked against its worst bulk continuation.",
+    "totalQueries": 936843,
+    "totalQueryLength": 10341444,
+    "maxQueries": 226,
+    "maxTotalQueryLengthObserved": 40295,
+    "provedTotalLengthBound": 40306,
+    "invalidCases": 11,
+    "checksum": "17036070644408443896",
+    "normalSeconds": 0.150602,
+    "normalPeakRSSKiB": 4836,
+    "standaloneCallback": {
+      "compiledWithoutGraderMacro": true,
+      "compiledWithoutMachineStub": true,
+      "cases": 4099,
+      "checks": 314871,
+      "checksum": "7379661480237581096",
+      "domain": "all anchor-A binary strings n1..12 plus four n20000 patterns and pre-callback invalid n"
+    },
+    "combinedChecksPerMode": 23957058,
+    "asanUbsan": {
+      "passed": true,
+      "checks": 23642187,
+      "staticCases": 131304,
+      "checksum": "17036070644408443896",
+      "standaloneCallbackChecks": 314871,
+      "standaloneCallbackChecksum": "7379661480237581096",
+      "seconds": 1.97564,
+      "peakRSSKiB": 448900,
+      "leakSanitizer": false
+    },
+    "oracles": {
+      "local": "Both actual decision trees run against literal adjacent species comparisons for all32 masks and both reference complements, with minimal anchor counts. Every reachable query node is covered and returned five-bit assignment must equal the original mask.",
+      "static": "Every anchored binary species string n1..17; all replies literally count unequal adjacent species; compare final answer to direct zero count and independently validate every query and counter.",
+      "adaptive": "For each n2..12, keep all2^(n−1) fixed worlds consistent with the full transcript; branch over every possible literal response. At every leaf all surviving worlds must have exactly the returned A count.",
+      "budget": "Dynamic program on counts(a,b), branching over every local five-bit assignment/cost. Check every terminal state with the worst water-filling bulk continuation. Materialize a consistent adaptive policy attaining226 calls, then replay the exact resulting fixed world. Also verify every integer-capacity certificate t22..44.",
+      "standalone": "Entire visible fence compiled without IOI macro or external machine definition, linked and run with an ordinary literal callback."
+    },
+    "cases": [
+      "All128 local mask/complement/tree cases and every rule node.",
+      "All131071 anchored binary strings n1..17 plus boundary, large, random and policy witnesses.",
+      "Full adaptive response tree n2..12:5586 states3814 leaves, with query transcript replay and all-world count agreement.",
+      "Exact226-query consistent maximal-input adversary and replay as a fixed hidden world.",
+      "N20000 all-A, all-B except anchor, alternating, block patterns; training cutoff/tail dimensions;160 seeded random inputs including80 at maximum N.",
+      "All per-query lengths, ID range/distinctness, total length, strict226-call cap and returned statistics verified independently.",
+      "Invalid n0/negative/20001/INT_MIN/MAX before callback; negative/huge/impossible responses; callback exception propagation; n1 no callback.",
+      "Separate standalone no-macro/no-stub executable covers4099 cases and314871 checks in both normal and sanitizer modes."
+    ],
+    "sharedFilesModified": false,
+    "unconfirmedLemmas": [],
+    "unconfirmedPerformance": []
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "notes": "原典と全掲載実装を独立に精読し、通常とASan/UBSanを再実行して両者の件数・checksumを再現。Mushroomsでは原典用adapterの無条件リンク依存を検出し、macro有無の二つの実行ファイルで修正を確認した。"
+  },
+  "editorNotes": [
+    "Eight sections with one always-visible complete C++20 fence. Source text is summarized, not reproduced; the finite query table is attributed to the official distributed model.",
+    "Only /tmp artifacts were edited; shared articles/data/initial audit remain unchanged. Initial unconfirmed/numeric-false record must be preserved and later evidence appended.",
+    "Original PDF/PNGs are retained temporarily at sourceVerification.nationalCommitteeOriginalPdf paths because root requested them for independent visual review.",
+    "Article is ready for independent review and flow integration; publication/flow/plan/resolution are root responsibilities.",
+    "Plants was deferred because its two-neighbor compression and cyclic reachability lemmas remain unresolved; Mushrooms local trees and worst budgets are now independently established."
+  ],
+  "artifactSha256": {
+    "article": "178b33333d0242bcc3449be27ed4b68ca4812af2e4e43a285772c68f79c4f7e4",
+    "checker": "ef3cf80d94ea5cfcf3755f657fb02403efb180c4ab002053f277279dd35e3312"
+  },
+  "cppSha256": "ae3bee2cac450e2373538737824d8633260029e1554dec2a80212535307d153b",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/interactive-transition-count-species-decision-trees.mdx",
+    "checker": "scripts/check_transition_species_cpp.py",
+    "entryGraphId": "interactive-oracles",
+    "choices": [
+      "transition-count",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "ae3bee2cac450e2373538737824d8633260029e1554dec2a80212535307d153b",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true
+  }
+}

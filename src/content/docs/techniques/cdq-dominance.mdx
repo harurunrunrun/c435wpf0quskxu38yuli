@@ -1,0 +1,81 @@
+---
+title: "三つの大小条件を、分割・走査・累積個数へ分ける"
+description: "一座標で順序を固定し、二座標目の走査中に三座標目の累積個数を数える。"
+techniqueId: cdq-dominance
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各点について $a_j\le a_i,b_j\le b_i,c_j\le c_i$ をすべて満たす他の点の個数を求めたい。各座標に同値があり、完全に同じ点も複数ある。全点対を見ると二乗になる。
+
+## 考え方
+
+点を $(a,b,c)$ の辞書順で並べ、完全に同じ点を一つへまとめて重みを個数にする。この順序の左右を分割し、両側の内部を再帰で処理する。
+
+左側から右側へ数える組について、$a$ の条件は順序から確定している。両側を $b$ 順に走査し、$b_{左}\le b_{右}$ の左点の重みを、$c$ のFenwick木へ加える。右点の $c$ 以下の累積重みが、左右をまたぐ寄与になる。走査後は加えた重みをすべて取り消し、$b$ 順に併合する。
+
+同じ点のグループには、最後にグループサイズから1を引いた寄与を加える。
+
+## 適用条件
+
+三座標の非厳密な大小比較を扱う。厳密不等号へ変えるなら同値点の追加時期も変える。完全同値点をまとめず、順序の片側からだけ数えると同値点同士の寄与が欠ける。負の座標も圧縮すれば使える。
+
+## なぜ正しいか
+
+完全同値でない支配関係では、支配する点は辞書順で先にある。各組は、二点を初めて左右へ分ける唯一の再帰段階で数えられる。その段階で $b$ の条件を満たす点だけを追加し、$c$ 以下だけを取得するので、三条件を満たす組だけが一回数えられる。完全同値点の相互寄与はグループ内の個数として別に正確に加える。
+
+## 計算量
+
+全点対比較の $O(N^2)$ から $O(N\log^2 N)$ 時間へ改善する。各分割段階で $O(N)$ 回の木操作、深さ $O(\log N)$。圧縮と併合バッファを含め空間は $O(N)$。
+
+## 実装
+
+`dominance_counts(points)` は自分を除いた個数を入力順に返す。原典の「その個数がdの点数」は、この戻り値をヒストグラムへ集計すればよい。
+
+```cpp
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <functional>
+std::vector<int> dominance_counts(const std::vector<std::array<long long,3>>& points) {
+    int n=int(points.size());std::vector<int> order(n);for(int i=0;i<n;++i) order[i]=i;
+    std::sort(order.begin(),order.end(),[&](int a,int b){return points[a]<points[b];});
+    std::vector<long long> coordinates;for(auto p:points) coordinates.push_back(p[2]);
+    std::sort(coordinates.begin(),coordinates.end());coordinates.erase(std::unique(coordinates.begin(),coordinates.end()),coordinates.end());
+    struct Group {long long a,b;int c,weight,group,count;};
+    std::vector<Group> p;std::vector<int> group_of(n);
+    for(int i:order) {
+        int c=int(std::lower_bound(coordinates.begin(),coordinates.end(),points[i][2])-coordinates.begin())+1;
+        if(p.empty()||p.back().a!=points[i][0]||p.back().b!=points[i][1]||p.back().c!=c)
+            p.push_back({points[i][0],points[i][1],c,0,int(p.size()),0});
+        group_of[i]=p.back().group;++p.back().weight;
+    }
+    std::vector<int> bit(coordinates.size()+1);std::vector<Group> buffer(p.size());
+    auto add=[&](int x,int delta){for(;x<int(bit.size());x+=x&-x) bit[x]+=delta;};
+    auto sum=[&](int x){int s=0;for(;x;x-=x&-x) s+=bit[x];return s;};
+    std::function<void(int,int)> solve=[&](int l,int r) {
+        if(r-l<=1) {return;}
+        int mid=(l+r)/2;solve(l,mid);solve(mid,r);
+        int i=l;
+        for(int j=mid;j<r;++j) {while(i<mid&&p[i].b<=p[j].b) {add(p[i].c,p[i].weight);++i;}p[j].count+=sum(p[j].c);}
+        for(int t=l;t<i;++t) add(p[t].c,-p[t].weight);
+        i=l;int j=mid,k=l;
+        while(i<mid||j<r) buffer[k++]=(j==r||(i<mid&&p[i].b<=p[j].b))?p[i++]:p[j++];
+        for(int t=l;t<r;++t) p[t]=buffer[t];
+    };
+    solve(0,int(p.size()));std::vector<int> group_answer(p.size());
+    for(auto x:p) group_answer[x.group]=x.count+x.weight-1;
+    std::vector<int> answer(n);for(int i=0;i<n;++i) answer[i]=group_answer[group_of[i]];return answer;
+}
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [半開区間の開始と終了を同じ座標でまとめる](/flowchartcp/techniques/sweep-interval-endpoints/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [洛谷：三维偏序 / 陌上花开（原典の条件）](https://www.luogu.com.cn/problem/P3810)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="cdq-dominance" />

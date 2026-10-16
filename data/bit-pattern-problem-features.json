@@ -1,0 +1,184 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "482B",
+    "title": "Interesting Array",
+    "url": "https://codeforces.com/problemset/problem/482/B",
+    "techniqueIds": [
+      "range-and-forced-bits"
+    ],
+    "features": [
+      "長さNの非負整数列を一つ構築する",
+      "各条件が非空区間のANDの値を指定する",
+      "N,M≤100000、値は30ビット",
+      "解がなければ不可能と判定する"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/14417",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "指定ANDのビットが1なら区間の全要素で1が必要になる。その強制だけを重ねた配列を作り、0指定のビットに0が残るかを確認すれば、存在する解を取り逃さず構築できる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "typical90_ch",
+    "title": "086 - Snuke's Favorite Arrays（★5）",
+    "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ch",
+    "techniqueIds": [
+      "bitwise-or-constraint-count"
+    ],
+    "features": [
+      "N≤12の整数列の個数を数える",
+      "各条件は三要素のビットORを指定する",
+      "全要素は0以上2^60未満",
+      "Q≤50、個数は法10^9+7"
+    ],
+    "evidenceUrl": "https://github.com/E869120/kyopro_educational_90/blob/main/sol/086.cpp",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "三要素ORの等式はビットをまたがないため、各桁で2^N個の0/1割当を検査できる。桁ごとの成立数の積が整数列全体の成立数になる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc129_e",
+    "title": "Sum Equals Xor",
+    "url": "https://atcoder.jp/contests/abc129/tasks/abc129_e",
+    "techniqueIds": [
+      "carryfree-sum-xor-bound"
+    ],
+    "features": [
+      "非負整数の順序付き組(a,b)を数える",
+      "a+b=a XOR b が必要",
+      "a+b≤L、Lは最大100001桁の二進文字列",
+      "答えは法10^9+7"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc129/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "二数の和がXORに一致する条件は、同じ桁で二数が共に1にならないこと。和の各桁0は一通り、1は二通りとして、上限と一致する接頭辞と既に小さい接頭辞に分けて数えられる。",
+    "publicationDate": "2019-06-09"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc347_d",
+    "title": "Popcount and XOR",
+    "url": "https://atcoder.jp/contests/abc347/tasks/abc347_d",
+    "techniqueIds": [
+      "xor-popcount-construction"
+    ],
+    "features": [
+      "0≤X,Y<2^60となる二数を一つ構築する",
+      "popcount(X)=a、popcount(Y)=bを指定する",
+      "X XOR Y=Cを指定する",
+      "0≤a,b≤60、C<2^60、不可なら検出する"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc347/editorial/9691",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "Cの1の桁は一方だけ1、0の桁は両方同じである。a+bからCの1の個数を引いて半分にすると共通の1の数が決まり、残った桁の個数で存在判定と割当ができる。",
+    "publicationDate": "2024-03-30"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc117_d",
+    "title": "XXOR",
+    "url": "https://atcoder.jp/contests/abc117/tasks/abc117_d",
+    "techniqueIds": [
+      "bounded-xor-sum-maximum"
+    ],
+    "features": [
+      "N個の非負整数Aiが固定される",
+      "0≤X≤Kとなる一つのXを選ぶ",
+      "sum(X XOR Ai)を最大化する",
+      "N≤100000、Ai,K≤10^12"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc117/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "各ビットの利益はAiの0/1個数だけで決まるが、X≤Kが桁を結び付ける。上位がKと一致する状態と、既に小さい状態を分けると、下位の自由な選択を失わず最大化できる。",
+    "publicationDate": "2019-02-03"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc238_d",
+    "title": "AND and SUM",
+    "url": "https://atcoder.jp/contests/abc238/tasks/abc238_d",
+    "techniqueIds": [
+      "and-sum-disjoint-remainder"
+    ],
+    "features": [
+      "非負整数x,yの存在を判定する",
+      "x AND y=a、x+y=sを同時に満たす",
+      "a,s<2^60、最大100000組の質問",
+      "二数を全探索するには値が大きい"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc238/tasks/abc238_d",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "x+y=(x XOR y)+2(x AND y)なので、残りs−2aが非負でaとビットを共有しないことが必要になる。この条件ならx=a、y=a OR (s−2a)を取れて十分でもある。",
+    "publicationDate": "2022-02-05"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc236_f",
+    "title": "Spices",
+    "url": "https://atcoder.jp/contests/abc236/tasks/abc236_f",
+    "techniqueIds": [
+      "minimum-cost-xor-generators"
+    ],
+    "features": [
+      "各Bビットの非零マスクに購入費用がある",
+      "買ったマスクの部分集合XORで全ての非零値を作りたい",
+      "購入費用の和を最小化する",
+      "原典B≤16、各費用1..10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc236/editorial/3306",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "購入済みの部分集合XORで作れる値なら、追加購入しても作れる範囲は変わらない。費用順に独立な値だけを加えると、交換によって最適な生成集合を得られる。",
+    "publicationDate": "2022-01-23"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "arc098_b",
+    "title": "Xor Sum 2",
+    "url": "https://atcoder.jp/contests/abc098/tasks/arc098_b",
+    "techniqueIds": [
+      "carryfree-subarray-window"
+    ],
+    "features": [
+      "非負整数列の連続区間を数える",
+      "区間内の通常の和と全要素XORが等しい",
+      "N≤200000、Ai<2^20",
+      "0を含む区間や同じ値の繰返しもある"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/arc098/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "各ビットの1が区間内に高々一つなら繰り上がりは起きない。右端を固定して衝突がなくなるまで左端を進めると、残った全ての左端が成立するため線形走査で数えられる。",
+    "publicationDate": "2018-05-26"
+  }
+]

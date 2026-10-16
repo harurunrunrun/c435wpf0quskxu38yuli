@@ -1,0 +1,50 @@
+[
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_constellation3",
+    "title": "星座 3 (Constellation 3)",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/constellation3.pdf",
+    "techniqueIds": [
+      "skyline-cartesian-star-paths"
+    ],
+    "features": [
+      "列ごとに下側をビルが覆う画像で、ビルを含まないどの軸平行長方形にも残す星を高々一つにする。",
+      "星を消す費用の総和を最小化する。残す重みの最大化へ直せる。",
+      "N,M<=200000、各高さと座標は1..N、星は自列のビルより上、座標の重複なし、削除費用1..10^9。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/constellation3-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-03-22",
+    "notes": "各列の下側をビルが覆う画像で、空の長方形内に残す星を高々一つにし、削除費用を最小化する。二つの星の競合条件min(Yi,Yj)>区間最大ビル高は、最大値Cartesian treeで各星を列頂点から高さY未満の最上位祖先まで写した二パスの交差に一致する。残す重みを最大化する祖先パスの選択は、一本を除いた森の子DP和をパス上の差分和として計算できる。",
+    "discoveredBy": "joi-2020-spring"
+  },
+  {
+    "source": "JOI",
+    "problemId": "joi2020sc_harvest",
+    "title": "収穫 (Harvest)",
+    "url": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/harvest.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/harvest-review.pdf",
+    "techniqueIds": [
+      "functional-graph-timed-arrivals-offline"
+    ],
+    "features": [
+      "円周上の全従業員が時計回りに同じ速さで歩き、木の実は収穫からC秒後に再生する。再生と同時の到着でも収穫する。",
+      "直前の収穫者から次の収穫者と経過時間が決まり、木ごとの収穫を正の時間付き出次数1グラフ上の到着へ移せる。",
+      "従業員・木・質問は各20万以下、円周長と再生時間は10^9以下、質問時刻は10^18以下。指定従業員の指定時刻ちょうどまでの累積収穫数を多数答える。"
+    ],
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-03-22",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html",
+    "publicationNotes": "JOI公式課題一覧で競技3は2020年3月22日、同欄の第2問が収穫と確認。原典もContest Day 3。公式難度値は不明。"
+  }
+]

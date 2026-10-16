@@ -1,0 +1,209 @@
+---
+title: "対角線に沿う正方形の被覆を、重なり補正と枚数の罰金で最小にする"
+description: "包含される要求を除き、撮影範囲を連続した群へ分ける。重複面積を引くDPの離散凸性を示し、整数の罰金と単調な直線群で枚数の次元を除く。"
+techniqueId: diagonal-square-union-cover-monge-penalty-cht
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+整数のマスでできた正方形の盤面に、必ず覆うセルがある。選べる範囲は、盤面の主対角線上に向かい合う二つの角を持つ、マス目に沿った正方形である。高々 $K$ 個の範囲で全ての指定セルを覆い、覆われたセルの総数を最小にしたい。範囲が重なる部分は一度だけ数える。
+
+枚数ごとのDPをそのまま作ると、$K$ が大きい場合に間に合わない。この形では、幾何の条件を一次元の区間へ移し、枚数ごとの最小費用が離散凸になることを利用できる。
+
+## 考え方
+
+セル $(r,c)$ を覆う正方形の対角区間は、$[\min(r,c),\max(r,c)]$ を含む必要がある。この区間を一つの要求とする。以下では、行番号と列番号がともに $a$ 以上 $b$ 以下のセル集合を $[a,b]^2$ と書く。他の要求に含まれるものを取り除くと、残った区間の左端 $L_i$ と右端 $R_i$ は、ともに狭義増加に並ぶ。
+
+要求を連続した群へ分け、一群を一つの正方形で覆う。最後の群を足す際は、その面積から直前の正方形との重複面積を引けばよい。この区間分割DPについて、群数を一つ増やす節約額が順に小さくなることを示す。
+
+一枚につき整数の罰金 $\lambda$ を足すと、枚数の状態を外せる。罰金付きの費用と使った枚数を一緒に最小化し、目的の枚数をまたぐ罰金を二分探索する。各罰金のDPは一次式の最小値に変形でき、傾きと問い合わせ位置の単調性から線形時間で計算できる。
+
+## 適用条件
+
+指定セルは $M\times M$ 盤面内にあり、位置は0始まり。各範囲の角は主対角線上にあり、全てのセルを丸ごと含む。指定セルの重複や、対角線の反対側に対称なセルがあってもよい。費用は面積の和集合であり、重複分を繰り返し加算しない。
+
+`minimum_diagonal_square_union(points, grid_size, max_photos)` は、点数1〜10万、盤面の一辺1〜100万、枚数1〜点数を受け取り、最小セル数を `std::int64_t` で返す。入力は変更せず、呼出し間に状態を持たない。空列、上限超過、範囲外の座標・盤面サイズ・枚数には `std::invalid_argument`。内部領域の割当失敗などはそのまま伝わる。
+
+原典の全範囲を含み、値渡しの `long long take_photos(int n, int m, int k, std::vector<int> r, std::vector<int> c)` も載せる。こちらは明示した点数と二配列の長さも検査する。範囲の列や撮影手順そのものは返さない。
+
+## なぜ正しいか
+
+**二次元の被覆を、包含のない区間列へ移す。** 対角区間 $[a,b]$ の正方形がセル $(r,c)$ を覆うことは、$a\le\min(r,c)\le\max(r,c)\le b$ と同値である。包含される要求は、大きい方を覆えば自動的に覆われる。左端の昇順、同じ左端なら右端の降順に並べ、右端が伸びない要求を捨てれば、$L_i,R_i$ はともに狭義増加になる。
+
+選んだ正方形のうち他に含まれるものは捨ててよい。残りは左端と右端が同じ順序に並ぶ。要求を、それを覆う最初の正方形へ割り当てると、担当する要求は連続した群になる。逆順に担当する二要求があれば、左端の順序から後ろの正方形が前の要求を覆えないか、前の正方形が両方を覆うかのどちらかになり、最初の担当という定義に反する。
+
+各正方形を、担当群の最初の $L$ と最後の $R$ へ縮めても、全要求を覆ったまま面積を増やさない。従って、連続群への分割だけを考えれば十分である。
+
+**重複は、直前の一枚との分だけ引く。** 要求の最初の $t$ 個を既に処理し、次の群を $t+1$ から $i$ とする。新しい正方形は $[L_{t+1},R_i]^2$。それ以前のどの正方形も、右端は直前の一枚の右端 $R_t$ 以下である。新しい正方形との共通部分は、直前との共通部分に含まれる。よって面積の増分は
+
+$$W(t,i)=(R_i-L_{t+1}+1)^2-\max(0,R_t-L_{t+1}+1)^2.$$
+
+$t=0$ の重複項は0とする。両端を含むセル数なので、長さには1を足す。枚数 $q$ の最小費用は、辺 $t\to i$ の費用を $W(t,i)$ とする、頂点0から全要求数までの $q$ 辺の経路と一致する。
+
+**枚数ごとの費用は離散凸になる。** $a\le b<c\le d$ に対し、二乗を展開すると
+
+$$W(a,c)+W(b,d)-W(a,d)-W(b,c)
+=-2(L_{b+1}-L_{a+1})(R_d-R_c)\le0.$$
+
+重複を引く項は出発点ごとの定数なので、左右から相殺する。
+
+$q-1$ 枚と $q+1$ 枚の最適な経路を $P,Q$ とする。内部の切れ目を位置順に見て、$Q$ の切れ目数が $P$ より初めて二つ多くなる切れ目を $d$ とする。その直前の $Q$ の切れ目を $b$、$P$ の直前・直後を $a,c$ とすると、$a\le b<d\le c$ で、$b$ までの $Q$ の辺数は $a$ までの $P$ より一つ多い。
+
+辺 $a\to c$ と $b\to d$ の代わりに $a\to d$ と $b\to c$ を使い、後半を交換する。二経路はどちらも $q$ 辺になる。元の二辺は入れ子、新しい二辺は交差する並びなので、上の不等式を位置順 $a,b,d,c$ へ適用すると費用の合計は増えない。また、共有する切れ目で、そこまでの $Q$ の辺数が $P$ より一つ多い場合は、その位置から後半を交換するだけでもよい。従って、枚数別の最小値 $F(q)$ は
+
+$$2F(q)\le F(q-1)+F(q+1)$$
+
+を満たす。また、一群を二つに分けた正方形は元の一枚の内側に収まり、和集合を増やさない。よって $F$ は非増加である。「高々 $K$ 枚」の答えは、包含除去後の要求数を $B$ とすると $F(\min(K,B))$ になる。
+
+**整数の罰金と、同値の枚数をそろえる。**
+
+$$G(\lambda)=\min_q\{F(q)+\lambda q\}$$
+
+を計算し、同じ値なら枚数が少ない方を選ぶ。罰金が増えると選ばれる枚数は増えない。節約差 $F(q-1)-F(q)$ は非増加の非負整数なので、初めて最適枚数が $K$ 以下になる整数罰金では、$K$ 自体も最適枚数に含まれる。枚数が飛んだ場合も、その区間の $F$ は同じ傾きの直線上にある。従って答えは $G(\lambda)-\lambda K$。
+
+罰金0では最小面積が得られる。既に枚数が $K$ 以下なら、その値を返せる。罰金 $M^2$ では、面積 $M^2$ 以下の一枚が、二枚以上の候補より必ず有利になるので、二分探索の上端として十分である。
+
+同値処理には $H=B+1$ を使い、費用を $H$ 倍し、枚数を下位へ足す。枚数は $H$ 未満なので、整数の大小比較が「罰金付き費用、少数枚」の辞書順と一致する。これで直線同士が同じ値になった場合にも、枚数を失わない。
+
+## 計算量
+
+包含除去の整列は $O(N\log N)$。各罰金では、$A_t=L_{t+1}-1$ として
+
+$$D[i]=H R_i^2+\min_{t<i}\left\{-2H A_t R_i+D[t]+H(A_t^2-\mathrm{overlap}_t^2+\lambda)+1\right\}$$
+
+と書ける。$L$ の増加により直線の傾きは狭義減少し、$R$ も増加する。不要な直線を後ろから、問い合わせで負けた直線を前から一度ずつ除くので、各罰金は $O(B)$。全体は **$O(N\log N+N\log M)$ 時間、$O(N)$ 空間**。凸包用の配列は一度だけ割り当て、罰金ごとに再利用する。
+
+答えは高々 $M^2\le10^{12}$。罰金付きの各接頭辞も、一枚で覆えば $2M^2$ 以下である。$H\le100001$ より、保存する符号化費用・切片の絶対値は $5\times10^{17}$ 未満、傾きは $3\times10^{11}$ 未満に収まる。直線の評価と交点順の比較は、差や積を取る前に128bitへ広げる。比較積の絶対値は $10^{30}$ 未満であり、符号付き128bitに収まる。
+
+## 実装
+
+内部の `penalized` は、包含除去済みの区間列と再利用する作業配列を受け取る。公開APIは二つの関数であり、入力検査後にだけ内部関数を呼ぶ。`__int128` が使えるC++20処理系を用いる。
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace diagonal_square_union_detail {
+using Int = std::int64_t;
+using Wide = __int128_t;
+struct Interval { int left, right; };
+struct Line {
+    Int slope, intercept;
+    Wide at(Int x) const { return Wide(slope) * x + intercept; }
+};
+struct Penalized { Int cost; int count; };
+
+// intervals has strictly increasing left/right endpoints; scratch is large
+// enough. These are internal preconditions, established by the public API.
+Penalized penalized(const std::vector<Interval>& intervals, Int penalty,
+                    std::vector<Line>& scratch) {
+    const int n = static_cast<int>(intervals.size());
+    const Int scale = Int(n) + 1;
+    int head = 0, tail = 0;
+    Int value = 0;
+    for (int i = 0; i < n; ++i) {
+        const Int start = Int(intervals[i].left) - 1;
+        const Int overlap = i == 0 ? 0 : std::max<Int>(
+            0, Int(intervals[i - 1].right) - intervals[i].left + 1);
+        const Line line{
+            -2 * scale * start,
+            value + scale * (start * start - overlap * overlap + penalty) + 1
+        };
+        while (tail - head >= 2) {
+            const Line& a = scratch[tail - 2];
+            const Line& b = scratch[tail - 1];
+            if ((Wide(b.intercept) - a.intercept) *
+                    (Wide(b.slope) - line.slope) <
+                (Wide(line.intercept) - b.intercept) *
+                    (Wide(a.slope) - b.slope)) break;
+            --tail;
+        }
+        scratch[tail++] = line;
+        const Int x = intervals[i].right;
+        while (tail - head >= 2 &&
+               scratch[head].at(x) >= scratch[head + 1].at(x)) ++head;
+        value = static_cast<Int>(Wide(scale) * x * x + scratch[head].at(x));
+    }
+    return {value / scale, static_cast<int>(value % scale)};
+}
+}  // namespace diagonal_square_union_detail
+
+std::int64_t minimum_diagonal_square_union(
+    const std::vector<std::pair<int, int>>& points,
+    int grid_size, int max_photos) {
+    static_assert(std::numeric_limits<int>::max() >= 1000000);
+    static_assert(std::numeric_limits<long long>::digits >= 63);
+    if (points.empty() || points.size() > 100000 ||
+        grid_size < 1 || grid_size > 1000000 || max_photos < 1 ||
+        static_cast<std::size_t>(max_photos) > points.size())
+        throw std::invalid_argument("invalid size or photo count");
+    for (auto [r, c] : points) {
+        if (r < 0 || c < 0 || r >= grid_size || c >= grid_size)
+            throw std::invalid_argument("cell outside grid");
+    }
+    using namespace diagonal_square_union_detail;
+    std::vector<Interval> intervals;
+    intervals.reserve(points.size());
+    for (auto [r, c] : points)
+        intervals.push_back({std::min(r, c), std::max(r, c)});
+    std::sort(intervals.begin(), intervals.end(), [](Interval a, Interval b) {
+        return a.left != b.left ? a.left < b.left : a.right > b.right;
+    });
+    std::size_t kept = 0;
+    for (Interval interval : intervals) {
+        if (kept == 0 || interval.right > intervals[kept - 1].right)
+            intervals[kept++] = interval;
+    }
+    intervals.resize(kept);
+    const int count = static_cast<int>(kept);
+    max_photos = std::min(max_photos, count);
+    std::vector<Line> scratch(kept);
+    Int low = 0, high = Int(grid_size) * grid_size;
+    while (low < high) {
+        const Int middle = low + (high - low) / 2;
+        if (penalized(intervals, middle, scratch).count <= max_photos)
+            high = middle;
+        else
+            low = middle + 1;
+    }
+    return penalized(intervals, low, scratch).cost - low * max_photos;
+}
+
+long long take_photos(int n, int m, int k,
+                      std::vector<int> r, std::vector<int> c) {
+    if (n < 1 || n > 100000 || m < 1 || m > 1000000 ||
+        k < 1 || k > n || r.size() != static_cast<std::size_t>(n) ||
+        c.size() != static_cast<std::size_t>(n))
+        throw std::invalid_argument("invalid original arguments");
+    for (int i = 0; i < n; ++i) {
+        if (r[i] < 0 || c[i] < 0 || r[i] >= m || c[i] >= m)
+            throw std::invalid_argument("cell outside grid");
+    }
+    std::vector<std::pair<int, int>> points;
+    points.reserve(static_cast<std::size_t>(n));
+    for (int i = 0; i < n; ++i) points.emplace_back(r[i], c[i]);
+    return static_cast<long long>(minimum_diagonal_square_union(points, m, k));
+}
+```
+
+## 関連する手法
+
+[Aliens trick](/flowchartcp/techniques/aliens-trick/)は、整数の罰金と個数の関係を一般化したもの。この被覆では、写真の重複補正を含む費用が離散凸であることを先に示す。
+
+[凸包トリック](/flowchartcp/techniques/convex-hull-trick/)は一次式の最小値を保つ部品である。ここでは包含除去が、傾きと問い合わせ位置の両方の単調性も作る。[区間分割DPの最適な切れ目の単調性](/flowchartcp/techniques/dp-monotone-split/)とは、枚数の次元を残すか罰金で除くかが異なる。
+
+## 参考資料
+
+- [IOI 2016 Aliens 原典](https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf)
+- [IOI公式アーカイブの解説集・Aliens部分（14〜17頁）](https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf)：Chethiya Abeysinghe署名。区間への変換、重複補正、CHT、枚数への罰金による高速化。上の入れ子辺の交換による離散凸性と、整数の同値処理の詳細は独立補足である。
+- [Day2 実装上の注意](https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf)
+- [日本委員会の公式課題一覧](https://www2.ioi-jp.org/ioi/2016/tasks/index.html)：本競技Day2は2016-08-16。
+
+<TechniqueReferences techniqueId="diagonal-square-union-cover-monge-penalty-cht" />

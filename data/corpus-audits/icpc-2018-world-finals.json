@@ -1,0 +1,2485 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "icpc-2018-world-finals",
+  "title": "ACM-ICPC World Finals 2018の公式全11題を固定した監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "fixedBeforeTechniqueSearch": true,
+    "selectionRule": "公式22頁の問題冊子にあるProblem AからProblem Kまで全11題。候補は技巧検索前に固定し、既存記事へ合う問題への置換は行わない。",
+    "contests": [
+      {
+        "year": 2018,
+        "division": "World Finals",
+        "expectedProblemCount": 11,
+        "letters": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I",
+          "J",
+          "K"
+        ],
+        "officialBookletUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      }
+    ],
+    "countEvidence": {
+      "officialBookletPages": 22,
+      "officialProblemHeadings": [
+        "Problem A",
+        "Problem B",
+        "Problem C",
+        "Problem D",
+        "Problem E",
+        "Problem F",
+        "Problem G",
+        "Problem H",
+        "Problem I",
+        "Problem J",
+        "Problem K"
+      ],
+      "statementStartingPages": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        21
+      ],
+      "officialHostSolutionSummaryLabels": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    "dateEvidence": {
+      "primaryUrl": "https://news.icpc.global/wf2018/",
+      "supportingUrl": "https://icpc.global/community/history/brochures/world-finals-2018-brochure.pdf",
+      "date": "2018-04-19",
+      "note": "ICPC公式ニュースが競技日April19,2018を明記。公式brochureも19April2018と明記。大会全体April15–20と競技日を区別。Codeforces再包装PDFのApril20は採用しない。"
+    },
+    "fixedProblems": [
+      {
+        "source": "icpc",
+        "problemId": "wf2018_a",
+        "title": "Catch the Plane",
+        "problemLetter": "A"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_b",
+        "title": "Comma Sprinkler",
+        "problemLetter": "B"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_c",
+        "title": "Conquer The World",
+        "problemLetter": "C"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_d",
+        "title": "Gem Island",
+        "problemLetter": "D"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_e",
+        "title": "Getting a Jump on Crime",
+        "problemLetter": "E"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_f",
+        "title": "Go with the Flow",
+        "problemLetter": "F"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_g",
+        "title": "Panda Preserve",
+        "problemLetter": "G"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_h",
+        "title": "Single Cut of Failure",
+        "problemLetter": "H"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_i",
+        "title": "Triangles",
+        "problemLetter": "I"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_j",
+        "title": "Uncrossed Knight’s Tour",
+        "problemLetter": "J"
+      },
+      {
+        "source": "icpc",
+        "problemId": "wf2018_k",
+        "title": "Wireless is the New Fiber",
+        "problemLetter": "K"
+      }
+    ],
+    "expectedProblems": 11
+  },
+  "snapshot": {
+    "manifestSHA256": "246e41da7f29fbd319552dbb852f4727da46ca2dba3ef4e71f0b35f2bf896705",
+    "techniqueMetadataCount": 472,
+    "articleCount": 472,
+    "flowGraphCount": 439,
+    "entryGraphs": 15,
+    "publicDiagramSVGs": 435,
+    "flowSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181",
+    "note": "IOI3技巧統合前の472記事/439graphを固定。rawSVGは435ファイル。1047ファイル全ての個別SHAをmanifestに記録、コピー中変更なし。",
+    "metadataIdentitiesSha256": "0f8bd13ff2c750a903b55b6fae2ba94f0a4b58f27d9a54c50589d22ff24237c3",
+    "flowSnapshotFile": "research/snapshots/icpc-2018-flow.json.gz",
+    "techniqueSnapshotFile": "research/snapshots/icpc-2018-technique.json.gz",
+    "techniqueSha256": "7b86efb4381ef4b36d502aa773d0c6cf372fde9927f18d9cb54001548d81706f",
+    "manifestFile": "research/snapshots/icpc-2018-manifest.json",
+    "registeredArticleCount": 472,
+    "specificTechniqueCount": 394,
+    "portableSnapshotNote": "元1047ファイルのSHA台帳と、分岐・全技巧metadataを恒久保存。元MDX全472本の初回コピーは作業時点の一時領域で確認し、恒久保管は分岐とmetadataに限定する。",
+    "initialWorkspaceDirectory": "/tmp/flowchartcp-icpc2018-snapshot",
+    "initialRuntimeDirectory": "/tmp/flowchartcp-icpc2018-runtime"
+  },
+  "status": {
+    "fixedCorpusResearchComplete": false,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 11,
+    "fixedCorpusResearchCompleteDefinition": "全11題の原典と主要な解法・補題を確認できた時だけtrue。CとJの主要証明が未確認なのでfalse。",
+    "statementVerifiedCount": 11,
+    "publicEditorialRetrievedCount": 11,
+    "publicEditorialVerifiedCount": 9,
+    "officialEditorialVerifiedCount": 0,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 9,
+    "unconfirmedCount": 2,
+    "unavailableCount": 0,
+    "unavailableSupplementCount": 0,
+    "firstPassAuditComplete": true,
+    "fixedProblemListComplete": true,
+    "solutionReviewedCount": 9
+  },
+  "records": [
+    {
+      "source": "icpc",
+      "problemId": "wf2018_a",
+      "title": "Catch the Plane",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "A",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "出発・到着時刻が決まった有向の移動で、各便が独立な確率で実行される。失敗はその便を試した時に分かる。",
+        "期限までに目的地へ着く確率を、待機や便の選択によって最大化する。同時刻の乗換は不可、同じ場所・同じ時刻に試せる便は一つ。"
+      ],
+      "constraints": {
+        "stations": "2..10^6",
+        "buses": "1..10^6",
+        "deadline": "1..10^18",
+        "schedule": "0 <= departure < arrival <= deadline",
+        "executionProbability": "0..1",
+        "error": "absolute <= 10^-6",
+        "distinctStationsPerBus": true,
+        "probabilityDecimalDigits": "<=10"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "game-probability",
+      "choices": [
+        "repeated-trials"
+      ],
+      "gap": {
+        "id": "stochastic-timetable-reverse-event-dp",
+        "features": [
+          "出発・到着時刻が決まった有向の移動で、各便が独立な確率で実行される。失敗はその便を試した時に分かる。",
+          "期限までに目的地へ着く確率を、待機や便の選択によって最大化する。同時刻の乗換は不可、同じ場所・同じ時刻に試せる便は一つ。"
+        ],
+        "reason": "独立試行の既存分岐に、時刻表上の適応的な成功確率最大化がない。開始時刻の確率を足す更新ではなく、失敗後の待機価値と到着後の価値を同時刻ごとに比較する必要がある。",
+        "neededTechniqueIds": [
+          "stochastic-timetable-reverse-event-dp"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "probability-start-time-window",
+          "expectation-first-step"
+        ],
+        "proposedFeatureAnswer": "出発・到着時刻が決まった有向の移動で、各便が独立な確率で実行される。失敗はその便を試した時に分かる。",
+        "firstMissingGraphId": "probability-processes",
+        "firstMissingNodeId": "goal",
+        "currentOptions": [
+          {
+            "id": "collect",
+            "label": "すべての種類を集めるまでの期待回数"
+          },
+          {
+            "id": "gain",
+            "label": "同じ分布の増分を足し、目標以上になるまでの期待回数"
+          },
+          {
+            "id": "vacant",
+            "label": "独立に動く対象の、空き場所の個数の期待値"
+          },
+          {
+            "id": "active-time",
+            "label": "固定長の種類をランダムに選び、指定時刻に特定の種類が処理中か"
+          },
+          {
+            "id": "rank",
+            "label": "ランダムな整数を含む、k 番目の値の期待値"
+          },
+          {
+            "id": "race",
+            "label": "独立な二人が交互に進み、先手が先着する確率"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "確率の操作から何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "時刻を降順に処理し、各地点から将来成功する最良確率を保つ。便の到着イベントで行先の値を保存し、出発イベントで成功時の保存値と失敗時の待機値を混ぜた候補を比較する。",
+        "independentAuditReasoning": [
+          "時刻tの到着では、tより後の出発だけを使える値を読む。同じtの出発候補はすべて更新前の待機値から計算し、最後に一括反映する。したがって到着値の保存を同時刻の出発更新より先に行う。",
+          "便を試す決定は成否を見る前に一つだけ選ぶ。その候補値はp*q+(1-p)*waitであり、何も試さないwaitとも最大を取る。便の結果が独立なので履歴から将来便の分布は変わらない。"
+        ],
+        "implementationRequirements": [
+          "時刻を64ビットで保持し、到着・出発・同地点の出発群を一括処理する。",
+          "p=0/1、出発時刻0、同着同発、目的地から出る便を検証する。原典はa!=bを要求する。"
+        ],
+        "complexity": "ソートを含めO(M log M + N)時間、O(M+N)空間。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          1,
+          2
+        ],
+        "editorialPages": [
+          1,
+          2
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "probability-start-time-window",
+          "file": "src/content/docs/techniques/probability-start-time-window.mdx",
+          "sha256": "7542a460696dbb3b0c72274ec8d47d2e2616f290ea336a45d6bd58ad508a71af",
+          "scopeMismatch": "待機なしで固定長の種類を毎回選ぶ前向きの確率DP。便を試す意思決定や時刻表の厳密不等号を扱わない。"
+        },
+        {
+          "techniqueId": "expectation-first-step",
+          "file": "src/content/docs/techniques/expectation-first-step.mdx",
+          "sha256": "686f43d68ef80bcb93084bd029cd5f06ebdd0e403083c90668b038d706da5436",
+          "scopeMismatch": "小さい整数への期待費用遷移が実装対象。巨大な時刻表の同時刻イベント処理は含まない。"
+        }
+      ],
+      "independentResearchCheck": {
+        "reverseEventVsRecursiveDecisionInstances": 1500,
+        "note": "独立な小規模有理数比較。同時刻乗換禁止・同時刻一便選択を含む。最大制約や完成実装は未検証。 小規模生成には原典外の自己ループも含めたが、原典では禁止される。"
+      },
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "repeated-trials",
+          "answerLabel": "独立な試行・移動・時間の確率と期待値"
+        }
+      ],
+      "initialReached": {
+        "graphId": "probability-processes",
+        "nodeId": "goal",
+        "nodeType": "question",
+        "title": "確率の操作から何を求めますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "6f2f344d16933708b35f8a746bb884ad9f2bd3d8be9a3b90938fe582ce253ef3",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "stochastic-timetable-reverse-event-dp"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の調査・停止位置を保持し、原典全範囲のAPI、独立証明、完成記事・実装、小規模全探索・最大規模・ASan/UBSan・独立レビューと特徴分岐で解消。公式配布の非公式sketchを公式解説と扱わない。"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_b",
+      "title": "Comma Sprinkler",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "B",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "同じ語の前・後にある読点を、別の出現の前・後へ反復して広げる。",
+        "隣接する二語の間の読点は、前語の後状態と後語の前状態を結ぶ。文の区切りを越えて読点を追加しない。"
+      ],
+      "constraints": {
+        "textCharacters": "2..10^6",
+        "alphabet": "lowercase English letters, spaces, commas, periods",
+        "format": "one line; word tokens; exactly one separator; final period"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "strings",
+      "choices": [
+        "changes"
+      ],
+      "gap": {
+        "id": "word-boundary-comma-closure",
+        "features": [
+          "同じ語の前・後にある読点を、別の出現の前・後へ反復して広げる。",
+          "隣接する二語の間の読点は、前語の後状態と後語の前状態を結ぶ。文の区切りを越えて読点を追加しない。"
+        ],
+        "reason": "語の前と後を別々の状態にし、文内の隣接だけを無向に結ぶ分岐・実装がない。一文字ごとの独立置換やグループ移動の補助頂点実装では、読点の最小閉包を構成できない。",
+        "neededTechniqueIds": [
+          "word-boundary-comma-closure"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "independent-letter-rewrite-reachability",
+          "graph-reduction",
+          "bfs"
+        ],
+        "proposedFeatureAnswer": "同じ語の前・後にある読点を、別の出現の前・後へ反復して広げる。",
+        "firstMissingGraphId": "strings-change-goals",
+        "firstMissingNodeId": "text-task",
+        "currentOptions": [
+          {
+            "id": "parentheses",
+            "label": "括弧を入れ替え、指定区間が正しい括弧列か調べる"
+          },
+          {
+            "id": "append-digits",
+            "label": "各整数の末尾に桁を追加して、順序を保った増加列にする"
+          },
+          {
+            "id": "bracket-prefix",
+            "label": "括弧の接頭辞を、指定長の正しい括弧列へ完成する個数"
+          },
+          {
+            "id": "binary-flip",
+            "label": "0/1 の区間を反転し、指定区間の最長の 1 の連続を求める"
+          },
+          {
+            "id": "global-replace",
+            "label": "現在の同じ文字を全て別の文字へ置き換える"
+          },
+          {
+            "id": "fill-pattern",
+            "label": "未定の文字を補い、同じ語の重複を許す出現数を最大にする"
+          },
+          {
+            "id": "palindrome-swaps",
+            "label": "隣り合う二文字の交換だけで、任意の回文を最少回数で作る"
+          },
+          {
+            "id": "letter-rules",
+            "label": "各位置の一文字を規則に従って繰り返し置換し、別の語へ変換できるか調べる"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "どの文字や桁を、どのように変更しますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "語の種類ごとに前・後の二頂点を作り、同じ文でaの直後がbならa後とb前を結ぶ。既存の読点に触れる状態から連結閉包を求め、元のトークン列へ戻す。",
+        "independentAuditReasoning": [
+          "各文内の語間は前語の後状態と後語の前状態を同時に有効にする。一回の伝播規則は辺に沿う一歩に一致し、反対向きも実現する。",
+          "元の読点から到達する頂点だけが有限回の伝播で有効になる。到達集合は規則に閉じているので、これが余分な読点を含まない最小不動点になる。文境界には辺を作らない。"
+        ],
+        "implementationRequirements": [
+          "読点・終止符と語間スペースを別に解析し、文頭・文末の例外を守る。",
+          "同じ語の前と後を同一視しない。初期読点がない文、全文章、自己隣接を比較する。"
+        ],
+        "complexity": "辞書の構築法により決定的O(T log T)、探索部分O(T)。O(T)空間。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          3,
+          4
+        ],
+        "editorialPages": [
+          2
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "independent-letter-rewrite-reachability",
+          "file": "src/content/docs/techniques/independent-letter-rewrite-reachability.mdx",
+          "sha256": "95b23491e94b482999ded41d2c6e80383c9a6f820c254cc77f45386f67e9abb9",
+          "scopeMismatch": "一位置の一文字を有向規則で変える。語の前後の連動や隣接関係の無向閉包は対象外。"
+        },
+        {
+          "techniqueId": "graph-reduction",
+          "file": "src/content/docs/techniques/graph-reduction.mdx",
+          "sha256": "d0ebaa1ba6abf1da11f2cbab7f33f68d0cab6d31ded4617f3958c919a52ee1b9",
+          "scopeMismatch": "掲載コードはグループ内移動用の補助頂点構築。語の両側を分ける具体的帰着はない。"
+        },
+        {
+          "techniqueId": "bfs",
+          "file": "src/content/docs/techniques/bfs.mdx",
+          "sha256": "0fcbca3017b4628dc431d8e7186c6b170fa36eed0d847a1290c510f7ad6a9b0b",
+          "scopeMismatch": "グラフが与えられた後の探索は使えるが、必要な状態と辺の同値性が別途必要。"
+        }
+      ],
+      "steps": [
+        {
+          "graphId": "strings",
+          "nodeId": "text-task",
+          "question": "文字列から何を求めますか？",
+          "answer": "changes",
+          "answerLabel": "文字や桁の変更・追加"
+        }
+      ],
+      "initialReached": {
+        "graphId": "strings-change-goals",
+        "nodeId": "text-task",
+        "nodeType": "question",
+        "title": "どの文字や桁を、どのように変更しますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "964f911c7a66b47d95717fd612f745d7378359d8d4f3cd4cd6a3d08dc67bde8e",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "word-boundary-comma-closure"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の調査・未確認事項・停止位置を保持。原典全域、主要補題と最悪予算、完成した再利用API、全小入力・最大入力・ASan/UBSan・独立レビューと特徴からの分岐で不足を解消。"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_c",
+      "title": "Conquer The World",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=5",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "C",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "重み付き木の各頂点に供給と必要量があり、必要量以上を残すよう最小費用で運ぶ。",
+        "供給総量は需要以上で、余りはどこに残してもよい。一般の最小費用流では大きすぎる木と供給総量を扱う。"
+      ],
+      "constraints": {
+        "vertices": "1..250000",
+        "edgeUnitCost": "1..10^6",
+        "supplyAndDemand": "nonnegative integers",
+        "totalSupply": "<=10^6 and >= totalDemand"
+      },
+      "auditOutcome": "proof-unconfirmed",
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "quantity-goals",
+        "costs",
+        "yes"
+      ],
+      "gap": {
+        "id": "tree-surplus-transport-convex-marginal-merge",
+        "features": [
+          "重み付き木の各頂点に供給と必要量があり、必要量以上を残すよう最小費用で運ぶ。",
+          "供給総量は需要以上で、余りはどこに残してもよい。一般の最小費用流では大きすぎる木と供給総量を扱う。"
+        ],
+        "reason": "一般最小費用流へは到達するが、25万頂点を扱う木専用の限界費用併合がない。公開sketchは主要な凸性とsplit移動の償却上界の証明を省略しており、そのまま完成解法確認済みにはできない。",
+        "neededTechniqueIds": [
+          "tree-surplus-transport-convex-marginal-merge"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "min-cost-flow",
+          "dp-piecewise-linear-cost",
+          "slope-trick",
+          "small-to-large"
+        ],
+        "proposedFeatureAnswer": "重み付き木の各頂点に供給と必要量があり、必要量以上を残すよう最小費用で運ぶ。",
+        "firstMissingGraphId": "assignment-quantity-goals",
+        "firstMissingNodeId": "mincost",
+        "currentOptions": [],
+        "currentQuestion": "最小費用流",
+        "firstMissingNodeType": "result",
+        "proposedBranchAt": {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "cost",
+          "nodeType": "question",
+          "question": "流す量を満たした上で、辺の費用の合計を最小にしますか？",
+          "options": [
+            {
+              "id": "yes",
+              "label": "はい"
+            },
+            {
+              "id": "no",
+              "label": "いいえ"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "一般の最小費用流へ進む前に、大規模な木輸送という特徴を分ける提案位置。初回経路の到達先とは区別する。"
+        },
+        "reachedTechniqueIds": [
+          "min-cost-flow"
+        ]
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch-with-unconfirmed-proof",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "公開sketchは追加供給量ごとの部分木最小費用を凸関数とし、離散限界費用を降順に併合する。辺を上へ延ばすと境界点の左右で費用を反対方向へずらし、負の改善を0に切る。",
+        "independentAuditReasoning": [
+          "c_T(a)は部分木の根へaだけ供給を追加した最小費用、a<0は根へ追加需要を置く。元の問題の答えは全木のc_T(0)。余剰を無理に全て運ぶ等式輸送へ置き換えてはいけない。",
+          "未確認: c_Tの凸性の完全な帰納証明、限界費用の符号切替の境界a=0、二つの遅延ヒープの合成、split移動距離の全体和<=2Xの償却証明。資料はこれらを省略または主張に留める。"
+        ],
+        "implementationRequirements": [
+          "省略された補題を独立に証明するか、帰属を確認した完全な別資料を読む。",
+          "余剰を残す選択、内部頂点の供給、0需要、鎖・星・重複限界費用を小規模輸送oracleと比較する。",
+          "O(N)再帰のスタックと、費用の積・総和の整数幅を評価する。"
+        ],
+        "complexity": "公開sketchの主張はO(N + X log^2 X)、X=総供給。split移動総量に依存し、この監査では完全確認していない。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          5,
+          6
+        ],
+        "editorialPages": [
+          2,
+          3,
+          4
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "partially-reviewed-proof-unconfirmed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-retrieved-proof-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "min-cost-flow",
+          "file": "src/content/docs/techniques/min-cost-flow.mdx",
+          "sha256": "9c541e2d860f9b53cacb8b3e20be1a4696427a637e8d91e964d43218874df42e",
+          "scopeMismatch": "一般の逐次増加路法。今回の木と総供給量に対する必要計算量を保証しない。"
+        },
+        {
+          "techniqueId": "dp-piecewise-linear-cost",
+          "file": "src/content/docs/techniques/dp-piecewise-linear-cost.mdx",
+          "sha256": "853adbb43be7486d43ac65a24466dbec43aa410a7ee9978dd4d9db51e70639c3",
+          "scopeMismatch": "順序列の絶対値追加・接頭辞最小。木のmin-plus畳込みや余剰の放置を含まない。"
+        },
+        {
+          "techniqueId": "slope-trick",
+          "file": "src/content/docs/techniques/slope-trick.mdx",
+          "sha256": "fa2d5860967e9ea78cf038aa6babf68f6ccc9006cd1720ba469ab7f8bb00b015",
+          "scopeMismatch": "公開APIは重み1の左右折れ点追加と接頭辞最小のみ。凸関数の併合・供給基準点は未実装。"
+        },
+        {
+          "techniqueId": "small-to-large",
+          "file": "src/content/docs/techniques/small-to-large.mdx",
+          "sha256": "141f6dc4da205230597247a6016825170b408038741ca7ae63499594f321b1fd",
+          "scopeMismatch": "色集合の併合の実装。符号で分けた限界費用の遅延更新やsplit移動の証明は含まない。"
+        }
+      ],
+      "unconfirmedDetails": [
+        "未確認: c_Tの凸性の完全な帰納証明、限界費用の符号切替の境界a=0、二つの遅延ヒープの合成、split移動距離の全体和<=2Xの償却証明。資料はこれらを省略または主張に留める。"
+      ],
+      "steps": [
+        {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "quantity-goals",
+          "answerLabel": "割当数量・行列の合計・費用・受取個数を制限する"
+        },
+        {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "costs",
+          "answerLabel": "数量を満たし、割当の費用合計を最小にする"
+        },
+        {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "cost",
+          "question": "流す量を満たした上で、辺の費用の合計を最小にしますか？",
+          "answer": "yes",
+          "answerLabel": "はい"
+        }
+      ],
+      "initialReached": {
+        "graphId": "assignment-quantity-goals",
+        "nodeId": "mincost",
+        "nodeType": "result",
+        "title": "最小費用流",
+        "techniqueIds": [
+          "min-cost-flow"
+        ]
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 3,
+        "stepsSha256": "3d70b9ee90f5fbb624aa3a311184c50a28ecd069ad8de97a5aeee7c287b7bcf7",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "alternativeFeatureWalk": {
+        "entryGraphId": "graphs",
+        "choices": [
+          "rooted-tree-goals",
+          "tree-answer",
+          "selection-sizes",
+          "one"
+        ],
+        "reachedGraphId": "tree-selection-sizes",
+        "reachedNodeId": "rooted",
+        "currentOptions": [
+          {
+            "id": "yes",
+            "label": "はい"
+          },
+          {
+            "id": "no",
+            "label": "いいえ"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "note": "木の全体最小値の一般枝まで到達。凸限界費用の併合を実装した枝はない。"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_d",
+      "title": "Gem Island",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "D",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+        "固定回数後の、重みが大きい上位r人の合計の期待値を求める。各人の重みは独立ではない。"
+      ],
+      "constraints": {
+        "inhabitants": "1..500",
+        "nights": "1..500",
+        "topCount": "1..N",
+        "error": "absolute or relative <= 10^-6"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "game-probability",
+      "choices": [
+        "stateful-process"
+      ],
+      "gap": {
+        "id": "polya-urn-uniform-composition-top-r-sum",
+        "features": [
+          "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+          "固定回数後の、重みが大きい上位r人の合計の期待値を求める。各人の重みは独立ではない。"
+        ],
+        "reason": "状態依存の増殖を、全ての正整数組成が等確率という分布へ変える分岐がない。既存の順位期待値記事の二項分布は独立値を要求し、総和が固定された本問には使えない。",
+        "neededTechniqueIds": [
+          "polya-urn-uniform-composition-top-r-sum"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "expectation-order-statistic-tail",
+          "expectation-indicators"
+        ],
+        "proposedFeatureAnswer": "全員が初期重み1で、全個体から一様に選ばれた所有者の重みが1増える。",
+        "firstMissingGraphId": "stateful-random-process-features",
+        "firstMissingNodeId": "goal",
+        "currentOptions": [
+          {
+            "id": "restart",
+            "label": "盤上を進み、特定の場所に着くと同じ開始地点へ戻る期待手数"
+          },
+          {
+            "id": "sushi",
+            "label": "皿を一様に選んで一個ずつ食べ、全て空になるまでの期待回数"
+          },
+          {
+            "id": "increasing",
+            "label": "一様に選んだ番号が現在より大きい間だけ続き、訪れた報酬を足す"
+          },
+          {
+            "id": "random-swap",
+            "label": "一様に二つの位置を重複を許して選び、交換を繰り返した一個の値"
+          },
+          {
+            "id": "dice-product",
+            "label": "サイコロの出目の積が、指定の整数にちょうど達する確率"
+          },
+          {
+            "id": "remove-edge",
+            "label": "閉路のない有向グラフのランダム歩行で、一辺を消して期待手数を小さくする"
+          },
+          {
+            "id": "choose-roulette",
+            "label": "毎回ルーレットを選んで費用を払い、合計得点が目標に届くまでの最小期待費用"
+          },
+          {
+            "id": "subtree-delete",
+            "label": "残った頂点を一様に選んで根付き部分木を消し、全頂点が消えるまでの期待回数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "ランダムな操作は、どのように進み、止まりますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "正整数の組成が等確率となることを示し、上位r合計の全組成にわたる総和を計数する。最小値1の人を除き、残り全員から1を引いた小問題へ分ける。",
+        "independentAuditReasoning": [
+          "重み列gへ至る直前の所有者kの寄与は(g_k-1)/(N+D-1)。直前の全組成が等確率なら、その和の分子はDで終状態によらず、帰納的に全組成が等確率。",
+          "独立に再導出した総和S_r(n,d)では、n<=rの基底は(n+d)*C(n+d-1,d)。n>rではr*C(n+d-1,d)に、初めの1を除いた人数別の小問題総和を足す。負の残り増分は0とし、n=0も総和0。",
+          "sketchのSの定義は総和だが、n<=rをn+dとする記載では個数因子が落ちる。例n=2,d=1,r=2の総和は6、記載の基底は3。これは独立解析で補正し、原資料の正確な引用とは区別する。"
+        ],
+        "implementationRequirements": [
+          "総和と期待値を混同せず、正規化か多倍長整数で500までの二項係数と数値誤差を評価する。",
+          "D=0を含む補助状態、r=N、1人、大きな対称ケースを組成全列挙と比較する。"
+        ],
+        "complexity": "補正した総和DPはO(N^2 D)時間、O(ND)空間。公開sketchの高速な包除版は証明が演習とされ、この監査の採用候補にしない。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          7,
+          8
+        ],
+        "editorialPages": [
+          5,
+          6
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "expectation-order-statistic-tail",
+          "file": "src/content/docs/techniques/expectation-order-statistic-tail.mdx",
+          "sha256": "4669816d6f7f0e802133345c90cab4c9669bfd9f9b630e80ef8ea75043f1dc1c",
+          "scopeMismatch": "独立な未知値の閾値超過数を二項分布で計算する。相関するurnの分布は扱えない。"
+        },
+        {
+          "techniqueId": "expectation-indicators",
+          "file": "src/content/docs/techniques/expectation-indicators.mdx",
+          "sha256": "492586eb306a85c9fd730a866670bead17ac08dda8937505c4b515a6486dc70d",
+          "scopeMismatch": "線形性は使えるが、順位を含む依存分布の具体的計数が必要。"
+        }
+      ],
+      "independentResearchCheck": {
+        "correctedRecurrenceComparisons": 189,
+        "exactUrnStates": 5004,
+        "normalizationCounterexample": {
+          "n": 2,
+          "d": 1,
+          "r": 2,
+          "compositions": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "sumOverAllCompositions": 6,
+          "sketchPrintedBase": 3
+        },
+        "note": "小規模の独立検査。大制約の浮動小数安定性や完成実装を検証したものではない。"
+      },
+      "verificationNotes": [
+        "総和の基底の不整合は独立解析で補った。非公式sketch全体が正しいという登録ではない。",
+        "より速い包除式とその二次時間の証明は未確認。採用候補は独立に確認した三次以下の計数DPだけ。"
+      ],
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "stateful-process",
+          "answerLabel": "盤・皿・番号・交換・積・部分木など、状態が変わる確率的な操作"
+        }
+      ],
+      "initialReached": {
+        "graphId": "stateful-random-process-features",
+        "nodeId": "goal",
+        "nodeType": "question",
+        "title": "ランダムな操作は、どのように進み、止まりますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "e76427284c48f9d8be22107c3014148dd3d31e004fdc5aa51dc6e4144981dd9d",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "polya-urn-uniform-composition-top-r-sum"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+          "statementPages": [
+            7
+          ],
+          "page8": "intentionally blank; no facts inferred from it",
+          "statementReadMethod": "web full PDF extraction D lines206..239",
+          "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+          "publicSketchPages": [
+            5,
+            6
+          ],
+          "publicSketchAuthors": [
+            "Per Austrin",
+            "Jakub Onufry Wojtaszczyk"
+          ],
+          "publicSketchReadMethod": "web full PDF extraction lines175..260 and disclaimer0..7",
+          "publicSketchIsOfficiallyHosted": true,
+          "publicSketchSelfDescribesAsUnofficial": true,
+          "officialEditorialVerified": false,
+          "solutionVerification": "independent-analysis",
+          "fullOriginalContractVerified": true,
+          "numericBoundsVerified": true,
+          "originalBounds": {
+            "people": "1..500",
+            "steps": "1..500",
+            "topCount": "1..N",
+            "timeLimitSeconds": 3,
+            "error": "absolute OR relative <=1e−6",
+            "initialWeights": "each exactly1",
+            "transition": "uniform individual chosen, its owner gets+1; owners not uniformly chosen",
+            "dependence": "total final weight N+D fixed; no independence assumption"
+          },
+          "contestDate": "2018-04-19",
+          "datePrecision": "day",
+          "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+          "difficulty": null,
+          "printedSketchBaseCounterexample": {
+            "n": 2,
+            "d": 1,
+            "r": 2,
+            "labeledFinalWeights": [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                1
+              ]
+            ],
+            "trueSumAcrossStates": 6,
+            "printedBaseWithoutCount": 3,
+            "independentCorrection": "S_r(n,d)=(n+d)*binomial(n+d−1,d) whenn<=r"
+          },
+          "chosenProductionMethod": "independently completed nonnegative composition-sum DP, not floating inclusion-exclusion",
+          "unconfirmedRequiredLemmas": [],
+          "unconfirmedRequiredSourceFacts": []
+        },
+        "notes": "初回positive研究・総和基底の補正・停止位置・未作成APIの記録と既存3resolutionを保持し、resolutionだけを追加。弱合成の一様性と可逆分割、binary64誤差、原典全域の可視C++20とAPIを作者/root/独立review者で確認。全小組成・所有者履歴の厳密確率・別の整数閾値計数・整数分割oracle・最大入力・通常/ASan、特徴分岐を検証。非公式sketchを公式解説に昇格させず、任意初期重みや未確認の二次時間包除を含めない。"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_e",
+      "title": "Getting a Jump on Crime",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=9",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=6",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "E",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "同じ初速度で中心間を跳ぶ軌道を選び、途中の各長方形屋根より高く通るかを判定する。",
+        "到達できる有向辺を作り、最少ジャンプ回数を求める。角を通る場合は四つの屋根すべてを避ける。"
+      ],
+      "constraints": {
+        "gridWidthAndHeight": "1..20",
+        "buildingWidth": "1..1000",
+        "takeoffSpeed": "1..1000",
+        "buildingHeight": "0..1000",
+        "gravity": 9.80665,
+        "robustness": "changing any building height by <=10^-6 does not change answers"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "geometry",
+      "choices": [
+        "travel-partition"
+      ],
+      "gap": {
+        "id": "ballistic-high-arc-building-visibility",
+        "features": [
+          "同じ初速度で中心間を跳ぶ軌道を選び、途中の各長方形屋根より高く通るかを判定する。",
+          "到達できる有向辺を作り、最少ジャンプ回数を求める。角を通る場合は四つの屋根すべてを避ける。"
+        ],
+        "reason": "平面移動の分岐に、固定速の放物線と建物の通過判定がない。BFS自体は存在するが、その前提となる有向辺の完全な判定が未実装。",
+        "neededTechniqueIds": [
+          "ballistic-high-arc-building-visibility"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "bfs",
+          "segment-intersection-orientation"
+        ],
+        "proposedFeatureAnswer": "同じ初速度で中心間を跳ぶ軌道を選び、途中の各長方形屋根より高く通るかを判定する。",
+        "firstMissingGraphId": "geometry-travel-partition",
+        "firstMissingNodeId": "geometry-task",
+        "currentOptions": [
+          {
+            "id": "move",
+            "label": "自己相似な地図上の移動距離"
+          },
+          {
+            "id": "grid-paths",
+            "label": "右・下に進む格子の経路数で、障害物が少ない"
+          },
+          {
+            "id": "rectangle-split",
+            "label": "一つの長方形を直線で切り分け、切るたびに費用がかかる"
+          },
+          {
+            "id": "grid-between-points",
+            "label": "障害物のない格子で、右・下に進む二点間の経路数"
+          },
+          {
+            "id": "point-set-shapes",
+            "label": "点集合で作る図形・形の一致・円・壁の領域・繰り返し移動"
+          },
+          {
+            "id": "conditional-point-moves",
+            "label": "条件に合う点をまとめて右・上へ動かし、追加と個体の位置照会も行う"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "点や座標から何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "水平距離dと高さ差hから水平速度の二乗qを解く。二つの許容軌道では小さいqの高い軌道だけを調べ、水平線分が触れる各建物の出入りで高度を判定する。可否グラフをBFSする。",
+        "independentAuditReasoning": [
+          "独立導出: 高度z(x)=z0+(h/d)x+[g/(2q)]x(d-x)。両端が同じ軌道同士では、qの小さい方が0<x<dの全点で高い。したがって低い軌道だけが障害物を避けるケースはない。",
+          "屋根を通過する区間でzは凹なので最小は区間の両端にある。グリッド頂点を通る瞬間は、線分内部を通る二棟だけでなく接触する四棟を含める。"
+        ],
+        "implementationRequirements": [
+          "二乗して得た根はq>0、q<=v^2と元の着地式を確認し、同じ屋根への長さ0は辺として扱わない。",
+          "出発・到着屋根は中心で等号の接触を許すが、途中の屋根と共有境界は衝突条件を守る。",
+          "正確な格子通過列挙、角接触、同高さ・高低差、判別式付近を独立に検証する。"
+        ],
+        "complexity": "格子通過列挙を用いO(dx^2 dy^2 (dx+dy))、各建物を総当たりする版はO(dx^3 dy^3)。どちらもBFS前の辺構築が支配する。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          9,
+          10
+        ],
+        "editorialPages": [
+          6,
+          7
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "bfs",
+          "file": "src/content/docs/techniques/bfs.mdx",
+          "sha256": "0fcbca3017b4628dc431d8e7186c6b170fa36eed0d847a1290c510f7ad6a9b0b",
+          "scopeMismatch": "可否が確定した有向辺の最少本数に利用できる。放物線の可否は別に必要。"
+        },
+        {
+          "techniqueId": "segment-intersection-orientation",
+          "file": "src/content/docs/techniques/segment-intersection-orientation.mdx",
+          "sha256": "308f5bdec0baf7bfba6fcfea0434ad8f996c805327aba5c22fc606d7e6aa0bd9",
+          "scopeMismatch": "平面線分の交差を扱う。高さを含む放物線の最低点評価ではない。"
+        }
+      ],
+      "steps": [
+        {
+          "graphId": "geometry",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "travel-partition",
+          "answerLabel": "移動・格子経路・長方形の切り分け"
+        }
+      ],
+      "initialReached": {
+        "graphId": "geometry-travel-partition",
+        "nodeId": "geometry-task",
+        "nodeType": "question",
+        "title": "点や座標から何を求めますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "978f4dce978ff19fc83c06824ad7c62ea2470b058ee269e26978910001e529fe",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_f",
+      "title": "Go with the Flow",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "F",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+        "行幅を選んで鎖を最大にし、同じ長さなら最小の行幅を返す。行末の余白は鎖へ含めない。"
+      ],
+      "constraints": {
+        "words": "2..2500",
+        "maxWordLength": 80,
+        "lineWidth": "at least maximum word length",
+        "objective": "longest river, then smallest width"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "dp",
+      "choices": [
+        "sequence-removals",
+        "split"
+      ],
+      "gap": {
+        "id": "word-wrap-sparse-space-river-dp",
+        "features": [
+          "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+          "行幅を選んで鎖を最大にし、同じ長さなら最小の行幅を返す。行末の余白は鎖へ含めない。"
+        ],
+        "reason": "連続区間の分割までは辿れるが、固定行幅から貪欲に定まる分割と、実在する空白だけの行間DPの分岐がない。区間分割の費用最適化とは異なる。",
+        "neededTechniqueIds": [
+          "word-wrap-sparse-space-river-dp"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "state-design",
+          "two-pointers"
+        ],
+        "proposedFeatureAnswer": "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+        "firstMissingGraphId": "dp-sequence-removals",
+        "firstMissingNodeId": "split-kind",
+        "currentOptions": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "区間の分け方には、どの条件がありますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "幅を最大語長から全語が一行になる幅まで試す。各幅で貪欲に改行し、実在する空白の位置と鎖長だけを持ち、前行の列差<=1の状態の最大へ1を足す。",
+        "independentAuditReasoning": [
+          "一行が決まれば、各空白で終わる鎖は前行の三列の最大にだけ依存する。全幅を昇順に調べ、改善したときだけ答えを更新すれば同点の最小幅が残る。",
+          "独立確認: 各幅で空白総数はN未満。隣接行の空白位置は昇順で、二本のポインタで三列内を照合できるため、文字のない列を全走査せずO(N)で評価できる。幅が総文字数を超えても配置は同じ。"
+        ],
+        "implementationRequirements": [
+          "語長だけで位置を計算し、幅いっぱい・一行一語・空白鎖なし・同点幅を扱う。",
+          "行数による打切りや配置変化時刻へのジャンプを使う場合は、経験的高速化を最悪計算量と混同しない。"
+        ],
+        "complexity": "最大語長をLとすると幅数O(NL)、一幅O(N)で全体O(N^2 L)時間、O(N)補助空間。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          11,
+          12
+        ],
+        "editorialPages": [
+          7
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "scopeMismatch": "状態設計の一般論。行間の空白位置と前行の最大鎖長を結ぶ具体コードはない。"
+        },
+        {
+          "techniqueId": "two-pointers",
+          "file": "src/content/docs/techniques/two-pointers.mdx",
+          "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+          "scopeMismatch": "空白位置列の照合には使えるが、折返しと幅探索が必要。"
+        }
+      ],
+      "steps": [
+        {
+          "graphId": "dp",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "sequence-removals",
+          "answerLabel": "列の分割・隣接要素の併合や削除"
+        },
+        {
+          "graphId": "dp-sequence-removals",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "split",
+          "answerLabel": "順番を保ち、連続した区間へ分ける"
+        }
+      ],
+      "initialReached": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "nodeType": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 2,
+        "stepsSha256": "7c4c39ec239c9d50d6dd5a99eb750081878aa47f501432953a969504be05618f",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "word-wrap-sparse-space-river-dp"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+          "statementPages": [
+            11,
+            12
+          ],
+          "statementReadMethod": "web full PDF extraction lines314..363 plus targeted primary PDF search for untruncated sample1",
+          "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+          "publicSketchPages": [
+            7
+          ],
+          "page8Checked": "already discussesG, not additionalF; Fends7",
+          "publicSketchAuthors": [
+            "Per Austrin",
+            "Jakub Onufry Wojtaszczyk"
+          ],
+          "publicSketchIsOfficiallyHosted": true,
+          "publicSketchSelfDescribesAsUnofficial": true,
+          "officialEditorialVerified": false,
+          "solutionVerification": "independent-analysis",
+          "fullOriginalContractVerified": true,
+          "numericBoundsVerified": true,
+          "originalBounds": {
+            "wordsMin": 2,
+            "wordsMax": 2500,
+            "wordLength": "1..80, nonempty tokens",
+            "alphabet": "ASCII a..z/A..Z",
+            "minimumWidth": "maximum word length",
+            "originalWidthUpperBound": "not specified; total one-line length is a proved sufficient search bound",
+            "timeLimitSeconds": 12,
+            "formatRules": [
+              "fixed order",
+              "left justified",
+              "maximal greedy packing",
+              "one interword space",
+              "no word splitting",
+              "no trailing whitespace in river"
+            ],
+            "river": "one space per consecutive row; neighboring columns differ by<=1",
+            "objective": "maximize river length, tie smallest width",
+            "output": "chosen width then river length"
+          },
+          "sourceSamples": {
+            "sample1WordCount": 21,
+            "sample1Expected": [
+              15,
+              5
+            ],
+            "sample2WordCount": 25,
+            "sample2Expected": [
+              21,
+              6
+            ],
+            "extractionIssue": "plain initial PDF extraction omitted five words in sample1, producing16 tokens; targeted official PDF search returned all21 before test fixture was frozen",
+            "successfulQuery": "site:icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf \"Sample Input 1\" \"river in Asia and the longest in\" \"21\"",
+            "returnedPrimaryUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+            "mirrorNotUsedAsFinalPrimaryEvidence": true
+          },
+          "contestDate": "2018-04-19",
+          "datePrecision": "day",
+          "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+          "difficulty": null,
+          "unconfirmedRequiredLemmas": [],
+          "unconfirmedRequiredSourceFacts": []
+        },
+        "notes": "初回positive研究・全原典範囲・停止位置・未作成APIの記録と既存4resolutionを保持し、resolutionだけを追加。実単語間空白の疎な行間DP、厳密な次配置変化幅、貪欲行数の非増加と停止・最小幅tie、有限T上限を作者/root/独立review者で確認。原典全域の完全C++20を全小文字grid・直接全path・全整数幅の別oracle・最大入力・通常/ASan・全改行partitionのboolean閉包で比較。非公式sketchを公式解説に昇格させず、jump/stopに未証明の最悪漸近改善を主張しない。"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_g",
+      "title": "Panda Preserve",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=13",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "G",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "単純多角形の全頂点を固定中心とした同半径の円板の和で、多角形全体を覆う最小半径を求める。",
+        "多角形内部の点から最寄りの頂点までの距離の最大値。凹多角形や辺の途中の最適点も含む。"
+      ],
+      "constraints": {
+        "vertices": "3..2000",
+        "coordinateAbsoluteValue": "<=10000",
+        "polygon": "simple, counterclockwise, not necessarily convex",
+        "error": "absolute or relative <=10^-6"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "geometry",
+      "choices": [
+        "enclosing-regions",
+        "point-set-shapes"
+      ],
+      "gap": {
+        "id": "polygon-vertex-sites-farthest-voronoi",
+        "features": [
+          "単純多角形の全頂点を固定中心とした同半径の円板の和で、多角形全体を覆う最小半径を求める。",
+          "多角形内部の点から最寄りの頂点までの距離の最大値。凹多角形や辺の途中の最適点も含む。"
+        ],
+        "reason": "既存の円被覆分岐は自由中心の一円で有限入力点を覆う。ここで必要なのは固定中心の複数円で連続な多角形領域を覆う処理であり、向きが逆。Voronoi候補列挙と境界切断の実装がない。",
+        "neededTechniqueIds": [
+          "polygon-vertex-sites-farthest-voronoi"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "disk-cover-center-intersections",
+          "polygon-winding-integer",
+          "segment-intersection-orientation"
+        ],
+        "proposedFeatureAnswer": "単純多角形の全頂点を固定中心とした同半径の円板の和で、多角形全体を覆う最小半径を求める。",
+        "firstMissingGraphId": "point-set-shape-features",
+        "firstMissingNodeId": "goal",
+        "currentOptions": [
+          {
+            "id": "parallelograms",
+            "label": "平面の点から、正の面積の平行四辺形を数える"
+          },
+          {
+            "id": "circle-lattice",
+            "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+          },
+          {
+            "id": "same-points",
+            "label": "点集合が回転と平行移動だけで一致するか"
+          },
+          {
+            "id": "translated-polygons",
+            "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+          },
+          {
+            "id": "repeat-moves",
+            "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+          },
+          {
+            "id": "wall-area",
+            "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+          },
+          {
+            "id": "cover-circle",
+            "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+          },
+          {
+            "id": "weighted-trapezoid",
+            "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "点集合や平面の移動で、出力したい量はどれですか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "頂点集合のVoronoi図を作り、内部のVoronoi頂点とVoronoi辺と多角形境界の交点を候補にする。各候補は対応するサイトまでの距離で評価できる。",
+        "independentAuditReasoning": [
+          "独立確認: 一つのVoronoi領域内では最近サイトが固定され、二乗距離は凸。一つの直線上の区間では最大は端点にある。したがって内部での最大は領域の頂点へ、境界での最大は境界と領域の区切りの交点へ移せる。",
+          "入力多角形頂点では最寄り距離0。退化のない領域の正の最大を落とさない。凹形状でも辺の内外テストと交点の全列挙により候補は変わらない。"
+        ],
+        "implementationRequirements": [
+          "Voronoiの無限辺、同円周上の複数サイト、近い交点、共線や重複する幾何表現を扱う。",
+          "一セルを半平面共通部分で作る方法でも、角度整列・並行制約・多角形との境界交点の検証が必要。"
+        ],
+        "complexity": "公開sketchの比較的遅い案は各セルO(N log N)、全体O(N^2 log N)時間、境界候補評価O(N^2)。完成コードと数値安定性は教材化時に検証する。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          13,
+          14
+        ],
+        "editorialPages": [
+          7,
+          8,
+          9
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "disk-cover-center-intersections",
+          "file": "src/content/docs/techniques/disk-cover-center-intersections.mdx",
+          "sha256": "9f97b334c4fc2a699bfbae71d960b48be7510ae324f24b15847edc6f1d16a6b5",
+          "scopeMismatch": "一つの自由中心の円が全入力点を含むかを判定する。多角形全体の被覆ではない。"
+        },
+        {
+          "techniqueId": "polygon-winding-integer",
+          "file": "src/content/docs/techniques/polygon-winding-integer.mdx",
+          "sha256": "cd1f5e5f6431c63d65a541e31e00c226a922e32f89f2d6949f7b7e449aac48c4",
+          "scopeMismatch": "Voronoi頂点の内外判定の部品になるが、最遠最寄り点を生成しない。"
+        },
+        {
+          "techniqueId": "segment-intersection-orientation",
+          "file": "src/content/docs/techniques/segment-intersection-orientation.mdx",
+          "sha256": "308f5bdec0baf7bfba6fcfea0434ad8f996c805327aba5c22fc606d7e6aa0bd9",
+          "scopeMismatch": "Voronoi辺と多角形辺の交点の部品。Voronoi図そのものは生成しない。"
+        }
+      ],
+      "steps": [
+        {
+          "graphId": "geometry",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "enclosing-regions",
+          "answerLabel": "図形・点集合の形・面積・比較"
+        },
+        {
+          "graphId": "geometry-enclosing-regions",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "point-set-shapes",
+          "answerLabel": "点集合で作る図形・形の一致・円・壁の領域・繰り返し移動"
+        }
+      ],
+      "initialReached": {
+        "graphId": "point-set-shape-features",
+        "nodeId": "goal",
+        "nodeType": "question",
+        "title": "点集合や平面の移動で、出力したい量はどれですか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 2,
+        "stepsSha256": "a75faf60c1a1387d0fa9d437389e60d7cd3d962b913d30f8278e3c7e9d2b5268",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_h",
+      "title": "Single Cut of Failure",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=15",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=9",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "H",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "長方形境界の異なる辺を結ぶ多数の弦を、最小本数の弦で全て横切る。",
+        "入力の端点はすべて異なる。出力端点は異なる辺に置き、既存端点と角から距離を取る必要がある。"
+      ],
+      "constraints": {
+        "wires": "1..10^6",
+        "rectangleWidthAndHeight": "1..10^8",
+        "anchors": "integer coordinates; all distinct; not corners; different sides per wire",
+        "outputSeparation": "at least 10^-6 from every anchor and corner"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "geometry",
+      "choices": [
+        "boundary-relations"
+      ],
+      "gap": {
+        "id": "circular-chord-all-crossing-window",
+        "features": [
+          "長方形境界の異なる辺を結ぶ多数の弦を、最小本数の弦で全て横切る。",
+          "入力の端点はすべて異なる。出力端点は異なる辺に置き、既存端点と角から距離を取る必要がある。"
+        ],
+        "reason": "点の内外や二線分の交差の枝はあるが、全ての弦を一本で横切る可否を巡回区間の各ラベル一回条件へ変える枝・実装がない。",
+        "neededTechniqueIds": [
+          "circular-chord-all-crossing-window"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "two-pointers",
+          "segment-intersection-orientation"
+        ],
+        "proposedFeatureAnswer": "長方形境界の異なる辺を結ぶ多数の弦を、最小本数の弦で全て横切る。",
+        "firstMissingGraphId": "geometry-boundary-relations",
+        "firstMissingNodeId": "geometry-task",
+        "currentOptions": [
+          {
+            "id": "sign",
+            "label": "点の内外・二線分の交差"
+          },
+          {
+            "id": "circle-rectangle",
+            "label": "二つの円周が接するか・交わるか"
+          },
+          {
+            "id": "circle-travel",
+            "label": "円周の上だけを移動し、別の円周へ乗り移れるか"
+          },
+          {
+            "id": "other-geometric",
+            "label": "その他の座標・向き・境界の条件"
+          },
+          {
+            "id": "point-set-shapes",
+            "label": "点集合で作る図形・形の一致・円・壁の領域・繰り返し移動"
+          },
+          {
+            "id": "disk-passage",
+            "label": "障害点のある平行な壁の間を、円が左から右へ通れる最大半径"
+          },
+          {
+            "id": "paired-corners",
+            "label": "左上・右下の角から、境界が交差しない包含または離れた長方形を復元する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "点や座標から何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "境界端点を巡回順に並べる。一本の切断弦と入力弦が交差する条件は、その二端点のちょうど一つが切断端点間の開区間にあること。全ラベルを一度ずつ含む窓を尺取りで探す。存在しなければ近い対角方向の二本で足りる。",
+        "independentAuditReasoning": [
+          "一つの始点gapに対して、右端は同じ弦の二端点目を含める直前まで延ばせる。全ラベル一回なら端点数はNであり、それ以上進めると必ず重複する。始点が進むと許される最大終点は戻らないので一周で全候補を調べる。",
+          "異なる辺を結ぶ弦は二対角線のどちらかと交差する。同一の対角線分割領域の境界に属する入力端点が両方とも同じ長方形辺にある場合だけ交差を避けられ、これは入力条件が除く。角の近くへ十分小さく移しても整数端点との巡回順は変わらない。",
+          "出力gapが角をまたぐ場合は、gapに含まれる辺の選択肢も保つ。同じ辺しか選べない二gapの組は一本解として出力しない。"
+        ],
+        "implementationRequirements": [
+          "境界の半開区間で角の所属を固定し、二周配列か剰余で10^6組を走査する。",
+          "角と既存端点からの10^-6以上の離隔、同じ側を避ける選択、二本解の座標生成を検証する。"
+        ],
+        "complexity": "2N端点の整列O(N log N)、整列後O(N)時間、O(N)空間。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          15,
+          16
+        ],
+        "editorialPages": [
+          9
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "two-pointers",
+          "file": "src/content/docs/techniques/two-pointers.mdx",
+          "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+          "scopeMismatch": "非負和の窓などの一般実装。対の端点を一つずつ含む窓と異なる側の出力条件は追加が必要。"
+        },
+        {
+          "techniqueId": "segment-intersection-orientation",
+          "file": "src/content/docs/techniques/segment-intersection-orientation.mdx",
+          "sha256": "308f5bdec0baf7bfba6fcfea0434ad8f996c805327aba5c22fc606d7e6aa0bd9",
+          "scopeMismatch": "一対の交差判定だけでは10^6本に対する最適本数を求められない。"
+        }
+      ],
+      "independentResearchCheck": {
+        "matchingInstancesCompared": 446,
+        "maxWires": 5,
+        "note": "境界endpointの巡回順とgapの側選択を検査。実数座標出力や1e-6回避の完成コード検証ではない。"
+      },
+      "steps": [
+        {
+          "graphId": "geometry",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "boundary-relations",
+          "answerLabel": "点の内外・交差・接続・壁で区切る領域"
+        }
+      ],
+      "initialReached": {
+        "graphId": "geometry-boundary-relations",
+        "nodeId": "geometry-task",
+        "nodeType": "question",
+        "title": "点や座標から何を求めますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "4e975fe3e3269c20e41aed138ae3df3ee539bcc4f3263a2625ec574965e59b6c",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_i",
+      "title": "Triangles",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=17",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=10",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "I",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "辺が欠けうる三角格子の図から、入力の辺だけで構成される全サイズ・二方向の三角形を数える。",
+        "任意の三頂点の角度分類ではなく、三辺の連続したrunが揃う個数を集計する。"
+      ],
+      "constraints": {
+        "vertexRows": "1..3000",
+        "asciiColumns": "1..6000",
+        "picture": "2R-1 lines, each length <=2C-1; missing trailing spaces allowed",
+        "edges": "three dashes horizontally, single slash or backslash diagonally"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "geometry",
+      "choices": [],
+      "gap": {
+        "id": "triangular-grid-run-expiry-fenwick",
+        "features": [
+          "辺が欠けうる三角格子の図から、入力の辺だけで構成される全サイズ・二方向の三角形を数える。",
+          "任意の三頂点の角度分類ではなく、三辺の連続したrunが揃う個数を集計する。"
+        ],
+        "reason": "幾何の分野根に、既存辺の三方向の連続長から三角形を数える回答がない。方向別の三点組分類を選ぶと、存在しない格子辺まで使うため特徴に忠実でない。",
+        "neededTechniqueIds": [
+          "triangular-grid-run-expiry-fenwick"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "angle-vector-two-pointers",
+          "fenwick-tree"
+        ],
+        "proposedFeatureAnswer": "辺が欠けうる三角格子の図から、入力の辺だけで構成される全サイズ・二方向の三角形を数える。",
+        "firstMissingGraphId": "geometry",
+        "firstMissingNodeId": "geometry-task",
+        "currentOptions": [
+          {
+            "id": "point-distances",
+            "label": "点どうしの距離・向き・角度"
+          },
+          {
+            "id": "enclosing-regions",
+            "label": "図形・点集合の形・面積・比較"
+          },
+          {
+            "id": "rectangle-aggregates",
+            "label": "長方形や座標範囲の集計"
+          },
+          {
+            "id": "boundary-relations",
+            "label": "点の内外・交差・接続・壁で区切る領域"
+          },
+          {
+            "id": "travel-partition",
+            "label": "移動・格子経路・長方形の切り分け"
+          },
+          {
+            "id": "circle-harvest",
+            "label": "同速度で円周を歩き、再生する対象を得る個数を指定時刻まで数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "点や座標から何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "格子をずらして三方向のrunを水平・垂直・斜めへ直す。一つの向きで右下端(x,y)のs=min(L,U)を求め、j∈[x-s,x-1]かつj+D(j,y)>=xを満たすjを有効点の区間和で数える。反転してもう一方向を数える。",
+        "independentAuditReasoning": [
+          "三角形のサイズiは水平・垂直のrunでi<=sに制限され、残る斜辺の条件がD(x-i,y)>=i。j=x-iと置くとj+D(j,y)>=xとなる。",
+          "jの点はx=j+D(j,y)の照会まで有効で、処理後に失効する。公開sketchのAの説明ではD(j,y)>=xと書かれているが、直後の失効規則と整合する式はj+D(j,y)>=x。独立代数と小規模検査で区別した。"
+        ],
+        "implementationRequirements": [
+          "格子の行の偶奇・ASCIIの空行と省略された末尾空白を正確に解釈する。",
+          "失効時刻の等号、run=0、最大サイズ、上下反転、64ビット個数を検証する。"
+        ],
+        "complexity": "ずらした一行の幅をW=O(R+C)としてO(R W log W)時間。元格子に沿う実装では有効な頂点数とrun保存量を別途見積もる。単純O(R C min(R,C))との比較と6秒制約での実測が必要。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          17,
+          18
+        ],
+        "editorialPages": [
+          10,
+          11
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "angle-vector-two-pointers",
+          "file": "src/content/docs/techniques/angle-vector-two-pointers.mdx",
+          "sha256": "eabbfcdcfd9f16fbb432d86d5ee073f62f9a2e1677fed367109d9e477283e6fe",
+          "scopeMismatch": "自由に三点を結んだ角度分類。入力辺が欠けた三角格子の閉じた三辺を数えない。"
+        },
+        {
+          "techniqueId": "fenwick-tree",
+          "file": "src/content/docs/techniques/fenwick-tree.mdx",
+          "sha256": "a98662b2175462b5fa5484e227891e3f8f1de4e8c823668db2ab0dcd441549eb",
+          "scopeMismatch": "点更新と区間和は利用できるが、runの生成と有効期限への帰着は含まない。"
+        }
+      ],
+      "independentResearchCheck": {
+        "activeIntervalComparisons": 29784,
+        "correctCondition": "j + D(j,y) >= x",
+        "inclusiveExpiry": "x=j+D(j,y) is still active",
+        "note": "任意run長の等式を検査。ASCII読取や全三角形列挙の完成コード検証ではない。"
+      },
+      "verificationNotes": [
+        "公開sketchの有効点の条件にある座標の欠落を独立に訂正。失効時刻の等号を含める。",
+        "全入力ASCIIの解析コードは未作成、従って完成対応済みではない。"
+      ],
+      "steps": [],
+      "initialReached": {
+        "graphId": "geometry",
+        "nodeId": "geometry-task",
+        "nodeType": "question",
+        "title": "点や座標から何を求めますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 0,
+        "stepsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_j",
+      "title": "Uncrossed Knight’s Tour",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=19",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=11",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "J",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "短辺8以下、長辺10^15以下の盤面で、ナイトの線分が交差も接触もしない単純な閉路を作る。",
+        "全マスを使う必要はなく、訪れるマス数の最大を求める。"
+      ],
+      "constraints": {
+        "shortSide": "1..8",
+        "longSide": "1..10^15",
+        "tour": "closed; no repeated squares; straight segments form a simple polygon",
+        "noSolutionOutput": 0
+      },
+      "auditOutcome": "proof-unconfirmed",
+      "entryGraphId": "grid-arrangements",
+      "choices": [
+        "movement-cycles"
+      ],
+      "gap": {
+        "id": "uncrossed-knight-frontier-periodic-optimum",
+        "features": [
+          "短辺8以下、長辺10^15以下の盤面で、ナイトの線分が交差も接触もしない単純な閉路を作る。",
+          "全マスを使う必要はなく、訪れるマス数の最大を求める。"
+        ],
+        "reason": "現在の単一閉路の枝は四近傍で指定全マスを覆う個数を数える。ナイトの長さ2の境界跨ぎ、交差・接触禁止、任意部分集合の最大化を扱わない。さらに公開sketchの有限計算から巨大長へ使う周期外挿には完全な証明がない。",
+        "neededTechniqueIds": [
+          "uncrossed-knight-frontier-periodic-optimum"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "frontier-single-cycle",
+          "linear-recurrence"
+        ],
+        "proposedFeatureAnswer": "短辺8以下、長辺10^15以下の盤面で、ナイトの線分が交差も接触もしない単純な閉路を作る。",
+        "firstMissingGraphId": "grid-movement-cycles",
+        "firstMissingNodeId": "goal",
+        "currentOptions": [
+          {
+            "id": "right-down",
+            "label": "右・下へ進む経路の個数や、経路上の値"
+          },
+          {
+            "id": "collect-and-finish",
+            "label": "迷路の少数の得点マスを訪れ、時間内に指定終点へ着く"
+          },
+          {
+            "id": "single-cycle",
+            "label": "全ての使用マスを一度ずつ通る、一つの閉路の個数"
+          },
+          {
+            "id": "ray-moves",
+            "label": "壁を越えず、右・下・右下へ任意の正距離を進む経路数"
+          },
+          {
+            "id": "row-quota",
+            "label": "右・下へ進み、各行の個数上限内で品物を拾う価値を最大にする"
+          },
+          {
+            "id": "quadratic-grid",
+            "label": "行数が巨大で、列へ進む費用は行番号の二乗、下へ進む費用は列ごとの定数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "格子で何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch-with-unconfirmed-proof",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "公開sketchは、境界マスの次数状態、二行を跨ぐナイト辺、未完経路の端点対応を持つfrontier DPで小さな長さの答えを計算し、その後は観察した周期を使う案。",
+        "independentAuditReasoning": [
+          "未完成と完成の空状態を分け、小閉路が複数できるのを防ぐ。追加辺同士と保存した長辺の幾何的な交差・接触を除く必要がある。",
+          "未確認: 全遷移の正確な列挙、状態数の保証、全幅で観察された周期・増分がどの長さから10^15まで成立するかの上界と構成証明。n<=200での一致だけではそれ以降の最適性を証明できない。"
+        ],
+        "implementationRequirements": [
+          "有限automatonの最大重み遷移で説明する場合も、対象state graphの確定と、過渡部・周期の証明書または十分な理論境界が必要。",
+          "実際の全小閉路列挙、全線分交差判定、幅7の周期33を含む端点規則を別検証する。"
+        ],
+        "complexity": "有限長DPの遷移数は到達状態数に依存。公開sketchは数十万到達状態とn<=200の事前計算を述べるが、巨大長の完全な最悪計算量・周期境界は未確認。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          19,
+          20
+        ],
+        "editorialPages": [
+          11,
+          12
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "partially-reviewed-proof-unconfirmed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-retrieved-proof-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "frontier-single-cycle",
+          "file": "src/content/docs/techniques/frontier-single-cycle.mdx",
+          "sha256": "cad6a26e9f2bc47f93ae398e21e05e3b99b2aa80df9fa5a755e07ea4b3644961",
+          "scopeMismatch": "上下左右・指定全マス・個数の実装。ナイトの二行跨ぎと線分の幾何、任意マス選択、最大化が対象外。"
+        },
+        {
+          "techniqueId": "linear-recurrence",
+          "file": "src/content/docs/techniques/linear-recurrence.mdx",
+          "sha256": "36a688e84add3efc8512de5e74c890c36b791a785c5a9adc10ad5382dfc3bff3",
+          "scopeMismatch": "線形な係数列の高速評価であり、最大値列の経験的周期を証明するものではない。"
+        }
+      ],
+      "unconfirmedDetails": [
+        "未確認: 全遷移の正確な列挙、状態数の保証、全幅で観察された周期・増分がどの長さから10^15まで成立するかの上界と構成証明。n<=200での一致だけではそれ以降の最適性を証明できない。"
+      ],
+      "steps": [
+        {
+          "graphId": "grid-arrangements",
+          "nodeId": "goal",
+          "question": "格子で何を求めますか？",
+          "answer": "movement-cycles",
+          "answerLabel": "経路・収集・全ての使用マスを通る一つの閉路"
+        }
+      ],
+      "initialReached": {
+        "graphId": "grid-movement-cycles",
+        "nodeId": "goal",
+        "nodeType": "question",
+        "title": "格子で何を求めますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 1,
+        "stepsSha256": "dde489c134d7687c52049db1d2abb985325a8a4230e3261b734fe3d7b12c3f25",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    {
+      "source": "icpc",
+      "problemId": "wf2018_k",
+      "title": "Wireless is the New Fiber",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "K",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+        "元と異なる次数を持つ頂点の個数を最小にする。新しい辺を元の辺集合から選ぶ必要はない。"
+      ],
+      "constraints": {
+        "vertices": "2..10000",
+        "edges": "1..100000",
+        "inputGraph": "connected, undirected; parallel edges allowed; no self loops",
+        "outputGraph": "any simple tree on same labeled vertices"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "thinking",
+      "choices": [
+        "operation-goals",
+        "graph-build"
+      ],
+      "gap": {
+        "id": "tree-degree-preservation-budget-construction",
+        "features": [
+          "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+          "元と異なる次数を持つ頂点の個数を最小にする。新しい辺を元の辺集合から選ぶ必要はない。"
+        ],
+        "reason": "グラフ構成の枝は距離2の頂点対数に限定され、次数を保存する予算配分と任意の木次数列の実現の枝がない。固定された木から辺を選ぶ次数上限DPは別問題。",
+        "neededTechniqueIds": [
+          "tree-degree-preservation-budget-construction"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "construct-star-distance-two",
+          "tree-dp-degree-capacity"
+        ],
+        "proposedFeatureAnswer": "連結多重グラフの各頂点の次数だけを参照し、任意の木を新たに構成する。",
+        "firstMissingGraphId": "graph-distance-construction",
+        "firstMissingNodeId": "distance-two",
+        "currentOptions": [
+          {
+            "id": "yes",
+            "label": "はい"
+          },
+          {
+            "id": "no",
+            "label": "いいえ"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "単純連結な無向グラフで、辺の長さは 1、距離 2 の頂点対を指定しますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "全頂点に次数1を与えた残りN-2を、元次数d_iの保存に要るd_i-1の費用が小さい頂点から使う。残りを不一致頂点へ置いた正の次数列を作り、Pruefer列の重複回数d_i-1または残次数の貪欲な接続で木を復元する。",
+        "independentAuditReasoning": [
+          "木の次数は正で和2N-2。保存する頂点集合には合計Σ(d_i-1)<=N-2が必要。全保存の価値が1なので最小費用から選ぶことで保存数の上界を達成する。",
+          "独立確認: 次に保存できない最小費用は残予算より大きい。余りをその一頂点に与えても元次数に達しない。他の未選択頂点の次数1も元次数と異なり、得た保存数は変わらない。全保存なら総和条件から余りは0。",
+          "任意の正次数列で和が2N-2なら、各頂点をd_i-1回含めた長さN-2のPruefer列で実現できる。多重入力でd_i>N-1でも、保存費用が予算を超すので木次数へ強制しない。"
+        ],
+        "implementationRequirements": [
+          "平行辺も次数へ重複して足す。入力の接続確認と出力N-1辺・連結・非巡回・次数一致数を比較する。",
+          "N=2、既に木、星、高い平行次数、残予算0と正、同コスト順を検証する。"
+        ],
+        "complexity": "入力O(M)、整列とPruefer復元ならO(N log N)、O(N)補助空間。残次数貪欲の復元でも同じ次数列を実現できる。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          21,
+          22
+        ],
+        "editorialPages": [
+          12,
+          13
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "construct-star-distance-two",
+          "file": "src/content/docs/techniques/construct-star-distance-two.mdx",
+          "sha256": "29557faafb016f05a7eb89e6d8b1d385edd698db19ffdef8acf970925064a5da",
+          "scopeMismatch": "距離2の組数を指定し、星へ辺を足す。次数の一致数と木の次数列を指定できない。"
+        },
+        {
+          "techniqueId": "tree-dp-degree-capacity",
+          "file": "src/content/docs/techniques/tree-dp-degree-capacity.mdx",
+          "sha256": "d6a3c4d5f9d3dd4d5046edaa427b62bc647b41d2d785e967ef2d7c724b41f606",
+          "scopeMismatch": "与えられた木の辺を選択する。新しい任意の木を構成するのではない。"
+        }
+      ],
+      "independentResearchCheck": {
+        "degreeTargetVectorsCompared": 5345,
+        "maxN": 6,
+        "targetDegreeValues": "1..4",
+        "note": "目標次数の総和が2N-2以上の小規模ベクトルと、全ての木次数列を比較。完成木の出力実装は未作成。"
+      },
+      "steps": [
+        {
+          "graphId": "thinking",
+          "nodeId": "reason-task",
+          "question": "操作や解の特徴として、どれを調べたいですか？",
+          "answer": "operation-goals",
+          "answerLabel": "操作を戻す・条件に合う形を作る"
+        },
+        {
+          "graphId": "thinking-operation-goals",
+          "nodeId": "reason-task",
+          "question": "操作や解の特徴として、どれを調べたいですか？",
+          "answer": "graph-build",
+          "answerLabel": "距離や個数の条件を満たすグラフを出力する"
+        }
+      ],
+      "initialReached": {
+        "graphId": "graph-distance-construction",
+        "nodeId": "distance-two",
+        "nodeType": "question",
+        "title": "単純連結な無向グラフで、辺の長さは 1、距離 2 の頂点対を指定しますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 2,
+        "stepsSha256": "bf0b51c5ddf0e5fb01aa696baf9a4a16073ffcec108864153b4d09c7de1b0836",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      },
+      "truthfulGuardContinuation": {
+        "answer": "no",
+        "reachedGraphId": "graph-distance-construction",
+        "reachedNodeId": "fallback",
+        "techniqueIds": [
+          "state-design",
+          "counterexample"
+        ],
+        "note": "距離2の頂点対指定という条件は本問に該当せず、一般の再確認結果へ止まる。"
+      },
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "tree-degree-preservation-budget-construction"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+          "statementPages": [
+            21,
+            22
+          ],
+          "statementReadMethod": "web PDF full extraction, K lines537..620; no native PDF download or visual-only verification is claimed",
+          "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+          "publicSketchPages": [
+            12,
+            13
+          ],
+          "publicSketchAuthors": [
+            "Per Austrin",
+            "Jakub Onufry Wojtaszczyk"
+          ],
+          "publicSketchReadMethod": "web PDF full extraction K lines592..617 and disclaimer lines0..7",
+          "publicSketchIsOfficiallyHosted": true,
+          "publicSketchSelfDescribesAsUnofficial": true,
+          "officialEditorialVerified": false,
+          "solutionVerification": "independent-analysis",
+          "fullOriginalContractVerified": true,
+          "numericBoundsVerified": true,
+          "originalBounds": {
+            "nMin": 2,
+            "nMax": 10000,
+            "mMin": 1,
+            "mMax": 100000,
+            "timeLimitSeconds": 2,
+            "vertexLabels": "0..n−1",
+            "graph": "connected, undirected, parallel edges allowed, self loops forbidden",
+            "selfLoopDegreeConvention": "source excludes self loops by distinct endpoints; graph API rejects them rather than applying an extension convention",
+            "output": "minimum changed vertex count, then n and n−1, then any valid tree edges; original-edge restriction absent"
+          },
+          "contestDate": "2018-04-19",
+          "datePrecision": "day",
+          "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+          "dateEvidenceMeaning": "official ICPC news explicitly dates the World Finals contest to April19,2018; not inferred from the broader event span",
+          "difficulty": null,
+          "unconfirmedRequiredLemmas": [],
+          "unconfirmedRequiredSourceFacts": []
+        },
+        "notes": "初回全項目・positive研究・未作成実装の記録・停止位置と既存2resolutionを保持し、resolutionだけを追加。原典全域の完全C++20、次数予算と余り・Prüfer構築の証明、API/整数境界を作者/root/別review者で確認。全小木の実辺集合による最適値・連結多重グラフ・別全次数選択DP・最大入力・通常/ASanと問題特徴の根経路を検証。非公式sketchを公式解説へ昇格せず、研究reviewを二重加算しない。"
+      }
+    }
+  ],
+  "classificationDefinitions": {
+    "covered": "必要な具体技巧と実装があり、問題の特徴に忠実な回答で分野根から到達できる。",
+    "missing-route": "既存の具体実装で必要な処理を行えるが、特徴から自然に到達する分岐がない。",
+    "missing-technique": "原典・公開sketchと必要な主要帰着を確認したが、一般論だけでは具体的条件・実装を満たせない。",
+    "unconfirmed": "資料を読めても主要な証明または最大制約への拡張が不足する。CとJは名前・タグだけで確認済みにしない。"
+  },
+  "materials": [
+    {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+      "kind": "official-problem-booklet",
+      "status": "retrieved-and-reviewed",
+      "pages": 22,
+      "problemCount": 11
+    },
+    {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf",
+      "kind": "public-solution-sketches-hosted-on-official-domain",
+      "status": "retrieved-and-reviewed-with-explicit-unconfirmed-proofs",
+      "pages": 13,
+      "authors": [
+        "Per Austrin",
+        "Jakub Onufry Wojtaszczyk"
+      ],
+      "selfDescription": "unofficial analysis",
+      "problemSections": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    {
+      "url": "https://news.icpc.global/wf2018/",
+      "kind": "official-contest-news",
+      "status": "retrieved-and-reviewed",
+      "contestDate": "2018-04-19"
+    },
+    {
+      "url": "https://icpc.global/community/history/brochures/world-finals-2018-brochure.pdf",
+      "kind": "official-event-brochure",
+      "status": "date-confirmed-from-search-extract",
+      "contestDate": "2018-04-19",
+      "eventDates": "2018-04-15..2018-04-20"
+    },
+    {
+      "url": "https://icpcarchive.github.io/ICPC-World-Finals/2018-ICPC-World-Finals/solutions/index.html",
+      "kind": "html-conversion-of-public-sketch",
+      "status": "search-extract-reviewed",
+      "note": "本文の主要確認には公式ドメインのPDFを使用。個別変換HTMLのいくつかのdirect openは読めず、読めたとは扱わない。"
+    }
+  ],
+  "limits": [
+    "今回の固定11題の初回調査完了であり、技巧の網羅完了でも全世界の問題群の調査完了でもない。",
+    "472記事・439flow graphの凍結snapshotを参照し、親が並行して加えるIOI技巧を混ぜない。各ファイルのSHAはmanifestに記録。",
+    "Cの凸性・限界費用の境界・split移動の償却証明、Jの巨大長への周期最適性は未確認のまま残す。",
+    "Dの総和基底、Iの有効点条件の不整合は独立な導出と小規模検査を併記し、原資料の記述と区別する。",
+    "非公式sketchの読了を公式解説確認済みに換算しない。難度の数値資料を取得しておらず全問null。",
+    "原典の問題文・図・サンプル全文を転載せず、監査に必要な条件と独立解析だけを記録する。",
+    "提案技巧IDは未実装の候補。完成記事・C++・独立oracle・分野根の検証を経るまでverified対応へ登録しない。",
+    "小規模研究チェックは補題の照合に限定し、最大制約の実装テストや記事の完成検証と同一視しない。"
+  ],
+  "artifacts": {
+    "auditFile": "data/corpus-audits/icpc-2018-world-finals.json",
+    "notesFile": "research/icpc-2018-audit-notes.md",
+    "researchChecker": "research/probes/icpc-2018-research-checks.py",
+    "researchResults": "research/probes/icpc-2018-research-checks.json",
+    "snapshotManifest": "research/snapshots/icpc-2018-manifest.json",
+    "snapshotManifestSha256": "246e41da7f29fbd319552dbb852f4727da46ca2dba3ef4e71f0b35f2bf896705",
+    "notesSha256": "66c96fa0da15e52c10e184c2146cd9d5ca09570c28db23a8adfa6f09f3db7dac",
+    "metadataFileManifest": "/tmp/flowchartcp-icpc2018-metadata-files.json",
+    "metadataFileManifestSha256": "58ab2ea1e0d1c22551808604823046e7dcc50c71be8979ce5344c15def47a309",
+    "researchCheckerSha256": "cab333f118e336805bcbaecdadb7fdad6dcb3ccaa41a08a755f748f7ffdde8fb",
+    "initialNotesSha256": "68cf65ba970e79542e9644ad1c9e930b67e2819fda51ecb58f67ce193ffd0758"
+  },
+  "validation": {
+    "fixedProblemCount": 11,
+    "uniqueProblemIds": 11,
+    "statementReviewedByCorpusProgress": 11,
+    "solutionReviewedByCorpusProgress": 9,
+    "officialEditorialReviewed": 0,
+    "rootWalksReplayed": 11,
+    "rootChoiceCount": 15,
+    "additionalFeatureWalksReplayed": 2,
+    "snapshotGraphErrors": [],
+    "classificationCounts": {
+      "missing-technique": 9,
+      "unconfirmed": 2
+    },
+    "allRelatedArticleFilesAndMetadataPresent": true,
+    "allDifficultiesNull": true,
+    "allExactContestDates": "2018-04-19",
+    "sharedFilesWritten": [],
+    "notes": "原典・公開sketch・具体記事の適用条件を別に検査。未確認C/Jは既存集計helperでもsolution reviewedへ昇格しない。",
+    "snapshotFilesVerified": 1047,
+    "gapMatchesFrozenStopForAllRecords": true,
+    "genericResultAndProposedBranchSeparated": true
+  }
+}

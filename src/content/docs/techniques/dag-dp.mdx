@@ -1,0 +1,75 @@
+---
+title: "DAG上のDP"
+description: "閉路のない有向グラフを依存順に処理して、経路の値を求める。"
+techniqueId: dag-dp
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+閉路のない有向グラフを依存順に処理して、経路の値を求める。
+
+## 使う場面
+
+有向グラフに閉路がない場合や、遷移のたびに時刻・長さ・集合の大きさが増える場合に使う。経路の最短距離、最長距離、個数などを求められる。
+
+## 考え方
+
+辺の始点が終点より先に並ぶトポロジカル順序を作る。始点の値を初期化して、順序どおりに各頂点から行き先へ値を渡す。最長路なら最大値、最短路なら最小値、経路数なら和を使う。
+
+一般の有向グラフを強連結成分に縮約するとDAGになる。ただし、各成分を一つの状態として扱えるかは、成分内の費用や訪問条件を確認する必要がある。
+
+## 適用条件
+
+依存関係に閉路がないことが必要になる。閉路を含むグラフの最長単純路を、この遷移だけで求めることはできない。
+
+到達できない状態は専用の値で表す。0で初期化すると、負の費用を持つ最長路などで、存在しない経路を混ぜてしまう。DAGなら、辺に負の重みがあっても最短距離を同じ順序で計算できる。
+
+## なぜ正しいか
+
+ある頂点を処理するとき、その頂点への辺の始点はすべて処理済みである。したがって、その頂点に到達するすべての候補を比較・合算できる。各経路を最後の辺で分けると、遷移式にすべての経路が含まれる。順序の先頭からこの性質を繰り返すことで、全頂点の値が求まる。
+
+## 計算量
+
+トポロジカルソートを含めて時間は $O(V+E)$。値と順序の追加空間は $O(V)$、グラフを含めた空間は $O(V+E)$。
+
+## 実装
+
+`dag_longest(g, s)` は始点 `s` からの最長距離を返す。到達できない頂点には `NEG` が入る。閉路を含む入力は例外で拒否する。有限の値と途中の加算結果の絶対値は $2^{60}$ 未満とする。
+
+```cpp
+#include <vector>
+#include <queue>
+#include <utility>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+using namespace std;
+vector<long long> dag_longest(const vector<vector<pair<int,long long>>>& g,int s) {
+    int n=g.size();
+    assert(0<=s && s<n);
+    vector<int> degree(n),order;
+    queue<int> q;
+    for(auto& row:g) for(auto [u,w]:row) ++degree[u];
+    for(int v=0;v<n;++v) if(!degree[v]) q.push(v);
+    while(!q.empty()) {
+        int v=q.front();q.pop();order.push_back(v);
+        for(auto [u,w]:g[v]) if(--degree[u]==0) q.push(u);
+    }
+    if(int(order.size())!=n) throw invalid_argument("graph has a cycle");
+    const long long NEG=-(1LL<<60);
+    vector<long long> d(n,NEG);
+    d[s]=0;
+    for(int v:order) if(d[v]!=NEG)
+        for(auto [u,w]:g[v]) d[u]=max(d[u],d[v]+w);
+    return d;
+}
+```
+
+## 関連する手法
+
+[トポロジカルソート](/flowchartcp/techniques/topological-sort/) ・ [強連結成分分解](/flowchartcp/techniques/scc/) ・ [bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [USACO Guide: Topological Sort / Longest Flight Route](https://usaco.guide/gold/toposort)
+
+<TechniqueReferences techniqueId="dag-dp" />

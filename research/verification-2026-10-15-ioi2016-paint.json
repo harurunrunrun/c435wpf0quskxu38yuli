@@ -1,0 +1,565 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed-current-scope-global-incomplete",
+  "scope": "IOI2016 Paint full-range reusable all-completion row colors, prefix/suffix and legal-block proof, guarded feature route and resolution-only registration.",
+  "counts": {
+    "specificTechniques": 434,
+    "foundationArticles": 78,
+    "allArticles": 512,
+    "exampleMappings": 533,
+    "originalUrls": 495,
+    "graphs": 479,
+    "nodes": 3745,
+    "questions": 1708,
+    "answerEdges": 5572,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 529,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+    "title": "黒い連続区間の長さから、全ての塗り方で共通する色を求める",
+    "verificationRecord": "research/technique-verifications/fixed-run-row-prefix-suffix-feasibility-forced-colors.json",
+    "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+    "normalization": "Only repository checker/probe paths, entryPoints order, confirmed common feature aliases and graph wording;entire article and C++ unchanged."
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2016-paint-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 6213.337611
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "durationSeconds": 6.157334229996195,
+      "record": "research/probes/ioi2016-paint-flow-results.json",
+      "initialFailureAndFix": "First run9/10 found missing publicationDate/precision/year and numeric-bounds aliases in the new feature. Primary-confirmed aliases supplied;identical test SHA passed10/10."
+    },
+    "targetedRegression": {
+      "groups": 11,
+      "passed": 11,
+      "failed": 0,
+      "durationMs": 29565.375869,
+      "scope": "ledger/domain/viewer/continuation/legacy/layout, IOI2016+2017 fixed corpora, Railroad/Molecules and specific-expansion flows. Separate new10-case suite protects all532prior full walks/478graphs3739nodes/all79data JSON/all10audit initial fields and3old resolutions.",
+      "newFeatureAliasCorrection": "Final validate and new10-case flow suite separately cover the research-feature normalization; broad groups were not unnecessarily repeated for non-rendered aliases.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 512,
+      "mappings": 533,
+      "diagrams": 479,
+      "passed": true,
+      "finalAliasNormalizedRebuild": {
+        "generatedFiles": 1576,
+        "allBytesIdenticalToTestedOutput": true
+      }
+    },
+    "localSearch": {
+      "articlesIndexed": 512,
+      "recentArticlesChecked": 42,
+      "japaneseEnglishFullWidthQueries": 173,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 479,
+      "completeAnswerLabels": 5572,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized dp-sequence-removals and fixed-run-forced-colors-conditions. New route and all new guard text have no node overlap. Existing parent is wide with shared-tail crossings and needs zoom;no browser or fit-size readability claim."
+    },
+    "localLinks": {
+      "command": "node scripts/check-links.mjs --local",
+      "htmlSvgFiles": 1479,
+      "linksAssets": 29889,
+      "diagrams": 479,
+      "passed": true,
+      "externalRequests": false,
+      "finalRebuildBytesIdentical": true
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": {
+    "source": {
+      "statements": {
+        "englishUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+        "japaneseUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf",
+        "pagesEach": 3,
+        "readMethod": "Full primary PDF web text with detached numeric glyphs assembled at their original p3 constraints;not visual screenshot/local-PDF inspection.",
+        "confirmed": {
+          "N": [
+            1,
+            200000
+          ],
+          "K": "1..min(N,100)",
+          "clueLengths": "1..N",
+          "inputAlphabet": [
+            "X",
+            "_",
+            "."
+          ],
+          "outputAlphabet": [
+            "X",
+            "_",
+            "?"
+          ],
+          "orderedRuns": true,
+          "whiteSeparatorMinimum": 1,
+          "atLeastOneSolutionGuaranteed": true,
+          "answer": "each cell common color across all valid completions,? iff both colors occur",
+          "genericSignature": "string solve_puzzle(string s,int[] c)",
+          "sourceExamplesVerified": 4
+        }
+      },
+      "solutions": {
+        "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+        "totalPages": 17,
+        "relevantOneBasedPages": [
+          8,
+          9,
+          10
+        ],
+        "printedAuthor": "Michal Forišek",
+        "selectedScope": "Full prefix/suffix feasibility steps1..5 and per-cell white/per-block black possibility;no smaller-subtask greedy assumption used",
+        "independentSupplements": [
+          "exact zero-prefix and boundary-separator handling",
+          "reverse lookup without copying row/clues",
+          "black placement aggregation by range difference",
+          "explicit generic contradiction/empty/zero-run contract"
+        ]
+      },
+      "notice": {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "pages": 1,
+        "mapping": {
+          "string": "std::string",
+          "int[]": "std::vector<int>"
+        },
+        "timeSeconds": 2,
+        "memoryGB": 2,
+        "standardInputOutputProhibited": true
+      },
+      "date": {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+        "day": 2,
+        "contestDate": "2016-08-16",
+        "precision": "day",
+        "difficulty": null
+      },
+      "header": {
+        "actualBytesRetrieved": false,
+        "adapterDerivedFromGenericAndNotice": "std::string solve_puzzle(std::string,std::vector<int>)",
+        "actualGraderHeaderCompilationClaimed": false
+      },
+      "originalEntireRangeIncluded": true
+    },
+    "proof": [
+      {
+        "obligation": "complete prefix recurrence",
+        "verdict": "verified",
+        "reason": "F0j is true iff the whole prefix has no known black;F[t>0][0]=false. Every feasible prefix either ends white,requiring non-X and F[t][j-1],or ends with its final positive run [a,j). That run contains no known white;when a>0 it has a white non-X predecessor and F[t-1][a-1]. At a=0,F[t-1][0] enforces no remaining earlier run. These conditions also construct a solution,so necessity and sufficiency hold."
+      },
+      {
+        "obligation": "reversal and suffix boundaries",
+        "verdict": "verified",
+        "reason": "Reversing both row and clue order preserves completions. t-th reversed clue is original c[K-t]. Reversed [a,b) contains no known white iff original white-prefix values at N-a and N-b agree. All indices stay0..N. No copied reverse arrays or differing tie convention exists."
+      },
+      {
+        "obligation": "white-cell possibility",
+        "verdict": "verified",
+        "reason": "In a completion making v white,each run lies completely left or right. Let t be the number on the left;then F[t][v] and B[K-t][N-v-1] hold. Conversely concatenate those two completions with the non-X cell v made white. Its separator makes black runs on the two sides distinct. Ends and t0/K are enforced by zero-length DP states."
+      },
+      {
+        "obligation": "black-cell possibility",
+        "verdict": "verified",
+        "reason": "A proposed clue-t placement[a,b) is valid iff no known white lies inside,existing immediate neighbors a-1 and b may be white,and F[t][max(0,a-1)] plus B[K-t-1][max(0,N-b-1)] hold. Neighbor cells are excluded from side tables and explicitly white,so no accidental merging occurs. Empty side tables also reject leftover clues at the physical boundary."
+      },
+      {
+        "obligation": "forced-color aggregation",
+        "verdict": "verified",
+        "reason": "Every black cell in any completion belongs to one enumerated legal run placement;every enumerated placement has a compatible whole completion. Difference endpoints produce exactly the union of those placements. After checking F[K][N],each cell has at least one possible color:only-white yields_,only-black X,both ?. Known X cannot be white and known_ lies in no legal black placement."
+      },
+      {
+        "obligation": "generic extensions versus source guarantee",
+        "verdict": "verified",
+        "reason": "Malformed sizes/counts/symbols/lengths throw before feasibility rejection. Well-formed impossible instances return nullopt before suffix/color combination. K0 returns all white iff no knownX;N=K=0 returns an engaged optional empty string. The source-name adapter shares these valid extensions and throws invalid_argument on a well-formed contradiction,which cannot occur in the source guaranteed-solution domain;it is not claimed to reject every extension outside originalN/K."
+      }
+    ],
+    "authorRootAndPeerNormalAsan": {
+      "status": "passed",
+      "date": "2026-10-15",
+      "allEightSectionsAndEntireCppRead": true,
+      "completeCheckerAndIndependentProbeRead": true,
+      "sourceScopeAndOfficialSelectedProofReviewed": true,
+      "sourceReading": "Primary English Paint3p/Day2 Notice1p and official Solutions8–10p full text read;not PDF visual inspection. Independent peer additionally reread JPN3p.",
+      "materialFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "independentReviewSha256": "f91966414842ff4c72cc46f8e2cab8c67321b53643b874591944386e4d95359f",
+      "rootNormal": {
+        "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+        "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 18676424,
+        "apiCalls": 1008660,
+        "partialRows": 88573,
+        "literalFullAssignmentPairs": 52092093,
+        "exhaustiveCompletionRevealPairs": 1398101,
+        "primarySamples": 4,
+        "consistentObservationClueGroups": 921587,
+        "originalDomainGroups": 919540,
+        "zeroRunExtensionGroups": 2047,
+        "contradictoryObservationClueCases": 77096,
+        "adapterCalls": 2830,
+        "randomInputs": 1800,
+        "metamorphicChecks": 5273,
+        "invalidCalls": 21,
+        "allocationFaults": 6,
+        "checksum": "16381575956586682632",
+        "seconds": 2.14977,
+        "peakRSSKiB": 48036,
+        "maximumCases": [
+          {
+            "name": "full length single run",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.00287499
+          },
+          {
+            "name": "single run length199999 overlaps",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.00220017
+          },
+          {
+            "name": "100 singleton runs,all positions ambiguous",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.11908
+          },
+          {
+            "name": "100 tight runs,no slack",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.129995
+          },
+          {
+            "name": "all exact known cells",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.0532876
+          },
+          {
+            "name": "known white in unique tight run",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 0.0230202
+          },
+          {
+            "name": "100 runs each2000 cannot fit separators",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 4.3077e-05
+          },
+          {
+            "name": "100 separated mandatory singleton positions",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.113131
+          },
+          {
+            "name": "100 singleton runs inside known white margins",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.127967
+          },
+          {
+            "name": "zero run extension",
+            "n": 200000,
+            "k": 0,
+            "exists": true,
+            "coreSeconds": 0.000132164
+          }
+        ]
+      },
+      "rootAsanUbsan": {
+        "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+        "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 18676424,
+        "apiCalls": 1008660,
+        "partialRows": 88573,
+        "literalFullAssignmentPairs": 52092093,
+        "exhaustiveCompletionRevealPairs": 1398101,
+        "primarySamples": 4,
+        "consistentObservationClueGroups": 921587,
+        "originalDomainGroups": 919540,
+        "zeroRunExtensionGroups": 2047,
+        "contradictoryObservationClueCases": 77096,
+        "adapterCalls": 2830,
+        "randomInputs": 1800,
+        "metamorphicChecks": 5273,
+        "invalidCalls": 21,
+        "allocationFaults": 6,
+        "checksum": "16381575956586682632",
+        "seconds": 12.2569,
+        "peakRSSKiB": 1051984,
+        "maximumCases": [
+          {
+            "name": "full length single run",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.00728183
+          },
+          {
+            "name": "single run length199999 overlaps",
+            "n": 200000,
+            "k": 1,
+            "exists": true,
+            "coreSeconds": 0.0248334
+          },
+          {
+            "name": "100 singleton runs,all positions ambiguous",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.638956
+          },
+          {
+            "name": "100 tight runs,no slack",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.703716
+          },
+          {
+            "name": "all exact known cells",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.402948
+          },
+          {
+            "name": "known white in unique tight run",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 0.151766
+          },
+          {
+            "name": "100 runs each2000 cannot fit separators",
+            "n": 200000,
+            "k": 100,
+            "exists": false,
+            "coreSeconds": 0.000101881
+          },
+          {
+            "name": "100 separated mandatory singleton positions",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.587047
+          },
+          {
+            "name": "100 singleton runs inside known white margins",
+            "n": 200000,
+            "k": 100,
+            "exists": true,
+            "coreSeconds": 0.540843
+          },
+          {
+            "name": "zero run extension",
+            "n": 200000,
+            "k": 0,
+            "exists": true,
+            "coreSeconds": 0.000221198
+          }
+        ]
+      },
+      "allDeterministicAuthorPeerRootNormalAsanFieldsMatch": true,
+      "normalizationAtIntegration": {
+        "article": "none;entire MDX/CPP preserved",
+        "checker": "only default article path to published repository file",
+        "independentProbe": "only default article path to published repository file",
+        "metadata": "entryPoints order advanced/complexity/reasoning",
+        "flow": "positive original bounds and separator-space wording from frozen flowcase;no API storage details on graph",
+        "resolutionNotes": "refer to actual three existing resolutions instead of author-time two;no initial fields modified"
+      },
+      "limitations": [
+        "Actual grader header bytes not retrieved;adapter derived from generic statement plus Notice.",
+        "Browser/Astro production build unavailable and not claimed.",
+        "Separate independent small-placement oracle is bounded;maximum range is supported by proof and native maximum cases."
+      ]
+    },
+    "additionalIndependentOracle": {
+      "script": "/tmp/flowchartcp-ioi2016-paint-independent-probe.py",
+      "command": "python3 /tmp/flowchartcp-ioi2016-paint-independent-probe.py [--sanitize]",
+      "normal": {
+        "checks": 117367,
+        "apiCalls": 45193,
+        "baseObservationCases": 19796,
+        "clueSlackProfiles": 2387,
+        "directBlockPlacements": 1658887,
+        "compatiblePlacements": 512906,
+        "knownSingletonFrameCases": 19796,
+        "colorPinnedBranchCases": 4256,
+        "sourceAdapterCalls": 1314,
+        "contradictoryCases": 2771,
+        "allocationFailureExceptions": 14,
+        "checksum": "6445428823580750785",
+        "seconds": 0.0461396,
+        "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+        "sanitize": false,
+        "peakRSSKiB": 4644
+      },
+      "asanUbsan": {
+        "checks": 117367,
+        "apiCalls": 45193,
+        "baseObservationCases": 19796,
+        "clueSlackProfiles": 2387,
+        "directBlockPlacements": 1658887,
+        "compatiblePlacements": 512906,
+        "knownSingletonFrameCases": 19796,
+        "colorPinnedBranchCases": 4256,
+        "sourceAdapterCalls": 1314,
+        "contradictoryCases": 2771,
+        "allocationFailureExceptions": 14,
+        "checksum": "6445428823580750785",
+        "seconds": 0.362982,
+        "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+        "sanitize": true,
+        "peakRSSKiB": 69652
+      },
+      "allDeterministicFieldsIdentical": true,
+      "oracle": "Enumerate block start positions directly for a fixed clue list. Starts respect each exact length and at least one separator;unoccupied cells are white. Filter by known-cell masks and intersect/union only compatible placements. No F/B table,per-block feasibility recurrence,range-difference array or enumeration of all binary rows is used to obtain the expected colors.",
+      "families": "Every ordered clue list of length1..4 with clue values1..4,plus empty list,and slack0..6 gives2387 clue/slack profiles. Eight observation modes each plus700 random profiles produce19796 base executions. Systematic rows reachN25;random rows up toN49 and frame transforms up toN53. Modes and random cases may overlap;execution counts are not all unique puzzles.",
+      "metamorphic": "Add a known singleton black run separated by knownwhite at each end:X_+row+_X,with clue1 prepended/appended. This gives a completion bijection,including contradictions and zero-run extension. For one ambiguous cell,pin it black and white separately,enumerate both subfamilies,and join their forced colors back to the original.",
+      "faults": "On a 1024-cell20-run feasible row,inject a custom bad_alloc subtype at every observed6 core and8 source-adapter allocation points,check exact exception type,input retention,allocated live-byte equality after unwinding,and successful fresh calls. The new14 faults are separate from author6.",
+      "limits": "Direct placement oracle is limited to these small clue/slack profiles;full originalN/K comes from the proof and reproduced source-scale tests. Frames are metamorphic rather than independent optimum oracles.14 locations are not a portable promise or LeakSanitizer result."
+    },
+    "publishedNativeRerun": true
+  },
+  "reviewCounters": {
+    "verifiedMappings": 533,
+    "reviewedProblems": 493,
+    "corpusStatementsReviewed": 77,
+    "corpusSolutionsReviewed": 70,
+    "allSolutionsReviewed": 501
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "5/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2016",
+      "research": "6/6",
+      "covered": "4/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 16,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual official Paint grader header bytes not retrieved; generic signature+Notice-derived standalone adapter tested.",
+    "ASan/UBSan pass with detect_leaks=0; no LeakSanitizer claim.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures. No install/server/browser retried.",
+    "External example-link liveness not checked. No commit/push/upload/publication."
+  ],
+  "inProgress": [
+    "Messy author frozen;independent full review and supplemental oracle/sanitizers in progress.",
+    "Shortcut author frozen;independent BFS oracle/maximum and supplemental sanitizer in progress.",
+    "IOI2015 official six selected and511-article/478-graph snapshot frozen before semantic matching;new fixed-corpus audit in progress."
+  ]
+}

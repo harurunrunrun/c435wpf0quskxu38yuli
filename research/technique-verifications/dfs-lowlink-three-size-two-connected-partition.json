@@ -1,0 +1,323 @@
+{
+  "techniqueId": "dfs-lowlink-three-size-two-connected-partition",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-split-article.mdx",
+    "checker": "/tmp/flowchartcp-split-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/dfs-lowlink-three-size-two-connected-partition.mdx",
+    "checker": "scripts/check_three_size_two_connected_cpp.py",
+    "metadata": "data/techniques-specific-graph-extensions.json",
+    "reference": "data/references-specific-graph-extensions.json"
+  },
+  "metadata": {
+    "id": "dfs-lowlink-three-size-two-connected-partition",
+    "title": "指定サイズの三集合へ分け、二つを連結にする",
+    "summary": "DFS部分木と真の祖先への後退辺を使い、指定サイズの三分割を構築する。作れない場合も同じ条件で判定する。",
+    "aliases": [
+      "IOI 2019 Split the Attractions",
+      "DFS lowlink three-size partition two connected groups",
+      "最小十分部分木 真祖先後退辺 指定三サイズ分割"
+    ],
+    "family": "グラフ",
+    "level": "上級",
+    "prerequisites": [
+      "bridge-edge-failure",
+      "subtree-euler-interval",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem2.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+      "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "dfs-lowlink-three-size-two-connected-partition",
+    "source": "IOI",
+    "problemId": "ioi2019_split",
+    "title": "アトラクションの分割 (Split the Attractions)",
+    "url": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+    "evidence": "正の三サイズa<=b<=cについて、小さい二つを連結にしてよい同値性を使う。子が全てa未満の最小十分DFS部分木Pを取り、low[child]<tin[v]で真の祖先へ戻れる子を連結なQへ移す。両側a以上なら連結prefixでa,bを抽出し、失敗時はG-vの全成分<aが不可能性の証拠になる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2019-08-06",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にIOI公式本部原典3ページ・公式HSC Review2ページ・日本委員会の日別課題一覧を再確認した。公式本部PDF通常抽出で欠ける数値は、ISC英語原典の公開ミラー(split-ISC.pdf)の3ページ目で3<=n<=100000、2<=m<=200000、1<=a,b,c<=n、和=n、単純・連結、0<=p[i],q[i]<nかつ異端点と確認した。公開ミラーという取得経路を明記し、公式サイト抽出で数値を読めたとはしない。小さい二サイズの連結性への同値性、最小十分DFS部分木、low[u]<tin[v]の真祖先接続、移動の連結不変条件、失敗時のG-v全成分<aからの必要性を独立に証明した。再利用APIと公式find_split入口は正3サイズをint64で加算検査し、端点/配列/自己ループ/グラフ連結性を検査、平行辺を辺IDで扱う。DFS/抽出に再帰なし、人工N/M capなしで原典全域を含む。実MDX単一C++20 fenceの抽出コンパイルと直接三分割oracleで、4278886検査・273940API呼出し・全27474連結単純グラフ・81610ソートサイズ・271526全順序サイズ・16208532直接partitionを検証。乱択1200/平行辺1200/最大境界11/不正16を含む。通常/ASan+UBSanともchecksum17105848895082083793で成功し、全processを1MiBスタックで実行して最大10万頂点の鎖を処理した。通常0.304655秒/27036KiB、ASan+UBSan3.82549秒/729084KiB。公式数式の欠けた添字を見たとはせず、verificationはindependent-analysis。初回IOI2019監査と共有データは未変更。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2019_split",
+    "title": "アトラクションの分割 (Split the Attractions)",
+    "url": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+    "techniqueIds": [
+      "dfs-lowlink-three-size-two-connected-partition"
+    ],
+    "features": [
+      "連結な無向グラフの全頂点を、指定された正の三サイズへ分ける。サイズの和は頂点数に等しい。",
+      "三集合のうち少なくとも二つだけが内部の辺で連結ならよい。全三集合の連結性や、外側を通る連結性を要求しない。",
+      "原典は3<=N<=100000、2<=M<=200000、正のa,b,cで和=N、0始まりの相異なる端点を持つ単純連結グラフ。掲載APIはこの全域を含み、平行辺も許す。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-06",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "sourceBoundsEvidenceUrl": "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+    "originalNumericBoundsVerified": true,
+    "notes": "正の三サイズa<=b<=cについて、小さい二つを連結にしてよい同値性を使う。子が全てa未満の最小十分DFS部分木Pを取り、low[child]<tin[v]で真の祖先へ戻れる子を連結なQへ移す。両側a以上なら連結prefixでa,bを抽出し、失敗時はG-vの全成分<aが不可能性の証拠になる。",
+    "discoveredBy": "ioi-2019"
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "solution": "retrieved-and-reviewed",
+      "officialEditorialVerified": false
+    },
+    "evidenceUrls": [
+      "https://ioinformatics.org/files/ioi2019problem2.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+      "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html"
+    ],
+    "notes": "2026-10-15にIOI公式本部原典3ページ・公式HSC Review2ページ・日本委員会の日別課題一覧を再確認した。公式本部PDF通常抽出で欠ける数値は、ISC英語原典の公開ミラー(split-ISC.pdf)の3ページ目で3<=n<=100000、2<=m<=200000、1<=a,b,c<=n、和=n、単純・連結、0<=p[i],q[i]<nかつ異端点と確認した。公開ミラーという取得経路を明記し、公式サイト抽出で数値を読めたとはしない。小さい二サイズの連結性への同値性、最小十分DFS部分木、low[u]<tin[v]の真祖先接続、移動の連結不変条件、失敗時のG-v全成分<aからの必要性を独立に証明した。再利用APIと公式find_split入口は正3サイズをint64で加算検査し、端点/配列/自己ループ/グラフ連結性を検査、平行辺を辺IDで扱う。DFS/抽出に再帰なし、人工N/M capなしで原典全域を含む。実MDX単一C++20 fenceの抽出コンパイルと直接三分割oracleで、4278886検査・273940API呼出し・全27474連結単純グラフ・81610ソートサイズ・271526全順序サイズ・16208532直接partitionを検証。乱択1200/平行辺1200/最大境界11/不正16を含む。通常/ASan+UBSanともchecksum17105848895082083793で成功し、全processを1MiBスタックで実行して最大10万頂点の鎖を処理した。通常0.304655秒/27036KiB、ASan+UBSan3.82549秒/729084KiB。公式数式の欠けた添字を見たとはせず、verificationはindependent-analysis。初回IOI2019監査と共有データは未変更。",
+    "originalNumericBoundsVerified": true,
+    "originalProblemScopeVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "officialStatementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+    "officialStatementPages": 3,
+    "officialEditorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Split/review.pdf",
+    "officialEditorialPages": 2,
+    "officialDirectNumericExtractionSucceeded": false,
+    "officialEditorialMathExtractionComplete": false,
+    "numericEvidenceDocument": {
+      "url": "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+      "documentTitle": "Split the Attractions",
+      "header": "Day 1 Tasks / English (ISC)",
+      "page": 3,
+      "retrieval": "web PDF text and indexed full text",
+      "provenance": "Public mirror of the original ISC English statement; the mirror host is not the official IOI website.",
+      "originalDocumentContentVerified": true,
+      "byteIdentityWithOfficialPdfClaimed": false
+    },
+    "originalNumericBoundsVerified": true,
+    "contestDate": "2019-08-06",
+    "exactDateVerified": true,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "difficulty": null,
+    "githubAttempt": {
+      "repository": "austrian-olympiad-informatics/ioi-tasks",
+      "path": "ioi2019-split/statement/split-en.pdf",
+      "result": "404; root repository listing includes only line/shoes/vision for 2019, so no PDF acquired from this repository."
+    },
+    "localPdfDownloads": false,
+    "imageInspectionClaimed": false,
+    "officialFormulaImagesReadClaimed": false,
+    "unconfirmedTechniqueLemmas": []
+  },
+  "subsequentSourceVerifications": [
+    {
+      "checkedAt": "2026-10-15",
+      "status": "verified",
+      "kind": "official-statement-public-mirror",
+      "sourceVerified": true,
+      "originalNumericBoundsVerified": true,
+      "statementUrl": "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+      "originalEnglishStatementUrl": "https://ioinformatics.org/files/ioi2019problem2.pdf",
+      "sourceSection": "Constraints, page 3, ISC English original document",
+      "originalConstraints": {
+        "n": {
+          "minimum": 3,
+          "maximum": 100000
+        },
+        "m": {
+          "minimum": 2,
+          "maximum": 200000
+        },
+        "a_b_c": {
+          "minimum": 1,
+          "maximum": "n"
+        },
+        "sizeSum": "a+b+c=n",
+        "endpoints": "0<=p[i],q[i]<n; p[i]!=q[i]",
+        "undirected": true,
+        "connected": true,
+        "selfLoops": false,
+        "parallelEdges": false
+      },
+      "apiContainmentProof": [
+        "All original n and sizes fit int; the API imposes no artificial upper cap.",
+        "Each original edge array has at most 200000 entries; edge IDs and cursors use size_t without narrowing.",
+        "The sum is cast to int64_t before addition; even 3*INT_MAX fits.",
+        "All original endpoints satisfy the checked 0..n-1 distinct-endpoint contract.",
+        "Simple connected graphs are a subset of the accepted connected loopless multigraphs.",
+        "DFS and prefix extraction use heap stacks/queues, so n=100000 does not require recursive depth."
+      ],
+      "initialAuditNumericFalsePreserved": true
+    }
+  ],
+  "originalProblemCoverage": {
+    "status": "verified",
+    "apiContainsEntireOriginalRange": true,
+    "originalNumericBoundsVerified": true,
+    "numericEvidenceUrl": "https://jonathanirvin.gs/files/ioi2019/split-ISC.pdf",
+    "solutionVerification": "independent-analysis",
+    "initialAuditUnchanged": true
+  },
+  "api": {
+    "signature": "std::vector<int> partition_three_two_connected(int n,std::array<int,3> sizes,const std::vector<int>& p,const std::vector<int>& q)",
+    "originalInterface": "std::vector<int> find_split(int n,int a,int b,int c,std::vector<int> p,std::vector<int> q)",
+    "input": "n>=3; positive int sizes with sum n; equal-length endpoint arrays; connected undirected graph with distinct endpoints in 0..n-1. Parallel edges are accepted, self-loops rejected. No artificial numeric cap beyond int vertex IDs and allocatable vectors.",
+    "output": "Length n; success labels1,2,3 preserve original size order. The two sorted-smallest requests are connected. Return n zeros iff no legal partition exists. Third group need not be connected.",
+    "errors": "invalid_argument for invalid n/positive sizes/sum/array lengths/endpoints/self-loops/disconnected graph. Impossible legal instances return zeros instead of throwing. Standard allocation exceptions are not intercepted.",
+    "integerSafety": "Cast first size to int64_t before summing. tin/low/sub/DFS interval ends stay at most n<=INT_MAX. order.size() is converted to int before discovery only when at most n-1. Edge IDs and cursors use size_t; no 2*M int calculation.",
+    "parallelEdges": "Skip only the exact incoming edge ID; every other parallel edge remains available to lowlink. Child lists are appended only on first discovery.",
+    "recursion": "None. DFS uses heap vector stack; connected-prefix extraction uses heap vector queue.",
+    "time": "O(N+M) worst case",
+    "space": "O(N+M) auxiliary",
+    "callIndependence": "All state and buffers are local to the call; no global adjacency or cached labels."
+  },
+  "proofInvariants": [
+    "Any legal pair of connected groups has sorted sizes s>=a,t>=b. Connected exploration prefixes reduce them to a,b; remainder size c has no connectivity requirement.",
+    "Descending through children with subtree size>=a reaches pivot v with sz[v]>=a and every child subtree<a.",
+    "Undirected DFS has no edges between different child subtrees. P contains pivot and retained children; Q is empty or connected outside plus moved children.",
+    "A child can attach to Q exactly with a back edge to a strict ancestor: low[u]<tin[v]. Equality may attach only to v and is insufficient.",
+    "Moving a whole eligible child preserves P connectivity through v and Q connectivity through the strict ancestor, while keeping |P|>=a.",
+    "If both sides>=a then max side>=N/2>=b; exploration prefixes produce the two required sizes without intersection.",
+    "If final Q<a, an eligible but unmovable child would force P<2a and Q>N-2a=b+c-a>=a. Hence all eligible children have moved.",
+    "After failure, deleting pivot leaves only Q and retained child subtrees, each of size<a. Every connected set of size>=a must contain pivot, so two disjoint such sets cannot exist."
+  ],
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "existingChoices": [
+      "group-constraints"
+    ],
+    "firstMissingGraphId": "graphs-group-constraints",
+    "firstMissingNodeId": "shortest",
+    "proposedAnswerId": "three-size-two-connected",
+    "proposedAnswerLabel": "全頂点を指定の三サイズへ分け、少なくとも二集合を連結にする",
+    "guardGraphId": "three-size-two-connected-conditions",
+    "guards": [
+      {
+        "id": "connected-undirected",
+        "feature": "連結な無向グラフで、頂点集合内部の辺による連結性を考える。平行辺を許してよいが自己ループは入力しない。"
+      },
+      {
+        "id": "positive-three-sizes",
+        "feature": "三サイズは正で合計がN。全頂点を重複なく分け、指定サイズ順のラベルを返す。"
+      },
+      {
+        "id": "two-connected-enough",
+        "feature": "三集合のうち少なくとも二つが連結ならよく、残りの連結性は要求しない。構築または不可能判定が必要。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "dfs-lowlink-three-size-two-connected-partition"
+    ]
+  },
+  "verification": {
+    "result": "passed",
+    "actualArticleFenceCompiled": true,
+    "flags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "checks": 4278886,
+    "apiCalls": 273940,
+    "connectedGraphs": 27474,
+    "sortedSizeCases": 81610,
+    "orderedSizeCases": 271526,
+    "literalPartitions": 16208532,
+    "randomGraphCases": 1200,
+    "parallelEdgeCases": 1200,
+    "largeCases": 11,
+    "invalidCases": 16,
+    "checksum": "17105848895082083793",
+    "normalCommand": "python3 /tmp/flowchartcp-split-checker.py /tmp/flowchartcp-split-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-split-checker.py /tmp/flowchartcp-split-article.mdx --sanitize",
+    "normalSeconds": 0.304655,
+    "normalPeakRSSKiB": 27036,
+    "stackLimitBytes": 1048576,
+    "asanUbsan": {
+      "passed": true,
+      "checks": 4278886,
+      "apiCalls": 273940,
+      "literalPartitions": 16208532,
+      "checksum": "17105848895082083793",
+      "seconds": 3.82549,
+      "peakRSSKiB": 729084,
+      "stackLimitBytes": 1048576,
+      "leakSanitizer": false
+    },
+    "oracle": "For each connected labeled simple graph of orders3..6, enumerate every ordered nonempty mask partition A,B,C. Compute induced connectivity by direct graph searches. Fill feasibility for every ordered size triple and compare it with the C++ result; also independently verify the two-smallest-connected equivalence. The oracle does not use DFS tree, lowlink, the pivot criterion or the construction.",
+    "cases": [
+      "All27474 connected labeled simple graphs N3..6, all81610 sorted triples and271526 ordered triples including every distinct size permutation.",
+      "Literal assigned-set connectivity plus exact labels/sizes/at-least-two and the stronger sorted-smallest connectivity for every successful return.",
+      "1200 seeded connected random graphs N3..8 with vertex/edge/endpoint order shuffled, plus1200 randomly replicated parallel-edge variants.",
+      "Explicit9-vertex witness: return to pivot only is impossible; adding a strict-ancestor edge changes it to possible. Each witness checked by all3,3,3 partitions.",
+      "Official9-vertex sample with unsorted4,2,3 sizes and find_split wrapper.",
+      "100000-vertex chain with each distinct order of33333,33333,33334;100000-cycle;100000-star impossible balanced and possible singleton cases.",
+      "Original maximum200000 simple edges, including a spanning chain;200000 parallel edges on a spanning chain.",
+      "100003-vertex chain demonstrates no artificial original-N cap.",
+      "16 invalid inputs include nonpositive/mismatched/overflowing size sums, unequal arrays, extreme and invalid endpoints, self-loop and disconnected graphs.",
+      "All calls run in a child with1MiB stack; maximal chains exercise the iterative implementation."
+    ],
+    "sharedFilesModified": false,
+    "unconfirmedLemmas": [],
+    "unconfirmedPerformance": []
+  },
+  "editorNotes": [
+    "Eight required sections and exactly one always-visible complete C++20 fence; original statements/editorial prose are not reproduced.",
+    "Only /tmp/flowchartcp-split-{article.mdx,checker.py,sidecar.json} were edited. Shared data/articles and the initial IOI2019 audit remain unchanged.",
+    "The official PDF numeric extraction gap is distinct from verified original-document constraints in the ISC public mirror; mirror hosting and no-image/no-download acquisition are recorded explicitly.",
+    "Solution verification remains independent-analysis because missing official subscripts were independently reconstructed and proved."
+  ],
+  "artifactSha256": {
+    "article": "2ecc98b59508e5bec7f216019bfdcc1ff2af9da0315039cee7523b310cebaa5f",
+    "checker": "f05e50c7ec0735cc0fa8f1bf6e27bb61ce74f0675f19b275e201d0eef5b7defa"
+  },
+  "cppSha256": "55fb4346b32476ffb768cbb5ef70a2af0f752d52870110395d5a1b0871fceca9",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/dfs-lowlink-three-size-two-connected-partition.mdx",
+    "checker": "scripts/check_three_size_two_connected_cpp.py",
+    "featureFile": "data/three-size-two-connected-problem-features.json",
+    "entryGraphId": "graphs",
+    "choices": [
+      "group-constraints",
+      "three-size-two-connected",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "55fb4346b32476ffb768cbb5ef70a2af0f752d52870110395d5a1b0871fceca9",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true
+  }
+}

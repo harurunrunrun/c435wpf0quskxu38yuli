@@ -1,0 +1,217 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc222_e",
+    "title": "Red and Blue Tree",
+    "url": "https://atcoder.jp/contests/abc222/tasks/abc222_e",
+    "techniqueIds": [
+      "tree-path-edge-difference"
+    ],
+    "features": [
+      "木の全辺を赤か青に塗る",
+      "指定された訪問先列を順に移動する",
+      "赤い辺と青い辺の通過回数の差がKになる色分け数を数える",
+      "前処理として各辺の通過回数をまとめて求める"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc222/tasks/abc222_e",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "隣接する訪問先間の木の経路を繰り返し移動し、各辺の赤・青の通過回数から色分けを数える。まず辺ごとの通過回数が必要なので、端点と LCA の差分集計がその前処理に当たる。 辺の頻度集計は前処理であり、色分けの個数はその頻度を使って別に数える。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1136",
+    "title": "Counting Paths",
+    "url": "https://cses.fi/problemset/task/1136",
+    "techniqueIds": [
+      "tree-path-vertex-difference"
+    ],
+    "features": [
+      "木の各頂点を含む経路の数",
+      "端点も数える",
+      "全経路をまとめてから集計する"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1136",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "各頂点について、その頂点を端点を含めて通る与えられた経路の本数を出力する。辺ではなく頂点の集計なので、LCA とその親を一度ずつ引く差分式に一致する。 公開日は原典に明記されず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "SPOJ",
+    "problemId": "COT",
+    "title": "Count on a tree",
+    "url": "https://www.spoj.com/problems/COT/en/",
+    "techniqueIds": [
+      "tree-path-kth-persistent"
+    ],
+    "features": [
+      "各頂点に固定の整数値",
+      "二頂点間の経路にある値のk番目小",
+      "同じ値の重複を数える"
+    ],
+    "evidenceUrl": "https://www.spoj.com/problems/COT/en/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "original-date-before-cutoff",
+    "notes": "原典は固定の頂点重みについて u-v 経路の第 k 小を問い合わせる。根への頻度版を共有し、LCA を一度残す四版の頻度差から順位を探せる。原典の検索取得で追加日 2012-02-14 を確認し、直接ページ取得は 403 を記録した。",
+    "originalPublishedAt": "2012-02-14",
+    "directFetchStatus": "403",
+    "statementAcquisition": "primary-search-result"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "342E",
+    "title": "Xenia and Tree",
+    "url": "https://codeforces.com/problemset/problem/342/E",
+    "techniqueIds": [
+      "centroid-nearest-marked"
+    ],
+    "features": [
+      "無向木の辺数距離",
+      "頂点への印は追加のみ",
+      "指定頂点から最寄りの印までの距離"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/342/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "青い頂点を赤へ変更する操作だけがあり、赤から青への削除はない。質問は木の辺数による最寄り赤頂点距離なので、重心ごとの距離最小値を単調に更新できる。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "600E",
+    "title": "Lomsat gelral",
+    "url": "https://codeforces.com/problemset/problem/600/E",
+    "techniqueIds": [
+      "subtree-mode-sack"
+    ],
+    "features": [
+      "根が固定された木の頂点色",
+      "全部分木について最頻色を集計",
+      "最多が複数なら色番号を合計"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/600/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "各頂点の部分木で出現回数最大の色を全て選び、その色番号の合計を求める。最多の同数色を保持する必要があり、頻度への追加時に最大回数と該当色の和を更新する sack が直接使える。"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "vertex_set_path_composite",
+    "title": "Vertex Set Path Composite",
+    "url": "https://judge.yosupo.jp/problem/vertex_set_path_composite",
+    "techniqueIds": [
+      "tree-path-directed-composition"
+    ],
+    "features": [
+      "頂点に一次関数がある",
+      "頂点関数の変更がある",
+      "始点から終点への順番で全関数を適用する"
+    ],
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/tree/vertex_set_path_composite/task.md",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "頂点の一次関数を変更し、指定した始点から終点への頂点順で合成する問題。関数合成は順序を交換できないため、各区間の正順・逆順の両方と、経路の両端側の積み上げ順が必要になる。 公開日は原典に明記されず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "916E",
+    "title": "Jamie and Tree",
+    "url": "https://codeforces.com/problemset/problem/916/E",
+    "techniqueIds": [
+      "reroot-subtree-complement"
+    ],
+    "features": [
+      "木の辺は固定で根だけ変わる",
+      "部分木への加算と部分木和",
+      "二頂点を含む最小の部分木へ加算"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/916/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "根を変更し、現在の根に対する部分木和と、二点を含む最小部分木への加算を処理する。根変更部分木の補集合と三つの固定根 LCA から得る現在 LCA を組み合わせると、各操作を固定 DFS 区間へ直せる。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "343D",
+    "title": "Water Tree",
+    "url": "https://codeforces.com/problemset/problem/343/D",
+    "techniqueIds": [
+      "subtree-path-last-write"
+    ],
+    "features": [
+      "根が固定の木で各頂点は0か1",
+      "部分木の全頂点を1に設定",
+      "根から指定頂点への全頂点を0に設定",
+      "一頂点の現在値を質問"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/343/D",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "部分木を満たし、指定頂点とその全祖先を空にし、点状態を質問する。消去端点が質問頂点の部分木内にあるときだけ影響するため、経路更新を消去時刻の点更新と部分木最大値へ置き換えられる。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1202",
+    "title": "Investigation",
+    "url": "https://cses.fi/problemset/task/1202",
+    "techniqueIds": [
+      "shortest-tight-dag-statistics"
+    ],
+    "features": [
+      "正の重みの有向グラフ",
+      "最短距離だけでなく最短路の個数を求める",
+      "最短路の辺数の最小と最大も必要"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1202",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "全飛行費用が 1 以上で、最小費用・最小費用の経路数・その中の飛行数の最小最大を求める。正の費用で最短距離が厳密に増えるため、最短距離を保つ辺の DAG 上で三種類を同時に集計できる。 公開日は原典に明記されず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1195",
+    "title": "Flight Discount",
+    "url": "https://cses.fi/problemset/task/1195",
+    "techniqueIds": [
+      "shortest-one-edge-discount"
+    ],
+    "features": [
+      "非負費用の有向グラフ",
+      "経路中の一辺だけ費用を半分にできる",
+      "割引は一回で切り捨てる"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1195",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "有向辺の通常費用は正で、飛行一回の費用だけを半分の切り捨てにできる。割引辺を固定すると前後には通常の最短距離しか残らないため、順方向・逆方向の距離で全辺候補を評価できる。 公開日は原典に明記されず、基準日以前の掲載とは断定しない。"
+  }
+]

@@ -1,0 +1,1585 @@
+{
+  "techniqueId": "bounded-spread-subset-sum-sorted-window-witness",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2016-molecules-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2016-molecules-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2016-molecules-sidecar.json",
+    "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+    "checkerSha256": "6b4bff7d2a630691a5f15fcbe438b92f9bf3653fd8953f85b549f69c08f4134b",
+    "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/bounded-spread-subset-sum-sorted-window-witness.mdx",
+    "techniqueGroup": "data/techniques-specific-selection-patterns.json",
+    "referenceGroup": "data/references-specific-selection-patterns.json",
+    "feature": "data/bounded-spread-subset-problem-features.json",
+    "checker": "scripts/check_bounded_spread_subset_cpp.py",
+    "verification": "research/technique-verifications/bounded-spread-subset-sum-sorted-window-witness.json"
+  },
+  "metadata": {
+    "id": "bounded-spread-subset-sum-sorted-window-witness",
+    "title": "合計を範囲に収める部分集合を、重さの幅を使って一つ見つける",
+    "summary": "許容範囲の幅が重さの最大差以上なら、ソート後の連続区間から元の添字を復元する。",
+    "aliases": [
+      "Bounded spread subset sum sorted contiguous window original index witness",
+      "IOI2016 Molecules solve find_subset",
+      "正の部分集合和 許容幅 重さの最大差 ソート窓 元添字の復元"
+    ],
+    "family": "幅の保証を使う部分集合の証拠復元",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "two-pointers",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "bounded-spread-subset-sum-sorted-window-witness",
+    "source": "IOI",
+    "problemId": "ioi2016_molecules",
+    "title": "Detecting Molecules",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "evidence": "正の重さから個数自由の部分集合を一つ選び、合計を閉区間へ収めて元の添字を返す。許容幅が最大重さと最小重さの差以上なので、任意部分集合解からソート後の連続窓解の存在を示し、和の二端点走査で復元できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に日本委員会の英語原典3頁、公式Solutions第1〜2頁、Day1 Notice、公式課題一覧をwebで再読。N1..200000、重さ/l/uは正かつ2^31未満、幅保証、添字の任意順、失敗時空配列、1秒/2GB、2016-08-14を確認。公式archive primary indexed本文のapi-ISC版はfind_subset、日本委員会ISC版はsolve。両者の公開時期の順序と実grader header bytesは未確認のまま、generic型とNoticeから導いた二adapterを別に検査した。公式Greedy2と独立の固定要素数窓・飛び幅・正の二端点完全性・元添字復元証明を採用。Greedy1のmaxSum<=lという誤記には依存しない。実MDXの単一可視C++20を通常/ASan+UBSanで抽出検査し、同34096437checks/3129167API/checksum2569540640142451667成功。重複を含む全順序21844配列、直接部分集合13228154割当（乱択を含む）、全適合小範囲3088644、両adapter36074呼出し（不正8件を含む）、乱択1200、metamorphic3200、不正25、最大N20万8構成。通常native .681132秒/RSS21540KiB、ASan4.08062秒/RSS851084KiB。最大単独core通常 .0135659秒、ASan .0448728秒はこの実行環境の観測で、一般的なハードウェア時間保証とはしない。初回positive6行/status/selection/snapshotは保持し、研究追加を行わないresolution-only。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2016_molecules",
+    "title": "Detecting Molecules",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+    "techniqueIds": [
+      "bounded-spread-subset-sum-sorted-window-witness"
+    ],
+    "features": [
+      "各正の重さを一回まで選び、個数自由の部分集合の合計を[l,u]に入れる。",
+      "許容幅u−lは最大重さと最小重さの差以上。元の添字を一つ返し、無ければ空配列。",
+      "原典N1〜200000、重さ/l/uは1〜2^31−1、l<=u。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "notes": "正の重さから個数自由の部分集合を一つ選び、合計を閉区間へ収めて元の添字を返す。許容幅が最大重さと最小重さの差以上なので、任意部分集合解からソート後の連続窓解の存在を示し、和の二端点走査で復元できる。",
+    "discoveredBy": "ioi-2016",
+    "publicationDate": "2016-08-14",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "entryGraphId": "ranges",
+    "choices": [
+      "selected-elements",
+      "bounded-spread-subset",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "bounded-spread-subset-sum-sorted-window-witness"
+    ],
+    "verificationKind": "independent-analysis",
+    "originalNumericBoundsVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+    "statementPages": 3,
+    "sourceContractVerified": true,
+    "originalNumericBoundsVerified": true,
+    "numericBoundsVerified": true,
+    "originalBounds": {
+      "N": [
+        1,
+        200000
+      ],
+      "weights": [
+        1,
+        2147483647
+      ],
+      "lower": [
+        1,
+        2147483647
+      ],
+      "upper": [
+        1,
+        2147483647
+      ],
+      "rangeOrder": "l<=u",
+      "width": "u-l>=max(w)-min(w)",
+      "selection": "each original index at most once,cardinality free,return any one witness",
+      "answerOrder": "any order",
+      "noSolution": "empty vector",
+      "emptySubsetValid": false
+    },
+    "sourceSeconds": 1,
+    "sourceMemoryGB": 2,
+    "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+    "noticeCppArrayType": "std::vector<int>",
+    "noticeProhibitsStandardInputOutput": true,
+    "cppHeaderBytesRetrieved": false,
+    "primaryPdfImagesClaimedRead": false,
+    "readMethod": "web primary PDF text; displaced full numeric formulas read at original lines97/98; primary indexed archive API full text",
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "editorialPages": [
+      1,
+      2
+    ],
+    "editorialAuthor": "Shi-Chun Tsai",
+    "chosenOfficialProcedure": "Greedy2: sorted contiguous segment with two pointers",
+    "editorialTypoNotUsed": "p1 Greedy1 prints maxSum[k]<=l; correct necessary suffix endpoint is >=l. This implementation and proof use Greedy2 and do not assume that typo.",
+    "apiEditions": {
+      "japaneseCommitteeISC": {
+        "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+        "generic": "int[] solve(int l,int u,int[] w)",
+        "pages": [
+          1,
+          2
+        ]
+      },
+      "officialArchiveApiISC": {
+        "url": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+        "generic": "int[] find_subset(int l,int u,int[] w)",
+        "readMethod": "primary indexed search text Country:api-ISC; actual direct open may time out",
+        "exactQuery": "site:ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf \"find_subset\""
+      },
+      "relativePublicationChronologyVerified": false,
+      "derivedCppSignatureEvidence": "Generic signatures plus Day1 Notice type mapping,not actual header bytes.",
+      "actualCppHeadersVerified": false
+    },
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "difficulty": null,
+    "unconfirmedRequiredSourceFacts": [],
+    "unconfirmedRequiredLemmas": [],
+    "optionalUnknowns": [
+      "Relative publication order of solve and find_subset editions.",
+      "Actual original grader header bytes and any qualifiers beyond the generic statement/Notice derivation.",
+      "Other two greedy variants are not used or fully reviewed."
+    ]
+  },
+  "api": {
+    "namespace": "subset_window",
+    "function": "template<std::signed_integral Weight> requires(sizeof(Weight)<=sizeof(std::int64_t)) std::optional<std::vector<int>> find_subset_in_range(std::int64_t lower,std::int64_t upper,std::span<const Weight> weights)",
+    "adapters": [
+      "std::vector<int> solve(int l,int u,std::vector<int> w)",
+      "std::vector<int> find_subset(int l,int u,std::vector<int> w)"
+    ],
+    "publicBounds": {
+      "N": [
+        0,
+        200000
+      ],
+      "weights": [
+        1,
+        2147483647
+      ],
+      "range": [
+        1,
+        2147483647
+      ],
+      "rangeOrder": "lower<=upper",
+      "width": "nonempty inputs require upper-lower>=max(weights)-min(weights)"
+    },
+    "emptyInput": "valid range and empty span -> nullopt;original source N>=1 is a subset",
+    "emptySuccessfulWitness": "never returned because lower>=1",
+    "noSolution": "generic nullopt;both original-name adapters return an empty vector",
+    "invalid": "invalid_argument for bad size,range,any weight or width;full input is checked before sort/search allocation,including an invalid trailing weight",
+    "allocationFailure": "standard allocation exceptions propagate without catch;no allocation-fault injection claimed",
+    "state": "all data local;const span never modified,no static mutable state,no IO",
+    "output": "distinct original0-based indices,weight-sorted witness order is permitted",
+    "reentrancyVerified": true,
+    "sourceComplete": true,
+    "headers": "Standalone article fence compiles without external source headers;adapter types are Notice-derived,not claimed as a retrieved header declaration."
+  },
+  "proof": {
+    "requiredLemmasVerified": true,
+    "unconfirmedRequiredLemmas": [],
+    "lemmas": [
+      "An arbitrary k-element subset sum lies between the sums of the smallest and largest k sorted elements.",
+      "Consecutive length-k window sums are nondecreasing and jump by at most the global spread,so a crossing of lower cannot skip the admissible width.",
+      "Positive weights let the left endpoint discard an upper-overflow start permanently;shorter windows cannot repair a below-lower sum.",
+      "Stored original indices are distinct and preserve exactly the selected weights;absence of any sorted window excludes every arbitrary subset."
+    ],
+    "boundaryCases": [
+      "equal weights and zero width",
+      "N1 and empty extension",
+      "many duplicates with different original indices",
+      "inclusive lower/upper endpoints",
+      "32bit transient overflow despite32bit original values"
+    ]
+  },
+  "complexity": {
+    "time": "O(N log N),withO(N)validation/two-pointers/output;empty inputO(1)",
+    "extraSpace": "O(N) for value/index pairs and witness,plusO(log N) sort recursion;original adapters by-value input copying is alsoO(N)",
+    "integer": {
+      "type": "std::int64_t",
+      "maximumGeneralSubsetSum": "429496729400000",
+      "maximumScanTransient": "4294967294",
+      "indexMaximum": 199999,
+      "subtractionsAfterValidationBounded": true
+    },
+    "sourceBudget": {
+      "seconds": 1,
+      "memoryGB": 2
+    },
+    "observedMaximumCoreSecondsNormal": 0.0135659,
+    "observedMaximumCoreSecondsAsan": 0.0448728,
+    "timingLimitStatement": "Source limits are confirmed;observed host timings are evidence,not a universal hardware guarantee."
+  },
+  "flowSuggestion": {
+    "entryGraphId": "ranges",
+    "parentGraphId": "range-selected-elements",
+    "parentNodeId": "updates",
+    "newAnswerId": "bounded-spread-subset",
+    "newAnswerLabel": "許容幅が重さの最大差以上のとき、合計が範囲内の部分集合を一つ探す",
+    "guardGraphId": "bounded-spread-subset-conditions",
+    "canonicalChoices": [
+      "selected-elements",
+      "bounded-spread-subset",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "positive-spread-range",
+        "question": "重さは正で、合計の許容範囲の幅が、重さの最大差以上ですか？",
+        "explanation": "閉区間[l,u]の幅u−lがmax(w)−min(w)以上です。この保証があって初めて、ソート後の連続区間だけを探せます。"
+      },
+      {
+        "id": "original-index-witness",
+        "question": "個数を固定せず部分集合を一つ選び、元の添字を返せばよいですか？",
+        "explanation": "各要素は一回まで選びます。個数や順序の最適化、選び方の数、全ての到達和の出力は求めません。"
+      },
+      {
+        "id": "bounds",
+        "question": "要素数1〜20万で、重さと範囲の両端は1〜2^31−1ですか？",
+        "explanation": "入力の個数・値・範囲・幅の条件を検査し、和を64ビットで計算します。掲載する一般APIは空の入力も解なしとして扱います。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "bounded-spread-subset-sum-sorted-window-witness"
+    ],
+    "oldGuardPreservation": "Append one feature answer and route,without changing existing parent questions/answers/options/relative ordering or any existing guard."
+  },
+  "verification": {
+    "actualSingleVisibleMdxFence": true,
+    "naturalJapaneseEightSections": true,
+    "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+    "checkerSha256": "6b4bff7d2a630691a5f15fcbe438b92f9bf3653fd8953f85b549f69c08f4134b",
+    "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2016-molecules-checker.py",
+      "python3 /tmp/flowchartcp-ioi2016-molecules-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 34096437,
+      "apiCalls": 3129167,
+      "orderedWeightArrays": 21844,
+      "literalSubsetAssignments": 13228154,
+      "allValidSmallRangeCases": 3088644,
+      "adapterCalls": 36074,
+      "randomInputs": 1200,
+      "metamorphicChecks": 3200,
+      "invalidCalls": 25,
+      "checksum": "2569540640142451667",
+      "seconds": 0.681132,
+      "peakRSSKiB": 21540,
+      "maximumCases": [
+        {
+          "name": "all one,all indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.00354468
+        },
+        {
+          "name": "all one,unreachable upper value",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.00272255
+        },
+        {
+          "name": "all maximal weight,one witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.00269696
+        },
+        {
+          "name": "all maximal minus one,32bit intermediate overflow trap",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.00294254
+        },
+        {
+          "name": "all10000,all200000 indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.00297261
+        },
+        {
+          "name": "descending arithmetic progression,known20000item witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 20000,
+          "coreSeconds": 0.00232644
+        },
+        {
+          "name": "full integer domain,loose range",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0116187
+        },
+        {
+          "name": "near half intmax,no cardinality can fit",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0135659
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 34096437,
+      "apiCalls": 3129167,
+      "orderedWeightArrays": 21844,
+      "literalSubsetAssignments": 13228154,
+      "allValidSmallRangeCases": 3088644,
+      "adapterCalls": 36074,
+      "randomInputs": 1200,
+      "metamorphicChecks": 3200,
+      "invalidCalls": 25,
+      "checksum": "2569540640142451667",
+      "seconds": 4.08062,
+      "peakRSSKiB": 851084,
+      "maximumCases": [
+        {
+          "name": "all one,all indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.0265817
+        },
+        {
+          "name": "all one,unreachable upper value",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0252285
+        },
+        {
+          "name": "all maximal weight,one witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0251416
+        },
+        {
+          "name": "all maximal minus one,32bit intermediate overflow trap",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0254258
+        },
+        {
+          "name": "all10000,all200000 indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.026113
+        },
+        {
+          "name": "descending arithmetic progression,known20000item witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 20000,
+          "coreSeconds": 0.016781
+        },
+        {
+          "name": "full integer domain,loose range",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0448728
+        },
+        {
+          "name": "near half intmax,no cardinality can fit",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.039966
+        }
+      ]
+    },
+    "counterSemantics": {
+      "checks": "Every require assertion,including individual witness index checks;not unique input count.",
+      "apiCalls": "3129167 public generic/adapter entries,including all25 invalid calls and8 invalid source-adapter calls.",
+      "allOrderedArrays": "All original-order arrays N1..7 over1..4,with repeats and permutations retained:21844.",
+      "allValidSmallRanges": "For each such array,every1<=lower<=upper<=sum(weights)+2 satisfying width>=spread:3088644.",
+      "literalSubsetAssignments": "Every explicitly iterated bitmask in the exhaustive/random/example oracles:13228154. Repeated sum values remain separate assignments.",
+      "adapters": "36074 source-name calls across both versions,including8 invalid calls;not twice the number of generic calls.",
+      "maximum": "8 families at sourceN200000;each runs generic plus both source adapters and verifies original witness indices.",
+      "random": "1200 literal-subset inputs,with3200 order/positive-scale invariance calls.",
+      "invalid": "25 bad public invocations;source-empty extension is valid and separate."
+    },
+    "oracleIndependence": "Explicit original-position subset masks are enumerated without sorting or window assumptions. Expected small-range existence uses their direct sum set prefix counts. Maximum uniform cases use divisibility/cardinality arithmetic;progression case has an explicit20000-item certificate;near-half-intmax case excludes1 and>=2 elements by cardinality bounds. Every returned maximum witness is checked in the unmodified original input.",
+    "apiTypeChecks": "signed8/16/32/64 spans compiled;unsigned/floating types rejected by constraints;both original-name by-value adapter signatures are checked by static_assert.",
+    "allocationFaultInjectionPerformed": false,
+    "independentExternalReviewStatus": "pending"
+  },
+  "relatedArticleReview": [
+    {
+      "techniqueId": "two-pointers",
+      "file": "src/content/docs/techniques/two-pointers.mdx",
+      "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+      "cppFenceSha256": "0152a4bb583c544b29a7f84515cf6e70e3cd020636fe8868d825f613013259e2",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "尺取り法",
+      "scopeMismatch": "連続区間の個数を返すAPIであり、任意部分集合をソート窓へ移せる補題・元添字の復元を含まない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-core.json",
+          "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+        }
+      ]
+    },
+    {
+      "techniqueId": "knapsack",
+      "file": "src/content/docs/techniques/knapsack.mdx",
+      "sha256": "5a0e0fb005f9c82154c323226d902ab9b942b91c8175d31814c2e227d8fef3ec",
+      "cppFenceSha256": "faec4a4e00049411186a3f5136f9f7196e7e7f7547b29ff5cca14a96f5138b02",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "ナップサックDP",
+      "scopeMismatch": "容量依存O(Nu)の最大価値配列で、u約21億の原典全域や証拠添字を扱う完成APIではない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-core.json",
+          "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+        }
+      ]
+    },
+    {
+      "techniqueId": "knapsack-bitset-shift",
+      "file": "src/content/docs/techniques/knapsack-bitset-shift.mdx",
+      "sha256": "d14d5f383c1896589636de56f7b65380a5de051449b2a7c7851a4e5c55d94e9f",
+      "cppFenceSha256": "32e108b193b5f1825a6e959d10f9a9388cf7769a9d21bdbc1e8186b2fc62efdf",
+      "fullArticleAndAllCodeRead": true,
+      "originalFullRangeApiReusable": false,
+      "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+      "fullImplementationRevalidatedForOriginal": false,
+      "title": "部分和の可否だけならビット列をずらしてまとめて更新する",
+      "scopeMismatch": "合計の可否ビット列のみ。N20万/u約21億のワード処理と選択添字復元を満たす全域APIではない。",
+      "metadataSourceFiles": [
+        {
+          "file": "data/techniques-specific-math.json",
+          "sha256": "4ae4f334343a453fe519e5014b71056974d69436574a78db8ec621a9ce004a3a"
+        }
+      ]
+    }
+  ],
+  "rootTrace": {
+    "initialReached": {
+      "graphId": "range-selected-elements",
+      "nodeId": "updates",
+      "type": "question",
+      "title": "数列について、何を求めますか？",
+      "options": [
+        {
+          "id": "pair",
+          "label": "二つ・四つの値の組を探す"
+        },
+        {
+          "id": "median",
+          "label": "値を増やして中央値などを最大化する"
+        },
+        {
+          "id": "increasing-subsequence",
+          "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+        },
+        {
+          "id": "remove-rank",
+          "label": "円環の残った要素から、指定順位の要素を削除する"
+        },
+        {
+          "id": "lis-results",
+          "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+        },
+        {
+          "id": "pair-product-ratio",
+          "label": "二数の積の順位、または二数を割った商の総和"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ],
+      "techniques": [],
+      "conditions": []
+    },
+    "initialChoices": [
+      "selected-elements"
+    ],
+    "initialSteps": [
+      {
+        "graphId": "ranges",
+        "nodeId": "updates",
+        "question": "数列について、何を求めますか？",
+        "answer": "selected-elements",
+        "answerLabel": "複数の値・増加する部分列・順位から要素を選ぶ",
+        "target": "selected-elements-route"
+      }
+    ],
+    "initialQuestion": "数列について、何を求めますか？",
+    "initialOptions": [
+      {
+        "id": "pair",
+        "label": "二つ・四つの値の組を探す"
+      },
+      {
+        "id": "median",
+        "label": "値を増やして中央値などを最大化する"
+      },
+      {
+        "id": "increasing-subsequence",
+        "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+      },
+      {
+        "id": "remove-rank",
+        "label": "円環の残った要素から、指定順位の要素を削除する"
+      },
+      {
+        "id": "lis-results",
+        "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+      },
+      {
+        "id": "pair-product-ratio",
+        "label": "二数の積の順位、または二数を割った商の総和"
+      },
+      {
+        "id": "unknown",
+        "label": "わからない"
+      }
+    ],
+    "firstMissingGraphId": "range-selected-elements",
+    "firstMissingNodeId": "updates",
+    "all15RootsConsideredInFrozenInitialAudit": true,
+    "initialActualReachedTechniqueIds": []
+  },
+  "initialAuditPreservation": {
+    "auditFile": "data/corpus-audits/ioi-2016.json",
+    "auditShaAtAuthorRead": "6acf36d22f9fad9afaa5fefd1561d64364bb441ce55c790d72d669d83560b029",
+    "originalAuditArchive": "research/snapshots/ioi-2016-original-audit.json.gz",
+    "originalAuditSha256": "d69b49d6672dcbf4145ef36c7d265bc135fb848a3561f4523677bd76d7318b83",
+    "initialRow": {
+      "source": "ioi",
+      "problemId": "ioi2016_molecules",
+      "officialTaskId": "molecules",
+      "title": "分子の検出",
+      "englishTitle": "Detecting Molecules",
+      "day": 1,
+      "date": "2016-08-14",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 1,
+        "date": "2016-08-14",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "正の重さから個数自由の部分集合を一つ選び、合計を範囲へ収める。範囲幅が最大・最小の重さの差以上。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            1,
+            200000
+          ],
+          "l": [
+            1,
+            2147483647
+          ],
+          "u": [
+            1,
+            2147483647
+          ],
+          "w_i": [
+            1,
+            2147483647
+          ],
+          "rangeOrder": "l<=u",
+          "gapGuarantee": "u−l>=max(w)−min(w)",
+          "indices": "0..N−1, distinct original indices, any order",
+          "answer": "any witness subset; empty if impossible"
+        },
+        "genericApi": "int[] find_subset(int l,int u,int[] w)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          9,
+          10,
+          12,
+          15,
+          23,
+          31
+        ],
+        "subtaskBounds": [
+          "N<=100,weights<=100,l/u<=1000,allweights equal",
+          "N<=100,w/l/u<=1000,spread<=1",
+          "N<=100,w/l/u<=1000",
+          "N<=10000,w/l/u<=10000",
+          "N<=10000,w/l/u<=500000",
+          "N<=200000,w/l/u<2^31"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+        "timeSeconds": 1,
+        "memoryGB": 2,
+        "apiEditions": {
+          "jpCommitteeGeneric": "int[] solve(int l,int u,int[] w)",
+          "officialArchiveApiGeneric": "int[] find_subset(int l,int u,int[] w)",
+          "officialArchiveApiUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+          "officialArchiveApiRetrieval": "indexed primary search full text; direct open timeout",
+          "exactSearchQuery": "site:ioi.te.lv/locations/ioi16 \"find_subset\"",
+          "chronology": "JP ISC/JPN snapshot prints solve. Official archive English link432 prints Country api - ISC and find_subset. Relative publication times not verified; store as edition/API difference, not inferred chronology."
+        }
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "selected-elements"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "selected-elements",
+          "answerLabel": "複数の値・増加する部分列・順位から要素を選ぶ",
+          "target": "selected-elements-route"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "type": "question",
+        "title": "数列について、何を求めますか？",
+        "options": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "type": "question",
+        "title": "数列について、何を求めますか？",
+        "options": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "type": "question",
+        "title": "数列について、何を求めますか？",
+        "options": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "bounded-spread-subset-sum-sorted-window-witness",
+        "features": [
+          "正の重さから個数自由の部分集合を一つ選び、合計を範囲へ収める。範囲幅が最大・最小の重さの差以上。"
+        ],
+        "firstMissingGraphId": "range-selected-elements",
+        "firstMissingNodeId": "updates",
+        "stopNodeType": "question",
+        "currentQuestion": "数列について、何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "二つ/四つの組、順位、部分列の選択肢しかなく、幅条件を使う個数自由の部分集合と元添字の証拠がない。",
+        "neededTechniqueIds": [
+          "bounded-spread-subset-sum-sorted-window-witness"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "two-pointers",
+          "knapsack",
+          "knapsack-bitset-shift"
+        ],
+        "proposedFeatureAnswer": "範囲の幅が重さの最大差以上のとき、合計が範囲内の部分集合を一つ探す",
+        "proposedBranchAt": {
+          "graphId": "range-selected-elements",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "currentOptions": [
+            {
+              "id": "pair",
+              "label": "二つ・四つの値の組を探す"
+            },
+            {
+              "id": "median",
+              "label": "値を増やして中央値などを最大化する"
+            },
+            {
+              "id": "increasing-subsequence",
+              "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+            },
+            {
+              "id": "remove-rank",
+              "label": "円環の残った要素から、指定順位の要素を削除する"
+            },
+            {
+              "id": "lis-results",
+              "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+            },
+            {
+              "id": "pair-product-ratio",
+              "label": "二数の積の順位、または二数を割った商の総和"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "固定個数の連続窓の和の飛び幅が範囲幅以下なので、任意部分集合解があればソート後の連続窓解がある。元の添字を保持してsortし、正の和のtwo pointersで一つ復元する。",
+        "complexity": "O(NlogN)時間・O(N)空間。和はN*(2^31−1)まであり64bit。",
+        "independentProofSupplement": [
+          "重さ昇順に並べ、任意の解の要素数kを固定する。最小k個和<=u、最大k個和>=l。",
+          "長さkの窓を左から右へ一位置ずつ動かす和は非減少で、増分w[i+k]−w[i]<=maxw−minw<=u−l。初めてl以上になる窓はuを飛び越せない。",
+          "正の窓の和がuを超えたら左を進める。任意の条件適合窓を捨てず、各端は一度だけ進む。元添字とのpairを返せる。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            1,
+            2
+          ],
+          "printedAuthor": "Shi-Chun Tsai",
+          "independentDetailsNotClaimedVerbatim": "Editorial p1 Greedy1のprinted maxSum<=l は記述どおりの存在条件ではない。採用はGreedy2と独立の>=l条件・飛び幅証明であり、誤記を前提にしない。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Other two greedy variants are not required by chosen window proof."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allSortedWeightArraysN1to8Weights1to6": 3002,
+          "allSubsetAssignmentsRepresented": 471040,
+          "validRangeCases": 234228,
+          "missingGapGuardCounterexample": {
+            "w": [
+              2,
+              3,
+              7
+            ],
+            "l": 9,
+            "u": 9,
+            "arbitrarySubset": [
+              0,
+              2
+            ],
+            "sortedContiguousWindowExists": false
+          },
+          "verified": "Positive sorted window search equals independent exact all-subset sum-set DP existence for all tested valid-width ranges. Cardinality window sums are monotone and jump by at most max−min<=u−l. Sorting retains original indices in future API.",
+          "unconfirmed": "Complete reusable C++20/API/invalid/overflow/full-scale checker not created."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "two-pointers",
+          "file": "src/content/docs/techniques/two-pointers.mdx",
+          "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+          "cppFenceSha256": "0152a4bb583c544b29a7f84515cf6e70e3cd020636fe8868d825f613013259e2",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "尺取り法",
+          "scopeMismatch": "連続区間の個数を返すAPIであり、任意部分集合をソート窓へ移せる補題・元添字の復元を含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ]
+        },
+        {
+          "techniqueId": "knapsack",
+          "file": "src/content/docs/techniques/knapsack.mdx",
+          "sha256": "5a0e0fb005f9c82154c323226d902ab9b942b91c8175d31814c2e227d8fef3ec",
+          "cppFenceSha256": "faec4a4e00049411186a3f5136f9f7196e7e7f7547b29ff5cca14a96f5138b02",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "ナップサックDP",
+          "scopeMismatch": "容量依存O(Nu)の最大価値配列で、u約21億の原典全域や証拠添字を扱う完成APIではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ]
+        },
+        {
+          "techniqueId": "knapsack-bitset-shift",
+          "file": "src/content/docs/techniques/knapsack-bitset-shift.mdx",
+          "sha256": "d14d5f383c1896589636de56f7b65380a5de051449b2a7c7851a4e5c55d94e9f",
+          "cppFenceSha256": "32e108b193b5f1825a6e959d10f9a9388cf7769a9d21bdbc1e8186b2fc62efdf",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "部分和の可否だけならビット列をずらしてまとめて更新する",
+          "scopeMismatch": "合計の可否ビット列のみ。N20万/u約21億のワード処理と選択添字復元を満たす全域APIではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-math.json",
+              "sha256": "4ae4f334343a453fe519e5014b71056974d69436574a78db8ec621a9ce004a3a"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "90a8e37f777950a298e1232cc8dd31f3809fed881e155c28975b01ba952b4c47",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 1,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "ranges/selected-elements-route"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ]
+    },
+    "initialRowSha256": "6fc5b9fc93cd5d8868084a162a9e4f5fbdbd1d441123b41a1da44fd0bc0f1a82",
+    "initialStatus": {
+      "fixedProblemListComplete": true,
+      "firstPassAuditComplete": true,
+      "fixedCorpusResearchComplete": true,
+      "fixedCorpusCoverageComplete": false,
+      "globalCoverageComplete": false,
+      "globalLearningComplete": false,
+      "recordCount": 6,
+      "statementVerifiedCount": 6,
+      "numericBoundsVerifiedCount": 6,
+      "numericBoundsUnconfirmedCount": 0,
+      "officialEditorialRetrievedCount": 6,
+      "officialEditorialVerifiedCount": 6,
+      "solutionReviewedCount": 6,
+      "coveredCount": 0,
+      "missingRouteCount": 0,
+      "missingTechniqueCount": 6,
+      "unconfirmedCount": 0,
+      "unavailableCount": 0,
+      "unconfirmedPrincipalDetailsCount": 0,
+      "fullImplementationValidatedCount": 0,
+      "articleResolutionComplete": false,
+      "fixedCorpusResearchCompleteDefinition": "固定6題の選定した原典全域手順と主要補題が一次資料+独立証明で確認できた状態。全別解や完成API/記事の存在を意味しない。",
+      "articleResolutionNotes": "研究6/6、完成API/記事対応/原典walk/coverage0/6。今後のresolutionを初回へ遡及しない。"
+    },
+    "initialStatusSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialSelectionSha256": "203a4b9f29e2711a5c680ee99496647b0066fec106c3d2393be318c498561c7e",
+    "initialSixRecordsSha256": "1fd300bf660b59cfe36cf0a9a16c41a83ed05a399e799801fce12a1e6e3f6584",
+    "initialSnapshotSha256": "e8a57e1f82671067c45c714f870c7d4f9e652a885ce79fb258c0c23987ff59ce",
+    "hashEncoding": "UTF8 json.dumps(sort_keys=True,separators=(',',':'),ensure_ascii=False),Python numeric-key lexical order explicitly retained for these semantic digests;original raw SHA authoritative.",
+    "allInitialSixFieldsUnchanged": true,
+    "initialResearchPositivePreserved": true,
+    "initialFullImplementationFalsePreserved": true,
+    "initialResearchCount": 6,
+    "initialCoverageCount": 0,
+    "additionalPositiveResearchReviewsProposed": 0,
+    "resolutionOnly": true,
+    "sharedFilesEdited": []
+  },
+  "resolutionProposal": {
+    "problemId": "ioi2016_molecules",
+    "status": "verified",
+    "techniqueIds": [
+      "bounded-spread-subset-sum-sorted-window-witness"
+    ],
+    "reviewedAt": "2026-10-15",
+    "verification": "independent-analysis",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "notes": "初回positive研究を保持し、完全記事/C++20/全原典API/実掲載fence独立oracle・最大・不正・通常ASanと別peerreviewが揃った後にresolutionだけを追加する。subsequentSolutionReviewsは追加しない。",
+    "sourceVerificationTarget": "research/technique-verifications/bounded-spread-subset-sum-sorted-window-witness.json"
+  },
+  "integrationGate": {
+    "authorArticleAndFullApiValidationComplete": true,
+    "sourceBoundsVerified": true,
+    "unconfirmedRequiredLemmas": [],
+    "independentPeerReviewRequired": true,
+    "independentPeerReviewCompleted": false,
+    "sharedRegistrationPerformed": false
+  },
+  "preservation": {
+    "sharedDataOrArticleOrAuditOrFlowModified": false,
+    "initialSixRowsUnchanged": true,
+    "formerResearchPrototypeNotRelabeled": true,
+    "externalPushOrPublication": false,
+    "envFileRead": false,
+    "status": "author-frozen-awaiting-independent-review"
+  },
+  "statusAtAuthorFreeze": "author-article-full-api-ready-awaiting-independent-review",
+  "status": "verified-and-integrated",
+  "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/bounded-spread-subset-sum-sorted-window-witness.mdx",
+    "checker": "scripts/check_bounded_spread_subset_cpp.py",
+    "metadataGroup": "selection-patterns",
+    "entryGraphId": "ranges",
+    "choices": [
+      "selected-elements",
+      "bounded-spread-subset",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Normalize checker and independent probe MDX paths to repository paths.",
+      "Normalize metadata entryPoints order to advanced,complexity,reasoning; article text and C++ unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-ioi2016-molecules.json"
+  },
+  "artifactSha256": {
+    "authorArticle": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+    "authorChecker": "6b4bff7d2a630691a5f15fcbe438b92f9bf3653fd8953f85b549f69c08f4134b",
+    "authorSidecar": "88707e2da0a6e4c84e39c4db83d242eb3ebd72aca3e5139734611b7f21335a03",
+    "publishedArticle": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+    "publishedChecker": "24f353bb4a9425488205b566cf661b83fbbc16881e78cbfe8014f8c324292bce"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "date": "2026-10-15",
+      "reviewer": "/root",
+      "status": "passed",
+      "techniqueId": "bounded-spread-subset-sum-sorted-window-witness",
+      "allEightSectionsAndEntireCppRead": true,
+      "completePublishedFenceCheckerRead": true,
+      "independentReportAndCompleteAdditionalProbeRead": true,
+      "sourceReview": "Complete JP3pageISC and Day1Notice web text, officialarchive api-ISC full indexed signature/body, officialSolutions selected Greedy2 and independent cardinality-window supplement checked. Final full numeric bound visible at displaced page2 formulas; actualheader/relative API chronology not inferred.",
+      "proofReviewed": [
+        "arbitrary k-subset bracketed by min/max k-sums",
+        "fixed k-window monotonicity and no jump over allowed range",
+        "positive two-pointer completeness over unknown k",
+        "distinct original-index witness and no-solution equivalence",
+        "full prevalidation,64bit transient sum,empty extension and local ownership"
+      ],
+      "normal": {
+        "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+        "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 34096437,
+        "apiCalls": 3129167,
+        "orderedWeightArrays": 21844,
+        "literalSubsetAssignments": 13228154,
+        "allValidSmallRangeCases": 3088644,
+        "adapterCalls": 36074,
+        "randomInputs": 1200,
+        "metamorphicChecks": 3200,
+        "invalidCalls": 25,
+        "checksum": "2569540640142451667",
+        "seconds": 0.68939,
+        "peakRSSKiB": 21600,
+        "maximumCases": [
+          {
+            "name": "all one,all indices required",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 200000,
+            "coreSeconds": 0.00393794
+          },
+          {
+            "name": "all one,unreachable upper value",
+            "n": 200000,
+            "exists": false,
+            "witnessSize": 0,
+            "coreSeconds": 0.00259533
+          },
+          {
+            "name": "all maximal weight,one witness",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 1,
+            "coreSeconds": 0.00271171
+          },
+          {
+            "name": "all maximal minus one,32bit intermediate overflow trap",
+            "n": 200000,
+            "exists": false,
+            "witnessSize": 0,
+            "coreSeconds": 0.00282277
+          },
+          {
+            "name": "all10000,all200000 indices required",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 200000,
+            "coreSeconds": 0.00303082
+          },
+          {
+            "name": "descending arithmetic progression,known20000item witness",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 20000,
+            "coreSeconds": 0.00239393
+          },
+          {
+            "name": "full integer domain,loose range",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 1,
+            "coreSeconds": 0.0115406
+          },
+          {
+            "name": "near half intmax,no cardinality can fit",
+            "n": 200000,
+            "exists": false,
+            "witnessSize": 0,
+            "coreSeconds": 0.013158
+          }
+        ]
+      },
+      "asanUbsan": {
+        "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+        "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 34096437,
+        "apiCalls": 3129167,
+        "orderedWeightArrays": 21844,
+        "literalSubsetAssignments": 13228154,
+        "allValidSmallRangeCases": 3088644,
+        "adapterCalls": 36074,
+        "randomInputs": 1200,
+        "metamorphicChecks": 3200,
+        "invalidCalls": 25,
+        "checksum": "2569540640142451667",
+        "seconds": 4.21816,
+        "peakRSSKiB": 851060,
+        "maximumCases": [
+          {
+            "name": "all one,all indices required",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 200000,
+            "coreSeconds": 0.0263532
+          },
+          {
+            "name": "all one,unreachable upper value",
+            "n": 200000,
+            "exists": false,
+            "witnessSize": 0,
+            "coreSeconds": 0.0252852
+          },
+          {
+            "name": "all maximal weight,one witness",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 1,
+            "coreSeconds": 0.0248661
+          },
+          {
+            "name": "all maximal minus one,32bit intermediate overflow trap",
+            "n": 200000,
+            "exists": false,
+            "witnessSize": 0,
+            "coreSeconds": 0.0259838
+          },
+          {
+            "name": "all10000,all200000 indices required",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 200000,
+            "coreSeconds": 0.0276771
+          },
+          {
+            "name": "descending arithmetic progression,known20000item witness",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 20000,
+            "coreSeconds": 0.0169958
+          },
+          {
+            "name": "full integer domain,loose range",
+            "n": 200000,
+            "exists": true,
+            "witnessSize": 1,
+            "coreSeconds": 0.0446595
+          },
+          {
+            "name": "near half intmax,no cardinality can fit",
+            "n": 200000,
+            "exists": false,
+            "witnessSize": 0,
+            "coreSeconds": 0.0386649
+          }
+        ]
+      },
+      "allDeterministicAuthorAndPeerFieldsIncludingMaximumCaseWitnessSizesMatched": true,
+      "independentReviewSha256": "70dafc6c927e7c718a77ba432573dbd205fdc8ebea694daf8506700ed38d4d60",
+      "additionalOracleExecutionAttributedToPeer": true,
+      "normalizationAtIntegration": [
+        "Normalize checker and independent probe MDX paths to repository paths.",
+        "Normalize metadata entryPoints order to advanced,complexity,reasoning; article text and C++ unchanged."
+      ],
+      "cppUnchangedAtIntegrationRequired": true,
+      "materialIssues": [],
+      "unconfirmedRequiredLemmas": [],
+      "unconfirmedRequiredSourceFacts": [],
+      "headerBytesRetrieved": false,
+      "relativeApiEditionChronologyVerified": false,
+      "initialAuditFieldsAndResearchCoveragePreservedRequired": true,
+      "registrationPerformed": false
+    },
+    "normal": {
+      "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 34096437,
+      "apiCalls": 3129167,
+      "orderedWeightArrays": 21844,
+      "literalSubsetAssignments": 13228154,
+      "allValidSmallRangeCases": 3088644,
+      "adapterCalls": 36074,
+      "randomInputs": 1200,
+      "metamorphicChecks": 3200,
+      "invalidCalls": 25,
+      "checksum": "2569540640142451667",
+      "seconds": 0.68939,
+      "peakRSSKiB": 21600,
+      "maximumCases": [
+        {
+          "name": "all one,all indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.00393794
+        },
+        {
+          "name": "all one,unreachable upper value",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.00259533
+        },
+        {
+          "name": "all maximal weight,one witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.00271171
+        },
+        {
+          "name": "all maximal minus one,32bit intermediate overflow trap",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.00282277
+        },
+        {
+          "name": "all10000,all200000 indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.00303082
+        },
+        {
+          "name": "descending arithmetic progression,known20000item witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 20000,
+          "coreSeconds": 0.00239393
+        },
+        {
+          "name": "full integer domain,loose range",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0115406
+        },
+        {
+          "name": "near half intmax,no cardinality can fit",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.013158
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "86732bca5b834b3ba94f199f7aaf303451e6846197eb8674f2ff1c9fdaa3fe2f",
+      "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 34096437,
+      "apiCalls": 3129167,
+      "orderedWeightArrays": 21844,
+      "literalSubsetAssignments": 13228154,
+      "allValidSmallRangeCases": 3088644,
+      "adapterCalls": 36074,
+      "randomInputs": 1200,
+      "metamorphicChecks": 3200,
+      "invalidCalls": 25,
+      "checksum": "2569540640142451667",
+      "seconds": 4.21816,
+      "peakRSSKiB": 851060,
+      "maximumCases": [
+        {
+          "name": "all one,all indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.0263532
+        },
+        {
+          "name": "all one,unreachable upper value",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0252852
+        },
+        {
+          "name": "all maximal weight,one witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0248661
+        },
+        {
+          "name": "all maximal minus one,32bit intermediate overflow trap",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0259838
+        },
+        {
+          "name": "all10000,all200000 indices required",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 200000,
+          "coreSeconds": 0.0276771
+        },
+        {
+          "name": "descending arithmetic progression,known20000item witness",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 20000,
+          "coreSeconds": 0.0169958
+        },
+        {
+          "name": "full integer domain,loose range",
+          "n": 200000,
+          "exists": true,
+          "witnessSize": 1,
+          "coreSeconds": 0.0446595
+        },
+        {
+          "name": "near half intmax,no cardinality can fit",
+          "n": 200000,
+          "exists": false,
+          "witnessSize": 0,
+          "coreSeconds": 0.0386649
+        }
+      ]
+    },
+    "additionalReviewFile": "research/probes/bounded-spread-subset-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,69 @@
+---
+title: "状態の設計"
+description: "これからの操作に必要な情報を見極め、DPや探索の状態に含める。"
+techniqueId: state-design
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+これからの操作に必要な情報を見極め、DPや探索の状態に含める。
+
+## 使う場面
+
+現在位置だけでは次の操作を決められない場合や、すべての履歴を保存すると大きすぎる場合に使う。使用済みの回数、直前の種類、訪問回数の偶奇など、どの履歴が今後に影響するかを考える。
+
+## 考え方
+
+同じ状態にまとめる履歴は、その後に選べる操作、追加費用、終了条件が等しくなるようにする。位置だけで足りなければ、残量、直前の文字、使用回数などを加える。
+
+指定された頂点へ入った回数の偶奇が重要な探索では、「現在の頂点」と「訪問回数が偶数か奇数か」を組にする。指定頂点へ移動するたびに偶奇を反転させればよい。
+
+## 適用条件
+
+状態だけから遷移と費用を決められることが必要になる。「偶数か奇数か」だけで十分なのか、回数そのものが必要なのかを区別する。
+
+情報を追加すると状態数は掛け算で増える。正しさを確保した後、不要な情報や、現在の層しか使わない配列を減らせないか検討する。
+
+## なぜ正しいか
+
+同じ状態からは同じ操作列を選べて、その追加費用も等しい。このため、最小費用を求める場合は、その状態までの最小値だけを残しても最適解を失わない。操作1回の費用が等しいなら幅優先探索、重みが異なるならその重みに適した最短路法を使う。
+
+## 計算量
+
+頂点数 $N$、辺数 $M$ のグラフに偶奇を追加すると、状態数は $2N$、遷移数は高々 $2M$。探索時間・空間は $O(N+M)$。一般には、追加する情報の取り得る値の数を掛けて見積もる。
+
+## 実装
+
+`parity_bfs` は、各頂点に偶数回・奇数回の条件で到達する最小辺数を返す。`marked[u]` が `true` の頂点へ入ると偶奇が反転する。始点自身を一回の訪問に数えるなら、`startParity` にその偶奇を指定する。
+
+```cpp
+#include <array>
+#include <queue>
+#include <vector>
+std::vector<std::array<int, 2>> parity_bfs(
+    const std::vector<std::vector<int>>& g, const std::vector<bool>& marked,
+    int start, int startParity = 0) {
+    std::vector<std::array<int, 2>> distance(g.size(), {-1, -1});
+    std::queue<std::pair<int, int>> queue;
+    distance[start][startParity] = 0; queue.push({start, startParity});
+    while (!queue.empty()) {
+        auto [v, p] = queue.front(); queue.pop();
+        for (int u : g[v]) {
+            int next = p ^ int(marked[u]);
+            if (distance[u][next] != -1) continue;
+            distance[u][next] = distance[v][p] + 1;
+            queue.push({u, next});
+        }
+    }
+    return distance;
+}
+```
+
+## 関連する手法
+
+[bit DP](../bitmask-dp/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC244 E](https://atcoder.jp/contests/abc244/editorial/3601?lang=en)
+
+<TechniqueReferences techniqueId="state-design" />

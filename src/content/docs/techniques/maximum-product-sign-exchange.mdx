@@ -1,0 +1,95 @@
+---
+title: "負数を含むK個の積最大化は、絶対値の上位から符号を一回の交換で直す"
+description: "積の符号を先に判定し、二種類の境界交換を交差積で比べ、最後にだけ剰余を取ります。"
+techniqueId: maximum-product-sign-exchange
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+積は大きくなりすぎて直接比較できず、負数も含む。値の大きい順だけでも、絶対値の大きい順だけでも、符号や選択個数の偶奇によって失敗する。まず正の積が作れるかを切り分ける。
+
+## 考え方
+
+絶対値の降順で上位 $K$ 個を選ぶ。積が正なら、この絶対値を超える選択はない。零を含むなら非零の要素数が $K$ 未満なので、全ての選択が零になる。
+
+積が負なら、次の二つの交換だけを候補にする。
+
+- 選択中の最小絶対値の負数を、外の最大絶対値の非負数へ替える。
+- 選択中の最小絶対値の正数を、外の最大絶対値の負数へ替える。
+
+交換後の絶対値比 $|b|/|a|$ を比べ、より大きい方を採用する。分数は交差積で比較する。いずれもできなければ、非負の積は作れないので絶対値の小さい方から $K$ 個選んで零に最も近い負数にする。$K=N$ は選択の余地がない。
+
+選択を決めてから各要素を法の範囲へ正規化して積を取る。逆元による除算は必要なく、零や法の倍数も扱える。
+
+## 適用条件
+
+各要素を自由に選べて、個数が正確に $K$。組ごとの相性や位置条件はない。実装では $|A_i|\le10^9$ とし、絶対値で最小整数を反転する危険を避ける。交差積には128bit整数を使う。法の大小に積の大小は保存されないので、比較途中に剰余を取らない。
+
+## なぜ正しいか
+
+上位 $K$ 個は全選択の絶対値を最大にする。負から非負へ変える任意の選択では、内外の交換を組にすると、少なくとも一組で符号が変わる。その一組以外の交換は、絶対値順によりどれも積の絶対値を増やさない。よって一回だけ符号を変える交換の中で最良のもの以上にはならない。
+
+同じ交換方向なら、外から最大絶対値を取り、内から最小絶対値を外すと比が最大になる。二方向を比べれば正の積の最大が得られる。零しか改善がない場合も、零は全ての負数より大きい。非負を作れない場合は全候補が負なので、絶対値を最小にする選択が整数として最大になる。
+
+## 計算量
+
+全 $K$ 個選択を列挙して多倍長の積を比較すると、少なくとも $O(\binom NK K)$ 回の整数演算と、積の桁数ぶんの空間が必要。絶対値の整列と境界走査なら時間 $O(N\log N)$、追加空間 $O(N)$。選択後の剰余計算は $O(K)$ 時間、追加空間 $O(1)$。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <cstdlib>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+std::vector<long long> maximum_product_selection(std::vector<long long> a,int k) {
+    int n=static_cast<int>(a.size());
+    if (n>200000 || k<1 || k>n) throw std::invalid_argument("size bounds");
+    for (auto x:a) if (x<-1000000000LL || x>1000000000LL) throw std::invalid_argument("value bounds");
+    std::sort(a.begin(),a.end(),[](long long x,long long y){return std::llabs(x)>std::llabs(y);});
+    if (k==n || a[k-1]==0) return {a.begin(),a.begin()+k};
+    int negatives=0,inside_negative=-1,inside_positive=-1;
+    for (int i=0;i<k;++i) {
+        if (a[i]<0) { ++negatives;inside_negative=i; }
+        else inside_positive=i;
+    }
+    if (negatives%2==0) return {a.begin(),a.begin()+k};
+    int outside_nonnegative=-1,outside_negative=-1;
+    for (int i=k;i<n;++i) {
+        if (a[i]>=0 && outside_nonnegative<0) outside_nonnegative=i;
+        if (a[i]<0 && outside_negative<0) outside_negative=i;
+    }
+    bool first=inside_negative>=0 && outside_nonnegative>=0;
+    bool second=inside_positive>=0 && outside_negative>=0;
+    if (!first && !second) return {a.end()-k,a.end()};
+    int remove,insert;
+    if (first && (!second ||
+        static_cast<__int128>(std::llabs(a[outside_nonnegative]))*std::llabs(a[inside_positive])>=
+        static_cast<__int128>(std::llabs(a[outside_negative]))*std::llabs(a[inside_negative]))) {
+        remove=inside_negative;insert=outside_nonnegative;
+    } else { remove=inside_positive;insert=outside_negative; }
+    a[remove]=a[insert];
+    return {a.begin(),a.begin()+k};
+}
+long long maximum_product_mod(std::vector<long long> a,int k) {
+    constexpr long long mod=1000000007;
+    auto chosen=maximum_product_selection(std::move(a),k);
+    long long result=1;
+    for (auto x:chosen) { x%=mod;if (x<0) x+=mod;result=result*x%mod; }
+    return result;
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder — Multiplication 4](https://atcoder.jp/contests/abc173/tasks/abc173_e)
+- [公式解説](https://img.atcoder.jp/abc173/editorial.pdf)
+
+<TechniqueReferences techniqueId="maximum-product-sign-exchange" />

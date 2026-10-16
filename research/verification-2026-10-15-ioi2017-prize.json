@@ -1,0 +1,210 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed-current-scope-global-incomplete",
+  "scope": "IOI2017 Prize full original-range reusable deterministic adaptive search, guarded feature route and one subsequent positive research review plus resolution.",
+  "counts": {
+    "specificTechniques": 431,
+    "foundationArticles": 78,
+    "allArticles": 509,
+    "exampleMappings": 530,
+    "originalUrls": 492,
+    "graphs": 476,
+    "nodes": 3727,
+    "questions": 1699,
+    "answerEdges": 5542,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 526,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "rank-count-oracle-equal-level-interval-pruning",
+    "title": "左右の上位個数から、唯一の最上位の位置を少ない質問で探す",
+    "verificationRecord": "research/technique-verifications/rank-count-oracle-equal-level-interval-pruning.json",
+    "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+    "normalization": "Repository checker/probe paths and removal of implicit temporary result writes; article and C++ unchanged."
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2017-prize-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 7126.815453
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 7707.708463000017,
+      "record": "research/probes/ioi2017-prize-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 11,
+      "passed": 11,
+      "failed": 0,
+      "durationMs": 28516.368605,
+      "scope": "ledger/domain/viewer/continuation/legacy/layout, IOI2016+2017 fixed corpora, Simurgh, Aliens and specific-expansion flows. Independent new10-case suite separately protects all529prior walks/475graphs/all79data JSON and all10initial audit projections.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 509,
+      "mappings": 530,
+      "diagrams": 476,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 509,
+      "recentArticlesChecked": 39,
+      "japaneseEnglishFullWidthQueries": 161,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 476,
+      "completeAnswerLabels": 5542,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized interactive-oracles and rank-count-prize-conditions. New route/labels have no node overlap; detail all three guards and explanations readable in the raster. Existing parent has many branches and crossing shared-tail edges, so uses separate wheel-zoom viewer; no fit-size readability or actual browser inspection claimed."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1470,
+      "linksAssets": 29736,
+      "diagrams": 476,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    },
+    "documentation": "README stale hard-coded counts/chronological completion prose replaced with authoritative live report/ledger references. Local build commands retained."
+  },
+  "proofAndOracleEvidence": {
+    "source": "Entire N3..200000 and all legal squared-growth multiplicities; every answer leaves at least one legal entire sequence consistent with all past replies. Hard10000/full-score5000. Actual header bytes unacquired; explicitly synthetic prize.h adapter.",
+    "proof": [
+      "universal upper bounds472rare positions/26non-cheapest reply sum",
+      "certain-cheapest prefix over every compatible completion",
+      "count-preserving midpoint scan and all branches of D_H(k)",
+      "early-prefix absorption plus optional19-visit fast path yields4779",
+      "returned position best in every final compatible completion, without fixing one array before the first ask"
+    ],
+    "authorRootAndPeerNormalAsan": {
+      "genericChecks": 9804568,
+      "genericApiCalls": 26286,
+      "genericChecksum": "12118485734290438769",
+      "syntheticAdapterChecks": 285071,
+      "syntheticAdapterApiCalls": 370,
+      "adapterChecksum": "12874631007238081852",
+      "allLegalArraysN3to16": 23807,
+      "allNonemptyAdaptiveReplyBranchesN3to12": 1966,
+      "adaptiveTerminals": 939,
+      "allLegalCountChains": 13098,
+      "markedPatternsN1to18": 524286,
+      "observedMaximumQueries": 4112,
+      "provedMaximumQueries": 4779
+    },
+    "independentAdditional": {
+      "checks": 44386,
+      "apiCalls": 3984,
+      "adaptiveRuns": 12,
+      "initialCompletionOccurrences": 75825,
+      "uniqueFamilyCompletions": 25275,
+      "candidateReplyComparisons": 6216314,
+      "capacityFeasibleRecurrenceStatesN1to255": 32640,
+      "allocationFaults": 2,
+      "callbackFaults": 3967,
+      "checksum": "10991112477329892348",
+      "ordinaryAndAsanPassed": true,
+      "executionAttributedToPeer": true
+    }
+  },
+  "reviewCounters": {
+    "verifiedMappings": 530,
+    "reviewedProblems": 490,
+    "corpusStatementsReviewed": 77,
+    "corpusSolutionsReviewed": 70,
+    "allSolutionsReviewed": 501
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "5/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2016",
+      "research": "6/6",
+      "covered": "1/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 19,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual official prize.h bytes not acquired; generic signature+Notice-derived synthetic header adapter tested.",
+    "Official omitted4759 implementation/proof remains unconfirmed and unused; independent complete4779 method meets5000 full score.",
+    "ASan/UBSan pass with detect_leaks=0; no LeakSanitizer claim.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures. No install/server/browser retried.",
+    "External example-link liveness not checked. No commit/push/upload/publication."
+  ],
+  "inProgress": [
+    "Molecules complete author article under independent review.",
+    "Railroad author implementation.",
+    "Paint author implementation."
+  ]
+}

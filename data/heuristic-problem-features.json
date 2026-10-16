@@ -1,0 +1,182 @@
+[
+  {
+    "techniqueId": "heuristic-rectangle-score-delta",
+    "source": "AtCoder",
+    "problemId": "ahc001_a",
+    "title": "AtCoder Ad",
+    "statementUrl": "https://atcoder.jp/contests/ahc001/tasks/ahc001_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc001/tasks/ahc001_a",
+    "features": [
+      "整数座標の軸平行長方形を互いに重ねず配置",
+      "各社の指定点と希望面積がある",
+      "満足度は min(希望面積,実面積)/max の二次式",
+      "一長方形だけ変える近傍の得点差"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-rectangle-contact-bound",
+    "source": "AtCoder",
+    "problemId": "ahc001_a",
+    "title": "AtCoder Ad",
+    "statementUrl": "https://atcoder.jp/contests/ahc001/tasks/ahc001_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc001/tasks/ahc001_a",
+    "features": [
+      "一長方形の一辺だけを動かす",
+      "指定点を含み正面積を保つ",
+      "他の長方形は固定し重なりは禁止",
+      "面積の満足度は希望面積で最大になる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-path-tail-rollback",
+    "source": "AtCoder",
+    "problemId": "ahc002_a",
+    "title": "Walking on Tiles",
+    "statementUrl": "https://atcoder.jp/contests/ahc002/tasks/ahc002_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc002/tasks/ahc002_a",
+    "features": [
+      "格子の上下左右を移動しタイルIDを一度だけ使う",
+      "同じタイルIDを持つ別のマスも再利用不可",
+      "初期マスを含む訪問マスの重みを足す",
+      "経路の先頭を残し末尾を作り直す"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-path-reachable-upper-bound",
+    "source": "AtCoder",
+    "problemId": "ahc002_a",
+    "title": "Walking on Tiles",
+    "statementUrl": "https://atcoder.jp/contests/ahc002/tasks/ahc002_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc002/tasks/ahc002_a",
+    "features": [
+      "同じタイルを一度しか踏めない格子経路",
+      "固定した先頭から到達可能な未使用マス",
+      "各タイルから取れる点は高々一つ",
+      "非負のマス得点を最大化する"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-precedence-two-opt",
+    "source": "AtCoder",
+    "problemId": "ahc006_a",
+    "title": "Food Delivery",
+    "statementUrl": "https://atcoder.jp/contests/ahc006/tasks/ahc006_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc006/tasks/ahc006_a",
+    "features": [
+      "選んだ注文の受取を先に配達を後に行う",
+      "固定始点と終点の間の巡回順を変える",
+      "マンハッタン距離は対称",
+      "区間反転で受取・配達の両方を含む注文があれば不正"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-paired-insertion-prefix",
+    "source": "AtCoder",
+    "problemId": "ahc006_a",
+    "title": "Food Delivery",
+    "statementUrl": "https://atcoder.jp/contests/ahc006/tasks/ahc006_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc006/tasks/ahc006_a",
+    "features": [
+      "選んだ注文に受取地点と配達地点がある",
+      "受取が配達より前という制約",
+      "積載数上限はない",
+      "残りの訪問順を保って一注文を差し込む"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-schedule-gap-delta",
+    "source": "AtCoder",
+    "problemId": "intro_heuristics_c",
+    "title": "Incremental Scoring",
+    "statementUrl": "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_c",
+    "evidenceUrl": "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_c",
+    "features": [
+      "毎日一種類を開催する日程",
+      "開催しない日が続くと前回からの日数に比例して減点",
+      "一日の開催種類を変更するクエリ",
+      "最後までの合計満足度を毎回出力"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-schedule-swap-transaction",
+    "source": "AtCoder",
+    "problemId": "intro_heuristics_a",
+    "title": "AtCoder Contest Scheduling",
+    "statementUrl": "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a",
+    "evidenceUrl": "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a",
+    "features": [
+      "毎日一種類を開催し開催間隔に比例する減点",
+      "二日間の開催種類を入れ替える近傍",
+      "同じ開催日の前後間隔が二変更で相互に変わる",
+      "試行後に取り消し、受理なら両方を反映"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-radius-threshold-candidates",
+    "source": "AtCoder",
+    "problemId": "ahc020_a",
+    "title": "Broadcasting",
+    "statementUrl": "https://atcoder.jp/contests/ahc020/tasks/ahc020_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc020/tasks/ahc020_a",
+    "features": [
+      "整数半径の円で住民を覆う",
+      "電波出力費用は半径の二乗",
+      "有効局と通信ケーブルを固定する部分問題",
+      "覆う集合が変わる距離の切上げだけ半径候補にする"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  },
+  {
+    "techniqueId": "heuristic-cover-count-delta",
+    "source": "AtCoder",
+    "problemId": "ahc020_a",
+    "title": "Broadcasting",
+    "statementUrl": "https://atcoder.jp/contests/ahc020/tasks/ahc020_a",
+    "evidenceUrl": "https://atcoder.jp/contests/ahc020/tasks/ahc020_a",
+    "features": [
+      "有効な放送局の集合を固定",
+      "複数の円が住民を重複して覆う",
+      "一局の半径だけを変える",
+      "各住民の被覆数が0をまたぐ場合だけ人数が変わる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の評価・操作・制約を確認。局所変更の評価・合法性を独立に証明し、掲載コードを全再計算や小規模全探索と比較した。最適化問題全体の最適性は主張しない。"
+  }
+]

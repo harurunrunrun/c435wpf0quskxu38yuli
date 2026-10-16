@@ -1,0 +1,90 @@
+---
+title: "同数の1と2を一つの区切りの前後から選ぶ区間質問は、左右の個数が交差する場所を探す"
+description: "区切りを右へ動かすと左の1は増え、右の2は減るので、交差の両隣だけを比較する。"
+techniqueId: slash-subsequence-crossing
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+区切りを右へ動かすと左の1は増え、右の2は減るので、交差の両隣だけを比較する。
+
+## 使う場面
+
+`1`・`2`・`/` の固定列があり、指定区間から $1^k/2^k$ という形の最長の部分列を何度も取り出したい。連続している必要はなく、中央の `/` は一つだけ選ぶ。
+
+## 考え方
+
+選ぶ `/` の位置を $p$ に決める。左の `1` の個数を $A(p)$、右の `2` の個数を $B(p)$ とすると、選べる $k$ の最大は $\min(A(p),B(p))$。二つの個数は累積和から定数時間で得られる。
+
+区間内の `/` を左から順に見ると、$A$ は減らず、$B$ は増えない。$A<B$ の側では最小値は $A$ なので減らず、$A\ge B$ の側では $B$ なので増えない。
+
+従って初めて $A\ge B$ になる `/` の位置と、その直前だけを比較すれば最大が分かる。区切りの出現位置の列に対して二分探索する。`/` がなければ0、あれば $k=0$ でも長さ1を作れる。
+
+## 適用条件
+
+本文は固定、前後で選ぶ文字の数が同じ、区切りを一つ選び、前後は部分列として自由に選べる。文字を連続して選ぶ制約では累積個数だけでは判定できない。
+
+実装は $N\le100000$。質問は0始まりの半開区間 $[l,r)$ で、空区間も0を返す。複数の区切りや左右で異なる個数比を指定する場合は、最小値の式と単調性を別に確認する。
+
+## なぜ正しいか
+
+固定した $p$ では左から任意の $k$ 個の `1`、右から任意の $k$ 個の `2` を選べばよいので、個数の上限以外に障害はない。従って最大の $k$ は両個数の最小値と一致する。
+
+区切りを右へ進めるほど左の対象範囲は広がり、右の対象範囲は狭まるので、二つの個数には記述した単調性がある。交差より左の候補は交差直前に、右の候補は交差位置に支配される。交差が区間外なら、その方向の端だけが候補になる。この二位置の比較は全ての区切りを尽くす。
+
+## 計算量
+
+質問ごとに区間内の全ての `/` を調べると最悪 $O(NQ)$ 時間。累積和・区切り位置列の構築は $O(N)$、各質問は $O(\log(N+1))$ 時間。合計 $O(N+Q\log(N+1))$ 時間・$O(N)$ 補助空間。
+
+長さ $k$ を二分探索し、その度に三文字の出現位置を二分探索する方法の $O(Q\log^2 N)$ から、区切り位置の交差を直接探すことで探索を一段にできる。
+
+## 実装
+
+`BalancedSlashQueries::longest(l,r)` は条件を満たす部分列の最大長を返す。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <vector>
+class BalancedSlashQueries {
+    int n;
+    std::vector<int> ones,twos,slashes;
+public:
+    explicit BalancedSlashQueries(const std::string& s):n(s.size()),ones(n+1),twos(n+1) {
+        if(s.size()>100000) throw std::invalid_argument("length");
+        for(int i=0;i<n;++i) {
+            if(s[i]!='1' && s[i]!='2' && s[i]!='/') throw std::invalid_argument("alphabet");
+            ones[i+1]=ones[i]+(s[i]=='1');twos[i+1]=twos[i]+(s[i]=='2');
+            if(s[i]=='/') slashes.push_back(i);
+        }
+    }
+    int longest(int l,int r) const {
+        if(l<0 || l>r || r>n) throw std::invalid_argument("range");
+        int begin=std::lower_bound(slashes.begin(),slashes.end(),l)-slashes.begin();
+        int end=std::lower_bound(slashes.begin(),slashes.end(),r)-slashes.begin();
+        if(begin==end) return 0;
+        auto left=[&](int i){return ones[slashes[i]]-ones[l];};
+        auto right=[&](int i){return twos[r]-twos[slashes[i]+1];};
+        int low=begin,high=end;
+        while(low<high) {
+            int middle=low+(high-low)/2;
+            if(left(middle)>=right(middle)) high=middle;else low=middle+1;
+        }
+        int best=0;
+        if(low<end) best=std::max(best,std::min(left(low),right(low)));
+        if(low>begin) best=std::max(best,std::min(left(low-1),right(low-1)));
+        return 2*best+1;
+    }
+};
+```
+
+## 関連する手法
+
+[次の出現位置で部分列照合を進める](/flowchartcp/techniques/substring-subsequence-next/) ・ [累積和](/flowchartcp/techniques/prefix-sum/) ・ [二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [AtCoder：11/22 Subsequence](https://atcoder.jp/contests/abc381/tasks/abc381_e)
+- [公式解説](https://atcoder.jp/contests/abc381/editorial/11650)
+
+<TechniqueReferences techniqueId="slash-subsequence-crossing" />

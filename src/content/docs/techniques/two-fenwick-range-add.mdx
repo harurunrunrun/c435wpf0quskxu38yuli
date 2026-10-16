@@ -1,0 +1,79 @@
+---
+title: "区間加算と区間和を二つのFenwick Treeで処理する"
+description: "差分の和と添字を掛けた差分の和を管理し、二重の累積を式に直す。"
+techniqueId: two-fenwick-range-add
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+差分の和と添字を掛けた差分の和を管理し、二重の累積を式に直す。
+
+## 使う場面
+
+長さ $N$ の配列に、区間 $[l,r)$ への加算と区間和の問い合わせが混在する。いもす法だけでは途中の和を取れず、通常のFenwick Treeだけでは区間加算をまとめて行えない。
+
+## 考え方
+
+差分を $d_i=a_i-a_{i-1}$ とする。ただし $a_{-1}=0$。先頭 $r$ 個の和は、差分 $d_j$ が $r-j$ 回現れるので、$S(r)=r\sum_{j<r}d_j-\sum_{j<r}jd_j$ となる。
+
+二つのFenwick Treeに $d_j$ と $jd_j$ を保存する。区間加算では差分の両端を更新し、区間和は $S(r)-S(l)$ で求める。
+
+## 適用条件
+
+更新が加算であり、集計が和の場合に使う。区間への代入、最大値、最小値には同じ式を使えない。値が負でもよいが、添字との積や途中の和が整数型に収まる必要がある。
+
+## なぜ正しいか
+
+差分を展開した二重和を、各差分が使われる回数でまとめた式なので、先頭からの和が正しく求まる。差分の両端の変更は加算する区間だけに作用し、二つの木の不変条件を保つ。
+
+## 計算量
+
+素朴な更新・問い合わせは各 $O(N)$。二つの木を使うと各 $O(\log N)$、空間 $O(N)$。初期値を点加算で設定する場合は構築に $O(N\log N)$ 時間がかかる。
+
+## 実装
+
+区間は右端を含まない。`RangeAddSum(n)` は0で初期化し、`add(l,r,x)` と `sum(l,r)` を使う。末尾の差分も保存するため、内部の木は長さ $N+1$ にする。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct SumBIT {
+    int n;
+    std::vector<long long> bit;
+    explicit SumBIT(int n):n(n),bit(n+1) {}
+    void add(int p,long long x) {
+        assert(0<=p && p<n);
+        for(int i=p+1;i<=n;i+=i&-i) bit[i]+=x;
+    }
+    long long prefix(int r) const {
+        assert(0<=r && r<=n);
+        long long s=0;
+        for(int i=r;i>0;i-=i&-i) s+=bit[i];
+        return s;
+    }
+};
+struct RangeAddSum {
+    int n;
+    SumBIT first,weighted;
+    explicit RangeAddSum(int n):n(n),first(n+1),weighted(n+1) {}
+    void endpoint(int p,long long x) { first.add(p,x);weighted.add(p,x*p); }
+    void add(int l,int r,long long x) {
+        assert(0<=l && l<=r && r<=n);
+        endpoint(l,x);endpoint(r,-x);
+    }
+    long long prefix(int r) const { return r*first.prefix(r)-weighted.prefix(r); }
+    long long sum(int l,int r) const {
+        assert(0<=l && l<=r && r<=n);
+        return prefix(r)-prefix(l);
+    }
+};
+```
+
+## 関連する手法
+
+[いもす法](/flowchartcp/techniques/difference-array/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [AtCoder公式解説：AWC0014 E](https://atcoder.jp/contests/awc0014/editorial/16419)
+
+<TechniqueReferences techniqueId="two-fenwick-range-add" />

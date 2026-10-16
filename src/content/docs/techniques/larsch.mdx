@@ -1,0 +1,76 @@
+---
+title: "LARSCH"
+description: "先行するDP値を順に確定しながら、Monge性を使って遷移を高速に計算します。"
+techniqueId: larsch
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+先行するDP値を順に確定しながら、Monge性を使って遷移を高速に計算します。
+
+別名：Online Monge DP / Larmore–Schieber
+
+## 使う場面
+
+$D[i]=\min_{j<i}\{D[j]+C(j,i)\}$ というDPで、費用 $C$ がMonge性を持つ場合に使います。前の層がすべて確定しているDPとは異なり、$D[i]$ を求めないと次の行を評価できません。このため、SMAWKをそのまま呼ぶと、まだ計算していない値を読むことがあります。
+
+## 考え方
+
+行 $i$、列 $j$ の要素を $D[j]+C(j,i)$ と考えます。ただし、評価できるのは確定済みの $j<i$ の部分だけです。LARSCHは、この依存関係を守りながら候補の列を削り、行の最小値を順番に求めます。
+
+実装では「次の行の最小列を取得する」「そのDP値を確定する」を交互に行います。行や列を縮約する処理は、必要な値を安全に評価できる時点まで進めないようにします。
+
+## 適用条件
+
+対象の前向きDPに対応したMonge性が必要です。代表的には $a<b<c<d$ に対して $C(a,c)+C(b,d)\le C(a,d)+C(b,c)$ を証明します。列に $D[j]$ を加えても、この不等式は変わりません。
+
+利用する実装について、最小化の向き、同じ値の候補を選ぶ規則、添字の対応を確認してください。値を返す関数を用意するだけでは依存関係は解決せず、未確定の列を評価しない計算順が必要です。
+
+## なぜ正しいか
+
+Monge性によって、ある候補が別の候補に負ける関係が、後の行で逆戻りしないことを利用します。ただし、未確定のDP値を使う比較はできないので、列の削減と行の補間を、先行状態の確定と同期させます。
+
+各行について有効な遷移元の最小値を取得できれば、先行するDP値が正しいという帰納法で、次のDP値も正しいことが分かります。LARSCH本体はこの取得を全体で線形回数の評価に抑えます。
+
+## 計算量
+
+標準的なLARSCHは、$N$ 状態で費用評価が $O(1)$ なら、時間・空間ともに $O(N)$ です。最小列を順に返す別の処理を使った場合は、その処理の計算量になります。以下の接続用コード自体が線形時間の最小列探索を実装しているわけではありません。
+
+## 実装
+
+以下は、最小列を順に返す関数 `next_argmin` とDPをつなぐコードです。行番号 `row` はDPの添字 `row + 1` に対応します。`value` 内の `assert` で未確定のDP値を読んでいないかを確認します。
+
+LARSCHの候補削減処理はこのコードに含まれていません。線形時間で動かすには、参考資料のLARSCH実装を `next_argmin` に接続する必要があります。添字と呼び出し順は、使用する実装に合わせてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// Reusable adapter core for dp[i]=min_{j<i}(dp[j]+C(j,i)).
+// To use the O(N) engine, bind a verified LARSCH implementation to Argmin.
+template<class Cost,class Argmin>
+vector<long long> online_monge_dp(int n,Cost C,Argmin next_argmin) {
+    vector<long long> dp(n+1); int ready=0;
+    auto value=[&](int row,int col) {
+        int i=row+1;
+        assert(0<=col && col<i && col<=ready);
+        return dp[col]+C(col,i);
+    };
+    for(int i=1;i<=n;++i) {
+        int j=next_argmin(i-1,value);
+        assert(0<=j && j<i);
+        dp[i]=value(i-1,j); ready=i;
+    }
+    return dp;
+}
+```
+
+## 関連する手法
+
+[Monge配列・SMAWK](/flowchartcp/techniques/monge-smawk/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [maspypy: LARSCH（完全実装）](https://maspypy.github.io/library/convex/larsch.hpp)
+- [maspypy: Monge最短路（DPとの接続例）](https://maspypy.github.io/library/convex/monge/monge_shortest_path.hpp)
+- [Golinほか: オンライン依存とSMAWKの差](https://web.cs.unlv.edu/bein/pubs/knuthyaotalg.pdf)
+
+<TechniqueReferences techniqueId="larsch" />

@@ -1,0 +1,79 @@
+---
+title: "移動で消費・回復する資源を持ち、不要な所持量を切る"
+description: "場所だけでは経路を比較できないとき、証明した所持上限まで資源を状態に加える。"
+techniqueId: dijkstra-expanded-resource
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+辺を通ると資源を消費し、頂点で時間を払うと資源が増える。最小時間を求めたいが、同じ頂点に早く着いた状態でも、資源が少なければ先へ進めない。
+
+## 考え方
+
+状態を `(頂点, 所持資源)` にする。辺の消費量が $a$、時間が $b$ なら $(v,s)\to(u,s-a)$ にコスト $b$ の辺を張る。頂点で $c_v$ 回復する操作は $(v,s)\to(v,\min(C,s+c_v))$、コスト $d_v$。
+
+回復を無限に続けられると状態も無限になるので、所持上限 $C$ の根拠が必要である。移動時間が非負で、最大消費量が $A$、目的が任意の一頂点への到達なら、$C=(N-1)A$ で十分。これだけ持てば、移動時間だけに関する最短の単純経路を、追加回復なしで最後まで進める。
+
+## 適用条件
+
+資源は非負整数で、回復量も非負。移動・回復の時間は非負とする。余った資源に報酬や持ち運びコストがなく、到着時に一定量を残す要求もないことが必要。
+
+「すべての地点を訪問する」「資源を売って利益を得る」などでは、単純経路の上限は使えない。また、資源の上限を制約の数字から適当に選ぶと、最適経路を消すことがある。上限後も状態数 $N(C+1)$ が扱えるかを確認する。
+
+## なぜ正しいか
+
+同じ場所・所持量なら、今後できる操作と費用が一致するので過去の履歴を捨てられる。上限以上の所持状態からは、時間だけの最短単純経路を進む方針が最適であり、それ以上の資源を使う必要がない。上限を超える資源を捨てても最適値は変わらない。非負時間の状態グラフでダイクストラ法を使える。
+
+## 計算量
+
+無制限の資源をすべて列挙すると有限の計算量を与えられない。上限を切った後は $O((N+M)C\log(NC))$ 時間、隣接リストを使い回す実装で $O(NC+N+M)$ 空間。
+
+## 実装
+
+`resource_shortest_times` は各頂点へ到達する最小時間を返す。無向辺は両方向を `g` へ追加する。上記の単純経路上限が成立する入力専用で、時間の合計が `INF` 未満であることを前提にする。
+
+```cpp
+#include <vector>
+#include <queue>
+#include <tuple>
+#include <algorithm>
+#include <functional>
+#include <limits>
+#include <cassert>
+struct ResourceEdge {int to,consume;long long time;};
+std::vector<long long> resource_shortest_times(const std::vector<std::vector<ResourceEdge>>& g,
+    int start,long long initial,const std::vector<int>& gain,const std::vector<long long>& gain_time) {
+    int n=int(g.size()),a=0;assert(n>0&&initial>=0);
+    for(const auto& list:g) for(auto e:list) {assert(e.consume>=0&&e.time>=0);a=std::max(a,e.consume);}
+    long long cap64=1LL*(n-1)*a;assert(cap64<=std::numeric_limits<int>::max()-1);
+    int cap=int(cap64);const long long INF=std::numeric_limits<long long>::max()/4;
+    std::vector<std::vector<long long>> dist(n,std::vector<long long>(cap+1,INF));
+    using State=std::tuple<long long,int,int>;
+    std::priority_queue<State,std::vector<State>,std::greater<State>> pq;
+    int s=int(std::min(initial,cap64));dist[start][s]=0;pq.push({0,start,s});
+    auto relax=[&](int v,int coins,long long value) {
+        if(value<dist[v][coins]) {dist[v][coins]=value;pq.push({value,v,coins});}
+    };
+    while(!pq.empty()) {
+        auto [d,v,coins]=pq.top();pq.pop();if(d!=dist[v][coins]) continue;
+        assert(gain[v]>=0&&gain_time[v]>=0);
+        int next=int(std::min(cap64,static_cast<long long>(coins)+gain[v]));
+        if(d<=INF-gain_time[v]) relax(v,next,d+gain_time[v]);
+        for(auto e:g[v]) if(coins>=e.consume&&d<=INF-e.time) relax(e.to,coins-e.consume,d+e.time);
+    }
+    std::vector<long long> result(n);
+    for(int v=0;v<n;++v) result[v]=*std::min_element(dist[v].begin(),dist[v].end());
+    return result;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) ・ [ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [曲がる回数を最小にするため、直前の向きを状態に持つ](/flowchartcp/techniques/turn-penalty-state/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC164 E](https://img.atcoder.jp/abc164/editorial.pdf)
+
+<TechniqueReferences techniqueId="dijkstra-expanded-resource" />

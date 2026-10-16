@@ -1,0 +1,1159 @@
+{
+  "techniqueId": "word-wrap-sparse-space-river-dp",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-space-river-article.mdx",
+    "checker": "/tmp/flowchartcp-space-river-checker.py",
+    "sidecar": "/tmp/flowchartcp-space-river-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/word-wrap-sparse-space-river-dp.mdx",
+    "checker": "scripts/check_word_wrap_space_river_cpp.py",
+    "metadata": "data/techniques-specific-dp-patterns.json",
+    "reference": "data/references-specific-dp-patterns.json",
+    "feature": "data/word-wrap-space-river-problem-features.json"
+  },
+  "metadata": {
+    "id": "word-wrap-sparse-space-river-dp",
+    "title": "行幅を変えて、空白の連なりを最長にする",
+    "summary": "単語間の空白だけを前行の空白と照合し、列差1以内の最長鎖を伸ばす。折返しが変わる次の幅へ進み、行数の上界で探索を止める。",
+    "aliases": [
+      "ICPC2018 World Finals F Go with the Flow longest river word wrap",
+      "word wrap sparse interword spaces river DP event widths",
+      "単語の折返し 左詰め 単語間空白 最長river 最小幅"
+    ],
+    "family": "折返しで定まる空白の疎な行間DP",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "two-pointers",
+      "state-design"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+      "https://news.icpc.global/wf2018/"
+    ]
+  },
+  "reference": {
+    "techniqueId": "word-wrap-sparse-space-river-dp",
+    "source": "ICPC",
+    "problemId": "wf2018_f",
+    "title": "Go with the Flow",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+    "evidence": "固定順の単語を左詰めで最大限詰め、単語を分けず、同じ行の単語間に空白一つを置く。行末の余白を除き、隣の行へ列差1以内でつながる単語間空白の最長鎖を最大化し、同点なら最小幅を選ぶ。実在する空白だけの行間DP、最初の不適合語を入れる次の変化幅、単調な行数による上界を使う。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-04-19",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15にICPC公式原典F11/12頁、公式ドメイン掲載のPer Austrin・Jakub Onufry Wojtaszczyk非公式sketch7頁（8頁はG）と冒頭disclaimer、公式news競技日2018-04-19をwebで再確認。N2..2500・語長1..80・英大小字・12秒・語分割不可・左詰め最大充填・1空白・行末余白除外・最大鎖/最小幅tieを確認。通常PDF抽出でsample1の5語が欠けたため、同一公式PDF限定queryで21語全文を取得し全2sampleを照合。固定幅の前行±1空白DP、次変化幅までの配置同一、貪欲の接頭優越と行数非増加、行数上界による停止、T以降不変、strict改善のみで最小幅tieを独立証明。実MDX唯一の可視C++20を抽出し通常/ASan+UBSanとも4382429checks/545801API/checksum14932699637744859611成功。全小21844語長列/全521155文字grid幅/521106次変化、直接全空白path44895呼出し、450random/1212metamorphic、invalid23、最大2500語7構成を検査。独立prefix二分探索+timestamp列DPで全262088整数幅/641826740空白更新を省略せず比較し、最大2構成も真の最適幅に一致。通常2.07547秒/RSS21468KiB、ASan15.4379秒/RSS888816KiBは完全checker+別oracle込み。保証はO(NQ),Q<=T−L+1、最悪O(N²(L+1))/O(N)であり、jump/stopを未証明の漸近改善へ読み替えない。初回Fpositive全field保持、resolution-onlyを提案。"
+  },
+  "problemFeature": {
+    "source": "ICPC",
+    "problemId": "wf2018_f",
+    "title": "Go with the Flow",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+    "techniqueIds": [
+      "word-wrap-sparse-space-river-dp"
+    ],
+    "features": [
+      "単語順固定・分割不可・左詰め・単語間1空白で、各行へ最大限詰めて折り返す。",
+      "行末余白を除く単語間空白だけを隣の行へ列差1以内で結ぶ最長鎖を求める。",
+      "幅を選んで鎖長を最大にし、同じ鎖長なら最小幅。原典2〜2500語、各語は英大小字のみ1〜80文字。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "固定順の単語を左詰めで最大限詰め、単語を分けず、同じ行の単語間に空白一つを置く。行末の余白を除き、隣の行へ列差1以内でつながる単語間空白の最長鎖を最大化し、同点なら最小幅を選ぶ。実在する空白だけの行間DP、最初の不適合語を入れる次の変化幅、単調な行数による上界を使う。",
+    "discoveredBy": "icpc-2018-world-finals",
+    "publicationDate": "2018-04-19",
+    "publicationYear": 2018,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+    "statementPages": [
+      11,
+      12
+    ],
+    "statementReadMethod": "web full PDF extraction lines314..363 plus targeted primary PDF search for untruncated sample1",
+    "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+    "publicSketchPages": [
+      7
+    ],
+    "page8Checked": "already discussesG, not additionalF; Fends7",
+    "publicSketchAuthors": [
+      "Per Austrin",
+      "Jakub Onufry Wojtaszczyk"
+    ],
+    "publicSketchIsOfficiallyHosted": true,
+    "publicSketchSelfDescribesAsUnofficial": true,
+    "officialEditorialVerified": false,
+    "solutionVerification": "independent-analysis",
+    "fullOriginalContractVerified": true,
+    "numericBoundsVerified": true,
+    "originalBounds": {
+      "wordsMin": 2,
+      "wordsMax": 2500,
+      "wordLength": "1..80, nonempty tokens",
+      "alphabet": "ASCII a..z/A..Z",
+      "minimumWidth": "maximum word length",
+      "originalWidthUpperBound": "not specified; total one-line length is a proved sufficient search bound",
+      "timeLimitSeconds": 12,
+      "formatRules": [
+        "fixed order",
+        "left justified",
+        "maximal greedy packing",
+        "one interword space",
+        "no word splitting",
+        "no trailing whitespace in river"
+      ],
+      "river": "one space per consecutive row; neighboring columns differ by<=1",
+      "objective": "maximize river length, tie smallest width",
+      "output": "chosen width then river length"
+    },
+    "sourceSamples": {
+      "sample1WordCount": 21,
+      "sample1Expected": [
+        15,
+        5
+      ],
+      "sample2WordCount": 25,
+      "sample2Expected": [
+        21,
+        6
+      ],
+      "extractionIssue": "plain initial PDF extraction omitted five words in sample1, producing16 tokens; targeted official PDF search returned all21 before test fixture was frozen",
+      "successfulQuery": "site:icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf \"Sample Input 1\" \"river in Asia and the longest in\" \"21\"",
+      "returnedPrimaryUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+      "mirrorNotUsedAsFinalPrimaryEvidence": true
+    },
+    "contestDate": "2018-04-19",
+    "datePrecision": "day",
+    "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "difficulty": null,
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedRequiredSourceFacts": []
+  },
+  "api": {
+    "namespace": "space_river",
+    "types": [
+      "WidthEvaluation {int longest;int line_count;optional<int> next_width;}",
+      "Result {int width;int longest;}"
+    ],
+    "functions": [
+      "WidthEvaluation longest_river_at_width(span<const int> lengths,int width)",
+      "Result best_space_river(span<const int> lengths)",
+      "Result best_space_river_words(span<const string> words)",
+      "void write_best_space_river(ostream& output,span<const string> words)"
+    ],
+    "parameters": {
+      "wordCount": "1..2500",
+      "wordLength": "1..80",
+      "fixedWidth": "maxWordLength..INT_MAX",
+      "wordAlphabet": "ASCII a..z/A..Z"
+    },
+    "sourceCoverage": "all source cases; exactly one word is an explicit extension with longest0/width=word length",
+    "fixedEvaluation": "longest over all rows, line_count, exact earliest wider configuration change; next_width nullopt iff all words fit one row",
+    "invalid": "invalid_argument on empty/too many words, nonpositive or>80 lengths, invalid word alphabet, or fixed width below maximum length; length validation before integer accumulation",
+    "integerSafety": "N<=2500/T<=202499; used+1+nextWord<=T, column±1 bounded; huge int width only compared, not incremented or used for allocation",
+    "state": "all state local, const spans not mutated/retained; returned ints/optional own values and reusable across calls",
+    "writer": "compute and validate first; unformatted write of decimal width,space,river,newline; caller flags/precision/width/fill retained",
+    "exceptions": "allocation and stream exceptions propagate"
+  },
+  "proof": {
+    "fixedLayout": "greedily pack next complete word whenever it fits; spaces created only before successfully appended words, never leading/trailing/padding columns",
+    "sparseRecurrence": "f(row,c)=1+max previous-row f atc−1,c,c+1; no prior space means1. Empty current row replaces previous by empty and cuts all chains.",
+    "linearMerge": "current/previous columns increasing; left pointer never returns; each [c−1,c+1] contains<=3 distinct integer columns; total space states<N",
+    "nextChange": "each nonfinal current row first excluded word requiresq_i=used+1+nextLength>w; q=minq_i. Forw<=wprime<q, inductively every row has same start/end and same internal columns.",
+    "rowCountMonotone": "greedy reaches at least as far afterjrows as any other feasible packing: if alternative endpoint not already passed, its remaining suffix from the greedy previous endpoint also fits. Hence greedy minimizes rows; increasing width preserves all old row feasibility.",
+    "earlyStop": "future river<=future rows<=current rows. If best>=current rows no strict improvement possible; larger equal width loses tie.",
+    "finiteDomain": "T=sumLengths+N−1 puts all words on one row; beyondT no internal space column changes",
+    "tie": "evaluate candidate widths increasing, update only on strict length improvement; skipped layouts identical and future stopped candidates no shorter",
+    "riverNotMonotoneWitness": {
+      "lengths": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "width3River": 3,
+      "width5River": 2,
+      "meaning": "no binary search on river length; only row bound is monotone"
+    },
+    "unconfirmedLemmas": []
+  },
+  "complexity": {
+    "fixedTime": "O(N), validation included",
+    "searchTime": "O(NQ)",
+    "Q": "number of actually evaluated widths, <=T−L+1",
+    "worstCaseTime": "O(N(T−L+1)) subset O(N²(L+1))",
+    "additionalSpace": "O(N), no width-sized or full character grid in public APIs",
+    "wordApiValidation": "O(total input letters) time plusO(N) lengths array",
+    "sourceMaxT": 202499,
+    "sourceMaxCandidateIntegerWidths": 202420,
+    "simpleWordPlacementUpperBound": 506050000,
+    "integerType": "all positions/sizes/river lengths fit32-bit signed int at source bounds",
+    "asymptoticHonesty": "event jump and row stop are proved safe, but their speedup is input dependent. No stronger general worst Q bound is claimed.",
+    "nativeRssScope": "reported RSS covers complete checker with dense grids/full-width oracle/ASan allocator; not API-only storage bound",
+    "maximumVerification": "all7generated source-max families tested,2full independent all-integer-width scans; this is generated coverage, not every possible max input"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "dp",
+    "parentGraphId": "dp-sequence-removals",
+    "parentNodeId": "split-kind",
+    "newAnswerId": "space-rivers",
+    "newAnswerLabel": "単語を詰めて改行し、隣の行につながる空白を長くする",
+    "guardGraphId": "word-wrap-space-river-conditions",
+    "canonicalChoices": [
+      "sequence-removals",
+      "split",
+      "space-rivers",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "greedy-word-wrap",
+        "question": "順番を変えず、単語を分けず、単語間1空白で各行へ最大限詰めますか？"
+      },
+      {
+        "id": "adjacent-internal-spaces",
+        "question": "行末余白を除く単語間の空白が、隣の行へ列差1以内でつながりますか？"
+      },
+      {
+        "id": "bounds-tie",
+        "question": "2〜2500語・語長1〜80で、鎖長を最大化し同点なら最小幅を返しますか？"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "word-wrap-sparse-space-river-dp"
+    ],
+    "oldGuardPreservation": "append one feature option/route atsplit-kind; keep all old options/answers/order/text and detailed guards"
+  },
+  "verification": {
+    "checkerReadsActualSingleVisibleMdxFence": true,
+    "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+    "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+    "checkerSha256": "aa5e42ace3e0c48710019af9ad7a5557527d2d57936141b87d1548841c84fc1a",
+    "commands": [
+      "python3 /tmp/flowchartcp-space-river-checker.py",
+      "python3 /tmp/flowchartcp-space-river-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 4382429,
+      "apiCalls": 545801,
+      "exhaustiveLengthInputs": 21844,
+      "literalIntegerWidths": 521155,
+      "literalGridCells": 94307189,
+      "nextChangeChecks": 521106,
+      "literalPathCalls": 44895,
+      "randomInputs": 450,
+      "metamorphicChecks": 1212,
+      "invalidCases": 23,
+      "fullWidthOracleIntegerWidths": 262088,
+      "fullWidthOracleSpaceUpdates": 641826740,
+      "checksum": "14932699637744859611",
+      "seconds": 2.07547,
+      "peakRSSKiB": 21468,
+      "maximumCases": [
+        {
+          "name": "2500 one-letter words",
+          "width": 3,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "2500 length80 words,total202499",
+          "width": 161,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "alternating80and1",
+          "width": 82,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "full random1..80",
+          "width": 5789,
+          "longest": 8,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "full random41..80",
+          "width": 968,
+          "longest": 7,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "periodic1..80",
+          "width": 1667,
+          "longest": 62,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "bit-mixed1..80",
+          "width": 616,
+          "longest": 8,
+          "fullWidthOracle": false
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 4382429,
+      "apiCalls": 545801,
+      "exhaustiveLengthInputs": 21844,
+      "literalIntegerWidths": 521155,
+      "literalGridCells": 94307189,
+      "nextChangeChecks": 521106,
+      "literalPathCalls": 44895,
+      "randomInputs": 450,
+      "metamorphicChecks": 1212,
+      "invalidCases": 23,
+      "fullWidthOracleIntegerWidths": 262088,
+      "fullWidthOracleSpaceUpdates": 641826740,
+      "checksum": "14932699637744859611",
+      "seconds": 15.4379,
+      "peakRSSKiB": 888816,
+      "maximumCases": [
+        {
+          "name": "2500 one-letter words",
+          "width": 3,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "2500 length80 words,total202499",
+          "width": 161,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "alternating80and1",
+          "width": 82,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "full random1..80",
+          "width": 5789,
+          "longest": 8,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "full random41..80",
+          "width": 968,
+          "longest": 7,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "periodic1..80",
+          "width": 1667,
+          "longest": 62,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "bit-mixed1..80",
+          "width": 616,
+          "longest": 8,
+          "fullWidthOracle": false
+        }
+      ]
+    },
+    "semanticCountsMatch": true,
+    "checksum": "14932699637744859611",
+    "counterSemantics": "apiCalls counts harness calls to each documented public entry; writer internally calls word/length APIs but is counted once. literalIntegerWidths includes independently built selected-max grids, nextChangeChecks only exhaustive small/random all-width comparisons; fullWidthOracle counts no-jump timestamp oracle widths and real space updates.",
+    "literalAllSmall": "all21844 sequences over lengths1..4,N1..7. Build actual strings from words, greedily render character rows; a dense width-sized grid DP checks every integer width and earliest tie.",
+    "nextChangeOracle": "retain actual rendered rows for all widths, search forward to the first different row list; compare exact optional next_width for521106cases, without threshold formula",
+    "literalPathOracle": "forN<=5 every starting space and every legal next-row ±1 path is recursively enumerated,44895path calls; compared with dense DP",
+    "independentFullWidthOracle": "prefix-sum binary search determines each row; timestamp array lookup at three columns instead of ordered-list merge. Scan EVERY widthL..T without event jumping or early stop; 262088widths and641826740real-space updates across50small self-validations and2max cases.",
+    "timestampOracleSafety": "positive word lengths give space gaps>=2, so after evaluatingc, overwriting its previous-row value cannot affect any later space whose wanted previous columns start>=c+1. Stamps separate consecutive rows and every new width; no empty row can be bridged.",
+    "maximumScope": "2500 words: all1/all80/alternating80,1 have closed optima; uniform1..80 and41..80 random both full-width-oracle checked; periodic1..80 andbit-mixed checked at returned±1/boundary/one-line widths by literal grid. All7also word writer andINT_MAX fixed-width tested.",
+    "randomAndMetamorphic": "450random all-width literal comparisons; character/case substitutions preserve result, affine a_new=2(a+1)−1/W_new=2(W+1)−1 preserves wrapping and cannot add diagonal rivers, appending a word no longer thanold max cannot remove old river atvalidoldwidth",
+    "invalidScope": "23cases include empty/count2501,0/-1/81/INT_MIN/MAX lengths,too-small/negativeINT_MIN widths,empty/81byte words,digits/space/tab/newline/punctuation/embeddednull/nonASCII; invalid writer emits nothing",
+    "sourceSamplesCompared": 2,
+    "trailingPaddingWitness": {
+      "lengths": [
+        1,
+        1,
+        2,
+        2,
+        1,
+        1
+      ],
+      "width": 3,
+      "trueRiver": 1,
+      "paddingMustNotBridge": true
+    },
+    "reuseAndFormatting": "100interleaved fixed/optimal calls, singletonextension, INT_MAXwidth, input constness, writerdecimal/one-space/newline withhexflags,width23,fill# allpreserved",
+    "separationFromInitialAudit": "Initial audit verified method and bounds but explicitly had implementationStatus not-created-in-this-audit. This is a new complete public C++ API plus independent literal/full-width/sanitizer validation; initial research record is not renamed to production."
+  },
+  "relatedArticleReview": [
+    {
+      "techniqueId": "state-design",
+      "file": "src/content/docs/techniques/state-design.mdx",
+      "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+      "scopeMismatch": "状態設計の一般論。行間の空白位置と前行の最大鎖長を結ぶ具体コードはない。",
+      "currentReviewedSha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+      "initialShaMatchesCurrent": true
+    },
+    {
+      "techniqueId": "two-pointers",
+      "file": "src/content/docs/techniques/two-pointers.mdx",
+      "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+      "scopeMismatch": "空白位置列の照合には使えるが、折返しと幅探索が必要。",
+      "currentReviewedSha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+      "initialShaMatchesCurrent": true
+    }
+  ],
+  "initialAuditPreservation": {
+    "auditFile": "data/corpus-audits/icpc-2018-world-finals.json",
+    "rawAuditSha256AtAuthoring": "d45e0c0ab9b8f2ba07c799633ed81902bae8985e150e2db1a6d067a039dd97aa",
+    "problemId": "wf2018_f",
+    "initialRecordCanonicalSha256": "5afbbda0ee7159016bf54716f42605e27e6c1ef7773865c4325cfbb902f1280f",
+    "initialRecord": {
+      "source": "icpc",
+      "problemId": "wf2018_f",
+      "title": "Go with the Flow",
+      "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+      "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+      "contest": {
+        "name": "ACM-ICPC World Finals 2018",
+        "division": "World Finals",
+        "problemLetter": "F",
+        "year": 2018,
+        "date": "2018-04-19",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "expectedTechniqueIds": [],
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式問題冊子の大会年とICPC公式ニュース・brochureの競技日2018-04-19を確認。大会全体の日程とは区別。",
+      "features": [
+        "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+        "行幅を選んで鎖を最大にし、同じ長さなら最小の行幅を返す。行末の余白は鎖へ含めない。"
+      ],
+      "constraints": {
+        "words": "2..2500",
+        "maxWordLength": 80,
+        "lineWidth": "at least maximum word length",
+        "objective": "longest river, then smallest width"
+      },
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "dp",
+      "choices": [
+        "sequence-removals",
+        "split"
+      ],
+      "gap": {
+        "id": "word-wrap-sparse-space-river-dp",
+        "features": [
+          "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+          "行幅を選んで鎖を最大にし、同じ長さなら最小の行幅を返す。行末の余白は鎖へ含めない。"
+        ],
+        "reason": "連続区間の分割までは辿れるが、固定行幅から貪欲に定まる分割と、実在する空白だけの行間DPの分岐がない。区間分割の費用最適化とは異なる。",
+        "neededTechniqueIds": [
+          "word-wrap-sparse-space-river-dp"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "state-design",
+          "two-pointers"
+        ],
+        "proposedFeatureAnswer": "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+        "firstMissingGraphId": "dp-sequence-removals",
+        "firstMissingNodeId": "split-kind",
+        "currentOptions": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "区間の分け方には、どの条件がありますか？"
+      },
+      "technicalFindings": {
+        "verification": "public-editorial-sketch",
+        "editorialAuthors": [
+          "Per Austrin",
+          "Jakub Onufry Wojtaszczyk"
+        ],
+        "editorialProvenance": "ICPC公式ドメイン掲載。文書自身がunofficial analysisと明記し、Per AustrinとJakub Onufry Wojtaszczykが署名する公開sketch。公式解説とは扱わない。",
+        "method": "幅を最大語長から全語が一行になる幅まで試す。各幅で貪欲に改行し、実在する空白の位置と鎖長だけを持ち、前行の列差<=1の状態の最大へ1を足す。",
+        "independentAuditReasoning": [
+          "一行が決まれば、各空白で終わる鎖は前行の三列の最大にだけ依存する。全幅を昇順に調べ、改善したときだけ答えを更新すれば同点の最小幅が残る。",
+          "独立確認: 各幅で空白総数はN未満。隣接行の空白位置は昇順で、二本のポインタで三列内を照合できるため、文字のない列を全走査せずO(N)で評価できる。幅が総文字数を超えても配置は同じ。"
+        ],
+        "implementationRequirements": [
+          "語長だけで位置を計算し、幅いっぱい・一行一語・空白鎖なし・同点幅を扱う。",
+          "行数による打切りや配置変化時刻へのジャンプを使う場合は、経験的高速化を最悪計算量と混同しない。"
+        ],
+        "complexity": "最大語長をLとすると幅数O(NL)、一幅O(N)で全体O(N^2 L)時間、O(N)補助空間。",
+        "sourceUrls": [
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf",
+          "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf"
+        ],
+        "statementPages": [
+          11,
+          12
+        ],
+        "editorialPages": [
+          7
+        ],
+        "implementationStatus": "not-created-in-this-audit"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "publicEditorialSketch": "retrieved-and-reviewed",
+        "solution": "retrieved-and-reviewed",
+        "officialEditorial": "not-asserted-unofficial-disclaimer",
+        "officialEditorialVerified": false,
+        "supplement": "not-obtained-not-required-to-finish-first-pass"
+      },
+      "collectionStatus": "statement-and-public-sketch-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "scopeMismatch": "状態設計の一般論。行間の空白位置と前行の最大鎖長を結ぶ具体コードはない。"
+        },
+        {
+          "techniqueId": "two-pointers",
+          "file": "src/content/docs/techniques/two-pointers.mdx",
+          "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+          "scopeMismatch": "空白位置列の照合には使えるが、折返しと幅探索が必要。"
+        }
+      ],
+      "steps": [
+        {
+          "graphId": "dp",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "sequence-removals",
+          "answerLabel": "列の分割・隣接要素の併合や削除"
+        },
+        {
+          "graphId": "dp-sequence-removals",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "split",
+          "answerLabel": "順番を保ち、連続した区間へ分ける"
+        }
+      ],
+      "initialReached": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "nodeType": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "techniqueIds": []
+      },
+      "navigationReplay": {
+        "runtime": "snapshot src/lib/flow.ts compiled by repository local-modules helper",
+        "choicesConsumed": 2,
+        "stepsSha256": "7c4c39ec239c9d50d6dd5a99eb750081878aa47f501432953a969504be05618f",
+        "graphDataSha256": "39a3d2089b8f5ac9e684092543ac49f5005555d3b6e8c0d4be3cdc2a9b1e0181"
+      }
+    },
+    "allInitialFieldsMustRemainUnchanged": true,
+    "initialResearchPositive": true,
+    "newPositiveResearchReviewRequired": false,
+    "registrationKind": "resolution-only",
+    "initialReviewStatus": "verified",
+    "initialClassification": "missing-technique",
+    "initialExpectedTechniqueIds": [],
+    "initialOfficialEditorialVerified": false,
+    "newResolutionMustNotRewriteInitialImplementationStatus": "not-created-in-this-audit"
+  },
+  "rootTrace": {
+    "initialEntryGraphId": "dp",
+    "initialChoices": [
+      "sequence-removals",
+      "split"
+    ],
+    "initialSteps": [
+      {
+        "graphId": "dp",
+        "nodeId": "defined",
+        "question": "選び方や分け方の特徴はどれですか？",
+        "answer": "sequence-removals",
+        "answerLabel": "列の分割・隣接要素の併合や削除"
+      },
+      {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "defined",
+        "question": "選び方や分け方の特徴はどれですか？",
+        "answer": "split",
+        "answerLabel": "順番を保ち、連続した区間へ分ける"
+      }
+    ],
+    "initialReached": {
+      "graphId": "dp-sequence-removals",
+      "nodeId": "split-kind",
+      "nodeType": "question",
+      "title": "区間の分け方には、どの条件がありますか？",
+      "techniqueIds": []
+    },
+    "initialGap": {
+      "id": "word-wrap-sparse-space-river-dp",
+      "features": [
+        "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+        "行幅を選んで鎖を最大にし、同じ長さなら最小の行幅を返す。行末の余白は鎖へ含めない。"
+      ],
+      "reason": "連続区間の分割までは辿れるが、固定行幅から貪欲に定まる分割と、実在する空白だけの行間DPの分岐がない。区間分割の費用最適化とは異なる。",
+      "neededTechniqueIds": [
+        "word-wrap-sparse-space-river-dp"
+      ],
+      "implementationNeeded": true,
+      "existingRelatedTechniqueIds": [
+        "state-design",
+        "two-pointers"
+      ],
+      "proposedFeatureAnswer": "単語を左詰めの規則で折り返し、単語間の空白だけから隣の行へ高々1列ずれて続く最長鎖を求める。",
+      "firstMissingGraphId": "dp-sequence-removals",
+      "firstMissingNodeId": "split-kind",
+      "currentOptions": [
+        {
+          "id": "exact-count",
+          "label": "ちょうど K 個の区間に分ける"
+        },
+        {
+          "id": "cut-cost",
+          "label": "一つの区間を切り、左右へ分けた費用を足す"
+        },
+        {
+          "id": "stages",
+          "label": "前の段の分割位置から、次の段を決める"
+        },
+        {
+          "id": "general",
+          "label": "個数を自由にし、合計費用を最小にする"
+        },
+        {
+          "id": "distinct-score",
+          "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+        },
+        {
+          "id": "equal-pair-cost",
+          "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ],
+      "currentQuestion": "区間の分け方には、どの条件がありますか？"
+    },
+    "existingScopeMismatch": "generic state-design/two-pointers do not implement greedy word wrapping, internal-space row DP, exact next event, finite optimum/tie/row-stop correctness",
+    "initialRootTraceMustRemain": true
+  },
+  "resolutionProposal": {
+    "status": "verified",
+    "reviewedAt": "2026-10-15",
+    "techniqueIds": [
+      "word-wrap-sparse-space-river-dp"
+    ],
+    "rootWalkFile": "data/problem-walks.json",
+    "notes": "初回positive研究・停止位置・未作成APIを全field保持。原典全域の可視C++、疎空白DP/変化幅/行数上界/最小幅tieの証明、正直な最悪計算量、全小文字grid/全幅・最大・別全幅oracle・ASan/UBSan・独立レビュー・特徴分岐で解消。追加positive研究reviewなし。非公式sketchを公式解説とは扱わない。"
+  },
+  "integrationGate": {
+    "authorArtifactsComplete": true,
+    "requiredMathNumericAndSourceUnknowns": [],
+    "externalIndependentReviewStillPending": true,
+    "articleFlowResolutionNotRegisteredByAuthor": true,
+    "resolutionRequires": "independent parent review and actual feature-flow/root-walk registration; tmp artifacts alone do not assert current coverage"
+  },
+  "preservation": {
+    "sharedFilesModified": false,
+    "initialAuditOrSnapshotModified": false,
+    "polyaAndDegreeTreeArtifactsModified": false,
+    "onlyAuthoredDeliverables": [
+      "/tmp/flowchartcp-space-river-article.mdx",
+      "/tmp/flowchartcp-space-river-checker.py",
+      "/tmp/flowchartcp-space-river-sidecar.json"
+    ],
+    "childAgentsCreated": false,
+    "articleCodeAlwaysVisible": true,
+    "sections": [
+      "使う場面",
+      "考え方",
+      "適用条件",
+      "なぜ正しいか",
+      "計算量",
+      "実装",
+      "関連する手法",
+      "参考資料"
+    ]
+  },
+  "status": "verified-and-integrated",
+  "statusAtAuthorFreeze": "complete-author-artifacts-pending-independent-review-and-registration",
+  "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/word-wrap-sparse-space-river-dp.mdx",
+    "checker": "scripts/check_word_wrap_space_river_cpp.py",
+    "metadataGroup": "dp-patterns",
+    "entryGraphId": "dp",
+    "choices": [
+      "sequence-removals",
+      "split",
+      "space-rivers",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Natural public title 行幅を変えて、空白の連なりを最長にする; identical metadata/frontmatter.",
+      "Standard entryPoints advanced/complexity/reasoning and exact-date/numeric feature fields.",
+      "Only checker/probe destinations and implicit tmp result writes normalized; C++ and all oracle logic unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-space-river.json"
+  },
+  "artifactSha256": {
+    "authorArticle": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+    "authorChecker": "aa5e42ace3e0c48710019af9ad7a5557527d2d57936141b87d1548841c84fc1a",
+    "authorSidecar": "cce0fc61579b548315719cfc2e1c25c08c0e06231556569c36b56c89406dc8b6",
+    "publishedArticle": "35cda650eb0c7ba6cf341389d5c49935bb687dcff88d28e85752fe3dcb7bb390",
+    "publishedChecker": "879abf008af9b3ba3db858d23c20b8e81a52c08435a7ffa24c4bf53ba8c17268"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewer": "/root",
+      "reviewedAt": "2026-10-15",
+      "techniqueId": "word-wrap-sparse-space-river-dp",
+      "sourceVerification": {
+        "statementPages": [
+          11,
+          12
+        ],
+        "fullStatementAndBothSamplesRead": true,
+        "sampleWordCounts": [
+          21,
+          25
+        ],
+        "sampleOutputs": [
+          [
+            15,
+            5
+          ],
+          [
+            21,
+            6
+          ]
+        ],
+        "sketchRelevantPage": 7,
+        "sketchSelfDescribesAsUnofficial": true,
+        "officialEditorialVerified": false,
+        "contestDate": "2018-04-19",
+        "difficulty": null,
+        "visualOnlyVerificationClaimed": false
+      },
+      "proofReview": [
+        "固定幅の貪欲最大充填は一意。実単語間空白のみを状態にし、前行の列差1以内から最大鎖を延ばす。空白のない行のswap/clearで鎖が途切れ、全行の最大を保持する。",
+        "全非最終行で最初に入らない語を入れる幅qの最小を取る。w<=wprime<qでは先頭行から帰納的に全改行位置が不変、qで少なくとも一つ変わる。next_widthは厳密に次の配置変化。",
+        "貪欲の各接頭行の終点は任意配置を支配し、行数が最小。幅を増やしても旧各行は可行なので行数は非増加。川自体の単調性を要求せず、行数<=bestで将来改善不能を証明。",
+        "最小幅LからTまで昇順に実変化だけ評価しstrict改善だけ更新するため、同点最小幅を返す。T以降の全一行配置は不変。単語1個0長の拡張も正しい。"
+      ],
+      "apiAndResourcesReview": [
+        "原典N2..2500、ASCII大小文字の語長1..80を全包含。汎用長さAPIは一語拡張。固定幅はL..INT_MAXを受理し、幅に依存するallocationやwidth加算を行わない。",
+        "検証を語長の加算前に行いT<=202499、used+1+nextLength<=T、列+-1安全。列は単語長が正なので昇順/相異なり、前行照合は最大3列。O(N)/幅、O(NQ)、Q<=T-L+1<=202420、最悪語配置506050000という保守上界。",
+        "const spanを変更・保持せず、二vectorと返す所有値だけを使う。空白なし行のcurrent.clearとprevious.swapは全行必ず行う。出力は全検証/計算後にASCII decimal行を作りunformatted write、callerのlocale/flags/width/fill/precisionを保つ。",
+        "記事はjump/stopの経験的速さから未証明の漸近改善を主張しない。最大7生成構成と2全整数幅独立oracleは全最大入力列挙とは区別。"
+      ],
+      "normal": {
+        "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+        "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 4382429,
+        "apiCalls": 545801,
+        "exhaustiveLengthInputs": 21844,
+        "literalIntegerWidths": 521155,
+        "literalGridCells": 94307189,
+        "nextChangeChecks": 521106,
+        "literalPathCalls": 44895,
+        "randomInputs": 450,
+        "metamorphicChecks": 1212,
+        "invalidCases": 23,
+        "fullWidthOracleIntegerWidths": 262088,
+        "fullWidthOracleSpaceUpdates": 641826740,
+        "checksum": "14932699637744859611",
+        "seconds": 2.1082,
+        "peakRSSKiB": 21552,
+        "maximumCases": [
+          {
+            "name": "2500 one-letter words",
+            "width": 3,
+            "longest": 1250,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "2500 length80 words,total202499",
+            "width": 161,
+            "longest": 1250,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "alternating80and1",
+            "width": 82,
+            "longest": 1250,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "full random1..80",
+            "width": 5789,
+            "longest": 8,
+            "fullWidthOracle": true
+          },
+          {
+            "name": "full random41..80",
+            "width": 968,
+            "longest": 7,
+            "fullWidthOracle": true
+          },
+          {
+            "name": "periodic1..80",
+            "width": 1667,
+            "longest": 62,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "bit-mixed1..80",
+            "width": 616,
+            "longest": 8,
+            "fullWidthOracle": false
+          }
+        ]
+      },
+      "asanUbsan": {
+        "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+        "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 4382429,
+        "apiCalls": 545801,
+        "exhaustiveLengthInputs": 21844,
+        "literalIntegerWidths": 521155,
+        "literalGridCells": 94307189,
+        "nextChangeChecks": 521106,
+        "literalPathCalls": 44895,
+        "randomInputs": 450,
+        "metamorphicChecks": 1212,
+        "invalidCases": 23,
+        "fullWidthOracleIntegerWidths": 262088,
+        "fullWidthOracleSpaceUpdates": 641826740,
+        "checksum": "14932699637744859611",
+        "seconds": 15.9237,
+        "peakRSSKiB": 888916,
+        "maximumCases": [
+          {
+            "name": "2500 one-letter words",
+            "width": 3,
+            "longest": 1250,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "2500 length80 words,total202499",
+            "width": 161,
+            "longest": 1250,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "alternating80and1",
+            "width": 82,
+            "longest": 1250,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "full random1..80",
+            "width": 5789,
+            "longest": 8,
+            "fullWidthOracle": true
+          },
+          {
+            "name": "full random41..80",
+            "width": 968,
+            "longest": 7,
+            "fullWidthOracle": true
+          },
+          {
+            "name": "periodic1..80",
+            "width": 1667,
+            "longest": 62,
+            "fullWidthOracle": false
+          },
+          {
+            "name": "bit-mixed1..80",
+            "width": 616,
+            "longest": 8,
+            "fullWidthOracle": false
+          }
+        ]
+      },
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "artifactSha256": {
+        "article": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+        "checker": "aa5e42ace3e0c48710019af9ad7a5557527d2d57936141b87d1548841c84fc1a",
+        "sidecar": "cce0fc61579b548315719cfc2e1c25c08c0e06231556569c36b56c89406dc8b6"
+      },
+      "independentReviewSha256": "1cab446fa256e06f3c766144f405a576a848d0bd8a4d06bd33769c324c316616",
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Natural public title 行幅を変えて、空白の連なりを最長にする; identical metadata/frontmatter.",
+        "Standard entryPoints advanced/complexity/reasoning and exact-date/numeric feature fields.",
+        "Only checker/probe destinations and implicit tmp result writes normalized; C++ and all oracle logic unchanged."
+      ],
+      "sharedFilesModified": false
+    },
+    "normal": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 4382429,
+      "apiCalls": 545801,
+      "exhaustiveLengthInputs": 21844,
+      "literalIntegerWidths": 521155,
+      "literalGridCells": 94307189,
+      "nextChangeChecks": 521106,
+      "literalPathCalls": 44895,
+      "randomInputs": 450,
+      "metamorphicChecks": 1212,
+      "invalidCases": 23,
+      "fullWidthOracleIntegerWidths": 262088,
+      "fullWidthOracleSpaceUpdates": 641826740,
+      "checksum": "14932699637744859611",
+      "seconds": 2.1082,
+      "peakRSSKiB": 21552,
+      "maximumCases": [
+        {
+          "name": "2500 one-letter words",
+          "width": 3,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "2500 length80 words,total202499",
+          "width": 161,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "alternating80and1",
+          "width": 82,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "full random1..80",
+          "width": 5789,
+          "longest": 8,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "full random41..80",
+          "width": 968,
+          "longest": 7,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "periodic1..80",
+          "width": 1667,
+          "longest": 62,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "bit-mixed1..80",
+          "width": 616,
+          "longest": 8,
+          "fullWidthOracle": false
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 4382429,
+      "apiCalls": 545801,
+      "exhaustiveLengthInputs": 21844,
+      "literalIntegerWidths": 521155,
+      "literalGridCells": 94307189,
+      "nextChangeChecks": 521106,
+      "literalPathCalls": 44895,
+      "randomInputs": 450,
+      "metamorphicChecks": 1212,
+      "invalidCases": 23,
+      "fullWidthOracleIntegerWidths": 262088,
+      "fullWidthOracleSpaceUpdates": 641826740,
+      "checksum": "14932699637744859611",
+      "seconds": 15.9237,
+      "peakRSSKiB": 888916,
+      "maximumCases": [
+        {
+          "name": "2500 one-letter words",
+          "width": 3,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "2500 length80 words,total202499",
+          "width": 161,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "alternating80and1",
+          "width": 82,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "full random1..80",
+          "width": 5789,
+          "longest": 8,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "full random41..80",
+          "width": 968,
+          "longest": 7,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "periodic1..80",
+          "width": 1667,
+          "longest": 62,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "bit-mixed1..80",
+          "width": 616,
+          "longest": 8,
+          "fullWidthOracle": false
+        }
+      ]
+    },
+    "additionalReviewFile": "research/probes/word-wrap-space-river-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

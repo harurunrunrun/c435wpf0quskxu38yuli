@@ -1,0 +1,93 @@
+---
+title: "多数のパターンの出現回数を failure link で逆向きに集める"
+description: "本文を一度読んで訪問回数だけを記録し、長い一致から短い一致へ後でまとめて配ります。"
+techniqueId: "aho-failure-aggregation"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+固定された本文に対して、多数のパターンの出現回数をそれぞれ求めたい場合。本文が `aaaa…`、パターンが `a`, `aa`, `aaa`, … のように、1 箇所で多数が同時に一致する入力が重要です。
+
+## 考え方
+
+パターンのトライを作り、各頂点に failure link を付けます。これは、そこまでの文字列の真の接尾辞のうち、トライに存在する最長のものへのリンクです。文字ごとの遷移も不足分を補います。
+
+本文を読みながら、現在の最長一致の頂点の訪問回数だけ増やします。短い一致はその場で全て列挙しません。読み終えた後、BFS 順の逆順で
+
+$$\mathrm{count}[\mathrm{fail}[v]]\mathrel{+}=\mathrm{count}[v]$$
+
+と配ります。各パターンの終端頂点に集まった回数が答えです。
+
+## 適用条件
+
+必要なのが出現**回数**や加算可能な寄与である場合です。全出現位置を実際に出力する場合、出力サイズ分の時間は避けられません。
+
+パターンが重複していても同じ終端の答えを返せます。本文に文字更新がある場合や、後からパターンを追加する場合は、この一度きりの前計算の扱いを見直します。
+
+## なぜ正しいか
+
+本文のある位置で終わる全パターンは、現在の最長一致から failure link をたどった頂点のうち、パターン終端になっているものです。最長一致への訪問 1 回をその連鎖へ配ると、その位置で終わる各パターンへ一度ずつ届きます。
+
+failure link は文字列の長さを短くするため、BFS 順の逆順で処理すれば、子孫からの回数を受け取ってから親へ配れます。
+
+## 計算量
+
+パターンごとに本文を読み直す改善前は $O(NK+L)$。全一致を列挙する方式も、出現総数が大きいと $\Theta(NK)$ になります。
+
+改善後はトライの頂点数を $V\le L+1$ として $O(\sigma V+N+K)$ 時間、$O(\sigma V+K)$ 空間。$L$ はパターン総長で、実装は $\sigma=26$ です。
+
+## 実装
+
+英小文字を対象とします。空パターンの出現数は $N+1$ として別扱いします。非空パターンの重なった出現も数えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> pattern_occurrences(const string& text,const vector<string>& patterns) {
+    struct Node {array<int,26> go{};int fail=0;long long count=0;};
+    vector<Node> trie(1);
+    vector<int> terminal;
+    for(const string& p:patterns) {
+        int v=0;
+        for(char ch:p) {
+            int c=ch-'a';assert(0<=c && c<26);
+            if(trie[v].go[c]==0) {
+                int to=trie.size();trie[v].go[c]=to;trie.emplace_back();
+            }
+            v=trie[v].go[c];
+        }
+        terminal.push_back(v);
+    }
+    vector<int> order;
+    for(int c=0;c<26;++c) if(trie[0].go[c]) order.push_back(trie[0].go[c]);
+    for(int i=0;i<int(order.size());++i) {
+        int v=order[i];
+        for(int c=0;c<26;++c) {
+            int to=trie[v].go[c];
+            if(to) {trie[to].fail=trie[trie[v].fail].go[c];order.push_back(to);}
+            else trie[v].go[c]=trie[trie[v].fail].go[c];
+        }
+    }
+    int v=0;
+    for(char ch:text) {
+        int c=ch-'a';assert(0<=c && c<26);
+        v=trie[v].go[c];++trie[v].count;
+    }
+    for(auto it=order.rbegin();it!=order.rend();++it)
+        trie[trie[*it].fail].count+=trie[*it].count;
+    vector<long long> answer;
+    for(int i=0;i<int(patterns.size());++i)
+        answer.push_back(patterns[i].empty() ? text.size()+1 : trie[terminal[i]].count);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[接頭辞の出現回数を、短い一致先へ集約する](/flowchartcp/techniques/prefix-border-occurrences/)、[禁止語を避ける DP に、末尾で一致している接頭辞の長さを持つ](/flowchartcp/techniques/automaton-forbidden-dp/)
+
+## 参考資料
+
+- [CSES：Counting Patterns の問題文](https://cses.fi/problemset/task/2103/)
+
+<TechniqueReferences techniqueId="aho-failure-aggregation" />

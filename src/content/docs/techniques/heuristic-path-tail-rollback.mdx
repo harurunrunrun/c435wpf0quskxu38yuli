@@ -1,0 +1,70 @@
+---
+title: "タイルを一度だけ使う経路は、末尾だけ外して再構築し、失敗したら戻す"
+description: "先頭の訪問記録を保ち、外した末尾と追加した末尾だけで合法性と得点を更新します。"
+techniqueId: "heuristic-path-tail-rollback"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+格子上でタイルごとに一度しか踏めない経路を伸ばし、袋小路から別の末尾へ作り直したいとき。同じタイルの別マスも再訪になるため、訪問マスだけの判定では足りません。
+
+## 考え方
+
+先頭の keep 個を残し、それ以降のマスを逆順に外します。外すたびにタイルの使用フラグを消し、マスの得点を引きます。新しい末尾を一マスずつ加え、隣接・盤面内・タイル未使用を確認します。途中で不正になった場合や候補を棄却した場合は、新しい末尾を外して古い末尾を順に戻します。
+
+## 適用条件
+
+各タイルを高々一回使う経路で、局所変更が末尾全体の置換であること。開始マスは残します。戻す順序は変更した順序の逆にします。固定した先頭に既にあるタイルの別マスへは移れません。得点以外の履歴も持つ場合は同じ範囲を一緒に戻す必要があります。
+
+## なぜ正しいか
+
+残った先頭は元の合法経路なので、フラグと得点もその先頭と一致します。追加ごとの検査で隣接とタイル一意性が保たれます。追加分を全て外せば元の先頭状態へ戻り、保存した末尾の再適用で元の経路そのものを復元できます。どの末尾を選ぶと良いかは探索上の選択で、最適性は保証しません。
+
+## 計算量
+
+毎候補の全マス走査は経路長 $L$ に対して $O(L+HW)$。初期化後は外した長さ $A$ と追加した長さ $B$ に対して時間 $O(A+B)$、棄却時の復元も同程度。盤面・フラグ・経路の予約領域に $O(HW)$、一試行の保存に $O(A)$ 空間を使います。経路長はタイル数以下なので、最大長を事前確保して試行中の再確保を避けます。
+
+## 実装
+
+`replace_tail(keep, tail, false)` は合法なら得点差を返し、状態を元へ戻します。不正な候補は `nullopt`。受理すると決めた候補だけ `true` で再適用します。マス番号は `行×幅+列`、`keep` は開始マスを含む保存個数です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class TilePath {
+    int h,w;vector<int> tile;vector<long long> point;vector<char> used;vector<int> cells;__int128 total=0;
+    bool append_cell(int v){
+        if(v<0 || v>=h*w || used[tile[v]])return false;
+        if(!cells.empty()){int u=cells.back();if(abs(u/w-v/w)+abs(u%w-v%w)!=1)return false;}
+        cells.push_back(v);used[tile[v]]=1;total+=point[v];return true;
+    }
+    void pop_cell(){int v=cells.back();cells.pop_back();used[tile[v]]=0;total-=point[v];}
+public:
+    TilePath(int height,int width,vector<int> ids,vector<long long> scores,vector<int> initial):h(height),w(width),tile(move(ids)),point(move(scores)){
+        assert(h>=1 && w>=1 && (int)tile.size()==h*w && tile.size()==point.size() && !initial.empty());
+        int count=0;for(int id:tile){assert(id>=0 && id<h*w);count=max(count,id+1);}used.resize(count);cells.reserve(h*w);
+        for(int v:initial){bool ok=append_cell(v);assert(ok);(void)ok;}}
+    optional<__int128> replace_tail(int keep,const vector<int>& tail,bool commit=false){
+        assert(1<=keep && keep<=(int)cells.size());__int128 before=total;vector<int> old(cells.begin()+keep,cells.end());
+        while((int)cells.size()>keep)pop_cell();
+        bool ok=true;for(int v:tail)if(!append_cell(v)){ok=false;break;}
+        __int128 diff=total-before;
+        if(!ok || !commit){while((int)cells.size()>keep)pop_cell();for(int v:old){bool restored=append_cell(v);assert(restored);(void)restored;}}
+        if(!ok)return nullopt;
+        return diff;
+    }
+    const vector<int>& path()const{return cells;}
+    __int128 score()const{return total;}
+};
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc002/tasks/ahc002_a)
+
+<TechniqueReferences techniqueId="heuristic-path-tail-rollback" />

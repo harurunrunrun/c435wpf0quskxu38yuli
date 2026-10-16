@@ -1,0 +1,97 @@
+---
+title: "転倒数が指定された順列は、最大値の挿入で増える個数を窓の和にする"
+description: "最大値を挿す位置と追加転倒数を対応させ、幅が一つずつ広がる遷移を足し引きで求める。"
+techniqueId: permutation-inversion-window-dp
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+$1..N$ を一度ずつ使う順列のうち、転倒数がちょうど $K$ のものを数える。転倒とは、$i<j$ かつ $a_i>a_j$ となる添字の組である。
+
+$N$ と $K$ がそれぞれ千程度なら順列の全列挙はできない。「今使っている値の集合」を持つ代わりに、最大値を順に挿入し、転倒数が増える範囲を調べる。
+
+## 考え方
+
+$dp_i[j]$ を、$1..i$ の順列で転倒数が $j$ のものの個数とする。空順列から始め、$dp_0[0]=1$、他は $0$ とする。
+
+$1..i-1$ の順列に新しい最大値 $i$ を挿す。$i$ の右にある要素は全て $i$ より小さいので、新たな転倒数は右側の要素数に等しい。挿入位置を右端から左端まで動かすと、増分は $0,1,\ldots,i-1$ を一度ずつ取る。従って
+
+$$
+dp_i[j]=\sum_{t=0}^{i-1}dp_{i-1}[j-t].
+$$
+
+負の添字は $0$ とみなす。ここで、隣り合う $j$ の和はほとんど同じである。
+
+$$
+dp_i[j]=dp_i[j-1]+dp_{i-1}[j]
+ -\begin{cases}dp_{i-1}[j-i]&j\ge i,\\0&j<i.\end{cases}
+$$
+
+前の段の配列上で、窓 $[j-i+1,j]$ の和を保てばよい。$j$ を一つ進めると右端の一項が入り、幅 $i$ を越えたら左端の一項が出る。現在の段と前の段を混ぜないよう、二つの配列を使う。
+
+さらに、順列の全ての値 $x$ を $N+1-x$ に置き換えると、転倒していた組と転倒していなかった組が反転する。$M=N(N-1)/2$ とすれば、転倒数 $K$ の順列と $M-K$ の順列は同数である。$K\le M$ を確認してから $T=\min(K,M-K)$ に置き換えると、計算する軸を短くできる。
+
+## 適用条件
+
+全ての値が相異なり、使う値の集合が固定され、条件は転倒数の合計だけである。最大値を挿入しても、既存の要素同士の転倒判定が変わらないことを使っている。
+
+値の重複を許すと、右側の要素数と新しい転倒数が一致しない。位置ごとに使える値が決まっている場合や、隣接不等号などの追加条件がある場合も、単に $0..i-1$ の全ての増分を一通りずつ足すことはできない。
+
+対称性による短縮には、値の大小を反転した順列も許される必要がある。この記事の転倒数だけを指定する問題では成り立つが、値や位置に別の制約が付く場合は確認が必要になる。
+
+## なぜ正しいか
+
+$1..i$ のどの順列も、最大値 $i$ を除くと $1..i-1$ の順列に一意に戻る。除いた位置は、$i$ の右にあった要素数 $t$ と一対一に対応する。既存要素間の転倒数は変わらず、$i$ が左側の大きい値となる $t$ 組だけが新たに増える。
+
+従って、転倒数 $j$ の順列は、ある $t\in[0,i-1]$ と転倒数 $j-t$ の小さい順列から、重複なく一度だけ生成される。これで漸化式が得られる。窓の更新式は、その和の右端を加え、範囲外になった左端を引いただけなので、同じ値を計算する。
+
+計算する添字を $0..T$ に限定しても、捨てた大きい添字は後の小さい添字へ遷移しない。新しい転倒数は非負だからである。最後に $dp_N[T]$ を返し、対称性を使った場合も元の $K$ の答えと一致する。
+
+## 計算量
+
+各状態で挿入位置を全て試すと $O(N^2(T+1))$ 時間かかる。窓の和なら、各段の各転倒数を定数時間で更新できるため、$O(N(T+1))$ 時間、$O(T+1)$ 空間となる。ここで $T=\min(K,N(N-1)/2-K)$。不可能な $K$ は定数時間で $0$ を返し、空順列も定数時間で扱う。
+
+## 実装
+
+法 $1000000007$ で個数を返す。$0\le N,K\le1000$ を受け付け、負の引数は `invalid_argument`、上限を超える引数は `length_error` とする。空順列は転倒数0なら $1$ 通り、それ以外は $0$ 通り。$K>N(N-1)/2$ も $0$ になる。
+
+窓の和は、足す値と引く値を処理するたびに法の範囲へ戻す。引き算の結果が負になることがあるため、負数の剰余をそのまま配列に保存しない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_permutations_with_inversions(int n, int k) {
+    constexpr int MOD = 1000000007;
+    if (n < 0 || k < 0) throw invalid_argument("negative n or k");
+    if (n > 1000 || k > 1000) throw length_error("n and k must be at most 1000");
+    const int maximum = n * (n - 1) / 2;
+    if (k > maximum) return 0;
+    const int target = min(k, maximum - k);
+    vector<int> dp(target + 1, 0), next(target + 1, 0);
+    dp[0] = 1;
+    for (int size = 1; size <= n; ++size) {
+        long long window = 0;
+        for (int inversions = 0; inversions <= target; ++inversions) {
+            window += dp[inversions];
+            if (inversions >= size) window -= dp[inversions - size];
+            if (window >= MOD) window -= MOD;
+            if (window < 0) window += MOD;
+            next[inversions] = static_cast<int>(window);
+        }
+        dp.swap(next);
+    }
+    return dp[target];
+}
+```
+
+## 関連する手法
+
+[遷移元が連続範囲の和なら累積和を使う](/flowchartcp/techniques/dp-range-sum/) ・ [隣接する不等号に合う順列を末尾の相対順位で数える](/flowchartcp/techniques/permutation-inequality-last-rank/) ・ [順列の全巡回シフトの転倒数を差分で求める](/flowchartcp/techniques/cyclic-inversion-delta/)
+
+## 参考資料
+
+- [LeetCode 629：K Inverse Pairs Array](https://leetcode.com/problems/k-inverse-pairs-array/)
+
+<TechniqueReferences techniqueId="permutation-inversion-window-dp" />

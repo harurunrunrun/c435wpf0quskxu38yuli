@@ -1,0 +1,65 @@
+---
+title: "盤面の勝利条件と得点比較が混在するなら、終了判定を先に行う"
+description: "同じ盤面をメモし、即時勝利が成立した状態から先を探索しません。"
+techniqueId: "weighted-board-terminal-minimax"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+交互に空きマスを取るゲームで、列が揃えば即時勝利し、盤面が埋まった場合だけ得点を比較するとき。得点が高くても途中の勝利条件で負けることがあるので、最終的な取り分だけを最適化できません。
+
+## 考え方
+
+各マスを空・先手・後手の3値で符号化し、同じ盤面の勝者をメモします。先に列の完成を確認し、次に満杯なら得点を比較します。それ以外の盤面では、現在の手番の側が勝てる子が一つでもあるかを調べます。手番は占有マス数の偶奇から復元できます。
+
+## 適用条件
+
+過去の手順が盤面以外の情報を残さず、得点が取ったマスの固定重みの和で決まること。例では3×3、同色の縦横斜め3連が即時勝利です。原典は総重みが奇数なので満杯で同点になりません。重みは負でも構いません。掲載実装では重みの絶対値の総和が64ビット符号付き整数に収まることを要求します。
+
+## なぜ正しいか
+
+終局条件が成立した時点で、以後の手はルール上存在しません。終局以外では、現在の側が勝てる子へ移れれば勝ち、全ての子で相手が勝つなら負けです。占有マス数が毎手増えるので循環せず、この再帰を後ろから一意に評価できます。得点は盤面から復元できるため、別の得点状態は要りません。
+
+## 計算量
+
+手順を区別すると最大 $9!$ 個の終局へ向かいます。盤面のメモでは最大 $3^9$ 状態、各状態で9マスと8本の列を調べるため時間 $O(9\cdot3^9)$、空間 $O(3^9)$。再帰の深さは9です。
+
+## 実装
+
+返り値0は先手、1は後手の勝ちです。最初に空の盤面から呼びます。重みの合計は奇数とし、累計には64ビット整数を使います。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int weighted_tictactoe_winner(const array<long long,9>& weight){
+    assert(accumulate(weight.begin(),weight.end(),0LL)%2!=0);
+    const int line[8][3]={{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
+    int power[10];power[0]=1;for(int i=0;i<9;++i)power[i+1]=3*power[i];
+    vector<int> memo(power[9],-1);
+    auto solve=[&](auto&& self,int state)->int{
+        if(memo[state]!=-1)return memo[state];
+        array<int,9> board{};int used=0;long long score[2]={0,0};
+        for(int i=0,x=state;i<9;++i,x/=3){board[i]=x%3;
+            if(board[i]){++used;score[board[i]-1]+=weight[i];}}
+        for(auto& triple:line){int c=board[triple[0]];
+            if(c && board[triple[1]]==c && board[triple[2]]==c)return memo[state]=c-1;}
+        if(used==9)return memo[state]=(score[0]>score[1] ? 0 : 1);
+        int turn=used%2;
+        for(int i=0;i<9;++i)if(board[i]==0)
+            if(self(self,state+(turn+1)*power[i])==turn)return memo[state]=turn;
+        return memo[state]=1-turn;
+    };
+    return solve(solve,0);
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/)、[二人の取り分の合計が一定なら、得点差だけを持つ](/flowchartcp/techniques/score-difference-game/)、[小さい入力で全探索する](/flowchartcp/techniques/brute-force-observation/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc349/editorial/9883)
+
+<TechniqueReferences techniqueId="weighted-board-terminal-minimax" />

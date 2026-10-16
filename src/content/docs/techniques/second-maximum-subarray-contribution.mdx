@@ -1,0 +1,119 @@
+---
+title: "全区間の二番目に大きい値は、左右二つずつの上位要素から寄与を数える"
+description: "担当要素より上位の位置を左右二つずつ調べ、そのうち一つだけを含む区間を数える。"
+techniqueId: second-maximum-subarray-contribution
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+配列の長さ2以上の全ての連続区間について、二番目に大きい値を合計したい。各区間の答えを順に求める代わりに、一つの要素が二番目になる区間数を数える。
+
+ここでの二番目は、重複も含めて大きい順に並べた二つ目を指す。例えば $[5,5,2]$ の二番目は5である。「最大値とは異なる値のうち最大」を求める場合とは条件が違う。
+
+## 考え方
+
+値が全て異なる場合から考える。位置 $i$ より左にある $a_i$ より大きい要素のうち、近い二つの位置を $L_1,L_2$、右側の近い二つを $R_1,R_2$ とする。並びは
+
+$$L_2<L_1<i<R_1<R_2$$
+
+となる。左側に一つしかなければ $L_2=-1$、なければ $L_1=L_2=-1$ とする。右側で足りない位置には $N$ を使う。
+
+$a_i$ が二番目になるためには、区間内に $i$ を含め、より大きい要素をちょうど一つ含めればよい。その要素のある側で場合を分ける。
+
+- 左側に一つあるとき、左端は $L_2+1$ から $L_1$、右端は $i$ から $R_1-1$。区間数は $(L_1-L_2)(R_1-i)$。
+- 右側に一つあるとき、左端は $L_1+1$ から $i$、右端は $R_1$ から $R_2-1$。区間数は $(i-L_1)(R_2-R_1)$。
+
+したがって、寄与は
+
+$$a_i\bigl((L_1-L_2)(R_1-i)+(i-L_1)(R_2-R_1)\bigr)$$
+
+となる。値の大きい順に処理し、処理済みの添字だけを順序付き集合に入れる。現在位置の直前・直後を二つずつ調べれば、四つの境界が得られる。
+
+同値がある場合は $(a_i,i)$ の辞書式順で順位を一意にする。同じ値では右の位置を上位と定め、同値の要素も一つずつ集合へ追加する。例えば $[5,5]$ では右の5を最大、左の5を二番目の担当とすれば、区間は一度だけ数えられる。
+
+## 適用条件
+
+静的な配列について、位置で区別する全ての連続区間を集計する。掲載実装は $N\le200000$、値は符号付き64ビット整数の全域に対応する。長さ0・1の区間は合計に含めない。
+
+同値があるのに「厳密に大きい値」の位置だけを使うと、最大値が二つある区間を数えられない。掲載実装の順位付けまで含めて使う。二番目に大きい**異なる値**を求める場合や、区間長に追加の制限がある場合には、この式をそのまま適用できない。
+
+## なぜ正しいか
+
+添字も用いた順位により、長さ2以上の各区間には最大と二番目の担当位置が一つずつ決まる。順位は値の大小を保つので、担当の値は重複込みの二番目の値に一致する。
+
+位置 $i$ が担当することは、区間に $i$ と、それより上位の位置をちょうど一つ含むことと同値である。その位置が左にあるなら、最も近い $L_1$ を含み、次の $L_2$ を含まない必要がある。右では最も近い $R_1$ さえ含めてはいけない。これが最初の積の端点条件になる。右に一つある場合も同様である。
+
+二つの場合は同時に起こらず、他の場合もない。各区間を二番目の担当位置に一度だけ割り当てているため、全位置の寄与の和が答えになる。最大値の位置には上位要素がなく、どちらの積も0になる。
+
+## 計算量
+
+全区間を延ばしながら上位二つを管理する方法でも、時間は $O(N^2)$。掲載実装は並べ替えと、各要素につき一回の集合検索・挿入により $O(N\log(N+2))$ 時間、$O(N)$ 空間。
+
+区間数は $N(N-1)/2$ 以下。値の絶対値が最大 $2^{63}$ でも、掲載上限での総和の絶対値は128ビット整数に収まる。値と区間数の積を取る前に128ビットへ変換する。
+
+## 実装
+
+`all_subarray_second_maximum_sum(a)` は長さ2以上の全区間の合計を返す。空配列と要素一つの配列では0。長さの上限を超える入力には `std::invalid_argument` を投げる。返り値の `__int128` はGNU C++の整数拡張を使う。
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <set>
+#include <stdexcept>
+#include <vector>
+
+__int128 all_subarray_second_maximum_sum(
+    const std::vector<long long>& a) {
+    if (a.size() > 200000) {
+        throw std::invalid_argument("too many values");
+    }
+    const int n = static_cast<int>(a.size());
+    std::vector<int> order(n);
+    std::iota(order.begin(), order.end(), 0);
+    std::sort(order.begin(), order.end(), [&](int i, int j) {
+        if (a[i] != a[j]) return a[i] > a[j];
+        return i > j;
+    });
+
+    std::set<int> higher;
+    __int128 answer = 0;
+    for (int i : order) {
+        auto next = higher.lower_bound(i);
+        int left1 = -1, left2 = -1;
+        int right1 = n, right2 = n;
+        if (next != higher.end()) {
+            auto it = next;
+            right1 = *it;
+            ++it;
+            if (it != higher.end()) right2 = *it;
+        }
+        if (next != higher.begin()) {
+            auto it = next;
+            --it;
+            left1 = *it;
+            if (it != higher.begin()) {
+                --it;
+                left2 = *it;
+            }
+        }
+        const long long count =
+            1LL * (left1 - left2) * (right1 - i) +
+            1LL * (i - left1) * (right2 - right1);
+        answer += static_cast<__int128>(a[i]) * count;
+        higher.insert(next, i);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全区間の最大値を各要素の寄与に分ける](/flowchartcp/techniques/subarray-extremum-contribution/) ・ [全区間で一度だけ現れる要素は、前後の同じ値に挟まれた端点数で数える](/flowchartcp/techniques/singleton-subarray-contribution/) ・ [寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [AtCoder：ABC140 E — Second Sum](https://atcoder.jp/contests/abc140/tasks/abc140_e)
+- [ABC140公式解説、E](https://img.atcoder.jp/abc140/editorial.pdf)。順列の場合の左右二位置による寄与式と、順序付き集合を使う方法。
+
+<TechniqueReferences techniqueId="second-maximum-subarray-contribution" />

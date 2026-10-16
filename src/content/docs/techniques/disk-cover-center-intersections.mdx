@@ -1,0 +1,100 @@
+---
+title: "全ての点を半径Rで覆えるかは、中心候補を等半径円の交点に絞る"
+description: "点を円の中心に置き換えて共通部分を考え、連続な中心位置の探索を有限個の候補に変える。"
+techniqueId: disk-cover-center-intersections
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+全ての点からの距離が $R$ 以下になる位置があるか判定したい。中心は連続的に動かせるため、座標の全探索はできない。点数が少なく、点対から作る候補を全点に対して検査できる場合に使う。
+
+## 考え方
+
+各点 $p_i$ を中心とする半径 $R$ の閉円板 $D_i$ を考える。求める位置は $\bigcap_iD_i$ の中にある。半径が同じなので、異なる中心を持つ二つの円板が片方を完全に含むことはない。
+
+共通部分があれば、中心が全て同じ場合を除いて、境界上に二円の交点を取れる。従って二円の交点だけを候補にし、それぞれが全円板に含まれるかを調べる。同じ中心しかない場合や半径0には、入力点そのものも候補に入れておく。
+
+異なる中心 $p,q$ の距離二乗を $d^2$ とすると、交点は
+
+$$\frac{p+q}{2}\ \pm\ (-\Delta y,\Delta x)\sqrt{\frac{R^2-d^2/4}{d^2}}.$$
+
+$d>2R$ の組には交点がない。半径を増やすと可否は単調なので、この判定を二分探索に使えば最小被覆半径も求められる。
+
+## 適用条件
+
+ユークリッド距離で全点を一つの円に含める。円の中心を置ける範囲に別の制約がなく、各点の許容距離が同じであること。異なる半径の円板では、交点のない包含だけで共通部分ができるため、この候補集合では不足する。
+
+掲載実装は100点以下、座標の絶対値 $10^6$ 以下の整数点を想定する。重複点、空集合、一点も扱う。計算は `long double` による近似。最初の点を原点へ移してから計算し、距離二乗の比較には相対的な許容幅を入れる。厳密な境界の真偽を返す整数幾何の関数ではない。原典の $10^{-6}$ 程度の半径誤差を許す用途に使う。
+
+## なぜ正しいか
+
+有限個の同半径円板の共通部分が面積を持つとする。その境界は各円周の弧からなる。異なる二つの円周の交点が一つもなければ、一つの円周全体が境界になり、その円板が他の全円板に含まれる。しかし同半径の異なる円板に包含はないので、中心が全て同じ場合以外は交点が存在する。
+
+共通部分が一点に縮む場合も、中心が同じ一つの円だけでは一点にならないため、少なくとも二つの円周がそこで交わる。正の半径の円板は厳密に凸なので、共通部分が異なる二点を含めば両点の中点の近傍を含み、線分だけの退化は生じない。半径0は入力中心の検査で処理できる。
+
+従って実数の厳密計算では、候補の一つが全円板に含まれることと、共通部分が空でないことが同値。実装ではこの幾何的帰着に加えて、丸め誤差を許容して判定する。
+
+## 計算量
+
+中心を間隔 $\delta$ の格子で探す方法は、探索範囲の幅を $D$ として $O(N(D/\delta)^2)$ 時間が必要で、格子外の最適中心を直接扱えない。交点候補は $O(N^2)$ 個、各候補の検査は $O(N)$ なので判定は $O(N^3)$ 時間、追加空間 $O(N)$。
+
+二分探索を $B$ 回行うと $O(BN^3)$ 時間。厳密な判定なら初期区間幅は $D/2^B$ になるが、浮動小数の計算では丸め誤差による限界も残る。掲載実装では90回で打ち切る。より大きい点集合には、最小包含円の専用手法を検討する。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+long double minimum_covering_radius(
+    const std::vector<std::pair<long long,long long>>& input) {
+    if(input.size()>100) throw std::invalid_argument("too many points");
+    for(auto [x,y]:input) if(x < -1000000LL || x > 1000000LL || y < -1000000LL || y > 1000000LL) throw std::invalid_argument("coordinate range");
+    if(input.size()<=1) return 0;
+    using Point=std::pair<long double,long double>;std::vector<Point> p;
+    for(auto [x,y]:input) p.emplace_back(x-input[0].first,y-input[0].second);
+    auto dist2=[](Point a,Point b){auto x=a.first-b.first,y=a.second-b.second;return x*x+y*y;};
+    auto feasible=[&](long double radius) {
+        long double square=radius*radius;
+        long double tolerance=1e-16L*std::max(1.0L,square);
+        auto covers=[&](Point center,int skip_a,int skip_b){
+            for(int k=0;k<(int)p.size();++k) if(k!=skip_a&&k!=skip_b&&dist2(center,p[k])>square+tolerance) return false;
+            return true;
+        };
+        if(covers(p[0],-1,-1)) return true;
+        for(int i=0;i<(int)p.size();++i) for(int j=0;j<i;++j) {
+            long double d2=dist2(p[i],p[j]);
+            if(d2==0 || d2>4*square) continue;
+            long double dx=p[j].first-p[i].first,dy=p[j].second-p[i].second;
+            long double factor=std::sqrt(std::max(0.0L,(square-d2/4)/d2));
+            long double mx=(p[i].first+p[j].first)/2,my=(p[i].second+p[j].second)/2;
+            if(covers({mx-dy*factor,my+dx*factor},i,j)||covers({mx+dy*factor,my-dx*factor},i,j)) return true;
+        }
+        return false;
+    };
+    long double lo=0,hi=0;
+    for(auto q:p) hi=std::max(hi,std::sqrt(dist2(p[0],q)));
+    for(int iteration=0;iteration<90;++iteration) {
+        long double mid=(lo+hi)/2;if(feasible(mid)) hi=mid;else lo=mid;
+    }
+    return hi;
+}
+```
+
+## 関連する手法
+
+- [二分探索](/flowchartcp/techniques/binary-search/)
+- [最も遠い二点を凸包へ絞る](/flowchartcp/techniques/convex-diameter-calipers/)
+- [小数の円を整数化する](/flowchartcp/techniques/scaled-circle-lattice-scan/)
+
+## 参考資料
+
+- [AtCoder — Enclose All](https://atcoder.jp/contests/abc151/tasks/abc151_f)
+- [公式解説](https://img.atcoder.jp/abc151/editorial.pdf)
+
+<TechniqueReferences techniqueId="disk-cover-center-intersections" />

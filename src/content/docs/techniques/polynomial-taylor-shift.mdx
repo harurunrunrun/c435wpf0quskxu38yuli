@@ -1,0 +1,113 @@
+---
+title: "変数を定数だけずらすとき、係数を反転して一回畳み込む"
+description: "f(x+c) の全係数を求める二重和から、階乗と c の冪を分離します。"
+techniqueId: polynomial-taylor-shift
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+多項式 $F(x)=\sum_i a_i x^i$ の変数を $x+c$ に置き換え、$F(x+c)$ の全係数を求めます。原点を移す計算や、ある点の周りで係数を持ち直す計算です。
+
+値を一つ求めるだけなら Horner 法で十分です。全係数を求めるとき、各 $(x+c)^i$ を展開する二重和をまとめます。
+
+## 考え方
+
+新しい係数は
+
+$$b_k=\sum_{i\ge k}a_i\binom{i}{k}c^{i-k}=\frac1{k!}\sum_{i\ge k}(a_i i!)\frac{c^{i-k}}{(i-k)!}.$$
+
+$a_i i!$ の列を反転し、$c^j/j!$ の列と畳み込みます。反転列の長さを $n$ とすると、積の $n-1-k$ 番目が上の和になるため、最後に $k!$ で割ります。
+
+たとえば $F=1+2x+3x^2$、$c=1$ なら $F(x+1)=6+8x+3x^2$ です。
+
+## 適用条件
+
+必要な階乗が逆元を持つことが条件です。掲載実装は法 998244353、入力係数 $[0,p)$、係数列の長さ $n\le2^{21}$ です。$c$ は負の値も受け取り、法の範囲へ正規化します。
+
+階乗が 0 になる次数ではこの実装を使えません。$c=0$ でも割り算は発生せず、$c^0=1$、$c^j=0$ として元の列がそのまま戻ります。
+
+## なぜ正しいか
+
+二項定理から $b_k$ の式が得られます。反転列の添字を $n-1-i$、もう一つを $j=i-k$ と置くと、その和は $n-1-k$ になります。この係数への全ての寄与が、まさに $i\ge k$ の和です。
+
+各項を $i!$ と $(i-k)!$ と $k!$ へ分けただけなので、存在する逆元を使う範囲で元の展開と一致します。
+
+## 計算量
+
+全ての単項式を展開する時間 $O(n^2)$ を、階乗・冪の準備と一回の畳み込みによる $O(n\log n)$ へ減らします。空間は $O(n)$ です。
+
+## 実装
+
+`taylor_shift(a,c)` は元の列と同じ長さを返します。最高次係数が 0 でも、配列の長さを保ちます。空列は零多項式として空列を返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> taylor_shift(const vector<int>& a,int c) {
+    int n=a.size();
+    assert(n<=(1<<21));
+    if(n==0) return {};
+    c=(c%ntt998::MOD+ntt998::MOD)%ntt998::MOD;
+    vector<int> fact(n,1),inverse_fact(n,1);
+    for(int i=1;i<n;++i) fact[i]=1LL*fact[i-1]*i%ntt998::MOD;
+    inverse_fact[n-1]=ntt998::power(fact[n-1],ntt998::MOD-2);
+    for(int i=n-1;i>0;--i) inverse_fact[i-1]=1LL*inverse_fact[i]*i%ntt998::MOD;
+    vector<int> reversed(n),weight(n);int power=1;
+    for(int i=0;i<n;++i) {
+        reversed[n-1-i]=1LL*a[i]*fact[i]%ntt998::MOD;
+        weight[i]=1LL*power*inverse_fact[i]%ntt998::MOD;
+        power=1LL*power*c%ntt998::MOD;
+    }
+    auto product=ntt998::convolution(reversed,weight);
+    vector<int> result(n);
+    for(int k=0;k<n;++k) result[k]=1LL*product[n-1-k]*inverse_fact[k]%ntt998::MOD;
+    return result;
+}
+```
+
+## 関連する手法
+
+[二項係数が付く遷移を、階乗で割って畳み込む](/flowchartcp/techniques/binomial-convolution-factorials/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_taylor_shift/task.md)
+
+<TechniqueReferences techniqueId="polynomial-taylor-shift" />

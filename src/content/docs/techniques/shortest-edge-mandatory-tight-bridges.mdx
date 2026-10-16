@@ -1,0 +1,183 @@
+---
+title: "全最短路に共通する辺は、最短路に使える辺だけ残して橋を調べる"
+description: "正の重みの有向グラフで最短路の辺を絞り、向きを外した補助グラフの橋から必須辺を判定する。"
+techniqueId: shortest-edge-mandatory-tight-bridges
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+正の整数重みを持つ有向グラフで、同じ始点・終点間の**全ての最短路に使われる辺**を知りたい。さらに、必須でない辺を一辺だけ軽くして必須にするための、最小の減少量を求める場合にも使える。
+
+最短路を一本選ぶだけでは、同じ距離の別経路を見落とす。経路数を法で数えて一致を比べる方法には衝突の可能性があるので、ここでは辺の構造から厳密に判定する。
+
+## 考え方
+
+始点からの距離を $d_s$、終点への距離を $d_t$、始点・終点間の最短距離を $D$ とする。$d_t$ は辺を逆にして終点から求める。
+
+辺 $(u,v,w)$ がいずれかの最短路に使える条件は
+
+$$d_s[u]+w+d_t[v]=D$$
+
+である。両側が到達可能で、この等式を満たす辺だけを残す。この補助グラフでは辺に沿って $d_s$ が厳密に増えるため、有向閉路はない。
+
+この補助グラフの**向きを外し、辺番号を保って橋を求める**。その橋が、全最短路に共通する辺になる。元の有向グラフ全体の向きを外して橋を探すわけではない。最短路に使えない迂回路が混ざると誤る。
+
+必須でない辺の重みを減らす場合、その辺を通る最短の候補の費用は $C=d_s[u]+w+d_t[v]$。元の最短路にはその辺を使わないものがあるので、新しい費用を $D$ より厳密に小さくする必要がある。必要な最小減少量は
+
+$$\Delta=C-D+1.$$
+
+新しい重みを正の整数に保つなら、$\Delta<w$ の場合だけ実行できる。
+
+## 適用条件
+
+- 重みは**全て正**。0を含む場合、残したグラフに閉路があり得るため、この証明で有向の必須辺を無向の橋へ置き換えられない。
+- 始点と終点を固定し、更新前のグラフをまとめて調べる。
+- 重みの変更は、辺を一本ずつ独立に試す。複数辺を同時に変更する問題ではない。
+- 多重辺を別の辺として扱う。橋の探索で親へ戻る辺を除くときも、親頂点ではなく辺番号を使う。
+
+始点と終点が同じなら最短路は空で、必須辺はない。元から到達不能なら、正の重みを変えても到達性は変わらず、全辺を不可能として返す。
+
+## なぜ正しいか
+
+まず、等式を満たす辺に、始点から $u$ の最短路と $v$ から終点の最短路をつなぐと、費用 $D$ の経路になる。正の閉路を含めば、その閉路を除いて $D$ より短くできてしまうため、これは単純な最短路である。したがって補助グラフの全辺は、実際にどれかの最短路に使われる。
+
+無向の橋を消すと始点と終点が分かれる。その辺を含む最短路があるので、橋の両側にはそれぞれ始点と終点があり、全最短路でこの辺が必要になる。
+
+逆に、有向の補助グラフで必須の辺 $e=(u,v)$ を消し、始点から到達できる頂点集合を $R$ とする。終点は $R$ にない。他の辺が $R$ の内側から外側へ出ることは、到達可能性の定義から不可能である。
+
+外側から内側へ戻る辺もない。補助グラフの辺に接続する外側の頂点 $x$ は、元の最短路上で必須辺 $e$ を通った後に現れるので $v$ から到達できる。内側の頂点 $y$ から終点へ進むには $e$ が必要なので、$y$ から $u$ へ到達できる。もし $x\to y$ があれば $v\to x\to y\to u\to v$ の有向閉路ができ、距離が厳密に増えることに矛盾する。従って、向きを外しても $R$ とその外側をつなぐ辺は $e$ だけであり、$e$ は橋になる。
+
+辺を軽くする場合、その辺を避ける最短路の費用 $D$ は変わらない。その辺を通る候補が $D$ 未満になれば全ての新しい最短路はその辺を使い、$D$ 以上なら元の回避路が残る。元の最短の前半・後半は、正の重みの同じ辺を再び使わないため、減少後もそれぞれ同じ距離で使える。これで減少量の式も得られる。
+
+## 計算量
+
+辺を一本ずつ除いて最短路を計算し直す方法は、最短路計算を $M$ 回必要とする。この方法は最短路計算二回と、線形時間の橋探索で済む。
+
+掲載する二分ヒープの実装は、古い候補もヒープへ残すため、全体で $O((N+M)\log(M+2))$ 時間・$O(N+M)$ 空間。橋の探索も明示的なスタックを使い、再帰の深さには依存しない。
+
+## 実装
+
+`analyze_shortest_edges(n,s,t,edges)` は、入力順に `Mandatory`、`Reduce`、`Impossible` を返す。`Reduce` の `reduction` が最小減少量。`reachable` が真のときだけ `distance` を参照する。頂点は0始まり。
+
+掲載実装は $1\le N\le200000$、$M\le500000$。各重みは正の符号付き64ビット整数で、距離と減少量の中間計算にはGNU C++の `__int128` を使う。多重辺・自己ループも受け付ける。正の自己ループは最短路には入らない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct DirectedPositiveEdge { int from, to; long long weight; };
+enum class ShortestEdgeAction { Mandatory, Reduce, Impossible };
+struct ShortestEdgeDecision {
+    ShortestEdgeAction action = ShortestEdgeAction::Impossible;
+    long long reduction = 0;
+};
+struct ShortestEdgeAnalysis {
+    bool reachable;
+    __int128 distance;
+    vector<ShortestEdgeDecision> decisions;
+};
+
+ShortestEdgeAnalysis analyze_shortest_edges(
+        int n, int source, int target, const vector<DirectedPositiveEdge>& edges) {
+    if (n < 1 || n > 200000 || edges.size() > 500000)
+        throw invalid_argument("graph size");
+    auto valid_vertex = [n](int v) { return 0 <= v && v < n; };
+    if (!valid_vertex(source) || !valid_vertex(target))
+        throw out_of_range("endpoint");
+    using Wide = __int128;
+    const Wide infinity = Wide(1) << 120;
+    vector<vector<pair<int,long long>>> forward(n), backward(n);
+    for (const auto& e : edges) {
+        if (!valid_vertex(e.from) || !valid_vertex(e.to))
+            throw out_of_range("edge endpoint");
+        if (e.weight <= 0) throw invalid_argument("positive edge weight required");
+        forward[e.from].push_back({e.to, e.weight});
+        backward[e.to].push_back({e.from, e.weight});
+    }
+    auto dijkstra = [&](int start, const auto& graph) {
+        vector<Wide> distance(n, infinity);
+        using Entry = pair<Wide,int>;
+        priority_queue<Entry,vector<Entry>,greater<Entry>> heap;
+        distance[start] = 0; heap.push({0, start});
+        while (!heap.empty()) {
+            auto [cost, v] = heap.top(); heap.pop();
+            if (cost != distance[v]) continue;
+            for (auto [to, weight] : graph[v]) {
+                Wide next = cost + weight;
+                if (next >= distance[to]) continue;
+                distance[to] = next; heap.push({next, to});
+            }
+        }
+        return distance;
+    };
+    vector<Wide> from_source = dijkstra(source, forward);
+    ShortestEdgeAnalysis out{false, 0, vector<ShortestEdgeDecision>(edges.size())};
+    if (from_source[target] == infinity) return out;
+    vector<Wide> to_target = dijkstra(target, backward);
+    out.reachable = true; out.distance = from_source[target];
+
+    vector<vector<pair<int,int>>> tight(n);
+    int m = static_cast<int>(edges.size());
+    for (int id = 0; id < m; ++id) {
+        const auto& e = edges[id];
+        if (from_source[e.from] == infinity || to_target[e.to] == infinity) continue;
+        if (from_source[e.from] + e.weight + to_target[e.to] != out.distance) continue;
+        tight[e.from].push_back({e.to, id});
+        tight[e.to].push_back({e.from, id});
+    }
+    vector<int> entered(n, -1), low(n), parent(n, -1), parent_edge(n, -1);
+    vector<size_t> next_edge(n);
+    vector<bool> bridge(m, false);
+    int timer = 0;
+    for (int start = 0; start < n; ++start) {
+        if (entered[start] != -1) continue;
+        vector<int> stack{start};
+        entered[start] = low[start] = timer++;
+        while (!stack.empty()) {
+            int v = stack.back();
+            if (next_edge[v] == tight[v].size()) {
+                stack.pop_back();
+                if (parent[v] != -1) {
+                    int p = parent[v];
+                    bridge[parent_edge[v]] = low[v] > entered[p];
+                    low[p] = min(low[p], low[v]);
+                }
+                continue;
+            }
+            auto [to, id] = tight[v][next_edge[v]++];
+            if (id == parent_edge[v]) continue;
+            if (entered[to] != -1) {
+                low[v] = min(low[v], entered[to]);
+            } else {
+                parent[to] = v; parent_edge[to] = id;
+                entered[to] = low[to] = timer++;
+                stack.push_back(to);
+            }
+        }
+    }
+    for (int id = 0; id < m; ++id) {
+        if (bridge[id]) {
+            out.decisions[id].action = ShortestEdgeAction::Mandatory;
+            continue;
+        }
+        const auto& e = edges[id];
+        if (from_source[e.from] == infinity || to_target[e.to] == infinity) continue;
+        Wide decrease = from_source[e.from] + e.weight + to_target[e.to]
+                        - out.distance + 1;
+        if (decrease > 0 && decrease < e.weight)
+            out.decisions[id] = {ShortestEdgeAction::Reduce, static_cast<long long>(decrease)};
+    }
+    return out;
+}
+```
+
+## 関連する手法
+
+[始点距離と終点距離で一辺の変更を挟む](/flowchartcp/techniques/shortest-one-edge-discount/) ・ [無向グラフの橋](/flowchartcp/techniques/bridge-edge-failure/) ・ [最短路上の個数・辺数](/flowchartcp/techniques/shortest-tight-dag-statistics/)
+
+## 参考資料
+
+- [Codeforces 567E：President and Roads](https://codeforces.com/problemset/problem/567/E)
+
+<TechniqueReferences techniqueId="shortest-edge-mandatory-tight-bridges" />

@@ -1,0 +1,26 @@
+[
+  {
+    "source": "sapo",
+    "problemId": "2015-jazz",
+    "reviewedAt": "2026-10-15",
+    "status": "statement-unconfirmed",
+    "archiveUrl": "https://saco-evaluator.org.za/?page=pastpapers",
+    "candidateStatementUrls": [
+      "https://saco-evaluator.org.za/old/sapo2015/day1_2015.pdf",
+      "https://saco-evaluator.org.za/old/sapo2015/day2_2015.pdf"
+    ],
+    "notes": "公式の年別PDFを発見し取得した。テキスト抽出結果は空で、問題の掲載箇所・設定・制約の確認は済んでいない。公開解説による技巧確認と原典確認を区別する。"
+  },
+  {
+    "source": "library-checker",
+    "problemId": "pow_of_matrix",
+    "reviewedAt": "2026-10-15",
+    "status": "statement-unconfirmed",
+    "archiveUrl": "https://judge.yosupo.jp/problem/pow_of_matrix",
+    "candidateStatementUrls": [
+      "https://github.com/yosupo06/library-checker-problems/issues/567",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/linear_algebra/pow_of_matrix/info.toml"
+    ],
+    "notes": "公式の問題提案には行列のK乗、K=0の単位行列、998244353の法が明記されている。公式info.tomlでも名称・次元上限200・指数上限10^18・法を確認した。提案の内容だけで最終版の原典本文確認とはせず、task.mdと公式解答は取得不能として保留を維持する。"
+  }
+]

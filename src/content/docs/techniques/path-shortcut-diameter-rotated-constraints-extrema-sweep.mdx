@@ -1,0 +1,248 @@
+---
+title: "一本道へ近道を一本足して直径を縮めるなら、遠すぎる駅の組を四つの境界にまとめる"
+description: "枝の付いた道の直径に上限を置き、近道を必要とする駅の組だけを制約へ変える。座標の和と差の四境界を二つの整列順で集約し、駅に限られた近道の端点を線形走査で探す。"
+techniqueId: path-shortcut-diameter-rotated-constraints-extrema-sweep
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一本道の各駅に、高々一本の行き止まりの枝が付いている。主線上の異なる二駅を選んで、長さ $c$ の近道を一本追加したい。求めるのは、追加後の駅同士の最短距離のうち、最大のものを最小にする値である。
+
+主線上の駅の座標を $x_0=0<x_1<\cdots<x_{N-1}$、各駅の枝の長さを $d_i$ とする。枝がない駅は $d_i=0$ で表す。近道の端点を全て試す代わりに、直径の上限 $K$ を固定し、その上限を実現できる端点があるかを判定する。
+
+## 考え方
+
+元の距離 $d_i+d_j+x_j-x_i$ が既に $K$ 以下の組は制約を作らない。$i<j$ でそれを超える組だけ、近道の端点 $y<z$ に対して
+
+$$d_i+|x_i-y|+c+|x_j-z|+d_j\le K$$
+
+を要求する。$S=y+z$、$D=z-y$、$a_i=x_i-d_i$、$b_i=x_i+d_i$ と置くと、一組の条件は四つの境界になる。
+
+$$
+\begin{aligned}
+b_i+b_j+c-K&\le S\le a_i+a_j+K-c,\\
+b_j-a_i+c-K&\le D\le a_j-b_i+K-c.
+\end{aligned}
+$$
+
+全ての組を列挙せず、$b_j$ の小さい順に駅 $j$ を見る。そのとき $a_i<b_j-K$ を満たす駅を、$a_i$ の整列順から順次加える。自己の添字 $i=j$ を除いた集合の最小の $a_i$ と最大の $b_i$ が分かれば、四境界を定数時間で更新できる。
+
+境界を集約した後は、$y$ を左から駅に固定する。$z$ が入る範囲は
+
+$$\max(S_{\rm lo}-y,y+D_{\rm lo})\le z\le\min(S_{\rm hi}-y,y+D_{\rm hi})$$
+
+である。この範囲に $y$ より右の駅があるかを、折り返しが一度だけのポインタで探す。
+
+## 適用条件
+
+主線の駅数は $2\le N\le10^6$。隣接駅の距離は $1\ldots10^9$、枝の長さは $0\ldots10^9$、追加する近道の長さは $1\ldots10^9$ の整数とする。各主駅の枝は高々一本で、長さ0は枝が存在しないことを意味する。
+
+主線・枝・近道は全て無向である。近道は、隣り合う駅も含む異なる二つの主駅を端点とし、ちょうど一本追加する。追加した辺を、最短路が必ず使う必要はない。
+
+直径は、元からある駅同士の最大最短距離である。辺の途中の任意の点を対象にした連続的な直径や、枝の先への近道、一般の木への辺追加は、ここでは扱わない。
+
+## なぜ正しいか
+
+主駅 $i$ に枝があればその先端、なければ主駅自体を代表点にする。異なる主駅に属する二点の距離は、代表点同士の距離以下である。同じ主駅とその枝先の距離 $d_i$ も、他の主駅の代表点までの距離以下になる。従って、直径は異なる添字 $i<j$ の代表点対だけで決まる。自己対の $2d_i$ を加えてはいけない。
+
+近道の端点を $y<z$ と固定する。主線は道なので、二代表点間の最短路は、元の主線を通るか、近道を一回使う。並び順 $x_i<x_j$、$y<z$ から
+
+$$|x_i-y|+|x_j-z|\le|x_i-z|+|x_j-y|$$
+
+となり、近道を逆向きに使う経路より、上の正常な向きの方が長くない。元の距離が $K$ を超える組に限り、正常な近道経由の距離を $K$ 以下にすれば必要十分である。
+
+二つの実数 $p,q$ について $|p|+|q|=\max(|p+q|,|p-q|)$ である。これを $p=y-x_i$、$q=z-x_j$ へ適用し、許される残距離 $K-c-d_i-d_j$ を移項すると四境界が得られる。残距離が負の場合も、上下限が交差して不可になる。近道の長さ $c$ は四つの式全てに残る。
+
+次に、悪い組を正しく拾う。二代表点の距離は必ず $d_i+d_j$ 以上なので、$K$ が異なる添字の最大二枝長の和未満なら不可である。この必要条件を満たすと仮定する。
+
+悪い組 $i<j$ は、$b_j-a_i>K$、すなわち $a_i<b_j-K$ と同値である。逆に、この不等式を満たす異なる添字で $i>j$ なら、
+
+$$b_j-a_i=d_i+d_j-(x_i-x_j)<d_i+d_j\le K$$
+
+となって矛盾する。従って、自己添字を除くだけで、整列走査が選ぶ組は全て必要な $i<j$ の組となる。元の距離がちょうど $K$ の組を加えないため、追加条件の不等号は厳密な `<` である。
+
+$b_j$ の昇順では閾値 $b_j-K$ が増えるので、$a_i$ の順から加える集合は縮まない。集合から一つの添字 $j$ を除いた最小値は、異なる添字の最小二候補のどちらかにある。最大値も同様である。同じ値が並ぶ場合も添字を区別して二つを保存する。
+
+各 $j$ について、$S$ の下限と $D$ の上限には最大の $b_i$、$S$ の上限と $D$ の下限には最小の $a_i$ を使う。それぞれ別の組が境界を決めても構わない。全ての組の共通部分を取っているからである。
+
+最後に、離散的な端点を判定する。$D_{\rm lo}$ は1以上へ上げ、$y=x_u$ と固定する。上式の $z$ の範囲に入る最初の駅で、添字が $u+1$ 以上のものを探す。それが上限以下なら有効な二端点であり、上限を超えたら、それより右にも有効な駅はない。
+
+下限関数 $\max(S_{\rm lo}-y,y+D_{\rm lo})$ は、傾き−1の直線と傾き1の直線の最大なので、一度減少してから増加する。この値に対する最初の駅の添字も同じ順に動く。さらに添字の下限 $u+1$ を課しても、減少中の添字と増加する $u+1$ の最大を取るだけで、折り返しは増えない。ポインタを最初は $N$ に置けば、左へ動く量と右へ動く量はそれぞれ高々 $N$ である。これで駅に限った全ての端点候補を線形時間で判定できる。
+
+上限 $K$ が大きくなるほど制約は緩む。元の直径は近道を使わなくても達成できる上限なので、整数二分探索で最小の $K$ が得られる。
+
+## 計算量
+
+$a_i$ と $b_i$ の二つの整列順を、初めに一回ずつだけ作る。準備は $O(N\log N)$ 時間・$O(N)$ 空間で、各直径判定は $O(N)$ 時間、追加の割り当てなしで行える。
+
+元の直径を $T$ とすると、最小値を求める全体は $O(N\log N+N\log T)$ 時間である。元の直径は $(N-1)10^9+2\cdot10^9\le1000001000000000$ 以下なので、二分の判定は高々50回となる。
+
+座標、$a_i,b_i$、四境界、直径には64ビット符号付き整数を使う。判定の上限が元の直径以上なら計算せず真を返すため、`INT64_MAX` を渡しても境界式であふれない。実際に境界を計算する値は元の直径未満で、加減算は $10^{16}$ 未満に収まる。
+
+## 実装
+
+`PathShortcut(lengths, branches, c)` で準備し、`minimum_diameter()` で最小直径、`can_achieve(K)` で指定した上限の可否を返す。`lengths` は主線の隣接距離、`branches` は各主駅の枝長であり、長さはそれぞれ $N-1,N$ である。
+
+範囲外の長さ・要素・近道長、負の判定上限は `invalid_argument`。入力全体を検査してから作業領域を確保する。割り当て例外は伝播し、入力は変わらない。準備後の判定と二分探索は読み取り専用で、追加割り当てを行わない。
+
+コピーは独立した値を作り、代入はコピーを完成させてから交換する。ムーブ元は空になり、`station_count()` は0を返す。その状態への直径判定・最小値取得は `logic_error` とする。コピーや代入によって再び有効な値を持たせられる。
+
+一回だけ最小値を求める一般関数が `minimum_path_shortcut_diameter`、原典の型に合わせた入口が `find_shortcut` である。後者は明示された駅数と二配列の長さも検査する。値渡しの配列コピーの例外は、関数に入る前にも起こり得る。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+static_assert(std::numeric_limits<int>::max() >= 1'000'000'000);
+
+namespace path_shortcut_detail {
+inline bool station_pair(const std::vector<std::int64_t>& position,
+                         std::array<std::int64_t, 4> bounds) {
+    const auto [sum_low, sum_high, diff_low, diff_high] = bounds;
+    if (sum_low > sum_high || diff_low > diff_high) return false;
+    const int n = static_cast<int>(position.size());
+    int right = n;
+    for (int left = 0; left + 1 < n; ++left) {
+        const auto y = position[left];
+        const auto lower = std::max(sum_low - y, y + diff_low);
+        const auto upper = std::min(sum_high - y, y + diff_high);
+        right = std::max(right, left + 1);
+        while (right > left + 1 && position[right - 1] >= lower) --right;
+        while (right < n && position[right] < lower) ++right;
+        if (right < n && position[right] <= upper) return true;
+    }
+    return false;
+}
+} // namespace path_shortcut_detail
+
+class PathShortcut {
+    using I64 = std::int64_t;
+    struct Station { I64 a = 0, b = 0; int index = -1; };
+    std::vector<I64> position;
+    std::vector<Station> by_a, by_b;
+    I64 shortcut = 0, branch_lower = 0, original_diameter = 0;
+    void require_value() const {
+        if (position.empty()) throw std::logic_error("empty moved-from value");
+    }
+public:
+    PathShortcut(const std::vector<int>& lengths, const std::vector<int>& branches, int c) {
+        if (branches.size() < 2 || branches.size() > 1000000 ||
+            lengths.size() != branches.size() - 1 || c < 1 || c > 1000000000) {
+            throw std::invalid_argument("sizes or shortcut length");
+        }
+        for (int value : lengths) {
+            if (value < 1 || value > 1000000000) throw std::invalid_argument("main length");
+        }
+        for (int value : branches) {
+            if (value < 0 || value > 1000000000) throw std::invalid_argument("branch length");
+        }
+        const int n = static_cast<int>(branches.size());
+        shortcut = c;
+        position.resize(n); by_a.resize(n);
+        I64 largest = 0, second = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i) position[i] = position[i - 1] + lengths[i - 1];
+            const I64 d = branches[i];
+            by_a[i] = {position[i] - d, position[i] + d, i};
+            if (d >= largest) { second = largest; largest = d; }
+            else if (d > second) second = d;
+        }
+        branch_lower = largest + second;
+        I64 smallest_a = by_a[0].a;
+        for (int i = 1; i < n; ++i) {
+            original_diameter = std::max(original_diameter, by_a[i].b - smallest_a);
+            smallest_a = std::min(smallest_a, by_a[i].a);
+        }
+        by_b = by_a;
+        std::sort(by_a.begin(), by_a.end(), [](const Station& x, const Station& y) {
+            return x.a != y.a ? x.a < y.a : x.index < y.index;
+        });
+        std::sort(by_b.begin(), by_b.end(), [](const Station& x, const Station& y) {
+            return x.b != y.b ? x.b < y.b : x.index < y.index;
+        });
+    }
+    PathShortcut(const PathShortcut&) = default;
+    PathShortcut(PathShortcut&& other) noexcept { swap(other); }
+    PathShortcut& operator=(PathShortcut other) noexcept { swap(other); return *this; }
+    void swap(PathShortcut& other) noexcept {
+        position.swap(other.position); by_a.swap(other.by_a); by_b.swap(other.by_b);
+        std::swap(shortcut, other.shortcut); std::swap(branch_lower, other.branch_lower);
+        std::swap(original_diameter, other.original_diameter);
+    }
+    int station_count() const noexcept { return static_cast<int>(position.size()); }
+    bool can_achieve(I64 diameter) const {
+        require_value();
+        if (diameter < 0) throw std::invalid_argument("negative diameter");
+        if (diameter >= original_diameter) return true;
+        if (diameter < branch_lower) return false;
+        I64 sum_low = 0, sum_high = 2 * position.back();
+        I64 diff_low = 1, diff_high = position.back();
+        std::array<Station, 2> smallest, largest;
+        std::size_t added = 0;
+        auto add = [&](const Station& s) {
+            if (smallest[0].index < 0 || s.a < smallest[0].a) {
+                smallest[1] = smallest[0]; smallest[0] = s;
+            } else if (smallest[1].index < 0 || s.a < smallest[1].a) smallest[1] = s;
+            if (largest[0].index < 0 || s.b > largest[0].b) {
+                largest[1] = largest[0]; largest[0] = s;
+            } else if (largest[1].index < 0 || s.b > largest[1].b) largest[1] = s;
+        };
+        for (const Station& j : by_b) {
+            while (added < by_a.size() && by_a[added].a < j.b - diameter) add(by_a[added++]);
+            const Station& lo = smallest[smallest[0].index == j.index ? 1 : 0];
+            const Station& hi = largest[largest[0].index == j.index ? 1 : 0];
+            if (lo.index < 0 || hi.index < 0) continue;
+            sum_low = std::max(sum_low, j.b + hi.b + shortcut - diameter);
+            sum_high = std::min(sum_high, j.a + lo.a + diameter - shortcut);
+            diff_low = std::max(diff_low, j.b - lo.a + shortcut - diameter);
+            diff_high = std::min(diff_high, j.a - hi.b + diameter - shortcut);
+            if (sum_low > sum_high || diff_low > diff_high) return false;
+        }
+        return path_shortcut_detail::station_pair(position,
+                                                  {sum_low, sum_high, diff_low, diff_high});
+    }
+    I64 minimum_diameter() const {
+        require_value();
+        I64 low = branch_lower, high = original_diameter;
+        while (low < high) {
+            const I64 middle = low + (high - low) / 2;
+            if (can_achieve(middle)) high = middle;
+            else low = middle + 1;
+        }
+        return low;
+    }
+};
+
+std::int64_t minimum_path_shortcut_diameter(const std::vector<int>& lengths,
+                                          const std::vector<int>& branches, int c) {
+    return PathShortcut(lengths, branches, c).minimum_diameter();
+}
+long long find_shortcut(int n, std::vector<int> l, std::vector<int> d, int c) {
+    if (n < 2 || n > 1000000 || d.size() != static_cast<std::size_t>(n) ||
+        l.size() != static_cast<std::size_t>(n - 1)) {
+        throw std::invalid_argument("explicit station count");
+    }
+    return static_cast<long long>(minimum_path_shortcut_diameter(l, d, c));
+}
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/)で目的値を可否へ変え、[座標の和と差への変換](/flowchartcp/techniques/manhattan-transform/)で絶対値の条件を四境界へまとめる。
+
+[木の直径と各頂点の最遠点](/flowchartcp/techniques/tree-eccentricity-diameter-endpoints/)は固定された木を扱う。近道を足すと閉路ができるため、元の直径の両端だけに条件を課しても十分とは限らない。元の距離が上限を超える全ての組を、極値の走査で漏れなく集約する。
+
+## 参考資料
+
+- [IOI 2016 Shortcut 公式原典](https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf)。枝の付いた主線、異なる主駅を結ぶ固定長の一本、駅同士の直径と `find_shortcut` の契約。
+- [IOI 2016 公式Solutions](https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf)、[公式配布アーカイブ](https://ioi.te.lv/locations/ioi16/contest/)。Gleb EvstropovによるShortcutの節は5〜7頁。直径判定への変換、回転した四境界、二つの整列順による集約が基礎になる。
+- [公式Day 1 実装上の注意](https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf)。C++の型対応と2秒・2GBの制限。
+- [日本委員会公式課題一覧](https://www2.ioi-jp.org/ioi/2016/tasks/index.html)。競技日1は2016年8月14日。
+
+<TechniqueReferences techniqueId="path-shortcut-diameter-rotated-constraints-extrema-sweep" />

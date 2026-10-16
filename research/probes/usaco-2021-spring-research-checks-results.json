@@ -1,0 +1,45 @@
+{
+  "1116": {
+    "arrays": 1092,
+    "allSubintervals": 19956,
+    "literalPaintingBFSStates": 5460,
+    "oracle": "BFS from all-zero fence, enumerate EVERY legal contiguous brush stroke of colors1..3 (never decrease any cell), then compare minimum action counts. No monotone-stack oracle."
+  },
+  "1117": {
+    "allConnectedUndirectedGraphsWithOptionalLoopsN2to5": 23940,
+    "completeInfiniteWalkLanguageGroups": 932,
+    "literalParityFeasibilityComparisons": 595764,
+    "oracle": "Enumerate EVERY labeled graph including loops/no parallel; group by the COMPLETE eventually-periodic sequence of literal exact-length reachable vertex bitsets (cycle detection, not an arbitrary length cutoff). Min edge count over the entire group is independent oracle for greedy."
+  },
+  "1118": {
+    "allConnectedUndirectedGraphsWithOptionalLoopsN2to5": 23940,
+    "completeInfiniteWalkLanguageGroups": 932,
+    "oracle": "Group size in the same exhaustive infinite-language partition is independent graph-count oracle; compare bipartite formula, layered two-stage PIE, root exemption and independently derived terminal C-edge/loop PIE. Exact integers, not modulo coincidences."
+  },
+  "1140": {
+    "allArraysLength1to8AlphabetAtMost3": 9833,
+    "allLeaderTriplesTested": 461322,
+    "oracle": "Enumerate ALL ordered-by-position leader triples l<m<r; directly count each leader breed in ENTIREdelegation l..r. Compare literal active/singleton interval-update equations (not a production lazy API), also check every intermediate active/weight invariant."
+  },
+  "1141": {
+    "allDirectedSimpleGraphsN2to4WithAtMostTwoBackwardEdges": 1468,
+    "allDegreeBalancedRoleConfigurationsWithSender": 574,
+    "validInstances": 562,
+    "balancedButNoValidScheme": 12,
+    "allLiteralTrailSchemes": 1481,
+    "oracle": "For EVERY eligible graph, local degree balance uniquely determines S/R/. roles. Enumerate actual sender-to-unusedreceiver edge-disjoint directed TRAILS in fixed sender order, permitting repeated vertices, stopping at receivers optionally, accepting iff EVERY edge used once. Compare two-backedge frontier DP including single-path cycle closure, cross merger, double cross closure, receiver termination and deg-minus-tracked factorial."
+  },
+  "1142": {
+    "everyNonemptyBitmapEveryH_W1to4": 74938,
+    "allGrassBoardsN1to3AndRandom4": 1556,
+    "oracle": "Enumerate actual cell subsets and test literal occupied-row contiguity, occupied-column contiguity,4-neighbor BFS connectivity. Compare endpoint/unimodality characterization for EVERYsmallshape. Zeta sum over allvalidsubsets gives exact answer for eachgrassboard, independently checked against interval/two-strict-phase-flags DP. No prefix-sum optimization/API implemented in this research probe."
+  },
+  "navigation": {
+    "recordsReplayed": 6,
+    "questionsAndAnswerLabelsVerified": 8,
+    "frozenFilesShaRechecked": 620,
+    "allInitialReachedAndGapFieldsEqualFrozenNodes": true,
+    "interpreter": "independent raw JSON graph/node/options/answers/route interpreter, no live data/runtime dependency"
+  },
+  "seconds": 1.4371560830040835
+}

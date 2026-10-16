@@ -1,0 +1,129 @@
+---
+title: "木で親の番号を子より小さくする割り当ては、部分木サイズの積で数える"
+description: "根を隣へ移すとサイズが変わる二つの部分木だけに注目し、全ての根の答えを線形時間で計算します。"
+techniqueId: tree-increasing-label-reroot-ratio
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+根付き木の全頂点に $1,2,\ldots,N$ を重複なく割り当て、各辺で親の番号を子より小さくしたい場面です。根をどの頂点にするかを変えた全ての答えや、頂点を親より後に追加する順序の個数を求めます。
+
+木の1頂点から始め、選んだ集合に隣接する未選択頂点を1個ずつ加える操作も、追加順に番号を付ければ同じ条件になります。根からある頂点へ至るには、その親を先に追加している必要があるためです。
+
+## 考え方
+
+根を $r$ とし、$s_v$ を頂点 $v$ の部分木の頂点数とします。この根での割り当ての個数 $F(r)$ は
+
+$$
+F(r)=\frac{N!}{\prod_v s_v}
+$$
+
+です。根の番号は1に決まるので、分子を $(N-1)!$、分母を根以外の部分木サイズの積としても同じです。整数としては割り切れますが、剰余で計算する際は逆元の条件を確認します。
+
+次に、仮の根で親子になっている辺 $v\to u$ を考えます。$s=s_u$ とすると、根を $v$ から $u$ へ移したときにサイズが変わるのは、この2頂点だけです。
+
+- 根 $v$ での二つのサイズは $N$ と $s$。
+- 根 $u$ での二つのサイズは $N-s$ と $N$。
+
+他の頂点の部分木は変わらないため、
+
+$$
+F(u)=F(v)\frac{s}{N-s}
+$$
+
+となります。最初の根の答えを積で計算し、この比を親から子へ伝えます。
+
+## 適用条件
+
+制約が「木の辺で親が子より先になる」ことだけで、各頂点を区別して $1,\ldots,N$ の番号をそれぞれ1回ずつ使う場合に適用します。兄弟同士の順序指定、使える番号の範囲、追加の辺による先行制約があると、この積公式にはなりません。
+
+掲載実装の法は素数 $p=10^9+7$ に固定し、$1\le N<p$ を要求します。全ての分母が $1$ 以上 $N$ 以下なので逆元を持ちます。$N\ge p$ や合成数の法では、整数として割り切れることだけを理由に逆元を使ってはいけません。$N\ge p$ では初期値が0になって情報が消える場合もあります。
+
+木は固定です。頂点や辺の追加・削除を挟む操作は扱いません。頂点1個なら割り当ては1通りです。
+
+## なぜ正しいか
+
+頂点 $v$ の子の部分木サイズを $t_1,\ldots,t_k$、それぞれの内部で条件を満たす順序の個数を $f_1,\ldots,f_k$ とします。$v$ を最初に置いた後、各部分木の内部順序を保ちながら混ぜる方法は多項係数なので、
+
+$$
+f_v=(s_v-1)!\prod_{i=1}^{k}\frac{f_i}{t_i!}
+$$
+
+です。葉から帰納的に $f_i=t_i!/\prod_{x\in T_i}s_x$ を代入すると、$t_i!$ が消えます。さらに $(s_v-1)!=s_v!/s_v$ なので、$f_v=s_v!/\prod_{x\in T_v}s_x$ が得られます。根でこの式を使うと、最初の積公式です。
+
+根を辺の反対側へ移すと、その辺以外の親子の向きは変わりません。両端以外の部分木サイズが同じなので、二つの積の比は $s/(N-s)$ です。最初の根の正しい答えから、この正しい比を各辺で1回ずつ掛ければ、全ての根の答えを得られます。
+
+## 計算量
+
+根を選ぶたびに部分木サイズを求め直すと $O(N^2)$ 時間です。サイズの集計を1回、初期値の計算を1回、比の伝播を1回行えば $O(N)$ 時間・$O(N)$ 空間になります。
+
+掲載実装は $1,\ldots,N$ の逆元を線形時間で前計算します。辺ごとにべき乗で逆元を計算する $O(N\log p)$ 時間も不要です。固定法の剰余同士の積は符号付き64ビット整数に収まります。
+
+## 実装
+
+`increasing_tree_label_counts(n, edges)` が全頂点を根とした個数を順に返します。頂点番号は0始まりです。木の走査を配列で行い、一本道でも再帰の深さに依存しません。不正な頂点数・辺数・端点、自己ループ、閉路、平行辺、非連結は `invalid_argument` で拒否します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<long long> increasing_tree_label_counts(int n,
+        const vector<pair<int,int>>& edges) {
+    constexpr long long MOD = 1000000007;
+    if (n <= 0 || n >= MOD || edges.size() != size_t(n - 1))
+        throw invalid_argument("require a nonempty tree with n < MOD");
+    vector<vector<int>> g(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v)
+            throw invalid_argument("invalid edge");
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    vector<int> parent(n, -2), order{0};
+    parent[0] = -1;
+    for (size_t i = 0; i < order.size(); ++i) {
+        int v = order[i];
+        for (int u : g[v]) if (u != parent[v]) {
+            if (parent[u] != -2)
+                throw invalid_argument("cycle or parallel edge");
+            parent[u] = v;
+            order.push_back(u);
+        }
+    }
+    if (order.size() != size_t(n)) throw invalid_argument("disconnected tree");
+
+    vector<int> size(n, 1);
+    for (int i = n - 1; i > 0; --i) {
+        int v = order[i];
+        size[parent[v]] += size[v];
+    }
+    vector<long long> inverse(n + 1), answer(n);
+    inverse[1] = 1;
+    for (int i = 2; i <= n; ++i)
+        inverse[i] = MOD - (MOD / i) * inverse[MOD % i] % MOD;
+    long long first = 1;
+    for (int i = 1; i <= n; ++i) first = first * i % MOD;
+    for (int s : size) first = first * inverse[s] % MOD;
+    answer[0] = first;
+    for (int i = 1; i < n; ++i) {
+        int v = order[i];
+        answer[v] = answer[parent[v]] * size[v] % MOD
+                  * inverse[n - size[v]] % MOD;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [全方位木DP](/flowchartcp/techniques/rerooting/)：積の比で消去できない場合は、各方向の情報をまとめる状態を設計する。
+- [一つの方向を除いた集約を前後から計算する](/flowchartcp/techniques/reroot-prefix-suffix/)：逆元に頼らず、隣接する枝の情報を合成する方法。
+- [木で需要重みを掛けた距離の和を、根の移動差で求める](/flowchartcp/techniques/weighted-tree-distance-reroot/)：根を隣へ移した際の差だけを求める場合。
+
+## 参考資料
+
+- [AtCoder ABC160 F：Distributing Integers](https://atcoder.jp/contests/abc160/tasks/abc160_f) — 既に選んだ頂点に隣接する頂点を順に加え、全ての始点について順序の個数を求める原典。
+- [AtCoder ABC160公式解説、F節](https://img.atcoder.jp/abc160/editorial.pdf) — 部分木の順序を混ぜる漸化式と全方位木DPを扱います。部分木サイズの積と根を移す比は、この漸化式から導けます。
+
+<TechniqueReferences techniqueId="tree-increasing-label-reroot-ratio" />

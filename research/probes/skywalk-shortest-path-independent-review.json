@@ -1,0 +1,283 @@
+{
+  "reviewStatus": "passed",
+  "reviewer": "/root/usaco_cowmistry_article",
+  "reviewedAt": "2026-10-15",
+  "problemId": "ioi2019_walk",
+  "techniqueId": "skywalk-endpoint-sparse-shortest-path",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-skywalk-article.mdx",
+    "checker": "/tmp/flowchartcp-skywalk-checker.py",
+    "sidecar": "/tmp/flowchartcp-skywalk-sidecar.json",
+    "independentProbe": "/tmp/flowchartcp-skywalk-independent-probe.py",
+    "independentProbeResult": "/tmp/flowchartcp-skywalk-independent-probe.json"
+  },
+  "artifactSha256": {
+    "article": "5b36a08a7301ad43b0674ba680298cfdf9eb7efac3f5ec41f14aa5a77c6df717",
+    "checker": "be9363901c53ff89ed40f4a8196c1545180ee1cc52b23073c9a5e7ef3cd1b38a",
+    "sidecar": "5c17ce226afbd7eb56e0dcc4cc6cfee6aae526889002e2dca63173dbc8b7de61",
+    "independentProbe": "27f165717375880f744efa60d800912db791d0ac971c8cdd81b76e01dd77c54d",
+    "independentProbeResult": "c72947270b8ce1146c34d583f244dbd52f72ed9f53139c2154f144579adce09f"
+  },
+  "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedOriginalNumericBounds": [],
+  "resolvedNonblockingFindings": [
+    {
+      "reportedBy": "root",
+      "issue": "132P describes adjacency-construction stage, not every earlier stage when N can dominate M.",
+      "resolution": "Author restricted 132P+48 to coordinate union/adjacency stage, separately described 96M event storage,4(N+M) permutation storage, tall/active sets and their destruction before graph allocation.",
+      "codeChanged": false,
+      "finalArticleSha256": "5b36a08a7301ad43b0674ba680298cfdf9eb7efac3f5ec41f14aa5a77c6df717"
+    }
+  ],
+  "sourceVerification": {
+    "methods": [
+      "Official English PDF text",
+      "Official archive directly linked English(HSC) Review text",
+      "Official host translation PDF search-visible text",
+      "Japanese national committee contest-day listing"
+    ],
+    "visualInspectionClaimed": false,
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+    "officialArchiveUrl": "https://ioi.te.lv/locations/ioi19/contest/index.shtml",
+    "officialReviewUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+    "officialReviewScope": "Both pages retrieved independently; all-intersection graph, deleting vertical edges whose upper vertex lies inside a skywalk, and nearest-tall cuts about arbitrary s/g agree with article. Rectangle-entry/lexicographic correctness proof is independently supplied, not represented as a verbatim official proof.",
+    "numericEvidenceUrls": [
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf"
+    ],
+    "successfulNumericQueries": [
+      "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf \"Batasan\" \"100000\"",
+      "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf \"100000\" \"1 ≤ h\""
+    ],
+    "originalBounds": {
+      "N": "1..100000",
+      "M": "1..100000",
+      "x": "0<=x[0]<...<x[N-1]<=1e9",
+      "h": "1..1e9 for all 0<=i<=N-1",
+      "endpoints": "0<=l[j]<r[j]<=N-1 for all 0<=j<=M-1",
+      "y": "1<=y[j]<=min(h[l[j]],h[r[j]]) for all 0<=j<=M-1",
+      "terminals": "0<=s,g<=N-1;s!=g",
+      "contacts": "No two skywalks share points except possibly their endpoints."
+    },
+    "numericBoundsVerified": true,
+    "fullOriginalApiCovered": true,
+    "absentPathValue": -1,
+    "absentPathPrimaryUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+    "successfulAbsentPathQuery": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf \"返回\"",
+    "absentPathPrimaryVerified": true,
+    "noticeUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf",
+    "noticeQuery": "site:ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf \"4\" \"1024\"",
+    "timeSeconds": 4,
+    "memoryMB": 1024,
+    "originalCppInt64": "long long",
+    "originalCppArray": "std::vector",
+    "sourceDate": "2019-08-08",
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "dateIndependentlyVerified": true,
+    "difficulty": null,
+    "analysisProvenance": "independent-analysis"
+  },
+  "proofAndImplementationReview": [
+    "Full intersection model preserves segment-union distances; nonterminal ground vertices and roof tails are dead ends.",
+    "Nearest tall predecessors/successors around strict-interior terminal columns make any remaining piece that has an internal building intersection exclude both terminals from its open horizontal span.",
+    "A bad vertical-edge prefix/suffix enters the piece rectangle through a side or top. Boundary travel is physically available and has Manhattan length no greater than the removed path, without assuming x-monotone travel.",
+    "Replacement adds no bad edge with upper height at least Y and deletes one at Y; lexicographic minimality over finite positive-weight shortest paths proves simultaneous bad-edge deletion. Same-height endpoint-only contacts ensure a piece endpoint cannot lie in another piece's interior.",
+    "Sweep starts precede queries and ends follow queries at the same column. lower_bound({Y,-1}) excludes all equal-height walks. Strictly lower projection always lies on a sufficiently tall building.",
+    "Global building/height coordinate union is essential for same-height endpoint transfers; original-walk sorting joins neighboring retained points and contracts horizontal subdivisions.",
+    "P<=6M; touches<=2P+2, vertical edges<=P, horizontal edges<=2P, total undirected edges<=3P. Reserve capacities/graph indexes/int differences remain in range.",
+    "Indexed heap keeps at most one live entry per unsettled vertex and skips already-settled neighbors. Distances and one-edge relaxations fit int64 from <=(2P+1)*1e9.",
+    "API validates all vectors/coords/heights/endpoints/terminal indices/overlap before s=g or M=0 shortcuts. N1/M0/s=g extensions are explicit. Short-circuit validation prevents out-of-bounds h lookup even with extreme invalid indices.",
+    "No input-linear recursion, all mutable state local, const input remains unchanged, byvalue original adapter included, standard allocation exceptions propagate.",
+    "O((N+M)log(N+M+1)) time and O(N+M) space hold for complete API. 132P+48 is only graph-construction major-array payload; earlier arrays/sets and caller input/copies/allocator are separately scoped."
+  ],
+  "presentationReview": {
+    "japaneseSections": 8,
+    "visibleCompleteCppFences": 1,
+    "allMetadataSourceUrlsPresent": true,
+    "sourceDateAndDifficultyConsistent": true,
+    "relatedLinksUseConfiguredBase": true,
+    "articleContainsNoResearchCounters": true,
+    "initialAuditNotEdited": true
+  },
+  "reproduction": {
+    "normalCommand": "python3 /tmp/flowchartcp-skywalk-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-skywalk-checker.py --sanitize",
+    "normal": {
+      "checks": 9280397,
+      "instances": 112287,
+      "exhaustiveInstances": 108279,
+      "exhaustiveTerminalPairs": 1716019,
+      "randomInstances": 4000,
+      "literalGraphNodes": 1445299,
+      "literalGraphDirectedEdges": 3187422,
+      "metamorphicChecks": 15440,
+      "invalidCalls": 24,
+      "checksum": "9377741248886004889",
+      "seconds": 4.80206,
+      "peakRSSKiB": 79164,
+      "maximumCases": [
+        {
+          "name": "all full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 333330002,
+          "seconds": 0.404263
+        },
+        {
+          "name": "all high full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 2333130002,
+          "seconds": 0.412151
+        },
+        {
+          "name": "alternating serial chain",
+          "vertices": 200002,
+          "undirectedEdges": 200002,
+          "distance": 99998999890004,
+          "seconds": 0.134643
+        },
+        {
+          "name": "disconnected halves",
+          "vertices": 200002,
+          "undirectedEdges": 299998,
+          "distance": -1,
+          "seconds": 0.213605
+        },
+        {
+          "name": "short source under high spans",
+          "vertices": 300001,
+          "undirectedEdges": 499996,
+          "distance": 2666460004,
+          "seconds": 0.284419
+        },
+        {
+          "name": "both short terminal detours",
+          "vertices": 599994,
+          "undirectedEdges": 1099978,
+          "distance": 2333170004,
+          "seconds": 0.673816
+        },
+        {
+          "name": "same-height endpoint chain",
+          "vertices": 100004,
+          "undirectedEdges": 100005,
+          "distance": 2399990000,
+          "seconds": 0.125595
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "article": "/tmp/flowchartcp-skywalk-article.mdx"
+    },
+    "sanitized": {
+      "checks": 9280397,
+      "instances": 112287,
+      "exhaustiveInstances": 108279,
+      "exhaustiveTerminalPairs": 1716019,
+      "randomInstances": 4000,
+      "literalGraphNodes": 1445299,
+      "literalGraphDirectedEdges": 3187422,
+      "metamorphicChecks": 15440,
+      "invalidCalls": 24,
+      "checksum": "9377741248886004889",
+      "seconds": 82.2454,
+      "peakRSSKiB": 783128,
+      "maximumCases": [
+        {
+          "name": "all full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 333330002,
+          "seconds": 7.01171
+        },
+        {
+          "name": "all high full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 2333130002,
+          "seconds": 7.20256
+        },
+        {
+          "name": "alternating serial chain",
+          "vertices": 200002,
+          "undirectedEdges": 200002,
+          "distance": 99998999890004,
+          "seconds": 3.03875
+        },
+        {
+          "name": "disconnected halves",
+          "vertices": 200002,
+          "undirectedEdges": 299998,
+          "distance": -1,
+          "seconds": 4.02418
+        },
+        {
+          "name": "short source under high spans",
+          "vertices": 300001,
+          "undirectedEdges": 499996,
+          "distance": 2666460004,
+          "seconds": 5.16869
+        },
+        {
+          "name": "both short terminal detours",
+          "vertices": 599994,
+          "undirectedEdges": 1099978,
+          "distance": 2333170004,
+          "seconds": 10.3097
+        },
+        {
+          "name": "same-height endpoint chain",
+          "vertices": 100004,
+          "undirectedEdges": 100005,
+          "distance": 2399990000,
+          "seconds": 2.92754
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "article": "/tmp/flowchartcp-skywalk-article.mdx"
+    },
+    "semanticResultsEqual": true,
+    "asanUbsanPassed": true,
+    "leakSanitizerEnabled": false,
+    "timingScope": "Maximum case times include two API calls plus a third graph construction and edge checks. Overall run times include literal/exhaustive/random/metamorphic/API verification. Measurements do not establish a hardware-independent 4-second guarantee."
+  },
+  "additionalIndependentProbe": {
+    "command": "python3 /tmp/flowchartcp-skywalk-independent-probe.py",
+    "result": {
+      "checks": 1750018,
+      "instances": 10624,
+      "bfsQueries": 105525,
+      "rasterVertices": 2011884,
+      "rasterUndirectedEdges": 1344432,
+      "heightInvarianceChecks": 655572,
+      "buildingInsertionChecks": 325530,
+      "checksum": "17658587268103824764",
+      "peakRSSKiB": 19376,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "oracle": "Unit-length raster graph BFS, no intersection compression or weighted Dijkstra",
+      "seed": 914704221
+    },
+    "construction": "Rasterize each complete building and skywalk into the union of all unit-length lattice edges, including roof and nonterminal-ground dead ends, then BFS from every original ground root. No intersection graph contraction, weighted Dijkstra, tall-building selection, active sweep or indexed heap is used.",
+    "exhaustiveScope": "Five buildings of height2, four alternating adjacent-gap1/2 patterns, all 1156 compatible skywalk subsets per gap pattern:4624 physical instances/all25 ordered terminal pairs.",
+    "randomScope": "6000 deterministic N1..12 instances, building heights1..12, x0 in0..3, adjacent gaps1..3;120 candidate skywalk attempts retained when valid. All ordered terminal pairs.",
+    "metamorphicScope": "For each random case, delete roof tails or extend roofs without reaching a new skywalk. Insert one new building in a gap with roof at the lowest crossing walk, adding only a one-contact vertical dead end; preserve all old-root distances and independently raster-check that invariant.",
+    "checksumInterpretation": "Checks counts assertions, not distinct physical inputs. It includes original API versus BFS, two height invariants, old-root API after building insertion and independent raster insertion-invariance assertions.",
+    "proofOfInsertionInvariant": "Fresh x lies strictly between original columns, so same-height endpoint contacts cannot occur there. Choosing the minimum covering-walk height adds exactly one geometric connection, or no connection when no walk covers the gap; its vertical building is a dead-end branch and cannot shorten old-root distances."
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "initialAuditModified": false,
+  "conclusion": "No substantive mathematical, implementation, API or original-source coverage defects remain in the frozen version. The earlier memory-stage wording issue is resolved without code changes.",
+  "originalReviewSha256": "a8a1045ffb56181a8fbd2c2d4410f9e8a592816e28f9b2af3781d7c28e4520e8",
+  "publishedArticle": "src/content/docs/techniques/skywalk-endpoint-sparse-shortest-path.mdx",
+  "permanentProbe": {
+    "script": "research/probes/skywalk-shortest-path-independent.py",
+    "originalScriptSha256": "27f165717375880f744efa60d800912db791d0ac971c8cdd81b76e01dd77c54d",
+    "normalizedScriptSha256": "92431846600e4fdeec9a9f6fce781f81b34560cc8dc2c1642e8967f66c2c5e47",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Oracle and all assertions unchanged."
+  }
+}

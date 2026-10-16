@@ -1,0 +1,75 @@
+---
+title: "Knuth最適化"
+description: "区間DPの最適な分割点を、隣接する区間の最適な分割点で挟み込みます。"
+techniqueId: knuth-optimization
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+区間DPの最適な分割点を、隣接する区間の最適な分割点で挟み込みます。
+
+別名：Knuth Optimization / Knuth–Yao Optimization
+
+## 使う場面
+
+隣り合う区間を順に結合する問題で、結合費用が区間全体だけから決まる場合に使います。たとえば、非負の重さを持つ列を、結合後の重さを費用として一つにまとめる問題です。すべての区間と分割点を調べる $O(N^3)$ のDPを、$O(N^2)$ に改善できることがあります。
+
+## 考え方
+
+閉区間 $[l,r]$ の最小費用を
+
+$$D[l][r]=C(l,r)+\min_{l\le k<r}\{D[l][k]+D[k+1][r]\}$$
+
+とします。最適な分割点を $\operatorname{opt}[l][r]$ としたとき、
+
+$$\operatorname{opt}[l][r-1]\le\operatorname{opt}[l][r]\le\operatorname{opt}[l+1][r]$$
+
+が成り立つなら、その範囲だけを調べます。短い区間から計算するので、両端の境界はすでに求まっています。実際の分割点は $l$ 以上 $r-1$ 以下に制限します。
+
+## 適用条件
+
+上の2つの境界が成立することが必要です。代表的な十分条件は、$a\le b\le c\le d$ に対する区間包含の単調性 $C(b,c)\le C(a,d)$ と、四辺形不等式 $C(a,c)+C(b,d)\le C(a,d)+C(b,c)$ です。
+
+非負の列の区間和はこの条件を満たします。一方、負の値を含む区間和では区間包含の単調性が崩れます。費用が分割点 $k$ にも依存する場合など、異なる形のDPには別の証明が必要です。
+
+## なぜ正しいか
+
+短い区間の答えが正しく求まっていれば、2つの境界も正しい値です。最適な分割点がその間に必ずあるため、限定した範囲で最小値を取っても答えは変わりません。以下のコードは同じ最小値なら大きい分割点を選び、すべての区間で規則をそろえています。
+
+## 計算量
+
+費用の計算が $O(1)$ なら時間・空間ともに $O(N^2)$ です。区間の長さを固定して探索幅を足すと、隣接する最適な分割点の差が打ち消し合います。そのため、$O(N^2)$ 個の状態について、全体で $O(N^2)$ 個の分割点を調べれば足ります。
+
+## 実装
+
+`optimal_merge(a)` は非負の重さの列について、隣接する要素を一つにまとめる最小費用を返します。区間和を累積和で求め、長さ1の区間の費用を0として計算します。重さの合計とDP値は `long long` の範囲内に収めてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// Nonnegative a; all prefix sums and DP values fit long long.
+long long optimal_merge(const vector<long long>& a) {
+    int n=a.size(); if(!n) return 0;
+    vector<long long> p(n+1);
+    for(int i=0;i<n;++i) { assert(a[i]>=0); p[i+1]=p[i]+a[i]; }
+    vector d(n,vector<long long>(n)); vector o(n,vector<int>(n));
+    for(int i=0;i<n;++i) o[i][i]=i;
+    for(int len=2;len<=n;++len) for(int l=0;l+len<=n;++l) {
+        int r=l+len-1; d[l][r]=LLONG_MAX;
+        for(int k=max(l,o[l][r-1]);k<=min(r-1,o[l+1][r]);++k) {
+            long long x=d[l][k]+d[k+1][r]+p[r+1]-p[l];
+            if(x<=d[l][r]) { d[l][r]=x; o[l][r]=k; }
+        }
+    }
+    return d[0][n-1];
+}
+```
+
+## 関連する手法
+
+[区間DP](/flowchartcp/techniques/interval-dp/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [cp-algorithms: Knuth Optimization](https://cp-algorithms.com/dynamic_programming/knuth-optimization.html)
+
+<TechniqueReferences techniqueId="knuth-optimization" />

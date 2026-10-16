@@ -1,0 +1,91 @@
+---
+title: "最短路の個数と辺数は、正の辺からなる最短距離の順でまとめる"
+description: "最短距離を保つ辺だけを使い、経路数・最小辺数・最大辺数を同時に伝播する。"
+techniqueId: shortest-tight-dag-statistics
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+最短距離を保つ辺だけを使い、経路数・最小辺数・最大辺数を同時に伝播する。
+
+## 使う場面
+
+正の費用を持つ有向グラフで、最短距離に加え、最短路の個数と、その中の辺数の最小・最大を求める。最短路の全列挙はできない。
+
+## 考え方
+
+まず始点からの最短距離 $d$ を求める。辺 $(u,v,w)$ が最短路に使えるのは
+
+$$d_u+w=d_v$$
+
+を満たすときだけ。全辺の重みが厳密に正なら、この辺では $d_u<d_v$ なので、距離の昇順が依存関係の順になる。
+
+始点を `ways=1, fewest=most=0` とし、最短距離を保つ各辺について、経路数を足し、最小辺数を `fewest[u]+1` で小さく、最大辺数を `most[u]+1` で大きくする。平行辺は別の選択としてそれぞれ数える。
+
+## 適用条件
+
+全辺の重みが厳密に正。辺列の異なる経路を別々に数え、経路数は指定した法で求める。距離が実装の `INF` 未満に収まることを要する。
+
+重み0の辺があると距離が同じ頂点への依存が生じ、距離順だけでは不十分。0の閉路が最短経路に入る場合は、歩道の数が無限になることもある。必要な前提を確かめずにこの更新順を使わない。
+
+## なぜ正しいか
+
+最短路の各接頭経路もその終点への最短路でなければ、接頭を短いものへ置き換えて全体を短縮できてしまう。よって最短路は距離を保つ辺だけからなる。逆にその辺を始点からつなげると距離が望遠鏡状に足され、最短距離に一致する。正の重みからこの部分グラフはDAGであり、最後の一辺ごとの分解が重複なく全最短路を数える。最小・最大辺数も同じ分解で求まる。
+
+## 計算量
+
+最短路を列挙すると指数個になり得る。ダイクストラ法で $O((N+M)\log N)$、距離順の並べ替えと伝播で $O(N\log N+M)$、空間は $O(N+M)$。経路数の大きさ自体には時間を掛けない。
+
+## 実装
+
+`shortest_statistics` は全頂点への結果を返す。到達不能なら距離は `INF`、経路数0、最小辺数 `INT_MAX`、最大辺数 -1。正の重みを実行時に確認する。法は2以上 $2^{63}-1$ 以下で、個数の加算には128ビットを使う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+constexpr long long INF=(1LL<<62);
+struct Edge {int to;long long weight;};
+struct ShortestStatistics {
+    vector<long long> distance,ways;
+    vector<int> fewest,most;
+};
+ShortestStatistics shortest_statistics(const vector<vector<Edge>>& g,int source,
+        long long mod=1000000007) {
+    int n=g.size();assert(n>0 && 0<=source && source<n && mod>=2);
+    for(const auto& row:g) for(auto e:row)
+        if(e.weight<=0 || e.weight>=INF) throw invalid_argument("strictly positive weight required");
+    ShortestStatistics result{vector<long long>(n,INF),vector<long long>(n),
+        vector<int>(n,INT_MAX),vector<int>(n,-1)};
+    auto& d=result.distance;
+    priority_queue<pair<long long,int>,vector<pair<long long,int>>,greater<pair<long long,int>>> queue;
+    d[source]=0;queue.push({0,source});
+    while(!queue.empty()) {
+        auto [distance,v]=queue.top();queue.pop();
+        if(distance!=d[v]) continue;
+        for(auto e:g[v]) if(e.weight<INF-distance && distance+e.weight<d[e.to]) {
+            d[e.to]=distance+e.weight;queue.push({d[e.to],e.to});
+        }
+    }
+    vector<int> order(n);iota(order.begin(),order.end(),0);
+    sort(order.begin(),order.end(),[&](int a,int b){return d[a]<d[b];});
+    result.ways[source]=1;result.fewest[source]=result.most[source]=0;
+    for(int v:order) {
+        if(d[v]==INF) break;
+        for(auto e:g[v]) if(e.weight<INF-d[v] && d[v]+e.weight==d[e.to]) {
+            result.ways[e.to]=(long long)(((__int128)result.ways[e.to]+result.ways[v])%mod);
+            result.fewest[e.to]=min(result.fewest[e.to],result.fewest[v]+1);
+            result.most[e.to]=max(result.most[e.to],result.most[v]+1);
+        }
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [CSES：Investigation](https://cses.fi/problemset/task/1202)
+
+<TechniqueReferences techniqueId="shortest-tight-dag-statistics" />

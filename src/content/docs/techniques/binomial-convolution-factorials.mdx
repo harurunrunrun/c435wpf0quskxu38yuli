@@ -1,0 +1,130 @@
+---
+title: "二項係数が付く遷移を、階乗で割って畳み込む"
+description: "組合せ数 C(k,i) の重みを入力と出力の階乗へ分け、普通の畳み込みに変えます。"
+techniqueId: binomial-convolution-factorials
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$c_k=\sum_{i=0}^k\binom{k}{i}a_i b_{k-i}$ の形です。異なる $k$ 個の要素から、左の部品に渡す $i$ 個を選ぶ組合せ数が掛かっています。全 $k$ について二重ループをする前に、二項係数を階乗へ分けます。
+
+## 考え方
+
+$\binom{k}{i}=k!/(i!(k-i)!)$ より、
+
+$$\frac{c_k}{k!}=\sum_i\frac{a_i}{i!}\frac{b_{k-i}}{(k-i)!}.$$
+
+入力を添字の階乗で割り、通常の畳み込みを行い、出力へ $k!$ を掛けます。
+
+固定 $n$ の第 2 種スターリング数では、$k$ 個の区別される箱へ全て一回以上入れる数を包含排除すると
+
+$$k!S(n,k)=\sum_{i=0}^k\binom{k}{i}i^n(-1)^{k-i}$$
+
+です。$a_i=i^n$、$b_j=(-1)^j$ と置けば全 $k$ を一度に計算できます。
+
+## 適用条件
+
+階乗の逆元が必要です。素数の法でも、使う添字が法以上なら階乗が 0 になり、この変形は使えません。合成数の法でも階乗が非零であるだけでは不十分です。
+
+掲載実装の法は 998244353、入力係数は $[0,p)$。一般の畳み込みの結果長は $2^{22}$ 以下、スターリング数の引数は $0\le n\le2^{21}-1$ です。$n=0$ では $S(0,0)=1$ とし、$0^0=1$ を使います。
+
+## なぜ正しいか
+
+階乗を分母へ移した式の各項は、元の式と一対一に対応します。畳み込みの添字の和が $k$ なので、$i!$ と $(k-i)!$ の分母が正しい位置に現れます。
+
+n 個の要素を x 個の区別された箱へ割り当てる数は x^n です。使った箱が k 個なら、先に要素を k 個の非空な集合へ分け、その集合を相異なる箱へ置くので、$x^n=\sum_k S(n,k)x(x-1)\cdots(x-k+1)$ になります。したがって、この集合分割数は原典の多項式係数と一致します。
+
+スターリング数の式では、まず各要素の行き先を決め、空の箱がある配置を包含排除で除きます。箱のラベルを外すと各集合分割は $k!$ 通りずつ数えられているため、最後に $k!$ で割ります。
+
+## 計算量
+
+入力長を $A,B$、結果長を $L=A+B-1$ とすると、素朴な計算は $O(AB)$、変形後は階乗の準備を含め $O(L\log L)$ です。空間は $O(L)$。
+
+全ての $S(n,k)$ を通常の三角形 DP で求めると時間 $O(n^2)$ です。掲載実装は $i^n$ の計算も含め $O(n\log(n+2))$、空間 $O(n)$ です。
+
+## 実装
+
+`binomial_convolution(a,b)` は `a.size()+b.size()-1` 項を返します。片方が空なら空です。`stirling_second_row(n)` は $S(n,0),\ldots,S(n,n)$ を返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> binomial_convolution(const vector<int>& a,const vector<int>& b) {
+    if(a.empty() || b.empty()) return {};
+    int n=a.size()+b.size()-1;
+    assert(n<=(1<<22));
+    vector<int> fact(n,1),inverse_fact(n,1);
+    for(int i=1;i<n;++i) fact[i]=1LL*fact[i-1]*i%ntt998::MOD;
+    inverse_fact[n-1]=ntt998::power(fact[n-1],ntt998::MOD-2);
+    for(int i=n-1;i>0;--i) inverse_fact[i-1]=1LL*inverse_fact[i]*i%ntt998::MOD;
+    vector<int> left(a.size()),right(b.size());
+    for(int i=0;i<int(a.size());++i) left[i]=1LL*a[i]*inverse_fact[i]%ntt998::MOD;
+    for(int i=0;i<int(b.size());++i) right[i]=1LL*b[i]*inverse_fact[i]%ntt998::MOD;
+    auto result=ntt998::convolution(left,right);
+    for(int i=0;i<n;++i) result[i]=1LL*result[i]*fact[i]%ntt998::MOD;
+    return result;
+}
+vector<int> stirling_second_row(int n) {
+    assert(0<=n && n<=(1<<21)-1);
+    vector<int> powers(n+1),sign(n+1),fact(n+1,1);
+    for(int i=0;i<=n;++i) {
+        powers[i]=ntt998::power(i,n);
+        sign[i]=(i&1)?ntt998::MOD-1:1;
+        if(i) fact[i]=1LL*fact[i-1]*i%ntt998::MOD;
+    }
+    auto result=binomial_convolution(powers,sign);result.resize(n+1);
+    int inv=ntt998::power(fact[n],ntt998::MOD-2);
+    for(int k=n;k>=0;--k) {
+        result[k]=1LL*result[k]*inv%ntt998::MOD;
+        if(k) inv=1LL*inv*k%ntt998::MOD;
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[NTT・畳み込み](/flowchartcp/techniques/ntt/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/stirling_number_of_the_second_kind/task.md)
+
+<TechniqueReferences techniqueId="binomial-convolution-factorials" />

@@ -1,0 +1,80 @@
+---
+title: "現在の値に対する一次式へ遷移を分離する"
+description: "遷移元ごとの費用を直線にできれば、全候補の比較を凸包トリックに置き換えます。"
+techniqueId: dp-affine-transition
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+遷移元ごとの費用を直線にできれば、全候補の比較を凸包トリックに置き換えます。
+
+## 使う場面
+
+$dp_i=\min_{j<i}\{dp_j+b_j a_i\}$ のように、現在の値 $a_i$ と遷移元の係数 $b_j$ の積が現れるDPです。$i$ と $j$ の項を分離し、現在の値を変数とする直線として読めるかを調べます。
+
+## 考え方
+
+状態 $j$ に対応する直線を $y=b_jx+dp_j$ とします。状態 $i$ を求めるときは $x=a_i$ の最小値を問い合わせ、計算後に傾き $b_i$、切片 $dp_i$ の直線を追加します。
+
+以下では $a_i$ が非減少、$b_i$ が狭義減少のため、dequeによる凸包トリックを使います。順序が任意ならLi Chao木などへ変えます。
+
+## 適用条件
+
+直線の切片は、その状態のDP値が確定してから追加します。自身や未計算の状態を追加しないことが必要です。以下の実装は同じ傾きを許さないため、等しい傾きがある場合は切片が小さい直線へ統合する処理を加えます。係数の積と交点比較は型の範囲に収めます。
+
+## なぜ正しいか
+
+問い合わせ座標で各直線を評価すると、元の遷移費用と一致します。凸包トリックが保持するのは、どこかで最小値になれる直線だけです。傾きと座標の順序を利用して不要な直線を捨てても、必要な最小値は変わりません。
+
+## 計算量
+
+全遷移元を試す $O(N^2)$ 時間を、両方の順序条件の下で $O(N)$ にできます。空間は $O(N)$ です。任意の順序をLi Chao木で扱う場合は $O(N\log N)$ 時間になります。
+
+## 実装
+
+`affine_transition_dp(a, b)` は $dp_0=0$ として全DP値を返します。係数の絶対値を $10^9$ 以下、DP値を `long long` に収める入力を使います。直線の評価結果は128ビットで返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std; using i128=__int128_t;
+struct MonotoneCHT {
+    struct Line { long long a,b; i128 at(long long x) const { return i128(a)*x+b; } };
+    deque<Line> h; optional<long long> last_x,last_a;
+    void add(long long a,long long b) {
+        assert(!last_a || a<*last_a); last_a=a; Line z{a,b};
+        while(h.size()>=2) {
+            auto x=h[h.size()-2],y=h.back();
+            if((i128(y.b)-x.b)*(i128(y.a)-z.a)
+                < (i128(z.b)-y.b)*(i128(x.a)-y.a)) break;
+            h.pop_back();
+        }
+        h.push_back(z);
+    }
+    i128 get(long long x) {
+        assert(!h.empty() && (!last_x || *last_x<=x)); last_x=x;
+        while(h.size()>1 && h[0].at(x)>=h[1].at(x)) h.pop_front();
+        return h.front().at(x);
+    }
+};
+vector<i128> affine_transition_dp(const vector<long long>& a,
+    const vector<long long>& b) {
+    assert(a.size()==b.size()); if(a.empty()) return {};
+    vector<i128> dp(a.size()); MonotoneCHT hull; hull.add(b[0],0);
+    for(int i=1;i<int(a.size());++i) {
+        assert(a[i-1]<=a[i] && b[i-1]>b[i]);
+        dp[i]=hull.get(a[i]);
+        assert(dp[i]>=LLONG_MIN && dp[i]<=LLONG_MAX);
+        hull.add(b[i],static_cast<long long>(dp[i]));
+    }
+    return dp;
+}
+```
+
+## 関連する手法
+
+[凸包トリック](/flowchartcp/techniques/convex-hull-trick/) ・ [Li Chao木](/flowchartcp/techniques/li-chao-tree/)
+
+## 参考資料
+
+- [Codeforces：Kalila and Dimna in the Logging Industryの解説・実装](https://codeforces.com/blog/entry/8166)
+
+<TechniqueReferences techniqueId="dp-affine-transition" />

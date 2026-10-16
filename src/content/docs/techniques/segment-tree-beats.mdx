@@ -1,0 +1,73 @@
+---
+title: "Segment Tree Beats"
+description: "区間の値を上限で切るなど、条件付きで一括処理できる更新を高速に扱います。"
+techniqueId: segment-tree-beats
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+区間の値を上限で切るなど、条件付きで一括処理できる更新を高速に扱います。
+
+別名：Range Chmin Chmax Add Range Sum
+
+## 使う場面
+
+区間内の各要素を $a_i\leftarrow\min(a_i,x)$ と更新し、区間和を求める場合に使います。和と最大値だけでは、上限 $x$ を超える要素の個数が分からず、通常の遅延セグメント木で一括更新できません。最大値の次に大きい値と、最大値の個数も保存すると、一部の更新をまとめて処理できます。
+
+## 考え方
+
+各ノードに、和、最大値、狭義の第二最大値、最大値の個数を持ちます。
+
+上限 $x$ が最大値以上なら何も変わりません。第二最大値より大きく、最大値より小さいなら、変わるのは最大値を持つ要素だけです。和から $(\text{最大値}-x)\times\text{最大値の個数}$ を引き、最大値を $x$ にします。それ以外の場合は子へ降りて処理します。
+
+## 適用条件
+
+一括更新には「第二最大値より厳密に大きい」という条件が必要です。等しい場合は最大値のグループと第二最大値のグループが一つになるため、現在の情報だけでは最大値の個数を更新できません。
+
+下限で切る更新、加算、代入も混ぜる場合は、最小値側の情報や遅延更新も管理します。対応する更新の組合せによって、正当性と計算量の解析が変わります。
+
+## なぜ正しいか
+
+一括更新できる場合は、最大値の要素だけが変わることが分かっているため、和と最大値を正確に更新できます。子へ降りるときは、親の最大値を上限として子にも伝えます。
+
+一括更新できずに深く降りる処理は、更新後に異なる値の種類を減らします。この変化を操作列全体で評価することで、各回の最悪時間より小さい、ならし計算量が得られます。
+
+## 計算量
+
+上限で切る更新と区間和・最大値を扱う基本形では、全体で $O((N+Q)\log N)$ です。ただし、1回の更新には最悪 $O(N)$ かかります。上限・下限で切る更新と加算を混ぜる標準的な実装は、ならし $O(\log^2 N)$ の解析を使います。空間は $O(N)$ です。
+
+## 実装
+
+以下は、ノードの結合と、上限による一括更新を判定する部分です。`cap(x)` が `true` なら処理が完了し、`false` なら子への再帰が必要です。木全体の区間処理と子への伝播は含まれていません。完全な実装は参考資料を参照してください。
+
+葉の第二最大値には `LLONG_MIN` を使うため、入力値と更新の上限はそれより大きい値にします。和と「値の差×個数」も `long long` の範囲内に収めます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// Reusable node core; the tree and propagation engine are separate.
+struct ChminNode {
+    long long sum,mx,second; int count;
+    bool cap(long long x) {
+        if(mx<=x) return true;
+        if(x<=second) return false;
+        sum-=(mx-x)*count; mx=x; return true;
+    }
+};
+ChminNode merge(ChminNode a,ChminNode b) {
+    ChminNode c; c.sum=a.sum+b.sum; c.mx=max(a.mx,b.mx);
+    c.count=(a.mx==c.mx?a.count:0)+(b.mx==c.mx?b.count:0);
+    c.second=max(a.mx==c.mx?a.second:a.mx,b.mx==c.mx?b.second:b.mx);
+    return c;
+}
+ChminNode leaf(long long x) { return {x,x,LLONG_MIN,1}; }
+```
+
+## 関連する手法
+
+[遅延セグメント木](/flowchartcp/techniques/lazy-segment-tree/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [Nyaan: Segment Tree Beats（完全実装・検証先）](https://nyaannyaan.github.io/library/segment-tree/segment-tree-beats.hpp.html)
+
+<TechniqueReferences techniqueId="segment-tree-beats" />

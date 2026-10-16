@@ -1,0 +1,76 @@
+---
+title: "個数制限付きナップサックを重さの剰余ごとに処理する"
+description: "同じ品物を選ぶ個数の走査を、剰余ごとの移動窓最大値に変えます。"
+techniqueId: bounded-knapsack-deque
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+同じ品物を選ぶ個数の走査を、剰余ごとの移動窓最大値に変えます。
+
+## 使う場面
+
+重さ $w$、価値 $v$ の品物を高々 $c$ 個選べるナップサックです。重さがちょうど $x$ の最大価値を $D[x]$ とすると、次の層は $D'[x]=\max_{0\le k\le c}(D[x-kw]+kv)$ です。品物の個数 $k$ をすべて試す部分を削ります。
+
+## 考え方
+
+重さを $x=r+tw$ と、$w$ で割った剰余 $r$ ごとに分けます。$j=t-k$ と置くと、
+
+$$D'[r+tw]=tv+\max_{\max(0,t-c)\le j\le t}\{D[r+jw]-jv\}$$
+
+です。右端と左端が一つずつ進む範囲の最大値なので、剰余ごとに単調dequeを使います。
+
+## 適用条件
+
+重さは正の整数、個数上限は非負です。以下では価値も非負とします。重さ0は剰余分割できないため別処理が必要です。dequeへ入れる値は更新前の層から取り、到達不能な状態は候補へ入れません。
+
+## なぜ正しいか
+
+同じ剰余の遷移元だけが品物を足して現在の重さに到達します。$j$ の範囲は0個から $c$ 個までの選択と一対一なので、変形した最大値は元の式と同じです。単調dequeが捨てるのは、より新しく価値も大きい候補に支配された候補だけです。
+
+## 計算量
+
+品物の種類数を $N$、容量を $W$ とすると、単純な $O(W\sum_i c_i)$ 時間を $O(NW)$ にできます。各層で全剰余を合わせた状態数が $W+1$ になるためです。全層の $O(NW)$ 空間を、前後の2層の $O(W)$ に減らします。
+
+## 実装
+
+`bounded_knapsack(items, W)` は総重量が $W$ 以下の最大価値を返します。価値の積とDP値を `long long` の範囲内にします。更新前の `dp` を固定し、結果を `next` に書きます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct BoundedItem { int weight,count; long long value; };
+long long bounded_knapsack(const vector<BoundedItem>& items,int W) {
+    assert(W>=0); const long long NEG=LLONG_MIN/4;
+    vector<long long> dp(W+1,NEG); dp[0]=0;
+    for(auto item:items) {
+        int w=item.weight,c=item.count; long long v=item.value;
+        assert(w>0 && c>=0 && v>=0); if(w>W || c==0) continue;
+        vector<long long> next(W+1,NEG);
+        for(int r=0;r<w && r<=W;++r) {
+            deque<pair<int,long long>> q;
+            for(int t=0;t<=(W-r)/w;++t) {
+                int x=r+t*w;
+                if(dp[x]!=NEG) {
+                    long long z=dp[x]-1LL*t*v;
+                    while(!q.empty() && q.back().second<=z) q.pop_back();
+                    q.push_back({t,z});
+                }
+                while(!q.empty() && q.front().first<t-c) q.pop_front();
+                if(!q.empty()) next[x]=q.front().second+1LL*t*v;
+            }
+        }
+        dp.swap(next);
+    }
+    return *max_element(dp.begin(),dp.end());
+}
+```
+
+## 関連する手法
+
+[ナップサックDP](/flowchartcp/techniques/knapsack/) ・ [単調キュー](/flowchartcp/techniques/monotone-queue/)
+
+## 参考資料
+
+- [AOJ：Knapsack Problem with Limitations IIの解説・実装](https://github.com/ei1333/library/blob/master/test/verify/aoj-dpl-1-i.test.cpp)
+
+<TechniqueReferences techniqueId="bounded-knapsack-deque" />

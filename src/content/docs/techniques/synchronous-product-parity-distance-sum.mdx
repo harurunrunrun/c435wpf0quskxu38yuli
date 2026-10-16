@@ -1,0 +1,188 @@
+---
+title: "全成分を同時に一歩ずつ進む距離の総和は、偶奇別の最短距離と最大値の集計に分ける"
+description: "巨大な頂点の組を列挙せず、各成分で偶数歩・奇数歩の距離を求め、両方で届く組の重複を引く。"
+techniqueId: synchronous-product-parity-distance-sum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+複数の無向グラフがあり、状態は各グラフの現在位置を一つずつ並べた組で表される。一手で、全てのグラフについて同時に一辺ずつ移動する。一部だけを動かしたり、辺を使わずに待ったりすることはできない。
+
+各グラフの指定始点から出発し、到達可能な全ての位置の組への最短距離の総和を求めたい。各グラフが小さくても、組の個数は頂点数の積になるので、組全体を頂点とする探索はできない。
+
+各グラフの通常の最短距離の最大値だけを取るのも正しくない。例えば二つのグラフがどちらも二頂点を一本の辺で結んだものなら、二つの駒は同時に両端を往復する。片方だけが移動先にいる状態へは到達できない。
+
+## 考え方
+
+各グラフで、頂点 $v$ までの偶数歩の最短距離 $e(v)$ と、奇数歩の最短距離 $o(v)$ を別々に求める。位置と歩数の偶奇を組にして、辺を使うたびに偶奇を反転させればよい。
+
+無向グラフでは、一辺を往復すれば同じ頂点に二歩後に戻れる。従って、ある偶奇で最短 $d$ 歩で届く頂点へは、同じ偶奇の $d,d+2,d+4,\ldots$ 歩で届く。始点を含む連結成分に辺があれば、距離0からもこの延長ができる。
+
+ある目的地の組 $(v_1,\ldots,v_K)$ を考える。全成分が偶数歩で届くなら、歩数を
+
+$$
+E=\max_i e_i(v_i)
+$$
+
+へそろえられる。奇数歩についても $O=\max_i o_i(v_i)$ となる。両方が可能なら距離は $\min(E,O)$、片方だけならその値である。どちらも不可能な組は、到達可能な組に含めない。
+
+全ての目的地を列挙せずに集計するため、次の三つの総和を計算する。
+
+1. 各成分で偶数歩で届く頂点だけから一つずつ選び、$e_i$ の最大値を足した $S_e$。
+2. 奇数歩について同様に求めた $S_o$。
+3. 各成分で両方の偶奇で届く頂点だけから一つずつ選び、$\max(e_i,o_i)$ の最大値を足した $S_b$。
+
+求める答えは $S_e+S_o-S_b$ である。両方で届く組だけが二度入っているので、大きい方を引くと小さい方が残る。
+
+残るのは「各群から一つずつ数を選んだときの最大値の総和」である。群 $i$ で $x$ 以下の数の個数を $c_i(x)$ とすると、最大値が $x$ 以下になる選び方は
+
+$$
+P(x)=\prod_i c_i(x)
+$$
+
+通り。従って、最大値がちょうど $x$ になる個数は $P(x)-P(x-1)$ であり、$x$ を掛けて合計すればよい。
+
+各グラフの偶奇付き距離は $2N_i-1$ 以下である。$c_i(x)$ を直接作るのは $0\le x<2N_i$ の範囲だけとし、それ以降は最後の個数を掛け続ける。以下では、直接掛ける配列と「この位置以降へ同じ値を掛ける」配列を分ける。全グラフについて同じ最大距離まで走査する必要はない。
+
+## 適用条件
+
+全ての辺は無向で、全成分が一手につき必ず一辺を進む。頂点や辺を繰り返し使ってよく、各移動の費用は1とする。自己ループがある場合も扱える。
+
+有向グラフでは同じ辺を戻れるとは限らず、最短の到達歩数から二歩ずつ延ばせるとは限らない。各成分が自由に待てる場合や、一度通った辺を使えない場合、辺ごとに費用が異なる場合にも、同じ偶奇の式をそのまま使うことはできない。
+
+原典の各グラフは連結で二頂点以上ある。以下の実装は、連結でないグラフや一頂点のグラフも扱う。始点が孤立している成分が一つでもあれば、全体で一歩も進めず、到達できるのは始点の組だけなので総和は0になる。他の連結成分の頂点は集計に含めない。
+
+## なぜ正しいか
+
+全体を $d$ 歩進めたとき、各成分の移動列も正確に $d$ 本の辺からなる。逆に、各成分で同じ長さ $d$ の移動列があれば、それらの一手目、二手目、…を同時に実行できる。従って、目的地へ届く条件は、全成分が共通の歩数で目的地へ届くことである。
+
+始点が孤立していなければ、到達先にも往復に使える辺がある。歩数の偶奇を固定すると、可能な長さはその偶奇の最短距離から二歩刻みの全ての値になる。共通の偶数歩の最小値は、各最短偶数歩の最大値に等しく、奇数歩も同様である。
+
+両方の偶奇を選べる組では、$E+O-\max(E,O)=\min(E,O)$ が成り立つ。また、$\max(E,O)=\max_i\max(e_i,o_i)$ なので、引く量も群ごとの最大値の集計で計算できる。片方の偶奇しか使えない組は、その側の総和に一度だけ含まれる。
+
+最後の積の式では、最大値が $x$ 以下という条件が、各群で $x$ 以下を一つ選ぶ独立な条件になる。同じ頂点の偶奇別状態を二つの目的地として数えず、三つの総和で補正しているため、到達可能な各頂点の組をちょうど一度だけ集計できる。
+
+## 計算量
+
+全頂点数を $V=\sum_i N_i$、入力辺数を $M=\sum_i M_i$ とする。積グラフを明示する方法では、頂点数だけで $\prod_i N_i$ に増える。
+
+偶奇付きの探索には $O(V+M)$ 時間かかる。各群の個数配列の長さは $2N_i$ であり、三種類の最大値和の計算も合計 $O(V)$ 時間で終わる。全体で $O(V+M)$ 時間、追加空間は $O(V+M)$。法の逆元や、群数と最大距離の積に比例する走査は使わない。
+
+## 実装
+
+`SynchronousFactorGraph` は、頂点番号が $0$ 以上 `vertex_count` 未満の無向グラフを表す。`edges` の一組が一本の辺であり、逆向きを追加する必要はない。自己ループと多重辺も受け付ける。各成分の始点は頂点0とする。
+
+`synchronous_product_distance_sum(factors)` は、到達可能な全ての頂点の組への最短距離の総和を $10^9+7$ で割った余りを返す。空の因子列は、移動しない空の組だけがあると定義し、0を返す。
+
+因子数は50000以下、各頂点数は1以上、全頂点数は100000以下、入力辺数の合計は200000以下とする。個数上限の違反は `length_error`、頂点数が正でない場合や辺の端点が範囲外の場合は `invalid_argument` とする。孤立した始点があっても、他の成分の入力検証を省略しない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct SynchronousFactorGraph {
+    int vertex_count;
+    vector<pair<int, int>> edges;
+};
+
+int synchronous_product_distance_sum(
+        const vector<SynchronousFactorGraph>& factors) {
+    constexpr long long MOD = 1000000007;
+    if (factors.size() > 50000)
+        throw length_error("at most 50000 factors");
+    size_t total_vertices = 0, total_edges = 0;
+    int max_bound = 0;
+    bool isolated_start = false;
+    for (const auto& factor : factors) {
+        if (factor.vertex_count <= 0)
+            throw invalid_argument("vertex_count must be positive");
+        total_vertices += size_t(factor.vertex_count);
+        total_edges += factor.edges.size();
+        if (total_vertices > 100000 || total_edges > 200000)
+            throw length_error("too many vertices or edges");
+        max_bound = max(max_bound, 2 * factor.vertex_count);
+        bool can_move = false;
+        for (const auto& [u, v] : factor.edges) {
+            if (u < 0 || v < 0 || u >= factor.vertex_count ||
+                    v >= factor.vertex_count)
+                throw invalid_argument("edge endpoint out of range");
+            can_move = can_move || u == 0 || v == 0;
+        }
+        isolated_start = isolated_start || !can_move;
+    }
+    if (factors.empty() || isolated_start) return 0;
+
+    vector<array<vector<int>, 3>> values(factors.size());
+    vector<int> bounds;
+    bounds.reserve(factors.size());
+    for (size_t i = 0; i < factors.size(); ++i) {
+        const int n = factors[i].vertex_count;
+        bounds.push_back(2 * n);
+        vector<vector<int>> adjacent(n);
+        for (const auto& [u, v] : factors[i].edges) {
+            adjacent[u].push_back(v);
+            adjacent[v].push_back(u);
+        }
+        vector<int> distance(2 * n, -1), queue;
+        queue.reserve(2 * n);
+        distance[0] = 0;
+        queue.push_back(0);
+        for (size_t head = 0; head < queue.size(); ++head) {
+            const int state = queue[head];
+            for (int next : adjacent[state / 2]) {
+                const int to = 2 * next + ((state & 1) ^ 1);
+                if (distance[to] != -1) continue;
+                distance[to] = distance[state] + 1;
+                queue.push_back(to);
+            }
+        }
+        for (int v = 0; v < n; ++v) {
+            const int even = distance[2 * v];
+            const int odd = distance[2 * v + 1];
+            if (even >= 0) values[i][0].push_back(even);
+            if (odd >= 0) values[i][1].push_back(odd);
+            if (even >= 0 && odd >= 0)
+                values[i][2].push_back(max(even, odd));
+        }
+    }
+
+    auto sum_maxima = [&](int kind) -> long long {
+        vector<long long> prefix_product(max_bound, 1);
+        vector<long long> tail_factor(max_bound + 1, 1);
+        for (size_t i = 0; i < factors.size(); ++i) {
+            vector<int> frequency(bounds[i], 0);
+            for (int distance : values[i][kind]) ++frequency[distance];
+            int count = 0;
+            for (int x = 0; x < bounds[i]; ++x) {
+                count += frequency[x];
+                prefix_product[x] = prefix_product[x] * count % MOD;
+            }
+            tail_factor[bounds[i]] = tail_factor[bounds[i]] * count % MOD;
+        }
+        long long answer = 0, previous = 0, tail = 1;
+        for (int x = 0; x < max_bound; ++x) {
+            tail = tail * tail_factor[x] % MOD;
+            const long long current = prefix_product[x] * tail % MOD;
+            const long long exact = (current - previous + MOD) % MOD;
+            answer = (answer + exact * x) % MOD;
+            previous = current;
+        }
+        return answer;
+    };
+    return int((sum_maxima(0) + sum_maxima(1) - sum_maxima(2) + MOD) % MOD);
+}
+```
+
+## 関連する手法
+
+- [状態の設計](/flowchartcp/techniques/state-design/)：歩数の偶奇ごとに、同じ位置へ別の状態として到達する。
+- [幅優先探索](/flowchartcp/techniques/bfs/)：二層にした各グラフで単位辺の最短距離を求める。
+- [寄与の数え上げ](/flowchartcp/techniques/contribution/)：目的地の組を列挙せず、最大値がしきい値以下になる選び方から総和を求める。
+
+## 参考資料
+
+- [USACO 2021 January Platinum：Sum of Distances](https://usaco.org/index.php?page=viewproblem2&cpid=1092) — 全成分を同時に移動する積グラフの距離の総和を求める原典。
+- [公式解説](https://usaco.org/current/data/sol_prob1_platinum_jan21.html) — 偶奇別距離、三つの最大値和による補正、個数の積の線形時間の集計。
+
+<TechniqueReferences techniqueId="synchronous-product-parity-distance-sum" />

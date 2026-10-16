@@ -1,0 +1,33 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2017_simurgh",
+    "title": "Simurgh",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+    "techniqueIds": [
+      "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+    ],
+    "features": [
+      "既知の単純連結無向グラフの中に、一つの固定された秘密全域木がある。",
+      "全域木を質問すると共通辺数が返り、任意集合や単一辺を直接質問できない。",
+      "頂点2〜500・辺N−1〜N(N−1)/2、毎質問N−1個の異なる辺番号、満点8000回。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "notes": "既知の単純連結無向グラフの秘密全域木を、合法な全域木との共通辺数から特定する。基準木の基本閉路交換の差分で基準辺を0/1分類し、任意の森を既知の基準辺で全域木へ補完して本数を得る。各頂点の星から秘密木の次数を調べ、残存葉の部分星を二分して唯一の秘密辺を復元する。",
+    "discoveredBy": "ioi-2017",
+    "publicationDate": "2017-08-01",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

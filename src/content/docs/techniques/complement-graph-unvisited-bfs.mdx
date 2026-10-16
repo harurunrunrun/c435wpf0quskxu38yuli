@@ -1,0 +1,98 @@
+---
+title: "存在しない辺だけが与えられるグラフは、未訪問の頂点を削除しながら探索する"
+description: "禁止された隣接には印を付け、それ以外の未訪問頂点を連結リストから一度だけ取り出す。"
+techniqueId: complement-graph-unvisited-bfs
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+ほとんどの頂点対に辺があり、入力には「辺が存在しない頂点対」だけが列挙される。そのグラフの連結成分を求めたい。存在する辺を全て作ると、入力が小さくても $O(N^2)$ 本になる。
+
+## 考え方
+
+未訪問の頂点を、削除できるリストに入れる。探索中の頂点 $v$ について、入力で $v$ とつながらないとされた頂点へ印を付ける。未訪問リストを走査し、印が付いていない頂点を取り出して同じ成分の探索待ちに加える。印が付いた頂点は、別の頂点から到達する可能性があるので残す。
+
+リストの削除は「次の要素」の配列だけで行える。走査中に前の位置を持っておけば、要素を削除しても配列を詰め直す必要がない。先頭から取り出す新しい始点も含め、発見した時点で削除する。
+
+毎回長い未訪問リストを走査しても、全体は入力の大きさに比例する。取り出せた頂点は二度と走査しない。取り出せなかった比較には、必ず入力に書かれた禁止辺が対応する。
+
+## 適用条件
+
+無向グラフの単純な隣接の有無を扱い、列挙された頂点対以外は全て辺がある。元のグラフの少数の辺を列挙した入力と取り違えない。
+
+以下は連結成分を求める実装。探索待ちをFIFOで処理するので、始点ごとの距離を別に保存すれば単位辺の最短距離にも拡張できる。一方、任意の重み付きの全頂点対の費用は、この隣接判定だけでは扱えない。
+
+## なぜ正しいか
+
+探索中の頂点 $v$ と、未訪問の頂点 $u$ の間に辺がある条件は、禁止辺の印が付いていないことと一致する。そのような $u$ を全て探索待ちへ加えるので、通常のBFSと同じ頂点を発見する。禁止されている頂点は今は取り出さず、後で別の頂点からの辺を調べる。
+
+ある探索の待ち行列が空になったとき、発見済みのその成分から未訪問側へ出る辺は残っていない。従ってその成分は確定し、リストの先頭を次の成分の始点としてよい。
+
+## 計算量
+
+頂点数を $N$、入力の禁止辺数を $M$ とする。存在する辺の明示的な構築は、時間・空間ともに最悪 $O(N^2)$。
+
+未訪問リストの各比較は、頂点を削除するか、禁止辺に当たって残すかのどちらかになる。削除する比較は全体で $O(N)$ 回。残す比較は、処理中の頂点と残した頂点を結ぶ入力辺に対応し、同じ頂点は一度しか処理しないので全体で $O(M)$ 回。禁止辺への印付けも隣接リスト全体で $O(M)$。したがって時間・空間ともに $O(N+M)$。
+
+順序集合の探索・削除で同様に実装すると対数の費用が付く。下の実装は添字の連結リストなので、削除が定数時間になる。
+
+## 実装
+
+`complement_components(n, forbidden_edges)` は成分ごとの頂点列を返す。各頂点はちょうど一つの成分に入る。成分の順序・内部の頂点順序は整列していない。使用例のように成分サイズを昇順に出すなら、最後にサイズだけを整列する。その分の時間は別に必要になる。
+
+頂点は0始まり、$0\le N\le1000000$。重複した禁止辺を許し、自己ループの入力は無視する。空グラフの結果は空。印には処理中の頂点番号を使うので、毎回全頂点の印を消す必要がない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> complement_components(
+        int n, const vector<pair<int,int>>& forbidden_edges) {
+    if (n < 0 || n > 1000000) throw invalid_argument("vertex count");
+    vector<vector<int>> forbidden(n);
+    for (auto [u, v] : forbidden_edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n)
+            throw out_of_range("edge endpoint");
+        if (u == v) continue;
+        forbidden[u].push_back(v); forbidden[v].push_back(u);
+    }
+    vector<int> next(n + 1), marked(n, -1);
+    iota(next.begin(), next.end(), 1);
+    int head = 0; // n はリストの末尾。
+    vector<vector<int>> components;
+    while (head < n) {
+        int start = head;
+        head = next[start];
+        components.push_back({start});
+        auto& queue = components.back();
+        for (size_t read = 0; read < queue.size(); ++read) {
+            int v = queue[read];
+            for (int u : forbidden[v]) marked[u] = v;
+            int previous = -1, u = head;
+            while (u < n) {
+                int following = next[u];
+                if (marked[u] == v) {
+                    previous = u;
+                } else {
+                    if (previous == -1) head = following;
+                    else next[previous] = following;
+                    queue.push_back(u);
+                }
+                u = following;
+            }
+        }
+    }
+    return components;
+}
+```
+
+## 関連する手法
+
+[幅優先探索](/flowchartcp/techniques/bfs/) ・ [変わらなくなった位置を削除して飛ばす](/flowchartcp/techniques/range-stabilizing-successor/)
+
+## 参考資料
+
+- [Codeforces 920E：Connected Components?](https://codeforces.com/problemset/problem/920/E)
+
+<TechniqueReferences techniqueId="complement-graph-unvisited-bfs" />

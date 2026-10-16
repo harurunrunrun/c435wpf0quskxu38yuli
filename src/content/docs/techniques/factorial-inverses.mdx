@@ -1,0 +1,69 @@
+---
+title: "組合せを何度も求めるときは逆階乗を前計算する"
+description: "n と k が毎回違う組合せクエリを、階乗と逆階乗で定数時間にします。"
+techniqueId: "factorial-inverses"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+大きな格子で右・下だけに進む経路の個数を繰り返し求めるなど、同じ素数 $p$ を法として多数の $\binom nk$ を計算するとき。
+
+## 考え方
+
+$fact[n]=n!$、$ifact[n]=(n!)^{-1}$ を用意すると、
+
+$$\binom nk=fact[n]\,ifact[k]\,ifact[n-k]\pmod p.$$
+
+最大添字 $L$ の逆階乗だけを累乗で求め、$ifact[i-1]=i\,ifact[i]$ と逆順に埋めます。各 $i$ の逆元を個別に累乗する必要はありません。
+
+## 適用条件
+
+$p$ は素数、前計算する上限は $L<p$。$L\ge p$ では階乗が 0 になり、この式で逆元を取れません。最大添字は座標それぞれではなく、組合せの上側 $n$ の最大値です。
+
+## なぜ正しいか
+
+階乗に $p$ の倍数が含まれないので逆元が存在します。$i! = i(i-1)!$ の逆元を取ると、逆順の更新式が得られます。
+
+## 計算量
+
+クエリごとに積を計算する場合は $O(Q L)$。前計算 $O(L+\log p)$、その後の $Q$ クエリは $O(Q)$。空間 $O(L)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct BinomialTable {
+    long long p;
+    vector<long long> fact, invfact;
+    long long power(long long a, long long e) const {
+        long long r = 1;
+        for (; e; e >>= 1, a = a * a % p) if (e & 1) r = r * a % p;
+        return r;
+    }
+    // p は素数、p <= 2^31-1、0 <= limit < p
+    BinomialTable(int limit, long long prime): p(prime),
+        fact(limit + 1, 1), invfact(limit + 1, 1) {
+        assert(0 <= limit && limit < p);
+        for (int i = 1; i <= limit; ++i) fact[i] = fact[i-1] * i % p;
+        invfact[limit] = power(fact[limit], p-2);
+        for (int i = limit; i >= 1; --i) invfact[i-1] = invfact[i] * i % p;
+    }
+    long long choose(int n, int k) const {
+        if (n < 0 || k < 0 || k > n) return 0;
+        assert(n < (int)fact.size());
+        return fact[n] * invfact[k] % p * invfact[n-k] % p;
+    }
+};
+```
+
+## 関連する手法
+
+[単調な列を差分にして非負整数の和を数える](/flowchartcp/techniques/stars-and-bars/)
+
+## 参考資料
+
+- [AtCoder：Grid 2 の問題文](https://atcoder.jp/contests/dp/tasks/dp_y)
+
+<TechniqueReferences techniqueId="factorial-inverses" />

@@ -1,0 +1,270 @@
+---
+title: "偶奇別の最短歩数を保つグラフを、層ごとの辺選択と包除原理で数える"
+description: "各頂点の二つの距離を前駆の条件に変え、まだ前駆が足りない頂点数だけを状態にする。二集合間の辺と自己ループを含む内部辺を、包除原理で重複なく数える。"
+techniqueId: parity-walk-profile-layer-inclusion-exclusion-count
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+連結な無向グラフと始点があり、各頂点へ「ちょうど何本の辺を通って到達できるか」を全て保つ別のグラフを数えたい。辺や頂点の再訪を許し、自己ループを使えるが、同じ頂点対の辺は高々一本とする。
+
+頂点にはラベルがあり、辺集合が違えば別のグラフである。元の辺の部分集合に限らず、新しい辺も選べる。最小辺数だけを求める場合と異なり、条件を満たす余分な辺の有無も全て数える必要がある。
+
+偶奇別の最短歩数を持つ頂点をまとめると、辺を張れる集合の組が限られる。その上で、各頂点に必要な前駆を残す条件を、行・列が空でない0/1行列と、指定頂点が孤立しない内部グラフの数え上げへ変換する。
+
+## 考え方
+
+偶数歩・奇数歩それぞれの最短値を二層BFSで求める。連結で二頂点以上なら、一辺の往復で二歩ずつ延ばせるため、この二値で到達可能な全歩数が決まる。
+
+二部グラフでは一方の偶奇しか到達できない。始点から距離 $d$ の頂点数を $f_d$ とすると、各頂点が直前の層から非空の隣接集合を選ぶだけなので、答えは
+
+$$\prod_{d\ge1}(2^{f_{d-1}}-1)^{f_d}.$$
+
+非二部では両距離が有限になる。小さい順の組を $(a,b)$ とし、この組を持つ頂点集合を $S(a,b)$ とする。二つの値の偶奇は異なるため、並べ替えても値自身の偶奇から元の二距離を復元できる。選べる辺は次の三種類だけである。
+
+|種類|結ぶ集合|前駆としての役割|
+|---|---|---|
+|A|$S(a,b)$ と $S(a-1,b-1)$|大きい側の二つの距離を両方満たす|
+|B|$S(a,b)$ と $S(a+1,b-1)$|同じ距離和の隣へつなぐ|
+|C|$S(a,a+1)$ の内部|末端で大きい距離を満たす。自己ループも含む|
+
+A辺は大きい側の条件だけに関係し、B・C辺は $a+b$ が同じ集合の中に閉じる。従って、距離和ごとの答えを掛けられる。
+
+一つの層を $a$ の昇順に進める。既に左からのB辺と下層へのA辺を選び終えた集合について、**まだ右へのB辺か末端のC辺が必要な頂点数**をDPの状態とする。次の集合へ進むたび、B辺を選ぶ段階とA辺を選ぶ段階を分ける。
+
+## 適用条件
+
+全ての辺は無向・単位長である。自己ループは一つの選択として数え、多重辺は許さない。入力は連結で、頂点数は $2\ldots100$。保存するのは固定始点からの全歩数集合であり、単純路の長さや全二点間距離ではない。
+
+掲載関数 `count_graphs_preserving_root_walk_lengths(n,edges,root,modulus)` は、0始まりの頂点と、一回ずつ列挙した無向辺を受け取る。端点の順序は自由である。原典の始点1は `root=0` に対応する。戻り値は条件を満たすラベル付きグラフ数の剰余で、辺集合そのものは返さない。
+
+法の既定値は原典と同じ $1000000007$。任意の正の32bit符号付き整数を法にでき、素数である必要はない。割り算や逆元を使わず、法1なら答えは0となる。数え上げで現れる $0^0$ は、選ぶ対象がない一通りを表す1として扱う。
+
+原典の $N\le100$、件数 $T\le25000$、全件の $\sum N^2\le100000$ を全て含む。各件は独立に呼び出す。範囲外の頂点数・始点・辺数、非正の法、範囲外の端点、重複辺、非連結は `std::invalid_argument`。入力は変更せず、割当例外はそのまま伝わる。共有する可変状態はない。
+
+## なぜ正しいか
+
+**許容辺と前駆が、二距離を保存する必要十分条件になる。** 偶奇 $q$ の距離を $d_q(v)$ とすると、辺 $uv$ は
+
+$$d_q(v)\le d_{1-q}(u)+1,\qquad d_q(u)\le d_{1-q}(v)+1$$
+
+を両偶奇で満たさなければならない。この四条件を、二値の大小と偶奇で分けると表のA・B・Cだけになる。自己ループが許されるのは $b=a+1$ の場合だけである。
+
+さらに各正の距離には、それより一つ小さい反対偶奇の距離を持つ隣が必要になる。前駆を全て選べば、距離の小さい順の帰納により指定の最短歩行を作れる。一方、辺の四不等式を歩行に沿って適用すると、指定値より短い到着はできない。始点の0歩だけは前駆不要である。
+
+非始点でA辺が一本あれば両前駆を満たす。A辺がなければ、左のB辺と右のB辺の両方が必要で、末端では右の代わりにC辺が必要となる。A辺は小さい側では前駆にならないため、その選択を大きい側の層だけで数えても、他の層の制約と干渉しない。
+
+**B辺の段階では、指定した行と列が空でない行列を数える。** 直前の集合の人数を $p$、そのうち未充足の人数を $y$、現在の人数を $m$ とする。直前の未充足 $y$ 人には、現在の集合へ少なくとも一本の辺が必要である。
+
+現在の $x$ 人をB入辺なしとし、残り $m-x$ 人には少なくとも一本を与える。入辺なしの実際の頂点を $\binom mx$ 通りで選ぶ。直前の必須 $y$ 人から、辺を持たないと仮定する $k$ 人を包除すると、辺選択数は
+
+$$
+B(p,m;y,x)=\binom mx\sum_{k=0}^{y}(-1)^k\binom yk(2^{p-k}-1)^{m-x}.
+$$
+
+残る各列は、禁止した $k$ 行以外から非空の隣接集合を選ぶ。これで列の非空条件を満たし、包除で指定行の非空条件も満たせる。従って、直前のDPを $D$ とした中間値は
+
+$$I(x)=\sum_{y=0}^{p}D(y)B(p,m;y,x).$$
+
+$D(y)$ は未充足頂点がどの集合であるかも含めて数えている。どの $y$ 人でも続きの選択数が同じなので、再び $\binom py$ を掛けてはいけない。
+
+**A辺の段階では、B入辺のない頂点を必ず満たす。** 現在のB入辺なしの人数を $z$、A辺の行き先の人数を $\ell$ とする。この $z$ 人はA辺が必須である。A辺を持たず未充足のまま残る $x$ 人は、残りの $m-z$ 人から選ぶ。
+
+他の $m-x$ 人には、それぞれ非空のA隣接集合を与える。従って更新後は
+
+$$D_{\rm next}(x)=\sum_{z=0}^{m-x}I(z)\binom{m-z}{x}(2^\ell-1)^{m-x}.$$
+
+A辺とB辺の両方を持つ頂点も含め、各辺集合は「B入辺なしの集合」と「A辺なしの集合」で一意に分類されるので、重複しない。空の集合や $\ell=0$ もこの式で扱える。
+
+**末端は、指定頂点を孤立させない内部グラフの数になる。** 末端の人数を $m$、未充足を $y$ 人とする。その $y$ 人だけにはC辺が一本以上必要で、他の人は自由である。
+
+必須頂点から $k$ 人を孤立させると、それらに接する全辺と自己ループを禁止する。残る $m-k$ 頂点の辺・ループは全て自由なので
+
+$$C(m,y)=\sum_{k=0}^{y}(-1)^k\binom yk2^{(m-k)(m-k+1)/2}.$$
+
+従って層の答えは $\sum_yD(y)C(m,y)$。自己ループを含むため、自由な選択数の指数は $\binom{m-k}{2}$ だけではない。
+
+**根と空集合も同じ状態へ接続できる。** $a=0$ にいるのは始点一つだけであり、小さい距離0の前駆は不要だが、大きい奇数距離の前駆は必要である。この集合ではA・左Bを処理せず、未充足一人の状態から始める。奇数距離1ならCの式が根の自己ループを強制し、それより大きければ次のB辺が奇数距離の前駆になる。
+
+その層に根がいなければ、空集合・未充足0人・一通りから始める。途中の空集合も省略せず処理すると、未充足のまま途切れた選択は包除により0になり、満たし終えた選択だけが先へ進む。
+
+全ての許容辺は一つのA段階・B段階・C段階に一度だけ属する。各段階が必要十分な前駆条件を数え、層間は独立なので、全体の積が求めるグラフ数になる。
+
+## 計算量
+
+$2^t$ を $t\le N(N+1)/2$ まで、$(2^u-1)^v$ と二項係数を $u,v\le N$ まで前計算する。時間・空間とも $O(N^2)$。辺の重複検査には直接表を使い、入力検査とBFSは $O(N^2+M)$ である。
+
+隣接する集合の人数を $p,m$ とすると、B段階は $O((m+1)(p+1)^2)$、A段階と末端は人数の二乗で処理できる。全ての非空集合の人数の総和は $N$ なので、これらの和は $O(N^3)$。空集合を含めて訪ねる座標の組も $O(N^2)$ に収まる。
+
+全体は **$O(N^3+M)$ 時間、$O(N^2+M)$ 空間**。原典の全件でも $\sum N^3\le100\sum N^2$ である。各加算・乗算の後に剰余を取る。正の32bit法なら二剰余の積は符号付き64bitに収まり、三つ以上をまとめて掛けない。
+
+## 実装
+
+全ての累乗は前計算し、DP中に二分累乗を呼ばない。`power[u][0]` は法における1なので、空の選択と $0^0$ を自然に扱う。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace walk_profile_count_detail {
+struct Ring {
+    int modulus;
+    int one() const { return 1 % modulus; }
+    int add(int a, int b) const {
+        return int((std::int64_t(a) + b) % modulus);
+    }
+    int sub(int a, int b) const {
+        return int((std::int64_t(a) - b + modulus) % modulus);
+    }
+    int mul(int a, int b) const {
+        return int(std::int64_t(a) * b % modulus);
+    }
+};
+
+struct Tables {
+    Ring ring;
+    std::vector<int> two;
+    std::vector<std::vector<int>> choose, power;
+    Tables(int n, int modulus)
+        : ring{modulus}, two(n * (n + 1) / 2 + 1, ring.one()),
+          choose(n + 1, std::vector<int>(n + 1)),
+          power(n + 1, std::vector<int>(n + 1, ring.one())) {
+        for (std::size_t i = 1; i < two.size(); ++i)
+            two[i] = ring.add(two[i - 1], two[i - 1]);
+        choose[0][0] = ring.one();
+        for (int i = 1; i <= n; ++i) {
+            choose[i][0] = ring.one();
+            for (int j = 1; j <= i; ++j)
+                choose[i][j] = ring.add(choose[i - 1][j - 1], choose[i - 1][j]);
+        }
+        for (int u = 0; u <= n; ++u)
+            for (int v = 1; v <= n; ++v)
+                power[u][v] = ring.mul(power[u][v - 1], ring.sub(two[u], ring.one()));
+    }
+    int between(int previous, int current, int required, int empty) const {
+        int result = 0;
+        for (int k = 0; k <= required; ++k) {
+            const int term = ring.mul(choose[required][k], power[previous - k][current - empty]);
+            result = (k & 1) ? ring.sub(result, term) : ring.add(result, term);
+        }
+        return ring.mul(choose[current][empty], result);
+    }
+    int finish(int size, int required) const {
+        int result = 0;
+        for (int k = 0; k <= required; ++k) {
+            const int remain = size - k;
+            const int term = ring.mul(choose[required][k], two[remain * (remain + 1) / 2]);
+            result = (k & 1) ? ring.sub(result, term) : ring.add(result, term);
+        }
+        return result;
+    }
+};
+} // namespace walk_profile_count_detail
+
+int count_graphs_preserving_root_walk_lengths(
+    int n, const std::vector<std::pair<int, int>>& edges,
+    int root = 0, int modulus = 1000000007) {
+    static_assert(std::numeric_limits<int>::max() >= 2147483647);
+    if (n < 2 || n > 100 || root < 0 || root >= n || modulus <= 0)
+        throw std::invalid_argument("invalid size, root or modulus");
+    if (edges.size() > std::size_t(n) * (n + 1) / 2)
+        throw std::invalid_argument("too many edges");
+    std::vector<unsigned char> used(std::size_t(n) * n);
+    std::vector<std::vector<int>> adjacent(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n)
+            throw std::invalid_argument("invalid endpoint");
+        if (used[std::size_t(u) * n + v])
+            throw std::invalid_argument("parallel edge");
+        used[std::size_t(u) * n + v] = used[std::size_t(v) * n + u] = 1;
+        adjacent[u].push_back(v);
+        if (u != v) adjacent[v].push_back(u);
+    }
+    const int infinity = 2 * n + 1;
+    std::vector<std::array<int, 2>> distance(n, {infinity, infinity});
+    std::vector<int> queue;
+    queue.reserve(2 * n);
+    distance[root][0] = 0;
+    queue.push_back(2 * root);
+    for (std::size_t head = 0; head < queue.size(); ++head) {
+        const int v = queue[head] / 2, parity = queue[head] % 2;
+        for (int w : adjacent[v]) {
+            if (distance[w][1 - parity] == infinity) {
+                distance[w][1 - parity] = distance[v][parity] + 1;
+                queue.push_back(2 * w + 1 - parity);
+            }
+        }
+    }
+    for (auto d : distance)
+        if (d[0] == infinity && d[1] == infinity)
+            throw std::invalid_argument("disconnected graph");
+
+    const walk_profile_count_detail::Tables table(n, modulus);
+    const auto& ring = table.ring;
+    int answer = ring.one();
+    if (distance[root][1] == infinity) {
+        std::vector<int> count(n);
+        for (auto d : distance) ++count[std::min(d[0], d[1])];
+        for (int d = 1; d < n; ++d)
+            answer = ring.mul(answer, table.power[count[d - 1]][count[d]]);
+        return answer;
+    }
+    const int side = 2 * n;
+    std::vector<std::vector<int>> frequency(side, std::vector<int>(side));
+    for (auto d : distance) {
+        if (d[0] > d[1]) std::swap(d[0], d[1]);
+        ++frequency[d[0]][d[1]];
+    }
+    auto count = [&](int a, int b) {
+        return a < 0 || b < 0 || a >= side || b >= side ? 0 : frequency[a][b];
+    };
+    for (int sum = 1; sum < 4 * n - 1; sum += 2) {
+        std::vector<int> dp(count(0, sum) + 1);
+        dp.back() = ring.one(); // Root: only its positive distance still needs a predecessor.
+        for (int a = 1; a <= sum / 2; ++a) {
+            const int b = sum - a;
+            const int p = count(a - 1, b + 1), m = count(a, b);
+            const int lower = count(a - 1, b - 1);
+            std::vector<int> intermediate(m + 1), next(m + 1);
+            for (int x = 0; x <= m; ++x)
+                for (int y = 0; y <= p; ++y)
+                    intermediate[x] = ring.add(intermediate[x],
+                        ring.mul(dp[y], table.between(p, m, y, x)));
+            for (int z = 0; z <= m; ++z)
+                for (int x = 0; x + z <= m; ++x) {
+                    const int ways = ring.mul(table.choose[m - z][x], table.power[lower][m - x]);
+                    next[x] = ring.add(next[x], ring.mul(intermediate[z], ways));
+                }
+            dp = std::move(next);
+        }
+        const int terminal = count(sum / 2, sum / 2 + 1);
+        int layer = 0;
+        for (int y = 0; y <= terminal; ++y)
+            layer = ring.add(layer, ring.mul(dp[y], table.finish(terminal, y)));
+        answer = ring.mul(answer, layer);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全歩数を保った最小辺数を求める方法](/flowchartcp/techniques/parity-walk-profile-layer-greedy-realization/)は、同じA・B・Cの条件を使い、辺を少なくする選択へ絞る。全実現を数える場合は、同費用の候補や余分な辺も省かず、未充足数を状態に残す。
+
+[包除原理](/flowchartcp/techniques/inclusion-exclusion-forbidden/)では、満たさない制約の集合を交代符号で数える。ここでは指定行を空にする操作と、指定頂点を孤立させる操作で、残りの辺の自由度を単純な累乗に変える。
+
+[偶奇別の最短距離](/flowchartcp/techniques/synchronous-product-parity-distance-sum/)は、無向辺の往復を使って無限の歩数集合を二値へ圧縮する部分を共有する。
+
+## 参考資料
+
+[USACO公式原典: Counting Graphs](https://usaco.org/index.php?page=viewproblem2&cpid=1118)、[Danny Mittal・Benjamin Qi による公式解説](https://usaco.org/current/data/sol_prob3_platinum_feb21.html)、[USACO 2021 February の公式結果](https://usaco.org/index.php?page=feb21results)。原典はPlatinum第3問であり、同名の別大会問題とは区別する。
+
+<TechniqueReferences techniqueId="parity-walk-profile-layer-inclusion-exclusion-count" />

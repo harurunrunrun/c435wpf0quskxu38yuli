@@ -1,0 +1,71 @@
+---
+title: "合流した経路の最大値を足すなら、最小の一経路を親へ渡す"
+description: "子の値を全て足してから最小の一つを残し、親による増分をその経路へ載せます。"
+techniqueId: "forest-trigger-minimum-continuation"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+森の葉から親へ進む経路を順に起動し、既に起動した頂点で停止する場合。一経路の得点が通った頂点重みの最大値で、全経路の得点総和を最大にしたいときです。
+
+## 考え方
+
+親へ最初に続く一経路の値を $carry[v]$、そのほかの経路から得る得点の合計を $closed[v]$ とします。最初の経路が部分木より上で最大値 $T$ を得るなら、得点は $closed[v]+\max(carry[v],T)$ です。葉は $carry[v]=F_v$、$closed[v]=0$。子の値を $x_1,\ldots,x_m$ とすると、$s=\min x_i$ を親へ続け、他の経路を確定します。
+$$closed[v]=\sum_u(closed[u]+carry[u])-s,\qquad carry[v]=\max(F_v,s).$$
+根で残った経路も確定し、$closed+carry$ を成分ごとに足します。
+
+## 適用条件
+
+親方向が森を成し、葉だけから開始し、一度起動した頂点は再び得点に使えないこと。得点は加算ではなく経路上の最大値、頂点重みは非負です。循環がある場合や複数の親へ進める場合、この二値への要約は成立しません。
+
+## なぜ正しいか
+
+部分木より上で最初の経路に加わる最大値を、任意の $T\ge0$ とします。部分木の最適値が $closed[v]+\max(carry[v],T)$ になることを、葉から帰納的に示します。葉では $\max(F_v,T)$ なので成立します。
+
+頂点 $v$ へ最初に届くのが子 $i$ の経路なら、その子だけが上側の最大値 $H=\max(F_v,T)$ を得ます。他の子の経路は、既に起動した $v$ で止まります。各子について帰納法を使うと、最適値は
+
+$$\sum_u(closed[u]+carry[u])+\max(H-carry[i],0)$$
+
+です。$carry[i]$ が最小の子を選べばこの増分は最大になります。$s=\min_u carry[u]$ とすると、全体は
+
+$$\left(\sum_u(closed[u]+carry[u])-s\right)+\max(F_v,s,T)$$
+
+となり、上の二値の更新式と一致します。この式が全ての $T$ で成立するため、さらに上の親の重みが大きくなっても、同じ最小の経路を渡す選択で最適です。選んだ子の最初の経路を先に起動し、その後に残りの葉を起動すれば、この値を実現できます。
+
+## 計算量
+
+葉の順序を全て試すと階乗時間。二値の部分木 DP は時間・空間 $O(N)$。掲載実装は葉から順に集計し、深い木で再帰を使いません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 maximum_forest_chain_fun(const vector<long long>& fun,const vector<int>& parent){
+    int n=fun.size();assert((int)parent.size()==n);
+    vector<int> remaining(n);vector<__int128> sum(n),smallest(n,(__int128)1<<120),carry(n),closed(n);
+    for(int v=0;v<n;++v){assert(fun[v]>=0 && -1<=parent[v] && parent[v]<n && parent[v]!=v);if(parent[v]>=0)++remaining[parent[v]];}
+    queue<int> q;for(int v=0;v<n;++v)if(remaining[v]==0)q.push(v);
+    int processed=0;__int128 answer=0;
+    while(!q.empty()){
+        int v=q.front();q.pop();++processed;
+        if(smallest[v]==((__int128)1<<120)){carry[v]=fun[v];closed[v]=0;}
+        else {carry[v]=max((__int128)fun[v],smallest[v]);closed[v]=sum[v]-smallest[v];}
+        int p=parent[v];
+        if(p==-1)answer+=closed[v]+carry[v];
+        else {sum[p]+=closed[v]+carry[v];smallest[p]=min(smallest[p],carry[v]);if(--remaining[p]==0)q.push(p);}
+    }
+    assert(processed==n);return answer;
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/)、[交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [出典の解説](https://github.com/google/coding-competitions-archive/blob/main/codejam/2022/qualification_round/chain_reactions/problem_statement/analysis.html)
+
+<TechniqueReferences techniqueId="forest-trigger-minimum-continuation" />

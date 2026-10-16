@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2020 Mushroomsの満点最悪保証とICPC2018Bの語前後読点閉包の不足解消",
+  "counts": {
+    "specificTechniques": 406,
+    "foundationArticles": 78,
+    "allArticles": 484,
+    "exampleMappings": 505,
+    "originalUrls": 467,
+    "graphs": 451,
+    "nodes": 3577,
+    "questions": 1624,
+    "answerEdges": 5292,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 501,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "interactive-transition-count-species-decision-trees",
+      "articleSha256": "852707993381c986c78b9d07694e1ea11d60f2c57978fbc8017059f7a2ca680c",
+      "codeSha256": "ae3bee2cac450e2373538737824d8633260029e1554dec2a80212535307d153b",
+      "checks": 23642187,
+      "normalAndAsanUbsanAuthorAndRootPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    },
+    {
+      "id": "word-boundary-comma-closure",
+      "articleSha256": "c5221e20d36fa6500aa1ba4b81596c264e83b07ef6fbe66121a8504309b2fa3f",
+      "codeSha256": "4df54db641760af0061bbd1baf4e8b8247eaf731c703c2049b2b6670c5c1529f",
+      "checks": 1051695,
+      "normalAndAsanUbsanAuthorAndRootPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    }
+  ],
+  "codeHashDefinition": "UTF-8 bytes of the single complete C++ fence extracted by the native checker, including final newline.",
+  "verified": [
+    "Mushrooms原典3ページを著者とrootが各自描画/目視。N2..20000、質問内全番号相異・長さ2..N、総長100000、ハード20000問と満点226問、全履歴と整合する適応返答を確認した。",
+    "局所5未知の全32割当×2木×基準反転128、anchorA固定の全n<=17二値列131071、全小適応返答木5586状態/3814葉、訓練抽象状態2611、226問を実現する適応witnessと固定配置への再現、最大N・乱択・無効11を検査。原典adapter側23642187検査、131304静的実行、936843質問、延べ総長10341444、checksum17036070644408443896。",
+    "rootが最悪226問の整数和・床関数の閉形式をt22..44の全範囲で別計算し、処理容量の余裕最小52を確認。各質問長/相異性と総長40306、全整合配置で個数と端の既知が不変である証明も独立に確認。",
+    "独立レビューで原典adapterがuse_machineを無条件参照するリンク不備を検出。TWO_SPECIES_IOI_GRADERで条件化し、macro無し・stub無しの別callback実行ファイル4099例314871検査/checksum7379661480237581096を追加。著者とrootが両exeを通常とASan/UBSanで再実行。公開C++は修正後に再レビューしたコードと完全一致。",
+    "Commaの公式原典3/4ページの全規則・全文法・原典長2..1000000と非公式sketch2ページを著者/rootが再読。前後二状態の意味、句点で辺を作らない例外、合法追加と到達性、最小不動点/順序独立、string_view辞書の文字比較計算量、字句解析と返却文字の保持を独立確認。",
+    "Commaは全134117小文章、667190閉包配置、87381生文字列の独立POSIX文法、5000乱択、最大100万字/50万語/20万種類40万状態/9万辺伝播、追加後1499997字を比較。通常/ASan+UBSan1051695検査/checksum10870040000863900980を著者/rootで再現。原典制限を出力へ誤適用しない。",
+    "原典adapterと単独callback、二つのグラフ/不動点oracleを含む、実公開MDX抽出native wrapper tests/transition-word-closure-cpp.test.mjsが成功。",
+    "新2入口と6guardの全no/unknown、共有・Back・SVG全ラベル/記事href、日付・難度null・出典、旧503全記録/全手順/到達結果/回答ラベル・旧449図3565全node/974結果を独立flow検証で確認。初回IOI1/6と旧4解消・原始snapshot、Mushrooms後続5/6、Plants未解消を保持。",
+    "既に解法確認済みだったICPC2018Bの新しい実装/証明レビューはsidecarとresolutionへ保存し、初回監査に重複するreview配列を付加しない。全初回audit hashを保持したまま8/8関連回帰が通過。",
+    "最終の分岐・配置・文字折返し・共有/表示/ホイール・固定群・収集器・台帳の46テスト群全成功。新しい日本語質問も簡潔に整え、全451図を再生成した。",
+    "最終npm run build:localは484記事505対応451図で成功。直近14記事の日英/全角検索57件、数式エラー無し、コード・使用例根拠・原典/資料URL・カタログを照合。",
+    "全451 SVG pairsと図専用ページ・5292回答ラベル・旧共有URL404件を照合。新2図をPNG描画して目視し、文字/矢印/カードの重なりなし。ブラウザやサーバーは起動していない。",
+    "最終npm run verify:localは1395 HTML/SVGの28475内部リンク・資産を検証。研究表25/25行の観測数・解法確認identity union・公開対応数が正しい列に一致。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 53,
+    "fixedCorpusSolutionsReviewed": 43,
+    "publishedExamplesSolutionsReviewed": 465,
+    "allDistinctSolutionsReviewed": 474,
+    "usacoCovered": "6/6",
+    "icpc2017Covered": "9/12",
+    "joiCovered": "9/12",
+    "ioi2020Research": "5/6",
+    "ioi2020Covered": "5/6",
+    "ioi2019Research": "3/6",
+    "ioi2019Covered": "3/6",
+    "icpc2018Research": "9/11",
+    "icpc2018Covered": "2/11",
+    "remainingKnownGaps": 20
+  },
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。固定群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは以前の環境上の失敗後に再試行しておらず未検証。",
+    "外部リンク全件の生存確認は未実施。",
+    "push・アップロード・公開は未実施。"
+  ],
+  "inProgress": [
+    "IOI2018公式全6題の482記事/449図/503経路凍結監査。独立レビュー成功、恒久保存・登録準備中。この時点の53固定原典/43解法確認には未算入。",
+    "IOI2018 Comboの専用技巧とIOI2020 Plantsの強制比較の実装・独立oracle"
+  ]
+}

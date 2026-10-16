@@ -1,0 +1,178 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "660D",
+    "title": "Number of Parallelograms",
+    "url": "https://codeforces.com/problemset/problem/660/D",
+    "techniqueIds": [
+      "parallelogram-diagonal-midpoints"
+    ],
+    "features": [
+      "相異なる平面上の整数点から、正の面積の平行四辺形を数える",
+      "原典ではどの三点も共線でない",
+      "四点の全探索は多すぎるが点対なら列挙できる",
+      "N≤2000、座標は0以上10^9以下"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/44259",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は三点共線のない点集合から平行四辺形を数える。対角線の中点一致を座標和の一致に直すと、点対の組合せで数えられる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc191_d",
+    "title": "Circle Lattice Points",
+    "url": "https://atcoder.jp/contests/abc191/tasks/abc191_d",
+    "techniqueIds": [
+      "scaled-circle-lattice-scan"
+    ],
+    "features": [
+      "円の内部または周上の整数格子点を数える",
+      "中心と半径は小数第4位までの有限小数",
+      "境界に非常に近い点を誤差なく判定したい",
+      "中心の絶対値と半径は10^5以下"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc191/editorial/611",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "有限小数の円の境界を含む格子点数を問う原典で、10^4倍した整数座標と列ごとの整数平方根を使って丸め誤差を避ける。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc207_d",
+    "title": "Congruence Points",
+    "url": "https://atcoder.jp/contests/abc207/tasks/abc207_d",
+    "techniqueIds": [
+      "point-congruence-cyclic-signature"
+    ],
+    "features": [
+      "二つの相異なる点の集合を回転と平行移動だけで一致させられるか",
+      "反転や拡大縮小は許されない",
+      "点の対応や回転角は与えられない",
+      "N≤100、各座標の絶対値≤10"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc207/editorial/2168",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "回転と平行移動だけでの点集合の一致を問う。公式解説の高速解法は整数化した重心相対ベクトルを偏角順にし、二乗長・内積・外積の巡回列を照合する。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc251_g",
+    "title": "Intersection of Polygons",
+    "url": "https://atcoder.jp/contests/abc251/tasks/abc251_g",
+    "techniqueIds": [
+      "translated-convex-halfplane-max"
+    ],
+    "features": [
+      "一つの凸多角形から平行移動したM個の多角形ができる",
+      "各質問点が全ての多角形の内部または境界にあるか",
+      "辺の向きは全ての多角形で共通",
+      "N≤50、M,Q≤200000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc251/editorial/3961",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "各質問点を同形の平行移動凸多角形全てに対して判定する。辺の向きが共通なので、同方向の半平面制約を最大の閾値一つにまとめる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc219_f",
+    "title": "Cleaning Robot",
+    "url": "https://atcoder.jp/contests/abc219/tasks/abc219_f",
+    "techniqueIds": [
+      "repeated-grid-walk-orbits"
+    ],
+    "features": [
+      "上下左右の同じ移動列をK回繰り返す",
+      "始点を含めて一度でも訪れた格子点の個数を求める",
+      "Kが大きく、全移動を実行できない",
+      "移動列長≤200000、K≤10^12"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc219/editorial/2654",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "同じ移動列の反復で訪れる格子点の和集合を問う。一周期の終点への平行移動で点を分類すると、同じ軌道の整数位置を区間の和集合として数えられる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc168_f",
+    "title": ". (Single Dot)",
+    "url": "https://atcoder.jp/contests/abc168/tasks/abc168_f",
+    "techniqueIds": [
+      "plane-wall-compressed-cells"
+    ],
+    "features": [
+      "無限平面に軸平行の線分の壁が置かれる",
+      "原点から壁と端点を通らずに移動できる領域の面積を求める",
+      "有限な囲いか無限に広がるかも判定する",
+      "縦横の壁が各1000本以下、座標の絶対値≤10^9、原点は壁上でない"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc168/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "軸平行線分を通らない原点の連結領域の面積を問う。端点座標で区切った長方形間の移動を壁で遮り、到達セルの実面積と外周到達を調べる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc151_f",
+    "title": "Enclose All",
+    "url": "https://atcoder.jp/contests/abc151/tasks/abc151_f",
+    "techniqueIds": [
+      "disk-cover-center-intersections"
+    ],
+    "features": [
+      "平面上の全点を含む円の半径を最小化する",
+      "中心は任意の実数座標に置ける",
+      "点は少なく、点対の候補を全点で検査できる",
+      "N≤50、整数座標0以上1000以下、絶対または相対誤差10^-6"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc151/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "中心を自由に選んで全点を覆う最小半径を問う。半径を固定すると中心の許容領域は等半径円の共通部分になり、その交点候補を全点で検査して二分探索できる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc220_g",
+    "title": "Isosceles Trapezium",
+    "url": "https://atcoder.jp/contests/abc220/tasks/abc220_g",
+    "techniqueIds": [
+      "isosceles-trapezoid-bisector-groups"
+    ],
+    "features": [
+      "重み付きの相異なる点から四点を選び、正の面積の等脚台形を作る",
+      "四頂点の重みの和を最大化する",
+      "長方形も等脚台形に含むが、同一直線上への退化は除く",
+      "N≤1000、座標絶対値と重み≤10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc220/editorial/2684",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "等脚台形の四点の重み和を最大化する。平行な対辺の垂直二等分線の一致で点対をまとめ、中点が異なる二組を選ぶことで退化を除く。"
+  }
+]

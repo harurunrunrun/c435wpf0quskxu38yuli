@@ -1,0 +1,178 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed-initial-fixed-corpus-registration-global-incomplete",
+  "scope": "IOI2016 official six-task fixed corpus; research and coverage kept distinct; no article or flow change in this registration.",
+  "counts": {
+    "specificTechniques": 429,
+    "foundationArticles": 78,
+    "allArticles": 507,
+    "exampleMappings": 528,
+    "originalUrls": 490,
+    "graphs": 474,
+    "nodes": 3715,
+    "questions": 1693,
+    "answerEdges": 5522,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 524,
+    "pendingWalks": 4
+  },
+  "fixedCorpora": 10,
+  "unresolvedKnownProblemGaps": 21,
+  "researchCounters": {
+    "verifiedMappings": 528,
+    "reviewedProblems": 488,
+    "corpusStatementsReviewed": 77,
+    "corpusSolutionsReviewed": 69,
+    "allSolutionsReviewed": 500
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "problems": 6,
+      "initialResearch": null,
+      "resolutionRecords": 6
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "problems": 12,
+      "initialResearch": null,
+      "resolutionRecords": 9
+    },
+    {
+      "id": "joi-2020-spring",
+      "problems": 12,
+      "initialResearch": null,
+      "resolutionRecords": 9
+    },
+    {
+      "id": "ioi-2020",
+      "problems": 6,
+      "initialResearch": 1,
+      "resolutionRecords": 6
+    },
+    {
+      "id": "ioi-2019",
+      "problems": 6,
+      "initialResearch": 3,
+      "resolutionRecords": 6
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "problems": 11,
+      "initialResearch": 9,
+      "resolutionRecords": 5
+    },
+    {
+      "id": "ioi-2018",
+      "problems": 6,
+      "initialResearch": 6,
+      "resolutionRecords": 6
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "problems": 6,
+      "initialResearch": 6,
+      "resolutionRecords": 6
+    },
+    {
+      "id": "ioi-2017",
+      "problems": 6,
+      "initialResearch": 4,
+      "resolutionRecords": 4
+    },
+    {
+      "id": "ioi-2016",
+      "problems": 6,
+      "initialResearch": 6,
+      "resolutionRecords": 0
+    }
+  ],
+  "registeredCorpus": {
+    "id": "ioi-2016",
+    "initialResearchReviewed": 6,
+    "initialCompletedApi": 0,
+    "initialArticleCoverage": 0,
+    "initialRowsStatusSelectionUnchanged": true,
+    "allInitialRawRetained": 1431,
+    "allInitialMdxRetained": 504,
+    "laterVendorSeparateEpoch": 105,
+    "originalRetentionProposalUnchanged": true,
+    "retentionExtendedBeyondDraftProposal": true,
+    "stageFiles": 47,
+    "previousSharedDataFilesHashGuarded": 78
+  },
+  "verification": {
+    "fixedCorpusSuite": {
+      "test": "tests/ioi-2016-fixed-corpus.test.mjs",
+      "results": "research/probes/ioi-2016-fixed-corpus-results.json",
+      "passed": 10,
+      "failed": 0,
+      "seconds": 16.53446349200385
+    },
+    "rootReview": "research/probes/ioi-2016-root-review.json",
+    "independentReview": "research/probes/ioi-2016-independent-review.json",
+    "normalizedManualCommands": {
+      "math": "all semantic JSON matches except elapsed",
+      "additionalIndependent": "all semantic JSON matches except elapsed",
+      "rawRoutes": "six routes/eight complete answer labels exact",
+      "runtime": "actual frozen product walker matches all six",
+      "scope": "all nineteen frozen fences compiled with original component scope unchanged"
+    },
+    "validate": {
+      "articles": 507,
+      "mappings": 528,
+      "graphs": 474,
+      "nodes": 3715,
+      "sourceLedgers": 25,
+      "passed": true
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 507,
+      "mappings": 528,
+      "graphs": 474,
+      "passed": true
+    },
+    "search": {
+      "indexedArticles": 507,
+      "recentArticles": 37,
+      "JapaneseEnglishFullWidthQueries": 152,
+      "passed": true
+    },
+    "diagramArtifactChecks": {
+      "svgPairsAndDiagramOnlyPages": 474,
+      "completeAnswerLabels": 5522,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "newVisualLayoutChange": false
+    },
+    "localLinks": {
+      "files": 1464,
+      "links": 29634,
+      "diagrams": 474,
+      "externalRequests": false,
+      "passed": true
+    },
+    "sourceTable": {
+      "rows": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "limitations": [
+    "Global problem denominator is unknown and global coverage remains incomplete.",
+    "The six initial research probes do not claim completed source APIs or production algorithms.",
+    "Production Astro/Starlight/Pagefind and real browser remain unverified after earlier environment failures; no install/server/browser retried.",
+    "External example-link liveness not checked. No commit/push/upload/publication."
+  ],
+  "inProgress": [
+    "Aliens complete author article under independent review; not included in these counts.",
+    "Prize complete author article independently reviewed; not yet integrated.",
+    "Molecules implementation/article authoring."
+  ]
+}

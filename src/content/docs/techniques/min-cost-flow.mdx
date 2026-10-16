@@ -1,0 +1,103 @@
+---
+title: "最小費用流"
+description: "容量の制約を守りながら、指定した流量の総費用を最小にします。"
+techniqueId: min-cost-flow
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+容量の制約を守りながら、指定した流量の総費用を最小にします。
+
+別名：Min Cost Flow / Primal Dual / Successive Shortest Path
+
+## 使う場面
+
+人と仕事の割当などで、選ぶ組によって費用が異なる場合に使います。安い候補から順に選ぶだけでは、後の割当ができなくなることがあります。最大流と同様に逆辺を使い、すでに選んだ組を取り消して別の組へ変更できるようにします。
+
+## 考え方
+
+各辺に容量と、1単位流す費用を持たせます。逆辺の費用は元の辺の費用の負値です。残余グラフで最も安い増加路を探し、流せる分だけ流すことを繰り返します。
+
+ポテンシャル $h$ を用いて、辺 $u\to v$ の費用を $c+h[u]-h[v]$ に変えると、非負の費用でDijkstra法を使えます。この変換では同じ始点・終点の経路に加える量が等しいため、最も安い経路は変わりません。負費用の辺がある場合は、初期ポテンシャルをBellman–Ford法で求めます。
+
+## 適用条件
+
+以下の実装では、初期状態の正容量の辺に負費用閉路がないことが必要です。負費用閉路を含む循環の最適化は扱いません。AtCoder Libraryの最小費用流は、元の辺の費用が非負という別の仕様なので、負費用を直接渡さないでください。
+
+すべての辺の費用へ定数を加える場合は、どの解も同じ本数の辺を通ることが必要です。通る本数が異なると、最適解も変わる可能性があります。
+
+## なぜ正しいか
+
+最小費用の増加路を流すと、その流量について最小費用である状態を保てます。逆辺の費用が負になることで、既存の流れを取り消す費用も正しく計上できます。
+
+最短距離でポテンシャルを更新した後、増加路上に新しくできる逆辺の変換後の費用は0です。以後もDijkstra法で増加路を求め、必要な流量まで進めます。
+
+## 計算量
+
+初期ポテンシャルの計算は $O(VE)$ です。増加回数を $A$ とすると、全体は $O(VE+A(E+V)\log V)$、空間は $O(V+E)$ です。整数流量が $F$ なら $A\le F$ ですが、一度に複数単位を流せる場合は、実際の増加回数はさらに少なくなります。
+
+## 実装
+
+`flow(s, t, want)` は、実際に流せた量とその最小費用を返します。流量が `want` より小さければ、指定量を流すことはできません。この実装では、辺をすべて追加してから `flow` を1回呼びます。
+
+距離・ポテンシャル・変換後の費用の計算は `INF / 4` の絶対値以内、総費用は `long long` の範囲内になる入力を使ってください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct MinCostFlow {
+    using ll=long long; static constexpr ll INF=1LL<<60;
+    struct Edge { int to,rev; ll cap,cost; }; vector<vector<Edge>> g;
+    explicit MinCostFlow(int n):g(n) {}
+    void add(int u,int v,ll cap,ll cost) {
+        assert(cap>=0); int a=g[u].size(),b=g[v].size()+(u==v);
+        g[u].push_back({v,b,cap,cost}); g[v].push_back({u,a,0,-cost});
+    }
+    pair<ll,ll> flow(int s,int t,ll want) {
+        assert(s!=t && want>=0); int n=g.size(); vector<ll> h(n,0),d(n);
+        // Bellman-Ford from a virtual source connected to every vertex.
+        for(int k=0;k<n;++k) {
+            bool change=false;
+            for(int u=0;u<n;++u) for(auto e:g[u]) if(e.cap && h[e.to]>h[u]+e.cost) {
+                h[e.to]=h[u]+e.cost; change=true;
+            }
+            if(!change) break;
+            if(k==n-1) throw runtime_error("negative cost cycle");
+        }
+        ll f=0,cost=0; vector<int> pv(n),pe(n);
+        while(f<want) {
+            fill(d.begin(),d.end(),INF); d[s]=0;
+            priority_queue<pair<ll,int>,vector<pair<ll,int>>,greater<pair<ll,int>>> q;
+            q.push({0,s});
+            while(!q.empty()) {
+                auto [dv,u]=q.top(); q.pop(); if(dv!=d[u]) continue;
+                for(int i=0;i<int(g[u].size());++i) { auto e=g[u][i];
+                    if(!e.cap) continue;
+                    ll nd=dv+e.cost+h[u]-h[e.to];
+                    if(nd<d[e.to]) { d[e.to]=nd; pv[e.to]=u; pe[e.to]=i; q.push({nd,e.to}); }
+                }
+            }
+            if(d[t]==INF) break;
+            for(int u=0;u<n;++u) if(d[u]!=INF) h[u]+=d[u];
+            ll delta=want-f;
+            for(int u=t;u!=s;u=pv[u]) delta=min(delta,g[pv[u]][pe[u]].cap);
+            for(int u=t;u!=s;u=pv[u]) {
+                auto& e=g[pv[u]][pe[u]]; cost+=delta*e.cost;
+                e.cap-=delta; g[u][e.rev].cap+=delta;
+            }
+            f+=delta;
+        }
+        return {f,cost};
+    }
+};
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/) ・ [ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [ベルマン–フォード法](/flowchartcp/techniques/bellman-ford/)
+
+## 参考資料
+
+- [cp-algorithms: Minimum-cost flow](https://cp-algorithms.com/graph/min_cost_flow.html)
+- [AtCoder Library: MinCostFlow（費用の制約）](https://atcoder.github.io/ac-library/production/document_ja/mincostflow.html)
+
+<TechniqueReferences techniqueId="min-cost-flow" />

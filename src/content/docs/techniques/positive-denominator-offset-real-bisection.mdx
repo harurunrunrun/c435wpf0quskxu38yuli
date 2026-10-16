@@ -1,0 +1,105 @@
+---
+title: "分母へ同じ実数を足す方程式は、正の定義域を決めて二分探索する"
+description: "距離を補正後の速度で割った和を既知の時間へ合わせる。開いた下端を評価せず、解析的な上界と単調減少性で一意な補正を探す。"
+techniqueId: positive-denominator-offset-real-bisection
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+正の量 $d_i$ と、正とは限らない測定値 $s_i$ があり、全てに共通する実数の補正 $c$ を求めたい。補正後は全て正で、既知の正の値 $T$ に対して
+
+$$\sum_{i=1}^{N}\frac{d_i}{s_i+c}=T$$
+
+を満たす。たとえば距離を速度で割った所要時間を合計する形になる。$c$ を非負や整数に限定すると正しい解を失う。
+
+## 考え方
+
+$m=\min_i s_i$ とする。全ての分母が正という条件は $c>-m$ と同値で、この下端では少なくとも一つの分母が0になる。下端をそのまま関数へ渡してはいけない。
+
+境界からの距離 $u=c+m$ を探す形にすると、定義域は $u>0$、関数は
+
+$$F(u)=\sum_i\frac{d_i}{(s_i-m)+u}$$
+
+になる。$s_i-m\ge0$ なので、正の $u$ だけ評価すればよい。極の近くでも、大きさの近い $s_i$ と $c$ を直接足し引きする回数を減らせる。
+
+$D=\sum_i d_i$ と置くと、$U=D/T$ について $F(U)\le D/U=T$。したがって下端 $0$ と上端 $U$ の間に解がある。掲載実装では、浮動小数点の丸めに余裕を持たせて上端を $2D/T$ とする。$F(2D/T)\le T/2$ なので上端を探索で何度も倍増する必要はない。
+
+中点で $F(u)>T$ なら補正が小さすぎるので下端を上げ、それ以外なら上端を下げる。下端0は範囲の境界として保存するだけで、関数を評価しない。
+
+## 適用条件
+
+$d_i>0$ と $T>0$ が必要である。分母に負や0を許すと、極をまたぐため同じ単調探索は使えない。$d_i$ に負の値が混ざる場合も単調減少性は別途確認する。
+
+掲載APIは `long double` で $1\le N\le1000$、$1\le d_i\le1000$、$|s_i|\le1000$、$1\le T\le10^6$ の有限な実数を受け取る。これらは整数である必要がなく、原典の整数入力も含む。範囲外、空入力、NaN、無限大は `invalid_argument` にする。負の補正も返し、0へ丸めない。
+
+最小の測定値を持つ項の距離を $d_*$ とすると、解では $d_*/u\le T$ なので $u\ge d_*/T\ge10^{-6}$。上端は $2\cdot10^6$ 以下となる。仮数が53ビット以上の `long double` を要求し、200回または中点が端点と同じになるまで反復する。返す $c$ の精度は、この入力範囲での絶対誤差または相対誤差 $10^{-6}$ を対象とする。任意の桁数の実数を正確に復元するAPIではなく、入力範囲を広げる場合は解と極の間隔、表現可能な間隔、要求精度を評価し直す。
+
+## なぜ正しいか
+
+$u>0$ では全項が連続であり、$u$ を大きくすると各正の項は厳密に小さくなる。よって $F$ は連続かつ厳密に単調減少する。最小の $s_i=m$ を持つ項があるので、$u\to0+$ で $F(u)\to\infty$。一方、$u\to\infty$ では $F(u)\to0$。任意の $T>0$ に対し解は存在し、一意である。
+
+初期区間の下端は解より小さく、解析的に求めた上端は解以上である。比較結果に従う更新は一意な解を区間から除かず、実数上では区間幅を半分にする。最終的な正の上端から $m$ を引くことで補正を得る。
+
+数値計算でも、掲載範囲では探索中の分母と各項が有限に収まる。返値を元の式に代入すると極近くの分母の相対誤差が目立つ場合があるが、求めているのは補正 $c$ の絶対または相対精度である。時間の残差だけを停止条件にすると、傾きの大きさに応じて補正の誤差との関係が変わるため、区間を縮めて精度を確保する。
+
+## 計算量
+
+一つの候補の評価は $O(N)$ 時間、反復回数を $I$ として全体は $O(NI)$ 時間。実数上で初期幅 $U$ を幅 $\varepsilon$ まで縮めるなら $I=O(\log(U/\varepsilon))$ となる。掲載実装は $I\le200$ で、入力以外の追加空間は $O(1)$。
+
+## 実装
+
+`positive_denominator_offset` の各組は `(距離, 測定値)`。計算の途中も返値も `long double` とし、出力するときも `double` へ変換しない。例えば `std::setprecision(15)` 以上で書き出す。
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+long double positive_denominator_offset(
+        const std::vector<std::pair<long double, long double>>& segments,
+        long double total_time) {
+    static_assert(std::numeric_limits<long double>::digits >= 53);
+    if (segments.empty() || segments.size() > 1000 ||
+        !std::isfinite(total_time) || total_time < 1 || total_time > 1000000) {
+        throw std::invalid_argument("segments or time outside supported range");
+    }
+    long double minimum_reading = 1000;
+    long double total_distance = 0;
+    for (auto [distance, reading] : segments) {
+        if (!std::isfinite(distance) || !std::isfinite(reading) ||
+            distance < 1 || distance > 1000 || std::abs(reading) > 1000) {
+            throw std::invalid_argument("nonfinite or unsupported segment");
+        }
+        minimum_reading = std::min(minimum_reading, reading);
+        total_distance += distance;
+    }
+    long double low = 0;
+    long double high = 2 * total_distance / total_time;
+    for (int iteration = 0; iteration < 200; ++iteration) {
+        long double middle = low + (high - low) / 2;
+        if (middle == low || middle == high) break;
+        long double time = 0;
+        for (auto [distance, reading] : segments) {
+            time += distance / ((reading - minimum_reading) + middle);
+        }
+        if (time > total_time) low = middle;
+        else high = middle;
+    }
+    return high - minimum_reading;
+}
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/)では単調な判定の境界を探す。この形では、判定より先に正の分母を保つ定義域と上端を決める。[反例から条件を見直す](/flowchartcp/techniques/counterexample/)ときは、負の補正、同じ測定値、極に近い解を別々に試す。
+
+## 参考資料
+
+- [ACM-ICPC World Finals 2017 問題冊子・E（原典、9頁）](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=9)。入力範囲と正の真の速度を確認した。
+- [Per Austrin・Jakub Onufry Wojtaszczyk：Solution sketches・E（公開解説、5頁）](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=5)。ICPC公式サイト掲載だが、文書自身は非公式の分析と明記している。ここでは合計時間の式から定義域・上界・一意性を導出した。
+
+<TechniqueReferences techniqueId="positive-denominator-offset-real-bisection" />

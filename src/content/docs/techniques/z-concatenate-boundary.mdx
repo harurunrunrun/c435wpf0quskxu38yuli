@@ -1,0 +1,72 @@
+---
+title: "パターンと本文を区切って、全ての一致位置を求める"
+description: "区切り文字を整数として確保し、パターンとの一致長を一度に計算します。"
+techniqueId: "z-concatenate-boundary"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+一つのパターンが長い本文のどこに現れるかを全て求める場合。重なった出現を含めて数えたいときも使えます。
+
+## 考え方
+
+パターン $P$ と本文 $T$ の文字を正の整数へ変え、どの文字にも使わない 0 を間に挟んで
+
+$$U=P+\lbrack 0\rbrack+T$$
+
+を作ります。$Z[i]$ は $U$ の先頭と $U[i,\ldots)$ の最長一致長です。本文の開始位置 $j$ に対応する添字は $|P|+1+j$ なので、そこで $Z\ge |P|$ なら一致です。
+
+`#` などを区切りと決めつけると、入力にもその文字が現れる場合に境界を壊します。整数列へ変えると、任意のバイト列でも専用の値を確保できます。
+
+## 適用条件
+
+パターンと本文の通常の完全一致が対象です。ワイルドカードや編集距離を含む照合では、この条件だけでは判定できません。
+
+空のパターンを許す場合は、出現位置を $0,\ldots,|T|$ の $|T|+1$ 個とする定義を別に処理します。実装はこの定義です。文字の単位は UTF-8 のバイトなので、Unicode の文字単位が必要なら整数の文字列に置き換えます。
+
+## なぜ正しいか
+
+先頭 $|P|$ 要素はパターンそのものです。本文側でそれと $|P|$ 要素以上一致することが、パターン出現と同値です。専用の区切りが本文にないため、一致がパターン境界を越えることはありません。
+
+Z 配列は既に一致が分かっている区間を再利用し、区間の右端より先へ伸ばす比較だけを新たに行うので、全体で線形時間になります。
+
+## 計算量
+
+各開始位置で独立に照合する改善前は $O(NM)$。改善後は $O(N+M)$ 時間、$O(N+M)$ 空間です。$N=|T|$、$M=|P|$。
+
+## 実装
+
+全ての開始位置を昇順で返します。入力に `#`、0 バイト、128 以上の値があっても区切りと混同しません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> exact_match_positions(const string& text,const string& pattern) {
+    int n=int(text.size()),m=int(pattern.size());
+    if(m==0) {vector<int> all(n+1);iota(all.begin(),all.end(),0);return all;}
+    vector<int> u;
+    for(unsigned char c:pattern) u.push_back(int(c)+1);
+    u.push_back(0);
+    for(unsigned char c:text) u.push_back(int(c)+1);
+    vector<int> z(u.size());
+    int l=0,r=0;
+    for(int i=1;i<int(u.size());++i) {
+        if(i<r) z[i]=min(r-i,z[i-l]);
+        while(i+z[i]<int(u.size()) && u[z[i]]==u[i+z[i]]) ++z[i];
+        if(i+z[i]>r) {l=i;r=i+z[i];}
+    }
+    vector<int> answer;
+    for(int j=0;j+m<=n;++j) if(z[m+1+j]>=m) answer.push_back(j);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[ワイルドカードの不一致を非負の多項式にして畳み込む](/flowchartcp/techniques/wildcard-convolution/)、[多数のパターンの出現回数を failure link で逆向きに集める](/flowchartcp/techniques/aho-failure-aggregation/)
+
+## 参考資料
+
+- [CSES：String Matching の問題文](https://cses.fi/problemset/task/1753/)
+
+<TechniqueReferences techniqueId="z-concatenate-boundary" />

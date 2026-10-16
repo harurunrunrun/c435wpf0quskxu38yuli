@@ -1,0 +1,56 @@
+---
+title: "一様に頂点を選んで部分木を消す期待回数は、祖先の中で最初に選ばれる確率を足す"
+description: "残った集合を状態にせず、ランダムな優先順位で各頂点が操作対象になる条件を判定する。"
+techniqueId: "random-subtree-removal-ancestor-priority"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+根付き木で、残っている頂点から一様に一つを選び、その部分木を丸ごと消すとき。残存頂点の集合を状態にすると指数個になります。各頂点が「選ばれて消える」か「祖先に巻き込まれて消える」かを分けて数えます。
+
+## 考え方
+
+最初に全頂点へ一様ランダムな順序を付け、残っている頂点のうち最も早いものから選ぶ、と見直します。頂点 $v$ が操作対象になるのは、自分と祖先の中で $v$ が最も早いときだけです。根の深さを0とするとその確率は $1/(\mathrm{depth}(v)+1)$。したがって
+$$\mathbb E[\text{操作回数}]=\sum_v\frac1{\mathrm{depth}(v)+1}.$$
+木を一回走査して深さを求めれば終わります。
+
+## 適用条件
+
+各時点で残った頂点を一様に選び、選んだ頂点の根付き部分木だけを消すこと。選択確率に重みがある場合や、祖先まで消す規則では確率が変わります。各操作の費用を頂点固有の値にするなら、各項へその費用を掛ける拡張ができます。
+
+## なぜ正しいか
+
+一様な順序の未処理部分は、消去履歴を条件にしても残った頂点について一様です。よって最も早い残存頂点を選ぶ操作は、毎回一様に選ぶ操作と同じ分布です。$v$ より先に祖先が選ばれると $v$ は巻き込まれ、そうでなければ必ず $v$ が選ばれます。祖先と自分の順序は等確率なので確率は深さの逆数です。操作回数は選ばれた頂点数と等しく、指示変数の期待値を足せます。
+
+## 計算量
+
+時間・空間ともに $O(N)$。深い木でも再帰でスタックを使い切らないよう、反復走査します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double expected_subtree_removals(int n,const vector<pair<int,int>>& edges,int root=0){
+    if(n<1||n>200000||root<0||root>=n||edges.size()!=size_t(n-1))throw invalid_argument("tree size");
+    vector<vector<int>> graph(n);
+    for(auto [v,u]:edges){if(v<0||v>=n||u<0||u>=n||v==u)throw invalid_argument("edge");graph[v].push_back(u);graph[u].push_back(v);}
+    vector<int> depth(n,-1),order{root};depth[root]=0;
+    long double answer=0;
+    for(size_t i=0;i<order.size();++i){int v=order[i];answer+=1.0L/(depth[v]+1);for(int u:graph[v])if(depth[u]<0){depth[u]=depth[v]+1;order.push_back(u);}}
+    if(int(order.size())!=n)throw invalid_argument("disconnected tree");
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [総数の期待値を、各組が成立する確率に分ける](/flowchartcp/techniques/expectation-indicators/)
+- [対称性](/flowchartcp/techniques/symmetry/)
+
+## 参考資料
+
+- [出典の問題条件](https://codeforces.com/problemset/problem/280/C)
+
+<TechniqueReferences techniqueId="random-subtree-removal-ancestor-priority" />

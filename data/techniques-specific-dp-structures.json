@@ -1,0 +1,502 @@
+[
+  {
+    "id": "subset-sum-max-threshold",
+    "title": "一方の和が他方の最大値以下になる部分集合は、最大値の担当を決めて数える",
+    "summary": "最大値側で整列し、最後の要素を追加する前の部分和を数えることで、最大値の状態と等値の重複を消す。",
+    "aliases": [
+      "Max Sum Counting",
+      "subset maximum threshold sum DP",
+      "最大値担当の部分和"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "knapsack",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc216/tasks/abc216_f",
+      "https://atcoder.jp/contests/abc216/editorial/3125"
+    ]
+  },
+  {
+    "id": "assignment-adjacent-swap-mask",
+    "title": "値の編集と隣接交換の最小費用は、対応を決めるたびに転倒数を足す",
+    "summary": "元の添字を次の位置へ割り当て、既に選んだ大きい添字の数を交換費用にすることで、対応順全体を集合へ縮める。",
+    "aliases": [
+      "Simple Operations on Sequence",
+      "adjacent swaps assignment bitmask inversion DP",
+      "編集と隣接交換"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "bitmask-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc232/tasks/abc232_f",
+      "https://atcoder.jp/contests/abc232/editorial/3153"
+    ]
+  },
+  {
+    "id": "two-column-rectangle-tiles",
+    "title": "幅二の矩形敷き詰めは、上段の二マスが同じ部品かだけを持つ",
+    "summary": "長方形の高さを全部記録せず、中央のつながりと二本の継続境界の選び方を二状態の遷移にまとめる。",
+    "aliases": [
+      "Counting Towers",
+      "two column arbitrary rectangle tiling",
+      "矩形敷き詰めの二状態"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2413"
+    ]
+  },
+  {
+    "id": "tournament-opponent-maximum",
+    "title": "固定トーナメントの報酬最大化は、相手側の最良を全勝者で共有する",
+    "summary": "勝者ごとの表を左右で併合するとき、相手の具体名に依存しない最大値を先に一度求める。",
+    "aliases": [
+      "Tournament opponent maximum DP",
+      "fixed bracket champion state",
+      "相手側最良の共有"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "tree-dp",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc263/tasks/abc263_f",
+      "https://atcoder.jp/contests/abc263/editorial/4562"
+    ]
+  },
+  {
+    "id": "connected-set-minimum-root",
+    "title": "値幅を制限する木の連結集合は、最小値の頂点を添字で一つに決めて根にする",
+    "summary": "同値の最小頂点を添字で一つに決め、許された頂点だけで根を含む連結集合の積を取る。",
+    "aliases": [
+      "Valid Sets minimum root DP",
+      "connected subtree bounded value range",
+      "連結集合の最小担当"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "tree-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/486/D",
+      "https://codeforces.com/blog/entry/14678"
+    ]
+  },
+  {
+    "id": "grid-waypoint-subset",
+    "title": "収集点の少ない迷路は、特別な点間の最短距離だけで訪問集合を持つ",
+    "summary": "全マスと収集集合の積を、始点・収集点・終点の距離表と訪問順の DP へ縮める。",
+    "aliases": [
+      "Pac-Takahashi metric closure subset DP",
+      "few rewards maze compression",
+      "迷路の収集点縮約"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "bfs",
+      "bitmask-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc301/tasks/abc301_e",
+      "https://atcoder.jp/contests/abc301/tasks/abc301_e/editorial"
+    ]
+  },
+  {
+    "id": "grid-earning-rate-dominance",
+    "title": "稼いで進む経路は、最高収入と最少行動数・最大の余りだけを残す",
+    "summary": "不足分だけを最高収入で稼ぐと残金が一回分未満になることを使い、遅い到着を支配して消す。",
+    "aliases": [
+      "Earn to Advance",
+      "maximum earning rate dominance DP",
+      "最高収入と残金の支配"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "dp-state-dominance",
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc344/tasks/abc344_f",
+      "https://atcoder.jp/contests/abc344/editorial/9496"
+    ]
+  },
+  {
+    "id": "ratio-knapsack-weight-cap",
+    "title": "重量下限を満たす比率最大化は、比率を仮定して重さを下限で丸める",
+    "summary": "才能と重量の比を差の和へ変え、下限を超えた重さを一状態に統合した0/1 DPで実現性を判定する。",
+    "aliases": [
+      "Talent Show capped weight ratio DP",
+      "parametric ratio knapsack",
+      "重量下限の比率最大化"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "prerequisites": [
+      "knapsack",
+      "binary-search"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?cpid=839&page=viewproblem2",
+      "https://usaco.org/current/data/sol_talent_gold_open18.html"
+    ]
+  },
+  {
+    "id": "lis-through-each-position",
+    "title": "最長増加部分列に使える位置と必須の位置は、前後の長さと同じ段の候補数で分ける",
+    "summary": "各位置で終わる長さと始まる長さを合わせ、最長の列に使える位置を絞ってから、各段に残る位置の数で必須性を判定します。",
+    "aliases": [
+      "LIS Position Classification",
+      "Forward Backward LIS",
+      "Mandatory LIS Elements",
+      "LIS Membership",
+      "最長増加部分列の必須要素",
+      "前後のLIS"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "prerequisites": [
+      "dp-state-dominance",
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc354/editorial/10037",
+      "https://atcoder.jp/contests/abc354/tasks/abc354_f",
+      "https://codeforces.com/problemset/problem/486/E"
+    ]
+  },
+  {
+    "id": "lis-length-count-monoid",
+    "title": "最長増加部分列の個数は、最大の長さと同率の個数を一緒にまとめる",
+    "summary": "遷移元の長さが違えば長い方を選び、同じなら個数を足す集約を作り、値が小さい範囲からLISの長さと個数を求めます。",
+    "aliases": [
+      "Number of Longest Increasing Subsequences",
+      "LIS Length Count Monoid",
+      "Count LIS with Fenwick Tree",
+      "LISの個数",
+      "最適値と個数の集約"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity"
+    ],
+    "prerequisites": [
+      "dp-state-dominance",
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/",
+      "https://codeforces.com/blog/entry/14678"
+    ]
+  },
+  {
+    "id": "partition-extrema-weighted-sum",
+    "title": "分割の重みに区間の最大値・最小値が掛かるなら、同じ極値の遷移をまとめる",
+    "summary": "右端を伸ばしたときに変わる極値をまとめ、各まとまりに切れ目より前のDPの総和を持ちます。",
+    "aliases": [
+      "weighted monotonic stack partition DP",
+      "partition product of range maximum minus minimum",
+      "重み付き単調スタック"
+    ],
+    "family": "区間分割DP",
+    "prerequisites": [
+      "subarray-extremum-contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc234/tasks/abc234_g",
+      "https://atcoder.jp/contests/abc234/editorial/3227?lang=ja"
+    ]
+  },
+  {
+    "id": "partition-minimum-pivot-max-score",
+    "title": "区間最小値の担当ごとに、分割DPの最大値をまとめる",
+    "summary": "区間の得点が最小要素の位置だけで決まるなら、始点の候補を併合し、各まとまりの最大値を保ちます。",
+    "aliases": [
+      "minimum pivot partition DP",
+      "monotonic stack prefix maximum DP",
+      "最小値担当の分割DP"
+    ],
+    "family": "区間分割DP",
+    "prerequisites": [
+      "subarray-extremum-contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/1482/E"
+    ]
+  },
+  {
+    "id": "interval-removal-carried-group",
+    "aliases": [
+      "Remove Boxes Carried Group Interval DP",
+      "Attached Same Color Count",
+      "同色個数の持ち越し",
+      "区間外の同色を状態にする"
+    ],
+    "prerequisites": [
+      "interval-dp",
+      "state-design"
+    ],
+    "sources": [
+      "https://leetcode.com/problems/remove-boxes/"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "同色を後でまとめて消す区間DPは、端へつながる同色の個数を持つ",
+    "summary": "区間の外に残した同色の要素を状態へ加え、今消す場合と、間を消して合流させる場合を比べる。"
+  },
+  {
+    "id": "permutation-inequality-last-rank",
+    "aliases": [
+      "Permutation Inequality Last Rank DP",
+      "Valid Permutations for DI Sequence",
+      "Rank Insertion Prefix Sum DP",
+      "不等号列の順位DP",
+      "使用済み集合を相対順位にする"
+    ],
+    "prerequisites": [
+      "dp-range-sum",
+      "state-design"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/dp/tasks/dp_t",
+      "https://leetcode.com/problems/valid-permutations-for-di-sequence/"
+    ],
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "隣接する不等号に合う順列は、末尾の相対順位で数える",
+    "summary": "使用済み集合を保存せず、末尾の相対順位を状態にし、遷移を接頭辞和と接尾辞和にする。"
+  },
+  {
+    "id": "two-choice-nondecreasing-count-interval-reconstruction",
+    "title": "二択で非減少な列を作るとき、選んだ個数を区間で持つ",
+    "summary": "各位置のA/Bから一つ選び、Aを指定回数使う可否と復元を、個数ごとのDP表を作らず求めます。",
+    "aliases": [
+      "Two-choice nondecreasing sequence with exact count",
+      "Interval compression of reachable counts",
+      "二択の使用数の区間圧縮",
+      "二候補の非減少列の復元"
+    ],
+    "family": "DP・状態の圧縮",
+    "level": "上級",
+    "prerequisites": [
+      "state-design",
+      "dp-state-dominance"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/building4.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/building4-review.pdf"
+    ]
+  },
+  {
+    "id": "paired-height-survivors-weighted-dyck-dp",
+    "title": "各高さ二本の減衰で残る位置を数えるなら、未確定の高さを重み付きDyck列にまとめる",
+    "summary": "生存を高さ頻度の最初の最小点で判定し、未決定位置をまとめて確定する係数を三値Dyck列から前計算します。",
+    "family": "具体的なDPの状態と遷移",
+    "level": "上級",
+    "aliases": [
+      "Paired-height survivor counting",
+      "Weighted three-step Dyck DP",
+      "Deferred-height counting DP",
+      "各高さ二本の生存位置計数",
+      "三値Dyck列の重み付きDP",
+      "未決定の高さをまとめて確定する"
+    ],
+    "prerequisites": [
+      "state-design",
+      "prefix-feasibility",
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/ruins3.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/ruins3-review.pdf"
+    ]
+  },
+  {
+    "id": "convex-piecewise-quadratic-suffix-cap",
+    "title": "行数が巨大な格子の最小費用を、区分二次式で保つ",
+    "summary": "二乗の追加を区分の生成列で遅延し、下移動による末尾の直線化をスタックの削除と整数二分探索で処理する。",
+    "aliases": [
+      "Piecewise Quadratic Suffix Slope Cap",
+      "Convex Grid Cost Profile",
+      "離散凸な二次費用関数",
+      "末尾の傾きの打切り"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "prerequisites": [
+      "state-design",
+      "binary-search"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1093",
+      "https://usaco.org/current/data/sol_prob2_platinum_jan21.html",
+      "https://usaco.org/index.php?page=jan21results"
+    ]
+  },
+  {
+    "id": "diagonal-square-union-cover-monge-penalty-cht",
+    "title": "対角線に沿う正方形の被覆を、重なり補正と枚数の罰金で最小にする",
+    "summary": "包含される要求を除き、撮影範囲を連続した群へ分ける。重複面積を引くDPの離散凸性を示し、整数の罰金と単調な直線群で枚数の次元を除く。",
+    "aliases": [
+      "IOI 2016 Aliens",
+      "対角正方形の和集合被覆",
+      "overlap corrected photo partition WQS CHT",
+      "Monge枚数離散凸と整数罰金"
+    ],
+    "family": "重なりを持つ区間被覆と枚数制約の最適化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "aliens-trick",
+      "convex-hull-trick"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  }
+]

@@ -1,0 +1,92 @@
+---
+title: "各箱に一個からの再分配は、空の箱の数で最小移動回数を数える"
+description: "総数を保つ人数配置を空箱の集合と正の配分に分け、ちょうどの移動回数は寄り道の可否を確認する。"
+techniqueId: redistribution-zero-count
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+最初は各箱に一個ずつあり、一個を任意の別の箱へ移す。移動回数に制限がある中で、最終的な各箱の個数を何通り作れるか数えたい。移動履歴を列挙せず、目的の個数へ達する最小移動回数を求める。
+
+## 考え方
+
+最終配置の空箱が $z$ 個なら、その $z$ 箱から一個ずつ出し、個数が増える箱へ送ればよい。総数が箱数と同じなので、増えた個数の合計も $z$。最小移動回数はちょうど $z$ である。
+
+空箱を $\binom nz$ 通りに選ぶ。残る $n-z$ 箱へ総数 $n$ を正に配る方法は、仕切りの数え上げから $\binom{n-1}z$ 通り。よって空箱が $z$ 個の配置は
+
+$$\binom nz\binom{n-1}z.$$
+
+高々 $k$ 回なら $z=0,\ldots,\min(k,n-1)$ を足す。ちょうど $k$ 回にもこの和を使うには、余る操作を追加できることを確認する。
+
+## 適用条件
+
+箱を区別し、どの箱からどの別の箱へも移せる。品物は個数だけを区別し、箱の容量制限はない。初期個数が全て1であることが、最小回数を空箱数だけで表せる理由になる。
+
+$n\ge3$ なら、ちょうどの回数 $k\ge2$ でも上の和が成り立つ。$k=1$ の場合は初期配置へ戻れないため、$z=0$ の項を除く。$k=0$ なら初期配置一通りだけ。$n=2$ では移動回数の偶奇が障害になるので掲載実装は受け付けない。法は $10^9+7$、$n<P$、$k$ は非負の64ビット整数。
+
+## なぜ正しいか
+
+空箱の一個は必ず外へ出るので、少なくとも $z$ 回の移動が要る。空箱から余分な個数を持つ箱へ直接送ると $z$ 回で達せるため、下限を達成する。
+
+最小経路が一回以上の移動を含む場合、一つの移動 $a\to b$ を第三の箱を経由する $a\to c\to b$ に置き換えれば、最終配置を変えずに一回増やせる。繰り返しにより、任意の余剰回数を吸収できる。
+
+初期配置へ戻るには二回の往復と三回の三角巡回が使える。2以上の整数は2と3の和で表せるため、$z=0$ も $k\ge2$ なら可能。$k=1$ だけは不可能である。最終配置には空箱の集合と残りの正の個数が一意に定まるので、積の式も重複しない。
+
+## 計算量
+
+個数配置の列挙は $\binom{2n-1}{n-1}$ 通りで、移動履歴はさらに多い。式の和は階乗表を含めて $O(n+\log P)$ 時間、$O(n)$ 空間。$k$ が非常に大きくても $n-1$ を超える項は必要ない。
+
+## 実装
+
+`redistribution_states(n, moves, exact)` の `exact=false` は高々の回数、`true` はちょうどの回数を数える。$n\ge3$ を要求し、0回と1回も明示的に扱う。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+constexpr long long REDISTRIBUTION_MOD=1000000007;
+long long redistribution_states(int n,long long moves,bool exact) {
+    if(n<3 || moves<0) throw std::invalid_argument("requires n >= 3 and nonnegative moves");
+    BinomialTable<REDISTRIBUTION_MOD> combinations(n);
+    int limit=int(std::min(moves,static_cast<long long>(n-1)));
+    long long answer=0;
+    for(int z=0;z<=limit;++z) {
+        if(exact && moves==1 && z==0) continue;
+        answer=(answer+combinations.choose(n,z)*combinations.choose(n-1,z))%REDISTRIBUTION_MOD;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[単調な列を差分にして非負整数の和を数える](/flowchartcp/techniques/stars-and-bars/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [AtCoder：E - Roaming（原典）](https://atcoder.jp/contests/abc156/tasks/abc156_e)。
+
+<TechniqueReferences techniqueId="redistribution-zero-count" />

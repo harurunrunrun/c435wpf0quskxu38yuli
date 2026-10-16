@@ -1,0 +1,124 @@
+---
+title: "ちょうどK本の辺を使う最小費用は、最小値と加算の行列を累乗する"
+description: "移動回数を足してつなぐ演算を作り、大きな回数の移動を二進法で組み合わせる。"
+techniqueId: exact-k-edge-minplus
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+重み付き有向グラフで、始点から終点まで**ちょうど $K$ 本の辺**を通るときの最小費用を求めたい。頂点や辺の再訪は許される。頂点数は小さいが、$K$ が非常に大きく、回数ごとのDPを全て計算できない。
+
+移動回数の制約があるため、通常の最短距離だけでは足りない。例えば始点から終点への辺が一本だけあっても、自己ループや戻る道がなければ二本使う経路は存在しない。
+
+## 考え方
+
+$A_{ij}$ を、頂点 $i$ から $j$ へ一本の辺で移動する最小費用とする。辺がなければ $\infty$、多重辺なら最小の重みを使う。
+
+ちょうど $a$ 本使う行列 $X$ と、ちょうど $b$ 本使う行列 $Y$ をつなぐ。中継頂点 $v$ を全て試すと、ちょうど $a+b$ 本使う費用は
+
+$$
+(X\star Y)_{ij}=\min_v(X_{iv}+Y_{vj})
+$$
+
+で求められる。通常の行列積の「足す・掛ける」を「最小値を取る・足す」に置き換えた演算で、min-plus積と呼ぶ。
+
+$A,A^{\star2},A^{\star4},\ldots$ を二乗で作り、$K$ の立っているビットに対応する行列をつなげればよい。0本の移動を表す単位行列は対角成分が0、それ以外が $\infty$ になる。
+
+**一本の辺を表す $A$ の対角成分に、無条件で0を入れない。** それは存在しない足踏みを追加し、「ちょうど」を「高々」に変えてしまう。0を入れるのは0本の移動を表す単位行列だけである。実際にある自己ループは、その重みを辺として使う。
+
+## 適用条件
+
+- グラフと各辺の費用は全移動で共通で、移動回数や履歴によって変わらない。
+- 頂点・辺の再訪を許し、移動に使う辺数だけをちょうど $K$ 本にする。
+- 頂点数の3乗と $\log(K+1)$ の積が制約に収まる。
+
+各頂点を一度しか通れない単純路には使えない。残り資源や直前の辺などが次の移動を変える場合は、まずそれを頂点の状態へ含める必要があり、その状態数で行列の大きさを評価する。
+
+負の辺や負閉路も扱える。辺数を固定しているため、負閉路を無制限に回って答えを減らすことはできない。ただし整数幅は、最大重みだけでなく $K$ を掛けた値まで必要になる。
+
+## なぜ正しいか
+
+ちょうど $a+b$ 本の任意の経路は、最初の $a$ 本と残り $b$ 本へ一意に分かれる。その中継頂点を $v$ とすると、費用は $X_{iv}+Y_{vj}$ 以上である。逆に、両側に有限の候補があれば、その最小費用の移動をつないで同じ値を達成できる。全ての $v$ の最小値が求める答えになる。
+
+三つの区間をつなぐ場合も、中継する二頂点について全て最小化するので、括り方で結果は変わらない。単位行列は移動回数を増やさず同じ頂点にとどまる。したがって、この演算で二進法による累乗ができる。
+
+一本の辺を表す行列から始め、積のたびに使用辺数を足しているため、得られる $A^{\star K}$ は全てのちょうど $K$ 本の移動を漏れなく表す。
+
+## 計算量
+
+回数ごとのDPは、各層の初期化も含めて $O(N+K(N+M))$ 時間。行列の初期化に $O(N^2+M)$ 時間、一回の積に $O(N^3)$ 時間がかかる。掲載実装は合計 $O(N^2+M+N^3\log(K+1))$ 時間、$O(N^2)$ 追加空間で求められる。$K=0$ では行列の積を行わず、単位行列だけで判定する。
+
+一始点・一終点の答えだけでも、掲載実装は途中の全頂点対の行列を計算する。頂点数が大きい疎なグラフでは、少ない回数のDPの方が軽いこともある。
+
+## 実装
+
+頂点番号は0始まり。`minimum_cost_exact_edges` は、到達できれば最小費用、できなければ `nullopt` を返す。負の答えも有効なので、到達不能と $-1$ を区別する。
+
+頂点数は $1..100$、入力する辺数は100000以下、使用する辺数 $K$ は $0..10^{18}$。辺重みは符号付き64ビット整数の全域に対応する。入力する辺数の上限超過は `length_error`、それ以外の入力違反は `invalid_argument` とする。
+
+到達不能は $2^{126}$ で表し、足す両項のどちらかが到達不能なら、その候補を飛ばす。有限の費用の絶対値は $10^{18}\cdot2^{63}<2^{123}$ に収まり、到達不能の値と衝突しない。加算は初めから `__int128` で行う。不要になった最後の二乗を省くため、$K\ge1$ では途中の行列も $K$ 本以下の移動だけを表し、同じ範囲に収まる。$K=0$ では加算を行わない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct ExactStepEdge {
+    int from, to;
+    long long cost;
+};
+
+optional<__int128> minimum_cost_exact_edges(
+        int n, const vector<ExactStepEdge>& edges,
+        unsigned long long edge_count, int source, int target) {
+    if (edges.size() > 100000) throw length_error("too many edges");
+    if (n < 1 || n > 100 || edge_count > 1000000000000000000ULL ||
+        source < 0 || source >= n || target < 0 || target >= n)
+        throw invalid_argument("invalid graph or step count");
+    const __int128 infinity = __int128(1) << 126;
+    using Matrix = vector<vector<__int128>>;
+    Matrix power(n, vector<__int128>(n, infinity));
+    for (const auto& edge : edges) {
+        if (edge.from < 0 || edge.from >= n || edge.to < 0 || edge.to >= n)
+            throw invalid_argument("invalid endpoint");
+        power[edge.from][edge.to] = min(
+            power[edge.from][edge.to], __int128(edge.cost));
+    }
+    Matrix result(n, vector<__int128>(n, infinity));
+    for (int v = 0; v < n; ++v) result[v][v] = 0;
+    auto multiply = [&](const Matrix& left, const Matrix& right) {
+        Matrix product(n, vector<__int128>(n, infinity));
+        for (int i = 0; i < n; ++i) {
+            for (int middle = 0; middle < n; ++middle) {
+                if (left[i][middle] == infinity) continue;
+                for (int j = 0; j < n; ++j) {
+                    if (right[middle][j] == infinity) continue;
+                    product[i][j] = min(product[i][j],
+                        left[i][middle] + right[middle][j]);
+                }
+            }
+        }
+        return product;
+    };
+    while (edge_count != 0) {
+        if (edge_count & 1) result = multiply(result, power);
+        edge_count >>= 1;
+        if (edge_count != 0) power = multiply(power, power);
+    }
+    if (result[source][target] == infinity) return nullopt;
+    return result[source][target];
+}
+```
+
+## 関連する手法
+
+- [行列累乗](/flowchartcp/techniques/matrix-exponentiation/)：同じ遷移を大きな回数繰り返す。ここでは積の演算を費用の最小化に変える。
+- [累乗と累乗和を一緒に求める](/flowchartcp/techniques/matrix-walk-sum-block/)：複数の移動回数の経路数を合計する場合。
+- [位置以外の資源も頂点に含める](/flowchartcp/techniques/dijkstra-expanded-resource/)：次の移動に必要な情報が頂点だけでは足りない場合。
+
+## 参考資料
+
+- [CSES：Graph Paths II](https://cses.fi/problemset/task/1724/) — 決められた辺数で始点から終点へ移動する最小費用を求める原典。
+- [Competitive Programmer's Handbook、23.3節](https://cses.fi/book/book.pdf) — グラフと行列の節で、固定した辺数の最短費用をmin-plus積で計算する方法を扱う。
+
+<TechniqueReferences techniqueId="exact-k-edge-minplus" />

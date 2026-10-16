@@ -1,0 +1,177 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc257_g",
+    "title": "Prefix Concatenation",
+    "url": "https://atcoder.jp/contests/abc257/tasks/abc257_g",
+    "techniqueIds": [
+      "prefix-piece-farthest-reach"
+    ],
+    "features": [
+      "一つの固定文字列Sの全ての非空接頭辞を何度でも使える",
+      "一片の費用は全て1で、Tを正確につなぐ最少片数を求める",
+      "S,Tは非空、各長さ≤500000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc257/editorial/4246",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2022-06-25",
+    "notes": "一致する最長接頭辞が長さLなら1..Lの全てが使える。Zで各開始位置のLを求め、同じ片数で到達できる連続した端点の右端をまとめて伸ばす。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc213_f",
+    "title": "Common Prefixes",
+    "url": "https://atcoder.jp/contests/abc213/tasks/abc213_f",
+    "techniqueIds": [
+      "suffix-lcp-pair-sum"
+    ],
+    "features": [
+      "一つの固定文字列の全ての非空接尾辞を比較する",
+      "各接尾辞について全接尾辞との最長共通接頭辞の長さを合計する",
+      "自分自身との一致も含む、長さ≤1000000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc213/editorial/2413",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021-08-08",
+    "notes": "接尾辞配列の二順位間のLCPは隣接LCPの区間最小値になる。各右端の最小値を値と個数にまとめ、左右から集計して自分自身の長さを加える。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "typical90_f",
+    "title": "Smallest Subsequence（★5）",
+    "url": "https://atcoder.jp/contests/typical90/tasks/typical90_f",
+    "techniqueIds": [
+      "fixed-length-lexicographic-subsequence"
+    ],
+    "features": [
+      "固定文字列から順序を保ってちょうどK文字を選ぶ",
+      "各文字を何回使うかには制約がなく、辞書順最小を求める",
+      "英小文字、1≤K≤N≤100000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/typical90/tasks/typical90_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "新しい文字が保持列の末尾より小さいとき、末尾を捨てても残りの位置で指定長を満たせるなら捨てる。各位置を高々一度追加・削除する。 典型90の原典は2021年開始のコンテストとして確認し、個別の初回公開日は記録しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc386_f",
+    "title": "Operate K",
+    "url": "https://atcoder.jp/contests/abc386/tasks/abc386_f",
+    "techniqueIds": [
+      "edit-distance-diagonal-band"
+    ],
+    "features": [
+      "二つの文字列の編集距離がK以下かだけを判定する",
+      "一文字挿入・削除・置換の費用が全て1",
+      "各長さ≤500000、K≤20"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc386/editorial/11706",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2024-12-28",
+    "notes": "消費した二文字列の長さがKより離れる状態は、挿入と削除だけでKを超える。長さ差がK以内の帯で通常の三遷移を行い、隣接する二行だけを持つ。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc135_f",
+    "title": "Strings of Eternity",
+    "url": "https://atcoder.jp/contests/abc135/tasks/abc135_f",
+    "techniqueIds": [
+      "periodic-match-residue-chains"
+    ],
+    "features": [
+      "同じ非空本文Sを必要なだけ繰り返せる",
+      "同じ非空文字列Tの連結が連続部分文字列として現れる最大回数を求める",
+      "開始位置は自由、回数が無限なら報告する、各長さ≤500000"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc135/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-07-27",
+    "notes": "開始位置を|S|で割った余りにし、Tが一致する余りからTの長さだけ進む辺を張る。辺数が連続回数になり、閉路があれば何回でも繰り返せる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc287_e",
+    "title": "Karuta",
+    "url": "https://atcoder.jp/contests/abc287/tasks/abc287_e",
+    "techniqueIds": [
+      "sorted-adjacent-max-lcp"
+    ],
+    "features": [
+      "固定された複数文字列それぞれに対し、別の入力位置とのLCP最大値を求める",
+      "同じ内容の文字列も別の入力位置なら相手として使える",
+      "文字列数≤500000、全長≤500000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc287/editorial/5639",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2023-01-28",
+    "notes": "同じ接頭辞を持つ文字列は辞書順で一つの連続区間になる。ある文字列の左右に離れた候補があるなら、その方向の直近の文字列も同じ接頭辞を共有する。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc284_f",
+    "title": "ABCBAC",
+    "url": "https://atcoder.jp/contests/abc284/tasks/abc284_f",
+    "techniqueIds": [
+      "reverse-deletion-two-z"
+    ],
+    "features": [
+      "長さ2Nの固定文字列から連続するN文字を削る",
+      "残った前後をつないだ文字列が、削ったN文字の逆順と一致する位置を一つ求める",
+      "先頭や末尾の削除も許す、N≤1000000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc284/editorial/5492",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2023-01-07",
+    "notes": "前半Aと後半の逆順Bを作ると、削除位置iの条件はAの接頭辞とBの接尾辞、Aの接尾辞とBの接頭辞の二つの一致になる。A+BとB+AのZで全iを定数時間ずつ判定する。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc381_e",
+    "title": "11/22 Subsequence",
+    "url": "https://atcoder.jp/contests/abc381/tasks/abc381_e",
+    "techniqueIds": [
+      "slash-subsequence-crossing"
+    ],
+    "features": [
+      "1・2・/からなる固定文字列の多数の区間質問",
+      "1をk個、/を一つ、2をk個の順に選ぶ部分列の最大長",
+      "連続でなくてよい、k=0も許す、N,Q≤100000"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc381/editorial/11650",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2024-11-22",
+    "notes": "/の位置を固定すると選べるkは左の1の数と右の2の数の最小値。/を右へ進めたときの両個数の単調性から、大小が入れ替わる位置の両隣だけを調べる。"
+  }
+]

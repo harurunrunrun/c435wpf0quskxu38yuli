@@ -1,0 +1,72 @@
+---
+title: "順序自由の切り分けで切る長さを払うなら、余りを一個にまとめて小さい二つから逆に併合する"
+description: "必要な長さと余りを葉にし、切断を逆向きの二個併合へ変えて最小の二重量を選びます。"
+techniqueId: unordered-split-residual-huffman
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+一本を二つへ分ける費用が、分ける前の全長になっている。最終的な断片の順番が指定されていなければ、切断位置の区間DPより、逆向きに断片をつなぐ方が考えやすい。
+
+## 考え方
+
+全長を $L$、必要な長さの和を $S$ とする。$L>S$ なら余り $L-S$ を一個の断片として加え、$L=S$ なら加えない。次に長さの多重集合から最小の二つ $a,b$ を取り、費用 $a+b$ を足して長さ $a+b$ を戻す。一個になるまで繰り返す。
+
+必要断片の配置順は、この併合木の葉の順序として決めればよい。先に配置順が固定され、隣接する断片しか併合できない場合は同じ貪欲法にならない。
+
+## 適用条件
+
+断片は正の長さで、必要な断片を一個ずつ渡す。配置順は自由。二分する費用は長さの和であり、任意の追加固定費や切断位置の費用は含まない。実装は必要長さの和が全長以下か検証し、全長 $10^{15}$ 以下・20万個以下とする。費用は粗い上界でも $N L$ 以内なので、累積費用には128bit整数を使う。
+
+## なぜ正しいか
+
+併合木の内部節点は二つの子を持ち、全費用は各葉の「長さ×深さ」の和になる。最深部の兄弟の葉に最小の二重量を置いても悪化しない。小さい重量を深い位置へ交換すると増分が非正だからである。最小二重量を一葉へ縮めた残りも同じ問題なので、帰納的に最小二つの併合が最適になる。
+
+余りを複数の葉に分けた木も、一個にまとめてよい。二つの余りのうち浅い葉へ合計重量を置き、深い葉を消して片子の親を縮める。この変形で移す重量の深さは増えず、残る葉の深さも増えない。繰り返して余りを一葉にしても費用は増えない。
+
+## 計算量
+
+残余の分割と全併合順を列挙する方法は、全長にも依存する巨大な探索になる。残余を一個に決めた後でも、全ペアの併合を列挙するのは指数時間。最小ヒープでは時間 $O(N\log N)$、追加空間 $O(N)$。
+
+## 実装
+
+```cpp
+#include <functional>
+#include <queue>
+#include <stdexcept>
+#include <vector>
+__int128 minimum_free_order_split(long long total,const std::vector<long long>& wanted) {
+    if (total<0 || total>1000000000000000LL || wanted.size()>200000)
+        throw std::invalid_argument("size bounds");
+    std::priority_queue<long long,std::vector<long long>,std::greater<long long>> pieces;
+    __int128 sum=0;
+    for (long long x:wanted) {
+        if (x<=0 || x>total) throw std::invalid_argument("piece bounds");
+        sum+=x; pieces.push(x);
+    }
+    if (sum>total) throw std::invalid_argument("insufficient length");
+    long long leftover=total-static_cast<long long>(sum);
+    if (leftover>0) pieces.push(leftover);
+    __int128 answer=0;
+    while (pieces.size()>1) {
+        long long a=pieces.top();pieces.pop();
+        long long b=pieces.top();pieces.pop();
+        answer+=a+b;pieces.push(a+b);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+- [逆順処理](/flowchartcp/techniques/reverse-thinking/)
+
+## 参考資料
+
+- [AtCoder — Bread](https://atcoder.jp/contests/abc252/tasks/abc252_f)
+- [公式解説](https://atcoder.jp/contests/abc252/editorial/4009)
+
+<TechniqueReferences techniqueId="unordered-split-residual-huffman" />

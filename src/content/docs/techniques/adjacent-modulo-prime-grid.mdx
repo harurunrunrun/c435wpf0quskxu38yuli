@@ -1,0 +1,78 @@
+---
+title: "隣接の余りをそろえる全異なる盤面は、二方向の素因子と積に1を足して作る"
+description: "一色のマスへ斜線ごとの二素数の積を置き、他色へ隣接値の全因子を含む積と1を置く。"
+techniqueId: adjacent-modulo-prime-grid
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+隣接する二数の大きい方を小さい方で割った余りを全てそろえ、しかも盤面の全ての値を異ならせたい。共通の余りが自由なら1を選び、「大きい値から1を引くと小さい値の倍数」へ変える。
+
+## 考え方
+
+盤面を $r+c$ の偶奇で二色に分ける。二つの互いに重ならない奇素数の列 $p,q$ を用意する。$E$ を $N$ 以下の最大の偶数とする。
+
+偶数色のマスへ
+
+$$a_{r,c}=p_{(r+c)/2}\,q_{(r-c+E)/2}$$
+
+を置く。奇数色では、隣の偶数色で使う四種類の因子を全て掛けて1を足す。
+
+$$a_{r,c}=p_{(r+c-1)/2}p_{(r+c+1)/2}q_{(r-c+E-1)/2}q_{(r-c+E+1)/2}+1.$$
+
+境界のマスでも、盤面外の仮想の隣へ対応する因子を省かない。これが端の値の重複を防ぐ。
+
+## 適用条件
+
+上下左右の隣接を持つ正方形盤面で、共通の正の余りを選べる。余りが別の値へ固定される場合や、全値の上限が小さい場合は同じ素数の選び方を使えない。
+
+掲載実装は $2\le N\le500$。$p$ に最初の $N$ 個の奇素数、$q$ に次の $N+1$ 個を使う。この範囲では $p<3600,q<8000$ で、奇数色の値も $3600^2\cdot8000^2+1<10^{15}$ に収まる。全積は64ビットにも収まる。素数2を使わず、値の偶奇で二色を区別する。
+
+## なぜ正しいか
+
+奇数色の値から1を引いた四因子には、隣の偶数色の二因子が必ず含まれる。残りの因子は1より大きいので奇数色の値が大きく、除算の余りは全隣接対で1になる。
+
+偶数色の値は奇数、奇数色の値は偶数なので、色をまたぐ同値はない。偶数色の値の素因数分解から二つの斜線番号を復元でき、位置も一意に復元できる。
+
+奇数色も、値から1を引いた素因数分解で $p$ 側の隣り合う二番号と $q$ 側の隣り合う二番号が分かる。両素数列は重ならず、各組は異なる素数なので、二つの斜線番号と位置が一意に決まる。これで同色内の値も全て異なる。
+
+## 計算量
+
+各マスの値を一通りずつ探す全探索は、値上限 $V$ に対して最大 $V^{N^2}$ 通りになる。素数を上限 $L=20000$ のふるいで用意する時間は $O(L\log\log L)$、盤面の構成と出力は $O(N^2)$。空間は $O(L+N^2)$。出力を一行ずつ作れば盤面保存分を減らせる。
+
+## 実装
+
+`adjacent_modulo_one_grid(n)` は共通余り1の盤面を返す。$q$ の最後の一因子も境界で使うため、$N+1$ 個を確保する。
+
+```cpp
+#include <stdexcept>
+#include <vector>
+std::vector<std::vector<long long>> adjacent_modulo_one_grid(int n) {
+    if(n<2 || n>500) throw std::invalid_argument("size");
+    constexpr int LIMIT=20000;
+    std::vector<bool> prime(LIMIT+1,true);prime[0]=prime[1]=false;
+    for(int p=2;p*p<=LIMIT;++p) if(prime[p]) for(int multiple=p*p;multiple<=LIMIT;multiple+=p) prime[multiple]=false;
+    std::vector<long long> odd;
+    for(int p=3;p<=LIMIT && int(odd.size())<2*n+1;++p) if(prime[p]) odd.push_back(p);
+    if(int(odd.size())!=2*n+1) throw std::logic_error("prime table");
+    int offset=n-n%2;
+    std::vector<std::vector<long long>> answer(n,std::vector<long long>(n));
+    for(int r=0;r<n;++r) for(int c=0;c<n;++c) {
+        int sum=r+c,difference=r-c+offset;
+        if(sum%2==0) answer[r][c]=odd[sum/2]*odd[n+difference/2];
+        else answer[r][c]=odd[(sum-1)/2]*odd[(sum+1)/2]*odd[n+(difference-1)/2]*odd[n+(difference+1)/2]+1;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/) ・ [約数ごとの集計を倍数側から配る](/flowchartcp/techniques/divisor-multiple-reversal/)
+
+## 参考資料
+
+- [AtCoder：D - Modulo Matrix（原典）](https://atcoder.jp/contests/agc027/tasks/agc027_d)。
+
+<TechniqueReferences techniqueId="adjacent-modulo-prime-grid" />

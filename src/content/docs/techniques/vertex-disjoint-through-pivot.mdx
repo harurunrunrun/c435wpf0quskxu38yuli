@@ -1,0 +1,141 @@
+---
+title: "指定頂点を通る単純パスを、頂点を共有しない二本の経路に分ける"
+description: "経由点から両端への経路が重ならないことを、頂点の入口と出口の間の容量で表す。"
+techniqueId: vertex-disjoint-through-pivot
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+$A$ から $C$ へ進む途中で $B$ を通り、同じ頂点を二度通ってはいけない。$A$-$B$ と $B$-$C$ がそれぞれ到達可能なだけでは足りない。二本が途中の頂点を共有すると、一つの単純パスにならない。
+
+## 考え方
+
+$B$ で切り、$B$ から $A$、$B$ から $C$ の二本を同時に探す。各頂点を入口と出口に分け、その間へ容量1の辺を張る。無向辺 $uv$ は、出口から相手の入口へ二方向に張る。
+
+始点から $B$ の出口へ容量2、$A$ と $C$ の出口から終点へ各容量1を張る。$B$ の分割辺を最初に通さず出発する。流量2ならよい。
+
+## 適用条件
+
+無向グラフで、$A,B,C$ は相異なる。元の辺の容量だけを1にしても、異なる辺で同じ中継頂点を使うことは防げない。
+
+有向の $A\to B\to C$ を同じ向きの二本へ分けると、$A\to B$ を逆向きに探すことになる。その場合はこの変換をそのまま使わない。
+
+## なぜ正しいか
+
+単純パスを $B$ で切ると、$B$ 以外を共有しない二本になるので流量2を作れる。逆に整数流量2を二経路に分解し、循環を除く。容量1の分割辺で共有頂点はなく、終点側の二辺の容量1で一方は $A$、他方は $C$ に終わる。片方を逆向きにつなげると、無向グラフの単純パスになる。
+
+## 計算量
+
+単純パスの列挙は指数時間。変換は $O(N+M)$ 頂点・辺を使う。必要流量が2なので、掲載実装の探索・増加操作は $O(N+M)$ 時間、$O(N+M)$ 空間。何本も経路を求める一般の問題には、この定数流量の計算量を使わない。
+
+## 実装
+
+頂点は0始まり。入力辺を二方向へ変換する。探索は非再帰なので、長い鎖状のグラフにも同じ実装を使える。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+bool path_through_pivot(int n,const std::vector<std::pair<int,int>>& undirected,
+    int a,int b,int c) {
+    int s=2*n,t=s+1; FlowNetwork g(t+1);
+    for(int v=0;v<n;++v) g.add(2*v,2*v+1,1);
+    for(auto [u,v]:undirected) {
+        g.add(2*u+1,2*v,1); g.add(2*v+1,2*u,1);
+    }
+    g.add(s,2*b+1,2); // 共通の始点 B だけは分割辺を通さない。
+    g.add(2*a+1,t,1); g.add(2*c+1,t,1);
+    return g.flow(s,t,2)==2;
+}
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/)
+
+## 参考資料
+
+- [AtCoder：Typical Path Problem（原典）](https://atcoder.jp/contests/abc318/tasks/abc318_g)
+- [公式解説](https://atcoder.jp/contests/abc318/editorial/7086)
+
+<TechniqueReferences techniqueId="vertex-disjoint-through-pivot" />

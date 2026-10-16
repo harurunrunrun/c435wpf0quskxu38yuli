@@ -1,0 +1,262 @@
+[
+  {
+    "id": "burnside-necklace-divisors",
+    "title": "回転で同じ色列を、回転の周期の約数ごとに数える",
+    "summary": "各回転で変わらない列の数を求め、同じ最大公約数を持つ回転をオイラー関数でまとめる。",
+    "aliases": [
+      "Burnside necklace",
+      "バーンサイドの補題",
+      "ネックレス",
+      "rotation orbit counting"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2209"
+    ]
+  },
+  {
+    "id": "burnside-bracelet-reflections",
+    "title": "裏返しも同じ環状配置は、反転軸を奇数長と偶数長で分ける",
+    "summary": "回転の固定配置に、反転で残る一箇所と二箇所の組を加え、全2n操作で平均する。",
+    "aliases": [
+      "Burnside bracelet",
+      "dihedral group",
+      "ブレスレット",
+      "二面体群"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "burnside-necklace-divisors"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://onlinejudge.org/external/102/10294.pdf"
+    ]
+  },
+  {
+    "id": "ballot-prefix-reflection",
+    "title": "途中の高さが決まった括弧列は、初めて負になる経路を反射して引く",
+    "summary": "残りの上下移動を数える二項係数から、禁止境界へ初めて達する経路の二項係数を差し引く。",
+    "aliases": [
+      "ballot theorem",
+      "reflection principle",
+      "接頭辞付きカタラン",
+      "反射原理"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "factorial-inverses",
+      "prefix-feasibility"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2187"
+    ]
+  },
+  {
+    "id": "derangement-fixed-count",
+    "title": "元の位置へ戻る個数を指定した順列は、固定点を選んで残りを完全順列にする",
+    "summary": "固定点を一つも持たない並べ替えを二つ前までの漸化式で数え、指定した固定点数の二項係数を掛ける。",
+    "aliases": [
+      "derangement",
+      "rencontres numbers",
+      "完全順列",
+      "固定点数"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1717"
+    ]
+  },
+  {
+    "id": "subset-extrema-rank",
+    "title": "K個を選ぶ最大値と最小値の総和は、並べた順位ごとの二項係数にする",
+    "summary": "同じ値でも添字を区別し、最後に選んだ順位と最初に選んだ順位へ極値の寄与を割り当てる。",
+    "aliases": [
+      "subset max min sums",
+      "rank contribution",
+      "K部分集合の極値",
+      "順位寄与"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc151/tasks/abc151_e"
+    ]
+  },
+  {
+    "id": "redistribution-zero-count",
+    "title": "各箱に一個からの再分配は、空の箱の数で最小移動回数を数える",
+    "summary": "総数を保つ人数配置を空箱の集合と正の配分に分け、ちょうどの移動回数は寄り道の可否を確認する。",
+    "aliases": [
+      "Roaming zero rooms",
+      "empty boxes minimum moves",
+      "再分配の空箱数"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "stars-and-bars",
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc156/tasks/abc156_e"
+    ]
+  },
+  {
+    "id": "injective-coordinate-avoidance",
+    "title": "重複しない二本の列の同位置一致を、強制する一致数で包除する",
+    "summary": "片方の列を固定し、一致させる位置を選んだ後に残る値の順列数を数える。",
+    "aliases": [
+      "injective NEQ arrays",
+      "partial derangement",
+      "単射列の同位置禁止"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "derangement-fixed-count",
+      "factorial-inverses",
+      "inclusion-exclusion-forbidden"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc172/tasks/abc172_e"
+    ]
+  },
+  {
+    "id": "grid-active-rows-cols",
+    "title": "二色が行や列を共有しない配置は、使う行・列を分けて空行と空列を引く",
+    "summary": "各色が使う行と列を先に選び、その部分盤面の全行列を使う配置を二次元の包除で数える。",
+    "aliases": [
+      "active row column inclusion exclusion",
+      "Black and White Rooks",
+      "空行空列の包除"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "factorial-inverses",
+      "inclusion-exclusion-forbidden"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc242/tasks/abc242_f"
+    ]
+  },
+  {
+    "id": "subset-bounding-box-expectation",
+    "title": "無作為に選ぶマスの外接長方形は、各マスを含まない四方向の包除で数える",
+    "summary": "長方形の四辺を列挙せず、選んだ点が全て上・下・左・右にある事象を各マスで引く。",
+    "aliases": [
+      "minimum bounding box expectation",
+      "rectangle cell indicators",
+      "外接矩形の期待値"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "expectation-indicators",
+      "factorial-inverses",
+      "inclusion-exclusion-forbidden"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc297/tasks/abc297_f"
+    ]
+  },
+  {
+    "id": "coloring-equal-adjacencies",
+    "title": "同色の隣接数を指定する色列は、同色にする境界を先に選ぶ",
+    "summary": "線形の列では各境界の同色・異色を独立に指定でき、境界位置の二項係数と色の選択数を掛けられる。",
+    "aliases": [
+      "Colorful Blocks",
+      "equal adjacency boundary counting",
+      "同色隣接数"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc167/tasks/abc167_e"
+    ]
+  }
+]

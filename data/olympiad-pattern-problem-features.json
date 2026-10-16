@@ -1,0 +1,90 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "2011-race",
+    "title": "Race",
+    "url": "https://ioinformatics.org/files/ioi2011problem2.pdf",
+    "techniqueIds": [
+      "weighted-tree-exact-length-min-edges"
+    ],
+    "features": [
+      "辺の長さは0以上の整数、木は最大20万頂点",
+      "異なる二頂点の経路長が正確にK",
+      "条件を満たす経路の辺数を最小化",
+      "原典では1≤K≤10^6"
+    ],
+    "evidenceUrl": "https://ioinformatics.org/files/ioi2011problem2.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "木の辺長は非負整数で、正確な長さの経路の辺数を最小化する。重心の別枝を合わせ、距離ごとの最小深さだけ残す帰着を原典から導出。 原典PDFの開催年を確認。掲載C++20実装は小規模全探索と境界ケースで照合した。"
+  },
+  {
+    "source": "IOI",
+    "problemId": "2014-wall",
+    "title": "Wall",
+    "url": "https://www.ioi2014.org/competition/images/tasks/day1/wall/wall.pdf",
+    "techniqueIds": [
+      "range-clamp-composition"
+    ],
+    "features": [
+      "初期値は全て0",
+      "区間の値をmax(x,h)またはmin(x,h)にする",
+      "更新の順序を保つ",
+      "途中の区間和ではなく最後の全位置の値"
+    ],
+    "evidenceUrl": "https://www.ioi2014.org/competition/images/tasks/day1/wall/wall-solution.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "区間chmin/chmaxを順番に適用し、求めるのは最後の各高さだけ。公式解説の二つの境界による更新合成に対応し、途中の区間集計は要求されない。 原典PDFの開催年を確認。掲載C++20実装は小規模全探索と境界ケースで照合した。"
+  },
+  {
+    "source": "IOI",
+    "problemId": "2014-holiday",
+    "title": "Holiday",
+    "url": "https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday.pdf",
+    "techniqueIds": [
+      "active-top-k-count-sum"
+    ],
+    "features": [
+      "都市が一列に並び、移動か訪問で一日を使う",
+      "各都市の価値は非負、同じ都市の価値は一度だけ得る",
+      "候補区間を決めた後の、残り訪問回数以下の最大価値和",
+      "区間の選択・移動日数の最適化とは別の集計部分"
+    ],
+    "evidenceUrl": "https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday-solution.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式解説は候補区間内の残り訪問回数ぶんの最大価値和を、候補の活性状態・個数・和で求める。この記事はその集計部分で、訪問区間の最適化全体を解くものではない。 原典PDFの開催年を確認。掲載C++20実装は小規模全探索と境界ケースで照合した。"
+  },
+  {
+    "source": "IOI",
+    "problemId": "2011-ricehub",
+    "title": "Rice Hub",
+    "url": "https://ioinformatics.org/files/ioi2011problem3.pdf",
+    "techniqueIds": [
+      "median-window-budget"
+    ],
+    "features": [
+      "同じ量の荷物が一次元に並び座標は昇順、重複も許す",
+      "集積場所を自由に選ぶ",
+      "運送費は対象ごとの絶対距離の和",
+      "予算以内で集める対象数を最大化"
+    ],
+    "evidenceUrl": "https://ioinformatics.org/files/ioi2011problem3.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "各田の収量が一台ぶんで運送費が絶対距離。座標は昇順で重複を許し、集積場所を自由に選べるため、連続区間の中央値への距離和を予算判定に使える。 原典PDFの開催年を確認。掲載C++20実装は小規模全探索と境界ケースで照合した。"
+  }
+]

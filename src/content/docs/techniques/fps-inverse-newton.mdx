@@ -1,0 +1,112 @@
+---
+title: "積を 1 にする係数列を、誤差を二乗して伸ばす"
+description: "逆数の係数を一項ずつ決める二重ループを、精度が倍になる多項式の更新に変えます。"
+techniqueId: fps-inverse-newton
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+係数 $f_0,f_1,\ldots$ から、$F(x)G(x)\equiv1\pmod{x^N}$ を満たす先頭 $N$ 項を求めます。係数比較で一項ずつ作ると、新しい係数を求めるたびに、それ以前の係数を全て読み直します。
+
+組合せの列でも、$G=1+HG$、$H(0)=0$ のように「任意個の部品を並べる」関係が得られたら、$G=(1-H)^{-1}$ となり、この形に帰着できます。単に積を計算したい場合とは区別します。
+
+## 考え方
+
+先頭 $m$ 項が正しい $G$ に対し、次を使います。
+
+$$G_{\mathrm{new}}=G(2-FG)\pmod{x^{2m}}.$$
+
+各更新では、欲しい長さまでの $F$ と今の $G$ を掛け、$2-FG$ を作り、もう一度 $G$ を掛けます。最初は $G=f_0^{-1}$ の一項です。1、2、4、8 項と伸ばし、最後だけ $N$ 項で切ります。
+
+$F=1-x$ なら、最初の $G=1$ は $1+x$、次は $1+x+x^2+x^3$ へ進みます。
+
+## 適用条件
+
+定数項が係数の環で逆元を持つ必要があります。法が素数なら $f_0\ne0$ で十分です。合成数の法では、非零だけでは足りず $\gcd(f_0,p)=1$ が必要です。たとえば法 6 の定数項 2 は使えません。
+
+掲載実装の法は 998244353、入力係数は $[0,p)$、$0\le N\le2^{21}$ です。足りない入力係数は 0 とします。$N=0$ では空列を返し、$N>0$ では非空の入力と非零の定数項が必要です。畳み込みの補助関数も含めています。
+
+## なぜ正しいか
+
+誤差を $E=1-FG$ と置くと、今の精度より低い次数の係数は 0 です。更新後の誤差は
+
+$$1-FG(2-FG)=(1-FG)^2=E^2$$
+
+なので、$x^m$ の倍数だった誤差が $x^{2m}$ の倍数になります。必要な係数はそのまま保たれ、正しい長さが倍になります。定数項から順に解く式が一意であるため、こうして得た列は目的の逆数です。
+
+## 計算量
+
+一項ずつ係数を比較する方法は時間 $O(N^2)$、空間 $O(N)$ です。長さ $m$ の積を $M(m)$ で計算できると、更新全体は $O(M(N))$ です。掲載実装の NTT では時間 $O(N\log N)$、空間 $O(N)$ になります。上限を $2^{21}$ としているのは、途中で切る前の畳み込みも最大変換長に収めるためです。
+
+## 実装
+
+`fps_inverse(f,n)` はちょうど `n` 項を返します。係数を追加で求めたい場合も、必要な精度を引数に指定します。途中の積を適当な長さで切りすぎると、高次数の補正を失います。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> fps_inverse(const vector<int>& f,int n) {
+    assert(0<=n && n<=(1<<21));
+    if(n==0) return {};
+    assert(!f.empty() && f[0]!=0);
+    vector<int> g{ntt998::power(f[0],ntt998::MOD-2)};
+    while(int(g.size())<n) {
+        int m=min(n,2*int(g.size()));
+        vector<int> part(f.begin(),f.begin()+min(m,int(f.size())));
+        auto correction=ntt998::convolution(part,g);
+        correction.resize(m);
+        for(int& x:correction) x=(ntt998::MOD-x)%ntt998::MOD;
+        correction[0]=(correction[0]+2)%ntt998::MOD;
+        g=ntt998::convolution(g,correction);
+        g.resize(m);
+    }
+    return g;
+}
+```
+
+## 関連する手法
+
+[NTT・畳み込み](/flowchartcp/techniques/ntt/) ・ [形式的冪級数](/flowchartcp/techniques/formal-power-series/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/inv_of_formal_power_series/task.md)
+
+<TechniqueReferences techniqueId="fps-inverse-newton" />

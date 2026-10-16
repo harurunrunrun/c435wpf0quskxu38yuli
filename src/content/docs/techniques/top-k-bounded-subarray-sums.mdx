@@ -1,0 +1,137 @@
+---
+title: "長さ制限のある区間和の上位K個は、右端候補を分割して取り出す"
+description: "左端ごとに最良の右端だけをヒープへ入れ、採用した右端の左右に候補を分ける。"
+techniqueId: top-k-bounded-subarray-sums
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+整数列の連続区間のうち、長さが $L$ 以上 $R$ 以下のものを考える。区間和を大きい順に $K$ 個取り出したい、あるいはその総和だけがほしい。区間同士の重なりは許され、同じ区間を二度選ぶことだけが禁止される。
+
+全区間は $O(N^2)$ 個あるが、必要な個数 $K$ はそれより少ない。負数を含むため、区間を伸ばせば和が増えるとは限らない。
+
+## 考え方
+
+累積和を $P_0=0$、$P_j=\sum_{i<j}a_i$ とする。左端 $i$ を固定すると、右端候補は
+
+$$
+i+L\le j\le\min(i+R,N)
+$$
+
+で、区間和は $P_j-P_i$。この範囲で $P_j$ が最大になる位置だけを、左端 $i$ の代表として最大ヒープへ入れる。
+
+ヒープの各要素は、左端 $i$ と、未採用の右端の連続範囲 $[l,r]$、その範囲内の最大位置 $m$ を持つ。最大要素を取り出して区間 $[i,m)$ を採用したら、残りを $[l,m-1]$ と $[m+1,r]$ に分け、それぞれの最大位置を再びヒープへ入れる。
+
+範囲最大の位置は、累積和上のSparse Tableで求める。一つ採用するたびに増える候補は高々二つなので、全区間を列挙せずに次の区間へ進める。
+
+## 適用条件
+
+- 選択の価値は区間和の合計であり、各区間を独立に評価できる。
+- 選んだ区間同士が重なってもよい。互いに素でなければならない場合には使えない。
+- 区別するのは両端の組である。同じ和の区間が複数あれば、その個数だけ候補に含める。
+- 長さ制限は全区間で共通の $L\ldots R$。配列は途中で更新されない。
+
+全要素が負でも使える。上位の和が負だからといって途中で止めず、要求された $K$ 個を取り出す。$K$ が候補区間の総数に近い場合、出力するだけでも二次の時間になる。
+
+## なぜ正しいか
+
+同じ左端の未採用区間を、右端の集合として見る。初期状態では一つの連続範囲であり、その最大値がヒープに入っている。
+
+右端 $m$ を採用すると、その一つだけが消える。残りの右端は $[l,m-1]$ と $[m+1,r]$ に重複なく分かれる。従って、各右端は採用されるまでちょうど一つの候補範囲に属し、採用後にはどの候補範囲にも属さない。
+
+ヒープには全ての候補範囲の最大値が入る。どの未採用区間の和も、自分が属する範囲の最大値以下なので、ヒープの最大値は未採用区間全体の最大値である。この操作を繰り返すと、異なる区間を和の降順に取り出せる。同値の最大位置はどれを先に選んでもよい。
+
+## 計算量
+
+Sparse Tableの構築は $O(N\log(N+1))$ 時間・空間、最大位置の取得は一回 $O(1)$ 時間。初期候補は高々 $N$ 個で、採用一回につき高々二つの候補を追加する。
+
+掲載実装は $O(N\log(N+1)+K\log(N+K+1))$ 時間、返す列とヒープを含めて $O(N\log(N+1)+K)$ 空間。初期ヒープも一要素ずつ挿入するが、その時間は最初の項に含まれる。
+
+## 実装
+
+`top_k_bounded_subarray_sums(a, min_length, max_length, k)` は、上位の和を降順に並べた `sums` と、その総和 `total` を返す。長さ $1\ldots500000$、$1\le L\le R\le N$、$0\le K\le500000$ を受け付ける。$K$ が候補区間数を超える場合も含め、条件違反は `invalid_argument`、長さの上限超過は `length_error` にする。
+
+要素は符号付き64ビット整数の全域を扱える。累積和・区間和・総和は、加算する前から `__int128` で計算する。$K=0$ は空の列と総和0を返す。区間自体が必要なら、ヒープから取り出した `left` と `best` を一緒に保存すればよい。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct BoundedSubarrayTopK {
+    vector<__int128> sums;
+    __int128 total = 0;
+};
+
+BoundedSubarrayTopK top_k_bounded_subarray_sums(
+    const vector<long long>& a, int min_length, int max_length, int k) {
+    if (a.size() > 500000) throw length_error("array too long");
+    const int n = static_cast<int>(a.size());
+    if (n == 0 || min_length < 1 || min_length > max_length ||
+        max_length > n || k < 0 || k > 500000)
+        throw invalid_argument("invalid length or rank");
+    long long candidate_count = 0;
+    for (int i = 0; i + min_length <= n; ++i)
+        candidate_count += min(max_length, n - i) - min_length + 1;
+    if (k > candidate_count)
+        throw invalid_argument("not enough distinct intervals");
+    BoundedSubarrayTopK answer;
+    if (k == 0) return answer;
+
+    vector<__int128> prefix(n + 1, 0);
+    for (int i = 0; i < n; ++i) prefix[i + 1] = prefix[i] + a[i];
+    vector<int> lg(n + 2, 0);
+    for (int i = 2; i <= n + 1; ++i) lg[i] = lg[i / 2] + 1;
+    auto better = [&](int x, int y) {
+        if (prefix[x] != prefix[y]) return prefix[x] > prefix[y] ? x : y;
+        return min(x, y);
+    };
+    vector<vector<int>> table(lg[n + 1] + 1, vector<int>(n + 1));
+    iota(table[0].begin(), table[0].end(), 0);
+    for (int b = 1; b <= lg[n + 1]; ++b) {
+        const int length = 1 << b;
+        for (int l = 0; l + length <= n + 1; ++l)
+            table[b][l] = better(table[b - 1][l],
+                                 table[b - 1][l + length / 2]);
+    }
+    auto maximum_index = [&](int l, int r) {
+        const int b = lg[r - l + 1];
+        return better(table[b][l], table[b][r - (1 << b) + 1]);
+    };
+    struct Candidate {
+        __int128 sum;
+        int left, lo, hi, best;
+        bool operator<(const Candidate& other) const {
+            return sum < other.sum;
+        }
+    };
+    priority_queue<Candidate> heap;
+    auto push = [&](int left, int lo, int hi) {
+        if (lo > hi) return;
+        const int best = maximum_index(lo, hi);
+        heap.push({prefix[best] - prefix[left], left, lo, hi, best});
+    };
+    for (int left = 0; left + min_length <= n; ++left)
+        push(left, left + min_length, min(n, left + max_length));
+    answer.sums.reserve(k);
+    for (int t = 0; t < k; ++t) {
+        const Candidate c = heap.top();
+        heap.pop();
+        answer.sums.push_back(c.sum);
+        answer.total += c.sum;
+        push(c.left, c.lo, c.best - 1);
+        push(c.left, c.best + 1, c.hi);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [セグメント木による区間集計](/flowchartcp/techniques/segment-tree/) ・ [追加・削除される集合の上位K個の和](/flowchartcp/techniques/active-top-k-count-sum/)
+
+## 参考資料
+
+- [洛谷 P2048：NOI2010 超级钢琴](https://www.luogu.com.cn/problem/P2048)。長さに制限がある異なる区間を選び、その和の合計を最大化する原典。候補区間の分割による列挙は、上の不変条件から導出できる。
+
+<TechniqueReferences techniqueId="top-k-bounded-subarray-sums" />

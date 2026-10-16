@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "command": "node tests/minedges-unitedcows-flow.test.mjs",
+  "executedAtUTC": "2026-10-15 09:22:09 UTC",
+  "testFile": "tests/minedges-unitedcows-flow.test.mjs",
+  "testSha256": "3e0195387d49f9b138c0c279367f54acfbcadbf2d3408ff300fc7d96d599729e",
+  "exitCode": 0,
+  "tests": 13,
+  "passed": 13,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 4111.066076,
+  "subtests": [
+    "1117: all premises gate the sole concrete result and no/unknown stays unresolved",
+    "1117: both displays, complete SVG labels, shared URLs and Back retain all premise histories",
+    "1117: dated original, complete article, grouped metadata and one canonical example agree",
+    "1140: all premises gate the sole concrete result and no/unknown stays unresolved",
+    "1140: both displays, complete SVG labels, shared URLs and Back retain all premise histories",
+    "1140: dated original, complete article, grouped metadata and one canonical example agree",
+    "all 514 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged",
+    "every field of all 460 old graphs and 3631 nodes survives, including every old option order and result",
+    "all historical local and completed shared URLs retain their candidates, domains and Back histories",
+    "Back preserves the full history of all404 completed historical share URLs",
+    "the initial six USACO records and every NoTime resolution field survive without duplicate positive research reviews",
+    "both new resolutions point to complete C++ evidence and canonical root walks with truthful source precision",
+    "the registration-stage target evidence proves6/6 research and3/6 coverage; removing the new resolutions returns1/6"
+  ],
+  "baseline": {
+    "articles": 493,
+    "graphs": 460,
+    "nodes": 3631,
+    "walks": 514,
+    "verifiedWalks": 510,
+    "rawSha256": {
+      "flows": "8af478e4a8f9e606a6bc7f87284f192211ad57171185a1d9f080b173c6fc9d01",
+      "walks": "7e5201fa2d2895d5f9499de89dcb8ad3744cf2fafcfaad29649cd6248fc6d995",
+      "audit": "8aa9b2edf59251a0b1ef3a1a40f7901c2eda458c093c357f57e1860366c14c63"
+    },
+    "preservedRecordProjectionSha256": "5527b4663bacfc09f71b0e4211a60fc7bea75c958d268fc2bea0a2b869ba2b47",
+    "preservedWalkStepsSha256": "8e3193a3a81eb6deafdea197d446bac156af33b99391e95bdbac7a5976bb62cc",
+    "preservedWalkTextAndLabelsSha256": "3a16166244c3ef52309e21549df5a14e4228d11cdfe551e3139e8f3839fd3eef",
+    "preservedOldGraphAllFieldsSha256": "af0dca4239094cbd5a4420331684095a5f7f5847e72e4a2c38c22525dbe35c2b",
+    "historicalAuditProjectionSha256": "ef19e3191fbd87d5b0e83be76e3321ab49e534b852a3dd98755c78ad13eb6d16",
+    "noTimeFullRecordSha256": "3a0e6c7a616e5fb7f25cc7397ee081fbe20d5046d007fa5224deefd8fabe0a1f"
+  },
+  "registered": {
+    "articles": 495,
+    "graphs": 462,
+    "nodes": 3643,
+    "questions": 1657,
+    "edges": 5402,
+    "walks": 516,
+    "flowRawSha256": "44e46d1d0a25fe2c4191959d535c9bc41b12297415170f2947a6b64e288cfc94",
+    "walkRawSha256": "bcada8d20ab08f00fd32fc66970cbdb70f1c3ae5fb568a9fcff900bdb25f0d57"
+  },
+  "newRoutes": [
+    {
+      "problemId": "1117",
+      "techniqueId": "parity-walk-profile-layer-greedy-realization",
+      "domain": "graphs",
+      "choices": [
+        "network-connection",
+        "walk-language-minimize",
+        "yes",
+        "yes",
+        "yes"
+      ],
+      "guardGraph": "parity-walk-minimum-conditions",
+      "guardIds": [
+        "undirected-connected",
+        "all-walk-lengths",
+        "bounds"
+      ],
+      "sourceDate": "2021-02",
+      "datePrecision": "month",
+      "difficulty": null,
+      "cppSha256": "1a04200fd167167a77a09ff5d98ca3a5354e6538025e2e36e41158636317693e"
+    },
+    {
+      "problemId": "1140",
+      "techniqueId": "interval-unique-endpoints-singleton-middle-active-lazy",
+      "domain": "ranges",
+      "choices": [
+        "aggregate-goals",
+        "window",
+        "unique-leader-triples",
+        "yes",
+        "yes",
+        "yes"
+      ],
+      "guardGraph": "interval-unique-leader-conditions",
+      "guardIds": [
+        "three-singleton-leaders",
+        "all-fixed-intervals",
+        "bounds"
+      ],
+      "sourceDate": "2021",
+      "datePrecision": "year",
+      "difficulty": null,
+      "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf"
+    }
+  ],
+  "coverageProof": {
+    "fixedProblems": 6,
+    "researchReviewed": 6,
+    "initialCovered": 0,
+    "registrationStageCovered": 3,
+    "withoutTheTwoNewResolutionsCovered": 1,
+    "withoutValidatedNewRootWalkTargetsCovered": 1,
+    "laterValidCoverageAdditionsAllowed": true,
+    "initialSixRecordsStatusSelectionSnapshotPreserved": true,
+    "existingNoTimeResolutionAllFieldsPreserved": true,
+    "noDuplicatePositiveSolutionReviewAdded": true
+  },
+  "uiChecks": {
+    "guardQuestions": 6,
+    "noUnknownFallbackPaths": 12,
+    "positiveCanonicalPaths": 2,
+    "questionsAndDiagramDisplays": true,
+    "svgCompleteLabelsAndArticleHref": true,
+    "allNewPositiveAndNegativeSharedHistoryAndBack": true,
+    "legacyLocalPrefixes": 593,
+    "legacyCompletedSharedUrls": 404,
+    "allCompletedLegacyBackHistories": true
+  },
+  "sharedEdits": [
+    "tests/minedges-unitedcows-flow.test.mjs",
+    "research/probes/minedges-unitedcows-flow-results.json"
+  ],
+  "tap": "TAP version 13\n# Subtest: 1117: all premises gate the sole concrete result and no/unknown stays unresolved\nok 1 - 1117: all premises gate the sole concrete result and no/unknown stays unresolved\n  ---\n  duration_ms: 444.469517\n  type: 'test'\n  ...\n# Subtest: 1117: both displays, complete SVG labels, shared URLs and Back retain all premise histories\nok 2 - 1117: both displays, complete SVG labels, shared URLs and Back retain all premise histories\n  ---\n  duration_ms: 3373.542616\n  type: 'test'\n  ...\n# Subtest: 1117: dated original, complete article, grouped metadata and one canonical example agree\nok 3 - 1117: dated original, complete article, grouped metadata and one canonical example agree\n  ---\n  duration_ms: 27.220289\n  type: 'test'\n  ...\n# Subtest: 1140: all premises gate the sole concrete result and no/unknown stays unresolved\nok 4 - 1140: all premises gate the sole concrete result and no/unknown stays unresolved\n  ---\n  duration_ms: 6.725067\n  type: 'test'\n  ...\n# Subtest: 1140: both displays, complete SVG labels, shared URLs and Back retain all premise histories\nok 5 - 1140: both displays, complete SVG labels, shared URLs and Back retain all premise histories\n  ---\n  duration_ms: 87.942114\n  type: 'test'\n  ...\n# Subtest: 1140: dated original, complete article, grouped metadata and one canonical example agree\nok 6 - 1140: dated original, complete article, grouped metadata and one canonical example agree\n  ---\n  duration_ms: 17.095991\n  type: 'test'\n  ...\n# Subtest: all 514 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged\nok 7 - all 514 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged\n  ---\n  duration_ms: 15.298538\n  type: 'test'\n  ...\n# Subtest: every field of all 460 old graphs and 3631 nodes survives, including every old option order and result\nok 8 - every field of all 460 old graphs and 3631 nodes survives, including every old option order and result\n  ---\n  duration_ms: 27.283843\n  type: 'test'\n  ...\n# Subtest: all historical local and completed shared URLs retain their candidates, domains and Back histories\nok 9 - all historical local and completed shared URLs retain their candidates, domains and Back histories\n  ---\n  duration_ms: 45.744635\n  type: 'test'\n  ...\n# Subtest: Back preserves the full history of all404 completed historical share URLs\nok 10 - Back preserves the full history of all404 completed historical share URLs\n  ---\n  duration_ms: 38.358368\n  type: 'test'\n  ...\n# Subtest: the initial six USACO records and every NoTime resolution field survive without duplicate positive research reviews\nok 11 - the initial six USACO records and every NoTime resolution field survive without duplicate positive research reviews\n  ---\n  duration_ms: 2.966085\n  type: 'test'\n  ...\n# Subtest: both new resolutions point to complete C++ evidence and canonical root walks with truthful source precision\nok 12 - both new resolutions point to complete C++ evidence and canonical root walks with truthful source precision\n  ---\n  duration_ms: 2.854449\n  type: 'test'\n  ...\n# Subtest: the registration-stage target evidence proves6/6 research and3/6 coverage; removing the new resolutions returns1/6\nok 13 - the registration-stage target evidence proves6/6 research and3/6 coverage; removing the new resolutions returns1/6\n  ---\n  duration_ms: 13.653169\n  type: 'test'\n  ...\n1..13\n# tests 13\n# suites 0\n# pass 13\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 4111.066076\n"
+}

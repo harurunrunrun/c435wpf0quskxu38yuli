@@ -1,0 +1,110 @@
+---
+title: "全要素へ同じXORをかけた最大値の最小化は、上位ビットで候補を二分する"
+description: "0と1が混ざる桁では最大値側に残るグループを選び、下位ビットの最適値が小さい方を採る。"
+techniqueId: xor-minimax-bit-partition
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+非負整数列 $A$ に対し、一つの非負整数 $X$ を選び、全ての要素を $A_i\oplus X$ に置き換える。その後の最大値をできるだけ小さくしたい。
+
+ビットごとに1の個数を数えるだけでは決められない。求めるのは総和ではなく最大値なので、上位の桁で小さくなった要素は、それ以降の最大値の候補から外せる。
+
+## 考え方
+
+上位の桁から順に考える。今注目しているビットを $b$ とし、最大値になる可能性が残っている要素を、この桁が0の集合 $S_0$ と1の集合 $S_1$ に分ける。
+
+片方が空なら、$X$ のこの桁を全要素と同じにする。XOR後のこの桁は全て0になり、全要素を残して次の桁へ進める。
+
+両方が空でなければ、$X$ のこの桁をどちらにしても、XOR後に1となる要素が必ずある。従って、最大値のこの桁は1になる。
+
+- $X$ のこの桁を0にすると、$S_1$ だけが最大値の候補に残る。
+- $X$ のこの桁を1にすると、$S_0$ だけが最大値の候補に残る。
+
+1が立った側の要素は、下位ビットがどうなっても、0になった側の全要素より大きい。このため、両方のグループを同時に小さくする必要はない。下位の最適値をそれぞれ計算し、小さい方を選べる。
+
+$F(S,b)$ を、集合 $S$ の下位 $b+1$ ビットについて求めた最小の最大値とすると、両方のグループがある場合は
+
+$$
+F(S,b)=2^b+\min\bigl(F(S_0,b-1),F(S_1,b-1)\bigr)
+$$
+
+となる。片方だけなら、そのグループの $F$ に等しい。全ての桁を処理した場合や、要素が一つだけになった場合の下位の答えは0である。
+
+例えば $A=(0,1,6)$ では、$2^2$ の桁で $\{0,1\}$ と $\{6\}$ に分かれる。下位2桁の最適値はそれぞれ1と0なので、答えは $4+0=4$。$X=2$ とすれば、XOR後は $(2,3,4)$ になる。
+
+## 適用条件
+
+- 全要素に同じ非負整数 $X$ をXORし、変換後の最大値を最小化する。
+- $X$ に追加の上限、使用可能なビット、1の個数などの制約がない。
+- 値のビット数が小さく、上位から全ビットを調べられる。
+
+全要素が $2^B$ 未満なら、$X$ のそれ以上の桁を1にする利点はない。全要素の値が $2^B$ 以上になってしまうため、最適な $X$ は下位 $B$ ビットだけで選べる。
+
+$X$ の上限がある場合は、グループごとに下位ビットを自由に選べるとは限らない。XOR後の総和を最適化する問題や、要素ごとに異なる $X$ を使える問題にも、この再帰式をそのまま使うことはできない。
+
+## なぜ正しいか
+
+同じ上位の接頭辞を持つ整数同士では、最初に異なるビットが1の方が大きい。ある桁が全て同じなら、$X$ を合わせて全て0にする選択は、全て1にする選択より必ず有利である。
+
+0と1の両方がある桁では、どの $X$ を選んでも最大値側の桁は1になる。XOR後に0となったグループは、下位を全て1にしても、1となったグループのどの要素にも届かない。従って、下位の最大値を決めるのは、残った片方のグループだけである。
+
+$X$ の現在の桁によって、残すグループの両方を選べる。どちらを残しても下位の桁は自由に選べるので、二つの部分問題の小さい方を採ればよい。最下位までこの選択を繰り返す帰納法により、再帰式は最小値を返す。
+
+## 計算量
+
+下位 $B$ ビットの $X$ を全て試すと $O(N2^B)$ 時間かかる。
+
+以下の実装では配列をコピーしてソートし、同じ上位の接頭辞を持つ連続区間を再帰的に分ける。一つの深さで調べる区間は互いに重ならないため、分割に使う走査は合計 $O(NB)$ 時間。ソートを含めて $O(N\log N+NB)$ 時間になる。
+
+配列のコピーに $O(N)$、再帰の呼び出しに $O(B)$ の空間を使い、追加空間は $O(N+B)$。グループごとの配列は新しく作らない。以下では $B=30$ である。
+
+## 実装
+
+`minimum_maximum_xor(values)` は、$\max_i(A_i\oplus X)$ の最小値を返す。要素数は200000以下、各値は $0$ 以上 $2^{30}$ 未満とし、違反は `invalid_argument` とする。空配列の返り値は0と定義する。元の配列は変更しない。
+
+各再帰区間では、現在より上位のビットが全て等しい。ソート済みなので、現在の桁が0の要素が前、1の要素が後にまとまる。要素が一つなら、その下位の値を $X$ に合わせられるので0を返す。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int minimum_maximum_xor(const vector<int>& values) {
+    constexpr int LIMIT = 1 << 30;
+    if (values.size() > 200000)
+        throw invalid_argument("require at most 200000 values");
+    for (int value : values) {
+        if (value < 0 || value >= LIMIT)
+            throw invalid_argument("require 0 <= value < 2^30");
+    }
+    if (values.empty()) return 0;
+    vector<int> sorted = values;
+    sort(sorted.begin(), sorted.end());
+    auto solve = [&](auto&& self, int left, int right, int bit) -> int {
+        if (bit < 0 || right - left <= 1) return 0;
+        int middle = left;
+        while (middle < right && ((sorted[middle] >> bit) & 1) == 0)
+            ++middle;
+        if (middle == left || middle == right)
+            return self(self, left, right, bit - 1);
+        const int zero_group = self(self, left, middle, bit - 1);
+        const int one_group = self(self, middle, right, bit - 1);
+        return (1 << bit) + min(zero_group, one_group);
+    };
+    return solve(solve, 0, int(sorted.size()), 29);
+}
+```
+
+## 関連する手法
+
+- [上限付きの一数とのXOR和を最大化する](/flowchartcp/techniques/bounded-xor-sum-maximum/)：総和なら各桁の寄与を集め、上限と一致しているかも追う。
+- [XORの寄与をビットごとに数える](/flowchartcp/techniques/bitwise-contribution/)：ビットが目的値へ独立に寄与する場合の整理。
+- [状態設計](/flowchartcp/techniques/state-design/)：上位の桁で最大値になれなくなった要素を、後の状態から除く。
+
+## 参考資料
+
+- [AtCoder ABC281 F：Xor Minimization](https://atcoder.jp/contests/abc281/tasks/abc281_f) — 共通のXORで変換した後の最大値を最小化する原典。
+- [AtCoder ABC281 F公式解説](https://atcoder.jp/contests/abc281/editorial/5377) — 上位ビットで二分し、最大値の候補として片方のグループを残す再帰。
+
+<TechniqueReferences techniqueId="xor-minimax-bit-partition" />

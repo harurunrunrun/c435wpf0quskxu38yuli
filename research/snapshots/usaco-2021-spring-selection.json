@@ -1,0 +1,135 @@
+{
+  "corpusId": "usaco-2021-february-us-open-platinum",
+  "cutoff": "2026-10-14",
+  "selectionFrozenBeforeFullStatementReview": true,
+  "selectionFrozenBeforeEditorialReview": true,
+  "selectionFrozenBeforeTechniqueMatching": true,
+  "selectionRule": "Read both official final-results Platinum sections FIRST; take their numbered problems1..3 with no replacement. Titles were fixed before ID searches; canonical IDs fixed before full statement/solution review.",
+  "contests": [
+    {
+      "contest": "USACO 2021 February Contest",
+      "division": "Platinum",
+      "problemCount": 3,
+      "indexUrl": "https://usaco.org/index.php?page=feb21results",
+      "sourceDate": "2021-02",
+      "datePrecision": "month",
+      "exactDateVerified": false,
+      "dayStatus": "not yet verified from primary calendar"
+    },
+    {
+      "contest": "USACO 2021 US Open",
+      "division": "Platinum",
+      "problemCount": 3,
+      "indexUrl": "https://usaco.org/index.php?page=open21results",
+      "sourceDate": "2021",
+      "datePrecision": "year",
+      "exactDateVerified": false,
+      "dayStatus": "exact month/day not yet verified from primary calendar"
+    }
+  ],
+  "records": [
+    {
+      "contestIndex": 0,
+      "number": 1,
+      "problemId": "1116",
+      "title": "No Time to Dry",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1116",
+      "statementVerified": true,
+      "constraints": {
+        "N": "1..200000",
+        "Q": "1..200000",
+        "colors": "1..N, increasing darkness",
+        "queries": "1<=a<=b<=N, paint onlyinside range, outside remainsuncolored; queries independent",
+        "paint": "onecontiguousinterval/color perstroke, no lighteroverdarker"
+      },
+      "difficulty": null
+    },
+    {
+      "contestIndex": 0,
+      "number": 2,
+      "problemId": "1117",
+      "title": "Minimizing Edges",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1117",
+      "statementVerified": true,
+      "constraints": {
+        "N": "2..100000",
+        "M": "N−1..N(N+1)/2, sumM<=200000",
+        "T": "1..50000,sumN<=100000",
+        "graph": "connectedundirected, selfloops allowed, no parallel edges",
+        "target": "preserve all root1→a walk-length feasibility for ALLa and b>=0; repeatededges counted; minimize edges; Gprime not restrictedtosubgraph"
+      },
+      "difficulty": null
+    },
+    {
+      "contestIndex": 0,
+      "number": 3,
+      "problemId": "1118",
+      "title": "Counting Graphs",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+      "statementVerified": true,
+      "constraints": {
+        "N": "2..100",
+        "M": "N−1..N(N+1)/2",
+        "T": "1..25000,sumN²<=100000",
+        "graph": "connectedundirected with loops allowed/no parallel edges",
+        "target": "same ALL rootwalk-length feasibility, count labeledGprime mod1000000007"
+      },
+      "difficulty": null
+    },
+    {
+      "contestIndex": 1,
+      "number": 1,
+      "problemId": "1140",
+      "title": "United Cows of Farmer John",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+      "statementVerified": true,
+      "constraints": {
+        "N": "1..200000",
+        "breeds": "1..N",
+        "interval": "contiguous length>=3, endpointsare2leaders plusoneinteriorleader",
+        "leaders": "threeleaders eachbreedunique among ENTIREinterval, not only pairwise distinct",
+        "target": "count interval+leaders, exact64bitanswer"
+      },
+      "difficulty": null
+    },
+    {
+      "contestIndex": 1,
+      "number": 2,
+      "problemId": "1141",
+      "title": "Routing Schemes",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+      "statementVerified": true,
+      "constraints": {
+        "N": "2..100",
+        "T": "1..20,sumN²<=20000",
+        "K": "0..2 edgeswithfrom>to; allothers increasing",
+        "graph": "directed0/1 adjacency, no selfloops, verticesmayrevisit inpath, eachDIRECTEDedge usedexactlyonceacrossallpaths",
+        "roles": "Ssenders andSreceivers,S>=1, eachnodeS/R/neither; everyendpoint distinct",
+        "guarantee": "atleastonevalidscheme",
+        "target": "countschemes mod1000000007"
+      },
+      "difficulty": null
+    },
+    {
+      "contestIndex": 1,
+      "number": 3,
+      "problemId": "1142",
+      "title": "Balanced Subsets",
+      "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+      "statementVerified": true,
+      "constraints": {
+        "N": "1..150",
+        "grid": "N×N, G/.",
+        "subset": "nonempty grassy4connected with everyoccupiedrow andcolumn acontiguousinterval",
+        "target": "countorthogonallyconvexconnectedsubsets mod1000000007"
+      },
+      "difficulty": null
+    }
+  ],
+  "notes": [
+    "At INITIAL LIST FREEZE, official index sections had enumerated all six before editorial reading or technique matching. ID-search snippets exposed partial statements; no full-statement verification had been asserted at that initial point. The later allStatementsVerifiedBeforeAnyEditorialReview field records subsequent complete statement review.",
+    "Official exact contest days not inferred from recollection or current sidebar schedule; primary verification pending.",
+    "United Cows of Farmer John has Gold and Platinum versions; fixed corpus is Platinumcpid1140 only."
+  ],
+  "allStatementsVerifiedBeforeAnyEditorialReview": true
+}

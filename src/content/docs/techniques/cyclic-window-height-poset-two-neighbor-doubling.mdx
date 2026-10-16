@@ -1,0 +1,279 @@
+---
+title: "円周上の「自分より高い個数」から、必ず成り立つ大小関係を求める"
+description: "条件に合う高さ順を一つ作り、近い二点の大小が全ての配置で共通することを使う。左右の候補への移動距離をまとめ、多数の比較に答える。"
+techniqueId: cyclic-window-height-poset-two-neighbor-doubling
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+円周上に、互いに異なる高さを持つ対象が $N$ 個ある。位置 $i$ から時計回りに次の $K-1$ 個を見て、自分より高い個数 $r_i$ だけが分かる。この情報に整合する全配置について、二位置の大小が必ず同じか、多数の質問に答えたい。
+
+一つの整合する高さ順を復元するだけでは、遠い二位置の大小を断定できない。必要なのは、全配置に共通する比較である。近距離の比較は入力から一意に決まり、その推移的な帰結を調べればよい。
+
+## 考え方
+
+添字は $N$ を法として扱う。まず、次の条件を満たす位置 $x$ を、高い方から取り除く。窓は元の添字のまま固定し、除去しても位置を詰めない。
+
+1. 残っている対象のうち、$x$ の時計回りの窓で高い個数が0。
+2. $x$ の直前 $K-1$ 位置には、残余0の別の対象がない。
+
+取り除いた $x$ を含む窓、すなわち直前 $K-1$ 位置の残余を1減らす。区間加算・最小値の遅延セグメント木と、残余0の位置を並べた集合を使う。0の位置が選択可能かは、その直前の0からの時計回り距離が $K$ 以上かで判定できる。0が一つだけなら距離を $N$ とする。
+
+こうして得た順位を `rank[x]` とする。小さいほど高い。円周のどちらかの向きに距離 $K$ 未満で届く二位置を、高い方から低い方へ結んだグラフ $G$ を考える。この近距離比較は、選んだ整合配置によらない。従って、全配置で $x$ が $y$ より高い条件は、$G$ に $x$ から $y$ への道があることである。
+
+$G$ の辺を全て作ると二次になる。代わりに各位置から、右の $K-1$ 位置のうち**自分より低い中で最も高い対象**へ一本、左にも同様に一本を用意する。低い順に位置の区間最小値へ順位を登録すれば、この二候補は $O(N\log N)$ で作れる。
+
+質問では、時計回りの候補をたどっても目標位置を越さない範囲で進む。最後の現在位置から目標への距離が $K$ 未満で、現在位置の高さが目標以上なら到達可能である。反時計回りも同様に調べる。ジャンプ先だけでなく、その向きに進んだ距離を二冪ごとに保持し、一質問を $O(\log N)$ にする。
+
+## 適用条件
+
+各高さは相異なり、全位置で同じ窓幅 $K$ を使う。窓は時計回りの次の $K-1$ 位置で、自分自身を数えない。観測値は「自分より厳密に高い個数」である。同じ高さを許す場合や、位置ごとに窓の長さが違う場合には、この半順序と左右候補の証明をそのまま使えない。
+
+掲載クラス `CyclicWindowOrder` は $1\le K\le N\le200000$、$0\le r_i<K$ を受け取り、整合する相異なる高さ順が実際に存在することも検査する。原典の $2\le K\le N\le200000$ を全て含み、$K=1$ と対象が一つの場合も扱える。初期化後の `compare(x,y)` は任意の有効な順序の二添字を受け取り、必ず $x$ が高ければ1、必ず低ければ−1、両方の配置があり得れば0を返す。原典の質問数20万回もこの計算量に含まれる。
+
+異なる添字への0は「同じ高さ」ではなく**比較が曖昧**という意味である。APIの拡張として `compare(x,x)` は0とする。`representative_rank()` は一つの整合順位を返し、順位0が最高である。
+
+範囲外・空の観測・不整合な個数配列・不正な質問添字は `std::invalid_argument`。移動元となったオブジェクトへの比較・順位取得は `std::logic_error`。コピーと代入は独立した状態を持ち、代入時の割当例外でも代入先の既存状態を保つ。標準の割当例外はそのまま伝わり、入力を変更しない。
+
+## なぜ正しいか
+
+**残余0の選択は、未知の比較グラフの始点選択である。** 整合配置を任意に一つ固定し、残っている近距離の対象間に高い方から低い方への辺を置く。残余0なら、時計回りの窓に自分より高い対象はいない。
+
+残余0の $x$ より高い対象 $z$ が左の窓内にいたと仮定する。$z$ も残余0なら選択条件に反する。そうでなければ $z$ の右窓にはさらに高い対象がある。それが $x$ を越えた位置なら $x$ の右窓にも入り、$x$ の残余0に反する。従って $z$ と $x$ の間にある。これを続けると、高さが増えながら位置が $x$ へ近づく有限列となり、最後には左窓内の残余0へ到達して矛盾する。よって選択条件を満たす $x$ は、残るグラフで入次数0である。
+
+逆に入次数0の $x$ は残余0であり、左窓内に残余0の $z$ があれば、その窓にいる $x$ より $z$ が高いことになって矛盾する。従って二つの選択条件は入次数0と同値である。$x$ の除去後は、それを含む窓の残余だけを1減らせばよい。左窓に別の0がないため、残る個数を負にしない。
+
+**近距離の向きは全配置で不変である。** この除去手順は、どの整合配置のグラフに対しても入次数0を選ぶ。入力と同じ選択順で得た一つの順位列は、全整合配置の近距離グラフのトポロジカル順序となる。一つの近距離対が二配置で逆向きなら、一つの順位列が両方向の辺を守ることになり不可能である。
+
+逆に、この不変なグラフ $G$ の任意のトポロジカル順序を高さ順にすると、窓内の各比較を全て保存するので元の個数配列を再現する。従って整合高さ順は $G$ の線形拡張と一致する。道がある対の順序は全ての線形拡張で固定される。道がどちら向きにもなければ、どちら向きの辺を追加しても閉路を作らず、それぞれのトポロジカル順序が存在するので、比較は曖昧である。
+
+不整合な入力では、全対象を除去する前に選択可能な0がなくなる。反対に全て除去できたなら、各位置を除去した時の残余が0であることから、元の $r_i$ は、それ以前に除去した右窓内の個数と等しい。構成した順位は実際に整合する。従ってこの停止判定は不整合検査としても完全である。
+
+**左右の二辺への圧縮。** 右の近距離辺 $x\to y$ を考える。右候補 $c$ は、右窓内の全下位対象の中で最高だから、$c=y$ または $x>c>y$ である。$c,y$ は同じ長さ $K-1$ の円弧内にあるので、$c\to y$ も近距離辺である。順位差について帰納すると、$x\to c$ と、その後の左右候補だけで $y$ まで到達できる。左の辺も同様であり、二辺への圧縮は全到達性を保存する。
+
+**道の向きの折返しは取り除ける。** 近距離の二辺が逆向きに進むとき、始点と終点は、折返し点の同じ側にある長さ $K-1$ の円弧内にある。高さは道に沿って下がるので、始点から終点への近距離辺へ短縮できる。円周を整数直線へほどいてこの短縮を繰り返すと、時計回りだけ、または反時計回りだけの道になる。
+
+一周以上進んでから目標に着く道も不要である。最初に目標位置を横断する辺の始点は目標より高く、目標までの距離はその辺の長さ未満である。そこで目標へ直接進める。従って、到達するなら目標を越さない単調な道がある。
+
+**その方向の最高下位候補へ進んでよい。** 時計回りの単調な道を固定し、現在位置を $x$、最初の次位置を $v$ とする。右候補 $c$ の高さは $v$ 以上である。$c$ が $v$ より手前なら $c\to v$ と続けられる。$c$ が後ろなら、元の道が初めて $c$ の位置へ達するか越す辺を選ぶ。その終点は $c$ から距離 $K$ 未満で、$v$ 以下、従って $c$ 以下の高さなので、$c$ からその終点へ続けられる。頂点が同じ場合は余分な辺を省けばよい。
+
+よって $c$ が目標を越さない限り、$x$ から $c$ へ進んでも到達性を失わない。$c$ が目標を越すなら、目標は $x$ の右窓内にあり、$x$ から直接到達する。候補が存在しなければ最初の辺もない。この貪欲な鎖を二冪ジャンプで進め、最後の近距離比較を行う判定は必要十分である。反時計回りも同じ議論になる。
+
+## 計算量
+
+各位置は残余0の集合へ一度入り、一度除かれる。新しい0の追加・削除で、選択可能性が変わるのはその位置と次の0だけである。区間減算も各除去につき高々二区間なので、順位構成は $O(N\log N)$ 時間、$O(N)$ 空間。
+
+左右候補も区間最小値で $O(N\log N)$。距離のジャンプ表は $O(N\log N)$ 時間・空間で作れ、一質問は $O(\log N)$。$Q$ 質問の合計は **$O((N+Q)\log N)$ 時間、$O(N\log N)$ 空間**である。
+
+距離は $N$ 以上を全て $N$ に切り詰める。質問で目標まで進める距離は $N$ 未満なので、切詰め後のジャンプは使用されず、判定を変えない。$N=200000$ なら表は左右それぞれ18段、`int` の距離だけで合計約28.8MB。順位や区間木・集合は別に線形量である。除去は集合から反復して行い、遅延セグメント木の再帰だけが深さ $O(\log N)$ となる。
+
+## 実装
+
+`rank` は0が最高。0候補用の木では、一度集合へ移した位置を十分大きな値にして二重登録を防ぐ。取り除いた位置に後の区間減算がかかっても、減算回数は高々20万なので再び0にはならない。
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <iterator>
+#include <limits>
+#include <set>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+static_assert(std::numeric_limits<int>::max() >= 1100000000,
+              "int must hold residual sentinels");
+
+namespace cyclic_order_detail {
+class ResidualTree {
+    int n;
+    std::vector<int> minimum, lazy;
+    void build(int node, int lo, int hi, const std::vector<int>& values) {
+        if (hi - lo == 1) { minimum[node] = values[lo]; return; }
+        const int mid = (lo + hi) / 2;
+        build(2 * node, lo, mid, values); build(2 * node + 1, mid, hi, values);
+        minimum[node] = std::min(minimum[2 * node], minimum[2 * node + 1]);
+    }
+    void apply(int node, int delta) { minimum[node] += delta; lazy[node] += delta; }
+    void push(int node) {
+        if (lazy[node]) {
+            apply(2 * node, lazy[node]); apply(2 * node + 1, lazy[node]); lazy[node] = 0;
+        }
+    }
+    void add(int node, int lo, int hi, int first, int last, int delta) {
+        if (first <= lo && hi <= last) { apply(node, delta); return; }
+        push(node); const int mid = (lo + hi) / 2;
+        if (first < mid) add(2 * node, lo, mid, first, last, delta);
+        if (mid < last) add(2 * node + 1, mid, hi, first, last, delta);
+        minimum[node] = std::min(minimum[2 * node], minimum[2 * node + 1]);
+    }
+public:
+    explicit ResidualTree(const std::vector<int>& values)
+        : n(static_cast<int>(values.size())), minimum(4 * n), lazy(4 * n) {
+        build(1, 0, n, values);
+    }
+    void add(int first, int last, int delta) {
+        if (first < last) add(1, 0, n, first, last, delta);
+    }
+    int first_zero() {
+        if (minimum[1] != 0) return -1;
+        int node = 1, lo = 0, hi = n;
+        while (hi - lo > 1) {
+            push(node); const int mid = (lo + hi) / 2;
+            if (minimum[2 * node] == 0) { node *= 2; hi = mid; }
+            else { node = 2 * node + 1; lo = mid; }
+        }
+        return lo;
+    }
+};
+
+class PositionMinimum {
+    int n, base = 1;
+    using Item = std::pair<int, int>;
+    std::vector<Item> tree;
+    Item range(int first, int last) const {
+        Item result{n, -1};
+        for (first += base, last += base; first < last; first /= 2, last /= 2) {
+            if (first & 1) result = std::min(result, tree[first++]);
+            if (last & 1) result = std::min(result, tree[--last]);
+        }
+        return result;
+    }
+public:
+    explicit PositionMinimum(int count) : n(count) {
+        while (base < n) base *= 2;
+        tree.assign(2 * base, {n, -1});
+    }
+    void put(int position, int rank) {
+        int node = base + position; tree[node] = {rank, position};
+        while ((node /= 2) != 0) tree[node] = std::min(tree[2 * node], tree[2 * node + 1]);
+    }
+    Item cyclic(int first, int length) const {
+        if (length == 0) return {n, -1};
+        if (first < 0) first += n;
+        if (first >= n) first -= n;
+        if (first + length <= n) return range(first, first + length);
+        return std::min(range(first, n), range(0, first + length - n));
+    }
+};
+} // namespace cyclic_order_detail
+
+class CyclicWindowOrder {
+    int n_ = 0, k_ = 0;
+    std::vector<int> rank_;
+    std::vector<std::vector<int>> right_, left_;
+    bool one_direction(int start, int target, bool clockwise) const {
+        const auto& jump = clockwise ? right_ : left_;
+        int remaining = clockwise ? (target - start + n_) % n_ : (start - target + n_) % n_;
+        int current = start;
+        for (int level = static_cast<int>(jump.size()) - 1; level >= 0; --level) {
+            const int distance = jump[level][current];
+            if (distance <= remaining) {
+                remaining -= distance;
+                current = clockwise ? (current + distance) % n_ : (current - distance + n_) % n_;
+            }
+        }
+        return remaining < k_ && rank_[current] <= rank_[target];
+    }
+    void valid_state() const {
+        if (n_ == 0) throw std::logic_error("moved-from cyclic order");
+    }
+public:
+    CyclicWindowOrder(int k, const std::vector<int>& taller) {
+        if (taller.empty() || taller.size() > 200000 || k < 1 ||
+            static_cast<std::size_t>(k) > taller.size())
+            throw std::invalid_argument("cyclic window dimensions");
+        for (int value : taller) if (value < 0 || value >= k)
+            throw std::invalid_argument("cyclic window count");
+        n_ = static_cast<int>(taller.size()); k_ = k;
+        rank_.resize(n_); std::vector<int> order(n_);
+        {
+            cyclic_order_detail::ResidualTree residual(taller);
+            std::set<int> zeros, ready;
+            const auto refresh = [&](int x) {
+                const auto it = zeros.find(x);
+                const auto previous = it == zeros.begin() ? std::prev(zeros.end()) : std::prev(it);
+                const int distance = zeros.size() == 1 ? n_ : (x - *previous + n_) % n_;
+                if (distance >= k_) ready.insert(x); else ready.erase(x);
+            };
+            for (int height_rank = 0; height_rank < n_; ++height_rank) {
+                for (int x; (x = residual.first_zero()) != -1;) {
+                    residual.add(x, x + 1, 1000000000);
+                    const auto it = zeros.insert(x).first;
+                    refresh(x);
+                    const auto following = std::next(it) == zeros.end() ? zeros.begin() : std::next(it);
+                    refresh(*following);
+                }
+                if (ready.empty()) throw std::invalid_argument("inconsistent cyclic counts");
+                const int x = *ready.begin();
+                rank_[x] = height_rank; order[height_rank] = x;
+                const auto it = zeros.find(x);
+                int following = -1;
+                if (zeros.size() > 1) {
+                    auto next = std::next(it); if (next == zeros.end()) next = zeros.begin();
+                    following = *next;
+                }
+                ready.erase(x); zeros.erase(it);
+                if (following != -1) refresh(following);
+                const int first = (x - k_ + 1 + n_) % n_, last = first + k_ - 1;
+                if (last <= n_) residual.add(first, last, -1);
+                else { residual.add(first, n_, -1); residual.add(0, last - n_, -1); }
+            }
+        }
+        int levels = 1;
+        while ((1 << levels) < n_) ++levels;
+        right_.assign(levels, std::vector<int>(n_, n_)); left_ = right_;
+        {
+            cyclic_order_detail::PositionMinimum shorter(n_);
+            for (int height_rank = n_ - 1; height_rank >= 0; --height_rank) {
+                const int x = order[height_rank];
+                const int r = shorter.cyclic(x + 1, k_ - 1).second;
+                const int l = shorter.cyclic(x - k_ + 1, k_ - 1).second;
+                if (r != -1) right_[0][x] = (r - x + n_) % n_;
+                if (l != -1) left_[0][x] = (x - l + n_) % n_;
+                shorter.put(x, height_rank);
+            }
+        }
+        for (int level = 1; level < levels; ++level) for (int x = 0; x < n_; ++x) {
+            const int r = right_[level - 1][x], l = left_[level - 1][x];
+            if (r < n_) right_[level][x] = std::min(n_, r + right_[level - 1][(x + r) % n_]);
+            if (l < n_) left_[level][x] = std::min(n_, l + left_[level - 1][(x - l + n_) % n_]);
+        }
+    }
+    CyclicWindowOrder(const CyclicWindowOrder&) = default;
+    CyclicWindowOrder(CyclicWindowOrder&& other) noexcept
+        : n_(std::exchange(other.n_, 0)), k_(other.k_), rank_(std::move(other.rank_)),
+          right_(std::move(other.right_)), left_(std::move(other.left_)) {}
+    CyclicWindowOrder& operator=(CyclicWindowOrder other) noexcept {
+        std::swap(n_, other.n_); std::swap(k_, other.k_); rank_.swap(other.rank_);
+        right_.swap(other.right_); left_.swap(other.left_); return *this;
+    }
+    const std::vector<int>& representative_rank() const { valid_state(); return rank_; }
+    int compare(int x, int y) const {
+        valid_state();
+        if (x < 0 || x >= n_ || y < 0 || y >= n_)
+            throw std::invalid_argument("cyclic query index");
+        if (x == y) return 0;
+        if (rank_[x] < rank_[y])
+            return one_direction(x, y, true) || one_direction(x, y, false) ? 1 : 0;
+        return one_direction(y, x, true) || one_direction(y, x, false) ? -1 : 0;
+    }
+};
+```
+
+## 関連する手法
+
+- [トポロジカルソート](/flowchartcp/techniques/topological-sort/)：未知の近距離比較グラフの入次数0を、残余個数と0の位置関係から判定する。
+- [遅延セグメント木](/flowchartcp/techniques/lazy-segment-tree/)：一位置の除去が、循環する直前の区間の個数を1減らす。
+- [ダブリング](/flowchartcp/techniques/doubling/)：次位置とともに方向別の移動距離を蓄積し、目標を越えない最長の候補列を進む。
+- [DAGの到達可能性](/flowchartcp/techniques/dag-reachable-bitsets/)：全配置での強制比較は到達可能性に等しい。ここでは循環した近距離辺の幾何を使い、二次のグラフと閉包表を省く。
+
+## 参考資料
+
+- [IOI 2020 — Comparing Plants、公式原典](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf)：循環窓の個数、相異なる高さ、全整合配置に対する比較、原典の添字と数値範囲。
+- [IOI 2020 — 公式解説](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf)：残余0の除去、近距離グラフの不変性、左右の最高下位候補、二冪ジャンプ。
+- [オーストリア競技委員会の公式配布 — 原典PDF](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf)、[満点の参照実装](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-original-ac.cpp)、[配布設定](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/task.yaml)：配布された原典と参照実装。本文の必要十分性は、近距離辺の向き、道の短縮、貪欲置換を分けて示した。
+
+<TechniqueReferences techniqueId="cyclic-window-height-poset-two-neighbor-doubling" />

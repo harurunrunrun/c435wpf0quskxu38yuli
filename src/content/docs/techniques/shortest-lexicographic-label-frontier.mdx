@@ -1,0 +1,80 @@
+---
+title: "最短経路の辺列を辞書順最小にするなら、同じ接頭列の到着点を全て残す"
+description: "次の辺の最小ラベルだけを選び、そのラベルで進める頂点集合を一緒に更新する。"
+techniqueId: shortest-lexicographic-label-frontier
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+次の辺の最小ラベルだけを選び、そのラベルで進める頂点集合を一緒に更新する。
+
+## 使う場面
+
+辺の色や記号を並べた列を、最短辺数の経路の中で辞書順最小にしたい。目先の色が同じ辺を一つだけ選ぶと、その先のより良い列を捨てることがある。
+
+## 考え方
+
+終点からBFSし、終点への最短辺数 $d_v$ を求める。最短経路の次の辺は $d_u=d_v-1$ を満たすものに限る。
+
+現在の候補頂点集合 $S$ は、ここまでに選んだラベル列で到達できる全頂点。$S$ から距離を一つ減らす辺の中で最小ラベル $c$ を選ぶ。そのラベルの辺で行ける全頂点を次の $S$ にする。重複した到着点はまとめてよいが、ラベルが同じだからといって到着点を一つに決めない。
+
+## 適用条件
+
+最初の目的は辺数最短で、その後の比較が辺ラベル列の辞書順。掲載実装は無向グラフで、ラベルは比較可能な `int`。ラベルを辺の費用として足す問題ではない。
+
+同じ接頭列・同じ頂点なら後続の可能性も同じなので頂点を統合できる。通過済みの色など別の履歴制約があると、この統合には追加状態が要る。
+
+## なぜ正しいか
+
+全候補は同じ終点距離を持ち、同じ最良接頭列で到達できる。距離を減らす出辺は最短路を継続できる辺と一致するため、次のラベルはその最小値を取るべきである。より大きい次ラベルは以後どう続けても辞書順で勝てない。
+
+最小ラベルの全到着点を残すと、その接頭列を持つ最短経路を一つも失わない。この不変条件を終点まで繰り返すことで、最短辺数内の辞書順最小列が得られる。
+
+## 計算量
+
+最短経路数を $R$ とすると、全列挙は $O(N+M+NR)$ 時間・$O(N+M)$ 空間。$R$ が指数通りになる場合もある。終点からのBFSは $O(N+M)$。距離は各段階で減るので各頂点は高々一つの候補層に入り、辺の検査も定数回。全体は $O(N+M)$ 時間・空間。
+
+## 実装
+
+`shortest_lexicographic_labels` は到達不能なら `nullopt`、到達できれば最良のラベル列を返す。始点と終点が同じなら空列。平行辺・自己ループも受け取れる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct LabeledEdge {int a,b,label;};
+optional<vector<int>> shortest_lexicographic_labels(int n,const vector<LabeledEdge>& edges,
+        int source,int target) {
+    assert(n>0 && 0<=source && source<n && 0<=target && target<n);
+    vector<vector<pair<int,int>>> g(n);
+    for(auto e:edges) {g[e.a].push_back({e.b,e.label});g[e.b].push_back({e.a,e.label});}
+    vector<int> distance(n,-1),queue{target};distance[target]=0;
+    for(int i=0;i<int(queue.size());++i)
+        for(auto [u,label]:g[queue[i]]) if(distance[u]<0) {
+            (void)label;distance[u]=distance[queue[i]]+1;queue.push_back(u);
+        }
+    if(distance[source]<0) return nullopt;
+    vector<int> frontier{source},answer;
+    vector<char> included(n);included[source]=true;
+    for(int step=distance[source];step>0;--step) {
+        int smallest=INT_MAX;
+        for(int v:frontier) for(auto [u,label]:g[v])
+            if(distance[u]==distance[v]-1) smallest=min(smallest,label);
+        vector<int> next;
+        for(int v:frontier) for(auto [u,label]:g[v])
+            if(distance[u]==distance[v]-1 && label==smallest && !included[u]) {
+                included[u]=true;next.push_back(u);
+            }
+        answer.push_back(smallest);frontier=move(next);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[幅優先探索](/flowchartcp/techniques/bfs/) ・ [状態設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [UVa：Ideal Path](https://onlinejudge.org/external/15/1599.pdf)
+
+<TechniqueReferences techniqueId="shortest-lexicographic-label-frontier" />

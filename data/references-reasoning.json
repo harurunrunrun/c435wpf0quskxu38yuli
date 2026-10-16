@@ -1,0 +1,222 @@
+[
+  {
+    "techniqueId": "brute-force-observation",
+    "source": "AtCoder",
+    "problemId": "abc182_c",
+    "title": "To 3",
+    "url": "https://atcoder.jp/contests/abc182/tasks/abc182_c",
+    "editorialUrl": "https://atcoder.jp/contests/abc182/editorial/324?lang=en",
+    "evidence": "消す桁の組み合わせを全探索する解法が、公式解説に挙げられている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "contribution",
+    "source": "AtCoder",
+    "problemId": "abc177_c",
+    "title": "Sum of product of pairs",
+    "url": "https://atcoder.jp/contests/abc177/tasks/abc177_c",
+    "editorialUrl": "https://atcoder.jp/contests/abc177/editorial/97",
+    "evidence": "組の一方を固定し、残りの要素の和をまとめて計算している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "reverse-thinking",
+    "source": "AtCoder",
+    "problemId": "abc229_e",
+    "title": "Graph Destruction",
+    "url": "https://atcoder.jp/contests/abc229/tasks/abc229_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc229/editorial/2985",
+    "evidence": "削除の順序を反転し、頂点と辺の追加をUnion-Findで処理している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "invariant",
+    "source": "AtCoder",
+    "problemId": "arc135_d",
+    "title": "Add to Square",
+    "url": "https://atcoder.jp/contests/arc135/tasks/arc135_d",
+    "editorialUrl": "https://atcoder.jp/contests/arc135/editorial/3381",
+    "evidence": "行と列の交代和が操作で変わらないことを使っている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "exchange-argument",
+    "source": "AtCoder",
+    "problemId": "abc358_d",
+    "title": "Souvenirs",
+    "url": "https://atcoder.jp/contests/abc358/tasks/abc358_d",
+    "editorialUrl": "https://atcoder.jp/contests/abc358/editorial/10276",
+    "evidence": "最適解の箱を貪欲法の選択へ交換しても悪化しないことを示している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "symmetry",
+    "source": "AtCoder",
+    "problemId": "panasonic2020_f",
+    "title": "Fractal Shortest Path",
+    "url": "https://atcoder.jp/contests/panasonic2020/tasks/panasonic2020_f",
+    "editorialUrl": "https://img.atcoder.jp/panasonic2020/editorial.pdf",
+    "evidence": "対称性を使い、ブロック間移動の場合分けを減らしている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "state-design",
+    "source": "AtCoder",
+    "problemId": "abc244_e",
+    "title": "King Bombee",
+    "url": "https://atcoder.jp/contests/abc244/tasks/abc244_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc244/editorial/3601?lang=en",
+    "evidence": "経路長と現在の頂点に加え、指定頂点の訪問回数の偶奇を状態にしている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "counterexample",
+    "source": "AtCoder",
+    "problemId": "abc270_d",
+    "title": "Stones",
+    "url": "https://atcoder.jp/contests/abc270/tasks/abc270_d",
+    "editorialUrl": "https://atcoder.jp/contests/abc270/editorial/4850",
+    "evidence": "取れるだけ取る貪欲法の反例を示し、ゲームDPを使っている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "graph-reduction",
+    "source": "AtCoder",
+    "problemId": "abc232_g",
+    "title": "Modulo Shortest Path",
+    "url": "https://atcoder.jp/contests/abc232/tasks/abc232_g",
+    "editorialUrl": "https://atcoder.jp/contests/abc232/editorial/3158",
+    "evidence": "補助頂点と座標圧縮で辺を共有し、辺数が二乗になることを避けている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "complement-counting",
+    "source": "AtCoder",
+    "problemId": "abc178_c",
+    "title": "Ubiquity",
+    "url": "https://atcoder.jp/contests/abc178/tasks/abc178_c",
+    "editorialUrl": "https://atcoder.jp/contests/abc178/editorial/104",
+    "evidence": "全体から指定数字を含まない列を引き、二重に引いた列を足し戻している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "randomized-algorithms",
+    "source": "AtCoder",
+    "problemId": "abc367_f",
+    "title": "Rearrange Query",
+    "url": "https://atcoder.jp/contests/abc367/tasks/abc367_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc367/editorial/10745",
+    "evidence": "各値に乱数を割り当て、区間の多重集合を加算ハッシュで比較している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "game-theory",
+    "source": "AtCoder",
+    "problemId": "abc368_f",
+    "title": "Dividing Game",
+    "url": "https://atcoder.jp/contests/abc368/tasks/abc368_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc368/editorial/10829",
+    "evidence": "素因数の個数をGrundy数として使い、独立な山のNimに帰着している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "probability-expectation",
+    "source": "AtCoder",
+    "problemId": "abc350_e",
+    "title": "Toward 0",
+    "url": "https://atcoder.jp/contests/abc350/tasks/abc350_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc350/editorial/9871",
+    "evidence": "自己ループの期待値を移項し、残りの状態をメモ化再帰で計算している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "probability-expectation",
+    "source": "AtCoder",
+    "problemId": "abc332_f",
+    "title": "Random Update Query",
+    "url": "https://atcoder.jp/contests/abc332/tasks/abc332_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc332/editorial/7926?lang=en",
+    "evidence": "各要素の期待値をアフィン変換で更新し、確率分布を保存せずに計算している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "interactive",
+    "source": "AtCoder",
+    "problemId": "abc269_e",
+    "title": "Last Rook",
+    "url": "https://atcoder.jp/contests/abc269/tasks/abc269_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc269/editorial/4897",
+    "evidence": "候補区間を半減させる質問を使い、問い合わせ回数の上限を示している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "interactive",
+    "source": "AtCoder",
+    "problemId": "abc305_f",
+    "title": "Dungeon Explore",
+    "url": "https://atcoder.jp/contests/abc305/tasks/abc305_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc305/editorial/6554",
+    "evidence": "観測した情報で深さ優先探索を行い、戻る移動も含めた回数の上限を示している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "output-only",
+    "source": "IOI",
+    "problemId": "2010-maze",
+    "title": "Maze (IOI 2010)",
+    "url": "https://stats.ioinformatics.org/tasks/2010/maze",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2010/tasks/tasks_jpn/day2/t3_maze/index.html",
+    "evidence": "公式日本語訳で、出力ファイルを提出する課題と明記されている。",
+    "verification": "official-tag",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "local-search",
+    "source": "AtCoder",
+    "problemId": "intro_heuristics_a",
+    "title": "AtCoder Contest Scheduling",
+    "url": "https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a",
+    "editorialUrl": "https://img.atcoder.jp/intro-heuristics/editorial.pdf",
+    "evidence": "解を少し変更する局所探索と、差分による得点更新を説明している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "simulated-annealing",
+    "source": "AtCoder",
+    "problemId": "ahc047_a",
+    "title": "Lovely Language Model",
+    "url": "https://atcoder.jp/contests/ahc047/tasks/ahc047_a",
+    "editorialUrl": "https://atcoder.jp/contests/ahc047/editorial/13096?lang=en",
+    "evidence": "Moegi氏の解説で、重み付きの評価を使う焼きなまし法を説明している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "beam-search",
+    "source": "AtCoder",
+    "problemId": "ahc043_a",
+    "title": "Railway Company",
+    "url": "https://atcoder.jp/contests/ahc043/tasks/ahc043_a",
+    "editorialUrl": "https://atcoder.jp/contests/ahc043/editorial/12355",
+    "evidence": "rhoo氏の解説で、初期駅の配置にビームサーチを使っている。",
+    "verification": "editorial",
+    "difficulty": null
+  }
+]

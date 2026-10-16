@@ -1,0 +1,219 @@
+---
+title: "両端と内部の一点が区間内で一度だけ現れる三点組を数える"
+description: "両端と内部一点の値が、それぞれ区間全体で一度だけ現れる三点組を数える。有効な左端だけの重み和を持ち、前二出現から内部の単出現数を二つの区間加算で更新する。"
+techniqueId: interval-unique-endpoints-singleton-middle-active-lazy
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+同じ種類の値が繰り返し現れる数列で、位置 $l<m<r$ を選ぶ。両端 $l,r$ が区間を定め、三つの位置の値は、それぞれ区間 $[l,r]$ **全体で一度だけ**現れる必要がある。この三点組の総数を求めたい。
+
+三つの選択位置の値が互いに異なるだけでは足りない。例えば `[1,2,1,3]` で先頭・二番目・末尾を選んでも、先頭の値1は区間内にもう一度現れるため失敗する。一方、選ばない値は何度現れてもよい。
+
+右端を一つずつ延ばすと、ある左端の値が再出現した時点で、その左端は以後ずっと使えなくなる。この不可逆な除外と、内側で一度だけ現れる値の数の更新を組み合わせる。
+
+## 考え方
+
+これから右端 $r$ を加える直前に、処理済みなのは半開区間 $[0,r)$ とする。各 $l<r$ について、次の二量を考える。
+
+- $a_l=1$：値 $B_l$ が $[l,r)$ で一度だけ現れる。それ以外は $a_l=0$。
+- $w_l$：内側の区間 $[l+1,r)$ で一度だけ現れる値の数。
+
+$B_r$ の直前の出現位置を $p$ とし、出現がなければ $p=-1$ とする。右端の値が $[l,r]$ で一度だけ現れる条件は $l>p$。この範囲の有効な左端について $w_l$ を足せば、今回の右端を持つ三点組の数になる。
+
+$$\sum_{p<l<r}a_lw_l.$$
+
+次に $r$ を処理済みの列へ加える。同じ値のさらに一つ前の出現を $q<p$ とすると、内部の単出現数に必要なのは次の二つの加算だけである。
+
+$$
+\begin{aligned}
+w_l&\mathrel{+}=1 &&\bigl(\max(0,p)\le l<r\bigr),\\
+w_l&\mathrel{-}=1 &&\bigl(\max(0,q)\le l<p\bigr).
+\end{aligned}
+$$
+
+後者は $p\ge0$ のときだけ行う。古い左端 $p$ を無効にし、新しい左端 $r$ を $a_r=1,w_r=0$ で追加する。範囲加算を一括で処理するため、有効点数と、有効点に限った重みの和を遅延セグメント木に持つ。
+
+## 適用条件
+
+区間の両端は必ず選択され、内側からもう一点を選ぶ。選択した三点の値は、その区間の非選択位置も含めて一度だけ現れなければならない。区間長が3未満なら寄与は0である。入力列は固定で、全区間の総数を一度に求める。
+
+掲載関数 `count_interval_unique_leader_triples(values)` は、長さ20万以下の `std::vector<std::int64_t>` を受け取り、三点組の個数を `std::int64_t` で返す。値の大小には意味がなく、等しいかどうかだけを使う。任意の符号付き64bitラベルを圧縮するため、0・負数・両端値も扱える。
+
+原典Platinum版の $1\le N\le200000$、値 $1\ldots N$ を全て含む。空列も許し、長さ0・1・2の答えは0とする。入力位置は実装内で0始まりで、原典の1始まりの三位置は全て1を引いて対応する。
+
+長さ上限違反は `std::invalid_argument`。ラベル値に範囲違反はない。標準の割当例外はそのまま伝わる。入力を変更せず、呼出し間で保持する状態はない。
+
+## なぜ正しいか
+
+**両端が単出現なら、内側の単出現数が選択肢の数になる。** $a_l=1$ と $l>p$ により、両端の値は区間全体で一度だけ現れる。従って両端の値は互いにも内側にも現れない。内側で一度だけ現れる位置は、区間全体でもその値が一度だけ現れ、第三の選択位置として使える。内側で二度以上現れる値は使えないので、選択肢は正確に $w_l$ 個である。
+
+各三点組は右端 $r$ と左端 $l$、内側の選択位置で一意に定まる。全ての右端で上の和を足すと、漏れも重複もない。
+
+**前二出現で、単出現数が変わる左端を分けられる。** 値 $B_r$ を内側へ加える前の出現数に注目する。
+
+- $p\le l<r$ では、直前の出現 $p$ が内側 $[l+1,r)$ に入らない。0回から1回となるため $w_l$ は1増える。
+- $q\le l<p$ では、内側に入る同じ値は $p$ の一つだけである。1回から2回となるため $w_l$ は1減る。
+- $l<q$ では既に2回以上あり、追加後も単出現ではない。
+
+実在する左端は0以上なので、負の出現位置を0へ切り上げる。$p=-1$ なら全ての既存左端に1を足すだけで、減算はない。$q=-1$ なら減算範囲は $[0,p)$ になる。端点 $p$ 自身は内側に $p$ を含まないため、減算側でなく加算側に入る。
+
+**無効化は永久である。** 今回の値の直前出現 $p$ は、それまで同じ値を右側に持たず、有効な左端だった。位置 $r$ が加わると $[p,r]$ に同じ値が二つ入る。右端をさらに延ばしても、この重複は消えない。従って $p$ を一度無効にすればよく、古い左端を復活させる必要はない。
+
+**有効点数を掛けると、必要な和だけを更新できる。** 木の各節点で、有効点数 $c$ と $s=\sum a_lw_l$ を持つ。区間内の $w_l$ へ一律に $\delta$ を足す操作は
+
+$$s\gets s+\delta c$$
+
+となる。無効点の $w_l$ は将来使わないため、その値自体を保存する必要はない。遅延値は、現在その節点に属する有効点へ届ける加算を表す。
+
+一点の有効性を変更する前には、祖先の遅延を子へ渡す。これにより、過去の加算は過去から有効だった点だけに正しい人数で反映される。葉を無効化すると和・人数・遅延を全て0にし、新しい位置を有効化すると人数1、重み0、遅延0へ置き換える。従って、新しい左端が過去の加算を受け継ぐことはない。
+
+**問い合わせを先に行い、その後で右端を内側へ移す。** 位置 $r$ を選ぶ今回の三点組では、内側は $[l+1,r)$ であり、$r$ を含まない。従って、まず $[p+1,r)$ の和を答えへ加える。その後、$p$ の無効化、二つの範囲加算、$r$ の有効化を行う。これで次の右端 $r+1$ の直前には、全ての定義がそのまま成立する。最初は有効点がなく、帰納的に全走査が正しい。
+
+## 計算量
+
+ラベルのソートと二分探索による圧縮に $O(N\log(N+1))$ 時間を使う。各右端につき、範囲和一回、無効化高々一回、範囲加算高々二回、有効化一回で、それぞれ $O(\log(N+1))$。一つの左端は一度だけ有効化され、高々一度しか無効化されない。遅延値を個々の有効点へ展開して回る処理はない。
+
+全体は **$O(N\log(N+1))$ 時間、$O(N)$ 空間**。長さ3未満は入力長の検査後すぐ0を返す。木の再帰の深さは $O(\log(N+1))$ である。
+
+各 $w_l$ は $0\ldots N$、節点の和は $N^2$ 以下である。答えは三位置の全選択数以下なので
+
+$$\binom{200000}{3}=1333313333400000$$
+
+まで増える。和・答え・人数との積には符号付き64bitを使う。減算があるため、符号なしの重みへ置き換えない。遅延値は高々 $2N$ 回の $\pm1$ 加算の一部の和で、絶対値は $2N$ 以下となる。
+
+## 実装
+
+公開関数で用いる補助クラスは、範囲内の添字だけを渡す内部用である。`replace` は葉の過去の値を捨てる。`add` と `fold` の区間は全て0始まりの半開区間である。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace unique_leader_detail {
+struct Aggregate {
+    int count = 0;
+    std::int64_t sum = 0;
+};
+
+class ActiveWeights {
+    struct Node {
+        int count = 0;
+        int lazy = 0;
+        std::int64_t sum = 0;
+    };
+    int n_;
+    std::vector<Node> tree_;
+
+    void apply(int node, int delta) {
+        tree_[node].sum += std::int64_t(delta) * tree_[node].count;
+        tree_[node].lazy += delta;
+    }
+    void push(int node) {
+        const int delta = tree_[node].lazy;
+        if (delta != 0) {
+            apply(2 * node, delta);
+            apply(2 * node + 1, delta);
+            tree_[node].lazy = 0;
+        }
+    }
+    void pull(int node) {
+        tree_[node].count = tree_[2 * node].count + tree_[2 * node + 1].count;
+        tree_[node].sum = tree_[2 * node].sum + tree_[2 * node + 1].sum;
+    }
+    void replace(int node, int left, int right, int position, bool active) {
+        if (right - left == 1) {
+            tree_[node] = Node{active ? 1 : 0, 0, 0};
+            return;
+        }
+        push(node);
+        const int middle = left + (right - left) / 2;
+        if (position < middle) replace(2 * node, left, middle, position, active);
+        else replace(2 * node + 1, middle, right, position, active);
+        pull(node);
+    }
+    void add(int node, int left, int right, int begin, int end, int delta) {
+        if (end <= left || right <= begin) return;
+        if (begin <= left && right <= end) {
+            apply(node, delta);
+            return;
+        }
+        push(node);
+        const int middle = left + (right - left) / 2;
+        add(2 * node, left, middle, begin, end, delta);
+        add(2 * node + 1, middle, right, begin, end, delta);
+        pull(node);
+    }
+    Aggregate fold(int node, int left, int right, int begin, int end) {
+        if (end <= left || right <= begin) return {};
+        if (begin <= left && right <= end)
+            return {tree_[node].count, tree_[node].sum};
+        push(node);
+        const int middle = left + (right - left) / 2;
+        const auto a = fold(2 * node, left, middle, begin, end);
+        const auto b = fold(2 * node + 1, middle, right, begin, end);
+        return {a.count + b.count, a.sum + b.sum};
+    }
+public:
+    explicit ActiveWeights(int n) : n_(n), tree_(4 * n) {}
+    void replace(int position, bool active) { replace(1, 0, n_, position, active); }
+    void add(int begin, int end, int delta) {
+        if (begin < end) add(1, 0, n_, begin, end, delta);
+    }
+    Aggregate fold(int begin, int end) {
+        return begin < end ? fold(1, 0, n_, begin, end) : Aggregate{};
+    }
+};
+} // namespace unique_leader_detail
+
+std::int64_t count_interval_unique_leader_triples(
+    const std::vector<std::int64_t>& values) {
+    static_assert(std::numeric_limits<int>::max() >= 1000000);
+    if (values.size() > 200000)
+        throw std::invalid_argument("too many values");
+    const int n = int(values.size());
+    if (n < 3) return 0;
+
+    auto palette = values;
+    std::sort(palette.begin(), palette.end());
+    palette.erase(std::unique(palette.begin(), palette.end()), palette.end());
+    std::vector<int> last(palette.size(), -1), second_last(palette.size(), -1);
+    unique_leader_detail::ActiveWeights tree(n);
+    std::int64_t answer = 0;
+    for (int right = 0; right < n; ++right) {
+        const int color = int(std::lower_bound(palette.begin(), palette.end(), values[right])
+                              - palette.begin());
+        const int p = last[color], q = second_last[color];
+        answer += tree.fold(p + 1, right).sum;
+        if (p >= 0) tree.replace(p, false);
+        tree.add(std::max(0, p), right, 1);
+        if (p >= 0) tree.add(std::max(0, q), p, -1);
+        tree.replace(right, true);
+        second_last[color] = p;
+        last[color] = right;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全区間の単出現を各位置の寄与から数える方法](/flowchartcp/techniques/singleton-subarray-contribution/)は、一つの単出現だけを数える。ここでは両端も単出現である必要があり、使える左端を残した上で内側の選択数を足す。
+
+[区間内で一度だけ現れる値を一つ探す方法](/flowchartcp/techniques/offline-range-singleton-witness/)は、単出現の存在と証人を求める。第三の位置の全選択数を、全ての有効な両端について合計する処理とは異なる。
+
+[遅延セグメント木](/flowchartcp/techniques/lazy-segment-tree/)の加算則を、有効点数 $c$ と有効点の重み和 $s$ に合わせて $s\gets s+\delta c$ とする。途中で有効性を変える際は、過去の遅延を反映してから葉を置き換える点が要となる。
+
+## 参考資料
+
+[USACO 2021 US Open Platinum 第1問の原典](https://usaco.org/index.php?page=viewproblem2&cpid=1140)と[Benjamin Qi による公式解説](https://usaco.org/current/data/sol_prob1_platinum_open21.html)。同名のGold版とは条件が異なる。公式解説は有効な左端と内部単出現数の積を保持し、前二出現による範囲加算を行う手順を示している。
+
+[公式競技結果](https://usaco.org/index.php?page=open21results)には、2021年 US Open のPlatinum第1問として掲載されている。
+
+<TechniqueReferences techniqueId="interval-unique-endpoints-singleton-middle-active-lazy" />

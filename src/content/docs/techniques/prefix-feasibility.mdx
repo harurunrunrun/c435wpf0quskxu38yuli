@@ -1,0 +1,73 @@
+---
+title: "括弧列の判定を、合計と接頭和の最小値で持つ"
+description: "区間が正しい括弧列かどうかを、二つの値を結合して判定します。"
+techniqueId: "prefix-feasibility"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+括弧の交換や変更があり、連続区間が正しい括弧列か何度も判定したいとき。全ての文字を読むと一つの問い合わせに区間長だけ掛かります。
+
+## 考え方
+
+開き括弧を $+1$、閉じ括弧を $-1$ とします。正しい列の条件は、合計が 0 で、空の接頭部も含めた全接頭和が非負であること。
+
+区間の情報を $(s,m)$ = (合計, 最小接頭和) とすると、左 $A$ と右 $B$ の結合は
+
+$$(s_A+s_B,\min(m_A,s_A+m_B)).$$
+
+右の接頭和には左の合計が加わります。順序を逆に結合できないので、区間クエリの左右の集計を分けます。
+
+## 適用条件
+
+一種類の括弧に限ります。複数種類で対応する種類も判定する場合、合計と最小値だけでは足りません。区間の開始前の残高を差し引く代わりに、各区間の相対接頭和を保存します。
+
+## なぜ正しいか
+
+全接頭部は、左だけの接頭部と、左全部に右の接頭部を続けたものに分かれます。最小値の式はこの二つの集合の最小です。全体が非負で合計 0 なら、どの閉じ括弧にも対応する前の開き括弧が存在します。
+
+## 計算量
+
+改善前の変更は $O(1)$、判定は $O(N)$。改善後は前処理 $O(N)$、一点変更・区間判定とも $O(\log N)$、空間 $O(N)$。交換は二つの一点変更です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct BracketTree {
+    struct Node {int sum=0, minimum=0;};
+    static Node merge(Node a,Node b){return {a.sum+b.sum,min(a.minimum,a.sum+b.minimum)};}
+    int size=1;vector<Node> tree;
+    BracketTree(const string& s){
+        while(size<(int)s.size())size*=2;
+        tree.resize(size*2);
+        for(int i=0;i<(int)s.size();++i){int v=s[i]=='(' ? 1:-1;tree[size+i]={v,min(0,v)};}
+        for(int i=size-1;i;--i)tree[i]=merge(tree[i*2],tree[i*2+1]);
+    }
+    void set(int pos,char c){
+        int v=c=='(' ? 1:-1, k=size+pos;tree[k]={v,min(0,v)};
+        for(k/=2;k;k/=2)tree[k]=merge(tree[k*2],tree[k*2+1]);
+    }
+    Node query(int l,int r)const{ // [l,r)
+        Node left,right;
+        for(l+=size,r+=size;l<r;l/=2,r/=2){
+            if(l&1)left=merge(left,tree[l++]);
+            if(r&1)right=merge(tree[--r],right);
+        }
+        return merge(left,right);
+    }
+    bool valid(int l,int r)const{auto x=query(l,r);return x.sum==0 && x.minimum>=0;}
+};
+```
+
+## 関連する手法
+
+[区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/)
+
+## 参考資料
+
+- [AtCoder：Parenthesis Checking の公式解説](https://atcoder.jp/contests/abc223/editorial/2802)
+
+<TechniqueReferences techniqueId="prefix-feasibility" />

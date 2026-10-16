@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/tmp/flowchartcp-ioi2017-wiring-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 4.772870711007272,
+  "testFile": "/tmp/flowchartcp-ioi2017-wiring-flow.test.mjs",
+  "testSha256": "16f4572b349cbad6f25e42b9ee4d6fc790e29af04703c3be494c36c5193a033d",
+  "tapFile": "/tmp/flowchartcp-ioi2017-wiring-flow-results.tap",
+  "tapSha256": "b92f04b9f97dbba3ea4bdb644389029ded0addc5c983fb6500ffd951aad5ae98",
+  "caseFile": "/tmp/flowchartcp-ioi2017-wiring-flow-case.json",
+  "caseSha256": "4736a85556bfc0253724203cd63c4625be6964f781d998f2bf5bea10c22bd8a1",
+  "frozenBaseline": {
+    "articles": 503,
+    "graphs": 470,
+    "nodes": 3691,
+    "walks": 524,
+    "corpora": 9,
+    "rawSha256": {
+      "flows": "5aa0bbfa07a58c2173e13291cb4e15351db0d760253d195e627a46c776b39834",
+      "walks": "a0deee2a518e3edca08d9c63eed4ea182bb170123c2ff60c417448d586d43986",
+      "ioi2017-audit": "980a693ea1e0de787635c077098f72b8590a410d61586e63848dc7b7ba9038e6",
+      "audits": "fb460e2bde0fc220bdc35b873e666c600090b529c83b1b40d50c958ffe7e0bab"
+    }
+  },
+  "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+  "sharedFilesModified": false,
+  "coveragePolicy": "Initial IOI2017 research4/6 and all9 prior initial audits preserved; live coverage>=1, deleting targetWiring evidence reduces coverage by1; an invalid actual MDX fence fails real preflight and makes preflight-dependent corpus coverage0. Additional later corpora and legal same-corpus resolutions are permitted.",
+  "permanentTest": "tests/ioi2017-wiring-flow.test.mjs"
+}

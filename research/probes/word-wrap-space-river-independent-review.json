@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "problemId": "wf2018_f",
+  "techniqueId": "word-wrap-sparse-space-river-dp",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialIssues": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "readCompleteEightSections": true,
+    "readEntireActualCpp": true,
+    "readCompleteCheckerAndSidecar": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72"
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-space-river-article.mdx",
+      "sha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-space-river-checker.py",
+      "sha256": "aa5e42ace3e0c48710019af9ad7a5557527d2d57936141b87d1548841c84fc1a"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-space-river-sidecar.json",
+      "sha256": "cce0fc61579b548315719cfc2e1c25c08c0e06231556569c36b56c89406dc8b6"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-space-river-independent-normal.json",
+      "sha256": "63abfc4d75146789359c95fb3b3d443d4748420dc0c4dd23a7f2e0f0d91ba231"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-space-river-independent-asan.json",
+      "sha256": "94011c30a4d04075466e7928678c4b8ed1b62f48cab8c4f859ea02516f563713"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-space-river-independent-probe.py",
+      "sha256": "63a1c01ced850d372e7fb3b0ecf3208e1aafc5ef052ba4b590826eb6c6fe52a6"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-space-river-independent-probe.json",
+      "sha256": "b789d0569318f32c0636f92a7553507310b15170b356b3084b26944c61261ee5"
+    }
+  },
+  "primarySourceReview": {
+    "statement": {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+      "pages": [
+        11,
+        12
+      ],
+      "method": "Independently read official PDF web text and primary-only targeted search. No unavailable image is counted as inspected.",
+      "bounds": {
+        "wordCount": [
+          2,
+          2500
+        ],
+        "wordLength": [
+          1,
+          80
+        ],
+        "alphabet": "English lower/uppercase letters",
+        "timeSeconds": 12,
+        "minimumWidth": "maximum word length",
+        "sourceUpperWidth": "not specified"
+      },
+      "contract": "Fixed word order, maximal left-justified packing with one interword space and no word splitting. River moves through consecutive rows with adjacent-column difference at most1; trailing whitespace is excluded. Maximize length and break ties by minimum width."
+    },
+    "sampleVerification": {
+      "originalWordCounts": [
+        21,
+        25
+      ],
+      "expectedWidthAndLength": [
+        [
+          15,
+          5
+        ],
+        [
+          21,
+          6
+        ]
+      ],
+      "primarySample1RecoveryQuery": "site:icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf \"Sample Input 1\" \"river in Asia and the longest in\" \"21\"",
+      "retrievedFromPrimary": true,
+      "full21And25TokenFixturesChecked": true,
+      "extractionIssueHandling": "The initial missing-five-words/16-token extraction is not used as the sample fixture. Targeted primary search returned all21 tokens; the independently retrieved full primary web text also now contains the complete sample. No problem paragraph is reproduced in this review."
+    },
+    "sketch": {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+      "pages": [
+        7
+      ],
+      "officiallyHosted": true,
+      "selfDescribedUnofficial": true,
+      "authors": [
+        "Per Austrin",
+        "Jakub Onufry Wojtaszczyk"
+      ],
+      "officialEditorialVerified": false,
+      "attribution": "The source gives sparse per-width evaluation, a current-row-count stop and jumping to the next changed wrapping. It explicitly does not give a stronger analysis for those last two improvements. The article independently proves their safety and retains a conservative O(N²(L+1)) worst-case bound."
+    },
+    "date": {
+      "url": "https://news.icpc.global/wf2018/",
+      "contestDate": "2018-04-19",
+      "datePrecision": "day",
+      "difficulty": null
+    }
+  },
+  "independentMathematicalReview": [
+    "Greedy maximal row packing is the unique layout required by the contract. Its actual interword spaces are exactly the positions generated before adding each second or later word; padding and leading margins are not DP states.",
+    "For any actual space c, a river ending there has either length1 or one more than a predecessor at c-1,c,c+1 in the immediately previous row. Keeping only that previous row is sufficient. Clearing current and swapping even after a one-word row cuts all chains; taking a global maximum also retains rivers ending before the last row.",
+    "In each row, the next excluded word first fits at used+1+nextLength. All these thresholds exceed the current width. Before their minimum, induction over rows preserves every old boundary and every space coordinate. At the minimum at least one boundary changes. Thus the event is the exact next layout change, not only a safe overestimate.",
+    "Greedy row endpoints dominate every feasible ordered line partition prefix. Consequently greedy minimizes row count, and increasing width cannot increase that count because every former row remains feasible. Future river length is bounded by future row count. When current rows<=best, no larger width can strictly improve the answer.",
+    "Widths increase strictly. Same-layout skipped widths cannot improve the objective, and stopping after the row bound cannot improve it either. Updating only on strict length improvement retains the minimum optimal width. River length itself is not monotone in width; the six one-letter-word example gives3 at width3 and2 at width5.",
+    "The full one-line length T=sum(lengths)+N-1 is sufficient: every width>=T has the same internal spaces. Search need not assume an original upper-width restriction. A singleton explicitly extends the original domain and returns length0 at its word length."
+  ],
+  "complexityAndIntegerReview": {
+    "perWidth": "O(N) time including validation and O(N) auxiliary space. Across all rows there are fewer than N actual spaces; the pointer advances only to the right, and at most3 distinct integer previous columns lie in any +/-1 range.",
+    "search": "O(NQ) with Q<=T-L+1; hence O(N(T-L+1)) subset O(N²(L+1)), without an unproved asymptotic speedup from event jumps or row stopping.",
+    "sourceUpperBounds": {
+      "T": 202499,
+      "candidateIntegerWidths": 202420,
+      "wordPlacementCount": 506050000
+    },
+    "upperBoundDerivation": "T-L+1=sum(lengths)-max(lengths)+N <=(N-1)*80+N; maximize at N2500. Multiply by2500 for the stated simple placement bound. Seven generated maximum families and two full all-width maximum oracles are tests, not enumeration of every maximum input.",
+    "integerSafety": "Validation caps N and each length before accumulation. used+1+nextLength<=T and columns +/-1 are bounded; next event is >width and <=T. INT_MAX widths are only compared, never incremented or used to allocate columns. Every result/column/index fits signed32-bit.",
+    "memory": "Two vectors reserve N Space records; no width-sized array exists in the published APIs. The extra INT_MAX/maxN probe measures40000 requested element bytes and0 live requested bytes afterward. Allocator/object/executable overhead is additional. Whole checker RSS includes dense full-width oracles and sanitizer quarantine."
+  },
+  "apiAndWriterReview": {
+    "originalRangeIncluded": true,
+    "extension": "One word is accepted explicitly. Fixed-width API accepts every int width>=maximum length including INT_MAX. It reports exact next change, or nullopt when all words fit one line.",
+    "invalid": "Empty or >2500 inputs, lengths outside1..80, non-letter/empty/too-long strings, and width below the maximum are rejected before unsafe arithmetic. Unsigned-char alphabet iteration handles non-ASCII bytes safely.",
+    "state": "Read-only spans are neither mutated nor retained. All computation state is local; Result and WidthEvaluation own their scalar/optional values. Repeated mixed calls are independent.",
+    "writer": "Computes and validates before output, makes a decimal ASCII line from the two positive integers, then unformatted write. Caller locale, basefield/showbase/showpos/uppercase flags, width29, fill and precision remain unchanged. Independent short-write and exception-enabled streams confirm standard badbit/failure propagation. Invalid-input output remains empty; no rollback of external partial writes is promised."
+  },
+  "suppliedCheckerIndependentReproduction": {
+    "classification": "Independent rerun of the supplied actual-fence checker. The same4382429 checks are not claimed as a new oracle.",
+    "normal": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 4382429,
+      "apiCalls": 545801,
+      "exhaustiveLengthInputs": 21844,
+      "literalIntegerWidths": 521155,
+      "literalGridCells": 94307189,
+      "nextChangeChecks": 521106,
+      "literalPathCalls": 44895,
+      "randomInputs": 450,
+      "metamorphicChecks": 1212,
+      "invalidCases": 23,
+      "fullWidthOracleIntegerWidths": 262088,
+      "fullWidthOracleSpaceUpdates": 641826740,
+      "checksum": "14932699637744859611",
+      "seconds": 2.06002,
+      "peakRSSKiB": 21584,
+      "maximumCases": [
+        {
+          "name": "2500 one-letter words",
+          "width": 3,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "2500 length80 words,total202499",
+          "width": 161,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "alternating80and1",
+          "width": 82,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "full random1..80",
+          "width": 5789,
+          "longest": 8,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "full random41..80",
+          "width": 968,
+          "longest": 7,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "periodic1..80",
+          "width": 1667,
+          "longest": 62,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "bit-mixed1..80",
+          "width": 616,
+          "longest": 8,
+          "fullWidthOracle": false
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 4382429,
+      "apiCalls": 545801,
+      "exhaustiveLengthInputs": 21844,
+      "literalIntegerWidths": 521155,
+      "literalGridCells": 94307189,
+      "nextChangeChecks": 521106,
+      "literalPathCalls": 44895,
+      "randomInputs": 450,
+      "metamorphicChecks": 1212,
+      "invalidCases": 23,
+      "fullWidthOracleIntegerWidths": 262088,
+      "fullWidthOracleSpaceUpdates": 641826740,
+      "checksum": "14932699637744859611",
+      "seconds": 16.9527,
+      "peakRSSKiB": 841016,
+      "maximumCases": [
+        {
+          "name": "2500 one-letter words",
+          "width": 3,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "2500 length80 words,total202499",
+          "width": 161,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "alternating80and1",
+          "width": 82,
+          "longest": 1250,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "full random1..80",
+          "width": 5789,
+          "longest": 8,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "full random41..80",
+          "width": 968,
+          "longest": 7,
+          "fullWidthOracle": true
+        },
+        {
+          "name": "periodic1..80",
+          "width": 1667,
+          "longest": 62,
+          "fullWidthOracle": false
+        },
+        {
+          "name": "bit-mixed1..80",
+          "width": 616,
+          "longest": 8,
+          "fullWidthOracle": false
+        }
+      ]
+    },
+    "allSemanticFieldsMatchFrozenAuthor": true,
+    "asanScheduling": "Started only after parent explicitly reported all root sanitizer jobs finished. Peer completion was sent back before parent restarted its own ASan.",
+    "leakSanitizer": "Disabled by the author harness due environment; address and undefined-behavior sanitizers enabled."
+  },
+  "additionalIndependentProbe": {
+    "script": {
+      "path": "/tmp/flowchartcp-space-river-independent-probe.py",
+      "sha256": "63a1c01ced850d372e7fb3b0ecf3208e1aafc5ef052ba4b590826eb6c6fe52a6"
+    },
+    "results": {
+      "articleSha256": "1f933aa80cd4f7eb0f790cb0b512403f40104e21c2185e0d344b59ff96333cfd",
+      "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+      "inputCases": 3660,
+      "allLegalOrderedLinePartitionsExamined": 302345,
+      "fixedWidthsComparedIncludingTwoPastOneLine": 205199,
+      "minimumRowCountAcrossAllFeasiblePartitionsChecks": 205199,
+      "additionalIntExtremeWidthComparisons": 7320,
+      "booleanClosureNodes": 126877,
+      "booleanAdjacentRowEdges": 11111,
+      "casesWithTiedOptimalWidths": 3632,
+      "emptyRowEvaluations": 93200,
+      "emptyRowCutWitness": {
+        "lengths": [
+          1,
+          1,
+          3,
+          1,
+          1
+        ],
+        "width3River": 1,
+        "width3Rows": [
+          2,
+          3,
+          5
+        ]
+      },
+      "checksum": "3236069206071420278",
+      "apiMemoryAndWriter": {
+        "memoryWriterAssertions": 13,
+        "maxNIntMaxWidthPeakRequestedAllocationBytes": 40000,
+        "liveRequestedBytesAfterCall": 0
+      },
+      "seconds": 1.1907370970002376,
+      "oracle": "Enumerate every cut mask, select the lexicographically greatest feasible ordered line endpoints, form the actual interword-space DAG and compute boolean transitive closure. Reachable row distance gives the river length. Next change is the first later differing endpoint tuple among every integer width, without the excluded-word threshold formula.",
+      "sanitizerForThisAdditionalProbe": false,
+      "sharedOrAuthorArtifactsModified": false
+    },
+    "independence": "All cut masks enumerate complete ordered line partitions. Choosing their lexicographically greatest feasible endpoint tuple implements the defining maximal packing without the production wrapping loop or prefix binary search. Minimum row count is independently checked across all feasible partitions. The actual-space DAG uses boolean Floyd transitive closure; reachable row distance gives the longest river without a maximum-length DP or recursive path enumeration.",
+    "nextChange": "Compares each width against the first later different endpoint tuple across every integer width; it does not use excluded-word thresholds.",
+    "inputScope": "All N1..7 sequences over lengths1/4/9, all N8 sequences over1/80,120 new random N8..12 sequences over1..80, and5 targeted chain-cut/extreme patterns.",
+    "meaningfulCounts": {
+      "inputs": 3660,
+      "orderedLinePartitions": 302345,
+      "integerWidths": 205199,
+      "rowCountOptimalityChecks": 205199,
+      "intExtremeWidths": 7320,
+      "tiedOptimumInputs": 3632,
+      "emptyRowLayouts": 93200,
+      "memoryWriterChecks": 13
+    },
+    "checksum": "3236069206071420278",
+    "additionalProbeSanitized": false
+  },
+  "initialAuditPreservation": {
+    "initialResearchPositive": true,
+    "initialRecordDeepComparedWithLiveAtReview": true,
+    "resolutionOnlyAppropriate": true,
+    "newPositiveReviewRequired": false,
+    "preserve": "All initial F fields, source/sketch provenance, officialEditorialVerified=false, missing-technique classification, original root trace, and not-created-in-this-audit implementation status. A future resolution follows parent integration and feature navigation validation; the reviewer has not registered coverage."
+  },
+  "integrationNotes": {
+    "parentPlannedPublicTitle": "行幅を変えて、空白の連なりを最長にする",
+    "authorCppFrozenUnchanged": true,
+    "metadataPrerequisitesExist": true,
+    "frontmatterDescriptionEqualsMetadataSummary": true,
+    "sharedRegistrationPerformed": false
+  },
+  "originalReviewSha256": "1cab446fa256e06f3c766144f405a576a848d0bd8a4d06bd33769c324c316616",
+  "publishedArticle": "src/content/docs/techniques/word-wrap-sparse-space-river-dp.mdx",
+  "permanentProbe": {
+    "script": "research/probes/word-wrap-space-river-independent.py",
+    "normalizedSha256": "13f00c61b684f205ef8dfdf493cd72dd7d969f2c8e8478464a0d746e07674a11",
+    "normalization": "Only MDX path and removal of implicit tmp result write; independent all-cut-partition and boolean-closure oracle, extreme widths and memory/writer checks unchanged."
+  }
+}

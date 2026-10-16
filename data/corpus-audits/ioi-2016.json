@@ -1,0 +1,4317 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2016",
+  "title": "IOI2016 本競技全6題の固定初回監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "corpusId": "ioi-2016",
+    "selectedAt": "2026-10-15T11:24:32.690672+00:00",
+    "fixedBeforeTechniqueSearch": true,
+    "basis": "Official Japanese committee task index lists exactly three tasks on each of two competition days. Actual English PDF links were opened and their printed task IDs/day headers verified before any technique matching.",
+    "officialTaskIndex": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "officialScheduleReport": "https://www2.ioi-jp.org/ioi/2016/report.html",
+    "scope": "IOI2016 main competition only; practice tasks and language duplicates excluded.",
+    "count": 6,
+    "datePrecision": "day",
+    "exactDatesVerified": true,
+    "difficulty": null,
+    "problems": [
+      {
+        "source": "IOI",
+        "problemId": "ioi2016_molecules",
+        "officialTaskId": "molecules",
+        "title": "分子の検出",
+        "englishTitle": "Detecting Molecules",
+        "day": 1,
+        "date": "2016-08-14",
+        "datePrecision": "day",
+        "exactDateVerified": true,
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+        "selectionLinkId": 7,
+        "taskIdReadInPrimaryPdf": true
+      },
+      {
+        "source": "IOI",
+        "problemId": "ioi2016_railroad",
+        "officialTaskId": "railroad",
+        "title": "ジェットコースター",
+        "englishTitle": "Roller Coaster Railroad",
+        "day": 1,
+        "date": "2016-08-14",
+        "datePrecision": "day",
+        "exactDateVerified": true,
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+        "selectionLinkId": 9,
+        "taskIdReadInPrimaryPdf": true
+      },
+      {
+        "source": "IOI",
+        "problemId": "ioi2016_shortcut",
+        "officialTaskId": "shortcut",
+        "title": "近道",
+        "englishTitle": "Shortcut",
+        "day": 1,
+        "date": "2016-08-14",
+        "datePrecision": "day",
+        "exactDateVerified": true,
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+        "selectionLinkId": 11,
+        "taskIdReadInPrimaryPdf": true
+      },
+      {
+        "source": "IOI",
+        "problemId": "ioi2016_paint",
+        "officialTaskId": "paint",
+        "title": "お絵かきパズル",
+        "englishTitle": "Paint By Numbers",
+        "day": 2,
+        "date": "2016-08-16",
+        "datePrecision": "day",
+        "exactDateVerified": true,
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+        "selectionLinkId": 15,
+        "taskIdReadInPrimaryPdf": true
+      },
+      {
+        "source": "IOI",
+        "problemId": "ioi2016_messy",
+        "officialTaskId": "messy",
+        "title": "バグの解読",
+        "englishTitle": "Unscrambling a Messy Bug",
+        "day": 2,
+        "date": "2016-08-16",
+        "datePrecision": "day",
+        "exactDateVerified": true,
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+        "selectionLinkId": 17,
+        "taskIdReadInPrimaryPdf": true
+      },
+      {
+        "source": "IOI",
+        "problemId": "ioi2016_aliens",
+        "officialTaskId": "aliens",
+        "title": "宇宙人",
+        "englishTitle": "Aliens",
+        "day": 2,
+        "date": "2016-08-16",
+        "datePrecision": "day",
+        "exactDateVerified": true,
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+        "selectionLinkId": 19,
+        "taskIdReadInPrimaryPdf": true
+      }
+    ],
+    "excludedPractice": [
+      "Martian DNA",
+      "Laugh Analysis",
+      "Reversing a Sequence",
+      "Mini Tetris"
+    ],
+    "solutionsAndCoverageNotYetAssessedAtSelection": true,
+    "globalLearningComplete": false
+  },
+  "snapshot": {
+    "corpusId": "ioi-2016",
+    "frozenAt": "2026-10-15T11:24:32.690672+00:00",
+    "snapshotRoot": "research/snapshots/ioi-2016-manifest.json",
+    "site": "/home/admin2/flowchartcp/site",
+    "selectionFile": "/tmp/flowchartcp-ioi2016-selection.json",
+    "selectionSha256": "3505ba77043d0ff594b6b66fe763cf9e7b1cd97082a79ff4dc30cbca809c3350",
+    "stableCopyBeforeEqualsAfter": true,
+    "copiedBytesMatchAllHashes": true,
+    "rawFileCount": 1431,
+    "coreRawFileCount": 959,
+    "publicRawFileCount": 472,
+    "scope": "All raw data/src/scripts/tests/public and package/config/README files captured in one stable before/copy/after epoch. Vendor/compiler is excluded and may be copied later in a separate epoch. No .env* paths opened.",
+    "hashAlgorithm": "SHA-256",
+    "ledgerSha256": "dd7151810d712521a5f3f19c206eecb7630c3b9688575c6243dee4b170992a56",
+    "rawCounts": {
+      "allTechniqueMdx": 504,
+      "metadataRecords": 504,
+      "referenceRecords": 525,
+      "flowcharts": 471,
+      "walks": 525,
+      "oldCorpusAudits": 9
+    },
+    "primaryFiles": {
+      "data/flows.json": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+      "data/problem-walks.json": "2f82ea7563546d93d38cbfd04feaea01cc66beb795d8e9d3893148dc42ce8774",
+      "data/sources.json": "f364ac6b2a586dfee90abb120449b8eb188bbb4445326b02d2ebf679ca492a68",
+      "src/lib/flow.ts": "9e72450184a8dbb9185164bce5a67a15e9d5565cfcd956d9e761e08cf6b92fe8",
+      "scripts/local-modules.mjs": "c8db0ef26b9034d37230aa55e9842605487c449961d306dece491bb92b121327"
+    },
+    "initialCountsPolicy": "Observed frozen counts never change retroactively when root later integrates new articles.",
+    "allInitialMdxRetainedInTmp": true,
+    "vendorCompilerCopied": true,
+    "coreLedgerSha256": "5c76f569d8093b743896da6498b3828d1f2ea283b6efccff34fe2ceee506ed3a",
+    "publicEpochSameAsCore": true,
+    "initialHashFiles": {
+      "before": "hashes-before.json",
+      "after": "hashes-after.json",
+      "memberCount": 1431,
+      "core959IsProjectionExcludingPublic": true
+    },
+    "historicalSnapshotRoot": "/tmp/flowchartcp-ioi2016-baseline",
+    "permanentInitialRawArchive": "research/snapshots/ioi-2016-initial-raw.json.gz",
+    "permanentLaterVendorArchive": "research/snapshots/ioi-2016-vendor-raw.json.gz",
+    "allInitialRawPermanentlyRetained": true,
+    "all504MdxPermanentlyRetained": true
+  },
+  "dependencyExtension": {
+    "copiedAt": "2026-10-15T11:35:44.489797+00:00",
+    "rawFileCount": 105,
+    "files": {
+      "vendor/GFM-LICENSE": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61",
+      "vendor/MICROMARK-LICENSE": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb",
+      "vendor/README.md": "553b4e919d7c25e9b63fabcf964208e305c2fbb07e722639b6df5bf2487544cd",
+      "vendor/TYPESCRIPT-LICENSE": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47",
+      "vendor/ac-library/LICENSE": "5537d4d10b76b81b6e8dfd8b644480a4b1efa332fbb0cdb61126c5be781ef7b4",
+      "vendor/ac-library/SOURCES.md": "8e9d624cdd39cc9eaa91ea8d9c0f57873a61ef2a7a965f0ceec77853a5b59937",
+      "vendor/ac-library/atcoder/internal_bit": "d6f98d5e58cbb741457eeb22b82325fe21a20364d98b307fb1515d99a4b05c15",
+      "vendor/ac-library/atcoder/internal_bit.hpp": "50424c02770861540b977b81727af496d41805f3543e47b0dfc6d3bbb98bb81e",
+      "vendor/ac-library/atcoder/internal_math": "3ef555528f0a6f9ad72fe89cc640c94a23c66e811c12707ab601cbd50fdd26a1",
+      "vendor/ac-library/atcoder/internal_math.hpp": "487416d11ce878d7785559a02c84f094529e39fa5cc593d4c45e91fc7da53f56",
+      "vendor/ac-library/atcoder/internal_type_traits": "502e0352f7710940687521f51f0b9efdded15b698c9445cb7537d080c137d405",
+      "vendor/ac-library/atcoder/internal_type_traits.hpp": "52c1c0d56535043c2b8f2f776d534fd8e931cf92a511d697fb56649cd4935000",
+      "vendor/ac-library/atcoder/lazysegtree": "f8ab4f39585e8072a0e3f580ff7d70b5f1e50f366f7940d2d1397bdeff8d294d",
+      "vendor/ac-library/atcoder/lazysegtree.hpp": "3685280a17ef0d8cd3c3510b1a6b494fa674debfc3c8651c87cf50c77cfe09da",
+      "vendor/ac-library/atcoder/modint": "c4f3cb7a51f00ff339a8e8c27038dfdd03fc544ddb24d0109b862f4aed2a7579",
+      "vendor/ac-library/atcoder/modint.hpp": "aef131053e67300be6def657f1ef1eb1c80ef2c92ffc8220d7be0cccab583318",
+      "vendor/ac-library/atcoder/string": "8b6083a3228f7d6073baf454806303b08d776c8039e7ddfd00cd2ab0e9f6d2c0",
+      "vendor/ac-library/atcoder/string.hpp": "e7ffe101a268208d63c17374e970f781a1a828feb6cc6010ead78c2a709cda86",
+      "vendor/ac-library/manifest.json": "e582fe7dfa0cc6800cc21ae89628673c4cc1b985aa2d8e14e5e962fad8d6201c",
+      "vendor/katex/LICENSE": "766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3",
+      "vendor/katex/README.md": "822c86622c5743dbe83d9bf330d6750bbd244b2bcb1ae0fc536f9cc6c4e78d50",
+      "vendor/katex/contrib/auto-render.js": "4cfb141d56e2c5644f5226e6b8709a3eadd39989fcec86a38c8150adb196d89b",
+      "vendor/katex/contrib/auto-render.min.js": "e5372d199bcdae8b4de71d0f7ceba72a4ba12774a27c60a6f1f77d03b3228ee4",
+      "vendor/katex/contrib/auto-render.mjs": "e0410e8ce6c38869bf2f703fcc3b8d192308b5f3b34264625d605d742b1309e0",
+      "vendor/katex/contrib/copy-tex.js": "75d6dbee9697706dc694d9500e876a1ad392db3e8a4588213e0cc300b280eb0a",
+      "vendor/katex/contrib/copy-tex.min.js": "c571c49b520cb8e9040287338286b21783e39b476660b8b56d9e1c037eeaeaff",
+      "vendor/katex/contrib/copy-tex.mjs": "d3a214e3f8c2de12410df5b4de45086dc54566b1919c0078e9ae947a15964283",
+      "vendor/katex/contrib/mathtex-script-type.js": "8c898971b4abe2fe9dadeb999617ea02cbeddd9a7b7d33e2c59e23dba922b380",
+      "vendor/katex/contrib/mathtex-script-type.min.js": "461b30e513fe6cffb7130f6786360d37208bb6945deaee0c520fa7fe51037795",
+      "vendor/katex/contrib/mathtex-script-type.mjs": "b11a5fab6ffeea4ef040f93e6f491bdbfcdec8963bc5e8c2b3642f3cb7d4799a",
+      "vendor/katex/contrib/mhchem.js": "b193073c57b9ba833ca09faa72013c8995eb56fd2d27d65a6814c2e75f2370ab",
+      "vendor/katex/contrib/mhchem.min.js": "aaf20145c0b8ecd450ccf6eb0cebece2f77d8e6a02c30d291f28c1167b57b2df",
+      "vendor/katex/contrib/mhchem.mjs": "d590d100ede9335bda7648d029db5510877205538af36b53d56cd8bac1de79c1",
+      "vendor/katex/contrib/render-a11y-string.js": "183de709fe5cd0cddb2db6ad642e10efc26ab3e88fc9f3e78006ec4c62516141",
+      "vendor/katex/contrib/render-a11y-string.min.js": "82a8136608618c4120874ef0fa2c95c56a55b356398f05b777989221af85ad78",
+      "vendor/katex/contrib/render-a11y-string.mjs": "05945b2bcc2624bddb1d9a5522eec520d3866cd72fadea17daab5e0b63bf46b3",
+      "vendor/katex/fonts/KaTeX_AMS-Regular.ttf": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "vendor/katex/fonts/KaTeX_AMS-Regular.woff": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "vendor/katex/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "vendor/katex/fonts/KaTeX_Caligraphic-Bold.ttf": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "vendor/katex/fonts/KaTeX_Caligraphic-Bold.woff": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "vendor/katex/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "vendor/katex/fonts/KaTeX_Caligraphic-Regular.ttf": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "vendor/katex/fonts/KaTeX_Caligraphic-Regular.woff": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "vendor/katex/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "vendor/katex/fonts/KaTeX_Fraktur-Bold.ttf": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "vendor/katex/fonts/KaTeX_Fraktur-Bold.woff": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "vendor/katex/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "vendor/katex/fonts/KaTeX_Fraktur-Regular.ttf": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "vendor/katex/fonts/KaTeX_Fraktur-Regular.woff": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "vendor/katex/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "vendor/katex/fonts/KaTeX_Main-Bold.ttf": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "vendor/katex/fonts/KaTeX_Main-Bold.woff": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "vendor/katex/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "vendor/katex/fonts/KaTeX_Main-BoldItalic.ttf": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "vendor/katex/fonts/KaTeX_Main-BoldItalic.woff": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "vendor/katex/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "vendor/katex/fonts/KaTeX_Main-Italic.ttf": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "vendor/katex/fonts/KaTeX_Main-Italic.woff": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "vendor/katex/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "vendor/katex/fonts/KaTeX_Main-Regular.ttf": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "vendor/katex/fonts/KaTeX_Main-Regular.woff": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "vendor/katex/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "vendor/katex/fonts/KaTeX_Math-BoldItalic.ttf": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "vendor/katex/fonts/KaTeX_Math-BoldItalic.woff": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "vendor/katex/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "vendor/katex/fonts/KaTeX_Math-Italic.ttf": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "vendor/katex/fonts/KaTeX_Math-Italic.woff": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "vendor/katex/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "vendor/katex/fonts/KaTeX_SansSerif-Bold.ttf": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "vendor/katex/fonts/KaTeX_SansSerif-Bold.woff": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "vendor/katex/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "vendor/katex/fonts/KaTeX_SansSerif-Italic.ttf": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "vendor/katex/fonts/KaTeX_SansSerif-Italic.woff": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "vendor/katex/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "vendor/katex/fonts/KaTeX_SansSerif-Regular.ttf": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "vendor/katex/fonts/KaTeX_SansSerif-Regular.woff": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "vendor/katex/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "vendor/katex/fonts/KaTeX_Script-Regular.ttf": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "vendor/katex/fonts/KaTeX_Script-Regular.woff": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "vendor/katex/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "vendor/katex/fonts/KaTeX_Size1-Regular.ttf": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "vendor/katex/fonts/KaTeX_Size1-Regular.woff": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "vendor/katex/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "vendor/katex/fonts/KaTeX_Size2-Regular.ttf": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "vendor/katex/fonts/KaTeX_Size2-Regular.woff": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "vendor/katex/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "vendor/katex/fonts/KaTeX_Size3-Regular.ttf": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "vendor/katex/fonts/KaTeX_Size3-Regular.woff": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "vendor/katex/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "vendor/katex/fonts/KaTeX_Size4-Regular.ttf": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "vendor/katex/fonts/KaTeX_Size4-Regular.woff": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "vendor/katex/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "vendor/katex/fonts/KaTeX_Typewriter-Regular.ttf": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "vendor/katex/fonts/KaTeX_Typewriter-Regular.woff": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "vendor/katex/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "vendor/katex/katex-swap.css": "c5946f7b8dd96249e900a6245d86e829fdb1422727d288075a7a29e700464a96",
+      "vendor/katex/katex-swap.min.css": "f2f08c0551dd3c7ee0702be51fa5c5c074b893c8a4de1ade60abc4867e09ca2d",
+      "vendor/katex/katex.css": "0001e5e3f0a1ff9b156d15c38ceac09cd363cff1aaf628898cafa0cdfb08c949",
+      "vendor/katex/katex.js": "b6d127a59e590859c5a12e92f7eb5a4a21be58f3ffc1dff7616b0584c4d5f631",
+      "vendor/katex/katex.min.css": "0289a02cf451a44dd73add683a09644252363871ac11713a647b732cee8b1ee3",
+      "vendor/katex/katex.min.js": "a29d2961d3146de5949d78ac7c1a9d93ae54955bad22a6db4fbe836e88e8bf48",
+      "vendor/katex/katex.mjs": "09a78a9812d1e7d3ace85033512e6a450127b9554ef281b4b6567408694c6e36",
+      "vendor/markdown.mjs": "94b75aa651ccc08be179dff68c6dc0a9faba7b823dc66fc03c68e87792f8649e",
+      "vendor/typescript.cjs": "e4290952f4ea693572645fe2c6a02406ee7bdc9fa4323bb73338bf4b485c6cb8"
+    },
+    "beforeEqualsAfter": true,
+    "sameEpochAsCore": false,
+    "doesNotChangeInitialCountsOrPublicSvgProvenance": true
+  },
+  "records": [
+    {
+      "source": "ioi",
+      "problemId": "ioi2016_molecules",
+      "officialTaskId": "molecules",
+      "title": "分子の検出",
+      "englishTitle": "Detecting Molecules",
+      "day": 1,
+      "date": "2016-08-14",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 1,
+        "date": "2016-08-14",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "正の重さから個数自由の部分集合を一つ選び、合計を範囲へ収める。範囲幅が最大・最小の重さの差以上。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            1,
+            200000
+          ],
+          "l": [
+            1,
+            2147483647
+          ],
+          "u": [
+            1,
+            2147483647
+          ],
+          "w_i": [
+            1,
+            2147483647
+          ],
+          "rangeOrder": "l<=u",
+          "gapGuarantee": "u−l>=max(w)−min(w)",
+          "indices": "0..N−1, distinct original indices, any order",
+          "answer": "any witness subset; empty if impossible"
+        },
+        "genericApi": "int[] find_subset(int l,int u,int[] w)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          9,
+          10,
+          12,
+          15,
+          23,
+          31
+        ],
+        "subtaskBounds": [
+          "N<=100,weights<=100,l/u<=1000,allweights equal",
+          "N<=100,w/l/u<=1000,spread<=1",
+          "N<=100,w/l/u<=1000",
+          "N<=10000,w/l/u<=10000",
+          "N<=10000,w/l/u<=500000",
+          "N<=200000,w/l/u<2^31"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+        "timeSeconds": 1,
+        "memoryGB": 2,
+        "apiEditions": {
+          "jpCommitteeGeneric": "int[] solve(int l,int u,int[] w)",
+          "officialArchiveApiGeneric": "int[] find_subset(int l,int u,int[] w)",
+          "officialArchiveApiUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+          "officialArchiveApiRetrieval": "indexed primary search full text; direct open timeout",
+          "exactSearchQuery": "site:ioi.te.lv/locations/ioi16 \"find_subset\"",
+          "chronology": "JP ISC/JPN snapshot prints solve. Official archive English link432 prints Country api - ISC and find_subset. Relative publication times not verified; store as edition/API difference, not inferred chronology."
+        }
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "selected-elements"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "selected-elements",
+          "answerLabel": "複数の値・増加する部分列・順位から要素を選ぶ",
+          "target": "selected-elements-route"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "type": "question",
+        "title": "数列について、何を求めますか？",
+        "options": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "type": "question",
+        "title": "数列について、何を求めますか？",
+        "options": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "range-selected-elements",
+        "nodeId": "updates",
+        "type": "question",
+        "title": "数列について、何を求めますか？",
+        "options": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "bounded-spread-subset-sum-sorted-window-witness",
+        "features": [
+          "正の重さから個数自由の部分集合を一つ選び、合計を範囲へ収める。範囲幅が最大・最小の重さの差以上。"
+        ],
+        "firstMissingGraphId": "range-selected-elements",
+        "firstMissingNodeId": "updates",
+        "stopNodeType": "question",
+        "currentQuestion": "数列について、何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "pair",
+            "label": "二つ・四つの値の組を探す"
+          },
+          {
+            "id": "median",
+            "label": "値を増やして中央値などを最大化する"
+          },
+          {
+            "id": "increasing-subsequence",
+            "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+          },
+          {
+            "id": "remove-rank",
+            "label": "円環の残った要素から、指定順位の要素を削除する"
+          },
+          {
+            "id": "lis-results",
+            "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+          },
+          {
+            "id": "pair-product-ratio",
+            "label": "二数の積の順位、または二数を割った商の総和"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "二つ/四つの組、順位、部分列の選択肢しかなく、幅条件を使う個数自由の部分集合と元添字の証拠がない。",
+        "neededTechniqueIds": [
+          "bounded-spread-subset-sum-sorted-window-witness"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "two-pointers",
+          "knapsack",
+          "knapsack-bitset-shift"
+        ],
+        "proposedFeatureAnswer": "範囲の幅が重さの最大差以上のとき、合計が範囲内の部分集合を一つ探す",
+        "proposedBranchAt": {
+          "graphId": "range-selected-elements",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "currentOptions": [
+            {
+              "id": "pair",
+              "label": "二つ・四つの値の組を探す"
+            },
+            {
+              "id": "median",
+              "label": "値を増やして中央値などを最大化する"
+            },
+            {
+              "id": "increasing-subsequence",
+              "label": "順序を保って選ぶ、値が増える部分列の最長の長さ"
+            },
+            {
+              "id": "remove-rank",
+              "label": "円環の残った要素から、指定順位の要素を削除する"
+            },
+            {
+              "id": "lis-results",
+              "label": "値が増える最長の部分列について、各位置の役割や選び方の数を求める"
+            },
+            {
+              "id": "pair-product-ratio",
+              "label": "二数の積の順位、または二数を割った商の総和"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "固定個数の連続窓の和の飛び幅が範囲幅以下なので、任意部分集合解があればソート後の連続窓解がある。元の添字を保持してsortし、正の和のtwo pointersで一つ復元する。",
+        "complexity": "O(NlogN)時間・O(N)空間。和はN*(2^31−1)まであり64bit。",
+        "independentProofSupplement": [
+          "重さ昇順に並べ、任意の解の要素数kを固定する。最小k個和<=u、最大k個和>=l。",
+          "長さkの窓を左から右へ一位置ずつ動かす和は非減少で、増分w[i+k]−w[i]<=maxw−minw<=u−l。初めてl以上になる窓はuを飛び越せない。",
+          "正の窓の和がuを超えたら左を進める。任意の条件適合窓を捨てず、各端は一度だけ進む。元添字とのpairを返せる。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            1,
+            2
+          ],
+          "printedAuthor": "Shi-Chun Tsai",
+          "independentDetailsNotClaimedVerbatim": "Editorial p1 Greedy1のprinted maxSum<=l は記述どおりの存在条件ではない。採用はGreedy2と独立の>=l条件・飛び幅証明であり、誤記を前提にしない。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Other two greedy variants are not required by chosen window proof."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allSortedWeightArraysN1to8Weights1to6": 3002,
+          "allSubsetAssignmentsRepresented": 471040,
+          "validRangeCases": 234228,
+          "missingGapGuardCounterexample": {
+            "w": [
+              2,
+              3,
+              7
+            ],
+            "l": 9,
+            "u": 9,
+            "arbitrarySubset": [
+              0,
+              2
+            ],
+            "sortedContiguousWindowExists": false
+          },
+          "verified": "Positive sorted window search equals independent exact all-subset sum-set DP existence for all tested valid-width ranges. Cardinality window sums are monotone and jump by at most max−min<=u−l. Sorting retains original indices in future API.",
+          "unconfirmed": "Complete reusable C++20/API/invalid/overflow/full-scale checker not created."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "two-pointers",
+          "file": "src/content/docs/techniques/two-pointers.mdx",
+          "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+          "cppFenceSha256": "0152a4bb583c544b29a7f84515cf6e70e3cd020636fe8868d825f613013259e2",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "尺取り法",
+          "scopeMismatch": "連続区間の個数を返すAPIであり、任意部分集合をソート窓へ移せる補題・元添字の復元を含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ]
+        },
+        {
+          "techniqueId": "knapsack",
+          "file": "src/content/docs/techniques/knapsack.mdx",
+          "sha256": "5a0e0fb005f9c82154c323226d902ab9b942b91c8175d31814c2e227d8fef3ec",
+          "cppFenceSha256": "faec4a4e00049411186a3f5136f9f7196e7e7f7547b29ff5cca14a96f5138b02",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "ナップサックDP",
+          "scopeMismatch": "容量依存O(Nu)の最大価値配列で、u約21億の原典全域や証拠添字を扱う完成APIではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ]
+        },
+        {
+          "techniqueId": "knapsack-bitset-shift",
+          "file": "src/content/docs/techniques/knapsack-bitset-shift.mdx",
+          "sha256": "d14d5f383c1896589636de56f7b65380a5de051449b2a7c7851a4e5c55d94e9f",
+          "cppFenceSha256": "32e108b193b5f1825a6e959d10f9a9388cf7769a9d21bdbc1e8186b2fc62efdf",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "部分和の可否だけならビット列をずらしてまとめて更新する",
+          "scopeMismatch": "合計の可否ビット列のみ。N20万/u約21億のワード処理と選択添字復元を満たす全域APIではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-math.json",
+              "sha256": "4ae4f334343a453fe519e5014b71056974d69436574a78db8ec621a9ce004a3a"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "90a8e37f777950a298e1232cc8dd31f3809fed881e155c28975b01ba952b4c47",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 1,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "ranges/selected-elements-route"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "bounded-spread-subset-sum-sorted-window-witness"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+          "statementPages": 3,
+          "sourceContractVerified": true,
+          "originalNumericBoundsVerified": true,
+          "numericBoundsVerified": true,
+          "originalBounds": {
+            "N": [
+              1,
+              200000
+            ],
+            "weights": [
+              1,
+              2147483647
+            ],
+            "lower": [
+              1,
+              2147483647
+            ],
+            "upper": [
+              1,
+              2147483647
+            ],
+            "rangeOrder": "l<=u",
+            "width": "u-l>=max(w)-min(w)",
+            "selection": "each original index at most once,cardinality free,return any one witness",
+            "answerOrder": "any order",
+            "noSolution": "empty vector",
+            "emptySubsetValid": false
+          },
+          "sourceSeconds": 1,
+          "sourceMemoryGB": 2,
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+          "noticeCppArrayType": "std::vector<int>",
+          "noticeProhibitsStandardInputOutput": true,
+          "cppHeaderBytesRetrieved": false,
+          "primaryPdfImagesClaimedRead": false,
+          "readMethod": "web primary PDF text; displaced full numeric formulas read at original lines97/98; primary indexed archive API full text",
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "editorialPages": [
+            1,
+            2
+          ],
+          "editorialAuthor": "Shi-Chun Tsai",
+          "chosenOfficialProcedure": "Greedy2: sorted contiguous segment with two pointers",
+          "editorialTypoNotUsed": "p1 Greedy1 prints maxSum[k]<=l; correct necessary suffix endpoint is >=l. This implementation and proof use Greedy2 and do not assume that typo.",
+          "apiEditions": {
+            "japaneseCommitteeISC": {
+              "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+              "generic": "int[] solve(int l,int u,int[] w)",
+              "pages": [
+                1,
+                2
+              ]
+            },
+            "officialArchiveApiISC": {
+              "url": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+              "generic": "int[] find_subset(int l,int u,int[] w)",
+              "readMethod": "primary indexed search text Country:api-ISC; actual direct open may time out",
+              "exactQuery": "site:ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf \"find_subset\""
+            },
+            "relativePublicationChronologyVerified": false,
+            "derivedCppSignatureEvidence": "Generic signatures plus Day1 Notice type mapping,not actual header bytes.",
+            "actualCppHeadersVerified": false
+          },
+          "sourceDate": "2016-08-14",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+          "difficulty": null,
+          "unconfirmedRequiredSourceFacts": [],
+          "unconfirmedRequiredLemmas": [],
+          "optionalUnknowns": [
+            "Relative publication order of solve and find_subset editions.",
+            "Actual original grader header bytes and any qualifiers beyond the generic statement/Notice derivation.",
+            "Other two greedy variants are not used or fully reviewed."
+          ]
+        },
+        "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、既存Aliensresolutionを保持し、Moleculesへresolutionだけ追加。任意k個の解をソート後k窓へ移す飛び幅補題、正の二端点完全性、元添字復元と64bit一時和を証明。原典全域C++20、solve/find_subsetの版差を保った二adapter、全小順序配列・literal部分集合・全適合範囲・最大N20万・不正・反復・通常ASanと独立の個数別生成多項式/large-offset/割当faultを確認。header未取得・版の年代未確認を維持し、研究positiveを二重加算しない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2016_railroad",
+      "officialTaskId": "railroad",
+      "title": "ジェットコースター",
+      "englishTitle": "Roller Coaster Railroad",
+      "day": 1,
+      "date": "2016-08-14",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/railroad.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 1,
+        "date": "2016-08-14",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "全ての入場上限・退出速度の組を一度ずつ並べ、連続する組の減速距離の総和を最小にする。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            2,
+            200000
+          ],
+          "s_i": [
+            1,
+            1000000000
+          ],
+          "t_i": [
+            1,
+            1000000000
+          ],
+          "startingSpeed": 1,
+          "slowdownPerMeter": 1,
+          "trackLengths": "nonnegative integers",
+          "speed": "strictly positive throughout",
+          "specialSections": "all used exactly once, arbitrary order",
+          "answer": "minimum total connecting length; subtask3 only zero/nonzero required"
+        },
+        "genericApi": "int64 plan_roller_coaster(int[] s,int[] t)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          11,
+          23,
+          30,
+          36
+        ],
+        "subtaskBounds": [
+          "2<=N<=8",
+          "2<=N<=16",
+          "2<=N<=200000,onlyzero/nonzero",
+          "2<=N<=200000,exactminimum"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "walk-goals"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "walk-goals",
+          "answerLabel": "移動費用・訪れる頂点・辺の通り方",
+          "target": "category-walk-goals"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "edge-route-count",
+            "label": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "edge-route-count",
+            "label": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "graphs-walk-goals",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "edge-route-count",
+            "label": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "directed-line-balance-euler-augmentation-mst",
+        "features": [
+          "全ての入場上限・退出速度の組を一度ずつ並べ、連続する組の減速距離の総和を最小にする。"
+        ],
+        "firstMissingGraphId": "graphs-walk-goals",
+        "firstMissingNodeId": "shortest",
+        "stopNodeType": "question",
+        "currentQuestion": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "distance",
+            "label": "移動費用や移動回数の最小値"
+          },
+          {
+            "id": "exact-walk",
+            "label": "決まった回数歩く・各頂点を一回ずつ通る"
+          },
+          {
+            "id": "functional",
+            "label": "各頂点の行き先が一つで、大きい回数進む"
+          },
+          {
+            "id": "all-edges",
+            "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+          },
+          {
+            "id": "through-pivot",
+            "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+          },
+          {
+            "id": "collect-once-reward",
+            "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+          },
+          {
+            "id": "synchronous-factors",
+            "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+          },
+          {
+            "id": "label-reset",
+            "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+          },
+          {
+            "id": "edge-route-count",
+            "label": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "必須の全区間を一度ずつ並べ、足りない接続を速度差の費用で買う分岐がない。既存all-edgesは指定始終点の既存辺だけの経路で、speed acceptanceと追加費用を保存しない。",
+        "neededTechniqueIds": [
+          "directed-line-balance-euler-augmentation-mst"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "euler-degree-connectivity",
+          "union-find",
+          "graph-reduction"
+        ],
+        "proposedFeatureAnswer": "全ての速度変換区間を並べ、入口上限に合わせる減速距離の総和を最小にする",
+        "proposedBranchAt": {
+          "graphId": "graphs-walk-goals",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "currentOptions": [
+            {
+              "id": "distance",
+              "label": "移動費用や移動回数の最小値"
+            },
+            {
+              "id": "exact-walk",
+              "label": "決まった回数歩く・各頂点を一回ずつ通る"
+            },
+            {
+              "id": "functional",
+              "label": "各頂点の行き先が一つで、大きい回数進む"
+            },
+            {
+              "id": "all-edges",
+              "label": "指定した始点と終点で、すべての辺を一回ずつ通る"
+            },
+            {
+              "id": "through-pivot",
+              "label": "指定した中継頂点を通り、頂点を繰り返さずに両端を結べるか"
+            },
+            {
+              "id": "collect-once-reward",
+              "label": "頂点を再訪しながら、一度だけ受け取れる報酬の総和を最大にする"
+            },
+            {
+              "id": "synchronous-factors",
+              "label": "複数の無向グラフで全成分を同時に一歩ずつ動かす、組状態の距離の総和"
+            },
+            {
+              "id": "label-reset",
+              "label": "移動のたびに番号を使い、同番号の再使用には間に大きい番号が必要な列を数える"
+            },
+            {
+              "id": "edge-route-count",
+              "label": "複数の送り手から異なる受け手へ、全有向辺を一度ずつ使う経路分解の個数"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "入口上限→出口速度を必須有向辺にし、最大速度→1の補助区間で閉路化する。速度座標の切れ目ごとに流量差を最安で補正し、非ゼロ補正の接続を縮約してゼロ差分の隣接区間でMSTを作る。",
+        "complexity": "座標圧縮/sweep/KruskalでO(NlogN)時間・O(N)空間。答え<(N−1)*1e9、64bit。",
+        "independentProofSupplement": [
+          "区間iの次をjにすると必要な距離はmax(0,t_i−s_j)。初速1は全s_i以下なので最初の区間へ無料で入れる。",
+          "s_aux=max(s_i,t_i),t_aux=1を足し、aux直後で切れば任意順序がspeed1始終のEuler閉路へ対応する。入口値までの仮想昇速はacceptanceの余裕を表し、実加速設備を要求しない。",
+          "各隣接速度座標のbalance=必須右向き数−左向き数。正ならその数だけ有料左向きを追加し、負なら無料右向きを追加する必要がある。費用はmax(balance,0)*gap。差分を全cutで0にすると各頂点入出次数も一致する。",
+          "必須辺/非ゼロ補正の接続は既に無料または必要費用で得られる。残る成分間のゼロbalance cutを双方向に追加する費用はgap。接続には縮約上の連結辺集合が必要で、MST以上。Kruskalの木を追加すれば有向平衡かつweak-connectedとなりEuler閉路ができ、下界を達成する。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            3,
+            4
+          ],
+          "printedAuthor": "Kento Nikaido",
+          "independentDetailsNotClaimedVerbatim": "原典の加速不可とEditorialのfree upward abstract edgesを、入口上限の受入れとして両方向に対応付けた。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allSectionArraysN2to4Speeds1to3": 7371,
+          "randomN2to8": 160,
+          "literalSectionPermutations": 1174270,
+          "verified": "Auxiliary maxspeed→1 edge, per-coordinate-cut balance correction and component MST equal ALL literal section orderings. Repeated endpoints/self-sections are included.",
+          "unconfirmed": "No production Euler/sweep/DSU C++ API, source-scale resource/overflow/exception/sanitizer validation yet."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "euler-degree-connectivity",
+          "file": "src/content/docs/techniques/euler-degree-connectivity.mdx",
+          "sha256": "777802d7b13319261e739199fc7f31f9959ba0ac5a9a5396a3c2f17c3a454d1c",
+          "cppFenceSha256": "d60b6849e5a4cd359d163300839db9241abaf3dddcd2b4e32c56984952c2ef91",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "すべての有向辺を一度ずつ通る経路を、次数と辺の消費で作る",
+          "scopeMismatch": "固定済みの辺集合のEuler pathを作る。速度の上限受入れ・有料の減速辺/無料の昇速・補助終端・最小追加費用は含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-graphs.json",
+              "sha256": "cfb056d05db68c3631bb751c97797dc4465027ba9c24814e0b3ddd1ba68bdde4"
+            }
+          ]
+        },
+        {
+          "techniqueId": "union-find",
+          "file": "src/content/docs/techniques/union-find.mdx",
+          "sha256": "7d8e6f5b4fb933886df5af2be0e1f8eccd6e64dbfde0e8ce2f987ccb74fcf880",
+          "cppFenceSha256": "a6e5a10cd9334c731ca0ed2bbc2a38b22d236fe2621d36daa2e1fbfee25c2c74",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "Union-Find",
+          "scopeMismatch": "成分併合だけのAPI。切れ目のbalance補正と接続費用を計算しない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ]
+        },
+        {
+          "techniqueId": "graph-reduction",
+          "file": "src/content/docs/techniques/graph-reduction.mdx",
+          "sha256": "d0ebaa1ba6abf1da11f2cbab7f33f68d0cab6d31ded4617f3958c919a52ee1b9",
+          "cppFenceSha256": "cba8f96138855a5f5087a9e83eff3000fe33aa50fe7433f8d9e5476733f0b6c8",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "グラフへの帰着",
+          "scopeMismatch": "掲載実装はグループ内移動用hubの構築。順序自由な速度区間のEuler augmentationではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "6f0999b40a5d773471cc3d6e44ed0cc3947f673a36db6c113c3f88ff9cfd59b1",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 1,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "graphs/category-walk-goals"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "directed-line-balance-euler-augmentation-mst"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+          "statementPages": 3,
+          "statementReadMethod": "Full official primary PDF web text; extracted formula fragments at page2 were read together to recover all integer ranges. No image inspection or local PDF retrieval claimed.",
+          "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+          "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "editorialPages": 17,
+          "relevantOneBasedPages": [
+            3,
+            4
+          ],
+          "printedAuthor": "Kento Nikaido",
+          "editorialProvenance": "Actual official archive Solutions link to IOI2016_analysis.pdf; Railroad heading/author and full selected subtask4 balance/MST approach read. Physical acceptance interpretation and both augmentation inequalities are explicit independent details, not quoted as source text.",
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+          "noticePages": 1,
+          "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+          "contestDate": "2016-08-14",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "difficulty": null,
+          "originalNumericBoundsVerified": true,
+          "originalConstraints": {
+            "N": [
+              2,
+              200000
+            ],
+            "s_i": [
+              1,
+              1000000000
+            ],
+            "t_i": [
+              1,
+              1000000000
+            ],
+            "initialSpeed": 1,
+            "slowdownPerMeter": 1,
+            "positiveSpeedThroughout": true,
+            "connectingLengths": "nonnegative integers; zero allowed",
+            "allSpecialSections": "each exactly once, arbitrary ordering",
+            "entry": "speed <=s_i",
+            "exit": "exactly t_i, independent of entry speed",
+            "finalReturnCostIncluded": false,
+            "objective": "minimum total length of connections between consecutive special sections",
+            "genericApi": "int64 plan_roller_coaster(int[] s,int[] t)",
+            "CLanguageSignatureIsDifferent": "int64 plan_roller_coaster(int n,int[] s,int[] t); not used as the C++ signature",
+            "sample": {
+              "s": [
+                1,
+                4,
+                5,
+                6
+              ],
+              "t": [
+                7,
+                3,
+                8,
+                6
+              ],
+              "answer": 3
+            },
+            "subtaskScores": [
+              11,
+              23,
+              30,
+              36
+            ],
+            "subtaskBounds": [
+              "N2..8",
+              "N2..16",
+              "N2..200000; only zero/nonzero required",
+              "N2..200000; exact minimum"
+            ],
+            "timeSeconds": 2,
+            "memoryGB": 2
+          },
+          "cppSignatureEvidence": {
+            "statementGeneric": "int64 plan_roller_coaster(int[] s,int[] t)",
+            "noticeMapping": {
+              "int64": "long long",
+              "int[]": "std::vector<int>"
+            },
+            "derivedSignature": "long long plan_roller_coaster(std::vector<int> s,std::vector<int> t)",
+            "actualCppHeaderRetrieved": false,
+            "headerReadNotClaimed": true,
+            "adapterUsesExactDerivedCppTypes": true,
+            "noSyntheticHeaderClaim": true
+          },
+          "originalFullRangeIncludedByApi": true,
+          "unconfirmedPrincipalLemmas": [],
+          "unconfirmedOptionalSourceFacts": [
+            "Actual distributed railroad.h bytes were not retrieved. Generic primary signature plus Notice determine the C++ types; standalone exact-type assertions and real adapter calls were executed."
+          ]
+        },
+        "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、Aliens/Molecules resolutionsを保持し、Railroadへresolutionだけ追加。max(t_i−s_next,0)の物理費用と補助(max全s,t,1)閉路化、無料上向きの入口許容解釈、隣接境界の強制下降費と零balance成分接続MST、弱連結平衡からEulerを得て実順序へ戻す両方向を作者/root/独立reviewで確認。原典全域C++20を全小physical順列・HeldKarp・最大N20万21構成・不正・22割当fault・2万反復・通常ASanで確認。別の直接degree補完列挙と67084 Euler→物理構成が一致。実header未取得を保持し、研究を二重加算しない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2016_shortcut",
+      "officialTaskId": "shortcut",
+      "title": "近道",
+      "englishTitle": "Shortcut",
+      "day": 1,
+      "date": "2016-08-14",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/shortcut.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 1,
+        "date": "2016-08-14",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "各頂点に高々一本の枝がある重み付き道へ、異なる主駅二つの間に固定長の辺を一本追加し、全駅間距離の最大を最小にする。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            2,
+            1000000
+          ],
+          "l_i": [
+            1,
+            1000000000
+          ],
+          "d_i": [
+            0,
+            1000000000
+          ],
+          "c": [
+            1,
+            1000000000
+          ],
+          "mainLineEdges": "N−1 lengths l_i",
+          "branches": "one optional new leaf at each main station, d_i=0 absent",
+          "newEdge": "exactly one undirected length c between distinct main stations; adjacent allowed",
+          "answer": "minimum diameter over all original main and leaf stations"
+        },
+        "genericApi": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          9,
+          14,
+          8,
+          7,
+          33,
+          22,
+          4,
+          3
+        ],
+        "subtaskBounds": [
+          "N<=10",
+          "N<=100",
+          "N<=250",
+          "N<=500",
+          "N<=3000",
+          "N<=100000",
+          "N<=300000",
+          "N<=1000000"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "network-connection"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "network-connection",
+          "answerLabel": "全体の接続・接続の変化・道路の復元",
+          "target": "category-network-connection"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "walk-language-minimize",
+            "label": "始点から到達できる全歩数を保ち、辺数を最小にする"
+          },
+          {
+            "id": "walk-profile-count",
+            "label": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "walk-language-minimize",
+            "label": "始点から到達できる全歩数を保ち、辺数を最小にする"
+          },
+          {
+            "id": "walk-profile-count",
+            "label": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "graphs-network-connection",
+        "nodeId": "shortest",
+        "type": "question",
+        "title": "頂点・辺について何を求めますか？",
+        "options": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "walk-language-minimize",
+            "label": "始点から到達できる全歩数を保ち、辺数を最小にする"
+          },
+          {
+            "id": "walk-profile-count",
+            "label": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "path-shortcut-diameter-rotated-constraints-extrema-sweep",
+        "features": [
+          "各頂点に高々一本の枝がある重み付き道へ、異なる主駅二つの間に固定長の辺を一本追加し、全駅間距離の最大を最小にする。"
+        ],
+        "firstMissingGraphId": "graphs-network-connection",
+        "firstMissingNodeId": "shortest",
+        "stopNodeType": "question",
+        "currentQuestion": "頂点・辺について何を求めますか？",
+        "currentOptions": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "path-count-table",
+            "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+          },
+          {
+            "id": "two-threshold-switch",
+            "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+          },
+          {
+            "id": "walk-language-minimize",
+            "label": "始点から到達できる全歩数を保ち、辺数を最小にする"
+          },
+          {
+            "id": "walk-profile-count",
+            "label": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "全体を最安でつなぐ/MSTや故障の問いはあるが、長さ固定の一本を自由に追加して最大最短距離を最小にする問いがない。",
+        "neededTechniqueIds": [
+          "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "binary-search",
+          "manhattan-transform",
+          "tree-eccentricity-diameter-endpoints"
+        ],
+        "proposedFeatureAnswer": "道に枝が付いた線路へ固定長の近道を一本追加し、全駅間の最大距離を最小にする",
+        "proposedBranchAt": {
+          "graphId": "graphs-network-connection",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "currentOptions": [
+            {
+              "id": "connectivity",
+              "label": "到達する頂点・成分・全体をつなぐ操作"
+            },
+            {
+              "id": "spanning",
+              "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+            },
+            {
+              "id": "failures",
+              "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+            },
+            {
+              "id": "mst-replace",
+              "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+            },
+            {
+              "id": "distance-table",
+              "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+            },
+            {
+              "id": "specified-mst-count",
+              "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+            },
+            {
+              "id": "mst-roles",
+              "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+            },
+            {
+              "id": "steiner-terminals",
+              "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+            },
+            {
+              "id": "spanning-count",
+              "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+            },
+            {
+              "id": "path-count-table",
+              "label": "全頂点対の単純路本数0/1/2/3を指定し、その通りのグラフを構築する"
+            },
+            {
+              "id": "two-threshold-switch",
+              "label": "前半は番号の下限・後半は上限を守り、一つの頂点で切り替えて移動する"
+            },
+            {
+              "id": "walk-language-minimize",
+              "label": "始点から到達できる全歩数を保ち、辺数を最小にする"
+            },
+            {
+              "id": "walk-profile-count",
+              "label": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "直径上限Kを仮定し、元距離がK超の全組だけに新辺経由を要求。端点y<zのsum/difference四境界を集約し、自己組を除く二極値sweepと離散駅のV字lower-bound pointerで各判定を線形化する。",
+        "complexity": "sortonce O(NlogN)、判定O(N)、全体O(NlogN+NlogD)時間・O(N)空間。D<=1e15+2e9で64bit。",
+        "independentProofSupplement": [
+          "i<j,y<zなら|x_i−y|+|x_j−z|<=|x_i−z|+|x_j−y|。従って新辺の逆向き経由を別に考える必要はなく、悪い組di+dj+xj−xi>Kに対しdi+dj+c+|xi−y|+|xj−z|<=Kを要求する。",
+          "a_i=x_i−d_i,b_i=x_i+d_iとする。悪い組ごとにS=y+zは[b_i+b_j+c−K,a_i+a_j+K−c]、D=z−yは[b_j−a_i+c−K,a_j−b_i+K−c]へ入る必要十分がある。",
+          "異なる枝先の距離は常にd_i+d_j以上なのでK>=最大二枝長の和が必要。これを満たせばi>jでb_j−a_i>Kは起きない。i=jだけを除けば、eligible a_i<b_j−Kは自動でi<jの悪い組になる。",
+          "b_j昇順でjを走査し、a_i昇順でeligibleを加える。min a_i/max b_iそれぞれ異なる添字の上位2個を保持して自己i=jを除外すると、四境界の全組集約が各j定数時間で得られる。並べ替えはKに依存せず一度だけでよい。",
+          "Dloを1へ上げ、各候補y=x_aについてzの下限はmax(Slo−y,y+Dlo)、上限はmin(Shi−y,y+Dhi)。下限はV字なのでlower_bound位置は減少と増加の各一段階しか持たず、z>yを守るpointerを全体O(N)で動かせる。",
+          "もとの木直径を上限にし、可否が単調なので整数二分する。branchが0なら同駅leafを作らず、自己組i=iの2d_iを直径へ誤算入しない。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            5,
+            6,
+            7
+          ],
+          "printedAuthor": "Gleb Evstropov",
+          "independentDetailsNotClaimedVerbatim": "四不等式に新辺長cを明示。公式のsort/two-pointers方針へ、top-two branch lower bound/self-exclusionとV字離散端点走査の完全な独立証明を加えた。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Editorial alternative dominance-filter linear decision proof not used or independently verified."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allSmallNetworksN2to4": 1548,
+          "randomN2to10": 1800,
+          "decisionThresholdsCompared": 21861,
+          "verified": "All actual augmented-graph Floyd diameters over EVERY legal express endpoint pair equal rotated-square constraints AND independent O(N) decision sweep. GuardK>=topTwoBranchLengths implies eligible distinct i automatically i<j; exclude self with two extrema by different indices. Keep c in all four bounds. Discrete distinct endpoints use V-shaped lower-bound pointer. Sort x−d/x+d once, then binary answer in O(NlogN+NlogDiameter).",
+          "unconfirmed": "Research prototype sorts sweep order per invocation; production must cache sorting once. No full N1million implementation, exception/64bit/sanitizer/API validation yet."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "binary-search",
+          "file": "src/content/docs/techniques/binary-search.mdx",
+          "sha256": "2974c005fe0a456940fae81d2091b4759dec7b867fc0da7bb79859cc740ee83d",
+          "cppFenceSha256": "81871b6ccef315d60b1f8e65869c6f70f1490782482c53989a99c5c2104311d9",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "二分探索",
+          "scopeMismatch": "判定callbackを受けるだけで、全組の迂回条件と離散端点の存在判定は利用者が作る。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ]
+        },
+        {
+          "techniqueId": "manhattan-transform",
+          "file": "src/content/docs/techniques/manhattan-transform.mdx",
+          "sha256": "d3f08c80f071be357b5cac6cb55a0c3806223f22d4113f0a0173715d74a168f0",
+          "cppFenceSha256": "2c31d1e90fb7fd589dcca29bf06fb719a16b1eaa7f523d15716f2833e9cc0948",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "マンハッタン距離の最大値は x+y と x−y の幅を見る",
+          "scopeMismatch": "固定点集合のL1直径だけ。悪い駅対ごとの異なる半径と集合交差/新辺端点の最適化は含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-math.json",
+              "sha256": "4ae4f334343a453fe519e5014b71056974d69436574a78db8ec621a9ce004a3a"
+            }
+          ]
+        },
+        {
+          "techniqueId": "tree-eccentricity-diameter-endpoints",
+          "file": "src/content/docs/techniques/tree-eccentricity-diameter-endpoints.mdx",
+          "sha256": "7a2f3e38c48aa717d37ec6c762016a2f4bfb5f18dc5924658ff91ac9b91a0213",
+          "cppFenceSha256": "32243ec5df61a094879a9f8f2a7f4c4e0715d17b1e2d36edfccd2146673219aa",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "木の各頂点からの最遠距離は、直径の両端への距離だけで求める",
+          "scopeMismatch": "固定木の最遠距離。新辺追加で閉路ができると木仮定から外れ、N上限も20万で原典100万を含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-tree-patterns.json",
+              "sha256": "a7d66196291a842b3ca4c729f62f2e520c99c1d31b88924f7b030d83c570d7c8"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "fd923118a2e1ebadb46906ee78080a52e4a6626d3127467837bd6c060205e712",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 1,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "graphs/category-network-connection"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "path-shortcut-diameter-rotated-constraints-extrema-sweep"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+          "statementPages": 3,
+          "statementReadMethod": "Full primary official PDF web text, including formula fragments at page3 reconstructed in reading order. No visual/PDF-local inspection claim.",
+          "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "editorialPages": 17,
+          "relevantOneBasedPages": [
+            5,
+            6,
+            7
+          ],
+          "printedAuthor": "Gleb Evstropov",
+          "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "editorialProvenance": "Actual official archive Solutions link1012. Selected bad-pair/rotated-box/sort-once full-score direction read; retained c in all four independently derived bounds. Self exclusion, necessary top-two guard, station-only pointer and API proofs are independent supplements.",
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+          "noticePages": 1,
+          "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+          "contestDate": "2016-08-14",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "difficulty": null,
+          "originalNumericBoundsVerified": true,
+          "originalConstraints": {
+            "N": [
+              2,
+              1000000
+            ],
+            "l_i": [
+              1,
+              1000000000
+            ],
+            "d_i": [
+              0,
+              1000000000
+            ],
+            "c": [
+              1,
+              1000000000
+            ],
+            "mainLineLengths": "N-1 positive integer lengths",
+            "branchModel": "at most one new leaf per main station;d_i=0 denotes no secondary line",
+            "newEdge": "exactly one undirected length-c edge between distinct main stations; neighbours allowed",
+            "distances": "shortest route lengths; all original main and actual leaf stations participate",
+            "diameter": "maximum over station pairs, not arbitrary interior points of edges",
+            "genericApi": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+            "timeSeconds": 2,
+            "memoryGB": 2,
+            "subtaskScores": [
+              9,
+              14,
+              8,
+              7,
+              33,
+              22,
+              4,
+              3
+            ],
+            "subtaskNUpperBounds": [
+              10,
+              100,
+              250,
+              500,
+              3000,
+              100000,
+              300000,
+              1000000
+            ],
+            "examples": [
+              {
+                "n": 4,
+                "l": [
+                  10,
+                  20,
+                  20
+                ],
+                "d": [
+                  0,
+                  40,
+                  0,
+                  30
+                ],
+                "c": 10,
+                "answer": 80
+              },
+              {
+                "n": 9,
+                "l": [
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10
+                ],
+                "d": [
+                  20,
+                  0,
+                  30,
+                  0,
+                  0,
+                  40,
+                  0,
+                  40,
+                  0
+                ],
+                "c": 30,
+                "answer": 110
+              },
+              {
+                "n": 4,
+                "l": [
+                  2,
+                  2,
+                  2
+                ],
+                "d": [
+                  1,
+                  10,
+                  10,
+                  1
+                ],
+                "c": 1,
+                "answer": 21
+              },
+              {
+                "n": 3,
+                "l": [
+                  1,
+                  1
+                ],
+                "d": [
+                  1,
+                  1,
+                  1
+                ],
+                "c": 3,
+                "answer": 4
+              }
+            ]
+          },
+          "cppSignatureEvidence": {
+            "statementGeneric": "int64 find_shortcut(int n,int[] l,int[] d,int c)",
+            "noticeMapping": {
+              "int64": "long long",
+              "int[]": "std::vector<int>",
+              "int": "int"
+            },
+            "derivedSignature": "long long find_shortcut(int n,std::vector<int> l,std::vector<int> d,int c)",
+            "actualCppHeaderRetrieved": false,
+            "headerReadNotClaimed": true,
+            "exactDerivedSignatureStaticAssertExecuted": true,
+            "syntheticHeaderNotClaimed": true
+          },
+          "originalFullRangeIncludedByApi": true,
+          "unconfirmedPrincipalLemmas": [],
+          "unconfirmedAlternatives": [
+            "Official alternative dominance-filter linear-decision proof is not used or independently verified."
+          ],
+          "unconfirmedOptionalSourceFacts": [
+            "Actual distributed shortcut.h bytes were not retrieved. The C++ signature is derived from primary generic statement and Notice, then checked by exact-type assertion/real adapter calls."
+          ]
+        },
+        "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、既存Aliens/Molecules/Railroad/Paint/Messy5resolutionsを保持し、Shortcutへresolutionだけ追加。異なる主駅の代表点対、近道の向き、必要な二枝長下界と自己除外、cを含む四境界、同値添字を保つ二極値、整列一回と離散V字pointerを独立証明。原典全域C++20を全端点Floyd・任意box・最大100万駅14構成・不正・28割当fault・copy/move/noalloc・通常ASanで確認。別の単位辺BFS・枝一律追加・整数倍・極端二駅・別boxでも一致。実header未取得と未採用dominance別解未確認を維持し、研究を二重加算しない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2016_paint",
+      "officialTaskId": "paint",
+      "title": "お絵かきパズル",
+      "englishTitle": "Paint By Numbers",
+      "day": 2,
+      "date": "2016-08-16",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day2/paint.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 2,
+        "date": "2016-08-16",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "既知の黒白と未定マスがある一列について、指定された長さ順の黒blockを作る全解で共通の色を求める。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            1,
+            200000
+          ],
+          "K": [
+            1,
+            100
+          ],
+          "K_le_N": true,
+          "c_i": "1..N",
+          "inputAlphabet": [
+            "X",
+            "_",
+            "."
+          ],
+          "outputAlphabet": [
+            "X",
+            "_",
+            "?"
+          ],
+          "blocks": "exact clue count/order/length, adjacent black blocks need at least one white cell",
+          "solutionExistsGuaranteed": true,
+          "answer": "color forced in every consistent full solution; ? if both colors possible"
+        },
+        "genericApi": "string solve_puzzle(string s,int[] c)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          7,
+          3,
+          22,
+          27,
+          21,
+          10,
+          10
+        ],
+        "subtaskBounds": [
+          "N<=20,K=1,allunknown",
+          "N<=20,allunknown",
+          "N<=100,allunknown",
+          "N<=100,onlyunknown/white",
+          "N<=100",
+          "N<=5000,K<=100",
+          "N<=200000,K<=100"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "dp",
+      "choices": [
+        "sequence-removals",
+        "split"
+      ],
+      "steps": [
+        {
+          "graphId": "dp",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "sequence-removals",
+          "answerLabel": "列の分割・隣接要素の併合や削除",
+          "target": "category-sequence-removals"
+        },
+        {
+          "graphId": "dp-sequence-removals",
+          "nodeId": "defined",
+          "question": "選び方や分け方の特徴はどれですか？",
+          "answer": "split",
+          "answerLabel": "順番を保ち、連続した区間へ分ける",
+          "target": "split-kind"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "type": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "options": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "type": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "options": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "dp-sequence-removals",
+        "nodeId": "split-kind",
+        "type": "question",
+        "title": "区間の分け方には、どの条件がありますか？",
+        "options": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+        "features": [
+          "既知の黒白と未定マスがある一列について、指定された長さ順の黒blockを作る全解で共通の色を求める。"
+        ],
+        "firstMissingGraphId": "dp-sequence-removals",
+        "firstMissingNodeId": "split-kind",
+        "stopNodeType": "question",
+        "currentQuestion": "区間の分け方には、どの条件がありますか？",
+        "currentOptions": [
+          {
+            "id": "exact-count",
+            "label": "ちょうど K 個の区間に分ける"
+          },
+          {
+            "id": "cut-cost",
+            "label": "一つの区間を切り、左右へ分けた費用を足す"
+          },
+          {
+            "id": "stages",
+            "label": "前の段の分割位置から、次の段を決める"
+          },
+          {
+            "id": "general",
+            "label": "個数を自由にし、合計費用を最小にする"
+          },
+          {
+            "id": "distinct-score",
+            "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+          },
+          {
+            "id": "equal-pair-cost",
+            "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+          },
+          {
+            "id": "space-rivers",
+            "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "連続区間の分割条件に、長さ順が指定された黒blockと既知色を満たす全解の共通セル色を答える分岐がない。K黒blockだけへの分割と、白gapを含む全列のK区間分割を同一視しない。",
+        "neededTechniqueIds": [
+          "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "state-design",
+          "lcs-hirschberg-reconstruction"
+        ],
+        "proposedFeatureAnswer": "長さの並びが決まった黒い連続区間を置き、既知の色に合う全解で各位置の必須色を求める",
+        "proposedBranchAt": {
+          "graphId": "dp-sequence-removals",
+          "nodeId": "split-kind",
+          "question": "区間の分け方には、どの条件がありますか？",
+          "currentOptions": [
+            {
+              "id": "exact-count",
+              "label": "ちょうど K 個の区間に分ける"
+            },
+            {
+              "id": "cut-cost",
+              "label": "一つの区間を切り、左右へ分けた費用を足す"
+            },
+            {
+              "id": "stages",
+              "label": "前の段の分割位置から、次の段を決める"
+            },
+            {
+              "id": "general",
+              "label": "個数を自由にし、合計費用を最小にする"
+            },
+            {
+              "id": "distinct-score",
+              "label": "ちょうど K 個に分け、区間ごとの異なる値の種類数の和を最大化"
+            },
+            {
+              "id": "equal-pair-cost",
+              "label": "ちょうど K 個に分け、各区間の同値二添字の組数の和を最小化"
+            },
+            {
+              "id": "space-rivers",
+              "label": "単語を詰めて改行し、隣の行につながる空白を長くする"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "既知色prefix sumsと、使用済clue数×prefix長の可否DPを前後から作る。各セルの白の可能性は分割clue数で判定し、各blockの合法な配置区間をrange-addして黒の可能性をまとめる。",
+        "complexity": "O(NK)時間・O(NK)空間。N20万/K100、前後2表をbyteで約40.4MB、原典2GB以内の設計可能。",
+        "independentProofSupplement": [
+          "prefix可否F[t][j]は末尾を白にするか長さc[t−1]の最後のblockにする場合で完全に分かれる。block内に既知白がなく、直前が白にでき、前のt−1blockのprefixが成立することが必要十分。",
+          "逆列/逆clueでも同じ表を作る。位置vを白にできるのは、既知黒でなく、左にtblock/右にK−tblockを独立に置けるtがある時に限る。白セルが接続を分離する。",
+          "clue tを[a,b)に置けるのはblock内の既知白なし、両隣が既知黒でなく、左prefixと右suffixが成立する時に限る。全合法区間を差分へ加えれば、黒になれる位置の和集合が得られる。",
+          "原典は少なくとも一解を保証するため、白/黒どちらかは必ず可能。片方だけなら確定色、両方なら?。端のseparatorは空prefix/suffixとして扱い、強制黒をblock外へ落とさない。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            8,
+            9,
+            10
+          ],
+          "printedAuthor": "Michal Forišek",
+          "independentDetailsNotClaimedVerbatim": "原典保証の存在を利用する。未来の汎用APIでは矛盾入力時の返し方を明示する必要があり、研究prototypeのassertを完成APIの例外契約とは呼ばない。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Restricted white-only greedy solutions are not the chosen full solution."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allConsistentCluesAndPartialRowsN1to8": 62701,
+          "literalFullSolutionRevealPairs": 86870,
+          "verified": "Prefix/suffix feasibility and per-block range marking equal color intersection/union across every literal full binary solution consistent with each observation, including mandatory black/white separation sentinels. O(NK), full K100/N200000 state bound identified.",
+          "unconfirmed": "No production reusable memory-bounded C++20/API, inconsistent-input policy, maximum/sanitizer validation yet."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "状態の設計",
+          "scopeMismatch": "掲載コードはparity_bfs。run長/既知色/block間白/全解の必須色のDPではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        },
+        {
+          "techniqueId": "lcs-hirschberg-reconstruction",
+          "file": "src/content/docs/techniques/lcs-hirschberg-reconstruction.mdx",
+          "sha256": "71a231f205c405281d19107ecf72153dd5ce19f91fa8d191e9a3f793022e84dd",
+          "cppFenceSha256": "eeabbdf36fc567410c670914c7d2aff7d8de089e6b35abefe57f89c01f6f9cbe",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "最長共通部分列を省メモリで復元するなら、前後の長さから分割位置を探す",
+          "scopeMismatch": "前後DPは共通の発想だが、二列の一つの最長共通部分列を返す。全てのrow completionでの白黒可否を集計しない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-dp.json",
+              "sha256": "628fbc5cf99ec515a7b4ca2a93ca57499f373bd9f0fa830bdbce1c18289f4ab1"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "e7c76611418c52cd19ea3f9108bad0d5dc58cafb9822eb9825df4c021468a98a",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 2,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "dp/category-sequence-removals"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+          "japaneseStatementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf",
+          "statementPages": 3,
+          "sourceContractVerified": true,
+          "originalNumericBoundsVerified": true,
+          "numericBoundsVerified": true,
+          "originalBounds": {
+            "N": [
+              1,
+              200000
+            ],
+            "K": [
+              1,
+              100
+            ],
+            "K_le_N": true,
+            "c_i": "1..N",
+            "inputAlphabet": [
+              "X",
+              "_",
+              "."
+            ],
+            "outputAlphabet": [
+              "X",
+              "_",
+              "?"
+            ],
+            "blocks": "Exactly K ordered positive-length maximal black runs,adjacent runs separated by at least one white cell",
+            "solutionExistsGuaranteed": true,
+            "answer": "X/underscore if forced in every valid completion,question mark iff both colors occur"
+          },
+          "sourceSeconds": 2,
+          "sourceMemoryGB": 2,
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+          "noticeCppArrayType": "std::vector<int>",
+          "noticeCppStringType": "std::string",
+          "noticeProhibitsStandardInputOutput": true,
+          "genericSignature": "string solve_puzzle(string s,int[] c)",
+          "derivedCppSignature": "std::string solve_puzzle(std::string s,std::vector<int> c)",
+          "derivedSignatureEvidence": "Statement generic signature plus Day2 Notice's C++ string/array correspondence;actual grader header declaration bytes are not claimed.",
+          "cppHeaderBytesRetrieved": false,
+          "primaryPdfImagesClaimedRead": false,
+          "readMethod": "web primary PDF text;all numeric formulas displaced to English p3 lines119..126 were read and assembled;JP translation and official task index cross-check",
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "editorialPages": [
+            8,
+            9,
+            10
+          ],
+          "editorialAuthor": "Michal Forišek",
+          "chosenOfficialProcedure": "Steps1..5: known-color prefix information,prefix/suffix feasibility,white-cell split,per-clue legal block locations;independent range-difference aggregation avoids a run-length factor.",
+          "independentDetailsNotClaimedVerbatim": [
+            "Boundary sentinels are represented by excluding actual neighboring white positions and using F[remaining][0].",
+            "The reverse DP is indexed into the original row and white-prefix array rather than allocating reversed inputs.",
+            "Well-formed inconsistent input and empty/zero-clue extensions have explicit API behavior beyond the source guarantee."
+          ],
+          "sourceDate": "2016-08-16",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+          "difficulty": null,
+          "unconfirmedRequiredSourceFacts": [],
+          "unconfirmedRequiredLemmas": [],
+          "optionalUnknowns": [
+            "Actual original grader header bytes and any declaration qualifiers beyond statement/Notice derivation.",
+            "Restricted unknown/white-only greedy alternatives and their proofs are not used as the full solution."
+          ]
+        },
+        "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、Aliens/Molecules/Railroad既存3resolutionsを保持し、Paintへresolutionだけ追加。前後の配置可否、端の白separator、各位置の白可能性、各黒区間の合法配置の必要十分性、差分による和集合を作者/root/独立reviewで確認。原典全域C++20とsolve_puzzleを全小観測/全完成色列・矛盾・最大N20万/K100・不正・通常ASanで確認。別の開始位置配置oracleと両端の既知区間追加・両色固定・14割当faultも一致。原典は一解を保証し、汎用APIの矛盾/空列/0区間は別契約。実header未取得を保持し、研究を二重加算しない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2016_messy",
+      "officialTaskId": "messy",
+      "title": "バグの解読",
+      "englishTitle": "Unscrambling a Messy Bug",
+      "day": 2,
+      "date": "2016-08-16",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day2/messy.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 2,
+        "date": "2016-08-16",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "書き込んだ0/1文字列集合が一度のcompileで同じ未知のbit置換を受け、その後の所属判定だけから置換全体を復元する。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "power of two; scored input cases N8,32,128",
+          "maximumN": 128,
+          "permutation": "p of0..N−1, fixed before restore_permutation call",
+          "transform": "output bit i=original bit p[i]",
+          "writesBeforeCompileOnly": true,
+          "compileExactlyOnce": true,
+          "readsAfterCompileOnly": true,
+          "strictFullBudget": {
+            "N": 128,
+            "w": 896,
+            "r": 896
+          },
+          "allScoredBudgets": [
+            {
+              "N": 8,
+              "w": 256,
+              "r": 256,
+              "extra": "at most2 moved positions"
+            },
+            {
+              "N": 32,
+              "w": 320,
+              "r": 1024
+            },
+            {
+              "N": 32,
+              "w": 1024,
+              "r": 320
+            },
+            {
+              "N": 128,
+              "w": 1792,
+              "r": 1792
+            },
+            {
+              "N": 128,
+              "w": 896,
+              "r": 896
+            }
+          ],
+          "answer": "p output-position to original-position; not inverse",
+          "duplicateWrites": "set insertion duplicate has no effect"
+        },
+        "genericApi": "int[] restore_permutation(int n,int w,int r)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 4,
+        "subtaskScores": [
+          20,
+          18,
+          11,
+          21,
+          30
+        ],
+        "subtaskBounds": [
+          "N8,w/r256,atmost2moved",
+          "N32,w320,r1024",
+          "N32,w1024,r320",
+          "N128,w/r1792",
+          "N128,w/r896"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件",
+          "target": "general-result"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ],
+        "conditions": [
+          "返答形式と質問・移動の上限を原典で確認する。",
+          "取得した情報だけで次の行動を決める。",
+          "flush、失敗返答、到着時の終了規則を守る。"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ],
+        "conditions": [
+          "返答形式と質問・移動の上限を原典で確認する。",
+          "取得した情報だけで次の行動を決める。",
+          "flush、失敗返答、到着時の終了規則を守る。"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ],
+        "conditions": [
+          "返答形式と質問・移動の上限を原典で確認する。",
+          "取得した情報だけで次の行動を決める。",
+          "flush、失敗返答、到着時の終了規則を守る。"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "precompiled-permutation-partition-signature-membership",
+        "features": [
+          "書き込んだ0/1文字列集合が一度のcompileで同じ未知のbit置換を受け、その後の所属判定だけから置換全体を復元する。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "currentOptions": [],
+        "reason": "otherで一般interactive記事へ届くが、compile前の符号設計と後の所属判定による全置換復元API/予算がない。一般記事への到達をcoverageに数えない。",
+        "neededTechniqueIds": [
+          "precompiled-permutation-partition-signature-membership"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-bit-group-testing",
+          "state-design"
+        ],
+        "proposedFeatureAnswer": "一度だけ置換される文字列集合を書き込み、後の所属判定で全ビットの対応を復元する",
+        "proposedBranchAt": {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "currentOptions": [
+            {
+              "id": "tree-distance",
+              "label": "辺は未知だが、指定した二頂点の木距離"
+            },
+            {
+              "id": "unimodal-value",
+              "label": "隠れた単峰列の、指定位置の値"
+            },
+            {
+              "id": "rectangle-count",
+              "label": "各行列に高々一個の配置の、長方形内の個数"
+            },
+            {
+              "id": "batch-subsets",
+              "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+            },
+            {
+              "id": "navigation",
+              "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+            },
+            {
+              "id": "other",
+              "label": "その他の返答形式・通信条件"
+            },
+            {
+              "id": "changing-color-count",
+              "label": "任意集合の会合で、参加者によって変わる色の種類数"
+            },
+            {
+              "id": "transition-count",
+              "label": "番号を並べると、隣り合う対象の種類が変わる回数が返る"
+            },
+            {
+              "id": "prefix-in-substring",
+              "label": "先頭の文字が一度だけの未知列・接頭辞が質問内に現れる長さ"
+            },
+            {
+              "id": "binary-edge-distances",
+              "label": "既知の道路に二重みを指定すると、未知の二地点間の最短距離が返る"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "区間を二分し、その区間外を1/内を0にして左半分の一点だけ1のsignatureをcompile前に書く。compile後はその区間に対応する出力位置集合で同じsignatureを質問し、左右の候補へ分けて再帰する。",
+        "complexity": "writes=(N/2)log2N、reads=Nlog2N、compile1回。文字列長Nの生成/通信はO(N²logN)、N<=128。",
+        "independentProofSupplement": [
+          "各size mの区間に対し、区間外を全1、区間内は左半分の一点だけ1のm/2個をinsertする。compile前に全recursive partitionを確定するので応答を見たwriteは不要。",
+          "異なる深さのmはsignatureの重みN−m+1が異なる。同じ深さの異なる区間は非emptyzero supportが互いに異なる区間内にあり一致しない。従って別のsubproblemのinsertと誤照合しない。",
+          "現在区間の出力位置集合が正しいと仮定し、外を全1/内0/候補一点1で質問すると、その元位置が左半分にある時だけinsert済集合へ属す。これで左右を分離でき、葉でanswer[outputPosition]=originalIndexを返す。",
+          "各levelでwrites N/2/reads N、深さlog2N。N128で448/896であり896/896以下。N32で80/160なので双方の非対称予算も満たす。固定された未知pに関係なく同数である。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            11,
+            12,
+            13
+          ],
+          "printedAuthor": "Shi-Chun Tsai",
+          "independentDetailsNotClaimedVerbatim": "Oracle callsと長さNの文字列作成/格納時間を分ける。全p復元方向はcompileを文字どおりシミュレートして確認。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Editorial randomized subtask3 scheme not required; chosen balanced scheme also fits that budget."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allPermutationsN1_2_4_8": 40347,
+          "randomOriginalN32_128": 400,
+          "exactCounts": {
+            "32": {
+              "writes": 80,
+              "reads": 160
+            },
+            "128": {
+              "writes": 448,
+              "reads": 896
+            }
+          },
+          "verified": "Literal compile maps output bit i to original bit p[i]; restored output is p, not inverse. Fixed precompile partition masks use outside ones and one left-half marker. Different levels have different weights, same-level blocks have disjoint zero supports. Exactly one compile after all writes; reads only later; worst448writes/896reads at128 fits strict full limits.",
+          "unconfirmed": "No callback-template C++20/state/error/source-scale resource validation yet; character operations O(N²logN), oracle calls O(NlogN)."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "compile-only protocol signature; no IO performed",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "対話問題の質問設計",
+          "scopeMismatch": "掲載コードは標準入出力のask_intervalで、原典で禁止されたstdioを行う。precompile書込/一compile/所属callback/全置換復元と予算保証を実装しない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        },
+        {
+          "techniqueId": "interactive-bit-group-testing",
+          "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+          "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+          "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+          "scopeMismatch": "隠れ対象一つをbinarycodeで当てるAPIで、compileが全ビットへ同時に及ぶ未知置換全体を復元しない。入力cap100も原典128を含まない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ]
+        },
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "状態の設計",
+          "scopeMismatch": "掲載APIは偶奇BFS。phase付きの署名集合と未知bit対応の再帰復元ではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "71790d17c507fed6e2ea4ffec39b70da23ef8264b114ca82d23746cdcf790f54",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 1,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "precompiled-permutation-partition-signature-membership"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+          "japaneseStatementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf",
+          "statementPages": 4,
+          "japaneseStatementPages": 3,
+          "sourceContractVerified": true,
+          "numericBoundsVerified": true,
+          "originalNumericBoundsVerified": true,
+          "originalBounds": {
+            "N": "Power of two;scored cases8,32,128;maximum128.",
+            "permutation": "p contains each0..N-1 once and is fixed before restore_permutation is called.",
+            "transform": "new_string[i]=old_string[p[i]],position0 is the most significant bit.",
+            "initialSet": "empty",
+            "duplicateInsertion": "No set change,but each add_element invocation counts toward w.",
+            "phaseOrder": "All add_element calls;exactly one compile_set;all check_element calls.",
+            "allScoredSubtasks": [
+              {
+                "score": 20,
+                "N": 8,
+                "w": 256,
+                "r": 256,
+                "promise": "At most two indices satisfy p[i]!=i.",
+                "actualWrites": 12,
+                "actualReads": 24
+              },
+              {
+                "score": 18,
+                "N": 32,
+                "w": 320,
+                "r": 1024,
+                "actualWrites": 80,
+                "actualReads": 160
+              },
+              {
+                "score": 11,
+                "N": 32,
+                "w": 1024,
+                "r": 320,
+                "actualWrites": 80,
+                "actualReads": 160
+              },
+              {
+                "score": 21,
+                "N": 128,
+                "w": 1792,
+                "r": 1792,
+                "actualWrites": 448,
+                "actualReads": 896
+              },
+              {
+                "score": 30,
+                "N": 128,
+                "w": 896,
+                "r": 896,
+                "actualWrites": 448,
+                "actualReads": 896
+              }
+            ],
+            "answer": "Return p indexed by output position."
+          },
+          "allSourceBudgetCombinationsCovered": true,
+          "asymmetricMethodRequiredForOriginal": false,
+          "budgetCoverageReason": "N32 uses80/160,which fits320/1024 and1024/320;N128 uses448/896,which fits both1792/1792 and896/896. No undocumented w80/r320 orw320/r80 source budget is claimed.",
+          "sourceSeconds": 2,
+          "sourceMemoryGB": 2,
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+          "genericSignatures": {
+            "restore": "int[] restore_permutation(int n,int w,int r)",
+            "add": "void add_element(string x)",
+            "compile": "void compile_set()",
+            "check": "boolean check_element(string x)"
+          },
+          "noticeCppTypes": {
+            "array": "std::vector<int>",
+            "string": "std::string",
+            "boolean": "bool"
+          },
+          "noticeProhibitsStandardInputOutput": true,
+          "derivedCppRestoreSignature": "std::vector<int> restore_permutation(int n,int w,int r)",
+          "cppHeaderBytesRetrieved": false,
+          "actualOriginalHeaderVerified": false,
+          "primaryPdfImagesClaimedRead": false,
+          "readMethod": "web primary PDF full text;displaced transformation formula atEnglishp1lines48..53 andallscoretableformulas atp3lines154..159 assembled;JPNp3lines143..148 cross-check.",
+          "officialEditorialRetrieved": true,
+          "officialEditorialVerified": true,
+          "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "editorialPages": [
+            11,
+            12,
+            13
+          ],
+          "editorialAuthor": "Shi-Chun Tsai",
+          "chosenOfficialProcedure": "Recursive bipartition with outside-one signatures and one marker in the original left half;membership classifies every output position.",
+          "independentDetailsNotClaimedVerbatim": [
+            "Exact writes are(N/2)log2N,rather than the editorial's looser O(NlogN) upper bound.",
+            "Separate Hamming weights across levels and nonempty disjoint zero support at equal levels prevent all cross-subproblem collisions.",
+            "Leaves record answer[outputPosition]=originalIndex,following the literal source transformation.",
+            "All buffers and callback objects are local/references;conditional adapter uses a local string value so reference-qualified synthetic headers can be tested without altering the generic query buffer."
+          ],
+          "sourceDate": "2016-08-16",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+          "difficulty": null,
+          "unconfirmedRequiredSourceFacts": [],
+          "unconfirmedRequiredLemmas": [],
+          "optionalUnknowns": [
+            "Actual original messy.h declaration bytes/qualifiers remain unacquired.",
+            "Editorial randomized/swap-search subtask alternatives are unnecessary and are not claimed as completed implementations."
+          ]
+        },
+        "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置、Aliens/Molecules/Railroad/Paint既存4resolutionsを保持し、Messyへresolutionだけ追加。異なる深さの1の個数と同深さの非空zero-supportで登録署名の衝突を排除し、集合二分の不変条件とp自身を返す向き、厳密登録/質問回数を証明。全原典予算を満たすC++20と全write→compile一回→全read、3種類の合成header、全小置換/返答列・最大128・不正・通常ASanを確認。別の整数zero-support oracle/全小群作用/全転置/510割当fault/194callback例外も成功。原典header未取得と研究prototypeの区別を維持し、研究を二重加算しない。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2016_aliens",
+      "officialTaskId": "aliens",
+      "title": "宇宙人",
+      "englishTitle": "Aliens",
+      "day": 2,
+      "date": "2016-08-16",
+      "datePrecision": "day",
+      "exactDateVerified": true,
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi16/contest/day2/aliens.pdf",
+      "contest": {
+        "name": "IOI 2016",
+        "division": "Main competition",
+        "year": 2016,
+        "day": 2,
+        "date": "2016-08-16",
+        "exactDateVerified": true
+      },
+      "difficulty": null,
+      "cutoffVerification": "contest-before-cutoff",
+      "features": [
+        "対角線上の二頂点を持つ正方形を高々K枚選び、全指定セルを覆うunion面積を最小にする。重複セルは一度だけ数える。"
+      ],
+      "constraints": {
+        "numericBoundsVerified": true,
+        "values": {
+          "N": [
+            1,
+            100000
+          ],
+          "M": [
+            1,
+            1000000
+          ],
+          "K": "1..N",
+          "r_i": "0..M−1",
+          "c_i": "0..M−1",
+          "pointDuplicatesAllowed": true,
+          "photos": "axis-parallel cell-aligned squares with opposite corners on main diagonal",
+          "objective": "union of covered cells, counted once",
+          "limit": "at mostK photos",
+          "answer": "minimum photographed union cell count"
+        },
+        "genericApi": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+        "derivedCppTypes": "int[] -> std::vector<int>, int64 -> long long, string -> std::string, boolean -> bool; Notice primary. Function signatures remain generic unless actual header read.",
+        "cppHeadersRetrieved": false,
+        "numericEvidenceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf"
+        ],
+        "numericEvidenceKind": "retrieved-primary-PDF-text-with-formulas-assembled-from-extraction",
+        "statementPages": 3,
+        "subtaskScores": [
+          4,
+          12,
+          9,
+          16,
+          19,
+          40
+        ],
+        "subtaskBounds": [
+          "N<=50,M<=100,K=N",
+          "N<=500,M<=1000,r_i=c_i",
+          "N<=500,M<=1000",
+          "N<=4000,M<=1e6",
+          "N<=50000,K<=100,M<=1e6",
+          "N<=100000,M<=1e6"
+        ],
+        "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+        "timeSeconds": 2,
+        "memoryGB": 2
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "geometry",
+      "choices": [
+        "enclosing-regions",
+        "point-set-shapes"
+      ],
+      "steps": [
+        {
+          "graphId": "geometry",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "enclosing-regions",
+          "answerLabel": "図形・点集合の形・面積・比較",
+          "target": "category-enclosing-regions"
+        },
+        {
+          "graphId": "geometry-enclosing-regions",
+          "nodeId": "geometry-task",
+          "question": "点や座標から何を求めますか？",
+          "answer": "point-set-shapes",
+          "answerLabel": "点集合で作る図形・形の一致・円・壁の領域・繰り返し移動",
+          "target": "point-set-shapes-route"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "initialReached": {
+        "graphId": "point-set-shape-features",
+        "nodeId": "goal",
+        "type": "question",
+        "title": "点集合や平面の移動で、出力したい量はどれですか？",
+        "options": [
+          {
+            "id": "parallelograms",
+            "label": "平面の点から、正の面積の平行四辺形を数える"
+          },
+          {
+            "id": "circle-lattice",
+            "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+          },
+          {
+            "id": "same-points",
+            "label": "点集合が回転と平行移動だけで一致するか"
+          },
+          {
+            "id": "translated-polygons",
+            "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+          },
+          {
+            "id": "repeat-moves",
+            "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+          },
+          {
+            "id": "wall-area",
+            "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+          },
+          {
+            "id": "cover-circle",
+            "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+          },
+          {
+            "id": "weighted-trapezoid",
+            "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReached": {
+        "graphId": "point-set-shape-features",
+        "nodeId": "goal",
+        "type": "question",
+        "title": "点集合や平面の移動で、出力したい量はどれですか？",
+        "options": [
+          {
+            "id": "parallelograms",
+            "label": "平面の点から、正の面積の平行四辺形を数える"
+          },
+          {
+            "id": "circle-lattice",
+            "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+          },
+          {
+            "id": "same-points",
+            "label": "点集合が回転と平行移動だけで一致するか"
+          },
+          {
+            "id": "translated-polygons",
+            "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+          },
+          {
+            "id": "repeat-moves",
+            "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+          },
+          {
+            "id": "wall-area",
+            "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+          },
+          {
+            "id": "cover-circle",
+            "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+          },
+          {
+            "id": "weighted-trapezoid",
+            "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "originalRootReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "point-set-shape-features",
+        "nodeId": "goal",
+        "type": "question",
+        "title": "点集合や平面の移動で、出力したい量はどれですか？",
+        "options": [
+          {
+            "id": "parallelograms",
+            "label": "平面の点から、正の面積の平行四辺形を数える"
+          },
+          {
+            "id": "circle-lattice",
+            "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+          },
+          {
+            "id": "same-points",
+            "label": "点集合が回転と平行移動だけで一致するか"
+          },
+          {
+            "id": "translated-polygons",
+            "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+          },
+          {
+            "id": "repeat-moves",
+            "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+          },
+          {
+            "id": "wall-area",
+            "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+          },
+          {
+            "id": "cover-circle",
+            "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+          },
+          {
+            "id": "weighted-trapezoid",
+            "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": [],
+        "conditions": []
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "diagonal-square-union-cover-monge-penalty-cht",
+        "features": [
+          "対角線上の二頂点を持つ正方形を高々K枚選び、全指定セルを覆うunion面積を最小にする。重複セルは一度だけ数える。"
+        ],
+        "firstMissingGraphId": "point-set-shape-features",
+        "firstMissingNodeId": "goal",
+        "stopNodeType": "question",
+        "currentQuestion": "点集合や平面の移動で、出力したい量はどれですか？",
+        "currentOptions": [
+          {
+            "id": "parallelograms",
+            "label": "平面の点から、正の面積の平行四辺形を数える"
+          },
+          {
+            "id": "circle-lattice",
+            "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+          },
+          {
+            "id": "same-points",
+            "label": "点集合が回転と平行移動だけで一致するか"
+          },
+          {
+            "id": "translated-polygons",
+            "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+          },
+          {
+            "id": "repeat-moves",
+            "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+          },
+          {
+            "id": "wall-area",
+            "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+          },
+          {
+            "id": "cover-circle",
+            "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+          },
+          {
+            "id": "weighted-trapezoid",
+            "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "reason": "点を高々K枚の対角正方形で覆い、union面積を最小にする回答がない。同名Aliens trickは汎用wrapperで、具体的なphoto DP/API/全域検証がない。",
+        "neededTechniqueIds": [
+          "diagonal-square-union-cover-monge-penalty-cht"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "aliens-trick",
+          "dp-exact-count-penalty",
+          "convex-hull-trick",
+          "dp-affine-transition",
+          "li-chao-tree",
+          "dp-monotone-split"
+        ],
+        "proposedFeatureAnswer": "対角線上に角を持つ正方形を高々K枚選び、全点を覆う面積の和集合を最小にする",
+        "proposedBranchAt": {
+          "graphId": "point-set-shape-features",
+          "nodeId": "goal",
+          "question": "点集合や平面の移動で、出力したい量はどれですか？",
+          "currentOptions": [
+            {
+              "id": "parallelograms",
+              "label": "平面の点から、正の面積の平行四辺形を数える"
+            },
+            {
+              "id": "circle-lattice",
+              "label": "小数で与えられる円の内部・円周上の整数格子点を数える"
+            },
+            {
+              "id": "same-points",
+              "label": "点集合が回転と平行移動だけで一致するか"
+            },
+            {
+              "id": "translated-polygons",
+              "label": "同じ凸多角形を平行移動した全領域に、質問点が入るか"
+            },
+            {
+              "id": "repeat-moves",
+              "label": "同じ上下左右の移動列を大量に繰り返し、訪れた格子点を数える"
+            },
+            {
+              "id": "wall-area",
+              "label": "軸平行の線分の壁で区切られた、原点から動ける領域の面積"
+            },
+            {
+              "id": "cover-circle",
+              "label": "全点を覆う円の半径を最小にし、中心は自由に選べる"
+            },
+            {
+              "id": "weighted-trapezoid",
+              "label": "重み付きの点から、等脚台形の四点の重み和を最大にする"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ]
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "点を[min(r,c),max(r,c)]へ移し、包含intervalを除去する。昇順intervalのpartition費用から隣接写真の重複二乗を引く。Mongeによる枚数別の離散凸性を示し、整数罰金と枚数tieを扱う単調CHTでO(NlogM)へする。",
+        "complexity": "O(NlogN+NlogM)時間・O(N)空間。面積<=M²<=1e12。countencodeした場合のcrossは128bitが必要。",
+        "independentProofSupplement": [
+          "指定セル(r,c)を覆う写真[a,b]²はa<=min(r,c)<=max(r,c)<=bと同値。包含される要求intervalは除ける。L昇順/R降順でsortし、Rが伸びないものを落とすとL/Rとも狭義増加になる。",
+          "写真の包含を除き、左端/右端を昇順に並べ、各要求を連続群として担当させる。各群の写真は最初のL/最後のRへ縮められる。新写真と以前のunionとの共通部分は直前写真との共通部分だけで決まり、重複辺長=max(0,R_t−L_{t+1}+1)。従ってW(t,i)=(R_i−L_{t+1}+1)^2−overlap_t²を使うpartition DPが必要十分。",
+          "W(a,c)+W(b,d)<=W(a,d)+W(b,c) (a<=b<c<=d)は二乗展開で得られ、差は−2*(L_{b+1}−L_{a+1})*(R_d−R_c)。overlap_t項は行定数として相殺する。",
+          "q−1辺の最適partition path Pとq+1辺のQを取る。内部cutを昇順走査し、#Qcuts−#Pcutsが初めて2になるQcut dを見る。直前のQcut b、直前/次のPcut a,cはa<=b<d<=cで、各prefix辺数はQが一つ多い。nested辺a→c,b→dをa→d,b→cへ交換しsuffixをswapすれば両pathがq辺となり、Mongeで費用合計は増えない。共通頂点の場合はそこからsuffix交換で同じ結論。従って2F(q)<=F(q−1)+F(q+1)。",
+          "群を分割した写真は元写真内に収まりunionを増やさないのでFは非増加。integer Fの非増加な節約差に対し、整数罰金lambdaでkが最適となる境界がある。G=min(F(q)+lambda*q)、少ないqをtieで選ぶと、最初にq<=KとなるlambdaでG−lambda*K=F(K)。Kは残ったinterval数へclampし、K1も同じ境界で扱う。",
+          "Wを展開して傾き−2(L_t−1)、切片DP[t]+(L_t−1)^2−overlap_t²+lambdaの直線にする。L/R狭義増加で追加傾き減少/問い合わせ増加となり一判定O(N)。費用/枚数のlex順はH=N+1を掛けて枚数を下位へencodeしてもよく、各辺にlambda*H+1を加える。integer cross128bitの範囲を未来APIで証明する。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+          "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf"
+        ],
+        "editorialProvenance": {
+          "officialArchiveSolutionsLink": "https://ioi.te.lv/locations/ioi16/contest/",
+          "linkedSolutionPdf": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "pages": [
+            14,
+            15,
+            16,
+            17
+          ],
+          "printedAuthor": "Chethiya Abeysinghe",
+          "independentDetailsNotClaimedVerbatim": "Editorialの離散凸性は定理として掲げられるが詳細証明がない。nested-edge交換と整数tie境界は独立証明。検証は実際の全square-cell unionで行い、単なる面積和とは比較しない。"
+        },
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "unreviewedAlternativeDetails": [
+          "Editorial Knuth optimization for smaller subtask is not required by chosen full penalty/CHT proof."
+        ],
+        "remainingImplementationValidation": [
+          "自然な日本語の細技巧記事/完全C++20/API契約/特徴rootwalk/原典referenceを作る。",
+          "実掲載fenceを独立oracle・最大原典・不正/多重call・通常ASan/UBSan・別担当reviewで検証する。"
+        ],
+        "probeEvidence": {
+          "allNonemptyIntervalInterestSubsetsM1to4": 1094,
+          "literalSquarePhotoSubsets": 437,
+          "requestedPhotoLimitsCompared": 7432,
+          "discreteConvexityChecks": 1038,
+          "exactPenaltyAndTieComparisons": 23532,
+          "randomM1to49": 1400,
+          "verified": "Literal UNION of actual square cell bitmaps matches containment-filtered overlap-subtracted partition DP, monotone lower hull penalty DP, and integer penalty search. Pairwise Monge nested-edge exchange proves discrete convexity via rebalancing q−1/q+1 paths toq/q; lex encoded count selects fewer photos; integer slopes justify G(lambda)−lambda*k even count jumps.",
+          "unconfirmed": "No production 1e5/N/m1e6 API/128-bit cross arithmetic/tie/maximum/sanitizer validation yet. Research DP quadratic, penalty prototype linear hull, no completed article."
+        }
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-primary",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "aliens-trick",
+          "file": "src/content/docs/techniques/aliens-trick.mdx",
+          "sha256": "2e6d82c68beeaeb287900ed20d0ccfff8631cf52815261f1545d3428dcbb34ef",
+          "cppFenceSha256": "84177ecbbbf0ae99da15731032e7d41879ee52c68e5d87ca79955a2e1e150619",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "Aliens trick",
+          "scopeMismatch": "generic exact_countはsolveを利用者が実装するtemplate。包含除去/重複補正/枚数凸性/CHTは含まれず、K=1はhighcount<Kの境界を別処理する必要がある。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-advanced.json",
+              "sha256": "719e20c22252bd1a8900c3f2b0396a0b289a8ccd0015c517793b86814b78771f"
+            }
+          ]
+        },
+        {
+          "techniqueId": "dp-exact-count-penalty",
+          "file": "src/content/docs/techniques/dp-exact-count-penalty.mdx",
+          "sha256": "b702443b1564d16025c3e699b23c02b45f8d279f3d64dd6f841b09a0ff8d799e",
+          "cppFenceSha256": "0f9a187b3f84b8bdb52edf4bdb59f4ea1c4486d82d3eef4fae82826170e10094",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "ちょうどK個のDPを選択1回の罰則で解く",
+          "scopeMismatch": "完成APIは隣接禁止の位置選択であって正方形union撮影ではない。入力のaをそのまま与えても原典費用を保存しない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-dp.json",
+              "sha256": "628fbc5cf99ec515a7b4ca2a93ca57499f373bd9f0fa830bdbce1c18289f4ab1"
+            }
+          ]
+        },
+        {
+          "techniqueId": "convex-hull-trick",
+          "file": "src/content/docs/techniques/convex-hull-trick.mdx",
+          "sha256": "5145640894c430792862db550bdf3e2fb6d16a8332ef334ceadf93338d09b738",
+          "cppFenceSha256": "51d46d31e28e31c815040f43cff520af619f267331364bab411e100903c45492",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "凸包トリック",
+          "scopeMismatch": "scalar line envelope component。撮影遷移と枚数の同値比較・整数罰金境界・全域APIは含まない。係数の範囲も利用側が証明する。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-advanced.json",
+              "sha256": "719e20c22252bd1a8900c3f2b0396a0b289a8ccd0015c517793b86814b78771f"
+            }
+          ]
+        },
+        {
+          "techniqueId": "dp-affine-transition",
+          "file": "src/content/docs/techniques/dp-affine-transition.mdx",
+          "sha256": "e6893420c58be53b0e9b1ce1f80e1f2595e7534278b4be9b5b315d07c69ea76d",
+          "cppFenceSha256": "db68d70d27f48fe35c3da82c7e62d2c04c6be388b28983d6ceb7312ed89ad2cd",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "現在の値に対する一次式へ遷移を分離する",
+          "scopeMismatch": "特定のscalar affine DP。新しい写真の左端/前写真との重複/枚数付きpenaltyを扱わない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-dp.json",
+              "sha256": "628fbc5cf99ec515a7b4ca2a93ca57499f373bd9f0fa830bdbce1c18289f4ab1"
+            }
+          ]
+        },
+        {
+          "techniqueId": "li-chao-tree",
+          "file": "src/content/docs/techniques/li-chao-tree.mdx",
+          "sha256": "f01ad3c96323f0c35d1ce73cdd00c99042cf4a3f547199e926b02f2bb053ed88",
+          "cppFenceSha256": "b96fcf6beac0624f1fa1b2151776bcdf094e9e6a0f8dc5a333b83ecc8f72fb2a",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "Li Chao木",
+          "scopeMismatch": "任意順のscalar line query。photo solverへの再構成が必要で、原典満点のO(NlogM)手順/APIではない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-advanced.json",
+              "sha256": "719e20c22252bd1a8900c3f2b0396a0b289a8ccd0015c517793b86814b78771f"
+            }
+          ]
+        },
+        {
+          "techniqueId": "dp-monotone-split",
+          "file": "src/content/docs/techniques/dp-monotone-split.mdx",
+          "sha256": "2a4e2b98f2aa205c7ac6a807722fab62ab0a106c73a4e171ea6162e56186ffce",
+          "cppFenceSha256": "907ae91d44ca6063a8efd28ed835e07546ab1eeb1bfd762245557e3320efab69",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false,
+          "title": "区間分割DPの最適な切れ目が単調なら分割統治する",
+          "scopeMismatch": "区間和二乗のexact-K分割。幾何の包含除去と重なり二乗減算がなく、KがNまでの原典をO(KNlogN)では満たさない。",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-dp.json",
+              "sha256": "628fbc5cf99ec515a7b4ca2a93ca57499f373bd9f0fa830bdbce1c18289f4ab1"
+            }
+          ]
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON walker cross-checked with frozen actual flow.ts via later-epoch local TypeScript compiler",
+        "stepsSha256": "91a08885a544af60956c0717208e47847e002cc8483b9b4b5742cfa84a5078d1",
+        "stepsSha256Encoding": "UTF-8 canonical JSON sorted keys, compact separators, ensure_ascii false",
+        "choicesConsumed": 2,
+        "graphDataSha256": "438a5f833f04e2457d6e641e93569a8ea493ab7b55db73420ddaf892e79b890f",
+        "routeBoundaries": [
+          "geometry/category-enclosing-regions",
+          "geometry-enclosing-regions/point-set-shapes-route"
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴からカテゴリを選び、合わない操作/目的をyesへ変えない。必要な細技巧と完成APIの欠落を初回に保存する。",
+        "研究prototypeと既存componentのnative検査を、原典全域の完成C++20/API/ASan実績へ読み替えない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "diagonal-square-union-cover-monge-penalty-cht"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "sourceVerification": {
+          "checkedAt": "2026-10-15",
+          "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+          "statementPages": 3,
+          "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+          "editorialUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+          "editorialPages": 17,
+          "relevantOneBasedPages": [
+            14,
+            15,
+            16,
+            17
+          ],
+          "printedAuthor": "Chethiya Abeysinghe",
+          "editorialProvenance": "Official IOI archive actual Solutions link1012; same source as frozen audit. High-level proof and formulas read as primary text, independent supplements identified separately.",
+          "noticeUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+          "noticePages": 1,
+          "dateIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+          "contestDate": "2016-08-16",
+          "datePrecision": "day",
+          "exactDateVerified": true,
+          "difficulty": null,
+          "originalNumericBoundsVerified": true,
+          "originalConstraints": {
+            "N": [
+              1,
+              100000
+            ],
+            "M": [
+              1,
+              1000000
+            ],
+            "K": "1..N",
+            "r_i": "0..M−1",
+            "c_i": "0..M−1",
+            "duplicatesAllowed": true,
+            "photoShape": "axis-aligned complete integer cells with opposite corners on main diagonal",
+            "objective": "covered-cell union cardinality",
+            "photoLimit": "at most K",
+            "timeSeconds": 2,
+            "memoryGB": 2,
+            "originalGenericApi": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+            "originalExamples": [
+              {
+                "N": 5,
+                "M": 7,
+                "K": 2,
+                "answer": 25
+              },
+              {
+                "N": 2,
+                "M": 6,
+                "K": 2,
+                "answer": 16
+              }
+            ]
+          },
+          "cppSignatureEvidence": {
+            "statementGeneric": "int64 take_photos(int n,int m,int k,int[] r,int[] c)",
+            "noticeMapping": {
+              "int64": "long long",
+              "int[]": "std::vector<int>"
+            },
+            "derivedSignature": "long long take_photos(int n,int m,int k,std::vector<int> r,std::vector<int> c)",
+            "actualCppHeaderRetrieved": false,
+            "headerReadNotClaimed": true
+          },
+          "originalFullRangeIncludedByApi": true,
+          "unconfirmedPrincipalLemmas": [],
+          "unconfirmedAlternatives": [
+            "Editorial smaller-subtask Knuth optimization is neither used nor claimed verified."
+          ]
+        },
+        "notes": "初回6records/statusと研究6/6・API0/coverage0・全停止位置を保持し、Aliensへresolutionだけ追加。包含除去・連続群の完全性と全unionの隣接重複控除、Monge二経路均衡交換・枚数離散凸、整数罰金境界・少数枚tie・128bit単調CHTを作者/root/独立reviewで確認。原典全域take_photosと実fenceをliteral全photo集合・別DP・全小順序点列・最大30構成・例外・再入・ASanで確認。別constructive交換969547組とliteral全分割・座標拡大を追加。実header未取得を維持し、同一研究positiveを二重加算しない。"
+      }
+    }
+  ],
+  "status": {
+    "fixedProblemListComplete": true,
+    "firstPassAuditComplete": true,
+    "fixedCorpusResearchComplete": true,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "globalLearningComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "numericBoundsVerifiedCount": 6,
+    "numericBoundsUnconfirmedCount": 0,
+    "officialEditorialRetrievedCount": 6,
+    "officialEditorialVerifiedCount": 6,
+    "solutionReviewedCount": 6,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 6,
+    "unconfirmedCount": 0,
+    "unavailableCount": 0,
+    "unconfirmedPrincipalDetailsCount": 0,
+    "fullImplementationValidatedCount": 0,
+    "articleResolutionComplete": false,
+    "fixedCorpusResearchCompleteDefinition": "固定6題の選定した原典全域手順と主要補題が一次資料+独立証明で確認できた状態。全別解や完成API/記事の存在を意味しない。",
+    "articleResolutionNotes": "研究6/6、完成API/記事対応/原典walk/coverage0/6。今後のresolutionを初回へ遡及しない。"
+  },
+  "classificationDefinitions": {
+    "covered": "原典全域を含む完成記事/API/検証と原典特徴経路が存在する。今回0。",
+    "missing-technique": "選定全手順の主要補題は確認したが、細技巧記事/APIがない。今回6。",
+    "missing-route": "完成記事/APIはあるが特徴で届かない。今回0。",
+    "unconfirmed": "選定全手順の主要補題または原典必要予算が未確認。今回0、未検証の別解は別fieldへ保持。"
+  },
+  "materials": {
+    "problemIndexUrls": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+      "https://ioi.te.lv/locations/ioi16/contest/"
+    ],
+    "allPrimaryStatementsReadBeforeTechniqueMapping": true,
+    "allEditorialsRetrievedBeforeTechniqueMapping": true,
+    "editorialProvenance": "Official IOI competition archive actual Solutions link1012 to 17-page analysis. Printed author attribution retained per task; independent supplements kept separate.",
+    "difficultyPolicy": "unknown numerical difficulty null; IOI main competition division separate",
+    "problemTextReproduced": false,
+    "apiVariantWarning": "Molecules JP solve vs archive api-ISC find_subset are distinct primary editions; no inferred relative publication time."
+  },
+  "limits": [
+    "対象母集団は技巧照合前に固定した本競技6題のみ。練習4題/翻訳重複を除外。全学習global完了false。",
+    "研究6/6は完成API/記事検証ではなく、原典全域の手順と主要補題の確認。sourceAPIの実C++headerzipは未読。",
+    "初回raw1431=core959+public472は同epoch、vendor105は後epoch。後から統合されるTrain等を初回504/471/525へ足さない。",
+    "Shortcutの別dominance手順やAliensの小課題Knuth等は、採用した満点手順の証明と区別して未確認を保持。",
+    "公開/commit/server/install/定期収集設定/共有編集なし。"
+  ],
+  "validation": {
+    "manualCommand": "python3 research/probes/ioi-2016-research-checks.py [optional-new-output.json]",
+    "probeFile": "research/probes/ioi-2016-research-checks.py",
+    "probeSha256": "e02b22d5425b4939f22815674b8c314f43bb88242d7a1afcadb2e24dd02eb336",
+    "probeOutputFile": "research/probes/ioi-2016-initial-probe-results.json",
+    "probeOutputSha256": "f029dfc00a9010178d3e4ba14adabcbf42aba54c86a401ac5b26d409d0152908",
+    "checks": {
+      "scope": "IOI2016 fixed six competition tasks; independent research prototypes only",
+      "productionImplementationValidated": false,
+      "baseline": {
+        "rawFilesVerified": 1431,
+        "coreRawFiles": 959,
+        "publicRawFiles": 472,
+        "initialCounts": {
+          "allTechniqueMdx": 504,
+          "metadataRecords": 504,
+          "referenceRecords": 525,
+          "flowcharts": 471,
+          "walks": 525,
+          "oldCorpusAudits": 9
+        },
+        "ledgerSha256": "dd7151810d712521a5f3f19c206eecb7630c3b9688575c6243dee4b170992a56"
+      },
+      "molecules": {
+        "allSortedWeightArraysN1to8Weights1to6": 3002,
+        "allSubsetAssignmentsRepresented": 471040,
+        "validRangeCases": 234228,
+        "missingGapGuardCounterexample": {
+          "w": [
+            2,
+            3,
+            7
+          ],
+          "l": 9,
+          "u": 9,
+          "arbitrarySubset": [
+            0,
+            2
+          ],
+          "sortedContiguousWindowExists": false
+        },
+        "verified": "Positive sorted window search equals independent exact all-subset sum-set DP existence for all tested valid-width ranges. Cardinality window sums are monotone and jump by at most max−min<=u−l. Sorting retains original indices in future API.",
+        "unconfirmed": "Complete reusable C++20/API/invalid/overflow/full-scale checker not created."
+      },
+      "railroad": {
+        "allSectionArraysN2to4Speeds1to3": 7371,
+        "randomN2to8": 160,
+        "literalSectionPermutations": 1174270,
+        "verified": "Auxiliary maxspeed→1 edge, per-coordinate-cut balance correction and component MST equal ALL literal section orderings. Repeated endpoints/self-sections are included.",
+        "unconfirmed": "No production Euler/sweep/DSU C++ API, source-scale resource/overflow/exception/sanitizer validation yet."
+      },
+      "shortcut": {
+        "allSmallNetworksN2to4": 1548,
+        "randomN2to10": 1800,
+        "decisionThresholdsCompared": 21861,
+        "verified": "All actual augmented-graph Floyd diameters over EVERY legal express endpoint pair equal rotated-square constraints AND independent O(N) decision sweep. GuardK>=topTwoBranchLengths implies eligible distinct i automatically i<j; exclude self with two extrema by different indices. Keep c in all four bounds. Discrete distinct endpoints use V-shaped lower-bound pointer. Sort x−d/x+d once, then binary answer in O(NlogN+NlogDiameter).",
+        "unconfirmed": "Research prototype sorts sweep order per invocation; production must cache sorting once. No full N1million implementation, exception/64bit/sanitizer/API validation yet."
+      },
+      "paint": {
+        "allConsistentCluesAndPartialRowsN1to8": 62701,
+        "literalFullSolutionRevealPairs": 86870,
+        "verified": "Prefix/suffix feasibility and per-block range marking equal color intersection/union across every literal full binary solution consistent with each observation, including mandatory black/white separation sentinels. O(NK), full K100/N200000 state bound identified.",
+        "unconfirmed": "No production reusable memory-bounded C++20/API, inconsistent-input policy, maximum/sanitizer validation yet."
+      },
+      "messy": {
+        "allPermutationsN1_2_4_8": 40347,
+        "randomOriginalN32_128": 400,
+        "exactCounts": {
+          "32": {
+            "writes": 80,
+            "reads": 160
+          },
+          "128": {
+            "writes": 448,
+            "reads": 896
+          }
+        },
+        "verified": "Literal compile maps output bit i to original bit p[i]; restored output is p, not inverse. Fixed precompile partition masks use outside ones and one left-half marker. Different levels have different weights, same-level blocks have disjoint zero supports. Exactly one compile after all writes; reads only later; worst448writes/896reads at128 fits strict full limits.",
+        "unconfirmed": "No callback-template C++20/state/error/source-scale resource validation yet; character operations O(N²logN), oracle calls O(NlogN)."
+      },
+      "aliens": {
+        "allNonemptyIntervalInterestSubsetsM1to4": 1094,
+        "literalSquarePhotoSubsets": 437,
+        "requestedPhotoLimitsCompared": 7432,
+        "discreteConvexityChecks": 1038,
+        "exactPenaltyAndTieComparisons": 23532,
+        "randomM1to49": 1400,
+        "verified": "Literal UNION of actual square cell bitmaps matches containment-filtered overlap-subtracted partition DP, monotone lower hull penalty DP, and integer penalty search. Pairwise Monge nested-edge exchange proves discrete convexity via rebalancing q−1/q+1 paths toq/q; lex encoded count selects fewer photos; integer slopes justify G(lambda)−lambda*k even count jumps.",
+        "unconfirmed": "No production 1e5/N/m1e6 API/128-bit cross arithmetic/tie/maximum/sanitizer validation yet. Research DP quadratic, penalty prototype linear hull, no completed article."
+      },
+      "elapsedSeconds": 8.179255448005279
+    },
+    "independentRawWalker": "research/probes/ioi-2016-root-replay.py",
+    "actualFrozenRuntimeReplay": "research/probes/ioi-2016-frozen-runtime-replay-results.json",
+    "runtimeReplay": {
+      "frozenRuntimeReplayEqual": true,
+      "sixCanonicalRoutes": 6,
+      "entryDomainIds": [
+        "ranges",
+        "dp",
+        "graphs",
+        "flow-matching",
+        "strings",
+        "math",
+        "geometry",
+        "game-probability",
+        "thinking",
+        "heuristic",
+        "condition-check",
+        "set-operations",
+        "interactive-oracles",
+        "grid-arrangements",
+        "fixed-output"
+      ],
+      "flowGraphs": 471,
+      "allQuestionsAndFullAnswerLabelsEqual": true,
+      "productionApiCoverageClaimed": false
+    },
+    "scopeChecker": "research/probes/ioi-2016-frozen-scope.py",
+    "scopeChecks": {
+      "actualFrozenFencesCompiled": 19,
+      "componentScopeChecks": 19,
+      "allAreCompletedSourceApis": false,
+      "unmodifiedOriginalFences": true,
+      "cppHarnessSha256": "b29c1cb1a5e69ab0e8c665fda9cf59fd204fc0aad4dce3fadd6eaa49af3020dc",
+      "records": [
+        {
+          "techniqueId": "two-pointers",
+          "file": "src/content/docs/techniques/two-pointers.mdx",
+          "sha256": "574a53302cbf06938618acb7ffaacd84e5250f95902f3e17129f0287478a613b",
+          "cppFenceSha256": "0152a4bb583c544b29a7f84515cf6e70e3cd020636fe8868d825f613013259e2",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "knapsack-bitset-shift",
+          "file": "src/content/docs/techniques/knapsack-bitset-shift.mdx",
+          "sha256": "d14d5f383c1896589636de56f7b65380a5de051449b2a7c7851a4e5c55d94e9f",
+          "cppFenceSha256": "32e108b193b5f1825a6e959d10f9a9388cf7769a9d21bdbc1e8186b2fc62efdf",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "knapsack",
+          "file": "src/content/docs/techniques/knapsack.mdx",
+          "sha256": "5a0e0fb005f9c82154c323226d902ab9b942b91c8175d31814c2e227d8fef3ec",
+          "cppFenceSha256": "faec4a4e00049411186a3f5136f9f7196e7e7f7547b29ff5cca14a96f5138b02",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "euler-degree-connectivity",
+          "file": "src/content/docs/techniques/euler-degree-connectivity.mdx",
+          "sha256": "777802d7b13319261e739199fc7f31f9959ba0ac5a9a5396a3c2f17c3a454d1c",
+          "cppFenceSha256": "d60b6849e5a4cd359d163300839db9241abaf3dddcd2b4e32c56984952c2ef91",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "graph-reduction",
+          "file": "src/content/docs/techniques/graph-reduction.mdx",
+          "sha256": "d0ebaa1ba6abf1da11f2cbab7f33f68d0cab6d31ded4617f3958c919a52ee1b9",
+          "cppFenceSha256": "cba8f96138855a5f5087a9e83eff3000fe33aa50fe7433f8d9e5476733f0b6c8",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "binary-search",
+          "file": "src/content/docs/techniques/binary-search.mdx",
+          "sha256": "2974c005fe0a456940fae81d2091b4759dec7b867fc0da7bb79859cc740ee83d",
+          "cppFenceSha256": "81871b6ccef315d60b1f8e65869c6f70f1490782482c53989a99c5c2104311d9",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "manhattan-transform",
+          "file": "src/content/docs/techniques/manhattan-transform.mdx",
+          "sha256": "d3f08c80f071be357b5cac6cb55a0c3806223f22d4113f0a0173715d74a168f0",
+          "cppFenceSha256": "2c31d1e90fb7fd589dcca29bf06fb719a16b1eaa7f523d15716f2833e9cc0948",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "tree-eccentricity-diameter-endpoints",
+          "file": "src/content/docs/techniques/tree-eccentricity-diameter-endpoints.mdx",
+          "sha256": "7a2f3e38c48aa717d37ec6c762016a2f4bfb5f18dc5924658ff91ac9b91a0213",
+          "cppFenceSha256": "32243ec5df61a094879a9f8f2a7f4c4e0715d17b1e2d36edfccd2146673219aa",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "state-design",
+          "file": "src/content/docs/techniques/state-design.mdx",
+          "sha256": "64989eeb428d7bdba576ad4c34ba452f7e2a9e00376500fcc9b4c9d6e0d3683e",
+          "cppFenceSha256": "90ecfc0c6af83ffcb8c090d78b2dee4d8a605c9de3ac9353239965002ac94eb5",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "interactive",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "cppFenceSha256": "25ad640fc5fed8ac84cf553a04a9826daacbad658b2b0101e9e07a9fd41f79e6",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "compile-only protocol signature; no IO performed",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "interactive-bit-group-testing",
+          "file": "src/content/docs/techniques/interactive-bit-group-testing.mdx",
+          "sha256": "82fc91eb84ded2ba296dc70e2a76a0691fd941f4238666c3e631c79529b1849b",
+          "cppFenceSha256": "8cd1a809ffe1710fe42b2a5957259300da1b4ae0e6232dfc2c2d040e6d8ec8ca",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "aliens-trick",
+          "file": "src/content/docs/techniques/aliens-trick.mdx",
+          "sha256": "2e6d82c68beeaeb287900ed20d0ccfff8631cf52815261f1545d3428dcbb34ef",
+          "cppFenceSha256": "84177ecbbbf0ae99da15731032e7d41879ee52c68e5d87ca79955a2e1e150619",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "dp-exact-count-penalty",
+          "file": "src/content/docs/techniques/dp-exact-count-penalty.mdx",
+          "sha256": "b702443b1564d16025c3e699b23c02b45f8d279f3d64dd6f841b09a0ff8d799e",
+          "cppFenceSha256": "0f9a187b3f84b8bdb52edf4bdb59f4ea1c4486d82d3eef4fae82826170e10094",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "convex-hull-trick",
+          "file": "src/content/docs/techniques/convex-hull-trick.mdx",
+          "sha256": "5145640894c430792862db550bdf3e2fb6d16a8332ef334ceadf93338d09b738",
+          "cppFenceSha256": "51d46d31e28e31c815040f43cff520af619f267331364bab411e100903c45492",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "dp-affine-transition",
+          "file": "src/content/docs/techniques/dp-affine-transition.mdx",
+          "sha256": "e6893420c58be53b0e9b1ce1f80e1f2595e7534278b4be9b5b315d07c69ea76d",
+          "cppFenceSha256": "db68d70d27f48fe35c3da82c7e62d2c04c6be388b28983d6ceb7312ed89ad2cd",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "li-chao-tree",
+          "file": "src/content/docs/techniques/li-chao-tree.mdx",
+          "sha256": "f01ad3c96323f0c35d1ce73cdd00c99042cf4a3f547199e926b02f2bb053ed88",
+          "cppFenceSha256": "b96fcf6beac0624f1fa1b2151776bcdf094e9e6a0f8dc5a333b83ecc8f72fb2a",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "union-find",
+          "file": "src/content/docs/techniques/union-find.mdx",
+          "sha256": "7d8e6f5b4fb933886df5af2be0e1f8eccd6e64dbfde0e8ce2f987ccb74fcf880",
+          "cppFenceSha256": "a6e5a10cd9334c731ca0ed2bbc2a38b22d236fe2621d36daa2e1fbfee25c2c74",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "lcs-hirschberg-reconstruction",
+          "file": "src/content/docs/techniques/lcs-hirschberg-reconstruction.mdx",
+          "sha256": "71a231f205c405281d19107ecf72153dd5ce19f91fa8d191e9a3f793022e84dd",
+          "cppFenceSha256": "eeabbdf36fc567410c670914c7d2aff7d8de089e6b35abefe57f89c01f6f9cbe",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "dp-monotone-split",
+          "file": "src/content/docs/techniques/dp-monotone-split.mdx",
+          "sha256": "2a4e2b98f2aa205c7ac6a807722fab62ab0a106c73a4e171ea6162e56186ffce",
+          "cppFenceSha256": "907ae91d44ca6063a8efd28ed835e07546ab1eeb1bfd762245557e3320efab69",
+          "fullArticleAndAllCodeRead": true,
+          "originalFullRangeApiReusable": false,
+          "nativeCheckKind": "actual frozen fence component scope check; not a full-source solver",
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ]
+    },
+    "sanitizerOrProductionScopeClaimed": false,
+    "originalProbeFile": "/tmp/flowchartcp-ioi2016-probe.py",
+    "originalProbeSha256": "2cc576c2b9c99fd3f7718239de76829049bbc0039d98ee978a298a2243fd7869",
+    "actualFrozenRuntimeReplayCommand": "node research/probes/ioi-2016-frozen-runtime.mjs",
+    "independentReview": "research/probes/ioi-2016-independent-review.json",
+    "normalization": "Bootstrap restores every1431initialraw/every504MDX plus105vendor from separateepoch and checksallSHA. Math/native fences/runtime unchanged;defaultstdout and optionalexplicitoutput. Originalaudit/probe/notes/proposal exactbytes kept separately."
+  },
+  "preservation": {
+    "oldCorporaCount": 9,
+    "oldAuditFiles": [
+      {
+        "file": "data/corpus-audits/icpc-2017-world-finals.json",
+        "sha256": "f6e504a921e6c263f89b4443e459df1d6c81d43190bc3787a24ff89c590a13a2"
+      },
+      {
+        "file": "data/corpus-audits/icpc-2018-world-finals.json",
+        "sha256": "5b9288000c2165023233cfe4b8dbc26ea743cdc80a85da1e1dd9c41d762465e2"
+      },
+      {
+        "file": "data/corpus-audits/ioi-2017.json",
+        "sha256": "eb69a8e7b55d61cc5e1c8cc16494d9a5cd7bfc199072fcac2826238224364710"
+      },
+      {
+        "file": "data/corpus-audits/ioi-2018.json",
+        "sha256": "0d9a04e7c024248cdc6a8be90394ca282e7cb7836c289f3524c0d5861b366eda"
+      },
+      {
+        "file": "data/corpus-audits/ioi-2019.json",
+        "sha256": "c950b0fc69b4bb3f150a1ca6b108e27bcf44748a62189e132c419c779a213ed1"
+      },
+      {
+        "file": "data/corpus-audits/ioi-2020.json",
+        "sha256": "237f84501b3a0928d3e47ab75eaa41842d392918921f4acbf86bbf7f48e77445"
+      },
+      {
+        "file": "data/corpus-audits/joi-2020-spring.json",
+        "sha256": "3957417c7a82cc15a85279713c30b154a0c04050b04a6782b9ef8a5733bde28d"
+      },
+      {
+        "file": "data/corpus-audits/usaco-2020-dec-2021-jan-platinum.json",
+        "sha256": "d4229180493cdabd1ab1280118b290fbe86f85da28cc6866a4ea57b62c76509d"
+      },
+      {
+        "file": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+        "sha256": "c08951667854fdfdaae354dca1c5c39e46d1d0754e5eed550676a3e45afd6975"
+      }
+    ],
+    "oldFieldsPolicy": "All original top/row keys including existing resolutions and subsequent reviews remain identical under projection; future new keys may be added.",
+    "sharedFilesModified": false,
+    "books3ArtifactsUnchanged": true
+  }
+}

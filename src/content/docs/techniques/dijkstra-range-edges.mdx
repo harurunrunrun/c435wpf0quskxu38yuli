@@ -1,0 +1,83 @@
+---
+title: "点から区間・区間から点への移動を二つの区間木で張る"
+description: "同一コストの区間遷移をまとめ、行きと帰りの補助辺を混ぜずに圧縮する。"
+techniqueId: dijkstra-range-edges
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+番号付きの頂点が並び、「頂点 `v` から番号区間 $[l,r)$ のどれかへ同じ費用で移動」「区間内のどの頂点からでも `v` へ同じ費用で移動」という指定が多数ある。区間の各頂点へ辺を張ると $NQ$ 本になる。
+
+## 考え方
+
+区間を $O(\log N)$ 個の二分区間へ分ける。点から区間へ向かうため、区間頂点から子の区間頂点へコスト0の辺を張り、葉を元の頂点につなぐ。元の点から区間を覆う頂点へ費用 $w$ で入れば、その区間内だけへ降りられる。
+
+逆向きは別の木を使い、葉から親へコスト0で上がれるようにする。区間を覆う頂点から目的の点へ費用 $w$ の辺を張る。
+
+一つの木に上下両方向の0辺を張ってはいけない。ある葉から根を経て別の葉へ無料で行けてしまう。二つの木は元の葉だけを共有する。
+
+## 適用条件
+
+区間に属するすべての移動先・移動元で費用が同じ場合に使う。番号によって費用が違うなら、その式を追加で表現する必要がある。以下は非負コスト専用。空区間は辺を追加しない。
+
+## なぜ正しいか
+
+点から下向き木の区間頂点へ入った後、到達できる葉はその区間に属する頂点と一致する。上向き木では、区間頂点へ到達できる葉がその区間に一致する。それぞれ費用 $w$ は一度だけ払う。補助木を通る経路を元の区間遷移へ置き換えられ、逆に元の各遷移も補助木で同じ費用に再現できる。
+
+## 計算量
+
+明示的に張ると $O(NQ)$ 本。圧縮後は $O(N)$ 頂点、$O(N+Q\log N)$ 辺で、構築は $O(N+Q\log N)$ 時間。最短路は $O((N+Q\log N)\log N)$ 時間、$O(N+Q\log N)$ 空間。
+
+## 実装
+
+`point_to_range(v,l,r,w)` と `range_to_point(l,r,v,w)` は半開区間。元の頂点は `0..n-1`。`distances(s)` が元の頂点だけの距離を返す。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <queue>
+#include <functional>
+#include <limits>
+#include <cassert>
+struct RangeEdgeGraph {
+    int n;std::vector<int> down,up;
+    std::vector<std::vector<std::pair<int,long long>>> g;
+    explicit RangeEdgeGraph(int count):n(count),down(4*count),up(4*count),g(count) {assert(n>0);build(1,0,n);}
+    int vertex() {g.emplace_back();return int(g.size())-1;}
+    void add_edge(int a,int b,long long w) {assert(w>=0);g[a].push_back({b,w});}
+    void build(int k,int l,int r) {
+        if(r-l==1) {down[k]=up[k]=l;return;}
+        down[k]=vertex();up[k]=vertex();int m=(l+r)/2;build(2*k,l,m);build(2*k+1,m,r);
+        for(int child:{2*k,2*k+1}) {add_edge(down[k],down[child],0);add_edge(up[child],up[k],0);}
+    }
+    void connect(int k,int l,int r,int ql,int qr,int v,long long w,bool outgoing) {
+        if(qr<=l||r<=ql) return;
+        if(ql<=l&&r<=qr) {if(outgoing) add_edge(v,down[k],w);else add_edge(up[k],v,w);return;}
+        int m=(l+r)/2;connect(2*k,l,m,ql,qr,v,w,outgoing);connect(2*k+1,m,r,ql,qr,v,w,outgoing);
+    }
+    void point_to_range(int v,int l,int r,long long w) {assert(0<=l&&l<=r&&r<=n);connect(1,0,n,l,r,v,w,true);}
+    void range_to_point(int l,int r,int v,long long w) {assert(0<=l&&l<=r&&r<=n);connect(1,0,n,l,r,v,w,false);}
+    std::vector<long long> distances(int start) const {
+        const long long INF=std::numeric_limits<long long>::max()/4;
+        std::vector<long long> dist(g.size(),INF);dist[start]=0;
+        using P=std::pair<long long,int>;
+        std::priority_queue<P,std::vector<P>,std::greater<P>> pq;pq.push({0,start});
+        while(!pq.empty()) {
+            auto [d,v]=pq.top();pq.pop();if(d!=dist[v]) continue;
+            for(auto [u,w]:g[v]) if(d<=INF-w&&d+w<dist[u]) {dist[u]=d+w;pq.push({dist[u],u});}
+        }
+        dist.resize(n);return dist;
+    }
+};
+```
+
+## 関連する手法
+
+[セグメント木](/flowchartcp/techniques/segment-tree/) ・ [ダイクストラ法](/flowchartcp/techniques/dijkstra/) ・ [同じ集合内の移動を仮想頂点への入場と退出に分ける](/flowchartcp/techniques/zero-one-bfs-supernodes/)
+
+## 参考資料
+
+- [Codeforces：786B Legacy（原典）](https://codeforces.com/problemset/problem/786/B)。区間辺の圧縮は原典の条件から導出し、全区間を明示したグラフとの比較で確認している。
+
+<TechniqueReferences techniqueId="dijkstra-range-edges" />

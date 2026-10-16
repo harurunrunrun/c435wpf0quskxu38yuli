@@ -1,0 +1,69 @@
+---
+title: "誰も来ない確率は、各移動者が来ない確率の積にする"
+description: "移動者ごとの位置分布だけを計算し、空いている場所の期待数を求めます。"
+techniqueId: "independent-avoidance-product"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+複数の物体が独立に移動した後、誰もいない場所の数の期待値を求めます。複数の物体が同じ場所にいてよい設定です。
+
+## 考え方
+
+物体 $s$ が最後に場所 $v$ にいる確率を $p_{s,v}$ とします。場所 $v$ が空く確率は $\prod_s(1-p_{s,v})$。したがって期待空き場所数は $\sum_v\prod_s(1-p_{s,v})$ です。各物体の位置分布を、一体だけの時刻と位置の DP で求めます。
+
+## 適用条件
+
+物体どうしの移動が独立であること。衝突で止まる、同じ乱数で動くなどの相互作用があると積にはできません。隣接先の数は場所によって変わるため、それぞれの次数で確率を割ります。
+
+## なぜ正しいか
+
+場所 $v$ が空なら 1、そうでなければ 0 の変数を置きます。各物体が $v$ に来ない事象は独立なので、その積が空く確率です。場所どうしの空き方は独立でなくても、指示変数の期待値は足せます。
+
+## 計算量
+
+場所数 $V$、移動の有向辺数 $E$、歩数 $K$ とすると時間 $O(KV(E+V)+V^2)$、追加空間 $O(V+E)$。盤面では $E=O(V)$ なので $O((K+1)V^2)$。全物体の位置を同時に持つ $V^V$ 状態を避けます。
+
+## 実装
+
+`expected_empty_cells(h,w,steps)` は、各マスに一体ずつ置いたロボットが、上下左右の盤面内へ等確率で進む場合を扱います。歩数 0 では空きマスはなく、一マスだけの盤面ではその場に留まります。初期配置や移動規則が異なる場合は、一体ごとの初期分布と遷移を変更します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double expected_empty_cells(int h,int w,int steps){
+    assert(h>=1 && w>=1 && steps>=0);
+    int n=h*w;
+    vector<vector<int>> next(n);
+    for(int y=0;y<h;++y)for(int x=0;x<w;++x){
+        int v=y*w+x;
+        for(auto [dy,dx]:vector<pair<int,int>>{{1,0},{-1,0},{0,1},{0,-1}}){
+            int ny=y+dy,nx=x+dx;
+            if(0<=ny && ny<h && 0<=nx && nx<w)next[v].push_back(ny*w+nx);
+        }
+        if(next[v].empty())next[v].push_back(v); // 一マスの盤面ではその場に留まる
+    }
+    vector<long double> empty(n,1),p(n),q(n);
+    for(int start=0;start<n;++start){
+        fill(p.begin(),p.end(),0);p[start]=1;
+        for(int t=0;t<steps;++t){
+            fill(q.begin(),q.end(),0);
+            for(int v=0;v<n;++v)for(int u:next[v])q[u]+=p[v]/next[v].size();
+            p.swap(q);
+        }
+        for(int v=0;v<n;++v)empty[v]*=1-p[v];
+    }
+    return accumulate(empty.begin(),empty.end(),(long double)0);
+}
+```
+
+## 関連する手法
+
+[総数の期待値を、各組が成立する確率に分ける](/flowchartcp/techniques/expectation-indicators/)
+
+## 参考資料
+
+- [出典の問題文](https://cses.fi/problemset/task/1726)
+
+<TechniqueReferences techniqueId="independent-avoidance-product" />

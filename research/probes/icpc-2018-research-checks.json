@@ -1,0 +1,45 @@
+{
+  "D": {
+    "correctedRecurrenceComparisons": 189,
+    "exactUrnStates": 5004,
+    "normalizationCounterexample": {
+      "n": 2,
+      "d": 1,
+      "r": 2,
+      "compositions": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "sumOverAllCompositions": 6,
+      "sketchPrintedBase": 3
+    },
+    "note": "小規模の独立検査。大制約の浮動小数安定性や完成実装を検証したものではない。"
+  },
+  "K": {
+    "degreeTargetVectorsCompared": 5345,
+    "maxN": 6,
+    "targetDegreeValues": "1..4",
+    "note": "目標次数の総和が2N-2以上の小規模ベクトルと、全ての木次数列を比較。完成木の出力実装は未作成。"
+  },
+  "I": {
+    "activeIntervalComparisons": 29784,
+    "correctCondition": "j + D(j,y) >= x",
+    "inclusiveExpiry": "x=j+D(j,y) is still active",
+    "note": "任意run長の等式を検査。ASCII読取や全三角形列挙の完成コード検証ではない。"
+  },
+  "H": {
+    "matchingInstancesCompared": 446,
+    "maxWires": 5,
+    "note": "境界endpointの巡回順とgapの側選択を検査。実数座標出力や1e-6回避の完成コード検証ではない。"
+  },
+  "A": {
+    "reverseEventVsRecursiveDecisionInstances": 1500,
+    "note": "独立な小規模有理数比較。同時刻乗換禁止・同時刻一便選択を含む。最大制約や完成実装は未検証。"
+  }
+}

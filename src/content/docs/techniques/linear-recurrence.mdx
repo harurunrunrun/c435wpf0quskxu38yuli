@@ -1,0 +1,77 @@
+---
+title: "線形漸化式の高速計算"
+description: "固定長の線形漸化式から、非常に大きい添字の項を求めます。"
+techniqueId: linear-recurrence
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+固定長の線形漸化式から、非常に大きい添字の項を求めます。
+
+別名：Linear Recurrence / Kitamasa / Bostan–Mori / Berlekamp–Massey
+
+## 使う場面
+
+直前の $K$ 項から次の項が決まる数列で、$10^{18}$ 番目など遠い項だけを求める場合に使います。1項ずつ計算する方法では間に合いません。行列累乗でも解けますが、特性多項式を使うと、行列より小さな計算で済みます。
+
+## 考え方
+
+漸化式を
+
+$$a_n=\sum_{j=0}^{K-1}c_j a_{n-1-j}$$
+
+とし、特性多項式 $P(x)=x^K-\sum_j c_jx^{K-1-j}$ を作ります。$x^n$ を $P$ で割った余りの係数を初期値 $a_0,\ldots,a_{K-1}$ に掛けて足すと、$a_n$ が得られます。
+
+Kitamasa法では、多項式の積を取るたびに $P$ で割った余りに戻しながら、二分累乗で $x^n$ を計算します。Bostan–Mori法は、生成関数を使って目的の係数を求める別の方法です。
+
+## 適用条件
+
+漸化式の係数と最初の $K$ 項が既知であることが前提です。以下は法998244353で計算します。
+
+Berlekamp–Massey法で標本から漸化式を求める場合は、体上の演算と十分な項数が必要です。観測した項に一致する漸化式が見つかっただけでは、その後も一致する保証はありません。元の数列が一定次数の線形漸化式を満たすことを先に証明します。
+
+## なぜ正しいか
+
+特性多項式の関係で $K$ 次以上の冪を低い冪へ置き換えると、数列の漸化式と同じ係数関係になります。したがって、$x^n$ の余りを初期項に作用させた値は $a_n$ に一致します。二分累乗は剰余の下で同じ積を計算するため、結果を変えずに計算回数を減らせます。
+
+## 計算量
+
+単純な多項式の積と剰余計算を使うKitamasa法は、$O(K^2\log n)$ 時間、$O(K)$ 空間です。高速な乗算の計算量を $M(K)$ とすると、標準的なBostan–Mori法は $O(M(K)\log n)$ 時間です。
+
+## 実装
+
+以下は既知の漸化式に対するKitamasa法です。係数の順序は、`c[j]` が $a_{n-1-j}$ の係数です。Fibonacci数列なら初期値は `{0, 1}`、係数は `{1, 1}` を渡します。初期値と係数は0以上法未満に正規化してください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// a[n] = sum_{j=0}^{k-1} c[j] * a[n-1-j], modulo P.
+long long linear_recurrence(const vector<long long>& initial,
+                           const vector<long long>& c,uint64_t n) {
+    constexpr long long P=998244353; int k=c.size();
+    assert(k>0 && int(initial.size())==k);
+    auto mul=[&](const vector<long long>& a,const vector<long long>& b) {
+        vector<long long> t(2*k-1);
+        for(int i=0;i<k;++i) for(int j=0;j<k;++j) t[i+j]=(t[i+j]+a[i]*b[j])%P;
+        for(int d=2*k-2;d>=k;--d) for(int j=0;j<k;++j)
+            t[d-1-j]=(t[d-1-j]+t[d]*c[j])%P;
+        t.resize(k); return t;
+    };
+    vector<long long> r(k),x(k); r[0]=1;
+    if(k==1) x[0]=c[0]; else x[1]=1;
+    for(;n;n>>=1,x=mul(x,x)) if(n&1) r=mul(r,x);
+    long long answer=0;
+    for(int i=0;i<k;++i) answer=(answer+r[i]*initial[i])%P;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[行列累乗](/flowchartcp/techniques/matrix-exponentiation/) ・ [形式的冪級数](/flowchartcp/techniques/formal-power-series/)
+
+## 参考資料
+
+- [maspypy: 有理FPSの係数計算（完全実装・検証先）](https://maspypy.github.io/library/poly/coef_of_rational_fps.hpp)
+- [cp-algorithms: 多項式と漸化式](https://cp-algorithms.com/algebra/polynomial.html)
+
+<TechniqueReferences techniqueId="linear-recurrence" />

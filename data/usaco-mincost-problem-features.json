@@ -1,0 +1,27 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1093",
+    "title": "Minimum Cost Paths",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1093",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob2_platinum_jan21.html",
+    "verification": "editorial",
+    "reviewStatus": "verified",
+    "techniqueIds": [
+      "convex-piecewise-quadratic-suffix-cap"
+    ],
+    "features": [
+      "非常に行数の多い格子で、列番号を一つ増やす費用は現在の行番号の二乗、行番号を一つ増やす費用は列ごとの固定値。",
+      "始点は行1・列1で、番号を増やす二操作だけを使い、複数の到着点までの最小費用を求める。",
+      "全行を列挙できないため、列ごとの最小費用を行の関数として小さく持ち、問い合わせをまとめて処理する。"
+    ],
+    "difficulty": "USACO Platinum",
+    "difficultyEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1093",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceYearMonth": "2021-01",
+    "exactDateVerified": false,
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=jan21results",
+    "publicationNotes": "公式原典と結果一覧でUSACO 2021 January Contest, Platinum第2問と確認。2021-01は基準日以前。日単位の開催日・公開日は登録しない。"
+  }
+]

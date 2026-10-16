@@ -1,0 +1,50 @@
+[
+  {
+    "techniqueId": "weighted-tree-exact-length-min-edges",
+    "source": "IOI",
+    "problemId": "2011-race",
+    "title": "Race",
+    "url": "https://ioinformatics.org/files/ioi2011problem2.pdf",
+    "editorialUrl": "https://ioinformatics.org/files/ioi2011problem2.pdf",
+    "evidence": "木の辺長は非負整数で、正確な長さの経路の辺数を最小化する。重心の別枝を合わせ、距離ごとの最小深さだけ残す帰着を原典から導出。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "木の辺長は非負整数で、正確な長さの経路の辺数を最小化する。重心の別枝を合わせ、距離ごとの最小深さだけ残す帰着を原典から導出。 掲載実装を全探索・素朴な再計算と比較して確認。"
+  },
+  {
+    "techniqueId": "range-clamp-composition",
+    "source": "IOI",
+    "problemId": "2014-wall",
+    "title": "Wall",
+    "url": "https://www.ioi2014.org/competition/images/tasks/day1/wall/wall.pdf",
+    "editorialUrl": "https://www.ioi2014.org/competition/images/tasks/day1/wall/wall-solution.pdf",
+    "evidence": "区間chmin/chmaxを順番に適用し、求めるのは最後の各高さだけ。公式解説の二つの境界による更新合成に対応し、途中の区間集計は要求されない。",
+    "verification": "editorial",
+    "difficulty": null,
+    "verificationNotes": "区間chmin/chmaxを順番に適用し、求めるのは最後の各高さだけ。公式解説の二つの境界による更新合成に対応し、途中の区間集計は要求されない。 掲載実装を全探索・素朴な再計算と比較して確認。"
+  },
+  {
+    "techniqueId": "active-top-k-count-sum",
+    "source": "IOI",
+    "problemId": "2014-holiday",
+    "title": "Holiday",
+    "url": "https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday.pdf",
+    "editorialUrl": "https://www.ioi2014.org/competition/images/tasks/day2/holiday/holiday-solution.pdf",
+    "evidence": "公式解説は候補区間内の残り訪問回数ぶんの最大価値和を、候補の活性状態・個数・和で求める。この記事はその集計部分で、訪問区間の最適化全体を解くものではない。",
+    "verification": "editorial",
+    "difficulty": null,
+    "verificationNotes": "公式解説は候補区間内の残り訪問回数ぶんの最大価値和を、候補の活性状態・個数・和で求める。この記事はその集計部分で、訪問区間の最適化全体を解くものではない。 掲載実装を全探索・素朴な再計算と比較して確認。"
+  },
+  {
+    "techniqueId": "median-window-budget",
+    "source": "IOI",
+    "problemId": "2011-ricehub",
+    "title": "Rice Hub",
+    "url": "https://ioinformatics.org/files/ioi2011problem3.pdf",
+    "editorialUrl": "https://ioinformatics.org/files/ioi2011problem3.pdf",
+    "evidence": "各田の収量が一台ぶんで運送費が絶対距離。座標は昇順で重複を許し、集積場所を自由に選べるため、連続区間の中央値への距離和を予算判定に使える。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "各田の収量が一台ぶんで運送費が絶対距離。座標は昇順で重複を許し、集積場所を自由に選べるため、連続区間の中央値への距離和を予算判定に使える。 掲載実装を全探索・素朴な再計算と比較して確認。"
+  }
+]

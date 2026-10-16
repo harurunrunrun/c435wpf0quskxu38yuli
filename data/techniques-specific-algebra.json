@@ -1,0 +1,426 @@
+[
+  {
+    "id": "fps-inverse-newton",
+    "title": "積を 1 にする係数列を、誤差を二乗して伸ばす",
+    "summary": "逆数の係数を一項ずつ決める二重ループを、精度が倍になる多項式の更新に変えます。",
+    "prerequisites": [
+      "ntt",
+      "formal-power-series"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "Newton iteration FPS inverse",
+      "冪級数の逆数"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/inv_of_formal_power_series/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "fps-log-derivative",
+    "title": "対数の係数を、微分・逆数・積分へ分ける",
+    "summary": "何乗も足す対数の定義を使わず、微分すると元の列の逆数との積になることを使います。",
+    "prerequisites": [
+      "fps-inverse-newton"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "formal logarithm derivative integral"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/log_of_formal_power_series/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "fps-exp-newton",
+    "title": "指数の係数を、対数との差で倍の長さまで補正する",
+    "summary": "定数項 0 の列から指数を作るとき、今の近似の対数との差を掛けて補正します。",
+    "prerequisites": [
+      "fps-log-derivative"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "formal exponential Newton"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/exp_of_formal_power_series/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "linear-recurrence-bostan-mori",
+    "title": "遠い項だけを求める漸化式で、偶数番目と奇数番目を分ける",
+    "summary": "固定係数の漸化式を有理式にし、必要な係数の添字を一回ごとに半分へ減らします。",
+    "prerequisites": [
+      "ntt",
+      "formal-power-series"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "Bostan Mori",
+      "有理式の係数抽出"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/other/kth_term_of_linearly_recurrent_sequence/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "subset-convolution-ranked",
+    "title": "集合を重ならない二つに分ける和を、要素数別に畳み込む",
+    "summary": "部分集合和だけでは消せない重なりを、集合の要素数が足し合う条件で除きます。",
+    "prerequisites": [
+      "subset-transform"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "ranked subset convolution",
+      "高速部分集合畳み込み"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/set_power_series/subset_convolution/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "xor-convolution-transform",
+    "title": "添字の XOR ごとの積和を、和と差の変換で求める",
+    "summary": "添字の和ではなく XOR でまとまる二重和を、各ビットでの和と差に変換します。",
+    "prerequisites": [
+      "bitmask-dp"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "Walsh Hadamard transform",
+      "FWHT XOR convolution"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/convolution/bitwise_xor_convolution/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "binomial-convolution-factorials",
+    "title": "二項係数が付く遷移を、階乗で割って畳み込む",
+    "summary": "組合せ数 C(k,i) の重みを入力と出力の階乗へ分け、普通の畳み込みに変えます。",
+    "prerequisites": [
+      "ntt",
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "binomial convolution",
+      "exponential generating function",
+      "階乗による畳み込み"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/stirling_number_of_the_second_kind/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "multipoint-product-tree",
+    "title": "同じ多項式の多数の評価を、一次式の積の余りへ分ける",
+    "summary": "点ごとに全係数を読む代わりに、評価点の積を木にまとめて余りを配ります。",
+    "prerequisites": [
+      "fps-inverse-newton"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "subproduct tree",
+      "multipoint evaluation"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/multipoint_evaluation/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "polynomial-taylor-shift",
+    "title": "変数を定数だけずらすとき、係数を反転して一回畳み込む",
+    "summary": "f(x+c) の全係数を求める二重和から、階乗と c の冪を分離します。",
+    "prerequisites": [
+      "binomial-convolution-factorials"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "Taylor shift convolution"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_taylor_shift/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "primitive-root-discrete-log",
+    "title": "累乗が目標値になる最初の指数を、区間と位置に分けて探す",
+    "summary": "指数を区間番号と区間内の位置に分けて衝突を探し、底と法が互いに素でない部分は先に外します。",
+    "prerequisites": [
+      "linear-congruence-gcd"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "整数・組合せ",
+    "aliases": [
+      "baby step giant step",
+      "BSGS",
+      "extended BSGS",
+      "離散対数"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/discrete_logarithm_mod/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "binomial-composite-prime-power",
+    "title": "合成数の法で二項係数を計算するとき、素因数だけ外して割る",
+    "summary": "逆元を持たない階乗から素因数の指数を分離し、素数冪ごとの答えを合わせます。",
+    "prerequisites": [
+      "crt-noncoprime",
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "整数・組合せ",
+    "aliases": [
+      "binomial modulo composite",
+      "prime power factorial"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/enumerative_combinatorics/binomial_coefficient/task.md"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "floor-sum-euclidean",
+    "title": "一次式を割って切り捨てた和を、格子点の縦横を入れ替えて求める",
+    "summary": "巨大な添字範囲を走査せず、商の整数部分と残った格子点を分けて分母を減らします。",
+    "prerequisites": [
+      "quotient-blocks"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "整数・組合せ",
+    "aliases": [
+      "floor sum",
+      "Euclidean floor sum"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_ja/math.html"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "polynomial-interpolation-product-tree",
+    "title": "多数の点と値から、一次式の積を使って多項式を復元する",
+    "summary": "ラグランジュ補間の各項を別々に展開せず、点の積の木で重み付きの和をまとめます。",
+    "prerequisites": [
+      "multipoint-product-tree",
+      "fps-inverse-newton"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "polynomial interpolation",
+      "fast Lagrange interpolation",
+      "subproduct tree interpolation",
+      "高速多項式補間",
+      "ラグランジュ補間の積の木"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/polynomial_interpolation/task.md",
+      "https://nyaannyaan.github.io/library/verify/verify-yosupo-fps/yosupo-polynomial-interpolation-fast.test.cpp.html"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "lagrange-consecutive-values",
+    "title": "連続する整数での値から、前後の積で遠い一点を求める",
+    "summary": "次数の上限が分かる多項式を、係数へ戻さずに評価します。分母を階乗へ分けると、各項を定数時間で足せます。",
+    "prerequisites": [
+      "factorial-inverses"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "Lagrange interpolation consecutive points",
+      "equally spaced polynomial interpolation",
+      "ラグランジュ補間",
+      "連続点での多項式補間",
+      "等間隔の評価点"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/blog/entry/23442",
+      "https://atcoder.jp/contests/abc208/editorial/2219"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "residue-shortest-representable-count",
+    "title": "繰り返し足して作れる合計額を、剰余ごとの最小値から数える",
+    "summary": "使える最小の正数を法にすると、各剰余で作れる額は最小値からの等差数列になります。金額の上限ではなく、法の大きさだけを状態数にします。",
+    "aliases": [
+      "Residue Graph Shortest Representable Sums",
+      "Unbounded Coin Reachability by Residues",
+      "Apéry Set",
+      "剰余ごとの最小到達額",
+      "同余最短路"
+    ],
+    "family": "整数・数え上げ",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "prerequisites": [
+      "dijkstra"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www.luogu.com.cn/problem/P2371"
+    ]
+  },
+  {
+    "id": "summatory-totient-quotient-memo",
+    "title": "大きな上限までのトーティエントの和を、同じ商の区間とメモ化で求める",
+    "summary": "約数ごとのトーティエントの和が元の数になる恒等式から、累積和だけの再帰式を作ります。小さい値を篩い、大きい値は上限を割った商だけ計算します。",
+    "aliases": [
+      "Summatory Totient Function",
+      "Dujiao Sieve",
+      "Du Jiao Sieve",
+      "杜教篩",
+      "Totient Prefix Quotient Memoization",
+      "トーティエント総和"
+    ],
+    "family": "整数・数え上げ",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "prerequisites": [
+      "quotient-blocks",
+      "divisor-multiple-reversal"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/task.md",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/info.toml",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/sum_of_totient_function/sol/correct.cpp"
+    ]
+  },
+  {
+    "id": "fps-square-root",
+    "title": "二乗すると元の列になる係数を、最初の非零項から求める",
+    "summary": "先頭の零を外して平方根の存在を判定し、定数項の根を選んで正しい次数を倍々に伸ばします。",
+    "prerequisites": [
+      "fps-inverse-newton"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "family": "代数・多項式",
+    "aliases": [
+      "FPS square root",
+      "formal power series square root",
+      "Newton square root",
+      "冪級数の平方根",
+      "形式的冪級数の平方根",
+      "Tonelli Shanks"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/task.md",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/sol/correct.cpp",
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/info.toml"
+    ],
+    "kind": "technique"
+  }
+]

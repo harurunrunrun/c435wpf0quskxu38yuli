@@ -1,0 +1,284 @@
+---
+title: "二始点の混合流は、三つの最大流で配分を決め、同方向の合計流から分解する"
+description: "共有容量と種類別保存則を三本のカット制約へ直し、十進の重みを整数比で保って最適な二種類の流れを構築する。"
+techniqueId: two-source-concave-flow-mixture-decomposition
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+無向の容量付きネットワークで、別々の二始点から一つの終点へ二種類を送る。辺の容量は共有し、二種類を同じ辺の逆方向へ流してはいけない。各種類の保存則を別々に守りながら、終点への到着量 $F,W$ の重み付き幾何平均 $F^\alpha W^{1-\alpha}$ を最大にし、各辺の流れも返したい。
+
+種類1が容量を $v$ 倍使うなら、辺の条件は $v|f_e|+|w_e|\le c_e$。種類1を $x_e=vf_e$ に変えて同じ容量単位にそろえる。正規化した到着量を $X=vF,Y=W$ とすれば、目的値は $v^{-\alpha}X^\alpha Y^{1-\alpha}$。$v$ は正の定数なので、最適な正規化配分には影響しない。
+
+## 考え方
+
+まず三つの整数最大流を求める。$A$ は始点1だけから、$B$ は始点2だけから、$Z$ は両始点から終点への最大流である。他方の始点も通常の中継点として通ってよい。
+
+実現できる正規化配分は、ちょうど
+
+$$X\ge0,\quad Y\ge0,\quad X\le A,\quad Y\le B,\quad X+Y\le Z$$
+
+となる。種類別の流れを直接最適化する代わりに、二変数のこの領域で考える。目的値は各量に非減少なので、合計 $X+Y=Z$ の上で最適解を選べる。このとき
+
+$$Z-B\le X\le A,\qquad Y=Z-X.$$
+
+$0<\alpha<1$ のとき、内点での対数の微分は $\alpha/X-(1-\alpha)/(Z-X)$。従って $\alpha Z$ をこの区間へ切り詰めればよい。どちらかの種類を全く送れない場合も、この式で最適値0の解を選べる。
+
+重みを浮動小数点にせず、厳密な整数比 $\alpha=p/q$ とする。十進小数10桁までなら $q\le10^{10}$ である。
+
+$$X_n=\operatorname{clamp}(pZ,(Z-B)q,Aq),\qquad Y_n=Zq-X_n.$$
+
+ここから二回の整数最大流で辺ごとの流れを作る。
+
+1. 元の容量を $q$ 倍し、追加始点から始点1へ $X_n$、始点2へ $Y_n$ の容量を張る。合計 $X_n+Y_n$ の最大流を流す。
+2. 各無向辺で反対向きの合計流を相殺する。残る正の向きにだけ、その合計流量 $g_e$ を容量として置く。
+3. この有向グラフに、追加始点から始点1への容量 $X_n$ を張り、さらに $X_n$ の最大流を取り出す。これを種類1とし、$g_e$ から引いた残りを種類2にする。
+
+最後の二種類は同じ有向辺にしか乗らないため、逆方向の混在が生じない。種類1を $qv$、種類2を $q$ で割って元の単位へ戻す。最大流の残余容量や停止判定に実数のEPSは使わない。
+
+## 適用条件
+
+必要なのは、二始点・一終点、辺ごとに共有する加法的容量、種類別の通常の保存則、同方向なら自由に混合・再分離できることである。種類ごとに通れる辺が違う場合、三種類以上、途中の配合制約、輸送距離の目的などには、この三本の不等式だけでは足りない。
+
+掲載APIは頂点数 $3\le N\le200$、相異なる三端点、自己ループ・重複のない無向辺、整数容量0〜10を扱う。非連結や容量0も受け取り、到達できない種類の量を0にする。辺の順序と、入力の `u` から `v` への符号を保って返す。
+
+`ExactRatio` は分母1〜$10^{10}$ の整数比。重みは厳密に $0<p<q$、粘性は1〜10とする。原典の重み0.01〜0.99を含む。十進parserは符号・空白・指数なしの `整数部[.小数部]`、小数部1〜10桁を受け取る。整数部は必須で、未約分の分子が `int64_t` に収まる必要がある。形式・範囲違反には `std::invalid_argument` を投げる。
+
+## なぜ正しいか
+
+**配分領域の必要十分性。** 合法な二種類を足せば両始点からの合計流になるので $X+Y\le Z$。各種類を単独で見れば容量以内の流れなので $X\le A,Y\le B$ も必要である。
+
+逆に三不等式を満たす $X,Y$ を固定し、追加始点 $s$ から二始点への容量を $X,Y$ とする。任意の $s$–終点カットについて、元の頂点の始点側集合に二始点が何個含まれるかで分ける。
+
+- どちらも含まないと、追加した二辺だけで $X+Y$ 以上。
+- 始点1だけを含むと、元の辺のカット容量が $A$ 以上、追加辺が $Y$ なので $A+Y\ge X+Y$。
+- 始点2だけなら同様に $B+X\ge X+Y$。
+- 両方を含むと、元のカット容量が $Z$ 以上であり $Z\ge X+Y$。
+
+最大流最小カット定理から合計 $X+Y$ を流せる。$Z$ の計算では二始点への追加辺に元の全容量の総和を与えれば、十分大きい容量となる。
+
+**同方向での分解。** 得られた合計流の逆向きを辺ごとに相殺しても、各頂点の正味の流出量は変わらない。正の向きだけのグラフ $g$ で、始点1を含み終点を含まない任意の集合 $U$ を取る。流出量から流入量を引くと、始点2が $U$ 内なら $X+Y$、外なら $X$。従って $U$ から出る容量だけでも少なくとも $X$ ある。追加始点から始点1への容量を $X$ にすれば、必ずちょうど $X$ を取り出せる。
+
+取り出した種類1は、始点1と終点以外では保存される。差 $g-f_1$ は各辺で非負であり、元の合計流から種類1の保存式を引けば、始点2と終点以外で種類2も保存される。容量と同方向条件も満たす。循環流が残っても合法性には影響しない。
+
+**最適配分。** $A,B\le Z\le A+B$ が成り立つ。最後の不等式は、両始点からの最大流を始点ごとの経路へ分解すれば、それぞれ $A,B$ 以下になることから分かる。従って $[Z-B,A]$ は空でない。合計が $Z$ 未満の任意の実現可能配分も、どちらも減らさず合計 $Z$ の領域まで増やせる。具体的には $X'$ を $[\max(X,Z-B),\min(A,Z-Y)]$ から選べばよく、この区間は三不等式と $Z\le A+B$ により空でない。
+
+両量が正なら、合計一定の対数目的は厳密に凹で、微分の符号は $\alpha Z-X$ の符号に一致する。よって内点の最大点を区間へ切り詰める式が正しい。$Z=0$、$A=0$、$B=0$ では目的値0を明示的に返し、対数や $0^0$ を計算しない。$q$ 倍した容量と要求量は全て整数なので、後半の二最大流も整数で完了する。
+
+## 計算量
+
+通常の容量付きDinicを合計5回使う。$N$ 頂点、$M$ 無向辺に対し追加頂点・辺は定数個なので、$M\ge1$ では **$O(N^2M)$ 時間、$O(N+M)$ 空間**。空辺集合も含めて書くなら $O(N^2(M+1))$ 時間である。入力検査の重複検出は $O(M\log M)$ で、この範囲に含まれる。二つの残余グラフと出力が同時に存在しても空間は線形のまま。
+
+掲載範囲では、終点に接する辺は199本以下なので $A,B,Z\le1990$。$pZ,Zq,Aq,Bq$ と必要な追加辺の容量は $1990\cdot10^{10}=19900000000000$ 以下。元の一辺は $10q\le10^{11}$、無向辺の逆残余はその2倍以下である。最初の追加辺に使う全容量の総和も $10\binom{200}{2}=199000$ 以下。全て `int64_t` に収まる。粘性の分子は最大 $10^{11}$ だが、流量との積を整数型では作らない。
+
+返す整数分子による容量・保存則・同方向性は厳密である。`long double` は元の単位への変換と目的の `pow` だけに使う。表示時は例えば固定小数点12桁とする。一辺の丸め誤差を頂点の199本分加えても、$10^{-4}$ の許容誤差より十分小さい。
+
+## 実装
+
+`optimize_two_source_mixture` は正規化された厳密な分子 `edge_scaled` と、元の単位の `edge_rates`、到着量、最適目的値を返す。`scale` が全ての正規化分子に共通する分母である。元の入力を変更しない。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <cstdint>
+#include <limits>
+#include <numeric>
+#include <queue>
+#include <stdexcept>
+#include <string_view>
+#include <vector>
+
+struct ExactRatio { std::int64_t num, den; };
+
+ExactRatio parse_decimal_10(std::string_view text) {
+    using I = std::int64_t;
+    if (text.empty()) throw std::invalid_argument("empty decimal");
+    I numerator = 0, denominator = 1;
+    bool point = false;
+    int integer_digits = 0, fractional_digits = 0;
+    for (char ch : text) {
+        if (ch == '.' && !point && integer_digits > 0) { point = true; continue; }
+        if (ch < '0' || ch > '9') throw std::invalid_argument("decimal syntax");
+        const int digit = ch - '0';
+        if (numerator > (std::numeric_limits<I>::max() - digit) / 10)
+            throw std::invalid_argument("unreduced numerator too large");
+        numerator = numerator * 10 + digit;
+        if (point) {
+            if (++fractional_digits > 10) throw std::invalid_argument("too many decimal places");
+            denominator *= 10;
+        } else {
+            // Only the fact that an integer digit exists is needed.
+            integer_digits = 1;
+        }
+    }
+    if (point && fractional_digits == 0) throw std::invalid_argument("missing fractional digits");
+    const I divisor = std::gcd(numerator, denominator);
+    return {numerator / divisor, denominator / divisor};
+}
+
+struct MixturePipe { int u, v; std::int64_t capacity; };
+struct MixtureResult {
+    std::int64_t scale, single_first, single_second, total;
+    std::int64_t first_scaled, second_scaled;
+    std::vector<std::array<std::int64_t, 2>> edge_scaled;
+    std::vector<std::array<long double, 2>> edge_rates;
+    long double first_rate, second_rate, value;
+};
+
+namespace mixture_detail {
+using I = std::int64_t;
+struct Handle { int vertex, index; };
+class Dinic {
+    struct Edge { int to, reverse; I residual; };
+    std::vector<std::vector<Edge>> edges;
+    std::vector<int> level, next;
+    bool bfs(int source, int sink) {
+        std::fill(level.begin(), level.end(), -1);
+        std::queue<int> queue; queue.push(source); level[source] = 0;
+        while (!queue.empty()) {
+            const int v = queue.front(); queue.pop();
+            for (const auto& edge : edges[v])
+                if (edge.residual > 0 && level[edge.to] < 0) {
+                    level[edge.to] = level[v] + 1; queue.push(edge.to);
+                }
+        }
+        return level[sink] >= 0;
+    }
+    I dfs(int v, int sink, I limit) {
+        if (v == sink) return limit;
+        for (int& at = next[v]; at < int(edges[v].size()); ++at) {
+            auto& edge = edges[v][at];
+            if (edge.residual == 0 || level[edge.to] != level[v] + 1) continue;
+            const I sent = dfs(edge.to, sink, std::min(limit, edge.residual));
+            if (sent > 0) {
+                edge.residual -= sent;
+                edges[edge.to][edge.reverse].residual += sent;
+                return sent;
+            }
+        }
+        return 0;
+    }
+public:
+    explicit Dinic(int n) : edges(n), level(n), next(n) {}
+    Handle add(int u, int v, I forward, I backward = 0) {
+        const int a = int(edges[u].size()), b = int(edges[v].size());
+        edges[u].push_back({v, b, forward}); edges[v].push_back({u, a, backward});
+        return {u, a};
+    }
+    I residual(Handle h) const { return edges[h.vertex][h.index].residual; }
+    I flow(int source, int sink, I limit = std::numeric_limits<I>::max()) {
+        I total = 0;
+        while (total < limit && bfs(source, sink)) {
+            std::fill(next.begin(), next.end(), 0);
+            while (total < limit) {
+                const I sent = dfs(source, sink, limit - total);
+                if (sent == 0) break;
+                total += sent;
+            }
+        }
+        return total;
+    }
+};
+}
+
+MixtureResult optimize_two_source_mixture(
+    int n, const std::vector<MixturePipe>& pipes, int source_first, int source_second,
+    int sink, ExactRatio alpha, ExactRatio viscosity) {
+    using I = std::int64_t;
+    using mixture_detail::Dinic;
+    constexpr I max_denominator = 10000000000LL;
+    if (n < 3 || n > 200 || pipes.size() > std::size_t(n * (n - 1) / 2))
+        throw std::invalid_argument("network size");
+    auto vertex = [n](int v) { return 0 <= v && v < n; };
+    if (!vertex(source_first) || !vertex(source_second) || !vertex(sink)
+        || source_first == source_second || source_first == sink || source_second == sink)
+        throw std::invalid_argument("three distinct terminals");
+    if (alpha.den < 1 || alpha.den > max_denominator || alpha.num <= 0 || alpha.num >= alpha.den)
+        throw std::invalid_argument("weight must lie strictly between zero and one");
+    if (viscosity.den < 1 || viscosity.den > max_denominator
+        || viscosity.num < viscosity.den || viscosity.num > 10 * viscosity.den)
+        throw std::invalid_argument("viscosity must lie in 1..10");
+    I capacity_sum = 0;
+    std::vector<int> keys; keys.reserve(pipes.size());
+    for (const auto& pipe : pipes) {
+        if (!vertex(pipe.u) || !vertex(pipe.v) || pipe.u == pipe.v
+            || pipe.capacity < 0 || pipe.capacity > 10)
+            throw std::invalid_argument("pipe endpoint or capacity");
+        keys.push_back(std::min(pipe.u, pipe.v) * n + std::max(pipe.u, pipe.v));
+        capacity_sum += pipe.capacity;
+    }
+    std::sort(keys.begin(), keys.end());
+    if (std::adjacent_find(keys.begin(), keys.end()) != keys.end())
+        throw std::invalid_argument("duplicate undirected pipe");
+    auto original = [&](Dinic& graph, I scale) {
+        for (const auto& pipe : pipes)
+            graph.add(pipe.u, pipe.v, pipe.capacity * scale, pipe.capacity * scale);
+    };
+    auto single = [&](int source) {
+        Dinic graph(n); original(graph, 1); return graph.flow(source, sink);
+    };
+    const I a = single(source_first), b = single(source_second);
+    const int extra = n;
+    const I z = [&] {
+        Dinic graph(n + 1); original(graph, 1);
+        graph.add(extra, source_first, capacity_sum);
+        graph.add(extra, source_second, capacity_sum);
+        return graph.flow(extra, sink);
+    }();
+    const I q = alpha.den;
+    const I x = std::clamp(alpha.num * z, (z - b) * q, a * q), y = z * q - x;
+
+    Dinic combined(n + 1);
+    std::vector<mixture_detail::Handle> combined_handles;
+    for (const auto& pipe : pipes)
+        combined_handles.push_back(combined.add(pipe.u, pipe.v, pipe.capacity * q, pipe.capacity * q));
+    combined.add(extra, source_first, x); combined.add(extra, source_second, y);
+    if (combined.flow(extra, sink, x + y) != x + y) throw std::logic_error("infeasible aggregate");
+
+    Dinic first(n + 1);
+    std::vector<I> signed_total(pipes.size());
+    std::vector<mixture_detail::Handle> first_handles;
+    for (std::size_t i = 0; i < pipes.size(); ++i) {
+        const auto& pipe = pipes[i];
+        signed_total[i] = pipe.capacity * q - combined.residual(combined_handles[i]);
+        if (signed_total[i] >= 0)
+            first_handles.push_back(first.add(pipe.u, pipe.v, signed_total[i]));
+        else first_handles.push_back(first.add(pipe.v, pipe.u, -signed_total[i]));
+    }
+    first.add(extra, source_first, x);
+    if (first.flow(extra, sink, x) != x) throw std::logic_error("infeasible decomposition");
+
+    MixtureResult result{q, a, b, z, x, y, {}, {}, 0, 0, 0};
+    result.edge_scaled.resize(pipes.size()); result.edge_rates.resize(pipes.size());
+    const long double first_divisor = static_cast<long double>(q) * viscosity.num / viscosity.den;
+    for (std::size_t i = 0; i < pipes.size(); ++i) {
+        const I magnitude = signed_total[i] >= 0 ? signed_total[i] : -signed_total[i];
+        const I selected = magnitude - first.residual(first_handles[i]);
+        const I f = signed_total[i] >= 0 ? selected : -selected, w = signed_total[i] - f;
+        result.edge_scaled[i] = {f, w};
+        result.edge_rates[i] = {f / first_divisor, static_cast<long double>(w) / q};
+    }
+    result.first_rate = x / first_divisor; result.second_rate = static_cast<long double>(y) / q;
+    if (x > 0 && y > 0) {
+        const long double weight = static_cast<long double>(alpha.num) / q;
+        result.value = std::pow(result.first_rate, weight) * std::pow(result.second_rate, 1 - weight);
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+- [最大流・最小カット](/flowchartcp/techniques/max-flow/) — 二始点を含むかによる四場合のカットと、指定量を取り出す構築に使う。
+- [流量下限付きフロー](/flowchartcp/techniques/lower-bound-flow/) — 指定した注入量を満たす構築という点が共通する。ここでは追加辺を全て飽和できることを直接示す。
+- [不変量](/flowchartcp/techniques/invariant/) — 相殺では正味の流出量を保ち、差を取ることで種類2の保存則を得る。
+
+## 参考資料
+
+- [ICPC World Finals 2017 — 公式問題冊子、19–20ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=19) — 共有容量、粘性、種類別保存則、逆方向禁止、幾何平均を目的とする適用例。大会年2017を確認し、日単位の公開日は補わない。
+- [Per Austrin・Jakub Onufry Wojtaszczyk — 公開solution sketches、9–10ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=9) — 文書自身がunofficial analysisと明記する非公式分析。最適な配分と、合計流の向きに容量を置いて再分解する方針を参照。三本のカット制約、分解可能性、十進入力を整数比へ直す掲載実装は本文で独立に具体化した。
+
+<TechniqueReferences techniqueId="two-source-concave-flow-mixture-decomposition" />

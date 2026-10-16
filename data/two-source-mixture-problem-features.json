@@ -1,0 +1,25 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_j",
+    "title": "Son of Pipe Stream",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=19",
+    "techniqueIds": [
+      "two-source-concave-flow-mixture-decomposition"
+    ],
+    "features": [
+      "別々の二始点から一終点へ流す二種類が無向辺の容量を共有し、同じ辺で逆向きに流せない。",
+      "粘性vで種類1が使う容量を換算し、各種類の保存則を守って到着量の重み付き幾何平均を最大化し、辺ごとの流れも返す。",
+      "N<=200、重複なしの無向整数cap1..10、v1..10、α0.01..0.99。両実数が小数10桁以内であり厳密整数比に変換できる。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=9",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYear": 2017,
+    "notes": "別々の二始点から一終点へ流す二種類が無向辺の容量を共有し、種類別に保存される。同じ辺での逆方向混在は禁止され、混合した後も分離できる。粘性で容量単位をそろえれば、到着量X,Yは単独最大流A,Bと合計最大流ZによるX<=A,Y<=B,X+Y<=Zの領域となる。重み付き幾何平均の最大点をX+Y=Z上で選び、その量の合計流から同方向の二流を再構築する技巧が適用できる。",
+    "discoveredBy": "icpc-2017-world-finals"
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc158_e",
+    "title": "Divisible Substring",
+    "url": "https://atcoder.jp/contests/abc158/tasks/abc158_e",
+    "techniqueIds": [
+      "decimal-substring-divisibility"
+    ],
+    "features": [
+      "十進数字列の非空連続部分文字列を、位置を区別して数える",
+      "先頭0を許し、整数として法Pで割り切れるものを求める",
+      "原典はPが素数。2・5と、10に互いに素な法を分ける"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc158/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。法が素数で、十進部分文字列の非空区間を位置で区別して数える。2・5は末尾一桁の可除性、それ以外は右揃えした接尾辞の余りの一致へ帰着できる。先頭0も許される。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc259_e",
+    "title": "LCM on Whiteboard",
+    "url": "https://atcoder.jp/contests/abc259/tasks/abc259_e",
+    "techniqueIds": [
+      "lcm-removal-unique-maximum"
+    ],
+    "features": [
+      "正整数は素因数と指数の列で与えられ、数そのものは巨大",
+      "一個を1へ書き換えた後の最小公倍数として異なる値を数える",
+      "素因数ごとの最大指数を一個だけが持つかを判定する"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc259/editorial/4294",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。素因数と指数で与えられた巨大な数を一個だけ1にする。各素因数の最大指数を唯一持つ要素だけが最小公倍数を変え、その素因数が別の削除結果との違いの証拠になる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc342_d",
+    "title": "Square Pair",
+    "url": "https://atcoder.jp/contests/abc342/tasks/abc342_d",
+    "techniqueIds": [
+      "squarefree-product-pairs"
+    ],
+    "features": [
+      "非負整数列から異なる二添字i<jを選ぶ",
+      "積が非負の平方数になる組の個数",
+      "零も平方数で、正の値では素因数指数の偶奇だけが必要"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc342/editorial/9449",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。非負整数の二添字の積を平方数にする条件は、正の値の素因数指数の偶奇が一致すること。平方因子を除いた代表ごとに組を数え、零を含む組は全て成立するため別に加える。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc206_e",
+    "title": "Divide Both",
+    "url": "https://atcoder.jp/contests/abc206/tasks/abc206_e",
+    "techniqueIds": [
+      "gcd-pairs-exclude-divides"
+    ],
+    "features": [
+      "整数区間L..Rの順序付き二数を数える",
+      "gcd(x,y)>1で、x/gcdとy/gcdも1でない",
+      "同じ値の組は不成立なのでx<yで数えて最後に二倍"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc206/editorial/2107",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。x<yへ限定すると、大きい方を最大公約数で割った値は自動的に1より大きい。共通因子を持つ組から、小さい方の真の倍数の組だけを除き、順序付きの答えへ二倍する。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc228_e",
+    "title": "Integer Sequence Fair",
+    "url": "https://atcoder.jp/contests/abc228/tasks/abc228_e",
+    "techniqueIds": [
+      "prime-mod-power-tower"
+    ],
+    "features": [
+      "K種類から長さNの列を全て作り、各列へM種類の点数を独立に付ける",
+      "通り数M^(K^N)を素数998244353で割った余り",
+      "原典はN,K,Mが全て正。底が法の倍数かを先に分ける"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc228/editorial/2954",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。長さNのK種類の列はK^N本あり、各列へ独立にM種類の点数を付けるためM^(K^N)通りになる。原典では指数が正なので、底が法の倍数なら0、それ以外なら指数をp−1で縮める。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc150_d",
+    "title": "Semi Common Multiple",
+    "url": "https://atcoder.jp/contests/abc150/tasks/abc150_d",
+    "techniqueIds": [
+      "half-multiple-two-adic"
+    ],
+    "features": [
+      "全aiは正の偶数",
+      "全iでX=(ai/2)×正の奇数となるXを1..Mで数える",
+      "2の指数が一致するかと、最小公倍数が上限内かを判定する"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc150/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。全ての偶数aiに対してX/(ai/2)が正の奇数になる必要がある。2の指数が異なれば不可能で、一致する場合だけ半分の最小公倍数の奇数倍を数えればよい。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc280_d",
+    "title": "Factorial and Multiple",
+    "url": "https://atcoder.jp/contests/abc280/tasks/abc280_d",
+    "techniqueIds": [
+      "factorial-divisibility-threshold"
+    ],
+    "features": [
+      "指定整数K≤10^12が与えられる",
+      "N!がKの倍数になる最小の正整数N",
+      "素因数別の必要指数を満たすかで判定できる"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc280/editorial/5341",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。階乗がKの倍数かは、Kの素因数ごとの必要指数を全て満たすかで決まる。階乗を構築せず指数を数え、それぞれの達成位置の最大を取れば最小の正整数Nが得られる。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc238_c",
+    "title": "digitnum",
+    "url": "https://atcoder.jp/contests/abc238/tasks/abc238_c",
+    "techniqueIds": [
+      "decimal-length-rank-sum"
+    ],
+    "features": [
+      "f(x)はx以下でxと同じ桁数の正整数の個数",
+      "f(1)..f(N)の総和を求める",
+      "N<10^18なので整数を列挙せず十の冪で区切る"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc238/editorial/3365",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式の大会日が基準日より前であることを確認。f(x)は同じ桁数の正整数内の順位なので、十の冪で区切った各範囲で1から区間長まで増える。上限で切った区間長の三角数を足せば、巨大なNまで列挙せず計算できる。"
+  }
+]

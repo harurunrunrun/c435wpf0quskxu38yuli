@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2019_walk",
+    "title": "Sky Walking",
+    "url": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+    "techniqueIds": [
+      "skywalk-endpoint-sparse-shortest-path"
+    ],
+    "features": [
+      "地面から伸びる高さ付き鉛直ビルと正高さの水平通路の和集合上だけを歩き、地上の横移動はできない。",
+      "通路の途中のビルとの交点でも乗り換えられ、同高さ通路は端点同士だけで接する。指定二ビルの根元間の最短距離または到達不能を判定する。",
+      "原典N,M各1..100000、x昇順0..1e9、h1..1e9、0<=l<r<N、1<=y<=min両端h、異なるs,g。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-08",
+    "exactDateVerified": true,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "notes": "地面からの鉛直ビルと正高さの水平通路上だけを移動し、指定二ビル根元の最短距離を求める。始終点の左右で高さが足りる直近ビルに切れ目を追加し、各切れ目から直下の通路への鉛直接続と通路上の隣接点だけを残す。矩形への進入の置換と高い不要辺からの辞書式最小性により最短距離を保存し、全交点を列挙せずO((N+M)log(N+M+1))時間で処理する。",
+    "discoveredBy": "ioi-2019"
+  }
+]

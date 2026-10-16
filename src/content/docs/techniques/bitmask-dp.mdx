@@ -1,0 +1,72 @@
+---
+title: "bit DP"
+description: "選んだ要素の集合をビット列で表し、集合ごとの状態を保存する。"
+techniqueId: bitmask-dp
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+選んだ要素の集合をビット列で表し、集合ごとの状態を保存する。
+
+## 使う場面
+
+要素数が20程度で、すでに選んだ要素の集合によって次の選択が決まるときに使う。順列をそのまま列挙すると $N!$ 通りになるが、同じ集合に到達した結果をまとめれば、状態数を $2^N$ 程度に抑えられる。
+
+## 考え方
+
+要素 $i$ が集合に含まれるかを、整数の $i$ 番目のビットで表す。集合全体を一つの整数として、配列の添字に使える。
+
+割り当ての例では、「先頭から $|S|$ 人に集合 $S$ の仕事を割り当てた最小費用」を状態にする。未使用の仕事を一つ加えて次の状態へ進む。経路の問題では、訪問済み集合だけでは次の辺が決まらないため、現在の頂点も状態に加える。
+
+## 適用条件
+
+今後選べる操作と追加費用が、集合と保存した補助状態だけで決まる必要がある。訪問順が影響する場合は、必要な情報を追加する。
+
+状態数は要素数に対して指数的に増える。$2^N$ 個の配列がメモリに収まることと、ビット演算に使う整数型の幅を確認する。各集合についてさらに部分集合を列挙する遷移では、全体で $3^N$ 回になる場合がある。
+
+## なぜ正しいか
+
+同じ状態から先の選択肢と追加費用が等しければ、その状態までの最小費用だけを残しても最適な答えを失わない。要素を一つずつ加える遷移では、集合の要素数が必ず増えるため、小さい集合から順に計算できる。個数を求める場合は、最小値ではなく到達した場合の数を足し合わせる。
+
+## 計算量
+
+割り当ての例は時間 $O(N2^N)$、空間 $O(2^N)$。現在の頂点も保存する経路DPでは状態数が $O(N2^N)$、すべての頂点への遷移を試す場合の時間は $O(N^2 2^N)$。
+
+## 実装
+
+`min_assignment(cost)` は、各人に異なる仕事を一つずつ割り当てる最小費用を返す。`cost[i][j]` は人 `i` に仕事 `j` を割り当てる費用。各費用と途中の合計の絶対値は $2^{60}$ 未満とする。
+
+```cpp
+#include <vector>
+#include <bit>
+#include <algorithm>
+#include <cassert>
+using namespace std;
+long long min_assignment(const vector<vector<long long>>& cost) {
+    int n=cost.size();
+    assert(n<=22);
+    for(auto& row:cost) assert(int(row.size())==n);
+    const long long INF=1LL<<60;
+    int size=1<<n;
+    vector<long long> dp(size,INF);
+    dp[0]=0;
+    for(int mask=0;mask<size-1;++mask) {
+        if(dp[mask]==INF) continue;
+        int i=popcount(static_cast<unsigned>(mask));
+        for(int j=0;j<n;++j) if(!(mask>>j&1)) {
+            int next=mask|(1<<j);
+            dp[next]=min(dp[next],dp[mask]+cost[i][j]);
+        }
+    }
+    return dp.back();
+}
+```
+
+## 関連する手法
+
+[部分集合ゼータ変換](/flowchartcp/techniques/subset-transform/) ・ [半分全列挙](/flowchartcp/techniques/meet-in-the-middle/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [USACO Guide: Bitmask DP](https://usaco.guide/gold/dp-bitmasks)
+
+<TechniqueReferences techniqueId="bitmask-dp" />

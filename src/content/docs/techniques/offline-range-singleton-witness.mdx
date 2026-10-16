@@ -1,0 +1,95 @@
+---
+title: "区間に一度だけ現れる値は、最新位置の直前出現が左端より前かで探す"
+description: "右端までの最新出現だけを残し、直前位置の区間最小値から単出現の候補を取り出す。"
+techniqueId: offline-range-singleton-witness
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+右端までの最新出現だけを残し、直前位置の区間最小値から単出現の候補を取り出す。
+
+## 使う場面
+
+固定配列について、指定区間にちょうど一回現れる値を一つ見つけたい。各値の頻度を質問ごとに数えるのは遅く、種類数だけの集計では候補を取り出せない。
+
+## 考え方
+
+質問を右端の順に並べる。右端までに出た各値の最新位置 $i$ だけを残し、位置 $i$ にその直前の出現位置 $p_i$ を記録する。同じ値が再び出たら、古い最新位置の記録を無効にする。
+
+区間 $[L,R)$ で位置 $i$ がその値の唯一の出現になる条件は
+
+$$L\le i<R,\qquad p_i<L.$$
+
+$R$ より前の最新位置だけを残しているので、後ろの同値出現はもう存在しない。記録の区間最小値が $L$ 未満なら、その位置の値が答えになる。
+
+## 適用条件
+
+配列は固定で、全質問を右端順に並べ替えられる。求めるのは単出現の値一つで、その最小値や個数ではない。値の更新がある場合は、固定した前後の出現関係を使い続けられない。
+
+掲載実装は任意の64ビット整数値、配列と質問数はそれぞれ50万以下。空区間は候補なしとする。
+
+## なぜ正しいか
+
+右端までの同値出現は最新位置に一つだけ代表される。この代表が区間内にあり、その直前位置が区間より前なら、区間内に同値位置が一つだけある。逆に単出現の値はこの二条件を必ず満たす。
+
+区間内の有効な代表について直前位置の最小を取ると、条件を満たすものの有無を判定できる。最小値を作る位置も保存しておけば、その値を直接返せる。
+
+## 計算量
+
+質問ごとに頻度表を作る方法は $O(NQ\log N)$ 時間・$O(N+Q)$ 空間。圧縮・右端の整列・各位置の二点更新・区間最小値で、$O(N\log N+Q\log Q+(N+Q)\log(N+1))$ 時間・$O(N+Q)$ 空間。
+
+## 実装
+
+`range_singleton_values` は半開区間の質問を受け、入力順の `optional<long long>` を返す。値0も扱うため、候補なしを数値0で表さない。原典は値が正なので、候補なしを出力0へ変換できる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<optional<long long>> range_singleton_values(const vector<long long>& a,
+        const vector<pair<int,int>>& queries) {
+    int n=a.size(),q=queries.size();
+    if(n>500000 || q>500000) throw invalid_argument("size bounds");
+    for(auto [l,r]:queries) if(l<0 || l>r || r>n) throw out_of_range("query range");
+    auto values=a;sort(values.begin(),values.end());values.erase(unique(values.begin(),values.end()),values.end());
+    vector<int> rank(n),last(values.size(),-1);
+    for(int i=0;i<n;++i) rank[i]=lower_bound(values.begin(),values.end(),a[i])-values.begin();
+    int base=1;while(base<n) base*=2;
+    const pair<int,int> empty={n+1,-1};
+    vector<pair<int,int>> tree(2*base,empty);
+    auto set=[&](int p,pair<int,int> value) {
+        p+=base;tree[p]=value;
+        for(p/=2;p>0;p/=2) tree[p]=min(tree[2*p],tree[2*p+1]);
+    };
+    auto minimum=[&](int l,int r) {
+        auto result=empty;
+        for(l+=base,r+=base;l<r;l/=2,r/=2) {
+            if(l&1) result=min(result,tree[l++]);
+            if(r&1) result=min(result,tree[--r]);
+        }
+        return result;
+    };
+    vector<int> order(q);iota(order.begin(),order.end(),0);
+    sort(order.begin(),order.end(),[&](int x,int y){return queries[x].second<queries[y].second;});
+    vector<optional<long long>> answer(q);int next=0;
+    for(int id:order) {
+        auto [l,r]=queries[id];
+        while(next<r) {
+            int p=last[rank[next]];
+            if(p!=-1) set(p,empty);
+            set(next,{p,next});last[rank[next]]=next;++next;
+        }
+        auto [previous,pos]=minimum(l,r);
+        if(previous<l) answer[id]=a[pos];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[区間の種類数を各値の最新位置だけで数える](/flowchartcp/techniques/offline-rightmost-occurrence/) ・ [全区間で一度だけ現れる要素は、前後の同じ値に挟まれた端点数で数える](/flowchartcp/techniques/singleton-subarray-contribution/)
+
+## 参考資料
+
+- [Codeforces：One Occurrence](https://codeforces.com/problemset/problem/1000/F)
+
+<TechniqueReferences techniqueId="offline-range-singleton-witness" />

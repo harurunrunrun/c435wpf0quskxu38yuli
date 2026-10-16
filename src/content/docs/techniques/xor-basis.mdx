@@ -1,0 +1,75 @@
+---
+title: "XOR基底"
+description: "部分集合のXORで作れる値を、少数の独立な基底で表します。"
+techniqueId: xor-basis
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+部分集合のXORで作れる値を、少数の独立な基底で表します。
+
+別名：XOR Basis / Linear Basis / 線形基底
+
+## 使う場面
+
+いくつかの整数を選んだXORの最大値や、指定した値を作れるかどうかを求める場合に使います。整数の各ビットを0と1のベクトルと見なし、XORを2元体上の加算と考えます。指数個の部分集合を列挙せず、ビット数以下の基底で表せます。
+
+## 考え方
+
+最上位の1の位置ごとに基底を1本持ちます。新しい値を追加するときは、高いビットから見て、同じ最上位ビットの基底をXORして1を消します。0になれば既存の基底で表せます。基底のない位置に1が残れば、そこへ新しい基底を入れます。
+
+最大値を求めるときも高いビットから進め、基底をXORすると値が大きくなる場合だけ採用します。
+
+## 適用条件
+
+この消去を使えるのはXORです。通常の和やORでは同じ基底の性質は成立しません。64ビット目も扱う場合は符号なし整数を使います。
+
+以下は追加、表現可能性の判定、最大値を扱います。削除や区間の制限には追加の管理が必要です。昇順で $K$ 番目のXORを求めるには、基底をさらに正規化します。
+
+## なぜ正しいか
+
+既存の基底をXORする操作は、その基底の線形結合を足しているだけなので、作れる値の集合を変えません。異なる最上位ビットを持つ基底は独立で、追加したすべての値を表せます。
+
+最大化では、最上位の異なるビットで大きい方を選べば、後の低いビットではその大小関係を逆転できません。したがって、高いビットからの貪欲で正しく求められます。
+
+## 計算量
+
+ビット数を $B$ とすると、追加・表現可能性の判定・最大値の取得はそれぞれ $O(B)$、空間は $O(B)$ です。$N$ 個からの構築は $O(NB)$ です。独立な基底が $r$ 本なら異なるXORは $2^r$ 個あります。
+
+## 実装
+
+`add` は独立な基底が増えたとき `true` を返します。`contains(x)` は値 `x` を作れるか判定します。`maximum(seed)` は、`seed` と作れる値をXORした結果の最大値です。
+
+空集合から0を作れるので `contains(0)` は常に `true` です。基底が64本ある場合、作れる値の個数 $2^{64}$ は64ビット整数には収まりません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct XorBasis {
+    array<uint64_t,64> b{}; int rank=0;
+    bool add(uint64_t x) {
+        for(int i=63;i>=0;--i) if((x>>i)&1) {
+            if(!b[i]) { b[i]=x; ++rank; return true; }
+            x^=b[i];
+        }
+        return false;
+    }
+    bool contains(uint64_t x) const {
+        for(int i=63;i>=0;--i) if((x>>i)&1) { if(!b[i]) return false; x^=b[i]; }
+        return true;
+    }
+    uint64_t maximum(uint64_t seed=0) const {
+        for(int i=63;i>=0;--i) seed=max(seed,seed^b[i]);
+        return seed;
+    }
+};
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [USACO Guide: XOR Basis](https://usaco.guide/adv/xor-basis)
+
+<TechniqueReferences techniqueId="xor-basis" />

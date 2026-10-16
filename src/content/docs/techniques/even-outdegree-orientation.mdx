@@ -1,0 +1,89 @@
+---
+title: "全出次数を偶数にする向き付けは、各成分の辺数を確かめて葉から親辺で直す"
+description: "木以外の向きを先に決め、子の最後の一辺で偶奇を確定し、残る根の条件を成分全体の辺数へ結び付ける。"
+techniqueId: even-outdegree-orientation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+無向の辺を一方通行へ変え、全頂点の出次数を偶数にしたい。全体の辺数が偶数でも、二つの成分がそれぞれ奇数本なら実現できない。成分ごとの保存量と、最後に自由に向けられる親への辺を使う。
+
+## 考え方
+
+各連結成分でDFSの木を作る。木以外の辺は、その辺を初めて見た側から相手へ向け、その始点の出次数の偶奇を反転する。木の親辺は子の処理が終わるまで向きを決めない。
+
+子 $v$ の出次数が奇数なら、親辺を $v\to parent(v)$ として偶数へ直す。既に偶数なら $parent(v)\to v$ とし、子の偶数を保つ。親の偶奇だけが後へ残る。
+
+根で奇数が残れば不可能。各成分の辺数が偶数なら、根も必ず偶数となり構成できる。
+
+## 適用条件
+
+全辺は元々無向で、向きを自由に選べる。求めるのは各出次数の偶奇だけで、強連結性や正確な出次数は要求しない。辺の向きが固定されている場合は、それによる初期の偶奇を含めた別の条件が必要になる。
+
+掲載実装は頂点20万以下・辺40万以下で、非連結、平行辺、自己ループも扱う。自己ループはその頂点の出次数へ一つ加える。辺は番号で一回だけ処理する。辺なしの一頂点は合法で、返り値は全入力辺の向き。実現不能なら `nullopt`。
+
+## なぜ正しいか
+
+一つの成分で全出次数を足すと、その成分の辺数になる。全頂点の出次数が偶数なら、この辺数も偶数でなければならない。
+
+子の処理後に未確定なのは親へ向かう一辺だけ。この辺を子から出すか入れるかで、子の偶奇を自由に選べる。子を確定した後に、その子から出る辺を変更しないため、葉から根へ全非根頂点を偶数にできる。
+
+最後に根の偶奇だけが残る。成分の出次数の総和の偶奇は辺数の偶奇に等しいので、辺数が偶数なら根も偶数になる。これにより成分ごとの必要条件が十分条件にもなる。
+
+## 計算量
+
+全向きの列挙は $2^M$ 通りで、一つの検査に $O(N+M)$ 時間。構成は各辺と頂点を定数回扱い、$O(N+M)$ 時間・空間。反復DFSを使うので、長い鎖にも探索深さ分の再帰を使わない。
+
+## 実装
+
+`orient_with_even_outdegrees` は0始まりの頂点を受け取り、入力順に `(from,to)` を返す。木辺だけは子の終了時まで保留する。
+
+```cpp
+#include <optional>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+std::optional<std::vector<std::pair<int,int>>> orient_with_even_outdegrees(int n,
+                                              const std::vector<std::pair<int,int>>& edges) {
+    if(n<1 || n>200000 || edges.size()>400000) throw std::invalid_argument("size");
+    int m=int(edges.size());
+    std::vector<std::vector<std::pair<int,int>>> graph(n);
+    for(int id=0;id<m;++id) {
+        auto [u,v]=edges[id];
+        if(u<0 || u>=n || v<0 || v>=n) throw std::invalid_argument("edge");
+        graph[u].push_back({v,id});graph[v].push_back({u,id});
+    }
+    std::vector<bool> seen(n),used(m),odd(n);
+    std::vector<int> parent(n,-1),parent_edge(n,-1);
+    std::vector<std::pair<int,int>> direction(m);
+    for(int start=0;start<n;++start) if(!seen[start]) {
+        seen[start]=true;std::vector<std::pair<int,int>> stack{{start,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;int& next=stack.back().second;
+            if(next==int(graph[v].size())) {
+                stack.pop_back();int p=parent[v];
+                if(p==-1) {if(odd[v])return std::nullopt;}
+                else if(odd[v]) {direction[parent_edge[v]]={v,p};odd[v]=false;}
+                else {direction[parent_edge[v]]={p,v};odd[p]=!odd[p];}
+                continue;
+            }
+            auto [u,id]=graph[v][next++];if(used[id])continue;used[id]=true;
+            if(!seen[u]) {
+                seen[u]=true;parent[u]=v;parent_edge[u]=id;stack.push_back({u,0});
+            } else {direction[id]={v,u};odd[v]=!odd[v];}
+        }
+    }
+    return direction;
+}
+```
+
+## 関連する手法
+
+[全頂点間を行き来できる一方通行化は、橋を確かめて木の辺を下へ戻り辺を上へ向ける](/flowchartcp/techniques/bridgeless-strong-orientation/) ・ [不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [CSES：Even Outdegree Edges（原典）](https://cses.fi/problemset/task/2179)。
+
+<TechniqueReferences techniqueId="even-outdegree-orientation" />

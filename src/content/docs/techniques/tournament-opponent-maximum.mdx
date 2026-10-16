@@ -1,0 +1,81 @@
+---
+title: "固定トーナメントの報酬最大化は、相手側の最良を全勝者で共有する"
+description: "勝者ごとの表を左右で併合するとき、相手の具体名に依存しない最大値を先に一度求める。"
+techniqueId: tournament-opponent-maximum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定の勝ち抜き戦で全試合の結果を選び、各参加者が勝った回数に応じた報酬の総和を最大にしたい。部分大会の勝者を状態にすると、左右の勝者の全ての組を比較する併合が重くなる。
+
+## 考え方
+
+高さ $h$ の部分大会で、勝者を参加者 $i$ に固定した最大総報酬を $dp_h[i]$ とする。この時点では勝者にも $C_{i,h}$ を含める。$C_{i,0}=0$、最初は全員 $dp_0[i]=0$。
+
+左の勝者 $i$ が次の試合にも勝つ場合、右の勝者は誰でも負け、右の部分大会の最大総報酬だけが必要になる。
+
+$$dp_h[i]=dp_{h-1}[i]+\max_{j\text{ は右側}}dp_{h-1}[j]+C_{i,h}-C_{i,h-1}.$$
+
+右の参加者が勝つ場合も左右を逆にする。各部分大会で左右の最大値を先に一回求め、全参加者で共有する。報酬差が負でも同じ式を使う。
+
+## 適用条件
+
+組合せは固定された完全二分木で、人数は $2^H$。全試合の結果を自由に選び、報酬はその人の勝利回数だけで決まる。相手の名前や組合せによって報酬が変わる場合、相手側の最大値を全勝者で共有できない。
+
+実装は $H\le16$、各報酬の絶対値 $10^9$ 以下で、0勝の報酬は0とする。勝利数が増えても報酬が減る表を扱える。入力の各行は $C_{i,1},\ldots,C_{i,H}$。一人だけの大会も扱う。
+
+## なぜ正しいか
+
+左と右の部分大会は参加者を共有せず、それぞれの結果を独立に選べる。親の勝者を左の $i$ と決めると、右の大会の勝者は親では負けるため、その後の報酬は変わらない。右側から必要なのは最大総報酬一つだけである。
+
+左側の他の人の勝利回数も変わらず、$i$ の報酬だけが $C_{i,h-1}$ から $C_{i,h}$ へ変わる。差を足すことで、各人の最終勝利回数に対応する報酬をちょうど一回持てる。両側の最大値は更新前に取得し、同じ段の更新が相手の表へ混ざるのを防ぐ。
+
+## 計算量
+
+全勝者の組を比較すると、根の併合だけでも人数 $P=2^H$ に対し $O(P^2)$ 時間。相手側の最大値を共有すれば、各段で合計 $P$ 状態を処理し $O(PH)$ 時間。報酬入力は $O(PH)$ 空間、DPの補助空間は $O(P)$。人数二乗の表を全て確保する必要もない。
+
+## 実装
+
+各段の左右の最大値を先に確定してから、その区間の `dp` を更新する。返り値は大会全体の最大総報酬。
+
+```cpp
+#include <algorithm>
+#include <bit>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+long long maximum_fixed_tournament_reward(const std::vector<std::vector<long long>>& reward) {
+    unsigned people=unsigned(reward.size());
+    if(people==0 || people>(1u<<16) || !std::has_single_bit(people)) throw std::invalid_argument("people");
+    int height=std::countr_zero(people);
+    for(const auto& row:reward) {
+        if(int(row.size())!=height) throw std::invalid_argument("reward row");
+        for(long long value:row) if(value<-1000000000 || value>1000000000) throw std::invalid_argument("reward");
+    }
+    std::vector<long long> dp(people,0);
+    for(int h=1;h<=height;++h) {
+        unsigned length=1u<<h,half=length/2;
+        for(unsigned start=0;start<people;start+=length) {
+            long long left=*std::max_element(dp.begin()+start,dp.begin()+start+half);
+            long long right=*std::max_element(dp.begin()+start+half,dp.begin()+start+length);
+            for(unsigned i=start;i<start+length;++i) {
+                long long previous=(h==1)?0:reward[i][h-2];
+                dp[i]+=((i<start+half)?right:left)+reward[i][h-1]-previous;
+            }
+        }
+    }
+    return *std::max_element(dp.begin(),dp.end());
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [直前の層しか使わないDPは配列を使い回す](/flowchartcp/techniques/dp-dimension-rolling/)
+
+## 参考資料
+
+- [AtCoder：F - Tournament（原典）](https://atcoder.jp/contests/abc263/tasks/abc263_f)。
+- [AtCoder：F - Tournament（公式解説）](https://atcoder.jp/contests/abc263/editorial/4562)。
+
+<TechniqueReferences techniqueId="tournament-opponent-maximum" />

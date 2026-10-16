@@ -1,0 +1,73 @@
+---
+title: "変数間の差の制約を根からの差で管理する"
+description: "差の加算と矛盾判定だけが必要なら、成分の根との差をUnion-Findに保存する。"
+techniqueId: dsu-potential-differences
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+未確定の数値 $X_v$ に対し、$X_b-X_a=w$ という条件が順番に追加される。追加しても矛盾しないか、既存の条件から二変数の差を決められるかを知りたい。
+
+## 考え方
+
+Union-Findの親だけでなく $\delta[v]=X_v-X_{parent[v]}$ を保存する。根への経路上で足せば、$W_v=X_v-X_{root(v)}$ が得られる。根が同じ二頂点の差は $W_b-W_a$。
+
+異なる成分を結ぶ際は、根を $r_a,r_b$ として
+
+$$X_{r_b}-X_{r_a}=w+W_a-W_b$$
+
+を新しい親辺の差として保存する。親子を逆にするなら符号も逆にする。経路圧縮では、途中の差を足して根との差へ書き換える。
+
+## 適用条件
+
+数値の差を指定する等式に使う。$X_b-X_a\le w$ のような不等式は、同じ成分の差が一意にならないため扱えない。削除を伴うなら、通常の経路圧縮だけでは過去の状態へ戻せない。
+
+以下は整数加算の実装であり、差の累積が64ビットに収まることを前提にする。原典の $X_a-X_b=d$ は、引数の順序を `add_constraint(b,a,d)` にすれば対応する。
+
+## なぜ正しいか
+
+親への差は経路上で望遠鏡和になり、頂点と根の差を正確に表す。同じ成分なら既存の等式が二頂点の差を一意に決めるので、新しい差が一致する場合に限り受け入れられる。別成分なら片方の成分全体を平行移動して根の差を調整できるため、既存の等式を壊さずに結べる。
+
+## 計算量
+
+毎回等式グラフを探索する方法は $O(Q(N+Q))$ 時間。サイズによる併合と経路圧縮を行うと、全体で $O((N+Q)\alpha(N))$ 時間、$O(N)$ 空間。
+
+## 実装
+
+`add_constraint(a,b,w)` は $X_b-X_a=w$ を追加し、矛盾する場合だけ `false` を返してその条件を採用しない。`difference(a,b)` は $X_b-X_a$、未確定なら `std::nullopt`。
+
+```cpp
+#include <vector>
+#include <optional>
+#include <utility>
+struct DifferenceDSU {
+    std::vector<int> p;std::vector<long long> delta;
+    explicit DifferenceDSU(int n):p(n,-1),delta(n,0) {}
+    int root(int v) {
+        if(p[v]<0) return v;
+        int old=p[v],r=root(old);delta[v]+=delta[old];return p[v]=r;
+    }
+    bool add_constraint(int a,int b,long long w) {
+        int ra=root(a),rb=root(b);
+        if(ra==rb) return delta[b]-delta[a]==w;
+        long long root_difference=w+delta[a]-delta[b];
+        if(p[ra]>p[rb]) {std::swap(ra,rb);root_difference=-root_difference;}
+        p[ra]+=p[rb];p[rb]=ra;delta[rb]=root_difference;return true;
+    }
+    std::optional<long long> difference(int a,int b) {
+        if(root(a)!=root(b)) return std::nullopt;
+        return delta[b]-delta[a];
+    }
+};
+```
+
+## 関連する手法
+
+[Union-Find](/flowchartcp/techniques/union-find/) ・ [同じ・異なるという二値制約を偶奇として伝播する](/flowchartcp/techniques/bipartite-parity-constraints/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC328 F](https://atcoder.jp/contests/abc328/editorial/7664)
+
+<TechniqueReferences techniqueId="dsu-potential-differences" />

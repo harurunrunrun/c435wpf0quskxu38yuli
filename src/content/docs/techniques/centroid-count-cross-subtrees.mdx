@@ -1,0 +1,88 @@
+---
+title: "重心を通る頂点対を異なる部分木の間だけで数える"
+description: "一つの部分木を照会してから登録し、同じ側の二頂点を混ぜない。"
+techniqueId: centroid-count-cross-subtrees
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+一つの部分木を照会してから登録し、同じ側の二頂点を混ぜない。
+
+## 使う場面
+
+辺の長さが1の木で、距離がちょうど $K$ の頂点対を数える。全始点から探索すると二乗時間になる。重心分解を使い、各段階では重心を通る経路だけを数える。
+
+## 考え方
+
+重心からの距離ごとの出現回数を保存し、重心自身を距離0として一回登録する。重心を除いてできる部分木を順に処理する。
+
+現在の部分木の頂点の距離が $d$ なら、過去に処理した部分木の距離 $K-d$ の個数を加える。部分木内をすべて照会してから、その距離を登録する。同じ部分木内の対は、重心を除いた後の再帰で数える。
+
+## 適用条件
+
+現在の部分木の頂点を、照会と同時に登録してはいけない。同じ部分木の頂点対は重心を通らないため、距離の和を使うと誤る。例えば重心にぶら下がる鎖の距離1と2の頂点の間は、距離3ではなく1である。
+
+以下は異なる二頂点の非順序対を数える。$K=0$ の答えは0。
+
+## なぜ正しいか
+
+重心を通る経路では、両端が異なる部分木にあるか、一方が重心である。これらの距離は重心からの距離の和になる。照会してから登録することで、各対は後に処理する部分木側で一度だけ数えられる。重心を通らない対は、一つの再帰先にだけ残る。
+
+## 計算量
+
+全始点の探索は $O(N^2)$。各重心で、その連結部分を線形時間で処理し、再帰深さは $O(\log N)$ なので、全体の時間は $O(N\log N)$。空間は $O(N)$。頻度配列を毎回長さ $K$ で確保せず、現在の連結部分の大きさまでに抑える。
+
+## 実装
+
+`count_pairs_at_distance` は距離が `k` の頂点対の個数を返す。連結な無向木を前提にする。重心を探す走査と距離の収集は明示的なスタックを使い、分解の再帰深さだけが対数になる。
+
+```cpp
+#include <vector>
+#include <tuple>
+#include <algorithm>
+long long count_pairs_at_distance(const std::vector<std::vector<int>>& g,int k) {
+    int n=g.size();if(k<=0 || k>=n) return 0;
+    std::vector<bool> removed(n);std::vector<int> parent(n),size(n);
+    long long answer=0;
+    auto decompose=[&](auto&& self,int start)->void {
+        std::vector<int> order{start};parent[start]=-1;
+        for(int i=0;i<int(order.size());++i) {
+            int v=order[i];
+            for(int u:g[v]) if(!removed[u] && u!=parent[v]) { parent[u]=v;order.push_back(u); }
+        }
+        int total=order.size(),center=start;
+        for(int i=total-1;i>=0;--i) {
+            int v=order[i];size[v]=1;
+            for(int u:g[v]) if(!removed[u] && parent[u]==v) size[v]+=size[u];
+            int largest=total-size[v];
+            for(int u:g[v]) if(!removed[u] && parent[u]==v) largest=std::max(largest,size[u]);
+            if(largest*2<=total) center=v;
+        }
+        int limit=std::min(k,total-1);std::vector<int> frequency(limit+1);frequency[0]=1;
+        for(int start_child:g[center]) if(!removed[start_child]) {
+            std::vector<int> distances;
+            std::vector<std::tuple<int,int,int>> stack{{start_child,center,1}};
+            while(!stack.empty()) {
+                auto [v,p,d]=stack.back();stack.pop_back();if(d>limit) continue;
+                distances.push_back(d);
+                for(int u:g[v]) if(!removed[u] && u!=p) stack.push_back({u,v,d+1});
+            }
+            for(int d:distances) if(0<=k-d && k-d<=limit) answer+=frequency[k-d];
+            for(int d:distances) ++frequency[d];
+        }
+        removed[center]=true;
+        for(int u:g[center]) if(!removed[u]) self(self,u);
+    };
+    if(n) decompose(decompose,0);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[重心分解](/flowchartcp/techniques/centroid-decomposition/)
+
+## 参考資料
+
+- [USACO Guide：Fixed-Length Paths I の参照解法](https://usaco.guide/problems/cses-2080-fixed-length-paths-i/solution)
+
+<TechniqueReferences techniqueId="centroid-count-cross-subtrees" />

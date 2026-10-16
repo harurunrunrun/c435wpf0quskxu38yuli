@@ -1,0 +1,93 @@
+---
+title: "重複しない二本の列の同位置一致を、強制する一致数で包除する"
+description: "片方の列を固定し、一致させる位置を選んだ後に残る値の順列数を数える。"
+techniqueId: injective-coordinate-avoidance
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+二本の列を作り、各列では同じ値を二度使わず、同じ位置に同じ値を置くことも禁止したい。全ての列の組を列挙すると、$P(m,n)^2$ 通りになる。$P(m,n)=m!/(m-n)!$ は重複を許さない順列数である。
+
+## 考え方
+
+まず一本目 $A$ を固定する。$s$ 箇所を選んで $B_i=A_i$ を強制すると、その $s$ 個の値は別々なので、残りの位置へ入れる方法は $P(m-s,n-s)$ 個ある。他の位置の偶然の一致はこの段階では許す。
+
+同位置の一致を全て除く包除により、固定した $A$ に対する $B$ の数は
+
+$$\sum_{s=0}^n(-1)^s\binom nsP(m-s,n-s).$$
+
+どの $A$ でもこの個数は同じなので、二本の組を数える場合は $P(m,n)$ を掛ける。$m=n$ では通常の完全順列へ戻る。
+
+## 適用条件
+
+値域を共通に持ち、各列は単射で、禁止する対応は同じ位置の一致だけである。一本目に重複がある場合、一致を強制した値同士が衝突するため式を使えない。位置ごとに使える値が異なる問題も別の計数が必要。
+
+実装は $0\le n\le m<P=10^9+7$。空の二本の列は一通り。階乗・逆階乗が0にならない範囲で計算し、負号は剰余を正規化する。法が合成数の場合は通常の逆階乗をそのまま使えない。
+
+## なぜ正しいか
+
+一致位置をちょうど $t$ 個持つ $B$ は、上の包除で $\sum_{s=0}^t(-1)^s\binom ts=(1-1)^t$ 回数えられる。一致を持たなければ1回、持てば0回なので必要な列だけが残る。
+
+強制した $s$ 個の値を除いた値域は $m-s$ 個で、残る $n-s$ 位置に重複なく割り当てる方法は $P(m-s,n-s)$。一本目の値の名前を付け替えても条件は変わらず、全ての一本目に同じ数の二本目が対応する。
+
+## 計算量
+
+二本の列の組の列挙は $O(nP(m,n)^2)$ 時間。階乗表を $m$ まで作って $n+1$ 項を足す方法は $O(m+n+\log P)$ 時間、$O(m)$ 空間。
+
+## 実装
+
+`avoid_fixed_injection` は固定した単射列に対する二本目の個数、`count_unequal_injection_pairs` は二本の組の個数を返す。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+constexpr long long INJECTION_MOD=1000000007;
+long long avoid_fixed_injection(int n,int m,const BinomialTable<INJECTION_MOD>& combinations) {
+    if(n<0 || n>m) return 0;
+    long long answer=0;
+    for(int s=0;s<=n;++s) {
+        long long term=combinations.choose(n,s)*combinations.falling(m-s,n-s)%INJECTION_MOD;
+        answer=(answer+((s&1)?INJECTION_MOD-term:term))%INJECTION_MOD;
+    }
+    return answer;
+}
+long long count_unequal_injection_pairs(int n,int m) {
+    if(n<0 || m<0 || n>m) return 0;
+    BinomialTable<INJECTION_MOD> combinations(m);
+    return combinations.falling(m,n)*avoid_fixed_injection(n,m,combinations)%INJECTION_MOD;
+}
+```
+
+## 関連する手法
+
+[元の位置へ戻る個数を指定した順列は、固定点を選んで残りを完全順列にする](/flowchartcp/techniques/derangement-fixed-count/) ・ [全ての指定文字を含む列を、欠ける文字から数える](/flowchartcp/techniques/inclusion-exclusion-forbidden/)
+
+## 参考資料
+
+- [AtCoder：E - NEQ（原典）](https://atcoder.jp/contests/abc172/tasks/abc172_e)。
+
+<TechniqueReferences techniqueId="injective-coordinate-avoidance" />

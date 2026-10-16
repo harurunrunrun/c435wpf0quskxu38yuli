@@ -1,0 +1,11 @@
+---
+import sources from '../../data/sources.json';
+import ledger from '../../data/research-ledger.json';
+const statusLabels: Record<string,string> = { 'bootstrap-reviewed':'使用例の一部を確認', 'manual-pending':'手動調査待ち', 'not-started':'未着手', 'partial':'一部取得', 'failed':'取得失敗', 'complete':'対象索引の取得完了', 'completed':'対象索引の取得完了', 'metadata-complete':'対象索引の取得完了', 'corpus-partial':'固定群の一部を確認' };
+const entries = sources.map((source) => ({ source, progress: ledger.sources.find((entry) => entry.source === source.id) }));
+---
+<p>把握した問題には、索引の情報だけを取得したものも含みます。解法確認は、掲載使用例と先に固定した問題群の重複を除いた件数です。</p>
+<div class="research-scroll"><table><thead><tr><th>収集元</th><th>状態</th><th>総数</th><th>把握した問題</th><th>解法確認</th><th>技巧との対応</th></tr></thead><tbody>{entries.map(({source,progress}) => <tr><td><a href={source.archive}>{source.name}</a><small>{source.language}</small></td><td>{statusLabels[progress?.status || 'not-started'] || progress?.status}</td><td>{progress?.totalKnown ?? '未確認'}</td><td>{progress?.allProblemsObserved ?? progress?.fetched ?? 0}</td><td>{progress?.allSolutionsReviewed ?? progress?.solutionReviewed ?? 0}</td><td>{progress?.techniquesExtracted ?? 0}</td></tr>)}</tbody></table></div>
+<h2>収集元ごとの対象範囲</h2>
+<div class="source-notes">{entries.map(({source,progress}) => <details><summary>{source.name}</summary><p>{progress?.scope || source.notes}</p><p>{progress?.notes}</p><a href={source.archive}>出典の一覧を見る ↗</a></details>)}</div>
+<style>.research-scroll{overflow:auto}table{font-size:.9rem}td{min-width:5rem;vertical-align:top}td:first-child{min-width:10rem}small{display:block;color:var(--sl-color-gray-2)}.source-notes details{border-bottom:1px solid var(--sl-color-gray-5);padding:.6rem 0}.source-notes summary{cursor:pointer}.source-notes p{font-size:.9rem}</style>

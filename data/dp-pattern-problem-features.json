@@ -1,0 +1,175 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc321_f",
+    "title": "F - #(subset sum = K) with Add and Erase",
+    "url": "https://atcoder.jp/contests/abc321/tasks/abc321_f",
+    "features": [
+      "区別可能な正の重さの要素を一個ずつ追加・削除する",
+      "各更新後、和Kとなる0/1部分集合の個数を求める",
+      "削除する重さは存在する。Q,K,重さは5000以下"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "subset-sum-inverse-update"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc321/editorial/7281",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。",
+    "publicationDate": "2023-09-23"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc159_f",
+    "title": "F - Knapsack for All Segments",
+    "url": "https://atcoder.jp/contests/abc159/tasks/abc159_f",
+    "features": [
+      "正整数の固定列の全ての位置区間を対象とする",
+      "各区間内の添字部分集合で和Sになる個数を足す",
+      "N,S,A_iは3000以下。区間の端点が違えば別に数える"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "all-segment-subset-sum"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc159/editorial.pdf",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。",
+    "publicationDate": "2020-03-22"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc383_f",
+    "title": "F - Diversity",
+    "url": "https://atcoder.jp/contests/abc383/tasks/abc383_f",
+    "features": [
+      "正の価格の品物を各一回、予算内で任意個選ぶ",
+      "価値和に、選んだ異なる種類数×定数ボーナスを加える",
+      "N≤500、予算≤50000。何も選ばなくてもよい"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "knapsack-first-color-bonus"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc383/editorial/11840",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。",
+    "publicationDate": "2024-12-07"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "dp_w",
+    "title": "W - Intervals",
+    "url": "https://atcoder.jp/contests/dp/tasks/dp_w",
+    "features": [
+      "長さNの二値列を自由に選ぶ",
+      "各指定区間に1が一個以上あれば符号付き得点を一度だけ足す",
+      "N,M≤200000、得点絶対値≤10^9。全0も許す"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "interval-hit-last-selected"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/dp/tasks/dp_w",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。",
+    "publicationDate": "2019-01-06"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "833B",
+    "title": "B. The Bakery",
+    "url": "https://codeforces.com/problemset/problem/833/B",
+    "features": [
+      "固定列の全要素をちょうどK個の非空連続区間に分ける",
+      "区間ごとの異なる値の個数の総和を最大化",
+      "N≤35000、K≤50。重複した値を含む"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "partition-distinct-range-add"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/833/B",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。公式解説の本文は取得時に Tutorial is loading... のみ。原典の目的・制約から独立に導出して比較検証した。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "868F",
+    "title": "F. Yet Another Minimization Problem",
+    "url": "https://codeforces.com/problemset/problem/868/F",
+    "features": [
+      "全列をちょうどK個の非空連続区間へ分割する",
+      "区間費用は同値の異なる添字の順序なし対数",
+      "N≤100000、K≤20。最適な切れ目の単調性を費用から証明できる"
+    ],
+    "verification": "independent-analysis",
+    "techniqueIds": [
+      "partition-equal-pairs-moving-window"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/868/F",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。公式解説の本文は取得時に Tutorial is loading... のみ。原典から費用の四点不等式と探索範囲を独立に導出した。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "607B",
+    "title": "B. Zuma",
+    "url": "https://codeforces.com/problemset/problem/607/B",
+    "features": [
+      "現在の列の任意の非空な連続回文を一回で取り除く",
+      "残った列は隙間なく詰まり、全て消す最少回数を求める",
+      "長さ500以下。二個以上の同色だけを消す操作ではない"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "palindrome-erasure-boundary"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/22256",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc274_e",
+    "title": "E - Booster",
+    "url": "https://atcoder.jp/contests/abc274/tasks/abc274_e",
+    "features": [
+      "平面の任意の二点間を直線で移動し、原点から出発して戻る",
+      "全必須点を訪れるが、加速点は選んだものだけでよい",
+      "各加速点を初めて訪れると速度が2倍。必須12点以下・加速5点以下"
+    ],
+    "verification": "editorial",
+    "techniqueIds": [
+      "optional-booster-subset-speed"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc274/editorial/5082",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件から経路を記録。掲載実装を独立な全探索と境界ケースで確認。",
+    "publicationDate": "2022-10-22"
+  }
+]

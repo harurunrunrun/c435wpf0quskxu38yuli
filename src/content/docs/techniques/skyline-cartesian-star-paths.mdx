@@ -1,0 +1,247 @@
+---
+title: "ビルで遮られない二つの星の競合を祖先パスの交差へ移し、残す重みを最大にする"
+description: "最大値Cartesian treeに星の経路を置き、頂点を共有しない経路群を、子のDP和との差分とEuler区間加算で選ぶ。"
+techniqueId: skyline-cartesian-star-paths
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+列ごとに下から一定の高さまで障害物があり、その上に重み付きの点が置かれている。障害物を含まないどの軸平行長方形にも、残す点が高々一つとなるようにしたい。点を消す費用の総和を最小にするなら、全費用から、残せる点の重みの最大総和を引けばよい。
+
+二点が同じ空の長方形に入るかを全組で調べると二乗時間になる。列ごとの最大高さをCartesian treeへ移すと、二点の競合が祖先方向の二つの経路の交差に一致する。この経路群の重み付き選択まで具体的に処理する技巧である。
+
+## 考え方
+
+点 $(x,y)$ と $(x',y')$ を同じ空の長方形に含められる条件は、
+
+$$
+\min(y,y')>\max_{\min(x,x')\le i\le\max(x,x')} A_i
+$$
+
+である。二点を囲む最小の長方形の下端が、間の全てのビルより上にあればよい。下端と同じ高さのビルは長方形に含まれるため、不等号は厳密な `>` になる。
+
+高さ列の最大値Cartesian treeを作る。頂点は列番号で、中順の並びは元の列順、親の高さは子以上とする。同じ高さは右の列を上位と決める。単調スタックで、現在の高さ以下の頂点を取り除いてから接続すれば、この規則の木が線形時間でできる。
+
+星 $(x,y)$ について、頂点 $x$ から親へ上がり、高さが $y$ 未満である最上位の祖先を $t$ とする。その星を、**両端を含む** 祖先パス $[t,x]$ へ写す。星は元の列のビルより上にあるので、開始頂点 $x$ は必ずこのパスに含まれる。同高の祖先も $A<y$ なら全て通り、$A=y$ の祖先の手前で止める。
+
+残せる星の集合は、対応するパスがどの二つも頂点を共有しない集合と一致する。そこで、一般の根付き木について、重み付き祖先パスの選択問題を解く。
+
+頂点 $v$ の部分木だけに含まれるパスを使う最大重みを $dp[v]$、その子の答えの和を $b[v]=\sum_{u:\operatorname{parent}(u)=v}dp[u]$ とする。$v$ を通るパスを選ばなければ答えは $b[v]$。選ぶならその一本は上端が $v$ のパスなので、下端を $x$、重みを $w$ として、候補値は
+
+$$
+b[v]+w+\sum_{u\in[v,x]\setminus\{v\}}\bigl(b[u]-dp[u]\bigr)
+$$
+
+になる。従って、$d[u]=b[u]-dp[u]$ と書けば、遷移は次の形である。
+
+$$
+dp[v]=b[v]+\max\left(0,\max_{(v,x,w)}\left(w+\sum_{u\in[v,x]\setminus\{v\}}d[u]\right)\right).
+$$
+
+経路和は、後行順に頂点を処理することを使って軽くできる。木をDFS順に並べ、$d[u]$ が決まったら $u$ の部分木区間へ加算する。$v$ の候補を調べる時点では、子孫は処理済み、$v$ と祖先は未処理である。下端 $x$ の点の値は、ちょうど $v$ を除いた経路上の $d[u]$ の和になる。Fenwick木で区間加算と一点取得を行えば、一候補につき対数時間でよい。
+
+$v$ 自身の補正は、同じ上端を持つ全パスの候補を評価した**後**に加える。この順序を守ると、一つの候補の選択結果が別の候補の評価へ入り込まない。
+
+## 適用条件
+
+障害物は各列の下側を隙間なく覆い、長方形は軸平行とする。障害物を含まない長方形に点を二つ置くことが禁止され、点ごとの削除費用を足す。障害物が列の途中に浮く配置や、隙間を持つ配置には、この最大値への帰着をそのまま使わない。
+
+一般の `maximum_disjoint_ancestor_path_weight` は、頂点数・候補パス数が各200000以下の根付き木を受け取る。パスは一つの祖先とその子孫を結び、端点も占有する。重みは0〜$10^9$、選ばないパスは自由である。空の木は空のパス列とともに渡した場合だけ0を返す。
+
+画像用の `minimum_skyline_star_deletion` は、一辺 $N=1\ldots200000$ の正方形、ビルの高さ $1\ldots N$、星数0〜200000、星の高さ $1\ldots N$、費用 $1\ldots10^9$ を扱う。列番号は0始まりで、各星は自分の列のビルより上でなければならない。同じ列に異なる高さの星は許す。同じピクセルを二度指定した入力は例外にする。星の空列を許す点は、原典の星数1以上からの拡張である。
+
+範囲外、複数の根、閉路や非連結の親配列、祖先関係のないパス、不正な重み、重複する星の座標は `std::invalid_argument`。全ての木の処理を反復で行い、深さが200000の木も再帰呼出しなしで扱う。
+
+## なぜ正しいか
+
+空の長方形に二つの星が含まれるなら、二点を囲む最小の長方形も空である。その下端は $\min(y,y')$ で、横にまたぐ全列のビルの高さより上にある必要があり、最初の不等式が得られる。逆にこの不等式が成り立てば、最小の長方形そのものが二点を含む空の長方形になる。従って二点の禁止条件を全て避ければ、どの空の長方形にも残る星は高々一つである。
+
+Cartesian treeで二列のLCAを $z$ とすると、その高さは二列間の最大値になる。同高を列番号で区別しても、LCAの高さ自体はこの最大値に一致する。二つの祖先パスが交わるのは、両方が $z$ を含むときに限る。一方でも $z$ より下で止まれば、互いに別の枝にあるか、片方の開始頂点に届かない。両方が含む条件は $A_z<y$ かつ $A_z<y'$ であり、二点の競合条件と等しい。星の残し方と、頂点を共有しないパスの選び方は同じ重みで対応する。
+
+次に木DPの遷移を示す。$v$ を使わない選択では、全てのパスが一つの子の部分木に入り、各子の最適値を独立に足せる。$v$ を使う場合は一本だけであり、部分木内の祖先パスなら上端は $v$ である。そのパスを取り除くと、残るパスは、各パス頂点から外へ分岐する子の部分木のどれかに入る。
+
+パス上の全頂点の $b[u]$ を足すと、分岐先の答えに加えて、パスを進む各子の $dp[u]$ も一回ずつ入る。その子の分を引けば、残った森の最適値の和になる。これは式の $b[v]+\sum_{u\ne v}(b[u]-dp[u])$ である。パスの重みを足して全候補を比較すれば、$dp[v]$ は最適になる。
+
+最後に区間加算の不変条件を確認する。頂点 $u$ の部分木への $d[u]$ の加算は、点 $x$ に対して $u$ が祖先である場合だけ反映される。$v$ を処理中の点取得では、経路上の厳密な子孫だけが処理済みで、$v$ とその祖先はまだ加算されていない。別の枝で処理した頂点の部分木は $x$ を含まない。従って一点取得は遷移に必要な経路和そのもので、DPを正しく実装している。
+
+## 計算量
+
+星の全ての組を明示して競合を調べる方法は、$M(M-1)/2$ 組を判定する。その競合グラフを一般の独立集合問題として扱うと、この木の構造を生かせない。
+
+一般の祖先パスAPIは、頂点数を $N$、パス数を $M$ として、時間 $O((N+M)\log(N+1))$、追加空間 $O(N+M)$。親配列の検査、反復DFS、部分木サイズと子のDP和、上端ごとの候補整理は線形時間。各頂点で区間加算を一回、各パスで一点取得を一回行う。
+
+画像APIはCartesian treeに $O(N)$、祖先表に $O(N\log(N+1))$、星の上端の決定に $O(M\log(N+1))$。重複座標を調べる整列は $O(M\log(M+1))$ なので、掲載コード全体は時間
+
+$$
+O\bigl((N+M)\log(N+1)+M\log(M+1)\bigr),
+$$
+
+追加空間 $O(N\log(N+1)+M)$ である。合法な正方形の盤面では $M\le N^2$ なので、時間は $O((N+M)\log(N+1))$ ともまとめられる。祖先表は上限で $18N$ 個の `int`、他の配列は線形個数の要素を保持する。
+
+費用の総和と最適値は $200000\cdot10^9=2\cdot10^{14}$ 以下。$d[v]$ は0以下で、データ構造には負の値も入る。費用・DP・Fenwick木は全て符号付き64ビットで保持する。
+
+## 実装
+
+一般APIの親配列は根だけを `-1` とする。`AncestorWeightedPath{top,bottom,weight}` は両端を含み、頂点を一つでも共有する二パスを同時には選べない。画像APIの `SkylineStar{column,height,deletion_cost}` は0始まりの列と、下から数えた高さを渡す。
+
+画像APIは星を祖先パスへ変換し、一般APIの最大重みを全削除費用から引く。祖先表で跳ぶときも、ビルの高さが星の高さ**未満**であることを確認する。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+struct AncestorWeightedPath {
+    int top, bottom; // Both endpoints are included; top is an ancestor of bottom.
+    std::int64_t weight;
+};
+
+// Maximum total weight of vertex-disjoint ancestor paths in a rooted tree.
+// parent[root]=-1; every other entry is a valid parent index.
+std::int64_t maximum_disjoint_ancestor_path_weight(
+    const std::vector<int>& parent, const std::vector<AncestorWeightedPath>& paths) {
+    using Int = std::int64_t;
+    if (parent.size() > 200000 || paths.size() > 200000)
+        throw std::invalid_argument("tree or path count");
+    const int n = int(parent.size());
+    if (!n) {
+        if (!paths.empty()) throw std::invalid_argument("paths in an empty tree");
+        return 0;
+    }
+    std::vector<int> first(n, -1), next(n, -1), order, stack, tin(n), size(n, 1);
+    int root = -1;
+    for (int v = 0; v < n; ++v) {
+        int p = parent[v];
+        if (p == -1) {
+            if (root != -1) throw std::invalid_argument("multiple roots");
+            root = v;
+        } else {
+            if (p < 0 || p >= n || p == v) throw std::invalid_argument("parent index");
+            next[v] = first[p]; first[p] = v;
+        }
+    }
+    if (root == -1) throw std::invalid_argument("missing root");
+    order.reserve(n); stack.reserve(n); stack.push_back(root);
+    while (!stack.empty()) {
+        int v = stack.back(); stack.pop_back();
+        tin[v] = int(order.size()); order.push_back(v);
+        for (int child = first[v]; child != -1; child = next[child]) stack.push_back(child);
+    }
+    if (int(order.size()) != n) throw std::invalid_argument("disconnected cycle");
+    for (int index = n - 1; index >= 0; --index) {
+        int v = order[index];
+        if (parent[v] != -1) size[parent[v]] += size[v];
+    }
+    std::vector<int> head(n, -1), next_path(paths.size(), -1);
+    for (int index = 0; index < int(paths.size()); ++index) {
+        const auto& path = paths[index];
+        if (path.top < 0 || path.top >= n || path.bottom < 0 || path.bottom >= n ||
+            path.weight < 0 || path.weight > 1000000000)
+            throw std::invalid_argument("path endpoint or weight");
+        if (!(tin[path.top] <= tin[path.bottom] &&
+              tin[path.bottom] < tin[path.top] + size[path.top]))
+            throw std::invalid_argument("top is not an ancestor");
+        next_path[index] = head[path.top]; head[path.top] = index;
+    }
+    std::vector<Int> fenwick(n + 1, 0), dp(n, 0);
+    auto add = [&](int position, Int delta) {
+        for (++position; position <= n; position += position & -position) fenwick[position] += delta;
+    };
+    auto point = [&](int position) {
+        Int value = 0;
+        for (++position; position; position -= position & -position) value += fenwick[position];
+        return value;
+    };
+    for (int index = n - 1; index >= 0; --index) {
+        int v = order[index];
+        Int base = 0;
+        for (int child = first[v]; child != -1; child = next[child]) base += dp[child];
+        Int extra = 0;
+        // v's own correction is published only AFTER all these alternatives.
+        for (int p = head[v]; p != -1; p = next_path[p])
+            extra = std::max(extra, paths[p].weight + point(tin[paths[p].bottom]));
+        dp[v] = base + extra;
+        add(tin[v], -extra); add(tin[v] + size[v], extra);
+    }
+    return dp[root];
+}
+
+struct SkylineStar {
+    int column, height; // Column is zero-based; height is counted from the bottom.
+    std::int64_t deletion_cost;
+};
+
+// Building i occupies rows 1..building[i] in an n by n image.
+std::int64_t minimum_skyline_star_deletion(
+    const std::vector<int>& building, const std::vector<SkylineStar>& stars) {
+    if (building.empty() || building.size() > 200000 || stars.size() > 200000)
+        throw std::invalid_argument("image or star count");
+    const int n = int(building.size());
+    for (int height : building)
+        if (height < 1 || height > n) throw std::invalid_argument("building height");
+    std::int64_t total = 0;
+    std::vector<std::uint64_t> positions;
+    positions.reserve(stars.size());
+    for (const auto& star : stars) {
+        if (star.column < 0 || star.column >= n || star.height < 1 || star.height > n ||
+            star.height <= building[star.column] ||
+            star.deletion_cost < 1 || star.deletion_cost > 1000000000)
+            throw std::invalid_argument("star coordinate or cost");
+        positions.push_back((std::uint64_t(star.column) << 32) | std::uint64_t(star.height));
+        total += star.deletion_cost;
+    }
+    std::sort(positions.begin(), positions.end());
+    if (std::adjacent_find(positions.begin(), positions.end()) != positions.end())
+        throw std::invalid_argument("duplicate star pixel");
+    std::vector<int> parent(n, -1), stack;
+    stack.reserve(n);
+    for (int column = 0; column < n; ++column) {
+        int last = -1;
+        // Equal heights: the rightmost column becomes the ancestor.
+        while (!stack.empty() && building[stack.back()] <= building[column]) {
+            last = stack.back(); stack.pop_back();
+        }
+        if (!stack.empty()) parent[column] = stack.back();
+        if (last != -1) parent[last] = column;
+        stack.push_back(column);
+    }
+    int levels = 1;
+    while ((std::int64_t{1} << levels) <= n) ++levels;
+    std::vector<std::vector<int>> up(levels, std::vector<int>(n, -1));
+    up[0] = parent;
+    for (int level = 1; level < levels; ++level)
+        for (int v = 0; v < n; ++v) {
+            int previous = up[level - 1][v];
+            if (previous != -1) up[level][v] = up[level - 1][previous];
+        }
+    std::vector<AncestorWeightedPath> paths;
+    paths.reserve(stars.size());
+    for (const auto& star : stars) {
+        int top = star.column;
+        for (int level = levels - 1; level >= 0; --level) {
+            int ancestor = up[level][top];
+            if (ancestor != -1 && building[ancestor] < star.height) top = ancestor;
+        }
+        paths.push_back({top, star.column, star.deletion_cost});
+    }
+    return total - maximum_disjoint_ancestor_path_weight(parent, paths);
+}
+```
+
+## 関連する手法
+
+- [木DP](/flowchartcp/techniques/tree-dp/) — 子の答えの和から、選んだ長い経路に沿った補正を引く遷移へ広げる。
+- [部分木をEuler順の区間にする](/flowchartcp/techniques/subtree-euler-interval/) — 祖先の値の一点への寄与を、部分木区間への加算として表す。
+- [Fenwick木](/flowchartcp/techniques/fenwick-tree/) — 差分列への二点更新で区間加算を表し、接頭和で一点の値を得る。
+
+## 参考資料
+
+- [JOI 2019/2020 春季トレーニング合宿 — 公式課題一覧](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html) — 競技3は2020年3月22日。星座3の原典・公式解説へのリンクがある。
+- [星座3 — 公式原典](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/constellation3.pdf) — 下側をビルが覆う画像から星を消す費用の最小化という適用例。
+- [星座3 — 公式解説、13〜23ページ](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/constellation3-review.pdf) — Cartesian tree上の星のパス、非交差の条件、パスを取り除いた森のDP和を扱う。掲載コードでは、この和を後行順とEuler区間加算で計算する。
+
+<TechniqueReferences techniqueId="skyline-cartesian-star-paths" />

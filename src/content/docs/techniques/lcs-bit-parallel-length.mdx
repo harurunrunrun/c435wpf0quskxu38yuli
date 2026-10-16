@@ -1,0 +1,114 @@
+---
+title: "二文字列のLCSの長さだけなら、DP行の増分をビット列にしてまとめて更新する"
+description: "隣の列との差が0か1になる性質を使い、一致位置と桁借りで一行分の遷移を並列に進める。"
+techniqueId: lcs-bit-parallel-length
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+二つの文字列から、順序を保って文字を抜き出す。両方に共通する最長の部分列について、その**長さ**を求めたい。通常の二次元DPでは、文字列長の積だけ状態を更新するため重い。一方、部分列そのものの復元や、一致・不一致ごとの別の得点は必要ない。
+
+LCSのDPには、同じ行の隣り合う値の差が0か1になる性質がある。**行全体を増分のビット列で表し、64列ずつ演算する**ことで高速化できる。
+
+## 考え方
+
+短い側を $B$、長い側を $A$ とし、$D_i[j]$ を $A$ の先頭 $i$ 文字と $B$ の先頭 $j$ 文字のLCS長とする。$D_i[0]=0$ で、$D_i[j+1]-D_i[j]$ は0か1。この差が1である位置をビット列 $S$ にする。下位ビットから $B$ の左端に対応させると、$S$ の1の数がその行の右端のLCS長になる。
+
+文字 $c$ ごとに、$B$ 内で $c$ が現れる位置を1にしたビット列 $P_c$ を用意する。$A$ の次の文字が $c$ のとき、行の更新は
+
+$$
+X=S\mathbin{|}P_c,\qquad
+Y=(S\ll1)\mathbin{|}1,\qquad
+S'=X\mathbin{\&}\mathord{\sim}(X-Y)
+$$
+
+で求められる。引き算は、列数分の桁を持つ符号なし整数として扱う。
+
+$S$ の1は、その長さの共通部分列が初めて得られる位置を表す。次の行で長さ $k$ に到達する最初の位置は、前の行で長さ $k$ に達した位置を残すか、前の行で長さ $k-1$ に達した位置より後の最初の一致位置へ移すかの、小さい方である。$X$ は両方の候補を含む。$Y$ は、前の行の増加位置の一つ後と、先頭位置に1を立てる。
+
+$X-Y$ の桁借りは、各候補区間の先頭から、その区間で最初に1になる位置まで進む。その位置だけを $X\mathbin{\&}\mathord{\sim}(X-Y)$ で残すと、新しい増加位置になる。
+
+## 適用条件
+
+- 求めるのは通常のLCS長であり、文字を飛ばしてよいが順序は変えない。
+- 同じ文字を対応させたときだけ長さが1増え、文字ごとの重みや置換費用がない。
+- この実装では文字を0から255のバイトとして区別する。
+- $|A|\lceil |B|/64\rceil$ 回程度のワード処理が可能である。
+
+一行分の差しか残さないので、このコードから部分列そのものをそのまま復元することはできない。連続している必要がある最長共通**部分文字列**も別の問題である。UTF-8の文字列を渡すと文字単位ではなくバイト単位のLCSになるため、Unicode文字を単位にしたければ先に文字を整数へ変換し、文字ごとの位置ビット列の管理を変更する。
+
+## なぜ正しいか
+
+通常のLCSのDPでは、一文字増やして得られる長さは高々1なので、増分のビット列だけで行全体を復元できる。長さ $k$ を初めて達成する位置について考えると、前の行ですでに達成した位置、または長さ $k-1$ を達成した位置の後の一致のうち、早い方を選べばよい。これより早い位置では、古い部分列も新しい一文字を使った部分列も長さ $k$ に達しない。
+
+$M=|B|$ とし、前の行の増加位置を0始まりの添字で $p_1<\cdots<p_\ell$ とし、$p_0=-1$ と置く。長さ $k$ に対応する区間は $[p_{k-1}+1,p_k]$、新しく長さ $\ell+1$ に達するための区間は $[p_\ell+1,M)$ である。これらは互いに重ならず、最後以外の区間には、元の増加位置 $p_k$ が必ず候補として残っている。
+
+各区間の先頭から1を引くと、最初の候補の1が0になり、そこまでの0が1に変わる。元の $X$ と引き算の結果の否定とのANDを取ると、最初の候補だけが残る。区間内に必ず候補があるため、桁借りが次の区間へ漏れることもない。最後の区間に候補がない場合は残る1がなく、存在しない長さを増やさない。この処理を全区間で同時に行う式が上記の更新である。
+
+実装では、左シフトの繰り上がりと引き算の桁借りを、低いワードから高いワードへ渡す。これで文字列全体を一つの長い符号なし整数とした演算と一致する。不要な上位ビットは最後に0へ戻すので、最終的な1の総数がLCS長になる。
+
+## 計算量
+
+$N=\max(|A|,|B|)$、$M=\min(|A|,|B|)$、$W=\lceil M/64\rceil$ とする。文字種数を $\sigma=256$ とすると、前処理は $O(M+\sigma W)$、更新は $O(NW)$ 時間、補助領域は $O(\sigma W)$ ワード。空文字列の場合は定数時間で0を返す。
+
+通常の $O(NM)$ 時間から、一回の整数演算で扱えるビット数だけまとめて処理する。長さ200000同士では約6.25億ワード分の更新となるため、長さの上限だけで十分に速いとは限らない。実際の時間制限に対して、この積を確認する。
+
+## 実装
+
+`bit_parallel_lcs_length(a,b)` は二文字列のLCS長を返す。各文字列長は200000以下。空文字列を許し、文字はNULを含む全てのバイト値を受け付ける。長さ上限を超えると `invalid_argument` を送出する。
+
+短い文字列をビット列側に使う。64ビットをまたぐ桁借りでは、`x-y-borrow` の途中の減算を二回に分け、どちらで桁借りしたかを調べる。`y+borrow` を先に足すと、その加算のオーバーフローを見落としやすい。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int bit_parallel_lcs_length(const string& a, const string& b) {
+    if (a.size() > 200000 || b.size() > 200000)
+        throw invalid_argument("string too long");
+    if (a.empty() || b.empty()) return 0;
+    const string& short_text = a.size() <= b.size() ? a : b;
+    const string& long_text = a.size() <= b.size() ? b : a;
+    size_t length = short_text.size();
+    size_t words = (length + 63) / 64;
+    vector<vector<uint64_t>> position(256, vector<uint64_t>(words));
+    for (size_t j = 0; j < length; ++j) {
+        unsigned char c = static_cast<unsigned char>(short_text[j]);
+        position[c][j / 64] |= uint64_t(1) << (j % 64);
+    }
+    vector<uint64_t> state(words);
+    for (unsigned char c : long_text) {
+        uint64_t shift_carry = 1;
+        uint64_t borrow = 0;
+        for (size_t w = 0; w < words; ++w) {
+            uint64_t old = state[w];
+            uint64_t x = old | position[c][w];
+            uint64_t y = (old << 1) | shift_carry;
+            shift_carry = old >> 63;
+            uint64_t partial = x - y;
+            uint64_t difference = partial - borrow;
+            uint64_t next_borrow = (x < y) || (partial < borrow);
+            state[w] = x & ~difference;
+            borrow = next_borrow;
+        }
+        if (length % 64)
+            state.back() &= (uint64_t(1) << (length % 64)) - 1;
+    }
+    int result = 0;
+    for (uint64_t word : state) result += popcount(word);
+    return result;
+}
+```
+
+## 関連する手法
+
+- [DPの次元削減](/flowchartcp/techniques/dp-dimension-rolling/)：行そのものを二行分だけ保存する方法。LCS長の通常DPにも使える。
+- [部分和DPのビット列とシフト](/flowchartcp/techniques/knapsack-bitset-shift/)：多数の真偽値を一度に扱う。本記事ではさらに、引き算の桁借りを状態遷移に利用する。
+
+## 参考資料
+
+- [Aizu Online Judge ALDS1_10_C：Longest Common Subsequence](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_10_C) — 二文字列のLCS長を出力する原典。通常のDPでも解ける制約だが、本記事の更新も同じ量を求める。
+- [Heikki Hyyrö, Bit-Parallel LCS-length Computation Revisited](https://curiouscoding.nl/papers/hyyro04-revisited.pdf) — 3.1節でAllison–Dix法の増加位置の表現と、引き算を使う更新を説明する。本記事はその式を64ビット配列で実装する。
+
+<TechniqueReferences techniqueId="lcs-bit-parallel-length" />

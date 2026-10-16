@@ -1,0 +1,80 @@
+---
+title: "凸包トリック"
+description: "DPの遷移を直線の最小値に書き換え、候補となる直線だけを保持します。"
+techniqueId: convex-hull-trick
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+DPの遷移を直線の最小値に書き換え、候補となる直線だけを保持します。
+
+別名：Convex Hull Trick / CHT
+
+## 使う場面
+
+遷移式に二次式が現れたら、展開して現在の状態と遷移元に分けられるかを調べます。たとえば
+
+$$D[i]=\min_{j<i}\{D[j]+(x_i-x_j)^2\}$$
+
+は、$x_i^2+\min_{j<i}\{-2x_jx_i+D[j]+x_j^2\}$ に変形できます。遷移元 $j$ は傾き $-2x_j$、切片 $D[j]+x_j^2$ の直線になります。
+
+## 考え方
+
+状態を一つ計算するたびに、その状態に対応する直線を追加します。次の状態では、座標 $x_i$ における直線群の最小値を問い合わせます。
+
+傾きを減少順に追加し、問い合わせ座標を増加順に処理できるなら、必要な直線をdequeに並べるだけで済みます。追加時には、交点の順序を比較して最小値を取る範囲がない直線を末尾から削除します。問い合わせ時には、次の直線の方が良ければ先頭を削除します。
+
+## 適用条件
+
+以下の実装は最小値用です。傾きは狭義の減少順、問い合わせ座標は非減少順に渡します。同じ傾きの直線がある場合は、切片が最小のものだけを残してから追加してください。
+
+問い合わせ座標が単調でなければ、直線を問い合わせ時に削除せず、凸包上の二分探索を使います。傾きの追加順も任意ならLi Chao木などを使います。交点の比較には係数同士の積が現れるので、評価値だけでなく比較用の積も整数型の範囲内に収める必要があります。
+
+## なぜ正しいか
+
+傾きの順に並べた3本の直線を考えます。中央の直線が最小になる区間を持たなければ、それを取り除いても最小値は変わりません。
+
+また、問い合わせ座標が右へ動くと、先頭の直線が次の直線に負けた後に再び勝つことはありません。したがって、末尾からの削除と先頭からの削除のどちらも、今後必要になる最小値を失いません。
+
+## 計算量
+
+単調な追加が $N$ 回、問い合わせが $Q$ 回なら、合計時間は $O(N+Q)$、空間は $O(N)$ です。各直線は高々1回追加され、高々1回削除されます。問い合わせを二分探索で処理する場合は、1回あたり $O(\log N)$ です。
+
+## 実装
+
+`add(a, b)` で直線 $y=ax+b$ を追加し、`get(x)` で座標 $x$ の最小値を求めます。順序の条件は `assert` で確認します。
+
+積と返り値は `__int128_t` を使います。ただし、任意の `long long` の係数に対して交点比較の積まで安全とは限りません。たとえば係数の絶対値を $10^9$ 以下に制限すると、示した比較は128ビットの範囲に収まります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std; using i128=__int128_t;
+struct MonotoneCHT {
+    struct Line { long long a,b; i128 at(long long x) const { return i128(a)*x+b; } };
+    deque<Line> h; optional<long long> last_x,last_a;
+    void add(long long a,long long b) {
+        assert(!last_a || a<*last_a); last_a=a; Line z{a,b};
+        while(h.size()>=2) {
+            auto x=h[h.size()-2],y=h.back();
+            if((i128(y.b)-x.b)*(i128(y.a)-z.a)
+                < (i128(z.b)-y.b)*(i128(x.a)-y.a)) break;
+            h.pop_back();
+        }
+        h.push_back(z);
+    }
+    i128 get(long long x) {
+        assert(!h.empty() && (!last_x || *last_x<=x)); last_x=x;
+        while(h.size()>1 && h[0].at(x)>=h[1].at(x)) h.pop_front();
+        return h.front().at(x);
+    }
+};
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [Li Chao木](/flowchartcp/techniques/li-chao-tree/)
+
+## 参考資料
+
+- [cp-algorithms: Convex hull trick](https://cp-algorithms.com/geometry/convex_hull_trick.html)
+
+<TechniqueReferences techniqueId="convex-hull-trick" />

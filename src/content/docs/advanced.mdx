@@ -1,0 +1,212 @@
+---
+title: 高度なテクニック
+description: 更新・遷移・木の集計に必要な細かい条件を確認する。
+---
+import TechniqueGrid from '@components/TechniqueGrid.astro';
+
+| 設定・式の性質 | テクニック |
+| --- | --- |
+| 区間に ax+b を適用する更新が重なる | [写像の合成順を固定する](/flowchartcp/techniques/affine-lazy-composition/) |
+| 上限で切り詰める更新と区間和 | [二番目の最大値で、まとめて更新できるか判断する](/flowchartcp/techniques/range-chmin-second-maximum/) |
+| 辺の追加と削除を全て先に読める | [辺が存在する時間区間に分ける](/flowchartcp/techniques/connectivity-time-intervals/) |
+| 木の少数の指定頂点だけが必要 | [DFS 順で隣り合う頂点の LCA だけを追加する](/flowchartcp/techniques/virtual-tree-adjacent-lca/) |
+| 木の距離が K の組を数える | [異なる子部分木の間だけを結合する](/flowchartcp/techniques/centroid-count-cross-subtrees/) |
+| 独立な選択の通り数を、個数の和で併合する | [個数の畳み込みにする](/flowchartcp/techniques/dp-polynomial-convolution/) |
+| 絶対値の費用が積み重なる | [区分線形な凸関数の折れ目を持つ](/flowchartcp/techniques/dp-piecewise-linear-cost/) |
+| 木 DP に選んだ頂点数の軸がある | [部分木の大きさまでだけ遷移する](/flowchartcp/techniques/tree-knapsack-cardinality/) |
+| 次の移動費用が直前の方向で変わる | [到着方向も状態に含める](/flowchartcp/techniques/turn-penalty-state/) |
+| 更新される括弧列の区間を判定する | [合計と最小接頭和を結合する](/flowchartcp/techniques/prefix-feasibility/) |
+| 相性のよい隣接二個を消す操作の順序を数える | [独立区間の操作列を二項係数で混ぜる](/flowchartcp/techniques/interval-pair-removal-interleavings/) |
+| 右下へ進む全経路の XOR が指定値となる個数 | [中央の斜線で分け、合流マスの重複を補正する](/flowchartcp/techniques/grid-xor-antidiagonal/) |
+
+## 文字列・制約・経路
+
+| 設定 | テクニック |
+| --- | --- |
+| 指定文字列が一つも現れない列を数える | [接頭辞との一致状態で禁止する遷移を除く](/flowchartcp/techniques/automaton-forbidden-dp/) |
+| 一つの頂点を通らない経路の有無を何度も聞かれる | [関節点を分けた木の経路で判定する](/flowchartcp/techniques/block-cut-path/) |
+| 二候補から一つ選び、同時には選べない組がある | [禁止する二選択から含意を二本作る](/flowchartcp/techniques/two-sat-forbidden-pairs/) |
+| 数の差を指定する条件を追加していく | [根との値の差を持ち、同じ根では整合性を確認する](/flowchartcp/techniques/dsu-potential-differences/) |
+| 通過で資源を使い、頂点で補充できる | [位置と所持量を状態にし、必要な上限を証明する](/flowchartcp/techniques/dijkstra-expanded-resource/) |
+| 負辺があり、全ての始点から距離を求めたい | [負閉路を検査してから頂点のポテンシャルで重みを変える](/flowchartcp/techniques/dijkstra-potential-reweight/) |
+| 一つの最小全域木に辺を追加する | [経路上の最大の辺と追加辺を比較する](/flowchartcp/techniques/mst-replacement-edge/) |
+| 長方形を切るたび、その重み総和の費用が掛かる | [四境界と最初の切れ目を持つ](/flowchartcp/techniques/rectangle-split-dp/) |
+| 累乗の和を巨大な回数まで足す | [累乗とその和を一組で倍々に計算する](/flowchartcp/techniques/matrix-walk-sum-block/) |
+| 部分文字列の辞書順 K 番目 | [同じ文字列は一度数える](/flowchartcp/techniques/sam-kth-distinct-substring/)、[出現回数だけ数える](/flowchartcp/techniques/sam-kth-occurrence-substring/) |
+| 異なる部分文字列を長さ別に数える | [各状態の長さの区間へ差分で一つ足す](/flowchartcp/techniques/sam-length-distribution/) |
+| 文字更新を挟んで区間が回文か判定する | [正順と逆順のハッシュを併合する](/flowchartcp/techniques/palindrome-update-hash-monoid/) |
+| 長さ 2N の列から連続する N 文字を消し、残りが削除部分の逆順になる位置を探す | [前半と逆順の後半を二通りにつなぎ、前後の一致を二つの Z 配列で判定する](/flowchartcp/techniques/reverse-deletion-two-z/) |
+| 固定した 1・2・/ の列の区間から、同数の 1 と 2 を一つの / の前後へ部分列として選ぶ | [左の 1 の数と右の 2 の数が交差する / と、その直前を比べる](/flowchartcp/techniques/slash-subsequence-crossing/) |
+
+## 対応付け・容量・必須条件
+
+| 問題の特徴 | テクニック |
+| --- | --- |
+| 一部の頂点は必ず対応付け、対応数は自由 | [必須の接続に下限を付けて実現可能性を調べる](/flowchartcp/techniques/mandatory-matching-lower-bounds/) |
+| 各セルの下限を守り、行・列の合計を復元する | [下限を先に引き、残った行列和だけ流す](/flowchartcp/techniques/matrix-margin-lower-offset/) |
+| 各地点へ高々一つ対応させ、対応数ごとの利益が欲しい | [一組ずつ増やす最小費用から各サイズの答えを得る](/flowchartcp/techniques/matching-profit-each-cardinality/) |
+| 一つの中継点を通る、頂点を繰り返さない経路 | [中継点から二端点への頂点素な二経路を探す](/flowchartcp/techniques/vertex-disjoint-through-pivot/) |
+| 時間順の仕事を最小人数で全て担当する | [一人が続けてできる仕事を結び、経路被覆へ変える](/flowchartcp/techniques/dag-path-cover-vertex-disjoint/) |
+| 駒ごとに置ける長方形があり、行列の重複を避けたい | [行・駒・列を結び、駒の使用量を一つに制限する](/flowchartcp/techniques/rectangle-rook-flow/) |
+| 全ての完全な対応に共通する組が知りたい | [交互閉路へ参加できる対応を除く](/flowchartcp/techniques/perfect-matching-forced-scc/) |
+
+## 多項式・整数の細かい変形
+
+| 求める量・式 | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 係数列の対数 | 定数項 1、積分で使う整数に逆元がある | [微分と逆数の積を積分する](/flowchartcp/techniques/fps-log-derivative/) |
+| 係数列の指数 | 定数項 0、積分で使う整数に逆元がある | [近似の対数との差で補正する](/flowchartcp/techniques/fps-exp-newton/) |
+| 添字の XOR ごとの積和 | 長さは二冪、法が奇数 | [ビットごとの和と差で変換する](/flowchartcp/techniques/xor-convolution-transform/) |
+| 同じ多項式を多くの点で評価する | 一次式の積と多項式の余りを計算できる | [評価点の積の木へ余りを配る](/flowchartcp/techniques/multipoint-product-tree/) |
+| f(x+c) の全係数 | 必要な階乗に逆元がある | [係数を反転して一回畳み込む](/flowchartcp/techniques/polynomial-taylor-shift/) |
+| 合成数を法とする二項係数 | 法の素因数分解ができ、各素数冪が前計算可能 | [素因数の指数と残りの積を分ける](/flowchartcp/techniques/binomial-composite-prime-power/) |
+
+## 更新と順位
+
+| 問題の特徴 | テクニック |
+| --- | --- |
+| 一点代入を挟んで区間の k 番目の値を求める | [答えの値域で二分し、更新と質問の時系列を保つ](/flowchartcp/techniques/offline-kth-divide-values/) |
+| 静的な区間の k 番目を何度も求める | [二つの接頭区間の頻度差を辿る](/flowchartcp/techniques/persistent-prefix-kth/)、[ビットごとに区間内の順位を分ける](/flowchartcp/techniques/wavelet-range-kth/) |
+| 三つの座標が全て以下である点を数える | [一軸を分割し、残り二軸を走査する](/flowchartcp/techniques/cdq-dominance/) |
+| 現在使える数からの XOR を追加順の逆に戻す | [新しく入った基底行だけを記録する](/flowchartcp/techniques/linear-basis-rollback/) |
+| 区間加算と閾値未満の個数を求める | [ブロック内の整列値と全体への加算を分ける](/flowchartcp/techniques/range-add-count-less/) |
+
+## 凸性と方向順
+
+| 問題の特徴 | テクニック |
+| --- | --- |
+| 複数の凸領域から一点ずつ選び、位置の和を求める | [凸多角形の辺を方向順に併合する](/flowchartcp/techniques/convex-minkowski-sum/) |
+| 全ての点の最遠対 | [凸包の向かい合う頂点を一周させる](/flowchartcp/techniques/convex-diameter-calipers/) |
+| 図形を挟む二本の平行線の最小幅 | [凸包の辺と反対側の支持点を調べる](/flowchartcp/techniques/convex-minimum-width/) |
+| 二つのベクトルの内積が0になる選び方を禁止する | [方向と直交方向の二群ごとに選択数を数える](/flowchartcp/techniques/perpendicular-direction-pairs/) |
+| 凸多角形の弦で切る面積を指定比率へ近づける | [面積が目標を挟む二つの端点を調べる](/flowchartcp/techniques/convex-polygon-half-area/) |
+
+## ゲームの状態と質問予算
+
+| 操作・制限 | テクニック |
+| --- | --- |
+| 操作で白石が減り、青石が増える | [保存される量から全ての到達状態を確保する](/flowchartcp/techniques/grundy-conserved-state-bound/) |
+| 相性のよい二個を消し、手がなくなると負ける | [残り集合だけで勝敗を持つ](/flowchartcp/techniques/pair-removal-mask-game/) |
+| 木の距離を質問でき、全点対を聞く予算がない | [最遠点を二回探す](/flowchartcp/techniques/interactive-tree-diameter/) |
+| 狭義単峰な列の値を最大15回しか聞けない | [Fibonacci間隔で評価点の返答を再利用する](/flowchartcp/techniques/interactive-fibonacci-maximum/) |
+| 一個の隠れた番号を同時に行う二値質問で探す | [各候補へ異なるビットの返答列を割り当てる](/flowchartcp/techniques/interactive-bit-group-testing/) |
+
+## 近傍の可否と安全な上界
+
+| 設定 | テクニック |
+| --- | --- |
+| 受取が配達より先の巡回路で区間を反転する | [同じ注文の両地点を含む反転を除く](/flowchartcp/techniques/heuristic-precedence-two-opt/) |
+| 一度だけ使えるタイルの経路の続きを探索する | [到達できる未使用タイルごとの最大得点を上界にする](/flowchartcp/techniques/heuristic-path-reachable-upper-bound/) |
+| 多数の円の重複被覆を保ちながら半径を変える | [各点の被覆数が0をまたぐ変更だけを数える](/flowchartcp/techniques/heuristic-cover-count-delta/) |
+
+## 木の順序・根・更新
+
+| 問題の特徴 | テクニック |
+| --- | --- |
+| 木の経路上の値の k 番目を何度も求める | [根からの頻度を四つの版で引き合わせる](/flowchartcp/techniques/tree-path-kth-persistent/) |
+| 木に印を追加し、最も近い印までの距離を問う | [重心ごとの最短距離を追加時に更新する](/flowchartcp/techniques/centroid-nearest-marked/) |
+| 経路の順番によって写像の合成結果が変わる | [正順と逆順の要約を両方持つ](/flowchartcp/techniques/tree-path-directed-composition/) |
+| 根を変え、部分木への加算や和を求める | [全体から一つの子部分木を引く場合に分ける](/flowchartcp/techniques/reroot-subtree-complement/) |
+| 部分木へ値を設定し、ある頂点の祖先を消去する | [その点へ影響する最新時刻を比較する](/flowchartcp/techniques/subtree-path-last-write/) |
+| 最短路の個数と最小・最大の辺数を同時に求める | [正の辺が作る最短距離順でまとめる](/flowchartcp/techniques/shortest-tight-dag-statistics/) |
+| 質問ごとの少数の指定頂点を、指定頂点以外の削除で互いに分離する。削除費用は全て 1 | [元の隣接指定点を検査し、補助木で上につながる印だけを渡す](/flowchartcp/techniques/virtual-tree-marked-vertex-separation/) |
+| 木の全始点で、距離と行先の値の和を最大化する。始点自身は行先にできない | [子方向の上位二つを方向付きで持ち、戻る子側を除いて伝播する](/flowchartcp/techniques/tree-target-bonus-excluding-self/) |
+
+## 使用する行・列と外接範囲
+
+| 問題の特徴 | テクニック |
+| --- | --- |
+| 二色の駒が同じ行や列を使えない | [使用する行列を分け、空行・空列を除く](/flowchartcp/techniques/grid-active-rows-cols/) |
+| 無作為に選ぶマスの外接長方形の期待面積 | [各マスを含まない四方向の組合せを包除する](/flowchartcp/techniques/subset-bounding-box-expectation/) |
+| 二本の列はそれぞれ重複なしで、同じ位置の値も異なる | [強制する一致位置数で包除する](/flowchartcp/techniques/injective-coordinate-avoidance/) |
+
+## 選ぶ個数・種類・符号
+
+| 問題の特徴 | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 固定された時間区間を k 人で最大件数だけ担当する | 担当は交換可能、終了と次の開始の一致を許す | [終了順に見て、開始までに最も遅く空く担当を使う](/flowchartcp/techniques/interval-k-resources-predecessor/) |
+| ちょうど K 個の価値和と種類数のボーナスを最大化する | ボーナスは種類数のみで非減少 | [重複の最小値と未選択種類の最大値を交換する](/flowchartcp/techniques/fixed-size-diversity-exchange/) |
+| 負数を含むちょうど K 個の積を最大化する | 位置や組の相性はなく、整数の大小で選ぶ | [絶対値上位の符号を境界交換で直す](/flowchartcp/techniques/maximum-product-sign-exchange/) |
+
+## 併合と履歴を小さくする
+
+| 問題の特徴 | 必要な条件 | テクニック |
+| --- | --- | --- |
+| 列の値編集と隣接交換の最小費用 | 各交換の費用が同じで、列が短い | [次に対応させる添字を選び、転倒数を集合から足す](/flowchartcp/techniques/assignment-adjacent-swap-mask/) |
+| 幅二の盤面を任意の整数寸法の長方形で覆う | 各部品の種類を区別せず、配置を数える | [上段の二マスが同じ部品かの二状態へ縮める](/flowchartcp/techniques/two-column-rectangle-tiles/) |
+| 固定トーナメントの全試合の結果を選ぶ | 各人の報酬は最終勝利回数だけで決まる | [相手側の最良値を共有して併合する](/flowchartcp/techniques/tournament-opponent-maximum/) |
+| 安い経路の費用を順に K 個求める | 正の辺、再訪可能、同額の別経路も数える | [各頂点への到達を K 回まで確定する](/flowchartcp/techniques/k-shortest-walk-prefix-cap/) |
+| 最短辺数の経路のラベル列を辞書順で比べる | 過去のラベルに追加の履歴制約がない | [同じ最良接頭列の到着点を全て残す](/flowchartcp/techniques/shortest-lexicographic-label-frontier/) |
+
+## 出現位置と区間の状態
+
+| 求めるもの | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 質問区間に一度だけ現れる値を一つ返す | 配列は固定で、質問を右端順に処理できる。最小の値や個数は要求されない | [最新の出現位置だけを残し、その直前の出現が左端より前か調べる](/flowchartcp/techniques/offline-range-singleton-witness/) |
+| 二値列の区間を反転し、別の区間の最長の 1 の連続を求める | 反転は 0 と 1 の入れ替え。列の順序は変わらない | [両方の値の接頭長・接尾長・最大長を持ち、反転では二組を交換する](/flowchartcp/techniques/flip-longest-binary-run/) |
+| 点更新後の、隣り合う添字を選ばない最大和 | 空集合を許し、区間をまたぐ条件は直前を選んだかだけで決まる | [二状態の遷移を最大値と加算の行列で表し、左右の順を保って合成する](/flowchartcp/techniques/point-update-nonadjacent-max-sum/) |
+
+## 素因数と余りの条件
+
+| 求めるもの | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 十進部分文字列の値が P で割り切れる個数 | 10 と P が互いに素なら右揃えの余りを使える。P が 2 または 5 なら末尾の数字で別処理する | [同じ余りになる二つの接尾部分を数える](/flowchartcp/techniques/decimal-substring-divisibility/) |
+| 全ての a_i/2 の正の奇数倍になり、上限 M 以下である整数の個数 | 各 a_i は正の偶数で、2 の素因数指数が全て一致する必要がある | [半分の最小公倍数を上限付きで求め、その奇数倍だけ数える](/flowchartcp/techniques/half-multiple-two-adic/) |
+| 1 より大きい共通因子があるが、一方が他方を割り切らない二数の組 | 正整数の区間から順序付きで選ぶ。任意の配列の頻度を数える設定とは区別する | [共通因子を持つ異なる二数の組から、真の倍数の組を除く](/flowchartcp/techniques/gcd-pairs-exclude-divides/) |
+
+## 操作の可否と構成の条件
+
+| 求めるもの | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 固定列 A と各位置で異なるように、列 B を並べ替える | 各値について二列の頻度の和が長さ以下。B の並べ替えに他の制約はない | [整列した等値区間から、一致を避ける巡回ずらしを決める](/flowchartcp/techniques/unequal-multiset-cyclic-shift/) |
+| 値 i の i 番目の出現を指定位置にした列を作る | 値 1 から N を各 N 個置き、予約位置は互いに異なる | [予約位置を固定し、前のコピーを締切順、後ろのコピーを逆順に置く](/flowchartcp/techniques/reserved-occurrence-deadlines/) |
+| 全マスの値が異なり、隣接二数を割った正の余りが一定の盤面 | 共通の余りを自由に選べる。掲載構成は N が 500 以下で、値は 10 の 15 乗以下 | [二色に分け、隣接値の素因子を含む積に 1 を足す](/flowchartcp/techniques/adjacent-modulo-prime-grid/) |
+| 無向辺を向けて全頂点の出次数を偶数にする | 全体だけでなく、各連結成分の辺数が偶数でなければならない | [木以外の辺を先に向け、子の出次数を親辺の向きで確定する](/flowchartcp/techniques/even-outdegree-orientation/) |
+
+## 部分和と区間得点の更新
+
+| 求めるもの・更新 | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 要素の追加・削除の後に、指定和を作る部分集合の個数を求める | 重さは正、各要素は 0/1 選択。削除する要素が現在存在する | [追加は降順に足し、削除は昇順に引いて係数を復元する](/flowchartcp/techniques/subset-sum-inverse-update/) |
+| 位置を選び、一つでも選んだ位置を含む各区間の得点を足す | 区間ごとの得点は一回だけ。選択数の上限や追加条件がない | [最後の選択位置を状態にし、区間の右端で該当状態へ一括加算する](/flowchartcp/techniques/interval-hit-last-selected/) |
+
+## ビットの制約から数え上げ・構築へ
+
+| 求めるもの | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 指定された全区間の AND が成立する配列 | AND の等式だけを満たす任意の一例でよい。1 の総数などの追加条件はない | [必要な 1 の和集合を作り、0 を要求する区間に 0 が残るか検査する](/flowchartcp/techniques/range-and-forced-bits/) |
+| 少数の未知整数に対する三数 OR の等式を満たす配列数 | 値は共通幅の全ビット列から選び、他の数値上限はない | [一つのビットを持つ変数集合を全探索して、各桁の成立数を掛ける](/flowchartcp/techniques/bitwise-or-constraint-count/) |
+| 和と XOR が一致し、和が上限以下になる二数の組数 | 非負整数の順序付き対。0 を含み、上限は二進文字列でもよい | [00・01・10 の桁だけを選び、和の上限との一致を持つ](/flowchartcp/techniques/carryfree-sum-xor-bound/) |
+| XOR と両方の popcount を指定した二数の構築 | 共通のビット幅だけが上限で、特定の最小解は要求されない | [不一致の桁と共通の 1 の必要数が非負整数になるか確かめる](/flowchartcp/techniques/xor-popcount-construction/) |
+| 上限付きの X に対する、固定列との XOR 和の最大値 | 同じ X を全要素へ使い、桁をまたぐ制約は X の上限だけ | [桁の利益と上限未満へ移る状態を組み合わせる](/flowchartcp/techniques/bounded-xor-sum-maximum/) |
+| AND と和が指定された非負整数二数の存在判定 | 個別の上限や正整数条件はない。和そのものは桁あふれさせない | [共通の 1 の二倍を引き、残りとのビットの重なりを調べる](/flowchartcp/techniques/and-sum-disjoint-remainder/) |
+| 部分集合 XOR で全ビット列を作る最小購入費用 | 費用は非負で、材料は生成ごとに消費されない | [費用順に独立なマスクだけ採用し、階数が幅に達するまで続ける](/flowchartcp/techniques/minimum-cost-xor-generators/) |
+| 区間和と XOR が一致する全区間の個数 | 非負整数列で、数学的な和の一致を調べる | [全ビットの出現が高々一回になる最長の窓を保つ](/flowchartcp/techniques/carryfree-subarray-window/) |
+
+## 確率過程ごとの状態と更新順
+
+| 求めるもの | 確認する条件 | テクニック |
+| --- | --- | --- |
+| リセットのある前進すごろくの終了期待回数 | 戻る先は全て同じで、一試行内は前向き。通過不能な連続区間を先に調べる | [一試行の費用を成功確率で割り、両方の遷移和を窓で更新する](/flowchartcp/techniques/restart-board-trial-expectation/) |
+| 一様に選ばれる皿が全て空になる期待回数 | 中身は三個以下で、同じ中身の皿は選ばれる確率も同じ | [1・2・3 個の皿数を持ち、三個の皿数から順に二層で計算する](/flowchartcp/techniques/sushi-count-state-rolling/) |
+| 引いた添字が増える間だけ受け取る期待報酬 | 同じ添字集合から毎回独立一様に引く。増えなければ終了する | [各添字への訪問確率を累積和から求め、報酬へ掛けて足す](/flowchartcp/techniques/increasing-record-reward-probability/) |
+| 多数回のランダム交換後の、一個の印付き球の位置 | 添字は復元抽出で選ぶ。最初の位置以外は対称 | [二状態の一次式から定常値を引き、差だけを累乗する](/flowchartcp/techniques/random-swap-symmetry-two-state/) |
+| サイコロを掛けた積が目標へちょうど一致する確率 | 出目は公平な 1 から 6、値を小さくする操作はない | [目標の素因数を 2・3・5 に絞り、残り指数が減る順に計算する](/flowchartcp/techniques/dice-product-prime-exponents/) |
+| 高々一辺の削除で、確率的な経路の移動回数を最小化 | DAG の唯一の終点へ進み、出辺は等確率。一辺しか変更しない | [最も遅い子への辺を候補にし、到達確率で改善を重み付けする](/flowchartcp/techniques/dag-edge-removal-expectation/) |
+| 料金と出目の違うルーレットを選ぶ最小期待費用 | 増分は非負、料金は正。少なくとも一つは正の出目を持つ | [行動ごとに 0 点の項を除き、残量ごとの候補費用を最小化する](/flowchartcp/techniques/roulette-choice-zero-outcomes/) |
+| 一様に選んだ頂点の部分木を消し、木が空になる期待回数 | 削除対象は選んだ頂点と子孫で、残った頂点を一様に選ぶ | [祖先と自分の優先順位の最小を考え、深さの逆数を足す](/flowchartcp/techniques/random-subtree-removal-ancestor-priority/) |
+
+## 点対の条件と平面の分割
+
+| 求めるもの | 確認する条件 | テクニック |
+| --- | --- | --- |
+| 点集合からできる正の面積の平行四辺形の個数 | 点は相異なる。共線点を許すなら退化を別に除く | [対角線の中点を座標和でそろえ、同方向の二本を引く](/flowchartcp/techniques/parallelogram-diagonal-midpoints/) |
+| 有限小数の円の内部・周上の整数格子点数 | 小数の桁数が限られ、整数化した二乗が型に収まる | [列ごとに二乗不等式を解き、負の床・天井も正確に扱う](/flowchartcp/techniques/scaled-circle-lattice-scan/) |
+| 点の対応が不明な二集合の回転・平行移動による合同 | 反転と拡大縮小は禁止。重心上の零ベクトルは別にする | [偏角順の二乗長・内積・外積を巡回列として照合する](/flowchartcp/techniques/point-congruence-cyclic-signature/) |
+| 同じ凸多角形の多数の平行移動先全てへの内包判定 | 全図形で辺の向きが共通で、境界も含める | [辺の法線方向ごとに、最大の閾値を残して質問する](/flowchartcp/techniques/translated-convex-halfplane-max/) |
+| 同じ上下左右の命令列を繰り返して訪れる点の種類数 | 障害物も境界もない。一周期の移動が 0 か先に分ける | [平行移動の軌道と、その軌道内の整数区間へ分ける](/flowchartcp/techniques/repeated-grid-walk-orbits/) |
+| 軸平行の壁を避けて到達できる領域の面積 | 原点は壁上でなく、端点も通行不可。壁の本数が少ない | [隣接座標の間をセルにし、通行不可の辺と実面積を持つ](/flowchartcp/techniques/plane-wall-compressed-cells/) |
+| 全点を覆う円の最小半径 | 中心は自由、各点の許容距離は同じ。小規模で数値誤差を許す | [等半径円の交点で判定してから半径を二分探索する](/flowchartcp/techniques/disk-cover-center-intersections/) |
+| 四点の重み和が最大の等脚台形 | 正の面積を要求し、長方形も含む。点は相異なる | [共通の垂直二等分線でまとめ、異なる中点から二組を選ぶ](/flowchartcp/techniques/isosceles-trapezoid-bisector-groups/) |
+
+<TechniqueGrid entry="advanced" heading="高度なテクニックの一覧" />

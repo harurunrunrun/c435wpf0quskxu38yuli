@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2018 Meetingsの圧縮接頭辞最適費用を完成し、IOI2018固定6題の記事/根経路を全て解消",
+  "counts": {
+    "specificTechniques": 413,
+    "foundationArticles": 78,
+    "allArticles": 491,
+    "exampleMappings": 512,
+    "originalUrls": 474,
+    "graphs": 458,
+    "nodes": 3619,
+    "questions": 1645,
+    "answerEdges": 5362,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 508,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "cartesian-prefix-meeting-cost-single-cross-envelope",
+    "articleSha256": "122e845b0ca4fa9350d1bbf0f8378244aba80f60a2cb51f9f5203397163a41d1",
+    "codeSha256": "7241cb7bc2c5a4f6786a342a8a78592f0ba37097f2b01894afc4790c5263f1b1",
+    "checks": 10223222,
+    "normalAndAsanUbsanAuthorIndependentReviewerAndRootPassed": true,
+    "originalSourceAndApiContainmentVerified": true
+  },
+  "verified": [
+    "原典3頁/公式Review4頁と主催配布翻訳の数値を確認。通常抽出の公式欠落式の画像目視/全式転記とは主張せず、後年の著者補足を区別し具体式を独立に証明した。競技日2018-09-05は日本委員会一覧で確認、難度null。",
+    "固定元添字tie・空左右/根会場・prefix増分上界から一交差・queryを右子DP生存中に回収・mapの全体座標/断片被覆/offset・node_handleによる部分切詰めを独立精読。断片出生<=2N、一度の完全削除、元頂点mass倍増による連続iterator加算の全償却、64bit中間<=3NHmax、全反復でO((N+Q)log(N+1))時間/O(N+Q)空間を確認。",
+    "実公開fence抽出10223222checks/checksum14312679095217143898。全51367小高さ列/1766247区間を全会場・全参加者・全経路literal oracleへ照合、一方向1288632候補を別々に検査。500乱択/100000query、原典最大750000列/750000query7構成で計5250000queryと最大費用7.5e14、原典の相異なる質問対、APIQ0/重複拡張/invalid15/再利用を確認。作者・独立review者・rootの通常/ASan+UBSanで同件数/hash/checksumを再現。",
+    "追加独立metamorphic1255051checks/6513casesはliteral/affine/反転/範囲外padding/切出し不変性を検査。別の全会場monotone-stack oracleは小literal14846件を自身で比較後、最大N750000の一般高さ3構成192長区間を照合、計15038checks。恒久化した二probeを公開fenceから再実行し成功。",
+    "新native wrapper3/3と独立flow8/8成功。旧511walk全文/終端/ラベル・457図3613node全field/旧option順/target/result、593旧local URL/404完成共有URL、初回audit全体/6行/status/selection/snapshot/旧5resolutionsを保持。3guardsと全no/unknown出口、両表示/Back/共有/原典範囲を検査。Meetings resolution除去で研究6/6/covered5/6となるnegativeも確認。",
+    "全52回帰テスト群に成功。最終build:localは491記事512対応458SVG。日英/全角85検索と直近21記事の式/コード/使用例/根拠/カタログを確認。458SVG pairs・図専用ページ・5362回答label・404旧共有URLを照合。新詳細図と親の多択図をraster表示し、重なり/欠落なし。",
+    "localリンク検査1416 HTML/SVG/28824links/assetsが成功。研究表25/25行で観測identity/解法確認和集合/公開対応の正しい列を照合。"
+  ],
+  "reviewCounterSemantics": {
+    "corpusStatementsReviewed": 59,
+    "corpusSolutionsReviewed": 50,
+    "reviewedProblems": 472,
+    "allSolutionsReviewed": 481
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "3/6",
+      "covered": "3/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "2/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    }
+  ],
+  "remainingKnownGaps": 19,
+  "researchCounterNote": "Meetingsは初回固定群で解法確認済みだったため、記事使用例の確認は472へ増えたが異なる問題の和集合は481のまま。",
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。IOI2018固定6題の完成を全世界の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは環境上の以前の失敗後に再試行しておらず未検証。",
+    "外部リンク全件の生存確認は未実施。",
+    "push・アップロード・公開は未実施。"
+  ],
+  "inProgress": [
+    "USACO2021Feb/USOpen Platinum6題を技巧照合前に選び、488記事/455図/509walkの固定snapshotで監査中。まだ今回の集計へ含めない。",
+    "既存IOI2019固定群のRectを原典/公式解法/主要補題/全域実装から検証中。初回未確認を解消済みとしていない。"
+  ]
+}

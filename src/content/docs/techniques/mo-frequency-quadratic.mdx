@@ -1,0 +1,75 @@
+---
+title: "区間の頻度二乗和を、要素の出し入れの差分で求める"
+description: "出現回数の二乗を毎回集計せず、質問の順序を変えて端点を少しずつ動かす。"
+techniqueId: mo-frequency-quadratic
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+数列は変わらず、多数の区間について $\sum_x w_x c_x^2$ を求めたい。$c_x$ は区間内の値 $x$ の出現回数。同じ値が何度出るかに依存するため、要素ごとの単純な累積和には分解できない。
+
+## 考え方
+
+現在の区間について頻度表と答えを持つ。値 $x$ を加えると $w_x((c_x+1)^2-c_x^2)=w_x(2c_x+1)$ だけ増え、取り除くと $w_x(2c_x-1)$ だけ減る。頻度を変更する前の値を使う。
+
+質問を左端の幅 $B$ のブロック順、その中で右端順に並べる。隣のブロックでは右端順を反転し、往復を減らす。一般の $\sum_x f_x(c_x)$ でも、差分 $f_x(c+1)-f_x(c)$ と $f_x(c-1)-f_x(c)$ を定数時間で求められれば同じ処理ができる。
+
+## 適用条件
+
+全質問が先に分かり、配列の更新がなく、端点に一要素を加える・外す操作が安い場合に使う。頻度を座標圧縮しても重みは元の値を使う。空区間の答えは0。負の重みでも差分は成立する。オンライン回答が必要なら質問の並べ替えはできない。
+
+## なぜ正しいか
+
+区間を一要素ずつ変えるたび、その値の寄与だけを二乗の差により更新する。他の値の頻度は変わらないので、各移動後の総和は正しい。移動の順序は最終的な区間の頻度を変えない。元の質問番号で答えを保存すれば、並べ替えによる出力順の変更も起きない。
+
+## 計算量
+
+毎回区間を数えると $O(NQ)$。端点移動は $O(QB+N^2/B+N)$、並べ替えは $O(Q\log Q)$。$B\approx N/\sqrt Q$ なら移動は $O(N\sqrt Q+Q)$。値の圧縮を含め $O(N\log N+Q\log Q+N\sqrt Q+Q)$ 時間、$O(N+Q)$ 空間。
+
+## 実装
+
+`weighted_frequency_square(a,ranges)` は半開区間の答えを元の質問順に返す。重みは値そのもの。積と総和は128ビットで計算する。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+#include <utility>
+std::vector<__int128> weighted_frequency_square(
+    const std::vector<long long>& a,const std::vector<std::pair<int,int>>& ranges) {
+    int n=int(a.size()),q=int(ranges.size());
+    std::vector<long long> values=a;std::sort(values.begin(),values.end());
+    values.erase(std::unique(values.begin(),values.end()),values.end());
+    std::vector<int> id(n),cnt(values.size());
+    for(int i=0;i<n;++i) id[i]=int(std::lower_bound(values.begin(),values.end(),a[i])-values.begin());
+    int block=std::max(1,int(n/std::sqrt(std::max(1,q))));
+    std::vector<int> order(q);for(int i=0;i<q;++i) {order[i]=i;auto [l,r]=ranges[i];assert(0<=l&&l<=r&&r<=n);}
+    std::sort(order.begin(),order.end(),[&](int x,int y) {
+        auto [lx,rx]=ranges[x];auto [ly,ry]=ranges[y];
+        if(lx/block!=ly/block) return lx/block<ly/block;
+        return (lx/block&1)?rx>ry:rx<ry;
+    });
+    int l=0,r=0;__int128 sum=0;std::vector<__int128> answer(q);
+    auto add=[&](int p) {int x=id[p];sum+=__int128(values[x])*(2*cnt[x]+1);++cnt[x];};
+    auto erase=[&](int p) {int x=id[p];sum-=__int128(values[x])*(2*cnt[x]-1);--cnt[x];};
+    for(int i:order) {
+        auto [ql,qr]=ranges[i];while(l>ql) add(--l);while(r<qr) add(r++);
+        while(l<ql) {erase(l++);}
+        while(r>qr) {erase(--r);}
+        answer[i]=sum;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[オフラインクエリ](/flowchartcp/techniques/offline-queries/) ・ [区間の質問を、端点と更新時刻の三方向へ並べ替える](/flowchartcp/techniques/mo-with-updates/) ・ [和が指定値になる区間を累積和の頻度で数える](/flowchartcp/techniques/subarray-prefix-frequency/)
+
+## 参考資料
+
+- [Codeforces：Powerful array（原典の条件）](https://codeforces.com/problemset/problem/86/D)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="mo-frequency-quadratic" />

@@ -1,0 +1,61 @@
+---
+title: "半開区間の開始と終了を同じ座標でまとめる"
+description: "区間の負荷が変わる時刻だけを処理し、同時刻の差分を一括して足します。"
+techniqueId: "sweep-interval-endpoints"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+時刻 $[s_i,t_i)$ の間だけ負荷 $w_i$ が掛かり、どこかで容量を超えるか知りたいとき。時刻の最大値が大きく、各時刻を走査できない場合です。
+
+## 考え方
+
+開始に $+w_i$、終了に $-w_i$ のイベントを置き、座標順に累積します。同じ座標のイベントは全てまとめてから負荷を検査します。
+
+$[s,t)$ では時刻 $t$ の終了と別区間の開始が同時です。開始だけを先に検査すると、存在しない一瞬の超過を数えることがあります。閉区間なら、端点の扱いを別に設計します。
+
+## 適用条件
+
+負荷は区間内で一定。開始・終了の包含規則を固定します。下の最大負荷の実装は $w_i\ge0$、$s_i\le t_i$ 向けです。時刻ごとの状態を出力したい場合は、区間の間隔も保存します。
+
+## なぜ正しいか
+
+現在座標までに始まった負荷を足し、既に終了した負荷を引くと、その座標の直後の負荷になります。負荷は次の端点まで変わらないので、端点だけの検査で全区間を覆えます。
+
+## 計算量
+
+時刻を全走査する改善前は値域に比例。イベントの改善後は $O(N\log N)$ 時間、$O(N)$ 空間。座標圧縮せずソートだけで処理できます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long peak_interval_load(const vector<tuple<long long,long long,long long>>& intervals){
+    vector<pair<long long,long long>> events;
+    for(auto [s,t,w]:intervals){
+        assert(s<=t && w>=0);
+        events.emplace_back(s,w); events.emplace_back(t,-w);
+    }
+    sort(events.begin(),events.end());
+    long long current=0, peak=0;
+    for(int i=0;i<(int)events.size();){
+        long long x=events[i].first, delta=0;
+        do { delta+=events[i++].second; }
+        while(i<(int)events.size() && events[i].first==x);
+        current+=delta; peak=max(peak,current);
+    }
+    return peak;
+}
+```
+
+## 関連する手法
+
+[長方形への加算を四隅に記録する](/flowchartcp/techniques/difference-2d-corners/)
+
+## 参考資料
+
+- [AtCoder：Water Heater の問題文](https://atcoder.jp/contests/abc183/tasks/abc183_d)
+
+<TechniqueReferences techniqueId="sweep-interval-endpoints" />

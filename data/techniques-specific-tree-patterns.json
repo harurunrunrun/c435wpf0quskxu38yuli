@@ -1,0 +1,389 @@
+[
+  {
+    "id": "virtual-tree-marked-vertex-separation",
+    "title": "木の指定頂点同士を切り離す最少削除は、合流点と指定頂点だけで判断する",
+    "summary": "削除できない指定頂点が少ないとき、途中の一本道を縮めて、上へつながる印が残るかだけ持つ。",
+    "aliases": [
+      "Virtual Tree Vertex Multiway Cut",
+      "Kingdom and its Cities",
+      "指定頂点の分離",
+      "補助木の頂点削除"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [
+      "virtual-tree-adjacent-lca",
+      "doubling"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/613/D",
+      "https://codeforces.com/blog/entry/22832"
+    ]
+  },
+  {
+    "id": "unique-mst-completion-count",
+    "title": "指定した木を唯一の最小全域木にする追加辺は、結合される成分の頂点対で数える",
+    "summary": "追加辺の重みを経路最大より大きく制限し、その最大値が決まる頂点対を重み順にまとめる。",
+    "aliases": [
+      "Unique MST Completion Count",
+      "Counting Graphs",
+      "唯一の最小全域木",
+      "Kruskal component pair counting"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [
+      "union-find",
+      "mst-replacement-edge"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/1857/G",
+      "https://codeforces.com/blog/entry/119134"
+    ]
+  },
+  {
+    "id": "weighted-tree-distance-reroot",
+    "title": "木で需要重みを掛けた距離の和は、隣へ動いた差だけで全始点を求める",
+    "summary": "一辺を越えると、片側の需要は近くなり、もう片側の需要は遠くなる。",
+    "aliases": [
+      "Weighted Tree Distance Sum",
+      "Weighted Median on Tree",
+      "Reroot Distance Delta",
+      "需要重み付き距離和"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [
+      "rerooting"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc348/tasks/abc348_e",
+      "https://atcoder.jp/contests/abc348/editorial/9774"
+    ]
+  },
+  {
+    "id": "tree-path-hitting-inclusion-exclusion",
+    "title": "少数の経路に黒辺を必ず置く条件は、失敗する経路の集合を包除する",
+    "summary": "辺の色を全探索する代わりに、全て白になる経路を選び、その和集合だけ白へ固定する。",
+    "aliases": [
+      "Tree Path Hitting Inclusion Exclusion",
+      "Tree and Constraints",
+      "経路制約の包除",
+      "Path Union Bitmask"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc152/tasks/abc152_f",
+      "https://img.atcoder.jp/abc152/editorial.pdf"
+    ]
+  },
+  {
+    "id": "tree-xor-pair-bit-contribution",
+    "title": "木の全頂点対の経路XOR和は、根からのXORをビットごとの二群に分ける",
+    "summary": "共通の根経路はXORで消え、各ビットが異なる頂点対だけが答えへ寄与する。",
+    "aliases": [
+      "Tree XOR Pair Sum",
+      "Root XOR Potentials",
+      "Xor Distances",
+      "木のXOR距離和"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc201/tasks/abc201_e",
+      "https://atcoder.jp/contests/abc201/editorial/1837"
+    ]
+  },
+  {
+    "id": "rooted-tree-leaf-interval-labels",
+    "title": "部分木の包含と非交差を区間で表すなら、DFS順の葉だけに番号を付ける",
+    "summary": "全頂点へ別番号を与えず、子孫の葉番号の最小・最大で区間を作り、最大番号を葉数までにする。",
+    "aliases": [
+      "Rooted Tree Leaf Interval Labels",
+      "Ranges on Tree",
+      "Laminar Interval Construction",
+      "葉番号の区間ラベル"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [
+      "subtree-euler-interval"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc240/tasks/abc240_e",
+      "https://atcoder.jp/contests/abc240/editorial/3447"
+    ]
+  },
+  {
+    "id": "tree-eccentricity-diameter-endpoints",
+    "title": "木の各頂点からの最遠距離は、直径の両端への距離だけで求める",
+    "summary": "全ての始点で探索せず、一組の直径端点からの距離を全頂点で使い回す。",
+    "aliases": [
+      "Tree Eccentricity Diameter Endpoints",
+      "Tree Distances I",
+      "木の離心率",
+      "Diameter Endpoint Distances"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1132/"
+    ]
+  },
+  {
+    "id": "tree-target-bonus-excluding-self",
+    "title": "木の距離に行先の値を足す最大値は、戻す子方向を上位二つから除く",
+    "summary": "行先が自身ではない条件を保ち、子へ渡す候補からその子の部分木だけを外す。",
+    "aliases": [
+      "Tree Farthest Target Bonus Excluding Self",
+      "Expensive Expense",
+      "Top Two Reroot Directions",
+      "行先重み付き最遠点"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [
+      "reroot-directed-edge-state"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc222/tasks/abc222_f",
+      "https://atcoder.jp/contests/abc222/editorial/2763"
+    ]
+  },
+  {
+    "id": "tree-root-path-lis-rollback",
+    "title": "根から各頂点までのLISは、枝から戻るときに末尾配列を復元する",
+    "summary": "LISの更新が変える1か所だけを記録し、兄弟の枝へ前の状態を持ち込まないようにします。",
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Root Path LIS Rollback",
+      "LIS on Tree",
+      "Rollback Patience Sorting",
+      "根からの経路の最長増加部分列",
+      "最小末尾配列の巻き戻し"
+    ],
+    "prerequisites": [
+      "binary-search",
+      "tree-dp"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc165/tasks/abc165_f",
+      "https://img.atcoder.jp/abc165/editorial.pdf"
+    ]
+  },
+  {
+    "id": "tree-increasing-label-reroot-ratio",
+    "title": "木で親の番号を子より小さくする割り当ては、部分木サイズの積で数える",
+    "summary": "根を隣へ移すとサイズが変わる二つの部分木だけに注目し、全ての根の答えを線形時間で計算します。",
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "aliases": [
+      "Tree Hook Length Formula",
+      "Increasing Tree Labelings",
+      "Reroot Count Ratio",
+      "木の増加ラベル付け",
+      "親が先の順序数",
+      "部分木サイズの積"
+    ],
+    "prerequisites": [
+      "rerooting",
+      "factorial-inverses"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc160/tasks/abc160_f",
+      "https://img.atcoder.jp/abc160/editorial.pdf"
+    ]
+  },
+  {
+    "id": "tree-root-reversal-costs",
+    "aliases": [
+      "Tree Root Edge Reversal Costs",
+      "Choosing Capital for Treeland",
+      "Weighted Edge Reversal Rerooting",
+      "根から全頂点への最小反転費用",
+      "木の向き直しの全根集計"
+    ],
+    "prerequisites": [
+      "rerooting"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/219/D",
+      "https://codeforces.com/blog/entry/5160"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "title": "木を根から全頂点へ進める向きに直す費用は、根を一辺動かした差で求める",
+    "summary": "一つの根で逆向きの辺の費用を集め、隣の根へ移すたびにその一辺の費用だけを足し引きする。"
+  },
+  {
+    "id": "tree-color-closure-sink-scc",
+    "title": "木の同色頂点をつなぐとき、途中で必要になる色もまとめて選ぶ",
+    "summary": "同色頂点を結ぶパス上の色へ依存を張り、外への依存がない強連結成分の色数を最小化する。",
+    "aliases": [
+      "Tree color closure",
+      "Sink SCC of color dependencies",
+      "全同色頂点の閉包",
+      "木の色の一括併合"
+    ],
+    "family": "木・制約と全頂点集計",
+    "level": "上級",
+    "prerequisites": [
+      "scc",
+      "heavy-light-decomposition",
+      "dijkstra-range-edges"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/capital_city.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/capital_city-review.pdf"
+    ]
+  },
+  {
+    "id": "skyline-cartesian-star-paths",
+    "title": "ビルで遮られない二つの星の競合を祖先パスの交差へ移し、残す重みを最大にする",
+    "summary": "最大値Cartesian treeに星の経路を置き、頂点を共有しない経路群を、子のDP和との差分とEuler区間加算で選ぶ。",
+    "aliases": [
+      "Constellation 3 skyline Cartesian tree path packing",
+      "weighted ancestor path packing Euler Fenwick",
+      "星座3 ビル 長方形 祖先パス 非交差 重み付き選択"
+    ],
+    "family": "木上の条件と最適化",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "tree-dp",
+      "subtree-euler-interval",
+      "fenwick-tree"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/constellation3.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/constellation3-review.pdf"
+    ]
+  },
+  {
+    "id": "tree-local-routing-alternating-dfs-labels",
+    "title": "DFSの行き帰りでラベルを付け、隣接ラベルだけで木をたどる",
+    "summary": "深さの偶奇でDFSの入時と出時に番号を発行し、子の担当区間の端点を隣接ラベルだけから判定する。",
+    "aliases": [
+      "Alternating DFS Tree Routing Labels",
+      "Stateless Tree Routing",
+      "IOI Stations labeling scheme",
+      "交互DFSラベルと局所ルーティング"
+    ],
+    "family": "木上の条件と最適化",
+    "level": "上級",
+    "prerequisites": [
+      "subtree-euler-interval",
+      "rooted-tree-leaf-interval-labels",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf",
+      "https://ioi2020.sg/ioi-2020-tasks/",
+      "https://ioi2020.sg/schedule/"
+    ]
+  }
+]

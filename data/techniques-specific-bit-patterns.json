@@ -1,0 +1,357 @@
+[
+  {
+    "id": "range-and-forced-bits",
+    "title": "区間ANDを指定する配列は、必要な1だけを置いて0の条件を確かめる",
+    "summary": "区間全体に必要なビットを差分で重ね、最小の候補を作って全ての条件を検査する。",
+    "aliases": [
+      "Interesting Array range AND construction",
+      "forced one bits minimal assignment",
+      "区間AND 制約 配列復元"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "difference-array",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/482/B",
+      "https://codeforces.com/blog/entry/14417"
+    ]
+  },
+  {
+    "id": "bitwise-or-constraint-count",
+    "title": "少数の整数のOR条件は、各ビットの割当数を別々に数えて掛ける",
+    "summary": "変数の値全体を選ばず、一つのビットを持つ変数集合だけを全探索する。",
+    "aliases": [
+      "Snuke's Favorite Arrays independent bit assignments",
+      "OR constraints count bit enumeration",
+      "三要素OR 条件 数え上げ"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bitmask-dp-submask",
+      "contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/typical90/tasks/typical90_ch",
+      "https://github.com/E869120/kyopro_educational_90/blob/main/sol/086.cpp"
+    ]
+  },
+  {
+    "id": "carryfree-sum-xor-bound",
+    "title": "和とXORが等しい二数は、繰り上がりを禁止して和の上限だけを追う",
+    "summary": "一桁の選択を00・01・10に絞り、和の上位桁が上限と同じかだけを持つ。",
+    "aliases": [
+      "Sum Equals Xor carry free digit DP",
+      "no carry ordered pairs binary bound",
+      "和 XOR 一致 二進上限 桁DP"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "digit-dp-leading-zero",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc129/tasks/abc129_e",
+      "https://img.atcoder.jp/abc129/editorial.pdf"
+    ]
+  },
+  {
+    "id": "xor-popcount-construction",
+    "title": "XORと二数の1の個数を指定した構築は、異なる桁と共通の1へ分ける",
+    "summary": "XORで決まる不一致の個数から、両方1になる桁数を引き出す。",
+    "aliases": [
+      "Popcount and XOR common ones construction",
+      "xor fixed Hamming weights",
+      "ポップカウント XOR 二数 構築"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant",
+      "bitwise-contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc347/tasks/abc347_d",
+      "https://atcoder.jp/contests/abc347/editorial/9691"
+    ]
+  },
+  {
+    "id": "bounded-xor-sum-maximum",
+    "title": "上限付きの一数とのXOR和は、桁ごとの利益と上限未満の状態を組み合わせる",
+    "summary": "上限を超えない範囲で、0と1のどちらが各ビットの合計へ多く寄与するかを選ぶ。",
+    "aliases": [
+      "XXOR bounded XOR sum digit DP",
+      "maximize sum Ai xor X under K",
+      "上限付き XOR和 最大化"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "digit-dp-leading-zero",
+      "bitwise-contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc117/tasks/abc117_d",
+      "https://img.atcoder.jp/abc117/editorial.pdf"
+    ]
+  },
+  {
+    "id": "and-sum-disjoint-remainder",
+    "title": "二数のANDと和を指定するなら、共通の1を二回引いて残りとの重なりを調べる",
+    "summary": "和から共通ビットの二倍を除き、残りを片方へ置けるかを判定する。",
+    "aliases": [
+      "AND and SUM disjoint remainder",
+      "sum xor and identity feasibility",
+      "AND 和 二数 存在判定"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant",
+      "bitwise-contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc238/tasks/abc238_d"
+    ]
+  },
+  {
+    "id": "minimum-cost-xor-generators",
+    "title": "部分集合XORで全ての値を作る最小費用は、安い順に新しい値だけを加える",
+    "summary": "既に作れるマスクを買わず、作れる範囲を広げるマスクだけを採用する。",
+    "aliases": [
+      "Spices minimum cost XOR basis",
+      "weighted binary linear matroid greedy",
+      "XOR生成 最小費用 独立マスク"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "xor-basis-kth",
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc236/tasks/abc236_f",
+      "https://atcoder.jp/contests/abc236/editorial/3306"
+    ]
+  },
+  {
+    "id": "carryfree-subarray-window",
+    "title": "区間和とXORが等しい区間は、同じ1ビットが二度現れない窓を保つ",
+    "summary": "新しい値と現在の使用ビットが重なった間だけ左端を進める。",
+    "aliases": [
+      "Xor Sum 2 carry free two pointers",
+      "subarray sum equals xor bit collision window",
+      "区間和 XOR 一致 しゃくとり"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "two-pointers",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc098/tasks/arc098_b",
+      "https://img.atcoder.jp/arc098/editorial.pdf"
+    ]
+  },
+  {
+    "id": "disjoint-mask-subset-witness",
+    "title": "各値とANDが0になる相手は、補集合に含まれる入力値を一つずつ保存する",
+    "summary": "入力値を部分集合の証拠として上位のマスクへ渡し、各値の補集合から適合する相手を取り出す。",
+    "family": "ビットの条件と構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "aliases": [
+      "Compatible Numbers",
+      "Disjoint Mask Subset Witness",
+      "SOS DP Witness Propagation",
+      "ANDが0の相手",
+      "補集合の部分集合の証拠値"
+    ],
+    "prerequisites": [
+      "subset-transform"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/165/E",
+      "https://codeforces.com/blog/entry/4124"
+    ]
+  },
+  {
+    "id": "subset-and-zero-superset-inclusion",
+    "title": "選んだ数のANDを0にする個数は、残る1ビットを上位集合の集計と包除で消す",
+    "summary": "各マスクの1を全て持つ入力の個数から非空の選び方を求め、1の個数による符号を付けて合計する。",
+    "family": "ビットの条件と構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "aliases": [
+      "Jzzhu and Numbers",
+      "AND Zero Subset Inclusion Exclusion",
+      "Superset SOS DP Subset Count",
+      "非空部分集合のANDが0",
+      "上位集合の頻度と包除"
+    ],
+    "prerequisites": [
+      "subset-transform",
+      "inclusion-exclusion-forbidden"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/449/D",
+      "https://codeforces.com/blog/entry/13112"
+    ]
+  },
+  {
+    "id": "square-product-subsets-parity-mask",
+    "title": "積が平方になる部分集合は、素因数の指数の偶奇と同じ値の選択数をまとめる",
+    "summary": "値ごとの出現数から偶数個・奇数個を選ぶ重みを求め、指数の偶奇だけをXORで更新する。",
+    "aliases": [
+      "Square Subsets Prime Parity Mask DP",
+      "Square Product Subsets Equal Value Grouping",
+      "素因数指数の偶奇と部分集合の積",
+      "同じ値の偶数個と奇数個の選び方"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bitmask-dp",
+      "squarefree-product-pairs"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://codeforces.com/problemset/problem/895/C",
+      "https://codeforces.com/blog/entry/56028"
+    ]
+  },
+  {
+    "id": "xor-minimax-bit-partition",
+    "title": "全要素へ同じXORをかけた最大値の最小化は、上位ビットで候補を二分する",
+    "summary": "0と1が混ざる桁では最大値側に残るグループを選び、下位ビットの最適値が小さい方を採る。",
+    "aliases": [
+      "Xor Minimization Minimax Bit Partition",
+      "Minimum Maximum XOR Common Mask",
+      "共通XOR後の最大値を最小化",
+      "上位ビットで最大値の候補を絞る"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bitwise-contribution",
+      "state-design"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://atcoder.jp/contests/abc281/tasks/abc281_f",
+      "https://atcoder.jp/contests/abc281/editorial/5377"
+    ]
+  },
+  {
+    "id": "xor-bounded-triples-intervals",
+    "title": "どの二数のXORも上限以下となる三数を、区間集合から数える",
+    "summary": "同じ半分から三つ選ぶ場合と一対二でまたぐ場合を分け、各一数の許容相手数の二項係数を区間のまま合計する。",
+    "aliases": [
+      "Cowmistry interval union XOR triangles",
+      "pairwise bounded XOR triples",
+      "区間集合 全三組 XOR 上限 三数 計数"
+    ],
+    "family": "ビットの条件と構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "digit-dp",
+      "contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1070",
+      "https://usaco.org/current/data/sol_prob3_platinum_dec20.html"
+    ]
+  }
+]

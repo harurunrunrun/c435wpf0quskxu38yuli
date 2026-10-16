@@ -1,0 +1,66 @@
+---
+title: "遷移元が連続範囲の和なら累積和を使う"
+description: "同じDPの層から何度も範囲の和を取るなら、層ごとに累積和を作ります。"
+techniqueId: dp-range-sum
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+同じDPの層から何度も範囲の和を取るなら、層ごとに累積和を作ります。
+
+## 使う場面
+
+$dp_i[x]$ を長さ $i$ で最後の値が $x$ の通り数とし、前の値 $y$ が $L_i(x)\le y\le R_i(x)$ の範囲にあるときだけ遷移できるとします。遷移式は $dp_i[x]=\sum_{y=L_i(x)}^{R_i(x)}dp_{i-1}[y]$ です。各状態で範囲を走査しているなら、この和をまとめられます。
+
+## 考え方
+
+前の層の累積和を $P[t]=\sum_{0\le y<t}dp_{i-1}[y]$ と作ると、遷移は $P[R_i(x)+1]-P[L_i(x)]$ になります。
+
+以下では、各位置の値が指定範囲内にある非減少列を数えます。現在の値が $x$ なら前の値は $0\le y\le x$ なので、1回の累積和で層のすべての状態を計算できます。
+
+## 適用条件
+
+前の層が確定しており、加える各項の係数が同じことが条件です。一般の最小値には、2つの接頭辞最小値の差を使えません。各項に重みがある場合は、重み付きの累積和として分離できるかを調べます。法の下では差が負になった場合の正規化が必要です。
+
+## なぜ正しいか
+
+2つの累積和の差を取ると、$L_i(x)$ より前の項が打ち消され、必要な範囲の項だけが残ります。候補を捨てているわけではなく、元の遷移の総和を同じ値のまま計算しています。
+
+## 計算量
+
+$N$ 層、値域が $M+1$ 個なら、素朴な $O(NM^2)$ 時間を $O(NM)$ にできます。各層の累積和は $O(M)$、各遷移は $O(1)$ です。全層を保存する $O(NM)$ 空間から、前後の層だけを保存する $O(M)$ 空間にも減らせます。
+
+## 実装
+
+`nondecreasing_count(lo, hi, M)` は、$0\le lo_i\le x_i\le hi_i\le M$ を満たす非減少列の数を法998244353で返します。空の列は1通りです。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int nondecreasing_count(const vector<int>& lo,const vector<int>& hi,int M) {
+    constexpr int MOD=998244353;
+    assert(M>=0 && lo.size()==hi.size());
+    vector<int> dp(M+1),next(M+1); dp[0]=1;
+    for(int i=0;i<int(lo.size());++i) {
+        assert(0<=lo[i] && lo[i]<=hi[i] && hi[i]<=M);
+        fill(next.begin(),next.end(),0); int sum=0;
+        for(int x=0;x<=M;++x) {
+            sum+=dp[x]; if(sum>=MOD) sum-=MOD;
+            if(lo[i]<=x && x<=hi[i]) next[x]=sum;
+        }
+        dp.swap(next);
+    }
+    int result=0;
+    for(int x:dp) { result+=x; if(result>=MOD) result-=MOD; }
+    return result;
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [AtCoder：D - Between Two Arraysの解説・実装](https://atcoder.jp/contests/abc222/editorial/2761)
+
+<TechniqueReferences techniqueId="dp-range-sum" />

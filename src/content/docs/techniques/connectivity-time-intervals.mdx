@@ -1,0 +1,100 @@
+---
+title: "辺が存在する時間区間を分割して連結性を求める"
+description: "追加と削除の両方を、時間のセグメント木と巻き戻し可能なUnion-Findで扱う。"
+techniqueId: connectivity-time-intervals
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+追加と削除の両方を、時間のセグメント木と巻き戻し可能なUnion-Findで扱う。
+
+## 使う場面
+
+辺の追加、削除、二頂点が連結かの問い合わせが混在し、全操作が先に分かっている。逆順にしても追加と削除が混ざるため、単純な逆順処理だけでは足りない。
+
+## 考え方
+
+各辺が存在する期間を $[l,r)$ として取り出す。時間軸のセグメント木で、その期間を $O(\log Q)$ 個のノードに分解し、辺を保存する。
+
+木を深さ優先探索する。ノードに入ると保存した辺をUnion-Findに追加し、葉ではその時刻の問い合わせに答える。ノードから出るとき、追加前の状態へ巻き戻す。
+
+## 適用条件
+
+操作列を先読みでき、各追加と削除を対応付けられる必要がある。以下は同じ辺の二重追加を許さず、存在する辺だけを削除する。
+
+巻き戻すUnion-Findでは経路圧縮を使わない。サイズによる併合だけにすると、根の検索は最悪 $O(\log N)$ で、書き換える箇所が少なく、元へ戻せる。
+
+## なぜ正しいか
+
+ある時刻の葉から根までに保存された辺は、その時刻に存在する辺を過不足なく表す。別の時間区間へ進む前に状態を戻すので、その区間には無関係な辺が残らない。したがって葉のUnion-Findは、その時刻のグラフの連結性と一致する。
+
+## 計算量
+
+毎回の探索は最悪 $O(Q(N+Q))$。存在期間を $L$ 本とすると、時間は $O((L\log Q+Q)\log N+Q\log Q)$、空間は $O(N+Q+L\log Q)$。期間の対応付けに使う辞書も含む。
+
+## 実装
+
+`DynamicOp` の種類は0が辺の追加、1が削除、2が連結性の問い合わせ。`offline_connected` は種類2の答えだけを入力順に返す。グラフは空から始める。
+
+```cpp
+#include <vector>
+#include <map>
+#include <tuple>
+#include <utility>
+#include <algorithm>
+#include <cassert>
+struct UndoDSU {
+    struct Change { int a,b,pa,pb; };
+    std::vector<int> p;std::vector<Change> history;
+    explicit UndoDSU(int n):p(n,-1) {}
+    int root(int v) const { while(p[v]>=0) v=p[v];return v; }
+    void merge(int a,int b) {
+        a=root(a);b=root(b);if(a==b) return;
+        if(p[a]>p[b]) std::swap(a,b);
+        history.push_back({a,b,p[a],p[b]});p[a]+=p[b];p[b]=a;
+    }
+    void undo(std::size_t mark) {
+        while(history.size()>mark) { auto c=history.back();history.pop_back();p[c.a]=c.pa;p[c.b]=c.pb; }
+    }
+};
+struct DynamicOp { int type,u,v; };
+std::vector<bool> offline_connected(int n,const std::vector<DynamicOp>& operations) {
+    int q=operations.size();if(q==0) return {};
+    std::vector<std::vector<std::pair<int,int>>> time_tree(4*q);
+    auto put=[&](auto&& self,int v,int l,int r,int ql,int qr,std::pair<int,int> edge)->void {
+        if(qr<=l || r<=ql) return;
+        if(ql<=l && r<=qr) { time_tree[v].push_back(edge);return; }
+        int m=(l+r)/2;self(self,2*v,l,m,ql,qr,edge);self(self,2*v+1,m,r,ql,qr,edge);
+    };
+    std::map<std::pair<int,int>,int> active;
+    for(int t=0;t<q;++t) {
+        auto [type,u,v]=operations[t];if(u>v) std::swap(u,v);
+        std::pair<int,int> edge{u,v};
+        if(type==0) { assert(!active.contains(edge));active[edge]=t; }
+        else if(type==1) {
+            auto it=active.find(edge);assert(it!=active.end());
+            put(put,1,0,q,it->second,t,edge);active.erase(it);
+        } else assert(type==2);
+    }
+    for(auto [edge,start]:active) put(put,1,0,q,start,q,edge);
+    UndoDSU dsu(n);std::vector<bool> answer;
+    auto walk=[&](auto&& self,int v,int l,int r)->void {
+        auto mark=dsu.history.size();
+        for(auto [a,b]:time_tree[v]) dsu.merge(a,b);
+        if(r-l==1) {
+            auto op=operations[l];if(op.type==2) answer.push_back(dsu.root(op.u)==dsu.root(op.v));
+        } else { int m=(l+r)/2;self(self,2*v,l,m);self(self,2*v+1,m,r); }
+        dsu.undo(mark);
+    };
+    walk(walk,1,0,q);return answer;
+}
+```
+
+## 関連する手法
+
+[巻き戻し可能Union-Find](/flowchartcp/techniques/rollback-dsu/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [cp-algorithms：時間区間による削除の処理](https://cp-algorithms.com/data_structures/deleting_in_log_n.html)
+
+<TechniqueReferences techniqueId="connectivity-time-intervals" />

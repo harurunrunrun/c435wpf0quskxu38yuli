@@ -1,0 +1,64 @@
+---
+title: "累積和"
+description: "先頭からの和を前計算し、区間の和を引き算1回で求める。"
+techniqueId: prefix-sum
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+先頭からの和を前計算し、区間の和を引き算1回で求める。
+
+## 使う場面
+
+値が変わらない配列について、区間の和を何度も求めるときに使う。各区間を毎回走査すると、問い合わせが多い場合に時間がかかる。累積和があれば、区間の長さにかかわらず一定時間で答えられる。
+
+区間をすべて列挙する問題でも、各区間の評価を速くするために使える。
+
+## 考え方
+
+配列を $a_0,a_1,\ldots,a_{N-1}$ とする。$P_0=0$ とし、$P_i$ に先頭から $i$ 個の和を保存する。すると、左端を含み右端を含まない区間 $[l,r)$ の和は $P_r-P_l$ になる。
+
+二次元では、左上から各位置までの和を保存する。長方形の外側にある二つの領域を引き、二重に引いた重なりを足し戻せば、その長方形の和が求まる。
+
+## 適用条件
+
+足し算のように、先頭部分を取り除く演算が必要になる。XORも二つの累積XORを取れば区間のXORが求まる。一方、区間の最小値は累積最小値の差から復元できない。
+
+配列が頻繁に更新される場合は、更新のたびに累積和を作り直す必要がある。その場合はFenwick Treeやセグメント木を検討する。要素に負数が含まれていても、累積和は使える。
+
+## なぜ正しいか
+
+$P_r$ には先頭から $r$ 個、$P_l$ には先頭から $l$ 個の要素が含まれている。共通する先頭 $l$ 個を引くと、区間 $[l,r)$ の要素だけが残る。
+
+## 計算量
+
+前計算は時間・空間ともに $O(N)$。区間の和は1件あたり $O(1)$ なので、$Q$ 件の問い合わせを合わせて $O(N+Q)$ で処理できる。高さ $H$、幅 $W$ の二次元配列では、前計算の時間・空間は $O(HW)$。
+
+## 実装
+
+添字は0から数える。`sum(l, r)` は区間 $[l,r)$ の和を返し、空区間では0を返す。累積和と引き算の結果が符号付き64ビット整数に収まることを確認する。
+
+```cpp
+#include <vector>
+#include <cassert>
+using namespace std;
+struct PrefixSum {
+    vector<long long> p;
+    explicit PrefixSum(const vector<long long>& a) : p(a.size()+1) {
+        for (size_t i=0; i<a.size(); ++i) p[i+1]=p[i]+a[i];
+    }
+    long long sum(int l, int r) const {
+        assert(0<=l && l<=r && r<int(p.size()));
+        return p[r]-p[l];
+    }
+};
+```
+
+## 関連する手法
+
+[いもす法](/flowchartcp/techniques/difference-array/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [尺取り法](/flowchartcp/techniques/two-pointers/)
+
+## 参考資料
+
+- [USACO Guide: Prefix Sums](https://usaco.guide/silver/prefix-sums)
+
+<TechniqueReferences techniqueId="prefix-sum" />

@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "全有向辺を使う複数の道の数え上げと、全点をN+3本の縦横線分で通る構築を追加",
+  "counts": {
+    "specificTechniques": 422,
+    "foundationArticles": 78,
+    "allArticles": 500,
+    "exampleMappings": 521,
+    "originalUrls": 483,
+    "graphs": 467,
+    "nodes": 3673,
+    "questions": 1672,
+    "answerEdges": 5452,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 517,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+      "articleSha256": "6578214b29b96e4152c6b15d8ab5174f2fd6a51109d023b78834b953d6c1a36e",
+      "codeSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    },
+    {
+      "id": "orthogonal-point-cover-spiral-two-chains",
+      "articleSha256": "eefdf5fa18ed20005a02f05eb2bcf6154508a0346593aea3c2f005ca34ce3356",
+      "codeSha256": "4d35c149f77752aef1909e46250606366916a243951891ac2fa2c4244a16445b",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    }
+  ],
+  "verification": {
+    "native": {
+      "command": "node tests/routing-line-cpp.test.mjs",
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 10676.146626
+    },
+    "newFlow": {
+      "command": "node tests/routing-line-flow.test.mjs",
+      "passed": 13,
+      "failed": 0,
+      "durationMs": 5755.402118,
+      "record": "research/probes/routing-line-flow-results.json"
+    },
+    "broadRegression": {
+      "groups": 58,
+      "passed": 58,
+      "failed": 0,
+      "durationMs": 80820.875647,
+      "scope": "Navigation, guard, share/back/legacy, both displays, layout/text, fixed-corpus, ledger and collector regressions."
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 500,
+      "mappings": 521,
+      "diagrams": 467,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 500,
+      "recentArticlesChecked": 30,
+      "japaneseEnglishFullWidthQueries": 121,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 467,
+      "completeAnswerLabels": 5452,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Both new details and both parent choice graphs rasterized and actually viewed. Labels/nodes/arrows do not overlap; wide parent graphs remain available in the separate wheel-zoom viewer."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1443,
+      "linksAssets": 29282,
+      "diagrams": 467,
+      "passed": true,
+      "externalRequests": false,
+      "transientRun": "An earlier link-check run overlapped a rebuild and failed with missing dist-local/index.html. After the rebuild completed, the complete link-check command passed."
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "Routing: sender-labeled local incoming/outgoing bijections correspond exactly to the desired trail schemes plus forbidden isolated cycles. Every cycle contains a backward arc. The fixed two original-tail identifiers retain every contracted future-to-future path; source/receiver-anchored paths are safe to forget. Distinct ordered outputs, remaining(d-c)! local choices, one-way merges, self-closures and mutual cross-closures are complete and nonduplicating. Repeated vertices and valid trails passing graph cycles remain allowed.",
+    "Routing full const/local C++ API: N2..100, binary loopless directed adjacency with<=2 backward arcs, exclusive equal positive S/R roles, all structural validation before conservation-zero. Arbitrary positive32bit modulus incl1/composites without inverses. Degree<=N, state indices<=(N+1)^2-1, widened residue products<2^62; rolled O(N^3)/O(N^2), no recursion. T20/sumN^2<=20000 source range covered. Original2021 year precision/null difficulty retained.",
+    "Routing actual visible fence:8888553 assertions/2955941 API calls/checksum12131375425186710056. All58812 eligible N2..5 graphs with all legal role assignments,9288 balanced graph-role cases compared against independent literal local permutations and complete sender trails;2883600 other roles checked as conservation-zero.1000randomN6..9,84maximumN100calls,22batch calls,18invalid calls. Author/root/separate reviewer normal andASan/UBSan passed.",
+    "Routing extra5880checks/2784APIcalls/checksum10593336235733119677.120 layered networks with4..25 sender-receiver pairs and0/1/2 feedback, shared heads/tails, forced neutral edge subdivisions, within-layer relabeling, reversed trails with swapped roles, isolated neutral padding toN100, plus exact DAG factorial identities. Graph/trail bijections supplement both small literal oracles. Permanent probe rerun on published code.",
+    "Line: shared bounding-box corners form two strict monotone chains; four distinct extrema form strictly nested boxes. Alternating chain axes extend old final segments without losing earlier dots. Reverse the second chain to oppose its first parallel direction; one perpendicular connector enters it. Enter inner bottom/left side with one connector, then maintain downward/leftward final segments. Each next outer first side chooses the target extremum side and four edges suffice. Global coordinate uniqueness guarantees nonzero connectors. N=a+b+4r plus at mostthree nonempty-part connectors givesN+3.",
+    "Line complete const/local C++ covers originalN1..100000 and extends empty input. All x and y separately distinct integers1..1e9, output coordinates0..1e9+1, origin present in path but omitted by writer. Extreme scans move monotonically, O(Nlog(N+1))/O(N) for nonempty inputs; empty O(1) explicitly stated. Standard decimal maximum2200073bytes<15MB; crossing/overlap permitted. PrimaryPDF SHA b2dd1f7236c90f4237908f368cbc95dfcb31980d7378d8aea6f7cf2e5380721e pages1..4 actually viewed including all77 table entries, source formats and1000 visualizer-only limit. JP primary date2019-08-08; difficulty null.",
+    "Line actual visible fence:28709275checks/checksum16725969703083196;409113 complete rank permutations N1..9 and72632802 literal point-segment tests,6000random/6000metamorphic,15generated maximum/scoring-size inputs,14invalid calls. Author/root/separate reviewer normal andASan/UBSan passed. Original fixed ten input files acquired/tested0: generated cases are explicitly distinct. Universal proof covers their verified domain, without claiming original output execution.",
+    "Line extra segment-to-dot coordinate dictionary checks13310052 assertions/402rankpatterns/1608direct cover+6writer calls/checksum2898367367102235497;1206 independent strict increasing x/y warps preserve full axis/direction signatures. Supports each segment with its unique possible dot, without per-dot all-segment scanning or interval unions. Includes24maximum direct constructions and6maximum writer constructions. Permanent probe rerun on published code.",
+    "All519old full walk records/steps/terminals/questions/answer labels,465old graphs3661nodes/every old field/option order/answer-key order,593local prefixes and404completed share Back histories preserved. Six applicability guards and12no/unknown exits, dual displays, SVG complete labels, exact visible code hashes and original source/date/null metadata checked.",
+    "Both initial fixed audits and their five previous resolutions remain byte-equivalent under their original-field projections. Routing adds a resolution only, no duplicate positive research review; Line adds exactlyone independent subsequent positive review plusresolution, leaving all original unconfirmed/numericfalse/officialEditorialVerifiedfalse fields intact. Both corpora now research6/6 and covered6/6. Removing/mismatching live source/reference/metadata/walk/steps/positive review lowers actual coverage. An isolated read-only source mirror with an empty actual C++ fence fails product preflight and reduces coverage to0. Routing optional O(N^2)PIE/determinant/BEST work remains open."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 521,
+    "reviewedProblems": 481,
+    "corpusStatementsReviewed": 65,
+    "corpusSolutionsReviewed": 59,
+    "allSolutionsReviewed": 490
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "2/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    }
+  ],
+  "unresolvedKnownProblemGaps": 16,
+  "counterNote": "Both published mappings are newly integrated; Routing was already researched, Line adds one subsequent positive research review. Published reviewed identities479→481, fixed solution reviews58→59, distinct reviewed union489→490. Unknown global denominators remain unknown.",
+  "limitations": [
+    "Global denominator unknown; world-wide coverage incomplete.",
+    "Line original contest input files were not acquired/tested; do not conflate generated tests with them.",
+    "Routing optional faster PIE/determinant and general-K BEST methods are not verified.",
+    "Production Astro/Starlight/Pagefind build and real browser remain unverified after earlier environment failures; no installs/server/browser retried.",
+    "External-link liveness for every example not checked.",
+    "No push, upload or publication."
+  ],
+  "inProgress": [
+    "IOI2017 official six competition tasks selected before technique matching and frozen at498/465/519. Research audit/probes and independent review underway, not yet registered.",
+    "ICPC2018 K degree-preserving tree construction article drafted; native checker/sidecar and independent review not yet complete."
+  ]
+}

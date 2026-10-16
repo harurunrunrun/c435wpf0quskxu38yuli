@@ -1,0 +1,63 @@
+---
+title: "スライディングウィンドウ"
+description: "区間を一つずつずらし、出ていく要素と入る要素だけを更新する。"
+techniqueId: sliding-window
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+区間を一つずつずらし、出ていく要素と入る要素だけを更新する。
+
+## 使う場面
+
+固定長のすべての区間について、和や種類数などを求めるときに使う。隣り合う区間は大部分の要素が共通するため、毎回最初から集計し直す必要がない。
+
+## 考え方
+
+長さ $K$ の区間を一つ右へずらすと、左端の要素が一つ出て、新しい右端の要素が一つ入る。区間和なら、出ていく値を引き、新しい値を足せばよい。
+
+値の種類数を求める場合は、各値の出現回数を管理する。最小値・最大値は単調キュー、中央値は順序付き集合など、求める量に適したデータ構造を使う。
+
+## 適用条件
+
+要素の追加と削除を、集計に正しく反映できることが必要になる。重複する値を扱うときは、値の集合だけでは足りない。出現回数や重複を保持できるデータ構造を使う。
+
+固定長の区間和は、負数を含む配列でも求められる。長さを変えて和の上限を調整する尺取り法では、別に単調性の確認が必要になる。
+
+## なぜ正しいか
+
+移動前後の区間に共通する $K-1$ 個の要素は、集計を変える必要がない。出ていく1要素の寄与を取り除き、入る1要素の寄与を加えれば、新しい区間の集計になる。最初の区間からこの操作を繰り返すことで、すべての区間を正しく処理できる。
+
+## 計算量
+
+区間和の例では時間 $O(N)$、出力を除く追加空間 $O(1)$。追加・削除に $T$ 時間かかる集計なら、全体は $O(NT)$。各区間の結果を保存する場合は $O(N-K+1)$ の出力空間も必要になる。
+
+## 実装
+
+`window_sums(a, k)` は、長さ `k` の各区間の和を左から順に返す。`k` は1以上、配列長以下とする。計算途中の和が符号付き64ビット整数に収まることを確認する。
+
+```cpp
+#include <vector>
+#include <cassert>
+using namespace std;
+vector<long long> window_sums(const vector<long long>& a,int k) {
+    assert(1<=k && k<=int(a.size()));
+    long long sum=0;
+    vector<long long> ans;
+    for(int i=0;i<int(a.size());++i) {
+        sum+=a[i];
+        if(i>=k) sum-=a[i-k];
+        if(i+1>=k) ans.push_back(sum);
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[尺取り法](/flowchartcp/techniques/two-pointers/) ・ [単調キュー](/flowchartcp/techniques/monotone-queue/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [USACO Guide: Sliding Window](https://usaco.guide/gold/sliding-window)
+
+<TechniqueReferences techniqueId="sliding-window" />

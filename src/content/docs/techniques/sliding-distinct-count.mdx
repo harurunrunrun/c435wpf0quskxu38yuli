@@ -1,0 +1,64 @@
+---
+title: "区間をずらしながら値の種類数を更新する"
+description: "出現回数が0と1の間で変わるときだけ、種類数を増減する。"
+techniqueId: sliding-distinct-count
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+出現回数が0と1の間で変わるときだけ、種類数を増減する。
+
+## 使う場面
+
+長さ $K$ のすべての区間について、値の種類数や、その最大値を求める。各区間を集合に入れ直すと、同じ要素を何度も調べることになる。
+
+## 考え方
+
+現在の区間について、各値の出現回数と種類数を保存する。値を追加するとき、追加前の回数が0なら種類数を1増やす。削除するとき、削除後の回数が0なら種類数を1減らす。
+
+区間を一つ右へ動かすたびに、入る一要素と出る一要素を更新する。値を座標圧縮しておけば、出現回数を配列で持てる。
+
+## 適用条件
+
+値の集合だけでは、同じ値が複数ある場合に正しく削除できない。例えば $[1,1]$ から左の1を除いても、種類数は1のままである。長さ $K$ は1以上、配列長以下とする。
+
+## なぜ正しいか
+
+ある値が区間に存在することと、その出現回数が正であることは同じである。0から1への変化は新しい種類の出現、1から0への変化は最後の要素の消失を表す。その他の増減では種類数は変わらない。
+
+## 計算量
+
+区間ごとに作り直すと $O(NK)$ 以上。座標圧縮に $O(N\log N)$、その後の全区間の更新に $O(N)$、空間 $O(N)$。値域が小さく直接添字にできるなら、全体を $O(N)$ にできる。
+
+## 実装
+
+`window_distinct_counts` は、各長さ `k` の区間の種類数を左から順に返す。最大だけが必要なら、結果を保存する代わりに最大値を更新する。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+std::vector<int> window_distinct_counts(const std::vector<long long>& a,int k) {
+    int n=a.size();assert(1<=k && k<=n);
+    auto values=a;std::sort(values.begin(),values.end());
+    values.erase(std::unique(values.begin(),values.end()),values.end());
+    std::vector<int> ranks(n),frequency(values.size()),answer;
+    for(int i=0;i<n;++i) ranks[i]=std::lower_bound(values.begin(),values.end(),a[i])-values.begin();
+    int distinct=0;
+    for(int r=0;r<n;++r) {
+        if(frequency[ranks[r]]++==0) ++distinct;
+        if(r>=k && --frequency[ranks[r-k]]==0) --distinct;
+        if(r+1>=k) answer.push_back(distinct);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[スライディングウィンドウ](/flowchartcp/techniques/sliding-window/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC210 C](https://atcoder.jp/contests/abc210/editorial/2297)
+
+<TechniqueReferences techniqueId="sliding-distinct-count" />

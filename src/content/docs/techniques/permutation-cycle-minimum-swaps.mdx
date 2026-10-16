@@ -1,0 +1,50 @@
+---
+title: "任意の二箇所を交換できる順列は、値の現在位置を持って直す"
+description: "逆の位置配列で目的の値を定数時間で探し、サイクル数から交換回数を確認します。"
+techniqueId: "permutation-cycle-minimum-swaps"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+重複のない順列を、任意の二箇所の交換で目標の順列へ直すとき。操作列を作るだけでなく、必要な最小回数も分かります。
+
+## 考え方
+
+値 $x$ が今ある位置を $pos[x]$ に保存します。先頭から位置 $i$ を見て、まだ値 $i$ でなければ $pos[i]$ と交換し、交換した二値の位置を更新します。目標が任意の順列なら、各値を目標の位置番号に置き換えてから同じ処理をします。
+
+## 適用条件
+
+各値が一度だけ現れ、任意の二位置を交換できること。隣接位置だけ、または指定した位置対だけに制限される場合は回数も構築も変わります。掲載実装の値と位置は $0\ldots N-1$ です。
+
+## なぜ正しいか
+
+位置 $i$ を直すと、既に直した位置に値 $i$ は存在しないので、それらを壊しません。順列のサイクル数を $C$ とすると一回の交換で増やせるサイクルは最大一つ、完成時は $N$ 個なので $N-C$ 回以上必要です。この方法は各サイクルを長さより一回少ない交換で直し、下限を達成します。
+
+## 計算量
+
+目的の値を毎回走査して探すと $O(N^2)$。位置配列を持てば時間・空間とも $O(N)$、操作数は $N-C$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<pair<int,int>> sort_permutation_swaps(vector<int> p){
+    int n=p.size();vector<int> pos(n,-1);vector<pair<int,int>> operations;
+    for(int i=0;i<n;++i){assert(0<=p[i] && p[i]<n && pos[p[i]]==-1);pos[p[i]]=i;}
+    for(int i=0;i<n;++i)if(p[i]!=i){int j=pos[i],other=p[i];
+        swap(p[i],p[j]);pos[i]=i;pos[other]=j;operations.push_back({i,j});}
+    return operations;
+}
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc350/editorial/9869)
+
+<TechniqueReferences techniqueId="permutation-cycle-minimum-swaps" />

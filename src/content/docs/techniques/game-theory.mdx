@@ -1,0 +1,65 @@
+---
+title: "Grundy数"
+description: "公平なゲームの各状態に数を割り当て、独立なゲームの勝敗をXORで判定する。"
+techniqueId: game-theory
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+公平なゲームの各状態に数を割り当て、独立なゲームの勝敗をXORで判定する。
+
+## 使う場面
+
+二人が交互に操作し、動けなくなった側が負けるゲームで使う。複数の独立した山のうち、一手で一つだけを操作する形では、各山のGrundy数をXORして勝敗を求められる。
+
+## 考え方
+
+各状態のGrundy数は、その状態から一手で進める先のGrundy数に含まれない最小の非負整数とする。この演算をmexと呼ぶ。移動先がない状態の値は0になる。
+
+独立したゲームを合わせた場合は、各状態のGrundy数のXORを取る。結果が0なら後手勝ち、0以外なら先手勝ちである。単一のゲームの勝敗だけなら、負け状態へ移れる状態を勝ち、それ以外を負けとするDPでも求められる。
+
+## 適用条件
+
+両者が同じ合法手を持つ公平なゲームで、必ず有限回で終了し、動けない側が負けることが必要になる。ゲームの和では、一手で変更する部分ゲームは一つだけで、他の部分に影響しないことも必要になる。
+
+最後に動いた側が負けるルール、得点を競うルール、手番によって操作が違うルール、循環や引き分けがあるルールには、この公式をそのまま使えない。
+
+## なぜ正しいか
+
+mexの定義により、Grundy数が0の状態から0の状態へは進めず、0でない状態からは0へ進める。
+
+複数ゲームのXORが0なら、どの一手でもXORは0でなくなる。0でない場合は、XORの最上位の1ビットを持つ部分ゲームを選び、全体のXORを0にする小さいGrundy数へ進める。その小さい値への遷移はmexの定義で存在する。
+
+## 計算量
+
+遷移先が先に計算できる順序を用意すれば、全状態の計算時間は $O(V+E)$。グラフを含めた空間も $O(V+E)$。各状態のmexは、その状態から出る辺数に比例する時間で求められる。
+
+## 実装
+
+`grundy_dag` は各状態のGrundy数を返す。すべての遷移先の番号が現在の状態番号より小さい順序で与える。一般のDAGなら、先にトポロジカル順の逆順へ並べる。
+
+```cpp
+#include <algorithm>
+#include <vector>
+std::vector<int> grundy_dag(const std::vector<std::vector<int>>& moves) {
+    std::vector<int> grundy(moves.size());
+    for (int state = 0; state < int(moves.size()); ++state) {
+        std::vector<bool> seen(moves[state].size() + 1, false);
+        for (int next : moves[state])
+            if (grundy[next] < int(seen.size())) seen[grundy[next]] = true;
+        int mex = 0;
+        while (mex < int(seen.size()) && seen[mex]) ++mex;
+        grundy[state] = mex;
+    }
+    return grundy;
+}
+```
+
+## 関連する手法
+
+[状態の設計](../state-design/) ・ [不変量](../invariant/) ・ [反例探し](../counterexample/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC368 F](https://atcoder.jp/contests/abc368/editorial/10829)
+
+<TechniqueReferences techniqueId="game-theory" />

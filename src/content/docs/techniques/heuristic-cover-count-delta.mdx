@@ -1,0 +1,75 @@
+---
+title: "一局の半径変更は、境界を越えた点の被覆数だけ更新する"
+description: "各点を覆う局数を保存し、0と1の間を動いた点だけ被覆総数を変えます。"
+techniqueId: "heuristic-cover-count-delta"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+複数の円が点を重ねて覆い、局の半径を一つだけ変えたときの被覆人数と費用をすぐ求めたいとき。一点を一局が覆わなくなっても、別の局が覆っていれば人数は変わりません。
+
+## 考え方
+
+局ごとに、点を覆い始める必要半径と点番号を整列します。半径を小から大へ変える場合は、その二半径の間にある点だけ被覆数を増やし、逆なら減らします。被覆数が0から1へ動いたときだけ人数を増やし、1から0なら減らします。費用は新半径の二乗と旧半径の二乗の差です。
+
+## 適用条件
+
+有効な局の集合を固定し、円周を含む整数半径の被覆を扱います。ケーブルの変更で局が有効・無効になると、その局の被覆全体を追加・削除する別の更新が必要です。原典では接続していない局の半径も費用になるため、有効な局だけの掲載部品の費用に、そのような局の費用を別に含めなければなりません。
+
+## なぜ正しいか
+
+必要半径以下という条件で一点の被覆が決まるため、変更前後で境界を越えた点だけが変化します。各点の被覆数は有効局による指示変数の和であり、正か0かだけが被覆人数を決めます。二乗費用も一局の項だけ変わるので、更新後の人数と費用は全再計算と一致します。これは評価を速くする部品であり、最小費用の放送網を得る探索全体の最適性は保証しません。
+
+## 計算量
+
+前処理は $O(NK\log(K+1))$、空間 $O(NK+N+K)$。一変更で境界を越えた点数を $C$ とすると、時間 $O(\log(K+1)+C)$。全局・全点の再評価 $O(NK)$ を避けますが、大きな半径変更では $C=K$ となります。
+
+## 実装
+
+`stations` には固定した有効局だけを渡します。`power_cost()` はその局の出力費用の和です。原典の総費用には、固定したONケーブルの費用と、無効局にも出力を設定した場合の費用を足します。無効局の出力を0にしておけば後者は不要です。原典の得点を求めるときは、`covered_count()` が全住民数に達した場合の費用評価と、未達の場合の人数評価を分けます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct BroadcastPoint {long long x,y;};
+long long required_integer_radius(BroadcastPoint a,BroadcastPoint b){
+    assert(-10000<=a.x && a.x<=10000 && -10000<=a.y && a.y<=10000 && -10000<=b.x && b.x<=10000 && -10000<=b.y && b.y<=10000);
+    long long dx=a.x-b.x,dy=a.y-b.y,square=dx*dx+dy*dy;
+    long long root=sqrtl((long double)square);
+    while((root+1)*(root+1)<=square)++root;
+    while(root*root>square)--root;
+    return root+(root*root<square);
+}
+
+class BroadcastCoverageCache {
+    vector<vector<pair<int,int>>> events;vector<int> radius,count;int covered=0,limit;__int128 cost=0;
+public:
+    BroadcastCoverageCache(const vector<BroadcastPoint>& stations,const vector<BroadcastPoint>& residents,vector<int> initial,int upper=5000):events(stations.size()),radius(move(initial)),count(residents.size()),limit(upper){
+        assert(radius.size()==stations.size() && 0<=limit && limit<=10000);
+        for(size_t s=0;s<stations.size();++s){assert(0<=radius[s] && radius[s]<=limit);cost+=(__int128)radius[s]*radius[s];
+            for(int p=0;p<(int)residents.size();++p){int need=required_integer_radius(stations[s],residents[p]);if(need<=limit)events[s].push_back({need,p});if(need<=radius[s])++count[p];}
+            sort(events[s].begin(),events[s].end());}
+        covered=count_if(count.begin(),count.end(),[](int x){return x>0;});
+    }
+    void change(int station,int next){assert(0<=station && station<(int)radius.size() && 0<=next && next<=limit);int old=radius[station];if(old==next)return;
+        int low=min(old,next),high=max(old,next),delta=next>old ? 1 : -1;const auto& list=events[station];
+        auto begin=upper_bound(list.begin(),list.end(),pair<int,int>{low,INT_MAX}),end=upper_bound(list.begin(),list.end(),pair<int,int>{high,INT_MAX});
+        for(auto it=begin;it!=end;++it){int p=it->second;if(count[p]==0)++covered;count[p]+=delta;if(count[p]==0)--covered;}
+        cost+=(__int128)next*next-(__int128)old*old;radius[station]=next;
+    }
+    int covered_count()const{return covered;}
+    __int128 power_cost()const{return cost;}
+    const vector<int>& coverage_counts()const{return count;}
+};
+```
+
+## 関連する手法
+
+[整数半径の候補は、覆う点までの距離の切り上げに絞る](/flowchartcp/techniques/heuristic-radius-threshold-candidates/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc020/tasks/ahc020_a)
+
+<TechniqueReferences techniqueId="heuristic-cover-count-delta" />

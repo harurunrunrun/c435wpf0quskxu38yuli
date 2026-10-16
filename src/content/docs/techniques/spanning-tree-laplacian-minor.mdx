@@ -1,0 +1,143 @@
+---
+title: "無向グラフの全域木数は、次数行列から隣接行列を引いた小行列式で求める"
+description: "辺の部分集合を列挙せず、ラプラシアンの一行一列を削除して行列式を計算する。"
+techniqueId: spanning-tree-laplacian-minor
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+無向グラフの全頂点をつなぐ辺集合のうち、閉路を持たないものが何通りあるかを求めたい。辺を $N-1$ 本選ぶ全探索はできないが、頂点数の三乗の計算は間に合う。
+
+同じ二頂点を結ぶ辺が複数あるなら、それぞれを別の選択肢として数える。自己ループは全域木に使えない。**全域木の個数を、一つの行列式へ変える**のが行列木定理である。
+
+## 考え方
+
+自己ループを除いた各辺 $u\! -\! v$ について、行列 $L$ の成分を次のように更新する。
+
+- $L_{u,u}$ と $L_{v,v}$ に1を足す。
+- $L_{u,v}$ と $L_{v,u}$ から1を引く。
+
+つまり対角成分は次数、非対角成分はその二頂点を結ぶ辺数の負になる。これをグラフのラプラシアンという。
+
+任意の一頂点 $r$ を選び、$L$ の第 $r$ 行と第 $r$ 列を両方削除する。得られる $(N-1)\times(N-1)$ 行列 $A$ に対し、全域木の個数は $\det A$ である。
+
+例えば三角形では、どの頂点を削除しても
+
+$$
+A=\begin{pmatrix}2&-1\\-1&2\end{pmatrix},\qquad \det A=3
+$$
+
+になる。二頂点を結ぶ辺が $q$ 本だけあるなら、残る行列は $(q)$ であり、答えは $q$ になる。
+
+素数を法として答えればよいときは、その有限体の上で行列式を求める。各列で0でないピボットを探し、必要なら行を交換する。ピボットの逆元を使って下側の要素を消去し、対角成分の積と行交換の符号を合わせる。
+
+## 適用条件
+
+- 無向グラフの全頂点を含む木を数える。多重辺は辺ごとに区別する。
+- 自己ループは選ばないものとして無視できる。
+- $O(N^3)$ 時間と $O(N^2)$ 空間が使える。
+- 掲載実装は素数998244353を法とする。消去では0でない値だけを逆元にする。
+
+連結性は事前に保証されなくてよい。非連結グラフの答えは0になる。ただし、**法を取った答えが0でも、グラフが非連結とは限らない**。整数としての全域木数が法の倍数になっている場合もある。
+
+有向グラフで根へ向かう木を数える場合は、次数の向きと削除する根を対応させる別の形が必要になる。辺数や直径、指定辺の使用本数などを固定する制約も、この一回の行列式には含めない。合成数を法とすると非零でも逆元が存在しない場合があるため、この消去法をそのまま使わない。
+
+## なぜ正しいか
+
+各辺に説明用の向きを任意に付け、列に一方の端点の $+1$、もう一方の $-1$ を置く接続行列 $B$ を作る。自己ループの列は0として除く。すると $L=BB^{\mathsf T}$ が成り立つ。
+
+$B$ の第 $r$ 行を削除したものを $B'$ とすると、削除後の行列は $A=B'B'^{\mathsf T}$ である。Cauchy–Binetの公式より
+
+$$
+\det A=\sum_{F:\ |F|=N-1}\det(B'_F)^2
+$$
+
+となる。$B'_F$ は、辺集合 $F$ に対応する $N-1$ 本の列だけを取り出した正方行列である。
+
+$F$ が閉路を含むと、その閉路の列は符号を合わせて足すと0になり、行列式も0になる。$N-1$ 辺で閉路を持たなければ全域木である。全域木では、削除頂点でない葉の行に残る非零要素は $+1$ または $-1$ が一つだけなので、その葉を順に取り除く展開から行列式は $\pm1$ になる。
+
+従って和の各項は、全域木なら1、それ以外なら0であり、全域木の個数が得られる。並行辺も異なる列なので、別々の選択肢として数えられる。
+
+行交換は行列式の符号を反転させ、ある行の倍数を別の行から引いても行列式は変わらない。消去後の上三角行列の行列式は対角成分の積なので、実装の計算も同じ値を返す。
+
+## 計算量
+
+行列の構築に $O(N^2+M)$ 時間、消去に $O(N^3)$ 時間を使う。固定した法でのべき乗による逆元計算も含め、全体は $O(N^3+M)$ 時間、入力を除く追加空間は $O(N^2)$ である。
+
+頂点が一つなら、辺を一本も選ばない全域木が一通りある。対応する $0\times0$ 行列の行列式も1とする。
+
+## 実装
+
+`count_spanning_trees_mod(n, edges)` は全域木数を998244353で割った余りを返す。頂点数は $1..200$、辺数は20000以下、頂点番号は $0..N-1$。契約違反は `invalid_argument`。
+
+同じ端点の辺を何本渡してもよい。各辺は別の選択肢として数え、自己ループだけを無視する。頂点が一つの場合も、返す前に全ての辺の端点を検査する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_spanning_trees_mod(int n, const vector<pair<int,int>>& edges) {
+    constexpr long long mod = 998244353;
+    if (n < 1 || n > 200 || edges.size() > 20000)
+        throw invalid_argument("input size out of range");
+    const int size = n - 1;
+    vector<vector<long long>> matrix(size, vector<long long>(size, 0));
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n)
+            throw invalid_argument("invalid endpoint");
+        if (u == v) continue;
+        if (u < size) matrix[u][u] = (matrix[u][u] + 1) % mod;
+        if (v < size) matrix[v][v] = (matrix[v][v] + 1) % mod;
+        if (u < size && v < size) {
+            matrix[u][v] = (matrix[u][v] + mod - 1) % mod;
+            matrix[v][u] = (matrix[v][u] + mod - 1) % mod;
+        }
+    }
+    auto power = [](long long base, long long exponent) {
+        constexpr long long modulus = 998244353;
+        long long result = 1;
+        while (exponent) {
+            if (exponent & 1) result = result * base % modulus;
+            base = base * base % modulus;
+            exponent >>= 1;
+        }
+        return result;
+    };
+    long long determinant = 1;
+    for (int column = 0; column < size; ++column) {
+        int pivot = column;
+        while (pivot < size && matrix[pivot][column] == 0) ++pivot;
+        if (pivot == size) return 0;
+        if (pivot != column) {
+            swap(matrix[pivot], matrix[column]);
+            determinant = (mod - determinant) % mod;
+        }
+        long long diagonal = matrix[column][column];
+        determinant = determinant * diagonal % mod;
+        long long inverse = power(diagonal, mod - 2);
+        for (int row = column + 1; row < size; ++row) {
+            long long factor = matrix[row][column] * inverse % mod;
+            matrix[row][column] = 0;
+            for (int next = column + 1; next < size; ++next) {
+                matrix[row][next] = (matrix[row][next]
+                    - factor * matrix[column][next] % mod + mod) % mod;
+            }
+        }
+    }
+    return int(determinant);
+}
+```
+
+## 関連する手法
+
+- [行列累乗](/flowchartcp/techniques/matrix-exponentiation/)：行列を使う別の計数。長さを固定した歩道の数を求める行列積と、ここでの行列式を区別する。
+- [Union-Find](/flowchartcp/techniques/union-find/)：選んだ辺が閉路を作るかを確かめる。小さいグラフでは、この判定で全域木を列挙して検証できる。
+- [部分集合ごとに指定頂点をつなぐ](/flowchartcp/techniques/steiner-terminal-subset-shortest/)：辺集合の個数ではなく、一部の頂点をつなぐ最小費用を求める。
+
+## 参考資料
+
+- [Library Checker：Counting Spanning Trees (Undirected)](https://judge.yosupo.jp/problem/counting_spanning_tree_undirected) — 無向多重グラフの全域木数を求める原典。
+- [原典の問題文](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/graph/counting_spanning_tree_undirected/task.md)・[制約](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/graph/counting_spanning_tree_undirected/info.toml) — 公式リポジトリで問題設定と法を確認。行列式への帰着と掲載実装は独立に検証した。
+
+<TechniqueReferences techniqueId="spanning-tree-laplacian-minor" />

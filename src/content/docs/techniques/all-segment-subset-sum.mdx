@@ -1,0 +1,67 @@
+---
+title: "全区間の部分和の個数は、左端の開始を足し、各右端で一度ずつ集計する"
+description: "区間ごとのDPをまとめ、右端を伸ばす前に新しい左端の空選択を一つ追加する。"
+techniqueId: all-segment-subset-sum
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+連続区間ごとに、その中から選ぶ部分集合の和が $S$ になる個数を求め、全区間について足したい。必要なのは総和であり、各区間の答えの表ではない。
+
+## 考え方
+
+右端 $r$ まで処理したとき、$dp_s$ を「$r$ 以下の各左端から $r$ までの区間内で、和 $s$ の部分集合を選ぶ個数の合計」とする。
+
+次の要素を処理する直前に $dp_0$ へ1を足す。これは左端をその位置から新しく始め、まだ何も選んでいない一通りである。その後、通常の0/1部分和更新を重さの降順で行う。更新後の $dp_S$ がその右端を持つ全区間の寄与なので、答えに足す。
+
+同じ部分集合が複数の区間へ含まれるときは、その区間ごとに数える。左端をまとめても、その選択回数を係数に残している。
+
+## 適用条件
+
+列は正整数で、部分集合は添字を区別する0/1選択。目標 $S$ は正。個々の区間の答えを取り出す必要がある場合、集約した係数列だけでは足りない。
+
+掲載コードは長さ・目標・要素値が3000以下、法は998244353。空列の総和は0。負の値を含むと目標以下への切り詰めができず、重さ0や目標0を許す場合は空選択の数え方も定義し直す。
+
+## なぜ正しいか
+
+一つ前の右端に対する各区間は、新要素を含めない・含めるという二種類の部分集合へ延びる。それぞれ0/1更新の二項に対応する。新しい左端から始まる区間は、追加した一つの空選択から同じ更新で生成される。
+
+従って更新後の状態は、全左端の個数の合計を保つ。右端を一度ずつ固定して足すので、全ての区間とその部分集合がちょうど一回ずつ総和に入る。
+
+## 計算量
+
+左端ごとに部分和DPを開始して各右端へ延ばす方法は $O(N^2S)$ 時間・$O(S)$ 補助空間。全左端を合計して持つ方法は $O(NS)$ 時間・$O(S)$ 補助空間。三つの開始・終了状態を持つDPでも同じ時間で解け、層の使い回しで空間を減らせる。
+
+## 実装
+
+`all_segment_subset_sum_count(a,target)` は全区間の寄与の合計を返す。要素を使う遷移は降順に行い、同じ要素を二回選ばない。
+
+```cpp
+#include <stdexcept>
+#include <vector>
+int all_segment_subset_sum_count(const std::vector<int>& a,int target) {
+    constexpr int MOD=998244353;
+    if(a.size()>3000 || target<1 || target>3000) throw std::invalid_argument("range");
+    std::vector<int> dp(target+1);int answer=0;
+    for(int x:a) {
+        if(x<1 || x>3000) throw std::invalid_argument("weight");
+        if(++dp[0]==MOD) dp[0]=0;
+        for(int s=target;s>=x;--s) {dp[s]+=dp[s-x];if(dp[s]>=MOD)dp[s]-=MOD;}
+        answer+=dp[target];if(answer>=MOD)answer-=MOD;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[遷移元が連続範囲の和なら累積和を使う](/flowchartcp/techniques/dp-range-sum/) ・ [一方の和が他方の最大値以下になる部分集合は、最大値の担当を決めて数える](/flowchartcp/techniques/subset-sum-max-threshold/)
+
+## 参考資料
+
+- [AtCoder：F - Knapsack for All Segments（原典）](https://atcoder.jp/contests/abc159/tasks/abc159_f)
+- [公式解説](https://img.atcoder.jp/abc159/editorial.pdf)
+
+<TechniqueReferences techniqueId="all-segment-subset-sum" />

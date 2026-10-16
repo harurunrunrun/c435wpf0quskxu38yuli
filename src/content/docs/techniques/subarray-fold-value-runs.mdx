@@ -1,0 +1,87 @@
+---
+title: "同じ右端のGCDやORは、値が変わる部分だけを短い列にまとめる"
+description: "左端を延ばしても値が変わらない区間を、集計値と区間数の組で一括して持つ。"
+techniqueId: subarray-fold-value-runs
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+左端を延ばしても値が変わらない区間を、集計値と区間数の組で一括して持つ。
+
+## 使う場面
+
+全連続区間のGCDごとの個数や、ビットORの異なる結果を求めたい。同じ右端の区間を長い方へ延ばすと、集計値が変化する回数が少ない。
+
+## 考え方
+
+右端を固定した全区間を、短い順に「集計値、同じ値を持つ区間数」の列へまとめる。新しい値 $a$ を末尾へ足すと、長さ1の区間 $(a,1)$ を作り、以前の各組 $(v,c)$ を $(f(v,a),c)$ へ変換する。同じ値が隣り合ったら個数を足す。
+
+GCDでは $f(v,a)=\gcd(v,a)$。左へ延ばしてGCDが変わると、新しい正の値は以前の値の真の約数で、半分以下になる。ビットORでは $f(v,a)=v\mathbin{|}a$。延ばすたびにビットは立つだけで、一度立ったビットは消えない。
+
+出来上がった各右端の組を全体の頻度表へ加えれば、集計値ごとの区間数になる。ORの異なる結果だけが必要なら、頻度表のキー数を数えればよい。
+
+## 適用条件
+
+GCD版は正の整数値、OR版は非負の固定幅整数。一般の足し算など、延ばすたびに多くの異なる値が出る演算では列が短くならず、同じ計算量にはならない。
+
+掲載実装は32ビットの符号なし整数、$N\le200000$。GCD版は0を受け付けない。空配列の頻度表は空。区間は位置で区別するので、同じ部分列の値が何度現れても各出現を数える。
+
+## なぜ正しいか
+
+以前の右端までの各区間へ新しい末尾を足したものと、新しい一要素区間が、新しい右端の全区間を一度ずつ表す。集計値が同じ区間は、次の末尾を足したときも同じ値になるため、個数だけでまとめられる。
+
+GCDの値列は約数関係、ORの値列は立つビットの包含関係で単調になっている。変換後もその関係が保たれ、同じ値は連続して現れる。隣接した等値組を併合するだけで全重複をまとめられる。
+
+## 計算量
+
+全区間を右へ延ばしながら集計する方法は、GCDで $O(N^2\log(A+1))$、ORで $O(N^2)$ 時間、頻度表に $O(D)$ 空間。$D$ は全体の異なる集計値数。
+
+一右端の列はGCDで $O(\log(A+1))$、ORで高々 $B+1$ 組。掲載実装は平衡木の頻度表を使うので、GCDは $O(N\log(A+1)(\log(A+1)+\log(D+1)))$、ORは $O(NB\log(D+1))$ 時間。補助空間は頻度表と現在列に $O(D+\log(A+1))$ または $O(D+B)$。$B=32$。
+
+## 実装
+
+`subarray_gcd_histogram` と `subarray_or_histogram` は、集計値から非空区間の個数への表を返す。キーがない質問は0。個数は64ビットで持ち、同じ値を得た区間を消さずに足す。
+
+```cpp
+#include <cstdint>
+#include <map>
+#include <numeric>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+using Histogram=std::map<std::uint32_t,long long>;
+template<class Combine> Histogram compressed_subarray_histogram(
+        const std::vector<std::uint32_t>& a,Combine combine) {
+    if(a.size()>200000) throw std::invalid_argument("too many values");
+    std::vector<std::pair<std::uint32_t,long long>> current;
+    Histogram total;
+    for(auto x:a) {
+        std::vector<std::pair<std::uint32_t,long long>> next{{x,1}};
+        for(auto [value,count]:current) {
+            auto folded=combine(value,x);
+            if(next.back().first==folded) next.back().second+=count;
+            else next.push_back({folded,count});
+        }
+        for(auto [value,count]:next) total[value]+=count;
+        current=std::move(next);
+    }
+    return total;
+}
+Histogram subarray_gcd_histogram(const std::vector<std::uint32_t>& a) {
+    for(auto x:a) if(x==0) throw std::invalid_argument("positive values required");
+    return compressed_subarray_histogram(a,[](auto x,auto y){return std::gcd(x,y);});
+}
+Histogram subarray_or_histogram(const std::vector<std::uint32_t>& a) {
+    return compressed_subarray_histogram(a,[](auto x,auto y){return x|y;});
+}
+```
+
+## 関連する手法
+
+[GCD が d の倍数から、ちょうど d の個数を求める](/flowchartcp/techniques/gcd-divisibility-count/) ・ [全ての組の XOR の和をビットごとに数える](/flowchartcp/techniques/bitwise-contribution/)
+
+## 参考資料
+
+- [Codeforces：CGCDSSQ](https://codeforces.com/problemset/problem/475/D)
+- [LeetCode：Bitwise ORs of Subarrays](https://leetcode.com/problems/bitwise-ors-of-subarrays/description/)
+
+<TechniqueReferences techniqueId="subarray-fold-value-runs" />

@@ -1,0 +1,72 @@
+---
+title: "共通因子はあるが互いに割り切らない二数は、最大公約数の個数から真の倍数を引く"
+description: "先に小さい方と大きい方を決め、共通因子の条件と割り切らない条件を別々に数えます。"
+techniqueId: gcd-pairs-exclude-divides
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+共通因子が存在することと、一方が他方の約数にならないことが同時に必要。候補の二数を直接走査する前に、小さい方を決めると片方の条件が自動的に消える。
+
+## 考え方
+
+まず $x<y$ に限る。このとき $g=\gcd(x,y)\le x<y$ なので $y/g>1$ は自動的に成立する。残るのは $g>1$ と $x/g>1$。
+
+区間内の $d$ の倍数の個数を $c_d=\lfloor R/d\rfloor-\lfloor(L-1)/d\rfloor$ とする。最大公約数が正確に $d$ の異なる二数の組は、大きい $d$ から
+
+$$E_d=\binom{c_d}{2}-\sum_{j\ge2,\ jd\le R}E_{jd}$$
+
+で求められる。$\sum_{d=2}^{R}E_d$ が共通因子を持つ組数。
+
+$x/g=1$ になるのは、小さい $x$ が大きい $y$ を割り切る場合。$x\ge\max(2,L)$ ごとに真の倍数の個数 $\lfloor R/x\rfloor-1$ を引く。最後に順序を交換した組も含めて二倍する。
+
+## 適用条件
+
+正の整数区間の二数を選び、同値の添字や頻度はない。掲載実装は $1\le L\le R\le10^6$。配列の値の組へ一般化する場合は、区間の倍数個数ではなく値の頻度が必要で、等値の組も別に扱う。
+
+最大公約数が1の組を除く前に全ての約数・倍数組を引くと、1を含む組を余計に引く。小さい側の走査を必ず2以上にする。
+
+## なぜ正しいか
+
+二数が共に $d$ の倍数であることは、最大公約数が $d$ の倍数であることと同値。正確な最大公約数の分類は互いに交わらないので、大きい倍数の分類を引けば正確に $d$ の組だけが残る。
+
+共通因子を持つ $x<y$ で不適格なものは、$g=x$、すなわち $x\mid y$ に限られる。真の倍数は小さい $x$ ごとに一度だけ数えられ、最大公約数も $x\ge2$。同じ値の組は初めから二項係数で除かれ、順序を戻す二倍にも重複はない。
+
+## 計算量
+
+全二数の最大公約数を求めると区間長 $D=R-L+1$ に対し $O(D^2\log R)$ 時間、追加空間 $O(1)$。倍数側から分類すると時間 $O(R\log R)$、追加空間 $O(R)$。区間が極端に短いなら二数の直接列挙の方が小さくなることもある。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+long long count_nondividing_gcd_pairs(int left,int right) {
+    if(left<1 || left>right || right>1000000) throw std::invalid_argument("interval");
+    std::vector<long long> exact(right+1);
+    long long unordered=0;
+    for(int d=right;d>=2;--d) {
+        long long count=right/d-(left-1)/d;
+        exact[d]=count*(count-1)/2;
+        for(int multiple=d+d;multiple<=right;multiple+=d) exact[d]-=exact[multiple];
+        unordered+=exact[d];
+    }
+    for(int smaller=std::max(left,2);smaller<=right;++smaller) unordered-=right/smaller-1;
+    return 2*unordered;
+}
+```
+
+## 関連する手法
+
+- [GCD が d の倍数から、ちょうど d の個数を求める](/flowchartcp/techniques/gcd-divisibility-count/)
+- [約数ごとの集計を倍数側から配る](/flowchartcp/techniques/divisor-multiple-reversal/)
+
+## 参考資料
+
+- [AtCoder — Divide Both](https://atcoder.jp/contests/abc206/tasks/abc206_e)
+- [公式解説](https://atcoder.jp/contests/abc206/editorial/2107)
+
+<TechniqueReferences techniqueId="gcd-pairs-exclude-divides" />

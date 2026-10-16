@@ -1,0 +1,75 @@
+---
+title: "絶対値と接頭辞最小のDPは折れ点だけを持つ"
+description: "座標全体のDP値を配列で持たず、凸な折れ線の最小値と折れ点を更新します。"
+techniqueId: dp-piecewise-linear-cost
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+座標全体のDP値を配列で持たず、凸な折れ線の最小値と折れ点を更新します。
+
+## 使う場面
+
+列 $a_i$ を非減少の整数列 $x_i$ へ変更し、$\sum_i|x_i-a_i|$ を最小にする場合を考えます。$f_i(x)$ を最後の値が $x$ の最小費用とすると、$f_i(x)=|x-a_i|+\min_{y\le x}f_{i-1}(y)$ です。値域の全走査を避けられます。
+
+## 考え方
+
+初期関数を0とし、各要素について前の関数の接頭辞最小を取り、絶対値を加えます。関数は常に凸な折れ線です。Slope trickでは、最小値と左右の折れ点のヒープで表します。
+
+接頭辞最小は最小点より右を水平にするので右ヒープを消します。絶対値の追加は折れ点を左右に1つずつ入れ、順序が交差した分だけ最小値を増やします。
+
+## 適用条件
+
+更新が凸性を保つことが必要です。この例では、接頭辞最小と非負の絶対値費用なので成立します。負の重みの絶対値や任意の関数との最小を取る更新では、同じ表現を使えるとは限りません。以下は最小費用だけを求め、変更後の列は復元しません。
+
+## なぜ正しいか
+
+左の折れ点 $l$ が右の折れ点 $r$ を越えると、$\max(l-x,0)+\max(x-r,0)$ を、定数 $l-r$ と、順序を入れ替えた2項へ書き直せます。そのため、ヒープを直して最小値へ $l-r$ を加えても同じ関数です。接頭辞最小も関数の右側を水平にする操作と一致します。
+
+## 計算量
+
+値域幅を $V$ とすると、累積最小値で処理する $O(NV)$ 時間・$O(V)$ 空間から、$O(N\log N)$ 時間・$O(N)$ 空間になります。値域が小さい場合は配列版も有効です。ヒープの破棄は要素数に比例しますが、各要素を捨てるのは高々1回です。
+
+## 実装
+
+`isotonic_abs_cost(a)` は非減少列への変更費用を返します。左右の項の追加と接頭辞最小の処理を含めます。座標の差と最小費用は `long long` の範囲に収めてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct SlopeTrickCore {
+    long long minimum=0;
+    priority_queue<long long> L;
+    priority_queue<long long,vector<long long>,greater<long long>> R;
+    // f(x) += max(a-x,0)
+    void add_left(long long a) {
+        if(!R.empty() && R.top()<a) {
+            long long r=R.top(); R.pop(); minimum+=a-r;
+            L.push(r); R.push(a);
+        } else L.push(a);
+    }
+    // f(x) += max(x-a,0)
+    void add_right(long long a) {
+        if(!L.empty() && L.top()>a) {
+            long long l=L.top(); L.pop(); minimum+=l-a;
+            R.push(l); L.push(a);
+        } else R.push(a);
+    }
+    void add_abs(long long a) { add_left(a); add_right(a); }
+    void prefix_min() { R={}; } // f(x) <- min_{y<=x} f(y)
+};
+long long isotonic_abs_cost(const vector<long long>& a) {
+    SlopeTrickCore f;
+    for(long long x:a) { f.prefix_min(); f.add_abs(x); }
+    return f.minimum;
+}
+```
+
+## 関連する手法
+
+[Slope trick](/flowchartcp/techniques/slope-trick/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [yukicoder：Selling Carsの解説・実装](https://nyaannyaan.github.io/library/verify/verify-yuki/yuki-1467.test.cpp)
+
+<TechniqueReferences techniqueId="dp-piecewise-linear-cost" />

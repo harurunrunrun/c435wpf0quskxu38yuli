@@ -1,0 +1,142 @@
+[
+  {
+    "source": "Luogu",
+    "problemId": "P6192",
+    "title": "【模板】最小斯坦纳树",
+    "url": "https://www.luogu.com.cn/problem/P6192",
+    "techniqueIds": [
+      "steiner-terminal-subset-shortest"
+    ],
+    "features": [
+      "指定頂点は10個以下で、その他の頂点は途中の接続点に使ってよい",
+      "無向グラフの辺の費用は非負で、選んだ辺ごとに一度だけ払う",
+      "全ての指定頂点が同じ連結成分に入るような部分グラフの最小費用を求める",
+      "一台の巡回距離ではなく、複数の経路で辺を共有できる接続の費用である"
+    ],
+    "evidenceUrl": "https://www.luogu.com.cn/problem/P6192",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典でN≤100,M≤500,K≤10、正費用1..1000000、連結無向グラフ、自己ループと多重辺の可能性を直接確認した。公開日・公式解説本文は未確認であり、問題文からの独立導出として掲載する。掲載実装はN≤200,M≤20000,費用0..10^9、非連結、空端点、重複端点にも対応する。実際のMDX C++20を抽出し、5頂点までの全単純グラフと全端点集合を辺部分集合の全列挙と比較した。多重辺・自己ループ・費用0・共通の分岐・不連結・重複端点・K10/N200/M20000・64ビット費用と例外を検証して一致した。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "counting_spanning_tree_undirected",
+    "title": "Counting Spanning Trees (Undirected)",
+    "url": "https://judge.yosupo.jp/problem/counting_spanning_tree_undirected",
+    "techniqueIds": [
+      "spanning-tree-laplacian-minor"
+    ],
+    "features": [
+      "無向グラフの全頂点をつなぎ、閉路を持たない辺集合の個数を求める",
+      "同じ二頂点の間にある複数の辺は、それぞれを別の選択肢として数える",
+      "自己ループは全域木に使えず、非連結の場合は答え0になる",
+      "答えを素数998244353で割った余りが必要で、頂点数の三乗の計算が可能である"
+    ],
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/graph/counting_spanning_tree_undirected/task.md",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "公式リポジトリのtask.mdで無向・非単純グラフ・法998244353、info.tomlでN1..500,M0..500000を直接確認。公開日と公式解答本文は未確認であり、行列木定理を接続行列とCauchy–Binetから独立に説明する。掲載コードの契約はN≤200,M≤20000。6頂点までの全単純グラフを辺部分集合の全列挙と比較し、多重辺・ループも検証。連結なのに法で0となる例、途中のピボットが0で行交換が必要な例は、圧縮した辺種類の全列挙による期待値に一致した。N200の完全グラフはCayleyの公式と一致。単独頂点、20000辺、孤立点と例外も検証した。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Library Checker",
+    "problemId": "general_matching",
+    "title": "Matching on General Graph",
+    "url": "https://judge.yosupo.jp/problem/general_matching",
+    "techniqueIds": [
+      "general-matching-blossom-contraction"
+    ],
+    "features": [
+      "無向グラフの辺を選び、同じ頂点を二本以上の選択辺に使わない",
+      "最大化する量は重みの和ではなく選ぶ辺の本数である",
+      "二部性が保証されず、奇閉路を含んでもよい",
+      "頂点数は500以下で、最大本数と実際の辺集合を出力する"
+    ],
+    "evidenceUrl": "https://judge.yosupo.jp/problem/general_matching",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "公式リポジトリgraph/general_matching/task.mdで無向単純グラフ、Nは1以上500以下、Mは0以上N(N-1)/2以下、最大マッチングの辺を出力することを確認した。Edmonds原著Paths, Trees, and Flowersで増加路とBlossom縮約を確認し、問題設定への適用は独立に行った。掲載コードは隣接行列と基点配列を用いて記述し、O(N^3+M)時間。空グラフ、自己ループの無視、重複辺の統合へ契約を拡張する。問題提案issue77は2019年9月24日だが、ジャッジ公開日と区別し、問題の公開日確定には使わずundated-archiveとする。全小単純グラフN<=6とランダムN<=18を独立の部分集合DPと比較し、返す辺の合法性も検査した。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "Aizu Online Judge",
+    "problemId": "ALDS1_10_C",
+    "title": "Longest Common Subsequence",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_10_C",
+    "techniqueIds": [
+      "lcs-bit-parallel-length"
+    ],
+    "features": [
+      "二文字列から文字を飛ばしてよいが、選んだ文字の順序は変えない",
+      "両方に現れる共通部分列の最長の長さだけを出力する",
+      "一致する一文字を採用すると長さが1増え、文字別の重みはない",
+      "原典の文字列長は各1000以下で、通常の二次元DPでも解ける"
+    ],
+    "evidenceUrl": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_10_C",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "AOJ原典でアルファベットの二文字列、各長さ1以上1000以下、長さのみの出力と確認した。原典にビット並列法の解説はないので、Hyyrö論文Bit-Parallel LCS-length Computation Revisitedの3.1節にあるAllison–Dix法の増加位置表現とV=U&~(U-((V<<1)|1))を確認し、原典への適用を独立に検証した。通常DPでも解ける制約であり、必須の技巧とは扱わない。掲載実装は各200000バイト以下、NULを含む全256値、空文字列へ拡張し、多ワードのシフト繰り上がりと減算の桁借りを明示する。全二値文字列長8以下を全表DPと比較し、63/64/65、127/128/129、全バイト値、最大長を確認。問題公開日は原典で確認できないためundated-archive。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "USACO",
+    "problemId": "1092",
+    "title": "Sum of Distances",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1092",
+    "techniqueIds": [
+      "synchronous-product-parity-distance-sum"
+    ],
+    "features": [
+      "複数の無向グラフから一頂点ずつ選んだ組が現在位置を表す",
+      "一手で全グラフを同時に一辺ずつ進み、辺を使わず待つ操作はない",
+      "始点の組から到達可能な全ての組への最短距離の総和を求める",
+      "各グラフの頂点数の和は100000以下だが、積は列挙できない"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob1_platinum_jan21.html",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "USACO公式の2021 January結果一覧、Platinum第1問の原典、Spencer Comptonによる公式解説を確認した。各因子は連結無向・自己ループ可・重複辺なし、2≤K≤50000、N_i≥2、ΣN_i≤100000、ΣM_i≤200000、全成分が必ず同時に一辺を進み、到達可能な組への距離の総和をmod 10^9+7で求める。開催年月2021-01は基準日以前。正確な開催日は未確認。掲載実装は空因子列・未連結・孤立・自己ループ・多重辺にも拡張し、孤立始点では総和0とする。実MDXのC++20を抽出して-Wall -Wextra -Werrorでコンパイルし、ループを含む3頂点以下の全因子対、2頂点以下の全因子三つ、5頂点以下の単一因子、乱数2000例を明示積グラフBFSと比較して一致。100000頂点・200000辺・50000因子、長い奇閉路、巨大な到着組数の剰余、異なる距離上限、全契約例外も確認した。",
+    "cutoffVerification": "source-before-cutoff",
+    "discoveredBy": "usaco-2020-dec-2021-jan-platinum",
+    "publicationMonth": "2021-01"
+  },
+  {
+    "source": "USACO",
+    "problemId": "1068",
+    "title": "Sleeping Cows",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1068",
+    "techniqueIds": [
+      "maximal-threshold-matching-sweep-dp"
+    ],
+    "features": [
+      "二種類の対象が同数あり、左の値が右の値以下なら一対一で組にできる。",
+      "組を追加できる二対象が残らない対応を全て数える。組数の最大化ではない。",
+      "同じ値でも対象は別々に区別し、対象を使わない対応も許す。"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob1_platinum_dec20.html",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "固定したUSACO 2020 December/2021 January Platinum全6問を先に監査して発見した不足。公式原典とNick Wuによる公式解説で、N≤3000、値1..10^9、極大対応の定義、同値は左優先の昇順走査、予約数と未使用フラグのO(N^2)DPを確認。2020年12月大会と公式結果一覧を確認し、基準日以前であることは確定、開催日の日単位は未確認。APIは左右の個数が異なる場合と空配列へ拡張した。実MDXのC++を抽出し、左右3個以下・3値の全配列と、左右6個以下のランダム例を対応全列挙・未使用対の直接判定で比較。同値・N3000の全組可能で3000!・全組不可能・一方が空・不正値と上限を検証済み。",
+    "discoveredBy": "usaco-2020-dec-2021-jan-platinum",
+    "publicationMonth": "2020-12"
+  }
+]

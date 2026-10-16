@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2018_meetings",
+    "title": "Meetings",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+    "techniqueIds": [
+      "cartesian-prefix-meeting-cost-single-cross-envelope"
+    ],
+    "features": [
+      "固定高さ列の各区間で会場を選び、各参加者から会場までの両端を含む最大高さを全員分足した費用を最小にする。",
+      "多数の区間queryを全て先読みできる。高さ同値可、最適会場は質問ごとに変わる。単なる区間最大/全区間最大値和ではない。",
+      "原典N/Q1..750000、H1..1e9、0<=L<=R<N、質問対は全て異なる。掲載APIはQ0/重複queryも許す。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-05",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "notes": "固定高さ列の各区間で会場xを選び、参加者iとxを含む区間の最大高さを全員分足す費用を最小化する。最大位置で会場の左右を分けると、Cartesian部分木の接頭辞最適費用を加えた候補へ帰着する。右接頭辞のDPは一本の直線と既存関数の一交差包絡になり、区分一次の断片を破壊的に併合して多くの質問をまとめて答えられる。左右反転では同じ元indexを同高さの第二キーとして使う。",
+    "discoveredBy": "ioi-2018",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest2/LVA-meetings.pdf"
+  }
+]

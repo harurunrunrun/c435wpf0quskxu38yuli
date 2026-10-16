@@ -1,0 +1,58 @@
+---
+title: "マンハッタン距離の最大値は x+y と x−y の幅を見る"
+description: "全ての点の組を比べず、変換後の二つの座標の最大値と最小値を持ちます。"
+techniqueId: "manhattan-transform"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+平面上の点の全組について、$|x_i-x_j|+|y_i-y_j|$ の最大値を求めたいとき。組を調べると $O(N^2)$ です。
+
+## 考え方
+
+$u=x+y,v=x-y$ と変換すると、
+
+$$|x_i-x_j|+|y_i-y_j|=\max(|u_i-u_j|,|v_i-v_j|).$$
+
+従って答えは $\max(\max u-\min u,\max v-\min v)$。距離が $R$ 以下という領域も、変換後は $u,v$ それぞれが幅 $2R$ の区間である正方形になります。
+
+## 適用条件
+
+対象は二次元の L1 距離です。ユークリッド距離にはこの式を使えません。格子点を数える用途では、$u,v$ の偶奇が一致するという逆変換の条件も必要です。座標の和・差が元の型を超えるなら拡張します。
+
+## なぜ正しいか
+
+二つの座標差の符号が同じときは和、違うときは差の絶対値が L1 距離に一致します。各変換座標の絶対差の最大値は最大値と最小値の差なので、点対の列挙を省けます。
+
+## 計算量
+
+改善前は時間 $O(N^2)$。改善後は時間 $O(N)$、追加空間 $O(1)$。三次元以上では各座標の符号の組の線形和を見る方法へ拡張できますが、ここでの二式だけでは不足します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 maximum_manhattan_distance(const vector<pair<long long,long long>>& points){
+    if(points.empty())return 0;
+    __int128 u0=(__int128)points[0].first+points[0].second;
+    __int128 v0=(__int128)points[0].first-points[0].second;
+    __int128 ulo=u0,uhi=u0,vlo=v0,vhi=v0;
+    for(auto [x,y]:points){
+        __int128 u=(__int128)x+y,v=(__int128)x-y;
+        ulo=min(ulo,u);uhi=max(uhi,u);vlo=min(vlo,v);vhi=max(vhi,v);
+    }
+    return max(uhi-ulo,vhi-vlo);
+}
+```
+
+## 関連する手法
+
+[凸包](/flowchartcp/techniques/convex-hull/)
+
+## 参考資料
+
+- [AtCoder：Dist Max の解説](https://img.atcoder.jp/abc178/editorial-E-phcdiydzyqa.pdf)
+
+<TechniqueReferences techniqueId="manhattan-transform" />

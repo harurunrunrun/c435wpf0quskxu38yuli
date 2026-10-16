@@ -1,0 +1,116 @@
+---
+title: "位置ごとに独立な文字置換は、文字の有向到達性を調べる"
+description: "任意回使える一文字置換を文字のグラフにし、同じ長さの二語を各位置で照合する。"
+techniqueId: independent-letter-rewrite-reachability
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一文字を別の一文字へ変える有向の規則があり、好きな位置へ好きな順で0回以上適用できる。複数の語の対について、前者を後者へ変換できるかを調べたい。規則は途中でも再利用できる。
+
+同じ文字が現れる全位置を一括で置換する操作とは条件が異なる。例えば規則が `a → b` だけでも、位置を別々に選べるなら `aa → ab` が可能である。
+
+## 考え方
+
+文字を頂点、規則 $a\to b$ を有向辺にする。一つの位置の文字を $x$ から $y$ に変えられる条件は、このグラフで $x$ から $y$ へ到達できることに等しい。直接の規則がなくても、途中の文字を経由してよい。
+
+英小文字26種類なら、全ての文字対の到達可否 `reach[x][y]` を一度だけ計算する。初めに対角成分を真にし、0回の置換で同じ文字を保てるようにする。直接の規則も真にする。あとはワーシャル法で
+
+$$
+\operatorname{reach}[x][y]\gets\operatorname{reach}[x][y]
+\lor\bigl(\operatorname{reach}[x][k]\land\operatorname{reach}[k][y]\bigr)
+$$
+
+と更新する。経由してよい文字 $k$ を最も外側のループに置く。各始点からBFSを26回行っても、同じ到達表を求められる。
+
+問い合わせでは、まず語長が等しいかを調べる。同じなら全ての位置 $i$ で `reach[s[i]][t[i]]` が真であることを確認する。到達表は次の問い合わせにも再利用できる。
+
+## 適用条件
+
+一回の操作が一位置の一文字だけに作用し、他の位置を変えないことが必要である。適用できる規則は現在の文字だけで決まり、隣接文字、位置、他の位置で使った規則の回数には依存しない。文字の挿入・削除・並べ替えもない。
+
+規則の向きは保つ。`a → b` があるだけでは `b → a` を使えない。一方、循環や自分自身への規則は存在してもよく、0回の置換も常に許す。規則の使用回数に共通の予算がある場合には、位置ごとの可否だけでは足りない。
+
+## なぜ正しいか
+
+実際に語を変換できたとする。操作は長さと位置を変えないため、両方の語長は等しい。一つの位置だけに注目して、その位置へ適用した規則を順に読むと、元の文字から目標の文字への有向の道になる。操作しなかった位置は長さ0の道である。よって各位置の到達可能性は必要である。
+
+逆に、各位置の元の文字から目標の文字へ道があるなら、その道の規則を、その位置へ順番に適用する。ほかの位置に影響しないので、一位置ずつ完成させれば語全体を変換できる。したがって各位置の条件は十分でもある。
+
+ワーシャル法では、$k$ の処理後に「途中の頂点として処理済みの文字だけを使う道」の可否を保持する。$k$ を経由しない道は既存の値に、経由する道は $x$ から $k$ と $k$ から $y$ の二つの到達性に含まれる。全ての文字を処理すると、必要な道を全て表せる。
+
+## 計算量
+
+文字種類数を $A$、規則数を $M$ とすると、ワーシャル法の前処理は $O(M+A^3)$ 時間、$O(A^2)$ 空間。問い合わせ数を $Q$、全ての問い合わせの両側の文字数の合計を $L$ とすれば、検証を含めて追加 $O(L+Q)$ 時間で答えられる。空文字同士の問い合わせにも定数時間が掛かるため $Q$ を含める。ここでは $A=26$ である。
+
+26始点のBFSなら前処理は $O(A(A+M))$ 時間にできる。文字数が少ない場合は、短く書けて到達表をそのまま再利用できる方法を選べばよい。語全体を状態にすると長さ $n$ に対して最大 $A^n$ 状態になるが、位置の独立性を使えばこの探索は不要になる。
+
+## 実装
+
+`IndependentLetterRewrite(rules)` で前処理し、`can_transform(from,to)` で判定する。規則は676個以下、文字は全て英小文字 `a`–`z`、各語は200000文字以下。重複規則・自己規則も許す。規則なしでも同一の語は変換できる。
+
+空の語同士は真、長さの異なる語は偽を返す。文字や上限の条件違反は `invalid_argument`。長さ違いであっても両方の語を検証してから偽を返す。作成後の規則追加は扱わず、同じオブジェクトで複数クエリに答える。
+
+```cpp
+#include <array>
+#include <stdexcept>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+class IndependentLetterRewrite {
+    std::array<std::array<bool, 26>, 26> reach{};
+
+    static int letter_index(char c) {
+        if (c < 'a' || c > 'z')
+            throw std::invalid_argument("expected a lowercase letter");
+        return c - 'a';
+    }
+    static void validate_word(std::string_view word) {
+        if (word.size() > 200000)
+            throw std::invalid_argument("word is too long");
+        for (char c : word) letter_index(c);
+    }
+
+public:
+    explicit IndependentLetterRewrite(
+        const std::vector<std::pair<char, char>>& rules) {
+        if (rules.size() > 26 * 26)
+            throw std::invalid_argument("too many rules");
+        for (int c = 0; c < 26; ++c) reach[c][c] = true;
+        for (auto [from, to] : rules) {
+            const int a = letter_index(from);
+            const int b = letter_index(to);
+            reach[a][b] = true;
+        }
+        for (int k = 0; k < 26; ++k)
+            for (int from = 0; from < 26; ++from)
+                for (int to = 0; to < 26; ++to)
+                    reach[from][to] = reach[from][to]
+                        || (reach[from][k] && reach[k][to]);
+    }
+
+    bool can_transform(std::string_view from, std::string_view to) const {
+        validate_word(from);
+        validate_word(to);
+        if (from.size() != to.size()) return false;
+        for (std::size_t i = 0; i < from.size(); ++i)
+            if (!reach[from[i] - 'a'][to[i] - 'a']) return false;
+        return true;
+    }
+};
+```
+
+## 関連する手法
+
+- [幅優先探索](/flowchartcp/techniques/bfs/)：各文字を始点に一度ずつ探索しても到達表を作れる。
+- [問題をグラフに置き換える](/flowchartcp/techniques/graph-reduction/)：位置の状態を、共通の文字グラフの頂点へ帰着する。
+- [同じ値の一括置換を逆順に読む](/flowchartcp/techniques/global-replace-reverse-map/)：全出現を同時に変える場合は、独立な位置の到達性とは別に扱う。
+
+## 参考資料
+
+- [ACM-ICPC World Finals 2017 I：Secret Chamber at Mount Rushmore 原典、17–18ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=17)。位置ごとに0回以上置換する条件を確認した。原典の規則は最大500個、語長は最大50で、掲載APIは上記の範囲へ拡張している。
+- [Per Austrin・Jakub Onufry Wojtaszczyk による公開解法スケッチ、9ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=9)。ICPC公式サイト掲載だが、本文は **unofficial analysis** と明記する。26文字の有向グラフと推移的到達性への帰着を確認した。
+
+<TechniqueReferences techniqueId="independent-letter-rewrite-reachability" />

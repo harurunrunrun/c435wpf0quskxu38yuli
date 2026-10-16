@@ -1,0 +1,82 @@
+---
+title: "重心分解"
+description: "木を重心で分割し、パスの集計や距離の問い合わせを階層的に処理します。"
+techniqueId: centroid-decomposition
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+木を重心で分割し、パスの集計や距離の問い合わせを階層的に処理します。
+
+別名：Centroid Decomposition
+
+## 使う場面
+
+木の頂点ペアについて距離の条件を数える場合や、印を付けた頂点への最短距離を更新・取得する場合に使います。すべてのパスを列挙すると $O(N^2)$ ですが、どの分解段階で処理するパスかを決めると、重複を避けて集計できます。
+
+## 考え方
+
+取り除いた後の各連結成分の頂点数が、元の半分以下になる頂点を重心と呼びます。その重心を取り除き、残った各成分に同じ処理を再帰します。
+
+距離が $K$ のパスを数える例では、重心からの距離を成分ごとに集めます。距離 $d$ の頂点に対し、すでに処理した別の成分に距離 $K-d$ の頂点がいくつあるかを調べます。同じ成分内のペアは、この段階では数えず、再帰先に任せます。
+
+## 適用条件
+
+対象は木です。重心分解で作る親子関係は、元の木の辺とは異なります。距離の問い合わせに使う場合は、各頂点から重心の祖先までの元の木での距離を保存します。
+
+印付き頂点への最短距離を扱うとき、追加だけなら重心ごとの最小値を保持できます。削除もあるなら、最小値一つだけでは足りず、多重集合や削除を管理するヒープなどが必要です。
+
+## なぜ正しいか
+
+任意のパスは、現在の重心を通るか、残った一つの成分内にあります。重心を通るパスは異なる成分同士、または重心との組として数えます。それ以外は対応する成分の再帰に任せます。この分類で各パスをちょうど1回処理できます。
+
+## 計算量
+
+成分を線形に走査して重心を求める構築は $O(N\log N)$ です。分解木だけなら空間は $O(N)$、各頂点からすべての重心祖先への距離を保存すると $O(N\log N)$ です。各成分で距離をソートして集計する場合は、全体で $O(N\log^2 N)$ になることがあります。
+
+## 実装
+
+以下の `CentroidTree` は分解木の親を構築します。距離やパス数は計算していません。それらも求める場合は、`build` で重心 `c` を取得した直後に、元の木を探索する処理を追加します。すでに除去した頂点を越えないようにし、子の成分へ再帰する前に、その段階の集計を済ませてください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct CentroidTree {
+    const vector<vector<int>>& g; vector<int> parent,sz,work;
+    vector<bool> dead;
+    explicit CentroidTree(const vector<vector<int>>& g):g(g),
+        parent(g.size(),-1),sz(g.size()),work(g.size()),dead(g.size()) {
+        if(!g.empty()) build(0,-1);
+    }
+    int centroid(int start) {
+        vector<int> order{start}; work[start]=-1;
+        for(int i=0;i<int(order.size());++i) {
+            int v=order[i];
+            for(int u:g[v]) if(!dead[u] && u!=work[v]) { work[u]=v; order.push_back(u); }
+        }
+        for(int i=int(order.size())-1;i>=0;--i) {
+            int v=order[i]; sz[v]=1;
+            for(int u:g[v]) if(!dead[u] && work[u]==v) sz[v]+=sz[u];
+        }
+        for(int v:order) {
+            int largest=int(order.size())-sz[v];
+            for(int u:g[v]) if(!dead[u] && work[u]==v) largest=max(largest,sz[u]);
+            if(largest<=int(order.size())/2) return v;
+        }
+        abort();
+    }
+    void build(int v,int par) {
+        int c=centroid(v); parent[c]=par; dead[c]=true;
+        for(int u:g[c]) if(!dead[u]) build(u,c);
+    }
+};
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [USACO Guide: Centroid Decomposition](https://usaco.guide/plat/centroid)
+
+<TechniqueReferences techniqueId="centroid-decomposition" />

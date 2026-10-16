@@ -1,0 +1,70 @@
+---
+title: "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する"
+description: "各候補に異なる返答列を割り当て、同時に行う二値質問を最小化します。"
+techniqueId: "interactive-bit-group-testing"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+候補 $n$ 個のうち、ちょうど一つだけが不良であるとき。任意の部分集合に「不良が含まれるか」を問え、全質問を返答を見る前に決める必要があっても、番号の二進表現で一意に特定できます。
+
+## 考え方
+
+候補を $0,\ldots,n-1$ として $m=\lceil\log_2 n\rceil$ ビットで表します。第 $b$ 問には、番号の第 $b$ ビットが1の候補を全て入れます。返答列がそのまま不良の番号になります。番号0の候補はどの集合にも入れず、全て0の返答で特定します。原典では第 $b$ 問が第 $b$ の友人に飲ませる集合です。
+
+## 適用条件
+
+不良はちょうど一つ、返答は偽りなく、部分集合の大きさや各候補の参加回数を自由に選べること。複数の不良では返答が番号のビット OR になって一意に復元できません。質問を出す途中で候補が変わっても、全返答に矛盾しない一つの候補である必要があります。
+
+## なぜ正しいか
+
+第 $b$ 問の返答が1なのは不良の第 $b$ ビットが1である場合に限るので、番号をそのまま復元できます。$m$ 個の二値返答は高々 $2^m$ 通り。$n$ 個を区別するには $2^m\ge n$ が必要です。この構成はその最小の $m$ で全番号に異なる返答列を割り当てるため、質問数も最小です。
+
+## 計算量
+
+一個ずつ調べる $O(n)$ 回の質問を、$\lceil\log_2 n\rceil$ 回に減らします。集合を明示して出力する時間と空間は $O(n\log n)$、返答の復号は時間 $O(\log n)$。集合の出力自体を対数時間とは数えません。
+
+## 実装
+
+API の集合の番号は0始まりです。入力・出力の関数は原典の1始まりに直し、最初の人数と各集合を出力して flush してから返答を読みます。この原典の最終出力は番号だけで、`!` は付けません。返答の長さ・文字・復元番号を検査します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<vector<int>> binary_test_groups(int n){
+    assert(1<=n && n<=100);int m=0;while((1<<m)<n)++m;
+    vector<vector<int>> groups(m);
+    for(int b=0;b<m;++b)for(int x=0;x<n;++x)if(x>>b&1)groups[b].push_back(x);
+    return groups;
+}
+int decode_binary_test(int n,const string& response){
+    assert(1<=n && n<=100);int m=0;while((1<<m)<n)++m;
+    if(response.size()!=size_t(m))throw invalid_argument("invalid response length");
+    int value=0;
+    for(int b=0;b<(int)response.size();++b){
+        if(response[b]!='0' && response[b]!='1')throw invalid_argument("invalid response bit");
+        if(response[b]=='1')value|=1<<b;
+    }
+    if(value>=n)throw invalid_argument("invalid candidate");
+    return value;
+}
+void solve_binary_test_protocol(){
+    int n;if(!(cin>>n))return;
+    auto groups=binary_test_groups(n);cout<<groups.size()<<endl;
+    for(const auto& group:groups){cout<<group.size();for(int x:group)cout<<' '<<x+1;cout<<endl;}
+    if(groups.empty()){cout<<1<<endl;return;}
+    string response;if(!(cin>>response))return;
+    cout<<decode_binary_test(n,response)+1<<endl;
+}
+```
+
+## 関連する手法
+
+[対話問題の質問設計](/flowchartcp/techniques/interactive/)、[全ての組の XOR の和をビットごとに数える](/flowchartcp/techniques/bitwise-contribution/)、[状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc337/editorial/9281)
+
+<TechniqueReferences techniqueId="interactive-bit-group-testing" />

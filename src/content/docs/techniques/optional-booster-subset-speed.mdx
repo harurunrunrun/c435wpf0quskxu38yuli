@@ -1,0 +1,97 @@
+---
+title: "任意の加速点がある巡回は、訪問集合から今の速度を決め、必須点だけの完了を認める"
+description: "速度の軸を追加せず、取得済みの加速点のビット数で移動費用を計算する。"
+techniqueId: optional-booster-subset-speed
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+全ての必須点を訪れて出発点へ戻る最少時間を求めたい。途中で任意の加速点を訪れると、以後の移動が速くなる。遠い加速点を無理に集めると損をするため、全点の巡回を必須にしてはいけない。
+
+## 考え方
+
+必須点と加速点を一つの番号集合にする。$dp[S][v]$ は集合 $S$ を訪れ、点 $v$ にいる最少時間。取得済み加速点の個数 $b(S)$ は集合から決まるので、速度の別軸を持たない。
+
+未訪問の点 $u$ へ進む費用は
+
+$$\frac{dist(v,u)}{2^{b(S)}}.$$
+
+到着後の集合へ加速点が増える。新しい加速点の効果を、そこへ向かう移動に先取りしない。
+
+必須点を全て含む集合なら、現在の速度で出発点へ戻る候補を取る。任意の加速点は未訪問のままでよい。
+
+## 適用条件
+
+移動費用は直線距離を現在の速度で割った値。加速は各点で一回だけ、取得数だけで速度が決まり、効果は永続する。燃料の消費、時間による失効、訪問順に依存する倍率には別の状態が必要。
+
+掲載コードは必須点1〜12個、加速点0〜5個、座標の絶対値 $10^9$ 以下。初速1、倍率2、出発点は原点。原典の点と原点は相異なる。浮動小数点で距離と時間を計算する。
+
+## なぜ正しいか
+
+一つの集合と現在点が同じなら、将来取得できる点と現在の速度は同じである。従って到着時間の最小だけを残せる。
+
+既に訪れた点に戻っても新しい加速はない。新しい点の間の移動途中にそのような寄り道があれば、三角不等式で直接移動へ短縮できる。未訪問の加速点を途中で通るなら、そこを次の訪問に含めればよい。そのため、各点を初めて訪れる順番と最後の帰還を列挙する集合DPで最適経路を表せる。
+
+遷移は移動前の集合の速度で加算し、必須点を含む状態だけから帰還する。帰納的に全ての許された訪問順の最少時間を計算する。
+
+## 計算量
+
+加速点の部分集合と訪問順を全列挙すると、合計点数 $P$ に対して最大 $O(2^P P!P)$ 時間。集合DPは $O(P^2 2^P)$ 時間、$O(P2^P+P^2)$ 空間。速度は集合から計算するので、取得数の追加軸は不要。
+
+## 実装
+
+`minimum_boosted_tour(mandatory,boosters)` は最少時間を返す。`long double` で計算し、2の負の整数乗を移動時間の倍率として使う。
+
+```cpp
+#include <algorithm>
+#include <bit>
+#include <cmath>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+long double minimum_boosted_tour(const std::vector<std::pair<long double,long double>>& mandatory,
+                                const std::vector<std::pair<long double,long double>>& boosters) {
+    int n=int(mandatory.size()),m=int(boosters.size()),p=n+m;
+    if(n<1 || n>12 || m>5) throw std::invalid_argument("size");
+    auto points=mandatory;points.insert(points.end(),boosters.begin(),boosters.end());
+    for(auto [x,y]:points) if(!std::isfinite(x) || !std::isfinite(y) || std::abs(x)>1e9L || std::abs(y)>1e9L)
+        throw std::invalid_argument("coordinate");
+    std::vector<long double> origin(p);
+    std::vector<std::vector<long double>> distance(p,std::vector<long double>(p));
+    for(int i=0;i<p;++i) {
+        origin[i]=std::hypotl(points[i].first,points[i].second);
+        for(int j=0;j<p;++j) distance[i][j]=std::hypotl(points[i].first-points[j].first,points[i].second-points[j].second);
+    }
+    int states=1<<p,required=(1<<n)-1;
+    const long double INF=std::numeric_limits<long double>::infinity();
+    std::vector<long double> dp(std::size_t(states)*p,INF);
+    for(int i=0;i<p;++i) dp[std::size_t(1<<i)*p+i]=origin[i];
+    long double answer=INF;
+    for(int mask=1;mask<states;++mask) {
+        long double time_factor=std::ldexp(1.0L,-std::popcount(static_cast<unsigned>(mask>>n)));
+        for(int v=0;v<p;++v) if(mask>>v&1) {
+            long double now=dp[std::size_t(mask)*p+v];if(!std::isfinite(now))continue;
+            if((mask&required)==required) answer=std::min(answer,now+origin[v]*time_factor);
+            for(int u=0;u<p;++u) if(!(mask>>u&1)) {
+                auto& next=dp[std::size_t(mask|(1<<u))*p+u];
+                next=std::min(next,now+distance[v][u]*time_factor);
+            }
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[収集点の少ない迷路は、特別な点間の最短距離だけで訪問集合を持つ](/flowchartcp/techniques/grid-waypoint-subset/) ・ [移動で消費・回復する資源を持ち、不要な所持量を切る](/flowchartcp/techniques/dijkstra-expanded-resource/)
+
+## 参考資料
+
+- [AtCoder：E - Booster（原典）](https://atcoder.jp/contests/abc274/tasks/abc274_e)
+- [公式解説](https://atcoder.jp/contests/abc274/editorial/5082)
+
+<TechniqueReferences techniqueId="optional-booster-subset-speed" />

@@ -1,0 +1,211 @@
+[
+  {
+    "id": "prefix-piece-farthest-reach",
+    "title": "同じ文字列の接頭辞をつなぐ最少分割は、到達できる右端を段階ごとに伸ばす",
+    "summary": "長さ1から最長一致までを全て使えるので、分割の候補を到達区間へまとめる。",
+    "aliases": [
+      "Prefix Piece Farthest Reach",
+      "Prefix Concatenation",
+      "接頭辞分割の到達区間"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "prerequisites": [
+      "z-algorithm"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc257/tasks/abc257_g",
+      "https://atcoder.jp/contests/abc257/editorial/4246"
+    ]
+  },
+  {
+    "id": "suffix-lcp-pair-sum",
+    "title": "全接尾辞との共通接頭辞の長さの和は、LCPの区間最小値を個数付きでまとめる",
+    "summary": "新しいLCPを加えたときに小さくなる最小値だけを、単調なスタックで一括更新する。",
+    "aliases": [
+      "Suffix LCP Pair Sum",
+      "Common Prefixes",
+      "LCP区間最小値の和"
+    ],
+    "family": "文字列",
+    "level": "上級",
+    "prerequisites": [
+      "suffix-array"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc213/tasks/abc213_f",
+      "https://atcoder.jp/contests/abc213/editorial/2413"
+    ]
+  },
+  {
+    "id": "fixed-length-lexicographic-subsequence",
+    "title": "長さを指定した辞書順最小の部分列は、残りで埋められるときだけ末尾を捨てる",
+    "summary": "小さい文字で末尾を置き換える前に、必要な文字数を後ろから補えるか確認する。",
+    "aliases": [
+      "Fixed Length Lexicographically Smallest Subsequence",
+      "Smallest Subsequence",
+      "残り個数を守る単調スタック"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/typical90/tasks/typical90_f"
+    ]
+  },
+  {
+    "id": "edit-distance-diagonal-band",
+    "title": "編集回数の上限が小さいなら、長さの差が上限以内の対角帯だけを計算する",
+    "summary": "挿入と削除が長さの差を生むので、上限回数では到達できないDP状態を除く。",
+    "aliases": [
+      "Banded Edit Distance",
+      "Operate K",
+      "編集距離の対角帯"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "prerequisites": [
+      "state-design"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc386/tasks/abc386_f",
+      "https://atcoder.jp/contests/abc386/editorial/11706"
+    ]
+  },
+  {
+    "id": "periodic-match-residue-chains",
+    "title": "無限に繰り返す本文で同じ語を連続させるなら、開始位置の余りをつなぐ",
+    "summary": "一周の一致位置だけを調べ、語の長さだけ進む辺の最長鎖と閉路を判定する。",
+    "aliases": [
+      "Periodic Match Residue Chains",
+      "Strings of Eternity",
+      "無限周期本文の連続一致"
+    ],
+    "family": "文字列",
+    "level": "上級",
+    "prerequisites": [
+      "z-algorithm",
+      "topological-sort"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc135/tasks/abc135_f",
+      "https://img.atcoder.jp/abc135/editorial.pdf"
+    ]
+  },
+  {
+    "id": "sorted-adjacent-max-lcp",
+    "title": "各文字列が他と共有する最長接頭辞は、辞書順で隣の二つだけ調べる",
+    "summary": "同じ接頭辞を持つ文字列は連続するため、最も似た相手を全組から探す必要がない。",
+    "aliases": [
+      "Sorted Adjacent Maximum LCP",
+      "Karuta",
+      "辞書順隣接の最大共通接頭辞"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "prerequisites": [
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc287/tasks/abc287_e",
+      "https://atcoder.jp/contests/abc287/editorial/5639"
+    ]
+  },
+  {
+    "id": "reverse-deletion-two-z",
+    "title": "半分の長さを削って残りが削除部分の逆順になる条件は、二つの前後一致へ分ける",
+    "summary": "前半と逆順にした後半を二通りにつなぎ、全ての削除位置をZで一括判定する。",
+    "aliases": [
+      "Reverse Deletion Two Z Arrays",
+      "ABCBAC",
+      "反転削除の二つのZ"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "prerequisites": [
+      "z-algorithm"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc284/tasks/abc284_f",
+      "https://atcoder.jp/contests/abc284/editorial/5492"
+    ]
+  },
+  {
+    "id": "slash-subsequence-crossing",
+    "title": "同数の1と2を一つの区切りの前後から選ぶ区間質問は、左右の個数が交差する場所を探す",
+    "summary": "区切りを右へ動かすと左の1は増え、右の2は減るので、交差の両隣だけを比較する。",
+    "aliases": [
+      "Slash Subsequence Monotone Crossing",
+      "11/22 Subsequence",
+      "左右同数部分列の交差"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "prerequisites": [
+      "prefix-sum",
+      "binary-search"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc381/tasks/abc381_e",
+      "https://atcoder.jp/contests/abc381/editorial/11650"
+    ]
+  }
+]

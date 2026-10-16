@@ -1,0 +1,164 @@
+---
+title: "同じ語の前後へ読点を追加する規則を、一度の探索で処理する"
+description: "語の前と後を別の状態にし、文内の隣接を辺で結ぶ。元の読点からの到達集合で、追加規則の最小の不動点を求める。"
+techniqueId: word-boundary-comma-closure
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+同じ語のどこかの出現の直前に読点があれば、その語の他の出現にも直前の読点を追加する。直後にも同じ規則があり、追加した読点からさらに伝播する。文頭の直前と文末の直後には追加できず、元の語・句点・読点は消さない。この規則がもう何も追加しなくなる文章を求めたい。
+
+語の「前に読点が必要」と「後に読点が必要」は別の情報である。例えば `red, blue. blue green.` の `blue` の前に読点があっても、`blue` の後へは伝播しない。二つの側を同じ状態にすると、不要な読点を加えてしまう。
+
+## 考え方
+
+語の種類ごとに `before[word]` と `after[word]` の二頂点を作る。同じ文の中で語 `a` のすぐ後が語 `b` なら、
+
+$$\mathrm{after}[a]\;—\;\mathrm{before}[b]$$
+
+という無向辺を一本張る。この語間へ読点を入れることは、`a` の後と `b` の前を同時に有効にすることに等しい。片側が既に有効なら、その語の規則によってこの語間へ読点を追加でき、反対側も有効になる。従って辺は両方向の伝播を表す。
+
+最初からある読点の両端を始点として、BFSなどで到達集合を求める。その後、各文内の語間について、前の語の `after` が到達済みなら読点を置く。辺の両端は同時に到達済みになるので、次の語の `before` で判定しても同じである。
+
+句点を挟む隣接には辺を作らない。語の種類は文章全体で共有するため、同じ語を通じて別の文の内部へ伝播することはあるが、句点の所に読点は追加しない。
+
+## 適用条件
+
+規則は読点の追加だけであり、語の綴り、語順、空白、句点を変更しない。語の前後の規則は、それぞれ文章全体にある同じ語の全出現へ働く。語の比較に活用形や大文字小文字の同一視を導入するなら、同じ頂点へまとめる前に、その語の同値関係を定義する必要がある。
+
+掲載API `close_word_boundary_commas` は、長さ2〜100万の一行の文字列を受け取る。語は一文字以上の英小文字からなり、二語の区切りは空白一つ、`, `、`. ` のいずれか。文章は語から始まり、最後の語の直後に句点一つを置き、その後には何も置かない。改行は引数に含めない。この文法と範囲は原典入力の全体を含む。
+
+空文字列、範囲外の長さ、未知の文字、空の語、不正な句読点、余分な空白、末尾句点の欠落などは `std::invalid_argument`。メモリ割当などの標準例外はそのまま伝わる。入力を変更せず、呼出し間の状態も持たない。返す文章は追加した読点の分だけ長くなり、100万文字を超えても切り詰めない。
+
+## なぜ正しいか
+
+**語間と二状態が対応する。** 読点を置ける場所は、同じ文にある隣接二語の間だけである。その場所が読点を持つと、前語の後状態と後語の前状態の両方が有効になる。逆にどちらかが有効なら、対応する語の前または後へ読点を追加する規則を、その場所に適用できる。文頭・文末の例外は、句点を挟む辺を作らないことで守られる。
+
+**到達する状態は実際に作れる。** BFSの始点は既存の読点の両端なので、最初から有効である。到達済み頂点から辺を一本進むとき、その語間へ規則を適用すれば反対側を有効にできる。道の長さについて帰納すると、到達する全状態と、それによって出力する全読点は、有限回の合法な追加で得られる。
+
+**合法な追加を取りこぼさない。** ある読点を規則によって追加するとき、同じ語の同じ側には既に読点がある。既存の読点から始めた帰納法により、その状態は到達集合に含まれる。追加先の語間はその状態に接する辺なので、反対側も到達集合に含まれる。従ってどの順序で規則を適用しても、到達集合の外にある読点は作れない。
+
+到達集合は辺の両端について閉じている。よって再構成した文章には適用できる追加が残らない。しかもその読点は全て実際の規則で得られ、他のどの閉じた拡張にも必要となる。従って結果は元の読点を含む**最小の不動点**であり、規則の適用順によらず一意である。何も読点がなければ始点もなく、何も増えない。
+
+**字句解析と再構成。** 文字列を語と直後の区切りに分け、区切りの直後が次の語または入力末尾になることを検査する。これにより文内の語間と文境界が確定する。再構成では語をそのまま写し、句点の区切りをそのまま保ち、他の語間だけを判定する。既存の読点は探索の始点なので必ず残り、空白の個数や最後の句点も変わらない。
+
+## 計算量
+
+入力文字数を $T$、語の出現数を $K$、異なる語の数を $D$ とする。頂点は $2D$ 個、無向辺は文内の語間の数だけで高々 $K-1$ 本。重複する辺を残しても、BFSは **$O(D+K)$ 時間**である。
+
+掲載コードは `std::map` で語の綴りをIDへ変換する。一回の文字列比較は問い合わせた語の長さ以下の走査で済み、全出現の長さの和は $T$ 以下なので、辞書の処理も含め **$O(T\log(D+1))$ 時間、$O(T)$ 補助空間**となる。元の入力への `string_view` を保持し、語ごとの文字列コピーを避ける。
+
+各語には一文字以上と直後の区切りが必要なので、$2K\le T$。追加する読点は高々 $K-1$ 個であり、出力は $T+K$ 文字未満である。100万文字の入力でも、頂点番号は100万未満、出力容量は150万文字以下に収まる。探索は反復処理で行い、伝播が長く続いても再帰の深さは増えない。
+
+## 実装
+
+語のIDは綴りの完全一致で共有する。ID `v` の前を `2*v`、後を `2*v+1` とする。`separator` はその出現の直後にあった空白・読点・句点を表す。改行を除いた文章一行を渡す。
+
+```cpp
+#include <cstddef>
+#include <limits>
+#include <map>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <vector>
+
+static_assert(std::numeric_limits<int>::max() >= 1000000,
+              "int must represent every boundary state");
+
+std::string close_word_boundary_commas(std::string_view text) {
+    if (text.size() < 2 || text.size() > 1000000)
+        throw std::invalid_argument("text length");
+    struct Token {
+        std::string_view word;
+        int id;
+        char separator;
+    };
+    std::vector<Token> tokens;
+    const auto lower = [](char ch) { return 'a' <= ch && ch <= 'z'; };
+    std::size_t position = 0;
+    while (position < text.size()) {
+        const std::size_t first = position;
+        while (position < text.size() && lower(text[position])) ++position;
+        if (position == first || position == text.size())
+            throw std::invalid_argument("word or final period");
+        const auto word = text.substr(first, position - first);
+        const char separator = text[position++];
+        tokens.push_back({word, -1, separator});
+        if (separator == '.' && position == text.size()) break;
+        if (separator == ' ') {
+            if (position == text.size())
+                throw std::invalid_argument("trailing space");
+        } else if (separator == ',' || separator == '.') {
+            if (position == text.size() || text[position] != ' ')
+                throw std::invalid_argument("punctuation separator");
+            ++position;
+            if (position == text.size())
+                throw std::invalid_argument("trailing separator");
+        } else {
+            throw std::invalid_argument("text alphabet");
+        }
+    }
+    if (tokens.empty() || tokens.back().separator != '.')
+        throw std::invalid_argument("final period");
+
+    std::map<std::string_view, int> ids;
+    for (auto& token : tokens) {
+        const auto [it, inserted] = ids.try_emplace(token.word, static_cast<int>(ids.size()));
+        (void)inserted;
+        token.id = it->second;
+    }
+    const int state_count = 2 * static_cast<int>(ids.size());
+    std::vector<std::vector<int>> adjacent(state_count);
+    std::vector<unsigned char> reached(state_count, 0);
+    std::vector<int> queue;
+    const auto activate = [&](int v) {
+        if (!reached[v]) {
+            reached[v] = 1;
+            queue.push_back(v);
+        }
+    };
+    for (std::size_t i = 0; i + 1 < tokens.size(); ++i) {
+        if (tokens[i].separator == '.') continue;
+        const int after = 2 * tokens[i].id + 1;
+        const int before = 2 * tokens[i + 1].id;
+        adjacent[after].push_back(before);
+        adjacent[before].push_back(after);
+        if (tokens[i].separator == ',') {
+            activate(after);
+            activate(before);
+        }
+    }
+    for (std::size_t head = 0; head < queue.size(); ++head)
+        for (int next : adjacent[queue[head]]) activate(next);
+
+    std::string result;
+    result.reserve(text.size() + tokens.size());
+    for (std::size_t i = 0; i < tokens.size(); ++i) {
+        result.append(tokens[i].word);
+        if (tokens[i].separator == '.') {
+            result.push_back('.');
+            if (i + 1 < tokens.size()) result.push_back(' ');
+        } else {
+            if (reached[2 * tokens[i].id + 1]) result.push_back(',');
+            result.push_back(' ');
+        }
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+- [BFS](/flowchartcp/techniques/bfs/)：初期の印が複数あっても、同じキューで到達集合を求められる。
+- [グラフへの帰着](/flowchartcp/techniques/graph-reduction/)：同じ物の異なる役割を別頂点にし、局所的な連動を辺にする。ここでは語の前後を分けることが必要になる。
+- [一文字の置換規則と到達可能性](/flowchartcp/techniques/independent-letter-rewrite-reachability/)：規則の反復を到達可能性に変える点が共通する。本技巧では隣接語が二つの側を結び、語単独の有向置換とは異なる状態を作る。
+
+## 参考資料
+
+- [ICPC World Finals 2018 公式問題冊子、Problem B、3〜4ページ](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3)：読点追加規則、文頭・文末の例外、英小文字と区切りの文法、入力長2〜100万。
+- [Per Austrin・Jakub Onufry Wojtaszczyk, Solution sketches、2ページ](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2)：語の前後二頂点と文内隣接のグラフ化。ICPCサイトで配布されているが、資料自身は非公式分析と明記している。
+
+<TechniqueReferences techniqueId="word-boundary-comma-closure" />

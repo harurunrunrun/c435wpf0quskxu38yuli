@@ -1,0 +1,122 @@
+---
+title: "大小条件の極大対応を数えるときは、未対応を残したかを一ビットで持つ"
+description: "値の順に対象を処理し、対応を待つ個数と、今後の空きを許さない条件だけを残す。"
+techniqueId: maximal-threshold-matching-sweep-dp
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+左側の対象の値を $a_i$、右側を $b_j$ とし、$a_i\le b_j$ のときだけ組にできる。一つの対象は高々一組で使う。求めたいのは、**未使用の左右から新しい組を一つも追加できない対応の個数**である。
+
+これは「極大」の条件であり、組数が最大である必要はない。対応できる対象の範囲が大小関係で入れ子になることを使い、極大性を全ての未使用対について確認する処理を一つのフラグへまとめる。
+
+## 考え方
+
+左右の対象を、一つのイベント列として値の昇順に並べる。同じ値では左側を先に処理する。これで右側を処理する時点では、その相手になれる左側は全て処理済みになる。
+
+$dp[k][f]$ を次の状態の個数とする。
+
+- $k$：最終的に組に入れると決めたが、まだ右側の相手が決まっていない左側の個数。
+- $f$：組に入れない左側を、既に一つでも残したか。
+
+左側を処理するときは、後で組に入れると予約して $k$ を1増やすか、未使用のまま残して $f=1$ にする。
+
+右側を処理するときは、予約している左側の一つと組にするか、未使用で残す。組にする相手は全て条件を満たすため $k$ 通りあり、$k$ を1減らす。未使用で残せるのは $f=0$ のときだけである。
+
+一度でも左側を未使用にした後で右側も未使用にすると、その二つを組にできてしまい、極大性に反する。右側の空きを禁止するために必要なのは、過去の未使用左側の一覧ではなく、存在するかどうかの一ビットだけになる。
+
+最後に $k=0$ の二状態を足す。予約したまま終わる左側を含む状態は、実際の対応を表さないので除く。
+
+## 適用条件
+
+- 組にできる条件が、一つの全順序上の $a_i\le b_j$ だけで決まる。
+- 各対象は高々一組に使い、未使用の対象を残してよい。
+- 数える対象は、組を追加できない極大対応である。
+- 同じ値でも対象の識別子が違えば、異なる対応として数える。
+
+対象ごとの相性禁止や別の座標条件があると、処理済みの左側全てを個数だけでまとめられない。組数を最大化する問題や、最大組数の対応だけを数える問題にも、同じ最終条件は使わない。
+
+厳密不等号 $a_i<b_j$ が条件なら、同値イベントの順序を右側優先へ変える必要がある。掲載実装は $a_i\le b_j$ のみを扱う。
+
+## なぜ正しいか
+
+右側の処理時には、予約中の左側は全て値が小さいか等しい。従ってどれを組にしても合法で、識別可能な $k$ 個から一つを選ぶ重みが正しい。左側の採用・不採用と、採用した左側の相手の選択から、各対応が一意に決まる。
+
+追加できる組が残るとすれば、未使用の左側と右側で $a_i\le b_j$ となる対である。この場合、左側イベントが右側イベントより先に来る。左側を未使用にした時点でフラグが立ち、その後の右側の未使用遷移を禁止するので、この対を含む対応は数えない。
+
+逆に極大な対応では、フラグが立った後の右側を未使用にはできない。未使用にすると、そのフラグの原因になった左側との組を追加できるからである。よって極大な対応は全て禁止遷移を使わずに表せる。予約の残りを0に限定することで、合法な極大対応だけを一度ずつ数える。
+
+## 計算量
+
+左側が $L$ 個、右側が $R$ 個なら、並べ替えに $O((L+R)\log(L+R+1))$、DPに $O((L+R)(L+1))$ 時間を使う。状態は二層だけ保存でき、イベント列を含めて $O(L+R+1)$ 空間になる。
+
+未使用の最小左側を一つずつ固定して同じDPを繰り返すと、一層多く列挙することになる。その値を明示せず、未使用が既に出たかにまとめることで、左右同数 $N$ の場合は $O(N^2)$ 時間にできる。
+
+## 実装
+
+`count_maximal_threshold_matchings(left_values,right_values)` は、極大対応の個数を法 $10^9+7$ で返す。左右それぞれ3000個以下、値は $1..10^9$。条件違反は `invalid_argument`。空の側があれば、何も組にしない対応が唯一の極大対応である。
+
+掲載実装は左右の個数が異なる場合も扱う。同値の左側と右側の処理順、予約対象の選択数 $k$、最後の予約数0という三点を省かない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_maximal_threshold_matchings(
+    const vector<long long>& left_values,
+    const vector<long long>& right_values) {
+    if (left_values.size() > 3000 || right_values.size() > 3000)
+        throw invalid_argument("too many objects");
+    vector<pair<long long,int>> events;
+    for (int side = 0; side < 2; ++side) {
+        const auto& values = side == 0 ? left_values : right_values;
+        for (long long value : values) {
+            if (value < 1 || value > 1000000000LL)
+                throw invalid_argument("value outside supported range");
+            events.emplace_back(value, side);
+        }
+    }
+    sort(events.begin(), events.end()); // Equal values: left before right.
+    constexpr long long MOD = 1000000007;
+    const int count = static_cast<int>(left_values.size());
+    vector<array<long long,2>> dp(count + 1), next(count + 1);
+    dp[0][0] = 1;
+    for (const auto& event : events) {
+        fill(next.begin(), next.end(), array<long long,2>{0, 0});
+        for (int waiting = 0; waiting <= count; ++waiting) {
+            for (int discarded = 0; discarded < 2; ++discarded) {
+                long long ways = dp[waiting][discarded];
+                if (ways == 0) continue;
+                if (event.second == 0) {
+                    if (waiting < count)
+                        next[waiting + 1][discarded] =
+                            (next[waiting + 1][discarded] + ways) % MOD;
+                    next[waiting][1] = (next[waiting][1] + ways) % MOD;
+                } else {
+                    if (waiting > 0)
+                        next[waiting - 1][discarded] =
+                            (next[waiting - 1][discarded] + ways * waiting) % MOD;
+                    if (!discarded)
+                        next[waiting][0] = (next[waiting][0] + ways) % MOD;
+                }
+            }
+        }
+        dp.swap(next);
+    }
+    return static_cast<int>((dp[0][0] + dp[0][1]) % MOD);
+}
+```
+
+## 関連する手法
+
+- [将来の選択を区別できる状態を設計する](/flowchartcp/techniques/state-design/)：最小の未使用値を持たず、今後の空きを禁止するフラグにまとめる。
+- [二部マッチング](/flowchartcp/techniques/matching/)：組数の最大化とは、数える対象と終了条件を分けて考える。
+- [開いている組数を持つDP](/flowchartcp/techniques/dp-open-groups-gap-cost/)：対応が未確定の対象を、その個数だけで扱う。
+
+## 参考資料
+
+- [USACO 2020 December Platinum：Sleeping Cows](https://usaco.org/index.php?page=viewproblem2&cpid=1068)
+- [Sleeping Cows公式解説](https://usaco.org/current/data/sol_prob1_platinum_dec20.html) — 未対応の左側が出たかをフラグにまとめる走査DP。
+
+<TechniqueReferences techniqueId="maximal-threshold-matching-sweep-dp" />

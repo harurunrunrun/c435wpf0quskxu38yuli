@@ -1,0 +1,90 @@
+---
+title: "部分和の個数から要素を削除するなら、追加と逆の順に引き戻す"
+description: "正の重さの0/1選択を係数列として持ち、追加は降順、削除は昇順の三角形の式で更新する。"
+techniqueId: subset-sum-inverse-update
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+要素を一個追加・削除するたびに、部分集合の和が指定値になる個数を求めたい。追加だけなら重さの降順のDPで済むが、削除のたびに残った全要素から作り直すと重い。
+
+## 考え方
+
+重さ $x$ の要素を加える前後の係数を $f_s,g_s$ とすると、
+
+$$g_s=f_s+f_{s-x}$$
+
+となる。追加は $s$ の大きい方から計算すれば、右辺はどちらも追加前の値である。削除では逆に
+
+$$f_s=g_s-f_{s-x}$$
+
+を使う。小さい $s$ から進めると $f_{s-x}$ が復元済みになる。降順のまま引くと、削除前の係数を引いてしまう。
+
+生成関数では $\prod_i(1+z^{a_i})$ の一因子を掛ける・外す操作である。定数項が1なので、素数の法に限らず三角形の式で逆算できる。
+
+## 適用条件
+
+重さは正で、各要素を0回か1回だけ選び、同じ重さでも要素は区別する。削除する要素が現在存在することを確認する。非負の和だけを持つため、負の重さにはこの切り詰めを使えない。
+
+掲載コードは $0\le K\le5000$、$1\le x\le5000$、法は998244353。$x>K$ の要素は係数列を変えないが、削除の合法性のため個数は記録する。重さ0では因子が2となり別処理が必要。最大価値を持つDPは最大を取る際に候補の情報を失うので、同じ引き算では戻せない。
+
+## なぜ正しいか
+
+各部分集合を追加した要素を選ぶかで分けると、追加の式になる。$x>0$ なので削除の右辺は必ず小さい添字だけを使う。$s<x$ の係数は変わらず、それを出発点に全係数を一意に復元できる。
+
+重複した重さを一個外しても同じ一因子の除算となる。次数 $K$ 以下の計算へ高い次数が流れ込まないため、$K$ より大きい係数を保存しなくてよい。
+
+## 計算量
+
+現在 $B$ 個の要素があるとき、作り直しは一更新 $O(BK)$ 時間。逆更新は一更新 $O(K+\log(D+1))$ 時間、$D$ は記録中の異なる重さ数。係数列と個数表に $O(K+D)$ 空間を使う。個数表を固定値域の配列にすれば、更新の個数確認を定数時間にできる。
+
+## 実装
+
+`SubsetSumUpdates::add(x)` と `erase(x)` で一個を更新し、`count(s)` で現在の個数を得る。空集合を含むので、和0の個数は常に1。存在しない要素の削除は例外とする。
+
+```cpp
+#include <map>
+#include <stdexcept>
+#include <vector>
+class SubsetSumUpdates {
+    static constexpr int MOD=998244353;
+    int limit;
+    std::vector<int> dp;
+    std::map<int,long long> frequency;
+    void check_weight(int x) const {
+        if(x<1 || x>5000) throw std::invalid_argument("weight");
+    }
+public:
+    explicit SubsetSumUpdates(int k):limit(k) {
+        if(k<0 || k>5000) throw std::invalid_argument("target");
+        dp.assign(k+1,0);dp[0]=1;
+    }
+    void add(int x) {
+        check_weight(x);++frequency[x];
+        for(int s=limit;s>=x;--s) {dp[s]+=dp[s-x];if(dp[s]>=MOD)dp[s]-=MOD;}
+    }
+    void erase(int x) {
+        check_weight(x);auto it=frequency.find(x);
+        if(it==frequency.end()) throw std::invalid_argument("missing element");
+        if(--it->second==0) frequency.erase(it);
+        for(int s=x;s<=limit;++s) {dp[s]-=dp[s-x];if(dp[s]<0)dp[s]+=MOD;}
+    }
+    int count(int sum) const {
+        if(sum<0 || sum>limit) throw std::out_of_range("sum");
+        return dp[sum];
+    }
+};
+```
+
+## 関連する手法
+
+[部分和の可否だけならビット列をずらしてまとめて更新する](/flowchartcp/techniques/knapsack-bitset-shift/) ・ [同じ重さを c 個まで選ぶときは個数を二進分解する](/flowchartcp/techniques/subset-sum-repeated-binary/)
+
+## 参考資料
+
+- [AtCoder：F - #(subset sum = K) with Add and Erase（原典）](https://atcoder.jp/contests/abc321/tasks/abc321_f)
+- [公式解説](https://atcoder.jp/contests/abc321/editorial/7281)
+
+<TechniqueReferences techniqueId="subset-sum-inverse-update" />

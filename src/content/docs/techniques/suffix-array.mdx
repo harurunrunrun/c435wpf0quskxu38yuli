@@ -1,0 +1,73 @@
+---
+title: "接尾辞配列・LCP配列"
+description: "文字列の接尾辞を辞書順に並べ、部分文字列の比較や個数の集計に使います。"
+techniqueId: suffix-array
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+文字列の接尾辞を辞書順に並べ、部分文字列の比較や個数の集計に使います。
+
+別名：Suffix Array / SA / LCP Array
+
+## 使う場面
+
+異なる部分文字列の数、パターンが現れる位置、部分文字列同士の辞書順などを求める場合に使います。部分文字列をすべて作る代わりに、接尾辞の始点だけを並べます。ハッシュ衝突のない比較が必要な場合にも有効です。
+
+## 考え方
+
+接尾辞配列 $\mathrm{SA}$ は、接尾辞 $s[i..N)$ の始点 $i$ を辞書順に並べた配列です。LCP配列には、隣り合う接尾辞の最長共通接頭辞の長さを入れます。
+
+異なる部分文字列の数は $N(N+1)/2$ からLCPの総和を引くと得られます。また、離れた2接尾辞の共通接頭辞の長さは、SA上でその間にあるLCPの最小値です。LCPへ区間最小値を求めるデータ構造を載せると、任意の2接尾辞を比較できます。
+
+## 適用条件
+
+文字の大小関係が、求める辞書順と一致していることが必要です。複数の文字列を連結する場合は、区切りを適切に選び、元の文字列の境界を越える一致を除きます。
+
+空文字列に対するLCP構築は別に処理します。また、接尾辞の共通接頭辞を部分文字列の比較に使う場合は、指定した部分文字列の長さで打ち切ります。
+
+## なぜ正しいか
+
+ある文字列を接頭辞に持つ接尾辞は、辞書順で連続します。新しい接尾辞から生まれる接頭辞のうち、すでに出現したものは、直前の接尾辞とのLCP以下の長さのものです。各接尾辞の長さからこの重複分を引くと、異なる部分文字列をちょうど1回ずつ数えられます。
+
+同じ性質により、2接尾辞の間で共有される最大の接頭辞の長さは、間の隣接LCPの最小値になります。
+
+## 計算量
+
+倍増法では通常 $O(N\log N)$、SA-ISでは整数アルファベット上で $O(N+\sigma)$ です。以下で使うACLの文字列版は $O(N)$、LCP構築も $O(N)$ です。区間最小値をセグメント木で処理するなら、比較の1回は $O(\log N)$ です。
+
+## 実装
+
+AtCoder Libraryを利用します。`distinct_substrings` は異なる非空部分文字列の数を返します。`SuffixIndex` はSA、その逆配列 `rank`、LCPを保持します。
+
+LCPの区間最小値を使うときは、2接尾辞のSA上の位置を $p<q$ として、LCPの半開区間 $[p,q)$ の最小値を求めます。以下のコードには、その区間最小値のデータ構造は含まれていません。
+
+```cpp
+#include <atcoder/string>
+#include <string>
+#include <vector>
+long long distinct_substrings(const std::string& s) {
+    if(s.empty()) return 0;
+    auto sa=atcoder::suffix_array(s);
+    auto lcp=atcoder::lcp_array(s,sa);
+    long long answer=1LL*s.size()*(s.size()+1)/2;
+    for(int x:lcp) answer-=x;
+    return answer;
+}
+struct SuffixIndex {
+    std::vector<int> sa,rank,lcp;
+    explicit SuffixIndex(const std::string& s):sa(atcoder::suffix_array(s)),rank(s.size()) {
+        for(int i=0;i<int(sa.size());++i) rank[sa[i]]=i;
+        if(!s.empty()) lcp=atcoder::lcp_array(s,sa);
+    }
+};
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [AtCoder Library: String（公式仕様・使用例）](https://atcoder.github.io/ac-library/production/document_ja/string.html)
+
+<TechniqueReferences techniqueId="suffix-array" />

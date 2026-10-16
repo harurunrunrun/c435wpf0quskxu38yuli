@@ -1,0 +1,162 @@
+---
+title: "奇閉路を含む組合せで組数を最大にするときは、交互路の奇閉路を縮める"
+description: "同じ頂点を二度使わず辺を選ぶ問題で、二部に分けられない部分を縮約し、増加路の探索を続ける。"
+techniqueId: general-matching-blossom-contraction
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+頂点を人や物、辺を組にできる関係と考え、同じ頂点を二つの組に使わず、組数を最大にしたい。組にできる相手が二種類の間に限られず、三角形のような奇閉路もある。
+
+**増加路を探す途中で現れる特定の奇閉路を一頂点に縮め、縮めたグラフで探索を続ける**。これが一般グラフの最大マッチングで用いる Blossom 縮約である。求めるのは辺数の最大値であり、辺の重みの和を最大にする問題は別の処理になる。
+
+## 考え方
+
+現在選んでいる辺集合を $M$ とする。選ばれた辺と選ばれていない辺を交互に通り、両端がまだ組に使われていない道を**増加路**という。その道に沿って辺の採用・不採用を反転すると、選ぶ辺が一本増える。
+
+未使用の頂点を根として交互木を伸ばす。根から偶数本の辺で到達する頂点を外側、奇数本で到達する頂点を内側と呼ぶ。外側の頂点から未採用の辺をたどり、まだ木にない頂点へ進んだら、その頂点を内側、その相手を外側へ追加する。相手がなければ増加路が見つかる。
+
+二部グラフでは起きないのが、**同じ交互木の外側同士を結ぶ辺**である。二頂点から共通の祖先までの道とその辺を合わせると、奇数長の閉路ができる。共通の祖先を基点とするこの閉路では、基点以外の頂点が閉路内の採用辺で組になっている。これを Blossom として一頂点に縮める。
+
+縮約で外側に出られるようになった頂点も探索待ちに加える。縮めた後に別の奇閉路が見つかれば、縮約済みの部分を含めてさらに縮めてよい。掲載実装では実際にグラフを作り直さず、各頂点が属する縮約の基点を `base` に保存する。`parent` は、増加路が見つかったときに元の頂点へ戻して辺を反転できるよう、縮約時にも更新する。
+
+## 適用条件
+
+- 無向グラフの辺を選び、各頂点を高々一回使う。
+- 最大化するのは選ぶ辺の**本数**である。
+- 二部グラフに限らず、奇閉路があってもよい。
+- 掲載実装の $O(N^3)$ 時間と $O(N^2)$ 領域を使える規模である。
+
+全頂点をちょうど一回使いたい場合は、まず $N$ が偶数であることを確認し、最大マッチングの辺数が $N/2$ かを調べる。辺の重み、頂点ごとの複数回の使用、組の間の追加制約はこの実装では扱わない。二部性が保証される場合には、二部グラフ用の探索で十分である。
+
+## なぜ正しいか
+
+最大マッチングでない辺集合と、より大きいマッチングの対称差を取ると、交互閉路と交互路に分かれる。全体の辺数に差があるため、現在の辺より相手の辺が一本多い道があり、これは増加路になる。従って、増加路がなくなるまで一本ずつ増やせば最大となる。
+
+Blossom を縮めても増加路の有無は変わらない。縮約された頂点を増加路が使うとき、元の閉路上では基点と出入りする頂点の間に二通りの回り方がある。閉路長が奇数なので、そのうち一方を選んで、外側の道と採用・不採用が交互になるようにつなげられる。閉路を使わない道はそのまま残る。
+
+逆向きの議論では、元の増加路と、探索の根から基点までの交互路を合わせて考える。増加路が閉路に触れなければそのまま縮約後にも残り、触れる場合も交互路を適切につなぎ直すことで縮約後の増加路が得られる。これは単なる任意の奇閉路ではなく、**交互木の外側同士から得られ、基点以外が閉路内で対応済みの閉路**だから成り立つ。縮約後に得た道の展開を繰り返せば、入れ子の縮約も元の増加路へ戻せる。
+
+探索では、到達できる外側の頂点から全ての辺を調べる。未探索部分への拡張と Blossom の縮約を行っても未使用の端点へ到達しなければ、その根からの増加路はない。未使用の根を順に処理することで最大マッチングが得られる。
+
+## 計算量
+
+掲載実装は重複辺を隣接行列にまとめるため、入力辺数を $M$ とすると構築に $O(N^2+M)$ 時間。一回の探索では各頂点を高々一回キューから取り出し、各行を走査する。縮約は一回ごとに異なる基点をまとめ、合計高々 $N$ 回、それぞれ $O(N)$ 時間なので、一回の探索は $O(N^2)$ 時間となる。
+
+根ごとの探索が高々 $N$ 回で、全体は $O(N^3+M)$ 時間。隣接行列に $O(N^2)$、探索用配列に $O(N)$ の領域を使う。$N=0$ のときは入力検査だけを行う。
+
+## 実装
+
+`maximum_general_matching(n, edges)` は最大マッチングの辺を返す。頂点番号は $0$ 以上 $N$ 未満、返す辺は小さい端点を先にする。複数の最適解がある場合、どれを返すかは規定しない。
+
+$0\le N\le500$、入力辺数は200000以下。自己ループは選べないので無視し、重複辺はまとめる。空グラフも受け付ける。頂点数・辺数・端点が範囲外なら `invalid_argument` を送出する。辺を一つも使わない場合でも全ての入力辺を検査する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<pair<int,int>> maximum_general_matching(
+    int n, const vector<pair<int,int>>& edges) {
+    if (n < 0 || n > 500 || edges.size() > 200000)
+        throw invalid_argument("invalid graph size");
+    vector<vector<unsigned char>> adjacent(n, vector<unsigned char>(n));
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n)
+            throw invalid_argument("invalid endpoint");
+        if (u != v) adjacent[u][v] = adjacent[v][u] = 1;
+    }
+    vector<int> mate(n, -1), parent(n), base(n);
+    vector<unsigned char> outer(n), on_cycle(n), ancestor(n);
+
+    auto find_endpoint = [&](int root) -> int {
+        fill(parent.begin(), parent.end(), -1);
+        iota(base.begin(), base.end(), 0);
+        fill(outer.begin(), outer.end(), 0);
+        vector<int> waiting{root};
+        outer[root] = 1;
+
+        auto common_base = [&](int u, int v) {
+            fill(ancestor.begin(), ancestor.end(), 0);
+            for (;;) {
+                u = base[u];
+                ancestor[u] = 1;
+                if (mate[u] == -1) break;
+                u = parent[mate[u]];
+            }
+            for (;;) {
+                v = base[v];
+                if (ancestor[v]) return v;
+                v = parent[mate[v]];
+            }
+        };
+        auto mark_side = [&](int u, int center, int toward) {
+            while (base[u] != center) {
+                on_cycle[base[u]] = on_cycle[base[mate[u]]] = 1;
+                parent[u] = toward;
+                toward = mate[u];
+                u = parent[mate[u]];
+            }
+        };
+
+        for (size_t head = 0; head < waiting.size(); ++head) {
+            int u = waiting[head];
+            for (int v = 0; v < n; ++v) {
+                if (!adjacent[u][v] || base[u] == base[v] || mate[u] == v)
+                    continue;
+                if (v == root || (mate[v] != -1 && parent[mate[v]] != -1)) {
+                    int center = common_base(u, v);
+                    fill(on_cycle.begin(), on_cycle.end(), 0);
+                    mark_side(u, center, v);
+                    mark_side(v, center, u);
+                    for (int x = 0; x < n; ++x) {
+                        if (!on_cycle[base[x]]) continue;
+                        base[x] = center;
+                        if (!outer[x]) {
+                            outer[x] = 1;
+                            waiting.push_back(x);
+                        }
+                    }
+                } else if (parent[v] == -1) {
+                    parent[v] = u;
+                    if (mate[v] == -1) return v;
+                    int next = mate[v];
+                    if (!outer[next]) {
+                        outer[next] = 1;
+                        waiting.push_back(next);
+                    }
+                }
+            }
+        }
+        return -1;
+    };
+
+    for (int root = 0; root < n; ++root) {
+        if (mate[root] != -1) continue;
+        int endpoint = find_endpoint(root);
+        while (endpoint != -1) {
+            int previous = parent[endpoint];
+            int next = previous == -1 ? -1 : mate[previous];
+            mate[endpoint] = previous;
+            if (previous != -1) mate[previous] = endpoint;
+            endpoint = next;
+        }
+    }
+    vector<pair<int,int>> result;
+    for (int u = 0; u < n; ++u)
+        if (mate[u] > u) result.emplace_back(u, mate[u]);
+    return result;
+}
+```
+
+## 関連する手法
+
+- [マッチング](/flowchartcp/techniques/matching/)：組にできる相手が二つの集合の間に限られる場合。
+- [状態設計](/flowchartcp/techniques/state-design/)：頂点数が非常に少なければ、使用済み頂点集合のDPでも最大組数を求められる。
+
+## 参考資料
+
+- [Library Checker：Matching on General Graph](https://judge.yosupo.jp/problem/general_matching) — 単純無向グラフから最大マッチングを一つ出力する原典。[公式問題データ](https://github.com/yosupo06/library-checker-problems/blob/master/graph/general_matching/task.md)で頂点数上限と出力形式を確認できる。
+- [Jack Edmonds, Paths, Trees, and Flowers](https://www.math.u-szeged.hu/~hajnal/courses/MSc_Diszkret/edmonds65-blossom.pdf) — 増加路と奇閉路縮約の原著。掲載コードは、隣接行列と基点配列を用いる形で記述している。
+
+<TechniqueReferences techniqueId="general-matching-blossom-contraction" />

@@ -1,0 +1,86 @@
+---
+title: "Monge配列・SMAWK"
+description: "全単調な行列について、すべての行の最小値を線形回数の要素評価で求めます。"
+techniqueId: monge-smawk
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+全単調な行列について、すべての行の最小値を線形回数の要素評価で求めます。
+
+別名：Monge Array / SMAWK / Totally Monotone Matrix
+
+## 使う場面
+
+DPの1層が、行ごとにすべての遷移元を比較する形になっている場合に使います。行列を実際に保存する必要はなく、行と列の添字から要素を計算できれば十分です。最小値を取る列が単調に増える性質を、どの部分行列でも証明できるかを調べます。
+
+## 考え方
+
+各行と列を一部選んだすべての部分行列で、行の最小値を取る列が上から下へ非減少になる行列を、全単調な行列と呼びます。同じ最小値なら一番左の列を選ぶ規則を用います。
+
+SMAWKは、まず最小値の候補にならない列を削り、残る列数を行数以下にします。次に奇数番目の行を再帰的に解きます。偶数番目の行では、その前後の奇数行の答えに挟まれた列だけを調べます。
+
+## 適用条件
+
+全体の行の最小列が単調なだけでは足りず、部分行列でも同じ性質が必要です。$r<s$、$c<d$ に対して
+
+$$A[r][c]+A[s][d]\le A[r][d]+A[s][c]$$
+
+が成り立つMonge行列は、代表的な適用例です。
+
+要素を評価するときに、その値が確定している必要もあります。同じ層の未計算のDP値を読む場合は、計算順を保つ分割統治やLARSCHなどが必要です。三角形の無効な領域を無限大で埋める場合も、埋めた後の全単調性を確認してください。
+
+## なぜ正しいか
+
+列を削る段階では、全単調性によって、今比較した行より下でも必要にならない候補を判定できます。候補が行数を超えないようにする処理と組み合わせても、各行の最小列は残ります。
+
+奇数行の答えが分かれば、単調性から偶数行の最小列の範囲を挟めます。そこで残った候補を比較するため、再帰の結果も含めてすべての行の答えが求まります。
+
+## 計算量
+
+行数を $R$、列数を $C$ とすると、要素の評価回数と空間計算量は $O(R+C)$ です。1要素の評価時間が $T$ なら、時間は $O((R+C)T)$ になります。すべての要素を先に計算してしまうと、線形回数の評価という利点が失われます。
+
+## 実装
+
+`smawk(nr, nc, A)` は各行で最小値を取る列の添字を返します。`A(row, col)` は確定済みの要素を返す関数として渡します。少なくとも1列必要で、以下の実装はすべての行・列の組で要素が定義された行列を対象にしています。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// All entries are defined and totally monotone; ties choose leftmost.
+template<class Value>
+vector<int> smawk(int nr,int nc,Value A) {
+    assert(nr>=0 && nc>0); vector<int> ans(nr),rs(nr),cs(nc);
+    iota(rs.begin(),rs.end(),0); iota(cs.begin(),cs.end(),0);
+    auto go=[&](auto&& self,const vector<int>& rows,const vector<int>& cols)->void {
+        if(rows.empty()) return;
+        vector<int> s;
+        for(int c:cols) {
+            while(!s.empty() && A(rows[s.size()-1],c)<A(rows[s.size()-1],s.back())) s.pop_back();
+            if(s.size()<rows.size()) s.push_back(c);
+        }
+        vector<int> odd; for(int i=1;i<int(rows.size());i+=2) odd.push_back(rows[i]);
+        self(self,odd,s); int left=0;
+        for(int i=0;i<int(rows.size());i+=2) {
+            int right=s.size()-1;
+            if(i+1<int(rows.size())) {
+                right=left; while(s[right]!=ans[rows[i+1]]) ++right;
+            }
+            int best=left;
+            for(int j=left+1;j<=right;++j) if(A(rows[i],s[j])<A(rows[i],s[best])) best=j;
+            ans[rows[i]]=s[best]; left=right;
+        }
+    };
+    go(go,rs,cs); return ans;
+}
+```
+
+## 関連する手法
+
+[分割統治によるDP高速化](/flowchartcp/techniques/divide-conquer-dp/) ・ [LARSCH](/flowchartcp/techniques/larsch/)
+
+## 参考資料
+
+- [Luzhiled: SMAWK（作者実装）](https://ei1333.github.io/library/dp/smawk.hpp)
+- [Golinほか: MongeとオンラインDPの研究論文](https://web.cs.unlv.edu/bein/pubs/knuthyaotalg.pdf)
+
+<TechniqueReferences techniqueId="monge-smawk" />

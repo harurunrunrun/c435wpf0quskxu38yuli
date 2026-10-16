@@ -1,0 +1,57 @@
+---
+title: "区間内に続いている確率は、開始時刻の確率を足す"
+description: "開始だけを状態にし、観測時刻を覆う開始時刻の範囲から確率を求めます。"
+techniqueId: "probability-start-time-window"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+正整数の長さを持つ仕事や曲を一つ選び、終了するとすぐ次を選ぶ過程で、ある時刻に特定のものが続いている確率を求めるとき。現在の種類と残り時間を両方持つと状態数が膨らみます。
+
+## 考え方
+
+時刻 $t$ に何かが始まる確率を $f[t]$ とします。$f[0]=1$、等確率の $N$ 種類なら $f[t]=N^{-1}\sum_i f[t-T_i]$。長さ $T_0$ の種類が時刻 $X+0.5$ を覆うには、開始時刻が $\max(0,X-T_0+1)$ 以上 $X$ 以下である必要があり、答えはこの範囲の $f[t]/N$ の和です。
+
+## 適用条件
+
+長さは正整数、開始は時刻 0、待ち時間なし、次の選択確率は履歴に依存しないこと。長さ 0 は同時刻の自己ループを生むので、この前向き DP では扱いません。法で計算するときは $N$ の逆元が必要です。
+
+## なぜ正しいか
+
+時刻 $t$ の直前に終わる種類で分けると、開始時刻は $t-T_i$ です。これらの事象は排反なので確率を足せます。観測時刻を覆う特定の種類についても、どの開始時刻だったかは一意であり、最後の範囲の和に二重計上はありません。
+
+## 計算量
+
+長さの最大値を $T$ とすると、種類・残り時間を持つ方法は最大 $O(XNT)$ 状態。開始時刻だけなら時間 $O(NX)$、空間 $O(X)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long playlist_occupancy(const vector<int>& length,int x,int chosen=0){
+    constexpr long long mod=998244353;
+    int n=length.size();assert(0<n && n<mod && x>=0 && 0<=chosen && chosen<n);
+    for(int t:length)assert(t>0);
+    auto power=[&](long long a,long long k){long long r=1;for(;k;k>>=1,a=a*a%mod)if(k&1)r=r*a%mod;return r;};
+    long long inv=power(n,mod-2);vector<long long> f(x+1);f[0]=1;
+    for(int t=1;t<=x;++t){
+        for(int d:length)if(d<=t)f[t]=(f[t]+f[t-d])%mod;
+        f[t]=f[t]*inv%mod;
+    }
+    long long sum=0;
+    for(int t=max(0,x-length[chosen]+1);t<=x;++t)sum=(sum+f[t])%mod;
+    return sum*inv%mod;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/)、[期待値の線形性](/flowchartcp/techniques/probability-expectation/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc323/editorial/7357)
+
+<TechniqueReferences techniqueId="probability-start-time-window" />

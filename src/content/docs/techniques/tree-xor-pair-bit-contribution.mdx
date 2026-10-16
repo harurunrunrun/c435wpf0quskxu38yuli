@@ -1,0 +1,84 @@
+---
+title: "木の全頂点対の経路XOR和は、根からのXORをビットごとの二群に分ける"
+description: "共通の根経路はXORで消え、各ビットが異なる頂点対だけが答えへ寄与する。"
+techniqueId: tree-xor-pair-bit-contribution
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の経路にある辺重みをXORした値を、全頂点対について合計したい。各経路のLCAや辺を個別に求めると、頂点対が二乗個になってしまう。
+
+## 考え方
+
+根から頂点 $v$ までの辺重みのXORを $x_v$ とする。二つの根経路の共通部分は各辺が2回現れて消えるので、$u$–$v$ 経路のXORは $x_u\mathbin{\mathrm{xor}}x_v$ になる。LCAを実際に求める必要はない。
+
+第 $b$ ビットが1の頂点数を $c_b$、0の頂点数を $N-c_b$ とする。そのビットが異なる頂点対は $c_b(N-c_b)$ 個なので、答えは
+
+$$\sum_b 2^b c_b(N-c_b).$$
+
+0側と1側から一つずつ選ぶ組は、一つの順序なし対に対応する。さらに2倍したり2で割ったりしない。
+
+## 適用条件
+
+経路の集計がXORで、全頂点対を同じ重みで足す。通常の経路長の和や、最大XORを求める場合はこの個数の積を使えない。一般グラフでは二頂点間の経路が一意ではなく、根経路の共通部分を消すだけでは対象経路を特定できない。
+
+掲載実装は符号なし64ビットの辺重みを受け取り、64ビット全てを走査する。負の重みを二の補数の整数として合計する用途とは区別する。法は $1$ 以上 $10^9+7$ 以下で、素数である必要はない。原典は60ビット未満の重みと法 $10^9+7$ である。
+
+## なぜ正しいか
+
+根からLCAまでの各辺は二つの根経路に共通し、$a\mathbin{\mathrm{xor}}a=0$ によって消える。残る辺は二頂点間の経路とちょうど一致する。
+
+XORの第 $b$ ビットが1になる必要十分条件は、二つの値の第 $b$ ビットが異なること。それを満たす全対を二群の直積で一度ずつ数える。各値を二進数の重み $2^b$ の和へ分解し、頂点対とビットの足し合わせの順を入れ替えた式なので、全ての寄与が一致する。
+
+## 計算量
+
+全頂点対をLCAで処理する $O(N^2\log N)$ 時間から、根XORの準備 $O(N)$ と各ビットの計数 $O(NB)$ 時間へ改善する。$B$ は重みのビット数で、掲載実装では64。空間 $O(N)$。ビット重み・個数積は剰余を取りながら計算し、正確な総和を64ビットへ入れない。
+
+## 実装
+
+`tree_xor_pair_sum(n, edges, modulus)` が順序なし対のXOR和の剰余を返す。辺は `(u,v,uint64_t weight)`、頂点は0始まり。64ビットの最上位ビットも扱う。`modulus=1` なら答えは0。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+uint64_t tree_xor_pair_sum(int n,const vector<tuple<int,int,uint64_t>>& edges,
+        uint64_t modulus=1000000007) {
+    assert(1<=n && n<=200000 && int(edges.size())==n-1);
+    assert(1<=modulus && modulus<=1000000007);
+    vector<vector<pair<int,uint64_t>>> g(n);
+    for(auto [u,v,w]:edges) {
+        assert(0<=u && u<n && 0<=v && v<n);
+        g[u].push_back({v,w});g[v].push_back({u,w});
+    }
+    vector<int> parent(n,-2),order{0};parent[0]=-1;
+    vector<uint64_t> value(n);
+    for(size_t i=0;i<order.size();++i) {
+        int v=order[i];
+        for(auto [u,w]:g[v]) if(u!=parent[v]) {
+            assert(parent[u]==-2);parent[u]=v;value[u]=value[v]^w;order.push_back(u);
+        }
+    }
+    assert(int(order.size())==n);
+    uint64_t answer=0,power=1%modulus;
+    for(int bit=0;bit<64;++bit) {
+        uint64_t ones=0;
+        for(uint64_t x:value) ones+=(x>>bit)&1;
+        uint64_t pairs=ones*(uint64_t(n)-ones)%modulus;
+        answer=(answer+uint64_t((__uint128_t)pairs*power%modulus))%modulus;
+        power=power*2%modulus;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[木の経路和を根からの累積和とLCAで求める](/flowchartcp/techniques/tree-path-prefix-lca/) ・ [XOR基底](/flowchartcp/techniques/xor-basis/)
+
+## 参考資料
+
+- [AtCoder：Xor Distances](https://atcoder.jp/contests/abc201/tasks/abc201_e)
+- [AtCoder公式解説](https://atcoder.jp/contests/abc201/editorial/1837)
+
+<TechniqueReferences techniqueId="tree-xor-pair-bit-contribution" />

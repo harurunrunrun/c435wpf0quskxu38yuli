@@ -1,0 +1,173 @@
+---
+title: "DFSの行き帰りでラベルを付け、隣接ラベルだけで木をたどる"
+description: "深さの偶奇でDFSの入時と出時に番号を発行し、子の担当区間の端点を隣接ラベルだけから判定する。"
+techniqueId: tree-local-routing-alternating-dfs-labels
+---
+
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+準備段階では木全体を見られるが、実行段階では現在頂点・目的頂点・隣接頂点の整数ラベルしか分からない。それでも、目的地への一意な経路の最初の一歩を返したいときに使います。
+
+各頂点へ相異なる $0,\ldots,N-1$ を一つずつ配ります。親番号・深さ・木そのものを実行段階へ保存する必要はありません。準備と実行が別プロセスであっても、ラベルだけから判断できます。
+
+## 考え方
+
+任意の根からDFSします。深さが偶数の頂点には**入るとき**、奇数の頂点には**出るとき**、カウンタの値を付けて1増やします。各頂点で一度だけ増やすため、使うラベルはそのまま $0,\ldots,N-1$ です。一般のDFSの入・出の両方で時刻を増やしてから、偶数深さの入時刻と奇数深さの出時刻を選び、大小順に圧縮しても同じ順序になります。
+
+この付け方では、偶数深さの頂点のラベルは全隣接先より小さく、奇数深さなら全隣接先より大きくなります。深さを知らなくても、現在ラベル $s$ と隣接ラベルを比べれば、どちらの場合か分かります。ラベルの数値自体の偶奇は使いません。
+
+隣接ラベルを $c_0<c_1<\cdots<c_{d-1}$、目的地ラベルを $t\ne s$ とします。次の規則で一歩を選びます。
+
+|現在地の型|目的地の範囲|返す隣接ラベル|
+|---|---|---|
+|$s<c_0$|$s<t\le c_0$|$c_0$|
+|$s<c_0$|$c_{i-1}<t\le c_i$、$1\le i<d$|$c_i$|
+|$s<c_0$|$t<s$ または $c_{d-1}<t$|$c_{d-1}$|
+|$c_{d-1}<s$|$c_i\le t<c_{i+1}$、$0\le i<d-1$|$c_i$|
+|$c_{d-1}<s$|$c_{d-1}\le t<s$|$c_{d-1}$|
+|$c_{d-1}<s$|$t<c_0$ または $s<t$|$c_0$|
+
+小さい型では範囲内の `lower_bound(t)`、大きい型では `upper_bound(t)` の一つ前です。外側はそれぞれ最大隣接、最小隣接へ返します。目的地が隣接ラベルと等しい場合、どちらの型でもその隣接へ直接渡します。根には親がありませんが、根で外側の分岐が必要になる有効な目的地は存在しません。葉なら隣接先は一つなので、全ての有効な目的地でそこへ進みます。
+
+## 適用条件
+
+入力は木で、準備時にその全体を見られ、実行時にも隣接先のラベルは全て分かる必要があります。目的地は同じ木に属し、全ラベルがこの準備関数によるものであることが前提です。任意のラベル付けや、サイクルを含むグラフには、この規則をそのまま使いません。
+
+全ラベルへ**同じ狭義単調増加関数**を適用しても使えます。全頂点の大小順が保たれ、現在地・目的地・隣接先に同じ変換を使い、値が非負の `int` に収まることが条件です。ラベル間に空きがあってもよく、順位への圧縮もこの条件を満たします。頂点ごとに別の変換を使ったり、順序を逆にしたりすることは対象外です。
+
+掲載APIは頂点数1〜200000を扱います。頂点番号と返すラベルは0始まり、根も指定できます。木でない入力、不正な根・端点・辺数は `std::invalid_argument`。ラベル上限を渡す `label` は $k\ge N-1$ を要求します。
+
+`next_tree_label_sorted` は隣接ラベルの厳密な昇順を要求し、`next_tree_label` は渡された順序を整列します。負のラベル、目的地が現在地と同じ、空の隣接列、重複、現在ラベルを含む隣接列、現在ラベルの両側に隣接がある場合など、局所的に分かる違反を例外にします。ただし、この情報だけでは、目的地が本当に同じ木にあるか、隣接列が実際の辺と一致するかまでは検査できません。
+
+[公式原典](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf)は $2\le N\le1000$、シナリオ数1〜10、全シナリオで実行関数へ渡される隣接配列の長さの合計は100000以下です。実行関数には昇順の隣接列と異なる二頂点が渡されます。部分課題5の満点条件は最大ラベル1000以下であり、本構成の最大値 $N-1\le999$ はこれを満たします。$N-1$ は相異なる非負整数を $N$ 個使うときの最小の最大値でもあります。
+
+## なぜ正しいか
+
+DFSで一つの部分木を処理している間に、その部分木の全ラベルを発行し、外の頂点のラベルは発行しません。従って部分木のラベルは連続した順位区間になります。偶数深さなら自身のラベルがその区間の左端、奇数深さなら右端です。
+
+偶数深さの頂点 $v$ を考えます。子は奇数深さなので、子のラベルはそれぞれの部分木区間の右端です。子をDFS順に $x_1,\ldots,x_k$ とすると、担当区間は $(s,\ell(x_1)]$、$(\ell(x_1),\ell(x_2)]$、…です。親があれば奇数深さで出るときにラベルを発行するため、親のラベルは全ての子のラベルより大きく、昇順隣接列の最後にあります。子のどの区間にも入らない目的地は親方向です。子の最後の区間と親ラベルの間に別の頂点のラベルがあっても、`lower_bound` は親を返します。このため小さい型の全規則が正しいことが分かります。
+
+奇数深さの頂点では、子が偶数深さなので、子のラベルは各部分木区間の左端です。子の区間は $[\ell(x_1),\ell(x_2))$、…、$[\ell(x_k),s)$。親のラベルはそれらより小さく、昇順隣接列の最初です。最初の子より前の区間や自身より外の目的地は親方向で、それ以外は目的地以下で最大の子ラベルへ進みます。これが大きい型の規則です。
+
+根は偶数深さで、そのラベルは木全体の最小、子があれば最後の子のラベルは最大です。従って有効な目的地では外側へ出ません。一頂点の木には異なる目的地がないので実行関数を呼びません。次数1の頂点では、どの場合も唯一の隣接先を返します。全比較は大小関係と等号だけを使うため、共通の狭義単調増加変換の後でも同じ結論になります。区間の式に $c_i+1$ のような演算を使わないことが、この拡張にも必要です。
+
+以上から各呼出しは一意な経路上の隣接先を返し、目的地までの辺数を必ず1減らします。各頂点で同じ局所規則を適用すれば、同じ頂点へ戻ることなく目的地へ着きます。準備時の親配列やDFSの状態は、いずれの判断にも使っていません。
+
+## 計算量
+
+準備は各辺を高々二度見るため $O(N)$ 時間、隣接配列と反復DFSのスタックで $O(N)$ 補助空間です。カウンタは $N$ 回だけ増え、深さ200000の鎖でも再帰呼出しを使いません。
+
+昇順の隣接列が既に保証されていれば、決定規則そのものは二分探索で $O(\log(d+1))$ 時間、$O(1)$ 空間です。掲載の検査付き `next_tree_label_sorted` は隣接列を一度検査するため $O(d)$ 時間、$O(1)$ 補助空間です。公式インターフェースの配列は値渡しなので、そのコピーにも $O(d)$ の時間と空間を要します。未整列用アダプタは $O(d\log(d+1))$ 時間です。
+
+実際に経路の全歩を呼ぶ場合は、検査付きAPIでは通る頂点の次数の和が実行時間に現れます。一歩が正しいことから、呼出し回数自体は経路の辺数に一致します。
+
+ラベル生成では $N-1$ 以下しか返しません。単調変換後のラベルは最大 `INT_MAX` まで許しますが、実行関数はラベルの加減乗算を行わず比較するので、境界でも整数オーバーフローを起こしません。
+
+## 実装
+
+`alternating_tree_labels(n, edges, root)` が準備、`next_tree_label_sorted(current, target, neighbours)` が昇順隣接列に対する実行関数です。`next_tree_label` は未整列の隣接列用です。返す値は頂点番号ではなく、次の隣接頂点の**ラベル**です。目的地へ到着した後は呼びません。
+
+`label` と `find_next_station` は原典と同じ形のアダプタです。実行関数はグローバル変数や静的な木の状態を使わず、準備関数が一度も呼ばれていない別プロセスでも使えます。
+
+```cpp
+#include <algorithm>
+#include <iterator>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+// Preparation phase: one tree, rooted anywhere; labels are exactly 0..n-1.
+std::vector<int> alternating_tree_labels(
+    int n, const std::vector<std::pair<int, int>>& edges, int root = 0) {
+    if (n < 1 || n > 200000 || root < 0 || root >= n || edges.size() != std::size_t(n - 1))
+        throw std::invalid_argument("tree size, root, or edge count");
+    std::vector<std::vector<int>> adjacent(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v)
+            throw std::invalid_argument("edge endpoint");
+        adjacent[u].push_back(v); adjacent[v].push_back(u);
+    }
+    struct Frame { int vertex, parent; std::size_t next; bool odd; };
+    std::vector<Frame> stack;
+    stack.reserve(n);
+    std::vector<int> labels(n, -1);
+    std::vector<unsigned char> seen(n, 0);
+    int counter = 0, visited = 1;
+    labels[root] = counter++; seen[root] = 1;
+    stack.push_back({root, -1, 0, false});
+    while (!stack.empty()) {
+        Frame& frame = stack.back();
+        int v = frame.vertex;
+        if (frame.next == adjacent[v].size()) {
+            if (frame.odd) labels[v] = counter++;
+            stack.pop_back();
+            continue;
+        }
+        int child = adjacent[v][frame.next++];
+        if (child == frame.parent) continue;
+        if (seen[child]) throw std::invalid_argument("cycle or repeated edge");
+        seen[child] = 1; ++visited;
+        bool odd = !frame.odd;
+        if (!odd) labels[child] = counter++;
+        stack.push_back({child, v, 0, odd});
+    }
+    if (visited != n) throw std::invalid_argument("disconnected tree");
+    return labels;
+}
+
+// IOI interface adapter. No state is retained between calls or phases.
+std::vector<int> label(int n, int k, std::vector<int> u, std::vector<int> v) {
+    if (n < 1 || n > 200000 || k < n - 1 || u.size() != std::size_t(n - 1) || v.size() != u.size())
+        throw std::invalid_argument("label arguments or insufficient label range");
+    std::vector<std::pair<int, int>> edges;
+    edges.reserve(u.size());
+    for (std::size_t i = 0; i < u.size(); ++i) edges.push_back({u[i], v[i]});
+    return alternating_tree_labels(n, edges);
+}
+
+// Routing phase: no tree or labeler state is available.
+// The inputs must come from one labeling above, possibly after ONE shared
+// strictly increasing remapping of every label. Neighbours must be sorted.
+int next_tree_label_sorted(int current, int target, const std::vector<int>& neighbours) {
+    if (current < 0 || target < 0 || current == target || neighbours.empty() || neighbours.size() > 199999)
+        throw std::invalid_argument("routing labels or degree");
+    for (std::size_t i = 0; i < neighbours.size(); ++i)
+        if (neighbours[i] < 0 || neighbours[i] == current || (i && neighbours[i - 1] >= neighbours[i]))
+            throw std::invalid_argument("neighbours must be distinct and sorted");
+    if (current < neighbours.front()) {
+        if (target < current || target > neighbours.back()) return neighbours.back();
+        return *std::lower_bound(neighbours.begin(), neighbours.end(), target);
+    }
+    if (current > neighbours.back()) {
+        if (target > current || target < neighbours.front()) return neighbours.front();
+        return *std::prev(std::upper_bound(neighbours.begin(), neighbours.end(), target));
+    }
+    throw std::invalid_argument("current label is not a local extreme");
+}
+
+// Optional adapter for an arbitrary order of neighbour labels.
+int next_tree_label(int current, int target, std::vector<int> neighbours) {
+    std::sort(neighbours.begin(), neighbours.end());
+    return next_tree_label_sorted(current, target, neighbours);
+}
+
+int find_next_station(int s, int t, std::vector<int> c) {
+    return next_tree_label_sorted(s, t, c);
+}
+```
+
+## 関連する手法
+
+- [部分木をEuler順の区間にする](/flowchartcp/techniques/subtree-euler-interval/) — 部分木が連続した順序区間になる性質を、交互の片端ラベルだけへ圧縮する。
+- [根付き木の葉に区間ラベルを付ける](/flowchartcp/techniques/rooted-tree-leaf-interval-labels/) — 部分木の範囲を表す別のラベル構成。ここでは一頂点に二つの端点を渡せない制約を利用する。
+- [座標圧縮](/flowchartcp/techniques/coordinate-compression/) — 必要なのが大小関係だけなら、選んだDFS時刻を順位へ変換できる。
+
+## 参考資料
+
+- [Stations — 主催者の公式原典](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf) — 木全体を扱う準備と、ラベルだけで進む別プロセスの実行を分ける適用例。
+- [Solution for Stations — 主催者の公式解説](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf) — DFSの入・出の選択と大小順の圧縮を参照した。Web抽出で一部の数式が欠けるため、掲載した完全な端点規則は上の独立証明と全小木の比較で確認した。
+- [IOI 2020 公式課題一覧](https://ioi2020.sg/ioi-2020-tasks/) と [公式日程](https://ioi2020.sg/schedule/) — Stationsは競技2、実施日は2020年9月19日。
+
+<TechniqueReferences techniqueId="tree-local-routing-alternating-dfs-labels" />

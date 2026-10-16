@@ -1,0 +1,261 @@
+---
+title: "区間内の会場を選び、道中の最大高さの合計を最小にする"
+description: "区間の最大位置で会場の左右を分け、左端から各位置までの最適費用をまとめる。二候補が一度だけ交差する性質と、小さい側の併合で多数の区間質問に答える。"
+techniqueId: cartesian-prefix-meeting-cost-single-cross-envelope
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定の高さ列 $H$ に対し、各区間 $[L,R]$ で会場 $x$ を一つ選ぶ。参加者 $i$ の費用は、$i$ と $x$ を結ぶ区間の最大高さで、全員の費用の総和を最小化したい。
+
+$$\min_{L\le x\le R}\sum_{i=L}^{R}\max_{\min(i,x)\le j\le\max(i,x)}H_j.$$
+
+会場を区間最大の位置に置くと全員がその高さを支払うが、最大より低い側へ寄せれば費用を減らせる。多数の質問で全会場を試す代わりに、最大位置で分けた部分問題の**全接頭辞の最適費用**をまとめて扱う。
+
+## 考え方
+
+高さと元の添字の組 $(H_i,i)$ を優先順位とし、大きいものを親にする最大Cartesian木を作る。各部分木は連続区間 $[l,r)$ に対応する。その根を $v$ とし、各右端 $t\in[l,r)$ について、区間 $[l,t]$ の最適費用 $S_v(t)$ を持つ。
+
+$t<v$ なら左部分木の関数をそのまま使える。左部分木全体の最適費用を $C_L$、空なら0とすると、中央は $S_v(v)=C_L+H_v$。右部分木の接頭辞費用を $C_R(t)$ とすると、$t>v$ は
+
+$$S_v(t)=\min\left(F(t),G(t)\right),$$
+
+$$F(t)=C_L+(t-v+1)H_v,\qquad G(t)=(v-l+1)H_v+C_R(t).$$
+
+右端を一つ伸ばしても、以前の最適会場へ新しい参加者を加えれば増分は $H_v$ 以下である。従って $F-G$ は非減少で、最小値は**前半で直線 $F$、後半で $G$**となる。各関数を区分一次式の断片にし、$F$ が覆う右側の断片を削除して、この一本の切替を作る。
+
+断片の始点は配列全体での位置とし、全てを一つの `map` に置く。各生存部分木には一つの遅延加算値を持たせ、右側の $C_R$ への定数加算をまとめて表す。左右を一つにするときは、**元の部分木の頂点数が小さい側**の断片だけを調整し、加算値をそろえる。
+
+一般の質問では、同じ優先順位で区間最大の位置 $v$ を求める。会場を右側に置く候補は
+
+$$(v-L+1)H_v+\operatorname{opt}(v+1,R).$$
+
+後半は、$v$ の右の子の部分木における接頭辞である。その子のDPができた直後に値を読み、親に破壊される前に質問へ加算する。右側が空なら会場を $v$ とする候補を使う。左側の候補は配列を反転して同じ処理で求め、二候補の最小値を返す。
+
+## 適用条件
+
+高さは固定された正整数で、費用は二位置を含む区間の最大値である。質問区間の中から会場を選ぶ。高さの更新、参加者ごとの重み、最大値以外の区間集約には、同じ遷移をそのまま使わない。
+
+掲載APIは $1\le N\le750000$、$1\le H_i\le10^9$、$0\le Q\le750000$、$0\le L\le R<N$ を扱う。原典の全範囲を含み、質問0件と重複質問も許す。空列、範囲外の高さ・個数・端点は `std::invalid_argument`。空の質問列でも高さを検査する。入力は変更せず、割当例外は伝播する。
+
+同じ高さには、**元の添字を固定した第二キー**として使う。反転後も元の添字を変えてはいけない。例えば $[2,1,2]$ の全区間では最適費用は5である。両方向で独立に現在の右端の最大を選ぶと、異なる最大位置で左右を分け、6を返してしまう。同じ元位置を分割点にすれば、その左右の会場を尽くせる。
+
+このAPIは全質問を先読みする。部分木の関数を保存したまま後から質問を追加するオンライン構造ではない。構築状態は全て呼出し内にあり、別の入力へ繰り返し利用できる。
+
+## なぜ正しいか
+
+**Cartesian木の遷移。** 根 $v$ より左に会場があると、$v$ から右端までの全参加者は $H_v$ を支払うので、左全体の最適費用にその人数分を足せば $F$ となる。右側の会場なら、左端から $v$ までの全員が $H_v$ を払い、右接頭辞の費用を足した $G$ となる。
+
+根自身を会場にする費用は全員分の $H_v$ であり、左が非空なら $F$ 以上である。左が空なら $F$ が根を会場にする費用そのものである。中央までの接頭辞も、左の最適会場へ根一人を加えた $C_L+H_v$ が最適となる。よって空の子や同高さを含めて遷移は正しい。
+
+**一交差。** 右接頭辞の最適費用は、参加者を一人加えても増分が $H_v$ 以下だから、$F(t+1)-G(t+1)\ge F(t)-G(t)$。ある断片の末尾で $F\le G$ なら、その断片の全体を $F$ に置き換えてよい。そうでない最初の断片では、$F>G$ となる最初の整数位置だけを二分探索すればよい。それより後は全て $G$ が最小となる。等号は $F$ 側へ寄せても費用を変えない。
+
+**質問の回収。** 区間 $[L,R]$ の優先順位最大位置を $v$ とする。右側は全て $v$ より優先順位が低いため、$[v+1,R]$ は $v$ の右の子の部分木の接頭辞となる。会場が右側なら左の全参加者の寄与は一定で、残る最小化はこの接頭辞だけでよい。左側についても同じであり、反転時に同じ元の最大位置を使えば、全会場をこの二方向で覆う。会場 $v$ も、片側が空の場合の候補に含まれ、両側が非空なら他の候補以上なので取りこぼさない。
+
+**遅延値と破壊的併合。** 断片は、その始点からの距離 $d$ に対する一次式 $ad+b$ を保持し、実際の費用は所属する部分木の加算値 $o$ を足したものとする。所属を変える時に $b$ へ $o_{\rm old}-o_{\rm new}$ を加えれば、全位置の値を保存できる。質問はその部分木を親へ併合する前に回収するため、後の削除で答えが失われない。
+
+内部キーを変更する場合は、ノードを `extract` してからキーと始点の値を更新し、再挿入する。`map` に入っているキーを直接書き換えない。
+
+## 計算量
+
+一頂点で新しく作る断片は中央の一点と $F$ の区間の高々二つなので、作る断片の総数は全体で $O(N)$。覆われた断片は一度だけ削除され、部分的に残るものの始点変更は一併合につき高々一回である。探索・挿入・再挿入は $O(\log(N+1))$。
+
+遅延値の調整は、生存断片数ではなく、左右の元の部分木の頂点数を比較する。中央と新しい $F$ は根で生まれた断片として左側へ含める。一つの断片をその出生頂点へ対応させると、小さい側として調整されるたびに、その出生頂点を含む元の集合の大きさは二倍以上になる。削除で生存断片数が減っても元の集合は縮まらないため、一断片の調整は高々 $O(\log(N+1))$ 回である。
+
+区間最大の取得、断片の全処理、質問の取得を含め、二方向合計で **$O((N+Q)\log(N+1))$ 時間、$O(N+Q)$ 空間**。生存する断片は互いに重ならない非空区間を覆うので高々 $N$ 個である。Cartesian木の構築と後順処理は反復で行い、同高さや単調列による深さ $N$ の木でも再帰しない。
+
+全ての最適費用は $NH_{\max}\le7.5\times10^{14}$。遅延値も部分木の頂点数と $H_{\max}$ の積以下に保たれる。左の値を引き継ぐ場合はその帰納上界を保ち、右の値を引き継ぐ場合は、右部分木の上界に左部分木と根の人数分を加えるだけだからである。断片の始点値は実費用から遅延値を引いた量、傾きは $0\ldots H_{\max}$ であり、評価や加算値の変換を含む中間量も絶対値 $3NH_{\max}$ 以下となる。積を作る前に `long long` に変換し、費用・加算値・一次式には64bitを使う。
+
+## 実装
+
+`minimum_interval_meeting_costs(height, intervals)` は閉区間の質問順に最小費用を返す。最大位置は元の $(H_i,i)$ で一度だけ求め、反転側はその位置を写す。断片は全体座標をキーとし、`value` は断片の始点での値から所属の遅延値を引いた量である。
+
+```cpp
+#include <algorithm>
+#include <iterator>
+#include <limits>
+#include <map>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace meeting_envelope_detail {
+class RangeMaximum {
+    const std::vector<int>& height;
+    int base = 1;
+    std::vector<int> tree;
+    int better(int a, int b) const {
+        if (a == -1) return b;
+        if (b == -1) return a;
+        return height[a] != height[b] ? (height[a] > height[b] ? a : b) : std::max(a, b);
+    }
+public:
+    explicit RangeMaximum(const std::vector<int>& values) : height(values) {
+        while (base < static_cast<int>(height.size())) base *= 2;
+        tree.assign(2 * base, -1);
+        for (int i = 0; i < static_cast<int>(height.size()); ++i) tree[base + i] = i;
+        for (int i = base - 1; i > 0; --i) tree[i] = better(tree[2 * i], tree[2 * i + 1]);
+    }
+    int query(int first, int last) const { // half-open
+        int result = -1;
+        for (first += base, last += base; first < last; first /= 2, last /= 2) {
+            if (first & 1) result = better(result, tree[first++]);
+            if (last & 1) result = better(result, tree[--last]);
+        }
+        return result;
+    }
+};
+
+struct Piece {
+    int length;
+    long long slope, value;
+    long long at(int offset) const { return slope * offset + value; }
+};
+
+void direction(const std::vector<int>& heights,
+               const std::vector<std::pair<int, int>>& intervals,
+               const std::vector<int>& original_peak, bool reversed,
+               std::vector<long long>& answer) {
+    const int n = static_cast<int>(heights.size()), q = static_cast<int>(intervals.size());
+    const auto original = [&](int position) { return reversed ? n - 1 - position : position; };
+    const auto height = [&](int position) { return heights[original(position)]; };
+    const auto higher = [&](int a, int b) {
+        return height(a) != height(b) ? height(a) > height(b) : original(a) > original(b);
+    };
+    std::vector<int> left(n, -1), right(n, -1);
+    int root;
+    {
+        std::vector<int> stack;
+        for (int v = 0; v < n; ++v) {
+            int last = -1;
+            while (!stack.empty() && higher(v, stack.back())) { last = stack.back(); stack.pop_back(); }
+            if (!stack.empty()) right[stack.back()] = v;
+            left[v] = last; stack.push_back(v);
+        }
+        root = stack.front();
+    }
+    std::vector<int> order{root}, lo(n), hi(n);
+    order.reserve(n);
+    for (std::size_t i = 0; i < order.size(); ++i) {
+        const int v = order[i];
+        if (left[v] != -1) order.push_back(left[v]);
+        if (right[v] != -1) order.push_back(right[v]);
+    }
+    for (auto it = order.rbegin(); it != order.rend(); ++it) {
+        const int v = *it;
+        lo[v] = left[v] == -1 ? v : lo[left[v]];
+        hi[v] = right[v] == -1 ? v + 1 : hi[right[v]];
+    }
+
+    std::vector<int> first(n, -1), next(q), query_end(q);
+    std::vector<long long> base(q), offset(n);
+    for (int i = 0; i < q; ++i) {
+        const int l = reversed ? n - 1 - intervals[i].second : intervals[i].first;
+        const int r = reversed ? n - 1 - intervals[i].first : intervals[i].second;
+        const int v = reversed ? n - 1 - original_peak[i] : original_peak[i];
+        base[i] = static_cast<long long>(v - l + 1) * height(v);
+        if (v == r) answer[i] = std::min(answer[i], base[i]);
+        else {
+            const int child = right[v];
+            query_end[i] = r; next[i] = first[child]; first[child] = i;
+        }
+    }
+
+    std::map<int, Piece> pieces;
+    const auto evaluate = [&](int position, long long lazy) {
+        const auto it = std::prev(pieces.upper_bound(position));
+        return it->second.at(position - it->first) + lazy;
+    };
+    for (auto node = order.rbegin(); node != order.rend(); ++node) {
+        const int v = *node, lchild = left[v], rchild = right[v];
+        const long long h = height(v);
+        const long long left_offset = lchild == -1 ? 0 : offset[lchild];
+        const long long left_cost = lchild == -1 ? 0 : evaluate(v - 1, left_offset);
+        pieces.emplace(v, Piece{1, 0, left_cost + h - left_offset});
+        offset[v] = left_offset;
+        if (rchild != -1) {
+            const long long right_offset = offset[rchild] + static_cast<long long>(v - lo[v] + 1) * h;
+            int covered = 0;
+            auto it = pieces.find(v + 1);
+            while (it != pieces.end() && it->first < hi[v]) {
+                const int last = it->first + it->second.length - 1;
+                const long long f = left_cost + static_cast<long long>(last - v + 1) * h;
+                if (f > it->second.at(it->second.length - 1) + right_offset) break;
+                covered += it->second.length; it = pieces.erase(it);
+            }
+            if (it != pieces.end() && it->first < hi[v]) {
+                int low = 0, high = it->second.length - 1;
+                while (low < high) {
+                    const int middle = low + (high - low) / 2, position = it->first + middle;
+                    const long long f = left_cost + static_cast<long long>(position - v + 1) * h;
+                    if (f <= it->second.at(middle) + right_offset) low = middle + 1;
+                    else high = middle;
+                }
+                if (low > 0) {
+                    auto handle = pieces.extract(it);
+                    handle.key() += low;
+                    handle.mapped().value += handle.mapped().slope * low;
+                    handle.mapped().length -= low;
+                    pieces.insert(std::move(handle));
+                }
+                covered += low;
+            }
+            if (covered > 0)
+                pieces.emplace(v + 1, Piece{covered, h, left_cost + 2 * h - left_offset});
+            const int split = v + 1 + covered;
+            // Compare ORIGINAL vertex masses, even when many pieces were deleted.
+            if (v - lo[v] + 1 <= hi[v] - v - 1) {
+                for (auto p = pieces.lower_bound(lo[v]); p != pieces.end() && p->first < split; ++p)
+                    p->second.value += left_offset - right_offset;
+                offset[v] = right_offset;
+            } else {
+                for (auto p = pieces.lower_bound(split); p != pieces.end() && p->first < hi[v]; ++p)
+                    p->second.value += right_offset - left_offset;
+            }
+        }
+        for (int i = first[v]; i != -1; i = next[i])
+            answer[i] = std::min(answer[i], base[i] + evaluate(query_end[i], offset[v]));
+    }
+}
+} // namespace meeting_envelope_detail
+
+std::vector<long long> minimum_interval_meeting_costs(
+    const std::vector<int>& height,
+    const std::vector<std::pair<int, int>>& intervals) {
+    if (height.empty() || height.size() > 750000 || intervals.size() > 750000)
+        throw std::invalid_argument("meeting input size outside supported range");
+    for (int h : height) if (h < 1 || h > 1000000000)
+        throw std::invalid_argument("meeting height outside supported range");
+    const int n = static_cast<int>(height.size()), q = static_cast<int>(intervals.size());
+    for (auto [l, r] : intervals) if (l < 0 || l > r || r >= n)
+        throw std::invalid_argument("invalid meeting interval");
+    if (q == 0) return {};
+    std::vector<int> peak(q);
+    {
+        meeting_envelope_detail::RangeMaximum maximum(height);
+        for (int i = 0; i < q; ++i) peak[i] = maximum.query(intervals[i].first, intervals[i].second + 1);
+    }
+    std::vector<long long> answer(q, std::numeric_limits<long long>::max());
+    meeting_envelope_detail::direction(height, intervals, peak, false, answer);
+    meeting_envelope_detail::direction(height, intervals, peak, true, answer);
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [小さい集合を大きい集合へ併合](/flowchartcp/techniques/small-to-large/)：断片数が削除で減るため、償却の尺度には元の部分木の頂点数を使う。
+- [区間最大値の寄与](/flowchartcp/techniques/subarray-extremum-contribution/)：最大位置による分割は共通するが、ここでは会場の最小化を含む接頭辞関数を保持する。
+- [不変条件](/flowchartcp/techniques/invariant/)：部分木が生存している間の断片と遅延値の組が、その全接頭辞費用を表す。
+
+## 参考資料
+
+- [IOI 2018 Meetings 原典](https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf)：会場と各参加者間の最大高さによる費用。
+- [主催者配布の原典翻訳](https://ioi2018.jp/tasks/contest2/LVA-meetings.pdf)：$N,Q\le750000$、高さ上限と区間の条件。
+- [公式Review](https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf)：最大位置による分割と満点方針。
+- [Tomasz Idziaszek の公開解答](https://www.algonotes.com/en/solutions-ioi2018/)：2019年公開・2020年改訂の著者補足。競技時の公式Reviewとは区別する。
+- [日本委員会の公式日別一覧](https://www2.ioi-jp.org/ioi/2018/tasks/index.html)：競技日2は2018年9月5日。
+
+<TechniqueReferences techniqueId="cartesian-prefix-meeting-cost-single-cross-envelope" />

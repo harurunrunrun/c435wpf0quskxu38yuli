@@ -1,0 +1,117 @@
+---
+title: "二択で非減少な列を作るとき、選んだ個数を区間で持つ"
+description: "各位置のA/Bから一つ選び、Aを指定回数使う可否と復元を、個数ごとのDP表を作らず求めます。"
+techniqueId: two-choice-nondecreasing-count-interval-reconstruction
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+位置ごとに二つの値 $A_i,B_i$ があり、一方ずつ選んだ列を非減少にします。同時に、Aを使う回数をちょうど $K$ 回にする必要があります。AとBの値が同じでも、どちらから選んだかは区別します。
+
+「処理した位置・直前に選んだ側・Aの使用数」で可否を持つと、長さ $M$ に対して状態が $O(M^2)$ 個になります。ここでは、直前の側ごとに到達できる使用数が、穴のない整数区間になることを使います。可否だけでなく、選択列を一つ復元できます。
+
+## 考え方
+
+先頭 $i+1$ 位置まで選んだとき、最後をAから選んだ使用数の集合を $S_i^A$、Bから選んだ集合を $S_i^B$ とします。空集合を除き、それぞれの最小値と最大値だけを保存します。
+
+位置 $i$ でAを選ぶなら、直前の選択値が $A_i$ 以下の側から遷移できます。その使用数の集合を合わせて1を足します。Bを選ぶときは、直前の選択値が $B_i$ 以下の側の集合を合わせ、そのまま使います。
+
+最後の区間に $K$ を含む側を一つ選びます。後ろから、今の値以下で終わり、残りの使用数を含む直前の区間を選んで戻れば、答えを復元できます。
+
+例えば $A=(1,2,3)$、$B=(1,2,3)$ なら、各位置で両方が使えます。Aを0回から3回まで使う全ての個数が可能ですが、その個数を一つずつ保存する必要はありません。
+
+## 適用条件
+
+各位置の候補は二つで、隣同士の条件は選んだ値の大小比較です。追加の条件は片側を使った総数だけで、目的は存在判定と一つの復元です。選択列の個数まで知りたい場合、区間の端だけでは情報が足りません。
+
+任意の遷移規則を持つ二状態DPで、同じ圧縮ができるとは限りません。この問題では、現在の候補値が大きい側ほど、遷移元として許す側の集合が大きくなります。この包含関係が必要です。候補が三つ以上ある場合にも、後述の証明をそのまま使いません。
+
+掲載実装は $0\le M\le10^6$、$0\le K\le M$ です。二列の長さは等しい必要があります。値は符号付き64ビット整数の全範囲を使えます。長さや $K$ が範囲外なら `invalid_argument` を投げます。入力は変更しません。
+
+## なぜ正しいか
+
+以下は区間圧縮の性質を直接示す独立の証明です。
+
+各段について、$S_i^A$、$S_i^B$、その和集合の三つが、空集合または穴のない整数区間になることを示します。最初は $S_0^A=\{1\}$、$S_0^B=\{0\}$ なので成立します。
+
+前段の二集合と和集合が区間だとします。現在の各候補への遷移元は、前段のA側だけ、B側だけ、両方、どちらもなし、のいずれかです。従って、使える使用数の集合 $U_A,U_B$ はそれぞれ区間です。さらに、現在の候補値の大小から、許される遷移元の集合は包含関係にあり、$U_A\subseteq U_B$ または $U_B\subseteq U_A$ となります。
+
+更新後は $S_i^A=U_A+1$、$S_i^B=U_B$ です。二つの非空な整数区間が包含関係にあるなら、一方を1だけずらしても、二つの区間の間に整数の穴は生まれません。例えば $U_A\subseteq U_B$ なら、$\min U_A+1\le\max U_B+1$ で、ずらした区間の左端は $U_B$ の右端の次より先にはなりません。逆の包含でも同様です。空集合を含む場合も成立します。これで帰納法が完成し、最小・最大だけを保存してよいと分かります。
+
+復元時に目標の使用数が区間内なら、その使用数を持つ経路が実在します。現在の選択分を引くと、その数は許された遷移元のどちらかに含まれます。その側へ戻る操作を繰り返すので、個数条件と全ての大小条件を保った選択列を得られます。
+
+## 計算量
+
+各位置で二つの終端と二つの遷移元だけを調べるので、時間 $O(M)$ です。復元のため各位置の区間を保存し、補助空間 $O(M)$ を使います。可否だけなら直前の二区間だけで足り、補助空間を $O(1)$ にできます。ここでの空間には、入力と出力を含めません。
+
+## 実装
+
+`choose_nondecreasing_two_sources(a,b,k)` は、存在しなければ `nullopt`、存在すればA/Bからなる長さ $M$ の選択列を返します。空の二列と $K=0$ には空文字列を返します。非減少なので、大小比較には等号を含めます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct TwoChoiceCountRange {
+    int low=INT_MAX,high=-1;
+    bool contains(int value) const {return low<=value && value<=high;}
+    bool empty() const {return low>high;}
+};
+
+optional<string> choose_nondecreasing_two_sources(
+    const vector<long long>& a,const vector<long long>& b,int required_a) {
+    if(a.size()!=b.size() || a.size()>1000000)
+        throw invalid_argument("unsupported sequence lengths");
+    int length=int(a.size());
+    if(required_a<0 || required_a>length)
+        throw invalid_argument("invalid A count");
+    if(length==0) return string{};
+    vector<array<TwoChoiceCountRange,2>> ranges(length);
+    ranges[0][0]={1,1};
+    ranges[0][1]={0,0};
+    auto value=[&](int index,int side) {return side==0?a[index]:b[index];};
+    for(int i=1;i<length;++i) {
+        for(int side=0;side<2;++side) {
+            auto& current=ranges[i][side];
+            int added=side==0?1:0;
+            for(int previous=0;previous<2;++previous) {
+                const auto& source=ranges[i-1][previous];
+                if(source.empty() || value(i-1,previous)>value(i,side)) continue;
+                current.low=min(current.low,source.low+added);
+                current.high=max(current.high,source.high+added);
+            }
+        }
+        if(ranges[i][0].empty() && ranges[i][1].empty()) return nullopt;
+    }
+    int side=0;
+    if(!ranges.back()[side].contains(required_a)) ++side;
+    if(!ranges.back()[side].contains(required_a)) return nullopt;
+    string result(length,'A');
+    for(int i=length-1;i>=0;--i) {
+        result[i]=side==0?'A':'B';
+        required_a-=side==0?1:0;
+        if(i==0) break;
+        int previous=0;
+        while(previous<2 &&
+             (value(i-1,previous)>value(i,side) || !ranges[i-1][previous].contains(required_a)))
+            ++previous;
+        assert(previous<2);
+        side=previous;
+    }
+    assert(required_a==0);
+    return result;
+}
+```
+
+## 関連する手法
+
+[状態の優越関係](/flowchartcp/techniques/dp-state-dominance/) ・ [DPの次元削減](/flowchartcp/techniques/dp-dimension-rolling/) ・ [状態設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [JOI 2019/2020春季トレーニング合宿: 公式課題一覧](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html)
+- [Building 4: 原典](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/building4.pdf)
+- [Building 4: 公式解説](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/building4-review.pdf)
+
+<TechniqueReferences techniqueId="two-choice-nondecreasing-count-interval-reconstruction" />

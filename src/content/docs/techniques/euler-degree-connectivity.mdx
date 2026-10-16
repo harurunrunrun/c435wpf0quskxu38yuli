@@ -1,0 +1,71 @@
+---
+title: "すべての有向辺を一度ずつ通る経路を、次数と辺の消費で作る"
+description: "入出次数の差で端点を確認し、行き止まりから逆順に辺をつなぎ直す。"
+techniqueId: euler-degree-connectivity
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+頂点の再訪は許されるが、すべての有向辺をちょうど一度ずつ使い、指定された始点 `s` から終点 `t` へ進みたい。頂点を一度ずつ訪問する条件とは、見るべき構造が異なる。
+
+## 考え方
+
+途中の頂点では入った回数と出た回数が等しい。`s≠t` の場合、始点だけは出次数−入次数が1、終点は−1、他は0になる。`s=t` なら全頂点で0。
+
+この次数条件を確認し、未使用の辺へ進める間は進む。行き止まりになった頂点を答えへ追加してスタックから戻る。答えを逆順にすると、途中で見つかった閉路が元の経路へ組み込まれる。Hierholzer法の反復実装である。
+
+最後に使った辺数を確認する。次数が合っていても、別成分の閉路が残っていたら失敗である。
+
+## 適用条件
+
+有向辺の全使用に絞った方法。無向辺では入出次数ではなく奇数次数の頂点数を見る。各辺を個別に消費するので、多重辺と自己ループを一つへまとめない。孤立頂点は訪問要求がなければ問題にならない。
+
+辺が0本の場合、`s=t` なら始点だけの経路が成立する。`s≠t` なら成立しない。
+
+## なぜ正しいか
+
+次数の差は任意の有効な経路で必要になる。条件を満たすグラフでは、未使用辺をたどって行き止まりになる位置が各部分経路の端として整合する。行き止まり側から答えへ追加すると、途中の頂点で別の未使用閉路を通った部分が、そこへ戻る形で差し込まれる。全辺を消費できていれば、逆順の列は各辺を一回だけ使う `s`–`t` 経路になる。
+
+## 計算量
+
+辺の順列を試す方法は最大 $O(M!\,M)$ 時間。次数の計数と経路構築は $O(N+M)$ 時間、$O(N+M)$ 空間。
+
+## 実装
+
+`directed_euler_path` は頂点列を返し、存在しなければ `std::nullopt`。隣接リストの位置を進めるだけなので、辺を配列の中から削除する必要はない。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <optional>
+#include <algorithm>
+std::optional<std::vector<int>> directed_euler_path(int n,const std::vector<std::pair<int,int>>& edges,int s,int t) {
+    std::vector<std::vector<int>> g(n);std::vector<int> balance(n),next(n);
+    for(auto [a,b]:edges) {g[a].push_back(b);++balance[a];--balance[b];}
+    for(int v=0;v<n;++v) {
+        int wanted=(v==s?1:0)-(v==t?1:0);
+        if(balance[v]!=wanted) return std::nullopt;
+    }
+    std::vector<int> stack{s},answer;
+    while(!stack.empty()) {
+        int v=stack.back();
+        if(next[v]<int(g[v].size())) stack.push_back(g[v][next[v]++]);
+        else {answer.push_back(v);stack.pop_back();}
+    }
+    if(answer.size()!=edges.size()+1) return std::nullopt;
+    std::reverse(answer.begin(),answer.end());
+    if(answer.back()!=t) return std::nullopt;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) ・ [強連結成分分解](/flowchartcp/techniques/scc/)
+
+## 参考資料
+
+- [CSES：Teleporters Path（原典）](https://cses.fi/problemset/task/1693)。上の構築法は原典の条件から導出し、小さい辺集合の全使用順序との比較で確認している。
+
+<TechniqueReferences techniqueId="euler-degree-connectivity" />

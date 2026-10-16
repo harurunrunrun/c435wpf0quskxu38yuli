@@ -1,0 +1,63 @@
+---
+title: "一つに決まる移動を、巡回前と巡回後に分ける"
+description: "最初の再訪まで記録し、巨大な移動回数の巡回部分を余りへ置き換える。"
+techniqueId: functional-graph-cycle-tail
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各場所から次の場所が一つだけ決まり、同じ出発点から $K$ 回移動した後の場所を知りたい。$K$ が $10^{18}$ など大きくても、場所の数は小さい。
+
+## 考え方
+
+最初に訪れた時刻 `first[v]` を保存して移動する。初めて再訪した頂点の訪問時刻を $\mu$、そこまで記録した列の長さを $L$ とすると、巡回の長さは $\lambda=L-\mu$。
+
+出発時を0回目として記録した列を $P$ とする。$K<L$ なら答えは $P_K$。それ以降は
+
+$$ P_{\mu+(K-\mu)\bmod\lambda} $$
+
+で求まる。巡回に入る前の $\mu$ 回を引いてから余りを取る点が大切である。
+
+## 適用条件
+
+移動先が現在位置だけから一意に決まる必要がある。時刻や所持物で移動先が変わるなら、それらも状態へ含める。同じ出発点への質問に向いており、出発点が毎回変わる場合にこの記録を作り直すと $O(NQ)$ になる。その場合は全頂点の巡回分解やダブリングを検討する。
+
+## なぜ正しいか
+
+有限の $N$ 状態を移動するので $N+1$ 回目の訪問までに再訪する。同じ状態からは同じ次状態へ進むため、再訪後の列は同じ周期で繰り返す。巡回前の列は一度だけ現れ、巡回内の位置は移動回数の余りで決まる。
+
+## 計算量
+
+毎回の移動を再現する $O(K)$ 時間を、前処理 $O(N)$ 時間・空間と、各質問 $O(1)$ 時間へ変える。記録するのは出発点から訪れる高々 $N$ 頂点だけ。
+
+## 実装
+
+`FixedStartWalk(next,start)` で記録を作り、`at(k)` で0回を含む任意の符号なし64ビットの移動回数を問い合わせる。自己ループの巡回長は1になる。
+
+```cpp
+#include <vector>
+#include <cstdint>
+struct FixedStartWalk {
+    std::vector<int> path;std::uint64_t cycle_start,cycle_length;
+    FixedStartWalk(const std::vector<int>& next,int start) {
+        std::vector<int> first(next.size(),-1);int v=start;
+        while(first[v]<0) {first[v]=int(path.size());path.push_back(v);v=next[v];}
+        cycle_start=first[v];cycle_length=path.size()-cycle_start;
+    }
+    int at(std::uint64_t k) const {
+        if(k<path.size()) return path[k];
+        return path[cycle_start+(k-cycle_start)%cycle_length];
+    }
+};
+```
+
+## 関連する手法
+
+[ダブリング](/flowchartcp/techniques/doubling/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC167 D](https://img.atcoder.jp/abc167/editorial.pdf)
+
+<TechniqueReferences techniqueId="functional-graph-cycle-tail" />

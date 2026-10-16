@@ -1,0 +1,30 @@
+{
+  "testFile": "tests/degree-tree-flow.test.mjs",
+  "testSha256": "5dc6167dfdf01cd6dedc51dcb13f7604cd5a6d4c8a20514936613c89253a6098",
+  "command": "node tests/degree-tree-flow.test.mjs",
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationMs": 5228.533618,
+  "baseline": {
+    "articles": 500,
+    "graphs": 467,
+    "nodes": 3673,
+    "walks": 521,
+    "corpora": 8
+  },
+  "frozenFixtureSha256": "03f5fa7a0987945920e32ae367984d95f5c2f8f7233d1be6ec997b925b2efece",
+  "verified": [
+    "Each of three guards is necessary and has no/unknown continuation.",
+    "Questions, diagram labels, links, share and complete Back histories agree.",
+    "Grouped metadata, source date and null difficulty, source features and actual code fence agree.",
+    "All521 old full records, independent raw replay, questions, labels, targets and terminals unchanged.",
+    "All467 old graphs/3673 nodes preserve every old field and option/answer order.",
+    "593local prefixes and404completed share histories stay fixed.",
+    "All8 old corpora preserve all original fields and old resolutions.",
+    "K adds a resolution only, no duplicate positive research review.",
+    "Live missing source/reference/metadata/walk/steps lowers K coverage exactlyone; later independent resolutions may still increase the other coverage.",
+    "An actual empty code fence in an isolated read-only-source mirror fails product preflight and removes coverage."
+  ]
+}

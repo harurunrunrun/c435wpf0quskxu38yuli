@@ -1,0 +1,32 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2018_f",
+    "title": "Go with the Flow",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=11",
+    "techniqueIds": [
+      "word-wrap-sparse-space-river-dp"
+    ],
+    "features": [
+      "単語順固定・分割不可・左詰め・単語間1空白で、各行へ最大限詰めて折り返す。",
+      "行末余白を除く単語間空白だけを隣の行へ列差1以内で結ぶ最長鎖を求める。",
+      "幅を選んで鎖長を最大にし、同じ鎖長なら最小幅。原典2〜2500語、各語は英大小字のみ1〜80文字。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=7",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "固定順の単語を左詰めで最大限詰め、単語を分けず、同じ行の単語間に空白一つを置く。行末の余白を除き、隣の行へ列差1以内でつながる単語間空白の最長鎖を最大化し、同点なら最小幅を選ぶ。実在する空白だけの行間DP、最初の不適合語を入れる次の変化幅、単調な行数による上界を使う。",
+    "discoveredBy": "icpc-2018-world-finals",
+    "publicationDate": "2018-04-19",
+    "publicationYear": 2018,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

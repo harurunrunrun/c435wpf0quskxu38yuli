@@ -1,0 +1,247 @@
+---
+title: "点集合を二つの単調鎖と螺旋に分け、少ない縦横線分で結ぶ"
+description: "四方向の極値点を螺旋へ、角を兼ねる点を二つの単調鎖へ分ける。末尾の線分を延ばして次の部分へ一本で接続し、原点から全点を通る折れ線を点数に三本加えた本数以内で構成する。"
+techniqueId: orthogonal-point-cover-spiral-two-chains
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+互いに異なる横座標・縦座標を持つ点集合を、原点から始まる水平・垂直の折れ線で全て通りたい。点は線分の途中にあってよく、折れ線の自己交差と重なりも許される。線分の本数を、点数 $N$ に定数を加えた程度に抑える構築である。
+
+以下では全点が原点より右上にある場合を扱う。折れ線の長さの最小化や、交差しない巡回路を求める条件には適用しない。
+
+## 考え方
+
+残る点の最左・最上・最右・最下が全て別の点なら、外接長方形の四辺で四点を通れる。この長方形を記録して四点を取り除く。同じ点が縦横の極値を兼ねる場合は、その角の点だけを取り除く。左下・右上の角は右上がりの鎖、左上・右下の角は右下がりの鎖へ送る。
+
+最後に得るのは二つの単調鎖と、内側から外側へ厳密に広がる長方形列である。鎖は一点につき一本、長方形は四点につき四本で通ることができる。難所は三部分の接続である。
+
+各部分を最後の線分の先へ伸ばせる形で作る。次の鎖は最初の線分を逆向きに選び、二本の平行な線分を一本の垂直な線分で結ぶ。螺旋の最初の辺も同じように選ぶ。原点から最初の部分への一本と、部分間の高々二本を加え、合計を $N+3$ 本以内にする。
+
+## 適用条件
+
+`cover_points_orthogonally(points)` は `Point{x,y}` の列を受け取り、原点を先頭に含む折れ線の頂点列を返す。入力点数は0から100000、各座標は1から10億で、全ての横座標が相異なり、全ての縦座標も相異なることを契約とする。点の順序は自由で、入力は変更しない。空入力では原点一個を返す。
+
+原典は $1\le N\le100000$ の全域、正整数座標、横・縦それぞれの相異性を要求する。出力の座標は $[-2\cdot10^9,2\cdot10^9]$ 内の整数であり、このAPIの出力はさらに $[0,10^9+1]$ 内に収まる。点は端点にも途中にも置け、自己交差・重なりを許す。座標共有や非正座標をこのAPIへ渡すと `std::invalid_argument`、割当失敗は標準例外をそのまま伝える。入力を全て検査してから構築し、呼出し間で状態を共有しない。
+
+`write_line_output(out, points)` は同じ入力から構築し、原典形式の線分数と、原点を除いた頂点列を書く。原典は固定10入力へ出力のみを提出する形式で、各入力の満点閾値は $N+3$ 本である。最大出力も通常の整数表記で約2.3MB以内となり、一ファイル15MBの上限に収まる。
+
+## なぜ正しいか
+
+**分解。** 同じ横座標・縦座標の点がないので、異なる縦横の極値が一致するのは長方形の角だけである。左下の角を除くと残る点は全て右上、右上の角を除くと残る点は全て左下にある。従ってその二種類の角からなる集合は、横座標で並べると縦座標も厳密に増加する。左上・右下についても同じ議論で厳密な減少鎖になる。
+
+四つの極値が異なるときは、各極値点は自分の辺の内部にある。四点を除けば次の外接長方形は全四方向で狭くなる。その間に角の点を取り除いても外へは広がらない。従って記録した長方形は厳密に入れ子であり、全入力点は二鎖のいずれか、又は一枚の長方形の一辺へ、一度だけ割り当てられる。
+
+**鎖を一点一本で通る。** 横座標・縦座標がともに単調な順序 $p_1,\ldots,p_s$ を考える。最初の点を通る水平線分から始めたなら、その終点を $p_2$ の横座標まで延ばし、垂直線分で $p_2$ へ進む。次はその垂直線分の終点を $p_3$ の縦座標まで延ばし、水平線分で $p_3$ へ進む。単調性により、延長は既に通った点を消さず、毎回新しい一本だけを加える。最初を垂直にしても同様である。最後は最後の点で止め、その線分の進行方向へ自由に延長できる。
+
+**二鎖の接続。** 右上がりの鎖は横座標昇順に、最初を右向きの水平線分として通る。原点から最初の点と同じ高さへ垂直に進む一本を加えれば、その鎖へ入れる。最後の線分の軸を $a$、向きを $d$ とする。
+
+右下がりの鎖には、軸 $a$ 上で向き $-d$ に進むような順序が必ずある。水平なら昇順・逆順で右・左、垂直なら昇順・逆順で下・上を選べるためである。二鎖の末点と始点の軸 $a$ 座標の両方より、向き $d$ 側へ一単位外の値を $z$ とする。前の鎖の最後の線分を $z$ まで延ばし、軸 $a$ と垂直な一本で次の始点と同じもう一方の座標へ移り、向き $-d$ の線分で次の始点を通る。この最後の線分は次の鎖の一本目であり、余分な線分は接続の一本だけである。一方の鎖が空なら、その部分を飛ばす。右下がりの鎖から始めるときも、横座標昇順・最初は右向きにすれば原点から入れる。
+
+**最初の長方形への接続。** 既に通った鎖の末尾が水平なら、最内長方形の下辺を最初に通る。末尾と長方形の左右端の全てより、末尾の向き側へ一単位外の横座標 $z$ まで延ばし、垂直一本で下辺の高さへ移る。そこから逆向きに下辺を通る。左へ進むなら左下、左上、右上、右下の順、右へ進むなら右下、右上、左上、左下の順で四本を使う。四辺の点を全て通り、最後は下向きの垂直線分となる。
+
+鎖の末尾が垂直なら、左右を読み替えて最内長方形の左辺から始める。上へ進むなら左上、右上、右下、左下、下へ進むなら左下、右下、右上、左上の順で四本を使い、最後は左向きの水平線分になる。どちらも接続は一本だけである。二鎖が両方空なら、原点から最内長方形の左辺へ水平一本で入り、上向きに四辺を通る。
+
+**外側の長方形へ四本で移る。** 末尾が下向きなら、その線分を次の長方形の下辺まで延ばす。延長は下方向なので、直前の辺の点は残る。今いる横座標は外側の左右端の間にある。下辺の極値点が現在位置より左なら左下へ、右なら右下へ進み、残る三辺を続けて通る。最初の一本が下辺の点を通り、残る三本が各辺の点を通り、末尾は再び下向きになる。下辺の点と現在位置の横座標は、異なる入力点の横座標なので一致しない。
+
+末尾が左向きの場合も、その線分を外側の左辺まで延ばし、左辺の極値点の上下に応じて先に左上又は左下へ進む。四本で各辺を通り、再び左向きで終わる。従って全長方形を内側から外側へ処理できる。
+
+**本数と座標。** 鎖の点数を $a,b$、長方形数を $r$ とすると $a+b+4r=N$ である。各部分に必要な本数はそれぞれ $a,b,4r$、原点からの接続と部分間の接続は、空でない部分数以下で高々3本。従って全点を通る折れ線は $N+3$ 本以内となる。新しい座標は入力座標と0、又は二点・長方形の端の最大値に1を加えるか最小値から1を引いたものだけで、範囲は $[0,10^9+1]$。交差や重なりに制約がないため、前に描いた部分へ触れても正しさは変わらない。
+
+## 計算量
+
+空入力は $O(1)$ 時間・$O(1)$ 空間で原点だけを返す。点がある場合、横・縦のソートと鎖のソートに $O(N\log(N+1))$ 時間、以後は $O(N)$ 時間を使う。削除済みかを配列で持ち、両ソート列の先頭・末尾を進めるので、極値を探す走査も合計 $O(N)$ 回である。使用領域は入力を除いて $O(N)$。鎖と長方形は反復で処理し、長い鎖や深い螺旋に比例する再帰を使わない。標準ソート内部のスタックは対数程度である。
+
+座標・比較用の差は64bit整数で持つ。APIの検査後は加減算しても $[-1,10^9+1]$ 程度で、線分長の総和や外積を計算しない。点数は高々10万で添字と本数は `int` に収まる。記録の中心は二本の添字列、二鎖、長方形列、削除印、出力頂点列で、使用量は線形である。
+
+## 実装
+
+戻り値には原点を含むので、線分数は `path.size()-1` である。`write_line_output` は原典の「原点を出力しない」形式へ変換する。以下は単独で利用できる完全なC++20実装である。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <numeric>
+#include <ostream>
+#include <stdexcept>
+#include <vector>
+
+namespace orthogonal_cover {
+struct Point {
+    std::int64_t x, y;
+    bool operator==(const Point&) const = default;
+};
+struct Box {
+    std::int64_t left, right, bottom, top;
+    std::int64_t bottom_x, left_y;
+};
+
+std::vector<Point> cover_points_orthogonally(const std::vector<Point>& points) {
+    if (points.size() > 100000) throw std::invalid_argument("too many points");
+    const int n = static_cast<int>(points.size());
+    for (Point p : points)
+        if (p.x < 1 || p.x > 1000000000LL || p.y < 1 || p.y > 1000000000LL)
+            throw std::invalid_argument("coordinates must be in 1..1e9");
+    std::vector<int> xs(n), ys(n);
+    std::iota(xs.begin(), xs.end(), 0);
+    std::iota(ys.begin(), ys.end(), 0);
+    std::sort(xs.begin(), xs.end(), [&](int a, int b) { return points[a].x < points[b].x; });
+    std::sort(ys.begin(), ys.end(), [&](int a, int b) { return points[a].y < points[b].y; });
+    for (int i = 1; i < n; ++i)
+        if (points[xs[i-1]].x == points[xs[i]].x || points[ys[i-1]].y == points[ys[i]].y)
+            throw std::invalid_argument("x and y coordinates must each be distinct");
+    std::vector<unsigned char> removed(n, 0);
+    std::vector<Point> increasing, decreasing;
+    std::vector<Box> boxes;
+    int xl = 0, xr = n-1, yl = 0, yr = n-1, remaining = n;
+    while (remaining) {
+        while (removed[xs[xl]]) ++xl;
+        while (removed[xs[xr]]) --xr;
+        while (removed[ys[yl]]) ++yl;
+        while (removed[ys[yr]]) --yr;
+        const int l = xs[xl], r = xs[xr], d = ys[yl], u = ys[yr];
+        int corner = -1;
+        bool rises = false;
+        if (l == d) { corner = l; rises = true; }
+        else if (l == u) corner = l;
+        else if (r == d) corner = r;
+        else if (r == u) { corner = r; rises = true; }
+        if (corner != -1) {
+            (rises ? increasing : decreasing).push_back(points[corner]);
+            removed[corner] = 1;
+            --remaining;
+        } else {
+            boxes.push_back({points[l].x, points[r].x, points[d].y, points[u].y,
+                             points[d].x, points[l].y});
+            for (int id : {l, r, d, u}) removed[id] = 1;
+            remaining -= 4;
+        }
+    }
+    auto by_x = [](Point a, Point b) { return a.x < b.x; };
+    std::sort(increasing.begin(), increasing.end(), by_x);
+    std::sort(decreasing.begin(), decreasing.end(), by_x);
+    std::reverse(boxes.begin(), boxes.end());
+    std::vector<Point> path;
+    path.reserve(static_cast<std::size_t>(n) + 4);
+    path.push_back({0, 0});
+    int axis = 0, direction = 1; // last segment: axis0 horizontal, axis1 vertical
+    auto coordinate = [](Point p, int a) { return a == 0 ? p.x : p.y; };
+    auto set_coordinate = [](Point& p, int a, std::int64_t value) {
+        if (a == 0) p.x = value; else p.y = value;
+    };
+    auto append = [&](Point p) { if (!(p == path.back())) path.push_back(p); };
+    auto add_chain = [&](const std::vector<Point>& chain) {
+        if (chain.empty()) return;
+        bool reverse_order = false;
+        if (path.size() == 1) {
+            axis = 0;
+            direction = 1;
+            append({0, chain.front().y});
+            append(chain.front());
+        } else {
+            const int forward_direction = axis == 0 ? 1 : -1; // the second chain decreases in y
+            reverse_order = forward_direction != -direction;
+            const Point first = reverse_order ? chain.back() : chain.front();
+            const std::int64_t a = coordinate(path.back(), axis), b = coordinate(first, axis);
+            const std::int64_t z = direction > 0 ? std::max(a, b)+1 : std::min(a, b)-1;
+            set_coordinate(path.back(), axis, z); // extend the last covered segment
+            Point bend = first;
+            set_coordinate(bend, axis, z);
+            append(bend); // the one extra connector
+            append(first);
+            direction = -direction;
+        }
+        const int size = static_cast<int>(chain.size());
+        for (int i = 1; i < size; ++i) {
+            const Point next = reverse_order ? chain[size-1-i] : chain[i];
+            const int next_axis = 1-axis;
+            const std::int64_t delta = coordinate(next, next_axis)-coordinate(path.back(), next_axis);
+            set_coordinate(path.back(), axis, coordinate(next, axis));
+            append(next);
+            axis = next_axis;
+            direction = delta > 0 ? 1 : -1;
+        }
+    };
+    add_chain(increasing);
+    add_chain(decreasing);
+    auto four_sides = [&](const Box& b, int first_axis, int first_direction) {
+        if (first_axis == 0) {
+            if (first_direction > 0) {
+                append({b.right,b.bottom}); append({b.right,b.top});
+                append({b.left,b.top}); append({b.left,b.bottom});
+            } else {
+                append({b.left,b.bottom}); append({b.left,b.top});
+                append({b.right,b.top}); append({b.right,b.bottom});
+            }
+            axis = 1; direction = -1;
+        } else {
+            if (first_direction > 0) {
+                append({b.left,b.top}); append({b.right,b.top});
+                append({b.right,b.bottom}); append({b.left,b.bottom});
+            } else {
+                append({b.left,b.bottom}); append({b.right,b.bottom});
+                append({b.right,b.top}); append({b.left,b.top});
+            }
+            axis = 0; direction = -1;
+        }
+    };
+    if (!boxes.empty()) {
+        const Box& inner = boxes.front();
+        int first_axis, first_direction;
+        if (path.size() == 1) {
+            append({inner.left, 0});
+            first_axis = 1; first_direction = 1;
+        } else {
+            first_axis = axis; first_direction = -direction;
+            const std::int64_t a = coordinate(path.back(), axis);
+            const std::int64_t lo = axis == 0 ? inner.left : inner.bottom;
+            const std::int64_t hi = axis == 0 ? inner.right : inner.top;
+            const std::int64_t z = direction > 0 ? std::max(a, hi)+1 : std::min(a, lo)-1;
+            set_coordinate(path.back(), axis, z);
+            Point bend = axis == 0 ? Point{z,inner.bottom} : Point{inner.left,z};
+            append(bend);
+        }
+        four_sides(inner, first_axis, first_direction);
+        for (std::size_t i = 1; i < boxes.size(); ++i) {
+            const Box& outer = boxes[i];
+            if (axis == 1) {
+                path.back().y = outer.bottom;
+                const int d = outer.bottom_x > path.back().x ? 1 : -1;
+                four_sides(outer, 0, d);
+            } else {
+                path.back().x = outer.left;
+                const int d = outer.left_y > path.back().y ? 1 : -1;
+                four_sides(outer, 1, d);
+            }
+        }
+    }
+    return path;
+}
+
+void write_line_output(std::ostream& out, const std::vector<Point>& points) {
+    const auto path = cover_points_orthogonally(points);
+    out << path.size()-1 << '\n';
+    for (std::size_t i = 1; i < path.size(); ++i) out << path[i].x << ' ' << path[i].y << '\n';
+}
+} // namespace orthogonal_cover
+```
+
+## 関連する手法
+
+[マンハッタン距離の座標変換](/flowchartcp/techniques/manhattan-transform/)は縦横の距離を扱うときの補助になる。本構築は長さではなく線分数を扱い、角の除去から単調鎖と入れ子の長方形を取り出す。
+
+[出力を直接改善する方法](/flowchartcp/techniques/output-only/)と組み合わせる場合も、まず全点を通ることと本数の上限を検査する。描画器の表示上限だけを見て合法性を判断しない。
+
+## 参考資料
+
+- [IOI 2019 Broken Line 原典](https://ioinformatics.org/files/ioi2019problem4.pdf)
+- [大会配布の英語原典](https://ioi.te.lv/locations/ioi19/contest/day2/Line/line.pdf)
+- [大会公式Review](https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf)
+- [オーストリア委員会配布の原典](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/statement/line-en.pdf)
+- [同配布の構築コード](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/solution/sol-ge-most-optimal.cpp)
+- [同配布の採点器](https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2019-line/checker/checker.cpp)
+- [日本委員会による競技日と課題一覧](https://www2.ioi-jp.org/ioi/2019/tasks/index.html)
+
+<TechniqueReferences techniqueId="orthogonal-point-cover-spiral-two-chains" />

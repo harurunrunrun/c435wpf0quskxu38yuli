@@ -1,0 +1,181 @@
+---
+title: "各色から毎回一枚選び、中央値からの絶対差和を最大にする"
+description: "各色の小さい値と大きい値を選び、正側へ交換する非増加の増分を最大ヒープで取り、残り正側枚数の大きい色から各回へ割り振る。"
+techniqueId: median-ticket-extreme-selection-round-decomposition
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+偶数 $n$ 種類の色があり、各色には値が非減少順に並んだ $m$ 枚の券がある。$k$ 回それぞれに各色から一枚ずつ選び、同じ券は再使用しない。一回で選んだ値を $a_0,\ldots,a_{n-1}$ としたとき、得点は
+
+$$
+\min_{b\in\mathbb Z}\sum_{i=0}^{n-1}|a_i-b|
+$$
+
+である。全回の得点の合計を最大にし、実際に使う券と回の割当も復元したい。中心 $b$ は採点側が最小化するが、こちらが最大化するのは券の選び方である。
+
+一回の得点を「上位半分の和から下位半分の和を引く」形へ直す。次に各回の条件を一度外し、各色の両端から選ぶ問題へ変える。最後に、色ごとの正側の残り枚数だけを使って各回へ戻せる。
+
+## 考え方
+
+$h=n/2$ とする。選んだ一回分を昇順に並べた値を $a_{(0)},\ldots,a_{(n-1)}$ とすると、中心を二つの中央の値の間に置けば
+
+$$
+\min_b\sum_i|a_i-b|=\sum_{j=h}^{n-1}a_{(j)}-\sum_{j=0}^{h-1}a_{(j)}.
+$$
+
+そこで、各回にちょうど $h$ 枚ずつの正側と負側を置くことを考える。一回に選ぶ券を固定したとき、この符号和の最大値が元の中央値得点である。
+
+まず回の区別を外し、各色から合計 $k$ 枚、全体で正側をちょうど $kh$ 枚選ぶ。色 $i$ の正側枚数を $p_i$ とすると、残り $k-p_i$ 枚が負側になる。$p_i$ が固定なら、大きい $p_i$ 枚を正側、小さい $k-p_i$ 枚を負側にすればよい。$k\le m$ なのでこの二つは重ならない。
+
+$x_{i,j}$ を色 $i$ の昇順の値とすると、色ごとの最良の符号和は
+
+$$
+F_i(p)=\sum_{j=m-p}^{m-1}x_{i,j}-\sum_{j=0}^{k-p-1}x_{i,j}.
+$$
+
+全色 $p_i=0$ で始め、正側を一枚増やす増分
+
+$$
+\Delta_i(p)=F_i(p+1)-F_i(p)=x_{i,k-p-1}+x_{i,m-p-1}\quad(0\le p<k)
+$$
+
+が最大の色を選ぶ。$p$ を増やすと参照する二つの添字はともに左へ進むため、各色の増分列は非増加である。最大ヒープには各色の未採用の先頭増分だけを入れ、$kh$ 回取り出す。$m=k$ のときは外す負側の券と新しい正側の券が同じ添字になるが、これは一枚の符号を変える操作であり、二重使用ではない。
+
+復元では、残り正側枚数 $r_i=p_i$ を持つ。各回、$r_i$ の大きい順に色を並べ、先頭 $h$ 色から正側の券を一枚、それ以外から負側の券を一枚選ぶ。正側はその色の右端から、負側は左端から順に取り出す。正側を使った色の $r_i$ を一つ減らす。
+
+例えば二色の値が $[0,2,5]$ と $[1,1,3]$、$k=2$ なら、初期値は $-4$、最初の増分は $7,4$ である。各色を一度ずつ正側へ回して答えは $7$。一回目を $[5,1]$、二回目を $[0,3]$ とすれば、実際の得点は $4+3=7$ になる。
+
+## 適用条件
+
+各回には全ての色が一度ずつ登場し、回による券の利用禁止などの追加条件はない。色数は偶数で、各色の券数は等しい。目的は各回の絶対偏差和の**最小値**を、券の割当によって最大化することである。合計ではなく各回の最小得点を最大化する目的には、この全体の符号枚数への緩和をそのまま使えない。
+
+掲載APIは原典と同じく $2\le n\le1500$、偶数 $n$、$1\le k\le m\le1500$、$0\le x_{i,j}\le10^9$ を受け付ける。各行は非減少順で、同じ値を何枚含めてもよい。同じ値の券も添字で区別する。負数は原典の範囲外なのでAPIでも拒否する。空行、色数の範囲外や奇数、行の長さの不一致、不正な回数、範囲外の値、整列違反は `std::invalid_argument` とする。
+
+## なぜ正しいか
+
+**一回の得点と符号和。** 昇順の下半分と上半分を一枚ずつ組にする。各組 $(u,v)$、$u\le v$ について $|u-b|+|v-b|\ge v-u$ で、二つの中央の値の間の整数 $b$ なら全組で等号になる。従って得点は上半分の和と下半分の和の差である。また $h$ 枚を正側にする任意の符号和は、大きい $h$ 枚を正側にするもの以下なので、この得点を超えない。
+
+**各色の両端選択。** 正側が $p$ 枚なら、その値の和は最大の $p$ 枚の和以下である。負側の $k-p$ 枚の和は最小の $k-p$ 枚の和以上である。この二つの端は $k\le m$ によって同時に選べるため、$F_i(p)$ がちょうど達成可能な最大値になる。
+
+**ヒープによる枚数配分。** 各色の増分列は非増加であり、$p_i$ 枚を正側にすることはその列の先頭 $p_i$ 個を取ることと等しい。全増分列の未採用要素の最大値は、必ずどれかの未採用先頭にある。ヒープは毎回その最大値を取り出し、同じ色の次の先頭を公開する。従って全体で大きい順に $kh$ 個を取り、かつ各色で先頭から取る条件を守る。同点はどちらを先に取ってもよい。これにより緩和後の最適値 $V$ を求められる。
+
+**回への再配分。** 残り回数が $R$ の時点で
+
+$$
+0\le r_i\le R,\qquad \sum_i r_i=Rh
+$$
+
+を不変条件とする。正側が残る色は少なくとも $h$ 色ある。そうでなければ総和が $(h-1)R$ 以下になる。一方、$r_i=R$ の色は高々 $h$ 色なので、それらは必ず上位 $h$ 色に入る。従って選ばれた色は正側を一枚使え、選ばれなかった色は $r_i<R$ で負側が一枚以上残る。上位 $h$ 色の $r_i$ を一つ減らすと、全色で $0\le r_i\le R-1$、総和 $(R-1)h$ が成り立つ。帰納的に全回を合法に構成し、最後に全ての正側を使い切る。各色の両端の券は初めから互いに重ならないので、同じ券を再使用しない。
+
+**元の得点も最適値に一致する。** 元の任意の割当から各回の大きい半分に正符号を付ければ、緩和問題の合法解になる。従って元の最適値 $O$ は $V$ 以下である。復元した割当の実際の中央値得点を $D$ とすると、各回の実得点はその回へ置いた符号和以上なので $D\ge V$。復元は元の合法な割当でもあるため $D\le O$。従って $D=O=V$ となる。復元の途中で、正側の各値が負側の全値以上だと仮定する必要はない。
+
+## 計算量
+
+各色ごとに使う券を選び、さらに全回への割当を直接列挙すると、各色に $m!/(m-k)!$ 通りあるため、全体ではその $n$ 乗の候補がある。掲載実装は入力検査と出力表の初期化が $O(nm)$、$kn/2$ 回のヒープ操作が $O(nk\log n)$、各回の色の整列も合計 $O(nk\log n)$。時間は $O(nm+nk\log n)$ となる。返却表に $O(nm)$、それを除く追加領域に $O(n)$ を使う。
+
+最大の実得点は $kn\cdot10^9/2\le1.125\cdot10^{15}$。初期の負側和の絶対値と全増分の総和も高々 $nm\cdot10^9\le2.25\cdot10^{15}$ である。値、増分、符号和を符号付き64ビットで持てば途中計算も収まる。実装では積を求める前に64ビットへ変換する。浮動小数点、中央値の二値平均、絶対値を取る大整数は不要である。
+
+## 実装
+
+`maximize_median_ticket_deviation(values, rounds)` は最大得点 `score` と、入力と同じ形の `round_of_ticket` を返す。各要素は未使用なら `-1`、使用するなら $0$ 以上 `rounds` 未満の回番号である。入力の行順・券の添字を保ち、入力を変更しない。IOIの提出形式では返却表を `allocate_tickets` に一度渡してから `score` を返せばよい。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <numeric>
+#include <queue>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+struct MedianTicketAllocation {
+    std::int64_t score;
+    // -1 means unused; otherwise the entry is a round in [0, rounds).
+    std::vector<std::vector<int>> round_of_ticket;
+};
+
+MedianTicketAllocation maximize_median_ticket_deviation(
+        const std::vector<std::vector<std::int64_t>>& values, int rounds) {
+    if (values.size() < 2 || values.size() > 1500 || values.size() % 2 != 0)
+        throw std::invalid_argument("the number of colors must be even and in [2,1500]");
+    if (values.front().empty() || values.front().size() > 1500)
+        throw std::invalid_argument("the number of tickets per color must be in [1,1500]");
+    const int n = static_cast<int>(values.size());
+    const int m = static_cast<int>(values.front().size());
+    if (rounds < 1 || rounds > m)
+        throw std::invalid_argument("rounds must be in [1,m]");
+    for (const auto& row : values) {
+        if (row.size() != static_cast<std::size_t>(m))
+            throw std::invalid_argument("ticket rows must have equal length");
+        for (int j = 0; j < m; ++j) {
+            if (row[j] < 0 || row[j] > 1000000000LL)
+                throw std::invalid_argument("ticket values must be in [0,1000000000]");
+            if (j > 0 && row[j - 1] > row[j])
+                throw std::invalid_argument("each ticket row must be nondecreasing");
+        }
+    }
+    std::vector<int> positive(n, 0);
+    std::priority_queue<std::pair<std::int64_t, int>> next_gain;
+    std::int64_t score = 0;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < rounds; ++j) score -= values[i][j];
+        next_gain.push({values[i][rounds - 1] + values[i][m - 1], i});
+    }
+    const std::int64_t exchanges = std::int64_t(n / 2) * rounds;
+    for (std::int64_t step = 0; step < exchanges; ++step) {
+        const auto [gain, color] = next_gain.top();
+        next_gain.pop();
+        score += gain;
+        const int p = ++positive[color];
+        if (p < rounds) {
+            next_gain.push({values[color][rounds - p - 1]
+                          + values[color][m - p - 1], color});
+        }
+    }
+    MedianTicketAllocation result{score, std::vector<std::vector<int>>(
+        n, std::vector<int>(m, -1))};
+    std::vector<int> order(n), low(n, 0), high(n, m - 1);
+    std::iota(order.begin(), order.end(), 0);
+    for (int round = 0; round < rounds; ++round) {
+        std::sort(order.begin(), order.end(), [&](int a, int b) {
+            if (positive[a] != positive[b]) return positive[a] > positive[b];
+            return a < b;
+        });
+        // Do not change the counts until after the sort has finished.
+        for (int rank = 0; rank < n; ++rank) {
+            const int color = order[rank];
+            if (rank < n / 2) {
+                result.round_of_ticket[color][high[color]--] = round;
+                --positive[color];
+            } else {
+                result.round_of_ticket[color][low[color]++] = round;
+            }
+        }
+    }
+    return result;
+}
+```
+
+入力は得点を計算する前に全て検査する。交換後の `positive` は各色で正側にする最終枚数であり、復元時は未使用の正側枚数に変わる。比較関数が参照する値は `sort` の実行中に変えない。同値でも色番号で順序を固定している。
+
+掲載コードの抽出検証では、小さい値域の全ての非減少行の組について、各色からの相異なる券の選択と回への順列を直接全列挙する。各回の得点も候補中心を直接試して最小化し、符号への変換やヒープをoracleへ使わない。返却表の未使用値、各色で各回が一度だけ現れること、実際の中央値得点と返却値の一致を別に検査する。最大寸法、同値、$k=1$、$k=m$、桁あふれ、不正API入力も検証する。
+
+## 関連する手法
+
+[交換法](/flowchartcp/techniques/exchange-argument/)は、正側を大きい値、負側を小さい値へ置き換える理由を与える。この問題では枚数を一つ増やす限界利益まで求めると、非増加の列をヒープで統合できる。
+
+[二部マッチング](/flowchartcp/techniques/matching/)で色と各回の正側枠を対応させる見方もできる。各色はどの回にも出せるので、残り枚数の大きい色から選ぶ不変条件で直接構成でき、一般の流量計算を実行する必要はない。
+
+中央値への費用を扱う[一次元の集約](/flowchartcp/techniques/median-window-budget/)では、選んだ値を集めるための最小費用を使う。本技巧では、その最小値を券の選択によって最大にするため、正負の二群と色ごとの枚数配分へ進む。
+
+## 参考資料
+
+- [IOI 2020 Carnival Tickets 公式問題文](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-tickets-ISC.pdf)。各色一枚ずつの回、非負の券の値、同値の許可、割当出力を確認した。
+- [IOI 2020 Carnival Tickets 公式解説](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/tickets-solutions-ISC.pdf)。正負の緩和、限界利益の貪欲選択、正側残数順の再配分を示す。本記事ではその不変条件と元の得点への両側評価を明示した。
+- [IOI公式配布課題のアーカイブ](https://ioi.te.lv/locations/ioi20/contest/)の[Ticketsリトアニア語版](https://ioi.te.lv/locations/ioi20/contest/day1/Tickets/LTU.pdf)。取得できた検索表示に残る数値から、$n,m\le1500$、$k\le m$、値 $0..10^9$ と行の非減少条件を補って確認した。英語PDFでは数式が抽出から欠ける。
+- [情報オリンピック日本委員会の2020年課題一覧](https://www2.ioi-jp.org/ioi/2020/tasks/index.html)。競技日1の実施日が2020年9月16日であることを確認した。難度の数値は設定しない。
+
+<TechniqueReferences techniqueId="median-ticket-extreme-selection-round-decomposition" />

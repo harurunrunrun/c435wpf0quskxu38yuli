@@ -1,0 +1,76 @@
+---
+title: "他要素を足して列を非減少にするなら、符号をそろえて一方向へ累積する"
+description: "最大絶対値の要素で反対符号を消し、非負なら左から、非正なら右から隣へ加える。"
+techniqueId: additive-sign-sweep
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+要素の値を他の要素へ加える操作を使い、順番を入れ替えずに列を非減少へ変えたい。負数と正数が混在すると、隣へ足す方向を一つに固定できない。先に符号だけを統一する。
+
+## 考え方
+
+絶対値が最大の要素を一つ選ぶ。それが正なら全ての負の要素へ一回ずつ足し、列全体を非負にする。その後、左から右へ $a_{i+1}\gets a_{i+1}+a_i$ を行う。
+
+最大絶対値の要素が負なら、全ての正の要素へ一回ずつ足して非正にする。今度は右から左へ $a_{i-1}\gets a_{i-1}+a_i$ を行う。
+
+最初から非減少なら操作は不要。全て0の場合もそのままでよい。非空の列では符号統一が高々 $N-1$ 回、累積が $N-1$ 回なので、合計 $2N-2$ 回以内になる。
+
+## 適用条件
+
+任意の二添字を選んで、現在の値を相手へ加えられる。負数や0も使え、操作途中の値に上下限がない。足す量が固定される場合や、隣へしか加えられない場合には、最大絶対値を遠くへ渡す段階を使えない。
+
+実装は $N\le2\times10^5$、初期値の絶対値 $10^9$ 以下。途中の絶対値は $N$ 倍以内なので64ビットへ収まる。返り値の組 `(x,y)` は0始まりで $a_y\gets a_y+a_x$。操作数の最小化ではなく、指定上限内に収まる構成を返す。
+
+## なぜ正しいか
+
+正の最大絶対値を $M$ とすると、負の値は $-M$ 以上だから一回足せば0以上になる。元から非負の値も $M$ 以下なので、統一後の全値は $[0,M]$ に収まる。
+
+左から右へ累積すると、更新された右の値は「元の右の非負値＋更新済みの左の値」なので左以上になる。以後その左の値を変えないため、確定した大小関係は保たれる。
+
+負の場合は全値を $[-M,0]$ にそろえる。右から左へ足すと、更新された左の値は右の値以下になり、その関係を保つ。どちらも最後には全ての隣接対が非減少になる。
+
+## 計算量
+
+操作列を探索する方法は、途中の整数値の範囲が無制限で、状態数を入力の長さだけから抑えられない。構成は最大絶対値の探索、符号統一、累積の三走査で $O(N)$ 時間。返す操作列と作業用の値に $O(N)$ 空間。
+
+## 実装
+
+操作を生成しながら値も更新し、後の操作は更新後の値を使う。空入力にも空の操作列を返す。
+
+```cpp
+#include <algorithm>
+#include <cstdlib>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+std::vector<std::pair<int,int>> additive_nondecreasing_operations(std::vector<long long> a) {
+    int n=int(a.size());
+    if(n>200000) throw std::invalid_argument("size");
+    for(long long x:a) if(x<-1000000000 || x>1000000000) throw std::invalid_argument("value");
+    std::vector<std::pair<int,int>> operations;
+    if(std::is_sorted(a.begin(),a.end())) return operations;
+    int pivot=0;
+    for(int i=1;i<n;++i) if(std::llabs(a[i])>std::llabs(a[pivot])) pivot=i;
+    auto add=[&](int from,int to) {a[to]+=a[from];operations.push_back({from,to});};
+    if(a[pivot]>0) {
+        for(int i=0;i<n;++i) if(a[i]<0) add(pivot,i);
+        for(int i=0;i+1<n;++i) add(i,i+1);
+    } else {
+        for(int i=0;i<n;++i) if(a[i]>0) add(pivot,i);
+        for(int i=n-1;i>0;--i) add(i,i-1);
+    }
+    return operations;
+}
+```
+
+## 関連する手法
+
+[挿入の構築を、最後に取り除ける要素から逆算する](/flowchartcp/techniques/construct-last-operation/) ・ [不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder：D - Non-decreasing（原典）](https://atcoder.jp/contests/abc081/tasks/arc086_b)。
+
+<TechniqueReferences techniqueId="additive-sign-sweep" />

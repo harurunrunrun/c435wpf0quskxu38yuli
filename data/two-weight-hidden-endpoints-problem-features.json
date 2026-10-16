@@ -1,0 +1,30 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2018_highway",
+    "title": "高速道路の通行料金 (Highway Tolls)",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+    "techniqueIds": [
+      "binary-weight-distance-oracle-edge-split-endpoint-search"
+    ],
+    "features": [
+      "既知の単純連結無向グラフに相異なる未知二頂点があり、全質問で固定される。各辺の重みを既知正整数A<Bのどちらかへ自由に設定できる。",
+      "質問はその割当での未知二点間の正確な最短距離を返す。二端点を順不同で特定し、複数最短路や任意A<Bを扱う。",
+      "N2..90000,M1..130000,1<=A<B<=1000000000、満点50質問以下。入力グラフは木に限定されない。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-05",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "discoveredBy": "ioi-2018",
+    "notes": "既知の単純連結無向グラフで全辺に既知A/Bの二重みを割り当て、固定した未知二点間の最短距離だけを質問する。全A基準を初めて壊す辺prefixを二分して最短路上の辺を得る。その両端への厳密近接集合をBFS木に制限すると、基準距離の道が一意になり、親が先の頂点順のsuffix親辺を重くする質問で二端点を二分できる。整数の丸上げ込みで原典全域50質問以下。",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf"
+  }
+]

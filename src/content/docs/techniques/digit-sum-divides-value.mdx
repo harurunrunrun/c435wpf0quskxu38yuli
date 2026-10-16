@@ -1,0 +1,118 @@
+---
+title: "整数が自分の桁和で割り切れる条件は、桁和を固定して余りを持つ"
+description: "最後まで決まらない桁和を先に列挙し、桁和と整数の余りを同時に更新する。"
+techniqueId: digit-sum-divides-value
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+正整数 $x$ の十進の桁和を $S(x)$ とする。$1\le x\le N$ のうち、$x$ が $S(x)$ で割り切れるものを数えたい。
+
+通常の桁DPで「桁和と余り」を持とうとしても、割る数 $S(x)$ は最後の桁まで決まらない。そこで、**最終的な桁和を先に固定する**。上限の桁数が $D$ なら、正の桁和は $1$ から $9D$ に収まる。
+
+## 考え方
+
+桁和の候補 $s$ ごとに、次の条件を満たす整数を数える。
+
+$$
+S(x)=s,\qquad x\bmod s=0,\qquad 0\le x\le N.
+$$
+
+上位から桁を決める。状態に、ここまでの桁和 $u$、ここまでの整数の $s$ による余り $r$、上限の接頭辞と一致しているかを持つ。次の数字 $d$ を付けると、
+
+$$
+(u,r)\longrightarrow (u+d,(10r+d)\bmod s)
+$$
+
+と更新できる。$u+d>s$ になる桁は使わない。残りの桁を全て9にしても $s$ に届かない場合も省ける。
+
+最後に桁和が $s$、余りが0の状態を足す。これを全ての $s$ について合計する。
+
+例えば桁和を8に固定した回では、$2024$ は桁和8・余り0として数えられる。桁和を7や9に固定した回には含まれない。
+
+## 適用条件
+
+- 求めるのは正整数の個数で、十進の桁和による可除性を扱う。
+- 桁和の候補数が桁数に比例し、候補を固定すれば余りを更新できる。
+- 桁数の4乗に比例する計算量が制限内に収まる。数千桁の上限へ同じ実装を使うことはできない。
+
+短い整数は先頭を0で埋めて $D$ 桁として扱う。先頭の0は桁和にも整数の値にも影響しないため、この条件では「まだ数字が始まっていない」という別状態は不要である。全て0の列は、正の桁和 $s$ に到達しないので自動的に除かれる。
+
+桁積や、整数の値そのものほど大きくなる量を割る数にする場合、同じ候補数・状態数になるとは限らない。
+
+## なぜ正しいか
+
+桁和 $s$ を固定すると、接頭辞について必要な情報はその桁和・余り・上限との比較だけになる。次の桁を付けた後の情報は遷移式で一意に決まり、上限と一致している状態だけ桁の上限を制限すれば、$N$ 以下の全ての表記を重複なく生成できる。
+
+そのうち最終桁和が $s$、余りが0の表記は、ちょうど桁和 $s$ で自分の桁和の倍数になっている整数である。
+
+正整数の桁和は一つに決まり、必ず $1..9D$ に入る。従って、別の $s$ の回で同じ整数を二重に数えることはなく、全ての回を足せば必要な個数になる。
+
+## 計算量
+
+各整数を調べる方法は $O(ND)$ 時間。固定した $s$ のDPは、桁・桁和・余り・次の数字を調べるので $O(10Ds^2)$ 時間になる。
+
+全ての $s\le9D$ にわたる時間は $O(10D(9D)^3)$、十進固定なら $O(D^4)$。直前の桁の層だけを持つため、空間は $O((9D)^2)=O(D^2)$。桁和の候補ごとに表を使い直し、全候補の表を同時に保存しない。
+
+## 実装
+
+`count_digit_sum_divisible(upper)` は $1..upper$ の個数を返す。$0\le upper\le10^{14}$ を受け付け、0なら0を返す。それ以外は `invalid_argument` とする。
+
+答えと、各状態に数える接頭辞の個数は `long long` に収まる。上限 $10^{14}$ は15桁なので、桁数は文字列から求める。正確な桁和と固定した法による余りを、別々の軸として持つ。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long count_digit_sum_divisible(long long upper) {
+    if (upper < 0 || upper > 100000000000000LL)
+        throw invalid_argument("require 0 <= upper <= 10^14");
+    if (upper == 0) return 0;
+    const string bound = to_string(upper);
+    const int digits = int(bound.size());
+    long long answer = 0;
+    for (int target = 1; target <= 9 * digits; ++target) {
+        const int states = (target + 1) * target;
+        vector<array<long long, 2>> current(states), next(states);
+        current[0][1] = 1;
+        for (int position = 0; position < digits; ++position) {
+            fill(next.begin(), next.end(), array<long long, 2>{0, 0});
+            const int bound_digit = bound[position] - '0';
+            const int remaining = digits - position - 1;
+            for (int sum = 0; sum <= min(target, 9 * position); ++sum) {
+                for (int remainder = 0; remainder < target; ++remainder) {
+                    for (int tight = 0; tight <= 1; ++tight) {
+                        long long ways = current[sum * target + remainder][tight];
+                        if (ways == 0) continue;
+                        int limit = min(target - sum, tight ? bound_digit : 9);
+                        for (int digit = 0; digit <= limit; ++digit) {
+                            int new_sum = sum + digit;
+                            if (new_sum + 9 * remaining < target) continue;
+                            int new_remainder = (remainder * 10 + digit) % target;
+                            int new_tight = tight && digit == bound_digit;
+                            next[new_sum * target + new_remainder][new_tight] += ways;
+                        }
+                    }
+                }
+            }
+            current.swap(next);
+        }
+        answer += current[target * target][0] + current[target * target][1];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [桁和の余りを状態にする](/flowchartcp/techniques/digit-sum-residue-dp/)：割る数が最初から決まっていれば、正確な桁和を持たずに済む。
+- [先頭の0を区別する桁DP](/flowchartcp/techniques/digit-dp-leading-zero/)：数字の出現回数や桁数も条件にする場合の状態設計。
+- [指定数字を含む整数の総和](/flowchartcp/techniques/digit-required-count-sum/)：個数だけでなく、生成した整数の値も集約する。
+
+## 参考資料
+
+- [AtCoder ABC336 E：Digit Sum Divisible](https://atcoder.jp/contests/abc336/tasks/abc336_e) — 桁和で割り切れる正整数を上限以下で数える原典。
+- [AtCoder ABC336 E公式解説](https://atcoder.jp/contests/abc336/editorial/9055) — 最終的な桁和を固定する状態設計。
+
+<TechniqueReferences techniqueId="digit-sum-divides-value" />

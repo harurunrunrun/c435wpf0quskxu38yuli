@@ -1,0 +1,148 @@
+---
+title: "根が変わる部分木は、固定根の区間か全体から一つの子を除いた集合にする"
+description: "根の変更ごとに探索し直さず、祖先関係に応じて高々二つのDFS区間に直す。"
+techniqueId: reroot-subtree-complement
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+根の変更ごとに探索し直さず、祖先関係に応じて高々二つのDFS区間に直す。
+
+## 使う場面
+
+木の根が何度も変わり、その根から見た部分木へ加算したり、部分木の合計を質問したりする。木の辺自体は変わらない。
+
+## 考え方
+
+準備時の根を0、現在の根を $r$ とする。現在の根で見た $v$ の部分木は、次の三つに分かれる。
+
+- $v=r$：木全体。
+- 固定根で $v$ が $r$ の祖先でない：固定根での $v$ の部分木。
+- $v$ が $r$ の真の祖先：$v$ から $r$ へ向かう最初の子を $c$ とし、木全体から固定根での $c$ の部分木を除く。
+
+最後の集合はDFS順で $[0,tin_c)$ と $[tout_c,N)$ の二区間になる。$c$ は $r$ から深さの差だけ祖先を上って求められる。
+
+二頂点 $u,v$ を含む最小の部分木の根も必要なら、固定根での $\mathrm{LCA}(u,v),\mathrm{LCA}(u,r),\mathrm{LCA}(v,r)$ のうち最も深い頂点を使う。それが現在の根に対するLCAになる。
+
+## 適用条件
+
+木の接続は変わらず、根だけが変わる。DFS区間の加算・和など、少数の互いに重ならない区間へ分けて処理できる集計を対象にする。掲載例は整数の加算・和を128ビットで計算し、途中値を含めその範囲に収まることを要する。
+
+## なぜ正しいか
+
+$v\ne r$ の部分木は、$v$ から現在の根へ向かう辺を切ったときに $v$ 側へ残る成分。固定根で $v$ が $r$ の祖先でなければ、その辺は $v$ と親の辺なので通常の部分木になる。祖先なら、根へ向かう子 $c$ の辺を切り、その子側の成分だけを除く。
+
+三点 $u,v,r$ の間の三本の経路に共通する頂点は一つだけある。三つの固定根LCAのうち最も深いものがその頂点であり、根を $r$ としたときの二点の共通祖先になる。
+
+## 計算量
+
+根変更ごとのDFS $O(N)$ を省く。準備は祖先表込みで $O(N\log N)$、根変更は $O(1)$、部分木加算・和と根変更LCAは $O(\log N)$。空間は $O(N\log N)$。掲載例の初期値の登録は $O(N\log N)$。
+
+## 実装
+
+`RootChangingSubtree` は初期値を受け取る。`set_root`、`add_subtree`、`sum_subtree` が基本操作。`add_cover(u,v,x)` は現在の根で二頂点を含む最小部分木へ加算する。返す和は `__int128`。空の区間は無視する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct TreeIndex {
+    int n, lg=1;
+    vector<int> parent,depth,tin,tout,order;
+    vector<vector<int>> up;
+    explicit TreeIndex(const vector<vector<int>>& g,int root=0)
+        :n(g.size()),parent(n,-1),depth(n),tin(n),tout(n) {
+        assert(n>0 && 0<=root && root<n);
+        while((1LL<<lg)<=n) ++lg;
+        parent[root]=root;
+        vector<pair<int,int>> stack{{root,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;
+            int& i=stack.back().second;
+            if(i==0) { tin[v]=order.size();order.push_back(v); }
+            if(i==int(g[v].size())) { tout[v]=order.size();stack.pop_back();continue; }
+            int u=g[v][i++];
+            if(u==parent[v]) continue;
+            parent[u]=v;depth[u]=depth[v]+1;stack.push_back({u,0});
+        }
+        assert(int(order.size())==n);
+        up.assign(lg,vector<int>(n));up[0]=parent;
+        for(int k=1;k<lg;++k) for(int v=0;v<n;++v)
+            up[k][v]=up[k-1][up[k-1][v]];
+    }
+    bool ancestor(int a,int b) const {return tin[a]<=tin[b] && tin[b]<tout[a];}
+    int jump(int v,int steps) const {
+        assert(0<=steps && steps<=depth[v]);
+        for(int k=0;k<lg;++k) if((steps>>k)&1) v=up[k][v];
+        return v;
+    }
+    int lca(int a,int b) const {
+        if(ancestor(a,b)) return a;
+        if(ancestor(b,a)) return b;
+        for(int k=lg-1;k>=0;--k) if(!ancestor(up[k][a],b)) a=up[k][a];
+        return parent[a];
+    }
+};
+
+struct RangeAddSum {
+    int n;vector<__int128> first,second;
+    explicit RangeAddSum(int count):n(count),first(n+1),second(n+1) {}
+    void point(vector<__int128>& bit,int p,__int128 x) {
+        for(++p;p<=n;p+=p&-p) bit[p]+=x;
+    }
+    __int128 prefix_bit(const vector<__int128>& bit,int p) const {
+        __int128 result=0;
+        for(;p>0;p-=p&-p) result+=bit[p];
+        return result;
+    }
+    void add(int l,int r,__int128 x) {
+        if(l==r) return;
+        point(first,l,x);point(second,l,x*l);
+        point(first,r,-x);point(second,r,-x*r);
+    }
+    __int128 prefix(int r) const {
+        return r*prefix_bit(first,r)-prefix_bit(second,r);
+    }
+    __int128 sum(int l,int r) const {return prefix(r)-prefix(l);}
+};
+struct RootChangingSubtree {
+    TreeIndex tree;
+    RangeAddSum values;
+    int root=0;
+    RootChangingSubtree(const vector<vector<int>>& g,const vector<long long>& initial)
+        :tree(g),values(g.size()) {
+        assert(g.size()==initial.size());
+        for(int v=0;v<tree.n;++v) values.add(tree.tin[v],tree.tin[v]+1,initial[v]);
+    }
+    void set_root(int r) {root=r;}
+    vector<pair<int,int>> intervals(int v) const {
+        if(v==root) return {{0,tree.n}};
+        if(!tree.ancestor(v,root)) return {{tree.tin[v],tree.tout[v]}};
+        int child=tree.jump(root,tree.depth[root]-tree.depth[v]-1);
+        return {{0,tree.tin[child]},{tree.tout[child],tree.n}};
+    }
+    int current_lca(int u,int v) const {
+        int result=tree.lca(u,v);
+        for(int x:{tree.lca(u,root),tree.lca(v,root)})
+            if(tree.depth[x]>tree.depth[result]) result=x;
+        return result;
+    }
+    void add_subtree(int v,long long x) {
+        for(auto [l,r]:intervals(v)) values.add(l,r,x);
+    }
+    __int128 sum_subtree(int v) const {
+        __int128 result=0;
+        for(auto [l,r]:intervals(v)) result+=values.sum(l,r);
+        return result;
+    }
+    void add_cover(int u,int v,long long x) {add_subtree(current_lca(u,v),x);}
+};
+```
+
+## 関連する手法
+
+[部分木をDFS順の連続区間に変換する](/flowchartcp/techniques/subtree-euler-interval/) ・ [区間加算と区間和を二つのFenwick Treeで処理する](/flowchartcp/techniques/two-fenwick-range-add/) ・ [木の経路和を根からの累積和とLCAで求める](/flowchartcp/techniques/tree-path-prefix-lca/)
+
+## 参考資料
+
+- [Codeforces：Jamie and Tree](https://codeforces.com/problemset/problem/916/E)
+
+<TechniqueReferences techniqueId="reroot-subtree-complement" />

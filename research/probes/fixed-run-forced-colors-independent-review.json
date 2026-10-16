@@ -1,0 +1,489 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "fixed-run-row-prefix-suffix-feasibility-forced-colors",
+  "problemId": "ioi2016_paint",
+  "reviewer": "independent agent /root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allPublishedCppRead": true,
+    "completeSuppliedCheckerRead": true,
+    "completeSidecarRead": true,
+    "sourcesReadIndependently": true,
+    "authorArtifactsModified": false,
+    "sharedFilesModified": false,
+    "noNewSubagents": true
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-article.mdx",
+      "sha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "unchanged": true
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-checker.py",
+      "sha256": "00dd659431c89375365412d3e146094d5c8fca49b229423888445baee51aa366",
+      "unchanged": true
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-sidecar.json",
+      "sha256": "3df9c188d4be9b1b413b62eae2e0c76134b71a12bbd48b4776537a130f4465be",
+      "unchanged": true
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-independent-normal.json",
+      "sha256": "a485d4f777295c3f24920ff9429b7239c15257836f65bf119f655d35470961a6"
+    },
+    "independent-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-independent-sanitize.json",
+      "sha256": "f33ddc1dab4d89eb0f654e463f5e0c52bb1348270557052012af867dfeb989cb"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-independent-probe.py",
+      "sha256": "0e81e1d17a295356b7917bfa02ddefc8d15150da09760e55b09fa5d73a0fa8ec"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-independent-probe.json",
+      "sha256": "a92c3909b3153e3332748c84ec2987e372c60ad9a51f37c6cf4b534b5bc186b4"
+    },
+    "independent-probe-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-paint-independent-probe-sanitize.json",
+      "sha256": "e130563a1a10828e65808834683822925f8e3e7459ba55f05ea699100397b41f"
+    }
+  },
+  "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+  "sourceReview": {
+    "statements": {
+      "englishUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "japaneseUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-JPN.pdf",
+      "pagesEach": 3,
+      "readMethod": "Full primary PDF web text with detached numeric glyphs assembled at their original p3 constraints;not visual screenshot/local-PDF inspection.",
+      "confirmed": {
+        "N": [
+          1,
+          200000
+        ],
+        "K": "1..min(N,100)",
+        "clueLengths": "1..N",
+        "inputAlphabet": [
+          "X",
+          "_",
+          "."
+        ],
+        "outputAlphabet": [
+          "X",
+          "_",
+          "?"
+        ],
+        "orderedRuns": true,
+        "whiteSeparatorMinimum": 1,
+        "atLeastOneSolutionGuaranteed": true,
+        "answer": "each cell common color across all valid completions,? iff both colors occur",
+        "genericSignature": "string solve_puzzle(string s,int[] c)",
+        "sourceExamplesVerified": 4
+      }
+    },
+    "solutions": {
+      "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "totalPages": 17,
+      "relevantOneBasedPages": [
+        8,
+        9,
+        10
+      ],
+      "printedAuthor": "Michal Forišek",
+      "selectedScope": "Full prefix/suffix feasibility steps1..5 and per-cell white/per-block black possibility;no smaller-subtask greedy assumption used",
+      "independentSupplements": [
+        "exact zero-prefix and boundary-separator handling",
+        "reverse lookup without copying row/clues",
+        "black placement aggregation by range difference",
+        "explicit generic contradiction/empty/zero-run contract"
+      ]
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "pages": 1,
+      "mapping": {
+        "string": "std::string",
+        "int[]": "std::vector<int>"
+      },
+      "timeSeconds": 2,
+      "memoryGB": 2,
+      "standardInputOutputProhibited": true
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+      "day": 2,
+      "contestDate": "2016-08-16",
+      "precision": "day",
+      "difficulty": null
+    },
+    "header": {
+      "actualBytesRetrieved": false,
+      "adapterDerivedFromGenericAndNotice": "std::string solve_puzzle(std::string,std::vector<int>)",
+      "actualGraderHeaderCompilationClaimed": false
+    },
+    "originalEntireRangeIncluded": true
+  },
+  "mathematicalReview": [
+    {
+      "obligation": "complete prefix recurrence",
+      "verdict": "verified",
+      "reason": "F0j is true iff the whole prefix has no known black;F[t>0][0]=false. Every feasible prefix either ends white,requiring non-X and F[t][j-1],or ends with its final positive run [a,j). That run contains no known white;when a>0 it has a white non-X predecessor and F[t-1][a-1]. At a=0,F[t-1][0] enforces no remaining earlier run. These conditions also construct a solution,so necessity and sufficiency hold."
+    },
+    {
+      "obligation": "reversal and suffix boundaries",
+      "verdict": "verified",
+      "reason": "Reversing both row and clue order preserves completions. t-th reversed clue is original c[K-t]. Reversed [a,b) contains no known white iff original white-prefix values at N-a and N-b agree. All indices stay0..N. No copied reverse arrays or differing tie convention exists."
+    },
+    {
+      "obligation": "white-cell possibility",
+      "verdict": "verified",
+      "reason": "In a completion making v white,each run lies completely left or right. Let t be the number on the left;then F[t][v] and B[K-t][N-v-1] hold. Conversely concatenate those two completions with the non-X cell v made white. Its separator makes black runs on the two sides distinct. Ends and t0/K are enforced by zero-length DP states."
+    },
+    {
+      "obligation": "black-cell possibility",
+      "verdict": "verified",
+      "reason": "A proposed clue-t placement[a,b) is valid iff no known white lies inside,existing immediate neighbors a-1 and b may be white,and F[t][max(0,a-1)] plus B[K-t-1][max(0,N-b-1)] hold. Neighbor cells are excluded from side tables and explicitly white,so no accidental merging occurs. Empty side tables also reject leftover clues at the physical boundary."
+    },
+    {
+      "obligation": "forced-color aggregation",
+      "verdict": "verified",
+      "reason": "Every black cell in any completion belongs to one enumerated legal run placement;every enumerated placement has a compatible whole completion. Difference endpoints produce exactly the union of those placements. After checking F[K][N],each cell has at least one possible color:only-white yields_,only-black X,both ?. Known X cannot be white and known_ lies in no legal black placement."
+    },
+    {
+      "obligation": "generic extensions versus source guarantee",
+      "verdict": "verified",
+      "reason": "Malformed sizes/counts/symbols/lengths throw before feasibility rejection. Well-formed impossible instances return nullopt before suffix/color combination. K0 returns all white iff no knownX;N=K=0 returns an engaged optional empty string. The source-name adapter shares these valid extensions and throws invalid_argument on a well-formed contradiction,which cannot occur in the source guaranteed-solution domain;it is not claimed to reject every extension outside originalN/K."
+    }
+  ],
+  "implementationReview": {
+    "publicApi": "std::optional<std::string> forced_colors(std::string_view row,std::span<const int> clues)",
+    "sourceAdapter": "std::string solve_puzzle(std::string,std::vector<int>)",
+    "originalFullRangeIncluded": true,
+    "validation": "N<=200000,K<=100,K<=N;complete row alphabet and every clue1..N are validated before minimum required length or DP allocations. The minimum run+separator size is accumulated in int64;unplaceable valid clues return nullopt. Input? is rejected;output? is a possibility marker only.",
+    "memoryAndTime": {
+      "timeOriginal": "O(NK)",
+      "spaceOriginal": "O(NK)",
+      "genericBound": "O((N+1)(K+1));K0 O(N),N0 O(1)",
+      "maximumTwoByteTables": 40400202,
+      "maximumMajorElementPayload": 42400211,
+      "interpretation": "Major element payload includes two byte tables,white-prefix and difference int32 arrays,can_white bytes and answer characters/terminator. It excludes input/management/allocator/capacity overhead and is not a process-RSS upper bound. Reversal uses original indexing;no reversed input copies."
+    },
+    "integers": {
+      "maximumSingleTableElements": 20200101,
+      "maximumKnownWhitePrefix": 200000,
+      "safeDifferenceAndActiveBound": 20000100,
+      "minimumLengthType": "int64",
+      "tableProducts": "size_t"
+    },
+    "indexReview": "All j>=1 accesses at(j-1) map into row. Negative a is tested before prefix access. Black end b<=N,and left/right exclusions are0 at the physical ends. Table offset products are widened before multiplying. Positive clue lengths prevent an empty black block. DP table storage is zero-initialized uint8. Difference accumulation cannot overflow int32 under the above bound.",
+    "stateAndExceptions": "Production state is entirely local,no recursion,no mutable cache,views not retained. Both inputs remain unchanged and return owns its string. Main author test checks6 core bad_alloc sites;new reviewer test checks exact subtype and live bytes at6 core plus8 by-value adapter sites. Allocation-failure location counts are tested-toolchain observations,not a portable allocation-count contract.",
+    "resources": "Source2s/2GB confirmed. Full suite times/RSS include huge oracle enumeration and ASan quarantine;they are not source single-input runtime claims. Original maximumN/K and tightly packed separator cases were independently reproduced."
+  },
+  "reproducedAuthorChecker": {
+    "command": "python3 /tmp/flowchartcp-ioi2016-paint-checker.py [--sanitize]",
+    "normal": {
+      "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 18676424,
+      "apiCalls": 1008660,
+      "partialRows": 88573,
+      "literalFullAssignmentPairs": 52092093,
+      "exhaustiveCompletionRevealPairs": 1398101,
+      "primarySamples": 4,
+      "consistentObservationClueGroups": 921587,
+      "originalDomainGroups": 919540,
+      "zeroRunExtensionGroups": 2047,
+      "contradictoryObservationClueCases": 77096,
+      "adapterCalls": 2830,
+      "randomInputs": 1800,
+      "metamorphicChecks": 5273,
+      "invalidCalls": 21,
+      "allocationFaults": 6,
+      "checksum": "16381575956586682632",
+      "seconds": 2.18382,
+      "peakRSSKiB": 47984,
+      "maximumCases": [
+        {
+          "name": "full length single run",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.0030522
+        },
+        {
+          "name": "single run length199999 overlaps",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00224801
+        },
+        {
+          "name": "100 singleton runs,all positions ambiguous",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.11998
+        },
+        {
+          "name": "100 tight runs,no slack",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.136531
+        },
+        {
+          "name": "all exact known cells",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.0578738
+        },
+        {
+          "name": "known white in unique tight run",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.0244095
+        },
+        {
+          "name": "100 runs each2000 cannot fit separators",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 6.4113e-05
+        },
+        {
+          "name": "100 separated mandatory singleton positions",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.111577
+        },
+        {
+          "name": "100 singleton runs inside known white margins",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.125032
+        },
+        {
+          "name": "zero run extension",
+          "n": 200000,
+          "k": 0,
+          "exists": true,
+          "coreSeconds": 0.000162081
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "2819c15744ead60a39f2cd1e88a0719c17372259307e37d590d9f5fe4be28012",
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 18676424,
+      "apiCalls": 1008660,
+      "partialRows": 88573,
+      "literalFullAssignmentPairs": 52092093,
+      "exhaustiveCompletionRevealPairs": 1398101,
+      "primarySamples": 4,
+      "consistentObservationClueGroups": 921587,
+      "originalDomainGroups": 919540,
+      "zeroRunExtensionGroups": 2047,
+      "contradictoryObservationClueCases": 77096,
+      "adapterCalls": 2830,
+      "randomInputs": 1800,
+      "metamorphicChecks": 5273,
+      "invalidCalls": 21,
+      "allocationFaults": 6,
+      "checksum": "16381575956586682632",
+      "seconds": 12.4258,
+      "peakRSSKiB": 1052040,
+      "maximumCases": [
+        {
+          "name": "full length single run",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.00797489
+        },
+        {
+          "name": "single run length199999 overlaps",
+          "n": 200000,
+          "k": 1,
+          "exists": true,
+          "coreSeconds": 0.0215063
+        },
+        {
+          "name": "100 singleton runs,all positions ambiguous",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.643552
+        },
+        {
+          "name": "100 tight runs,no slack",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.683046
+        },
+        {
+          "name": "all exact known cells",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.432504
+        },
+        {
+          "name": "known white in unique tight run",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.13655
+        },
+        {
+          "name": "100 runs each2000 cannot fit separators",
+          "n": 200000,
+          "k": 100,
+          "exists": false,
+          "coreSeconds": 0.000101877
+        },
+        {
+          "name": "100 separated mandatory singleton positions",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.588067
+        },
+        {
+          "name": "100 singleton runs inside known white margins",
+          "n": 200000,
+          "k": 100,
+          "exists": true,
+          "coreSeconds": 0.506137
+        },
+        {
+          "name": "zero run extension",
+          "n": 200000,
+          "k": 0,
+          "exists": true,
+          "coreSeconds": 0.000224376
+        }
+      ]
+    },
+    "allDeterministicFieldsMatchAuthorFinal": true,
+    "scope": "These18676424 assertions/1008660API and checksum are author-checker reproduction,not a newly designed independent oracle;normal and sanitizer repeat the same cases.",
+    "counterMeaning": "88573 ternary partial rowsN0..10;1398101 compatible full-row/reveal pairs;921587 consistent observation/clue groups including2047 zero-clue extensions;77096 contradictions;52092093 literal full masks include random/example loops,not unique puzzles. Max10 families include original solvable cases plus contradictions andK0. Adapter calls include extensions and3 invalid calls.",
+    "oracleIndependence": "Author generates full binary rows and scans maximal runs,then aggregates all compatible reveals without the production DP or range-difference logic."
+  },
+  "additionalIndependentVerification": {
+    "script": "/tmp/flowchartcp-ioi2016-paint-independent-probe.py",
+    "command": "python3 /tmp/flowchartcp-ioi2016-paint-independent-probe.py [--sanitize]",
+    "normal": {
+      "checks": 117367,
+      "apiCalls": 45193,
+      "baseObservationCases": 19796,
+      "clueSlackProfiles": 2387,
+      "directBlockPlacements": 1658887,
+      "compatiblePlacements": 512906,
+      "knownSingletonFrameCases": 19796,
+      "colorPinnedBranchCases": 4256,
+      "sourceAdapterCalls": 1314,
+      "contradictoryCases": 2771,
+      "allocationFailureExceptions": 14,
+      "checksum": "6445428823580750785",
+      "seconds": 0.0461396,
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": false,
+      "peakRSSKiB": 4644
+    },
+    "asanUbsan": {
+      "checks": 117367,
+      "apiCalls": 45193,
+      "baseObservationCases": 19796,
+      "clueSlackProfiles": 2387,
+      "directBlockPlacements": 1658887,
+      "compatiblePlacements": 512906,
+      "knownSingletonFrameCases": 19796,
+      "colorPinnedBranchCases": 4256,
+      "sourceAdapterCalls": 1314,
+      "contradictoryCases": 2771,
+      "allocationFailureExceptions": 14,
+      "checksum": "6445428823580750785",
+      "seconds": 0.362982,
+      "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+      "sanitize": true,
+      "peakRSSKiB": 69652
+    },
+    "allDeterministicFieldsIdentical": true,
+    "oracle": "Enumerate block start positions directly for a fixed clue list. Starts respect each exact length and at least one separator;unoccupied cells are white. Filter by known-cell masks and intersect/union only compatible placements. No F/B table,per-block feasibility recurrence,range-difference array or enumeration of all binary rows is used to obtain the expected colors.",
+    "families": "Every ordered clue list of length1..4 with clue values1..4,plus empty list,and slack0..6 gives2387 clue/slack profiles. Eight observation modes each plus700 random profiles produce19796 base executions. Systematic rows reachN25;random rows up toN49 and frame transforms up toN53. Modes and random cases may overlap;execution counts are not all unique puzzles.",
+    "metamorphic": "Add a known singleton black run separated by knownwhite at each end:X_+row+_X,with clue1 prepended/appended. This gives a completion bijection,including contradictions and zero-run extension. For one ambiguous cell,pin it black and white separately,enumerate both subfamilies,and join their forced colors back to the original.",
+    "faults": "On a 1024-cell20-run feasible row,inject a custom bad_alloc subtype at every observed6 core and8 source-adapter allocation points,check exact exception type,input retention,allocated live-byte equality after unwinding,and successful fresh calls. The new14 faults are separate from author6.",
+    "limits": "Direct placement oracle is limited to these small clue/slack profiles;full originalN/K comes from the proof and reproduced source-scale tests. Frames are metamorphic rather than independent optimum oracles.14 locations are not a portable promise or LeakSanitizer result."
+  },
+  "preservation": {
+    "auditFile": "/home/admin2/flowchartcp/site/data/corpus-audits/ioi-2016.json",
+    "auditRawSha256AtReview": "fbe26d18e4ffca7442d6f5f78df173087b646cc8ef305371b3cfd6778c096cf1",
+    "initialRowCanonicalSha256": "6cf79e7f5bd9e01b6a19fe8eecf38c6c940ecbbf92d6f8b5bd4d3df256d9592c",
+    "initialStatusCanonicalSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialResearchCount": 6,
+    "initialCoveredCount": 0,
+    "initialFullImplementationCount": 0,
+    "initialResearchPositive": true,
+    "initialCompletedApiCoverage": false,
+    "initialRowHadNoResolution": true,
+    "existingResolutionsAtReview": [
+      "ioi2016_molecules",
+      "ioi2016_railroad",
+      "ioi2016_aliens"
+    ],
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "policy": "Preserve initialsix/status/snapshot/selection and priorAliens/Molecules/Railroad resolutions. Already-positive Paint needs no added positive research review;only parent may append resolution after actual article/source/root-walk registration."
+  },
+  "limitations": [
+    "Actual distributed header bytes not retrieved;source signature derived from generic statement plus Notice.",
+    "No PDF visual-inspection claim.",
+    "Unused restricted greedy alternatives are not necessary for selected full solution.",
+    "LeakSanitizer disabled per platform;address/undefined checks and separate live-byte accounting reported honestly."
+  ],
+  "executionNotes": {
+    "coordination": "Author checker reproduction finished and slot was temporarily released to Shortcut/Messy while the new oracle was prepared. Parent then authorized new supplemental sanitizer after Messy ended. Both modes succeeded and root was notified the slot was free before rootPaint sanitizer.",
+    "sharedOrAuthorEdits": false
+  },
+  "conclusion": "No material source-range,proof,implementation,API,integer or memory issue found. Selected complete method and full source contract are independently supported. Frozen author artifacts and initial audit remain unchanged;registration and coverage are parent work.",
+  "originalReviewSha256": "f91966414842ff4c72cc46f8e2cab8c67321b53643b874591944386e4d95359f",
+  "publishedArticle": "src/content/docs/techniques/fixed-run-row-prefix-suffix-feasibility-forced-colors.mdx",
+  "permanentProbe": {
+    "script": "research/probes/fixed-run-forced-colors-independent.py",
+    "normalizedSha256": "619e8334ccb808bfca78572a5c56e47162ab57f0c4ea0ce40cc99e4eac510922",
+    "normalization": "Only MDX path; direct block start enumeration, known singleton frames, both-color pins and allocation/live-byte checks unchanged."
+  }
+}

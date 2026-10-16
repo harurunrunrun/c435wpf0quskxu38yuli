@@ -1,0 +1,86 @@
+---
+title: "重量下限を満たす比率最大化は、比率を仮定して重さを下限で丸める"
+description: "才能と重量の比を差の和へ変え、下限を超えた重さを一状態に統合した0/1 DPで実現性を判定する。"
+techniqueId: ratio-knapsack-weight-cap
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+対象を一回ずつ選び、重量の合計が下限 $W$ 以上の中で、才能の合計と重量の合計の比を最大にしたい。全重量を軸にするナップサックは、各重量が大きいと表が作れない。最終的な重さを区別しなくてよい下限条件を使う。
+
+## 考え方
+
+答えを1000倍して切り捨てた整数を求めるなら、整数 $y$ が実現できるかを判定する。
+
+$$\frac{\sum t_i}{\sum w_i}\ge\frac y{1000}\iff\sum(1000t_i-yw_i)\ge0.$$
+
+候補 $y$ を固定し、各対象の値を $v_i=1000t_i-yw_i$ にする。DPの重さ $s<W$ は正確な重さ、$s=W$ は重さが $W$ 以上という意味にする。追加先は $\min(W,s+w_i)$ であり、そこで変換後の値の和の最大値を持つ。
+
+$dp[W]\ge0$ なら実現できる。$y$ を大きくするほど条件は厳しくなるので、実現する最大の整数を二分探索する。対象一つの比率の最大値が全ての選択の比率の上界になる。
+
+## 適用条件
+
+重量は正で、対象は0/1選択、重量制約は下限だけである。重量上限もある場合、下限を超えた正確な重さを捨てられない。才能は非負、少なくとも一つの集合の総重量が $W$ 以上になることを確認する。
+
+実装は $N\le250$、$1\le W\le1000$、各重量 $1\ldots10^6$、才能 $0\ldots1000$。変換した値は負になることもある。到達不能を十分小さい値にし、そこから遷移しない。実現できる重量がないときは `nullopt`。比較を整数だけで行うため、比率の丸め誤差は入らない。
+
+## なぜ正しいか
+
+同じ丸めた重さの状態では、将来の対象を同じだけ追加したときの下限達成の可否が同じである。重さ $W$ に丸めた集合は、いずれも既に下限を満たしているので、変換した値の大きい状態だけを残せる。$W$ より小さい状態は正確な重さを残す。
+
+重量が正なので重さの降順更新では各対象を一回だけ使う。追加先が同じ $W$ となる更新も、$s=W$ を一回だけ処理してから下へ進むため再利用されない。
+
+判定式は分母が正であることから同値であり、実現する整数 $y$ の最大値は最適比率の1000倍の床になる。全選択の比率は各対象の比率の重み付き平均なので、その最大値で探索区間を区切れる。
+
+## 計算量
+
+全選択の列挙は $O(N2^N)$ 時間。全重量を持つ判定は $O(N\sum w_i)$ 時間になる。重さを丸めると一判定 $O(NW)$ 時間・$O(W)$ 空間。比率の整数上界を $U$ とすると全体 $O(NW\log(U+1))$ 時間。入力の保存を含む空間は $O(N+W)$。
+
+## 実装
+
+`maximum_scaled_talent_ratio` は最適比率の1000倍の床を返す。変換後の値は64ビットで保持し、空集合を重量下限の達成として数えない。
+
+```cpp
+#include <algorithm>
+#include <optional>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+std::optional<int> maximum_scaled_talent_ratio(int minimum_weight,
+                                              const std::vector<std::pair<int,int>>& items) {
+    if(minimum_weight<1 || minimum_weight>1000 || items.size()>250) throw std::invalid_argument("range");
+    long long total_weight=0;int upper=0;
+    for(auto [weight,talent]:items) {
+        if(weight<1 || weight>1000000 || talent<0 || talent>1000) throw std::invalid_argument("item");
+        total_weight+=weight;upper=std::max(upper,1000*talent/weight);
+    }
+    if(total_weight<minimum_weight) return std::nullopt;
+    constexpr long long NEG=-4000000000000000000LL;
+    auto feasible=[&](int ratio) {
+        std::vector<long long> dp(minimum_weight+1,NEG);dp[0]=0;
+        for(auto [weight,talent]:items) {
+            long long value=1000LL*talent-1LL*ratio*weight;
+            for(int s=minimum_weight;s>=0;--s) if(dp[s]!=NEG) {
+                int next=std::min(minimum_weight,s+weight);
+                dp[next]=std::max(dp[next],dp[s]+value);
+            }
+        }
+        return dp[minimum_weight]>=0;
+    };
+    int low=0,high=upper+1;
+    while(high-low>1) {int middle=low+(high-low)/2;if(feasible(middle))low=middle;else high=middle;}
+    return low;
+}
+```
+
+## 関連する手法
+
+[ナップサックDP](/flowchartcp/techniques/knapsack/) ・ [二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [USACO：Talent Show (Gold)（原典）](https://usaco.org/index.php?cpid=839&page=viewproblem2)。
+- [USACO：Talent Show (Gold)（公式解説）](https://usaco.org/current/data/sol_talent_gold_open18.html)。
+
+<TechniqueReferences techniqueId="ratio-knapsack-weight-cap" />

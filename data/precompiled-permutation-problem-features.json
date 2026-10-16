@@ -1,0 +1,35 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2016_messy",
+    "title": "Unscrambling a Messy Bug",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+    "techniqueIds": [
+      "precompiled-permutation-partition-signature-membership"
+    ],
+    "features": [
+      "最初に空の集合へ同じ長さの0/1文字列を登録し、全登録後に一回だけcompileする。",
+      "compileで全要素へ同じ固定の未知ビット位置置換が作用し、その後は所属判定だけを行える。",
+      "全出力位置から元の位置への対応pを復元する。outbit[i]=oldbit[p[i]]であり、逆置換を返さない。",
+      "原典N8/32/128の全5予算を、一つのbalanced構成で満たす。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "notes": "二値文字列を集合へ登録した後、全要素のビット位置へ同じ未知置換が一回作用し、その後は所属だけを質問できる。各区間の外を1、左半分の一点だけを1にした文字列を全て先に登録すると、深さごとの1の個数と同深さの0の位置集合で部分問題を区別し、出力位置集合を左右へ分類して置換全体を復元できる。",
+    "discoveredBy": "ioi-2016",
+    "publicationDate": "2016-08-16",
+    "publicationDatePrecision": "day",
+    "publicationYear": 2016,
+    "originalNumericBoundsVerified": true,
+    "cutoffVerification": "contest-before-cutoff"
+  }
+]

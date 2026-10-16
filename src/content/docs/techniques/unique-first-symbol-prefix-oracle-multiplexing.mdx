@@ -1,0 +1,181 @@
+---
+title: "先頭の文字が再び現れない列を、候補を連結した質問で復元する"
+description: "未知列の接頭辞が質問内に現れる最大の長さを使い、三つの候補を一回の質問で区別する。先頭の文字が一度だけ現れる条件を利用する。"
+techniqueId: unique-first-symbol-prefix-oracle-multiplexing
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+四種類の記号からなる未知列 $S$ の長さ $N$ が分かっている。文字列 $Q$ を質問すると、「$Q$ のどこかに連続して現れる $S$ の接頭辞」の最大長が返る。各文字を候補ごとに試すと質問回数が多くなるため、複数の候補を連結した一つの質問で区別したい。
+
+ここで重要なのは、$S$ の先頭記号が二文字目以降には現れないという約束である。この記号を、一致が始まる場所を限定する目印として使う。中間の各文字を一質問で決め、先頭と末尾だけを別に処理する。
+
+## 考え方
+
+四記号をいったん $u,v,w,z$ と書く。まず $uv$ を質問する。返答が正なら先頭は $u,v$ のどちらかなので、$u$ だけを質問して決める。返答が0なら $w$ だけを質問し、先頭を $w,z$ のどちらかに決める。どの場合も二質問である。
+
+先頭が確定したら、それ以外の三記号を順に $a,b,c$ と呼ぶ。既に分かった正しい接頭辞を $P$、その長さを $m$ とする。まだ二文字以上残っている間、次の文字列を一回だけ質問する。$+$ は文字列の連結である。
+
+$$Q=(P+a+a)+(P+a+b)+(P+a+c)+(P+b).$$
+
+返答と次の文字の対応は次のようになる。
+
+| 返答 | 次の文字 |
+|---|---|
+| $m+2$ | $a$ |
+| $m+1$ | $b$ |
+| $m$ | $c$ |
+
+次が $a$ なら、その次の文字も $a,b,c$ のいずれかなので、最初の三ブロックのどれかが二文字分伸びる。次が $b$ なら末尾の $P+b$ だけが一文字伸びる。次が $c$ なら全ブロックで伸びない。
+
+一文字だけ残ったら、$P+a$ を質問し、返答が $N$ なら $a$ に決める。そうでなければ $P+b$ を質問し、返答が $N$ なら $b$、そうでなければ $c$ とする。$N=1$ なら先頭の二質問だけで終了する。
+
+## 適用条件
+
+質問への返答は、最初から固定された長さ $N$ の秘密列に対し、質問中に部分文字列として現れる秘密列の接頭辞の最大長とする。部分列や、質問自身の接頭辞との一致長ではない。秘密列の先頭記号は、その後に一度も現れない。
+
+掲載APIは $1\le N\le2000$ と、相異なる四つの `char` を扱う。既定の記号は `A,B,X,Y` だが、四記号への全単射で名前を置き換えてよい。質問の構成は記号の大小や文字コードに依存しない。`std::string` の長さで扱うため、独自の応答関数ならヌル文字を記号に含めることもできる。
+
+原典は質問長 $0\ldots4N$、最大8000回、満点には $N+2$ 回以下を要求する。掲載手順はその全入力範囲を満たす。空の質問は使わない。先頭記号の一意性は質問の前提条件であり、未知列を見ないAPIではその違反を一般には判定できない。
+
+## なぜ正しいか
+
+先頭を $d$ とする。最初の二質問について、$uv$ に長さ1以上の秘密接頭辞が現れることと、先頭が $u$ または $v$ であることは同値である。一文字だけの質問で残る二択を区別できるので、正しい先頭が分かる。
+
+以後、$P$ が正しい接頭辞であると仮定する。$P$ には $d$ が先頭に一度だけあり、$a,b,c$ は全て $d$ と異なる。従って連結質問中の $d$ は四つの $P$ の先頭にしかない。秘密列の空でない接頭辞が質問中に現れるなら、その開始位置は必ずこの四箇所のいずれかである。$P$ の途中や追加記号から始まる偽の一致はない。
+
+各開始位置ではまず $m$ 文字が一致する。最初の三ブロックは追加の二文字の後に次の $P$ が続き、その先頭は $d$ である。秘密列では最初以外の位置に $d$ がないので、一致がブロック境界を越えて三文字以上伸びることはない。末尾ブロックは追加の一文字で終わる。よって返答は高々 $m+2$ である。
+
+次の文字が $a$ の場合、まだ二文字以上残っているので、次々文字は確かに存在し、$a,b,c$ のいずれかである。それに対応する最初の三ブロックが $m+2$ 文字一致する。次が $b$ の場合、最初の三ブロックは $m$ で止まり、末尾ブロックがちょうど $m+1$ になる。次が $c$ の場合は全て $m$ で止まる。表の三つは排他的かつ網羅的なので、次の文字を正しく追加できる。
+
+残り一文字では、$P+a$ に長さ $N$ の接頭辞が現れることは、この質問全体が秘密列と一致することと同値である。二つの候補が失敗すれば三つ目に確定する。接頭辞の正しさを保って長さ $N$ に到達するため、返す列は秘密列そのものである。この議論は記号の等しい・異なるだけを使うので、四記号の名前を任意の全単射で置き換えても成り立つ。
+
+## 計算量
+
+$N\ge2$ では、先頭に2回、中間に $N-2$ 回、末尾に高々2回、合計高々 $N+2$ 回の質問をする。$N=1$ は2回である。
+
+中間の質問長は正確に $4m+7$。$1\le m\le N-2$ なので、$N\ge3$ で最大 $4N-1$ となる。先頭の質問長は2と1、末尾は一回あたり $N$ であり、$N=1,2$ でも全質問が $4N$ 以下に収まる。
+
+送る文字数の総和は $N\ge2$ で高々
+
+$$3+\sum_{m=1}^{N-2}(4m+7)+2N=2N^2+3N-7,$$
+
+$N=1$ で3である。文字列を実際に組み立てるローカル計算時間は $O(N^2)$、補助領域と返す列は $O(N)$。応答関数の内部の処理時間は含めない。$N=2000$ では最大2002質問、各質問最大7999文字、総文字数最大8005993である。
+
+## 実装
+
+`recover_unique_initial_sequence(length, press, symbols)` は復元した列を返す。`press` は `const std::string&` を受け取って `int` を返すcallableで、固定秘密列に対する上記の応答を返す。関数はcallbackをコピーせず、全ての内部状態を呼出しごとに持つ。同じcallbackを再利用する場合、その秘密列や外部の通信回数は呼出し側で管理する。
+
+不正な長さや重複した記号は、callbackを一度も呼ぶ前に `std::invalid_argument` で拒否する。返答が数値範囲外、または現在の段階で不可能な長さなら `std::logic_error`。全履歴に対する応答の正しさまで検証するものではない。callback自身の例外はそのまま伝播する。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <concepts>
+#include <functional>
+#include <stdexcept>
+#include <string>
+#include <type_traits>
+
+// Contract: one fixed secret over four distinct symbols; its first symbol
+// never occurs again. press(q) returns the longest secret prefix in q.
+template<class Query>
+requires std::same_as<
+    std::invoke_result_t<Query&, const std::string&>, int>
+std::string recover_unique_initial_sequence(
+    int length, Query&& press,
+    std::array<char, 4> symbols = {'A', 'B', 'X', 'Y'}) {
+    if (length < 1 || length > 2000)
+        throw std::invalid_argument("length must be in [1, 2000]");
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < i; ++j)
+            if (symbols[i] == symbols[j])
+                throw std::invalid_argument("symbols must be distinct");
+
+    int calls = 0;
+    auto ask = [&](const std::string& query) -> int {
+        if (query.size() > static_cast<std::size_t>(4 * length) ||
+            calls >= length + 2)
+            throw std::logic_error("internal query budget exceeded");
+        ++calls;
+        const int reply = std::invoke(press, query);
+        if (reply < 0 || reply > length ||
+            static_cast<std::size_t>(reply) > query.size())
+            throw std::logic_error("oracle reply outside its range");
+        return reply;
+    };
+
+    const int grouped = ask(std::string{symbols[0], symbols[1]});
+    char first;
+    if (grouped > 0) {
+        const int single = ask(std::string(1, symbols[0]));
+        if (grouped == 2 && single == 0)
+            throw std::logic_error("inconsistent first-symbol replies");
+        first = single ? symbols[0] : symbols[1];
+    } else {
+        first = ask(std::string(1, symbols[2])) ? symbols[2] : symbols[3];
+    }
+
+    std::string prefix(1, first);
+    prefix.reserve(length);
+    if (length == 1) return prefix;
+    std::array<char, 3> rest{};
+    int count = 0;
+    for (char symbol : symbols)
+        if (symbol != first) rest[count++] = symbol;
+    const auto [a, b, c] = rest;
+
+    while (static_cast<int>(prefix.size()) < length - 1) {
+        const int known = static_cast<int>(prefix.size());
+        std::string query;
+        query.reserve(4 * prefix.size() + 7);
+        auto append_block = [&](char x, char y) {
+            query += prefix;
+            query += x;
+            query += y;
+        };
+        append_block(a, a);
+        append_block(a, b);
+        append_block(a, c);
+        query += prefix;
+        query += b;
+        const int reply = ask(query);
+        if (reply < known || reply > known + 2)
+            throw std::logic_error("inconsistent middle reply");
+        prefix += reply == known + 2 ? a : reply == known + 1 ? b : c;
+    }
+
+    auto matches_last = [&](char symbol) {
+        std::string query = prefix;
+        query += symbol;
+        const int reply = ask(query);
+        if (reply != length - 1 && reply != length)
+            throw std::logic_error("inconsistent last reply");
+        return reply == length;
+    };
+    if (matches_last(a)) prefix += a;
+    else if (matches_last(b)) prefix += b;
+    else prefix += c;
+    return prefix;
+}
+```
+
+外部ライブラリが `int press(std::string)` を提供する形式なら、`recover_unique_initial_sequence(N, [](const std::string& q) { return press(q); })` の返り値をそのまま利用できる。返答から次の質問を組み立てるため、秘密列そのものを入力として受け取る必要はない。
+
+## 関連する手法
+
+対話処理の基本では、出力のflush、合法な質問、終了条件を守る。この技巧ではさらに、同じ接頭辞を複数回置き、返答の大きさへ候補を符号化する。通常の二分探索とは異なり、一質問で三通りを区別するために質問文字列自体を構成する。
+
+接頭辞の出現を扱うKMPやZ法は、既知の二文字列から一致長を計算する手法である。ここでは秘密列を読めないため、応答関数へ渡す質問列を設計する。先頭一意という約束がない場合、別の位置から始まる一致や連結境界を越す一致を防げず、この三値表をそのまま使うことはできない。
+
+## 参考資料
+
+- [IOI 2018 Combo 原典](https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf)：oracleの意味と先頭記号の条件。
+- 主催者配布の原典翻訳：[CHE版](https://ioi2018.jp/tasks/contest1/CHE-combo.pdf)、[CUB版](https://ioi2018.jp/tasks/contest1/CUB-combo.pdf)、[TUR版](https://ioi2018.jp/tasks/contest1/TUR-combo.pdf)。長さ・質問長・回数の数値条件。
+- [IOI 2018 Combo 公式Review](https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf)：中間文字を一質問で決める構成。
+- [Tomasz Idziaszek の公開解答](https://www.algonotes.com/en/solutions-ioi2018/)：連結質問の具体形を含む著者による解説。
+- [日本情報オリンピック委員会の競技日別一覧](https://www2.ioi-jp.org/ioi/2018/tasks/index.html)：競技日と原典・公式Review。
+
+<TechniqueReferences techniqueId="unique-first-symbol-prefix-oracle-multiplexing" />

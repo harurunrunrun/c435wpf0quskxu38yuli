@@ -1,0 +1,177 @@
+[
+  {
+    "source": "CSES",
+    "problemId": "2138",
+    "title": "Reachable Nodes",
+    "url": "https://cses.fi/problemset/task/2138",
+    "techniqueIds": [
+      "dag-reachable-bitsets"
+    ],
+    "features": [
+      "閉路のない有向グラフ",
+      "各頂点から到達できる頂点数を求める",
+      "自分も含め、複数の経路で着く頂点は一度だけ数える",
+      "N≤50000、M≤100000、メモリ512MB"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2138",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は DAG の各頂点から到達できる頂点数を、自分自身を含めて要求する。同じ到達先へ複数経路が合流するので経路数の和ではなく集合和が必要で、各到達集合をビット列で後ろから併合できる。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1686",
+    "title": "Coin Collector",
+    "url": "https://cses.fi/problemset/task/1686",
+    "techniqueIds": [
+      "scc-collect-once-reward"
+    ],
+    "features": [
+      "有向の道を何度通ってもよい",
+      "各頂点の正の報酬は一回だけ受け取る",
+      "開始と終了を自由に選び、獲得報酬を最大化する"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1686",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は有向トンネルを移動し、各部屋の正のコインを回収し、開始・終了部屋を自由に選ぶ。移動の再訪は可能だが同じ部屋のコインは増えないため、強連結成分内で全コインを集めた後に出口を選べる。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc218_f",
+    "title": "Blocked Roads",
+    "url": "https://atcoder.jp/contests/abc218/tasks/abc218_f",
+    "techniqueIds": [
+      "unweighted-edge-removal-shortest"
+    ],
+    "features": [
+      "長さ1の有向辺",
+      "辺を一本ずつ独立に禁止した始点終点間の最短距離",
+      "N≤400、禁止した辺は次の質問で元に戻る"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc218/tasks/abc218_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は各有向単位辺を独立に一本禁止して同じ始点・終点の最短距離を出力する。通常の一つの最短路を残せる削除は距離が変わらないので、選んだ経路上の高々 N-1 辺だけ再探索する。",
+    "publicationDate": "2021-09-11"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1196",
+    "title": "Flight Routes",
+    "url": "https://cses.fi/problemset/task/1196",
+    "techniqueIds": [
+      "k-shortest-walk-prefix-cap"
+    ],
+    "features": [
+      "正の費用の有向辺",
+      "同じ頂点へ何度訪れてもよい",
+      "異なる経路を安い順にK本求め、同費用も別々に数える",
+      "K≤10"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1196",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は都市の再訪を許し、同価格の別ルートもそれぞれ含めて K 本の安いルートを求める。接頭経路の到着点だけで同じ後続を使用できるため、各頂点の確定を K 回までに制限できる。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "UVa",
+    "problemId": "1599",
+    "title": "Ideal Path",
+    "url": "https://onlinejudge.org/external/15/1599.pdf",
+    "techniqueIds": [
+      "shortest-lexicographic-label-frontier"
+    ],
+    "features": [
+      "無向辺に色番号がある",
+      "まず通る辺数を最小化する",
+      "同じ最短辺数の経路では辺色列を辞書順最小にする",
+      "平行辺と自己ループがあり得る"
+    ],
+    "evidenceUrl": "https://onlinejudge.org/external/15/1599.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は無向通路の通過回数を最小にし、その中で色番号列の辞書順最小を求める。最短辺数を維持する辺の中で色を選び、同色の全到着点を残す必要がある。平行通路・自己ループも原典で認められている。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2177",
+    "title": "Strongly Connected Edges",
+    "url": "https://cses.fi/problemset/task/2177",
+    "techniqueIds": [
+      "bridgeless-strong-orientation"
+    ],
+    "features": [
+      "無向グラフの各辺を一方向にする",
+      "全頂点間で相互に到達できる向きを構成する",
+      "構成できなければ不可能を答える"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2177",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典は無向の各辺を片方向に選び、結果を強連結にする構成を要求する。橋の両側には片方向だけでは往復できず、連結で橋がなければ DFS の木辺を下、戻り辺を上に向けて構成できる。 原典で公開日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "arc083_b",
+    "title": "Restoring Road Network",
+    "url": "https://atcoder.jp/contests/abc074/tasks/arc083_b",
+    "techniqueIds": [
+      "distance-matrix-essential-edges"
+    ],
+    "features": [
+      "対称な全頂点対の最短距離表がある",
+      "対角は0、異なる頂点の距離は正",
+      "表を実現する無向道路の長さの総和を最小化する",
+      "N≤300、各距離≤10^9"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc074/tasks/arc083_b",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は正整数長の無向道路の全対最短距離表について、実現可能性と道路長総和の最小値を問う。三角不等式を破る表は不能で、異なる第三点で等号になる組の辺だけを省ける。",
+    "publicationDate": "2017-09-16"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "999E",
+    "title": "Reachability from the Capital",
+    "url": "https://codeforces.com/problemset/problem/999/E",
+    "techniqueIds": [
+      "capital-reachability-scc-sources"
+    ],
+    "features": [
+      "有向グラフに指定始点がある",
+      "任意の二頂点へ新しい有向辺を追加できる",
+      "始点から全頂点へ到達する追加辺数を最小化する",
+      "全体を強連結にする必要はない"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/999/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典は任意の新規一方通行道路を加え、首都から全都市へ届くための最小本数を問う。未到達の強連結成分のうち未到達間の入次数0の成分には必ず一本の新規入口が必要で、首都からそこへ張れば全未到達側へ届く。"
+  }
+]

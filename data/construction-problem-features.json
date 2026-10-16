@@ -1,0 +1,236 @@
+[
+  {
+    "techniqueId": "coupon-collector-state-count",
+    "source": "AtCoder",
+    "problemId": "abc194_d",
+    "title": "Journey",
+    "statementUrl": "https://atcoder.jp/contests/abc194/tasks/abc194_d",
+    "evidenceUrl": "https://atcoder.jp/contests/abc194/editorial/864",
+    "features": [
+      "N個の頂点を毎回独立かつ等確率で選ぶ",
+      "現在位置と選んだ頂点を辺で結んで移動",
+      "全頂点を訪れると連結になる",
+      "初めに一種類を収集済み"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "independent-avoidance-product",
+    "source": "CSES",
+    "problemId": "1726",
+    "title": "Moving Robots",
+    "statementUrl": "https://cses.fi/problemset/task/1726",
+    "evidenceUrl": "https://cses.fi/problemset/task/1726",
+    "features": [
+      "各マスに一体のロボット",
+      "ロボットは独立にK回移動",
+      "盤面内の隣接マスを等確率で選ぶ",
+      "空きマス数の期待値"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "random-gain-zero-elimination",
+    "source": "AtCoder",
+    "problemId": "abc382_e",
+    "title": "Expansion Packs",
+    "statementUrl": "https://atcoder.jp/contests/abc382/tasks/abc382_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc382/editorial/11487",
+    "features": [
+      "一試行で独立なN個の成功判定",
+      "成功数の分布は毎試行同じ",
+      "合計がX以上になるまでの期待試行回数",
+      "増分0もあり目標超過は許される"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "probability-start-time-window",
+    "source": "AtCoder",
+    "problemId": "abc323_e",
+    "title": "Playlist",
+    "statementUrl": "https://atcoder.jp/contests/abc323/tasks/abc323_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc323/editorial/7357",
+    "features": [
+      "正整数の長さを持つ曲を等確率で毎回選ぶ",
+      "一曲が終わるとすぐ次が始まる",
+      "時刻X+0.5で特定の曲が流れている確率",
+      "同じ曲を連続して選べる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "expectation-order-statistic-tail",
+    "source": "AtCoder",
+    "problemId": "abc295_e",
+    "title": "Kth Number",
+    "statementUrl": "https://atcoder.jp/contests/abc295/tasks/abc295_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc295/editorial/6056",
+    "features": [
+      "0の場所を1からMの独立一様整数に置き換える",
+      "昇順のK番目の期待値",
+      "既知の値と未知の値が混在",
+      "値域Mは2000以下"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "tree-dp-degree-capacity",
+    "source": "AtCoder",
+    "problemId": "abc259_f",
+    "title": "Select Edges",
+    "statementUrl": "https://atcoder.jp/contests/abc259/tasks/abc259_f",
+    "evidenceUrl": "https://atcoder.jp/contests/abc259/editorial/4296",
+    "features": [
+      "木の辺から任意の部分集合を選ぶ",
+      "各頂点に選べる接続辺数の上限",
+      "辺重みは負もある",
+      "選ぶ辺の重み総和を最大化"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "dp-open-groups-gap-cost",
+    "source": "Codeforces",
+    "problemId": "626F",
+    "title": "Group Projects",
+    "statementUrl": "https://codeforces.com/problemset/problem/626/F",
+    "evidenceUrl": "https://codeforces.com/blog/entry/23522",
+    "features": [
+      "区別できるN人を名前のない組へ分ける",
+      "一人だけの組も許される",
+      "各組の最大値と最小値の差の総和がK以下",
+      "値が同じ人も別人として数える"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "permutation-cycle-minimum-swaps",
+    "source": "AtCoder",
+    "problemId": "abc350_c",
+    "title": "Sort",
+    "statementUrl": "https://atcoder.jp/contests/abc350/tasks/abc350_c",
+    "evidenceUrl": "https://atcoder.jp/contests/abc350/editorial/9869",
+    "features": [
+      "1からNの順列",
+      "任意の二位置を交換できる",
+      "昇順にする操作列をN回以下で出力",
+      "位置配列を更新できる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "permutation-tree-leaf-fix",
+    "source": "AtCoder",
+    "problemId": "abc233_f",
+    "title": "Swap and Sort",
+    "statementUrl": "https://atcoder.jp/contests/abc233/tasks/abc233_f",
+    "evidenceUrl": "https://atcoder.jp/contests/abc233/editorial/3187",
+    "features": [
+      "交換可能な位置対がM種類指定される",
+      "順列を昇順へ直す操作列",
+      "Nは1000以下",
+      "操作回数を500000以下にする"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "construct-star-distance-two",
+    "source": "AtCoder",
+    "problemId": "abc131_e",
+    "title": "Friendships",
+    "statementUrl": "https://atcoder.jp/contests/abc131/tasks/abc131_e",
+    "evidenceUrl": "https://atcoder.jp/contests/abc131/tasks/abc131_e",
+    "features": [
+      "単純で連結なN頂点の無向グラフを構築",
+      "全ての辺の長さは1",
+      "最短距離が2の頂点対をちょうどK個",
+      "Nは100以下"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "independent-analysis",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "forest-trigger-minimum-continuation",
+    "source": "Google Coding Competitions Archive",
+    "problemId": "codejam-2022-qualification-chain-reactions",
+    "title": "Chain Reactions",
+    "statementUrl": "https://github.com/google/coding-competitions-archive/blob/main/codejam/2022/qualification_round/chain_reactions/problem_statement/problem.html",
+    "evidenceUrl": "https://github.com/google/coding-competitions-archive/blob/main/codejam/2022/qualification_round/chain_reactions/problem_statement/analysis.html",
+    "features": [
+      "各頂点は一つの親か外部へ向き循環がない",
+      "葉から開始し既に動いた頂点で経路が止まる",
+      "一経路の得点は通った重みの最大値",
+      "葉を開始する順序で得点総和を最大化"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "append-digits-lexicographic",
+    "source": "Google Coding Competitions Archive",
+    "problemId": "codejam-2021-round-1a-append-sort",
+    "title": "Append Sort",
+    "statementUrl": "https://github.com/google/coding-competitions-archive/blob/main/codejam/2021/round_1a/append_sort/problem_statement/problem.html",
+    "evidenceUrl": "https://github.com/google/coding-competitions-archive/blob/main/codejam/2021/round_1a/append_sort/problem_statement/analysis.html",
+    "features": [
+      "正の整数列の順序は変えられない",
+      "各整数の末尾へ0から9を追加できる",
+      "全体を狭義増加にする追加桁数を最小化",
+      "追加後の値は64bitを超えうる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  },
+  {
+    "techniqueId": "alternating-linear-weight-prefix",
+    "source": "Google Coding Competitions Archive",
+    "problemId": "kickstart-2020-round-c-candies",
+    "title": "Candies",
+    "statementUrl": "https://github.com/google/coding-competitions-archive/blob/main/kickstart/2020/round_c/candies/problem_statement/problem.html",
+    "evidenceUrl": "https://github.com/google/coding-competitions-archive/blob/main/kickstart/2020/round_c/candies/problem_statement/analysis.html",
+    "features": [
+      "一点の値を置き換える",
+      "区間の左端から1,-2,3,-4の係数で和を取る",
+      "Nは200000、Qは100000",
+      "左端によって符号と係数が変わる"
+    ],
+    "reviewStatus": "verified",
+    "verificationKind": "editorial",
+    "cutoffVerification": "contest-date",
+    "notes": "原典の条件を確認。記事の C++ 実装は小規模の独立なモデルと比較。"
+  }
+]

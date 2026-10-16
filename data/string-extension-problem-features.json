@@ -1,0 +1,222 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "arc081_c",
+    "title": "Don't Be a Subsequence",
+    "url": "https://atcoder.jp/contests/arc081/tasks/arc081_c",
+    "techniqueIds": [
+      "shortest-absent-subsequence"
+    ],
+    "features": [
+      "有限の英小文字列",
+      "本文の部分列ではない文字列を作る",
+      "最短を優先し、同じ長さなら辞書順最小",
+      "本文長≤2×10^5、文字種26"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/arc081/tasks/arc081_c",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "1609E",
+    "title": "William The Oblivious",
+    "url": "https://codeforces.com/problemset/problem/1609/E",
+    "techniqueIds": [
+      "forbidden-abc-segment-summary"
+    ],
+    "features": [
+      "文字は a・b・c の三種類",
+      "一文字ずつ変更される",
+      "部分列 abc を含まないようにする最小置換数",
+      "N,Q≤10^5、置換先も a・b・c"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/1609/E",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "163E",
+    "title": "e-Government",
+    "url": "https://codeforces.com/problemset/problem/163/E",
+    "techniqueIds": [
+      "aho-active-failure-subtree"
+    ],
+    "features": [
+      "辞書は最初に全て分かる",
+      "語ごとに有効・無効を切り替える",
+      "本文中の全出現数の合計、重なりも数える",
+      "辞書と本文の長さの合計≤10^6、小文字26種"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/4187",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。 公式解説の failure 木上の根までの和を、等価な部分木加算として実装した。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2108",
+    "title": "Substring Order I",
+    "url": "https://cses.fi/problemset/task/2108",
+    "techniqueIds": [
+      "sam-kth-distinct-substring"
+    ],
+    "features": [
+      "固定の英小文字列",
+      "全ての部分文字列から辞書順K番目",
+      "同じ文字列は一種類として数える",
+      "N≤10^5、Kは1始まり"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2108",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。 原典に公開日が明記されないため基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2109",
+    "title": "Substring Order II",
+    "url": "https://cses.fi/problemset/task/2109",
+    "techniqueIds": [
+      "sam-kth-occurrence-substring"
+    ],
+    "features": [
+      "固定の英小文字列",
+      "全ての部分文字列から辞書順K番目",
+      "重複する出現を別々に数える",
+      "N≤10^5、Kは1始まり"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2109",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。 原典に公開日が明記されないため基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2110",
+    "title": "Substring Distribution",
+    "url": "https://cses.fi/problemset/task/2110",
+    "techniqueIds": [
+      "sam-length-distribution"
+    ],
+    "features": [
+      "固定の英小文字列",
+      "全長1..Nそれぞれの異なる部分文字列数",
+      "同じ文字列の出現は重複して数えない",
+      "N≤10^5"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2110",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。 原典に公開日が明記されないため基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "2420",
+    "title": "Palindrome Queries",
+    "url": "https://cses.fi/problemset/task/2420",
+    "techniqueIds": [
+      "palindrome-update-hash-monoid"
+    ],
+    "features": [
+      "英小文字列の一文字更新",
+      "任意区間が回文かを繰り返し判定",
+      "N,Q≤2×10^5",
+      "ハッシュの衝突による誤判定を許容する場合の候補"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/2420",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。 二つの法のハッシュによる確率的判定。照合テストは無衝突の保証ではなく、記事と分岐に衝突の可能性を明記する。 原典に公開日が明記されないため基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc214_f",
+    "title": "Substrings",
+    "url": "https://atcoder.jp/contests/abc214/tasks/abc214_f",
+    "techniqueIds": [
+      "subsequence-nonadjacent-last-range"
+    ],
+    "features": [
+      "選んだ本文の位置どうしが隣り合ってはならない",
+      "削除して得られる異なる非空文字列を数える",
+      "選んだ位置ではなく得られる文字列を区別する",
+      "法10^9+7、N≤2×10^5"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc214/editorial/2447",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典と公式解説で非隣接条件・重複除去を確認。接頭辞総数を用いた記事の漸化式を証明し、掲載C++20実装を非隣接の全選択列挙・境界ケースと比較して確認した。"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "792",
+    "title": "Number of Matching Subsequences",
+    "url": "https://leetcode.com/problems/number-of-matching-subsequences/description/",
+    "techniqueIds": [
+      "subsequence-waiting-buckets"
+    ],
+    "features": [
+      "一つの本文と多数の照合語",
+      "各語が本文の部分列かを数える",
+      "語は最初に全て分かる",
+      "本文長≤5×10^4、語数≤5000、語長≤50、小文字"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/number-of-matching-subsequences/description/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。 原典に公開日が明記されないため基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "1203D2",
+    "title": "Remove the Substring (hard version)",
+    "url": "https://codeforces.com/problemset/problem/1203/D2",
+    "techniqueIds": [
+      "subsequence-delete-gap"
+    ],
+    "features": [
+      "本文の部分列である目標文字列が与えられる",
+      "一つの連続区間を本文から削除する",
+      "削除後も目標を部分列として残す",
+      "削除長の最大化、本文と目標の長さ≤2×10^5"
+    ],
+    "evidenceUrl": "https://codeforces.com/problemset/problem/1203/D2",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の条件を確認し、記事のモデルと正当性を独立に導出。掲載したC++20実装を小規模の全列挙・素朴解法および境界ケースと比較して確認した。"
+  }
+]

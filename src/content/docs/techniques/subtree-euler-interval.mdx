@@ -1,0 +1,86 @@
+---
+title: "部分木をDFS順の連続区間に変換する"
+description: "部分木の頂点を配列上の区間に並べ、和や個数の問い合わせへ直す。"
+techniqueId: subtree-euler-interval
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+部分木の頂点を配列上の区間に並べ、和や個数の問い合わせへ直す。
+
+## 使う場面
+
+根が固定された木で、部分木の和や頂点数、一定の深さにある子孫の個数を何度も求める。部分木ごとの走査を、配列の区間の問い合わせに置き換える。
+
+## 考え方
+
+深さ優先探索で、頂点に入るときに番号を一つ付ける。頂点 $v$ に入った番号を $in_v$、その部分木をすべて終えた次の番号を $out_v$ とする。部分木は区間 $[in_v,out_v)$ に対応する。
+
+頂点重みをこの順序の配列へ並べる。静的な和なら累積和、点更新があるならFenwick Treeを使える。深さごとの個数なら、同じ深さの番号だけをソートして区間内の数を二分探索する。
+
+## 適用条件
+
+深さ優先探索の順序を使う。幅優先探索では、一つの部分木が連続するとは限らない。探索の帰りにも番号を付ける別のEuler Tourを使う場合は、同じ配列長や和の扱いにならないことに注意する。
+
+根を変更すると部分木の意味が変わるため、固定した区間をそのまま使うことはできない。
+
+## なぜ正しいか
+
+深さ優先探索では、一つの子の部分木をすべて訪れてから次の子へ進む。頂点 $v$ に入ってから出るまでに番号を付けるのは、その部分木の頂点だけである。したがって、それらは一つの連続区間を作る。
+
+## 計算量
+
+問い合わせごとに部分木をたどると最悪 $O(NQ)$。DFSの前処理は $O(N)$。以下のFenwick Treeを使う例では、構築 $O(N\log N)$、点更新・部分木和は各 $O(\log N)$、空間 $O(N)$。
+
+## 実装
+
+`SubtreeSums` は頂点0を根にする。`add(v,x)` で頂点重みへ加算し、`sum(v)` で部分木の重みの合計を返す。入力は非空の連結な無向木とする。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct SumBIT {
+    int n;
+    std::vector<long long> bit;
+    explicit SumBIT(int n):n(n),bit(n+1) {}
+    void add(int p,long long x) {
+        assert(0<=p && p<n);
+        for(int i=p+1;i<=n;i+=i&-i) bit[i]+=x;
+    }
+    long long prefix(int r) const {
+        assert(0<=r && r<=n);
+        long long s=0;
+        for(int i=r;i>0;i-=i&-i) s+=bit[i];
+        return s;
+    }
+};
+#include <utility>
+struct SubtreeSums {
+    std::vector<int> in,out;
+    SumBIT bit;
+    SubtreeSums(const std::vector<std::vector<int>>& g,const std::vector<long long>& weight)
+        :in(g.size()),out(g.size()),bit(g.size()) {
+        int n=g.size();assert(n>0 && int(weight.size())==n);
+        std::vector<int> parent(n,-1);parent[0]=0;
+        std::vector<std::pair<int,int>> stack{{0,0}};int timer=0;
+        while(!stack.empty()) {
+            int v=stack.back().first;int& i=stack.back().second;
+            if(i==0) { in[v]=timer++;bit.add(in[v],weight[v]); }
+            if(i==int(g[v].size())) { out[v]=timer;stack.pop_back();continue; }
+            int u=g[v][i++];if(u==parent[v]) continue;
+            parent[u]=v;stack.push_back({u,0});
+        }
+    }
+    void add(int v,long long x) { bit.add(in[v],x); }
+    long long sum(int v) const { return bit.prefix(out[v])-bit.prefix(in[v]); }
+};
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC202 E](https://atcoder.jp/contests/abc202/editorial/1864)
+
+<TechniqueReferences techniqueId="subtree-euler-interval" />

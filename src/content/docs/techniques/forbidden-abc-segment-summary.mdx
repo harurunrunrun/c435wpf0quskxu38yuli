@@ -1,0 +1,77 @@
+---
+title: "部分列 abc を消す最小費用を、区間の六つの値で併合する"
+description: "一文字の個数と ab・bc・abc を避ける費用を持ち、文字更新後の最小置換数を求める。"
+techniqueId: forbidden-abc-segment-summary
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+文字列の一文字が変更されるたび、部分列 `abc` を含まない文字列にする最小の置換数を求めたい。一回なら短い DP で解けるが、毎回全体を読み直すと $O(NQ)$ になる。
+
+## 考え方
+
+まず「置換」を「削除」として扱う。区間ごとに `a,b,c` の個数と、`ab,bc,abc` を部分列として含まないための最小削除数を持つ。左区間 $L$ と右区間 $R$ の併合は、例えば次の三通りになる。
+
+$$abc(LR)=\min\{a(L)+abc(R),\ ab(L)+bc(R),\ abc(L)+c(R)\}$$
+
+左から `a` を全てなくす、左の `ab` と右の `bc` をなくす、右から `c` を全てなくす、という切り分けである。同様に $ab(LR)=\min\{a(L)+ab(R),ab(L)+b(R)\}$ とし、`bc` も同じ形で求める。
+
+一文字の区間では `ab,bc,abc` の費用は0。空区間では六つとも0になる。区間木の根の `abc` が答えである。
+
+## 適用条件
+
+文字は `a,b,c` に限り、一文字をこの三種類のどれかへ変える費用は1とする。避けるのは連続する `abc` ではなく、飛び飛びに選んでもよい部分列 `abc`。文字列長は $10^5$ 以下とする。禁止語や費用が変わる場合は、対応する状態遷移の最小費用行列を設計し直す。
+
+## なぜ正しいか
+
+`abc` の先頭から何文字を一致させたかを0・1・2の三状態で読むと、状態は後戻りしない。安全な文字列を左右に分ける際の境界状態も、この三種類だけである。各状態に対応する条件が上式の三候補となり、最小費用はその最小値になる。`ab` と `bc` の二候補も同じ議論で得られる。
+
+置換した場所を削除すれば、置換後の安全な文字列の部分列が残るので、最小削除数は最小置換数以下である。逆に、削除後に安全な文字列が残ったとする。最初の残った `a` より前の削除位置を `c`、その後を `a` で埋める。前半の `c` は `abc` の最後になれず、後半で追加した `a` より後に `bc` があれば元の最初の `a` とも `abc` を作ってしまう。残った `a` がなければ全て `c` で埋めればよい。このため同じ費用で安全な置換を作れ、二つの最小値は等しい。
+
+## 計算量
+
+毎回の全体 DP は $O(NQ)$ 時間。六つの値の併合は $O(1)$ なので、構築 $O(N)$、一文字更新 $O(\log N)$、答えの取得 $O(1)$、空間 $O(N)$。
+
+## 実装
+
+`change` の位置は0始まり。答えは全体の最小置換数で、更新に対する具体的な置換操作の復元は行わない。
+
+```cpp
+#include <algorithm>
+#include <string>
+#include <vector>
+struct AbcSummary {int a=0,b=0,c=0,ab=0,bc=0,abc=0;};
+AbcSummary merge_abc(AbcSummary l,AbcSummary r){
+    return {l.a+r.a,l.b+r.b,l.c+r.c,
+        std::min(l.a+r.ab,l.ab+r.b),
+        std::min(l.b+r.bc,l.bc+r.c),
+        std::min({l.a+r.abc,l.ab+r.bc,l.abc+r.c})};
+}
+AbcSummary abc_leaf(char c){return {c=='a',c=='b',c=='c',0,0,0};}
+class AvoidAbc {
+    int size=1;std::vector<AbcSummary> tree;
+public:
+    explicit AvoidAbc(const std::string& s){
+        while(size<int(s.size()))size*=2;
+        tree.resize(2*size);
+        for(int i=0;i<int(s.size());++i)tree[size+i]=abc_leaf(s[i]);
+        for(int i=size-1;i;--i)tree[i]=merge_abc(tree[2*i],tree[2*i+1]);
+    }
+    void change(int index,char c){
+        int p=size+index;tree[p]=abc_leaf(c);
+        for(p/=2;p;p/=2)tree[p]=merge_abc(tree[2*p],tree[2*p+1]);
+    }
+    int minimum_replacements() const{return tree[1].abc;}
+};
+```
+
+## 関連する手法
+
+[禁止語を避ける DP に、末尾で一致している接頭辞の長さを持つ](/flowchartcp/techniques/automaton-forbidden-dp/) ・ [セグメント木](/flowchartcp/techniques/segment-tree/)
+
+## 参考資料
+
+- [Codeforces：William The Oblivious（原典）](https://codeforces.com/problemset/problem/1609/E)。
+
+<TechniqueReferences techniqueId="forbidden-abc-segment-summary" />

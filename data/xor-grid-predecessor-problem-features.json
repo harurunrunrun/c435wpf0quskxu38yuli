@@ -1,0 +1,26 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2017_g",
+    "title": "Replicate Replicate Rfplicbte",
+    "url": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13",
+    "techniqueIds": [
+      "xor-grid-predecessor-boundary-single-error"
+    ],
+    "features": [
+      "無限二値格子で、自身を含む3×3のXORへ同時更新した直後に、任意の一セルが高々一回反転する。",
+      "外部0も含む非空観測から、更新0回以上を許して非空初期図形の外接長方形面積を最小化する。",
+      "原典の幅・高さ1..300。全外接範囲を与え、最小行列数の図形そのものを返す。"
+    ],
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYear": 2017,
+    "notes": "無限二値格子の各セルを、自身を含む3×3近傍のXORへ同時更新し、その直後に任意の一セルを高々一回反転できる。非空の最終図形の全外接長方形から、非空初期図形の外接面積を最小にする。行列ごとの1+t+t²の二ビット剰余で一誤りの交点を特定し、境界二セルの除算検査と再更新で一段前を復元する手順が適用できる。",
+    "discoveredBy": "icpc-2017-world-finals",
+    "difficulty": null
+  }
+]

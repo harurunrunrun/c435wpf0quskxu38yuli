@@ -1,0 +1,75 @@
+---
+title: "凸領域から一点ずつ選ぶ位置の和を、辺の方向順に併合する"
+description: "各領域内の点の和が作る領域を、全頂点対を列挙せずに求める。"
+techniqueId: convex-minkowski-sum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+二つ以上の凸領域から一点ずつ選び、その座標和や平均が指定位置になるかを調べたい。点は頂点に限らず領域の内部からも選べる。二領域の頂点を全組列挙すると $NM$ 個の点ができる。
+
+## 考え方
+
+二領域 $P,Q$ から選べる和の集合を $P+Q=\{p+q\mid p\in P,q\in Q\}$ とする。この集合も凸になる。
+
+反時計回りの凸多角形の辺は、方向角の順に一周する。両多角形を最も下、同じ高さなら最も左の頂点から始め、辺の方向順を併合する。同じ方向の辺は一つに加算する。最初の頂点は開始頂点の和であり、併合した辺を順に足せば和の境界が得られる。
+
+三領域の平均が $q$ になるかは、$3q\in P_1+P_2+P_3$ を問えばよい。割り算で座標を丸めない。得た領域への質問には [凸多角形の内外を、一頂点からの扇形の二分探索で判定する](/flowchartcp/techniques/convex-point-membership/) を組み合わせる。
+
+## 適用条件
+
+ここでの実装は3頂点以上の狭義凸多角形二つを反時計回りで受け取る。凹領域を凸包に置き換えると、選べなかった点まで使えてしまうため、同じ方法では解けない。整数点だけを選べるという制限がある場合も、連続領域の和と区別する。
+
+各入力座標の絶対値を $10^9$ 以下、和を取る領域数を $10^6$ 以下とする。辺と頂点の和は64ビットに収まり、方向の外積は128ビットで計算する。辺数と領域数の積がメモリに収まる必要もある。
+
+## なぜ正しいか
+
+ある方向への射影の最大値は、和の領域では二領域それぞれの最大値の和になる。従って外側の支持線が動くとき、最大化する頂点が変わるタイミングは各多角形の辺方向のタイミングを合わせたものになる。片方だけ変化するとその辺を、同時に変化すると両辺の和を進めるので、辺の併合が和の境界をちょうど一周する。
+
+方向角の比較は上半平面・下半平面を先に分ける。外積が0でも逆方向の辺は同じ方向として併合しない。
+
+## 計算量
+
+全頂点対を作り凸包を取ると $O(NM\log(NM))$ 時間。既に反時計回りなら $O(N+M)$ 時間、出力を含め $O(N+M)$ 空間。複数領域は累積した辺数に応じて併合する。
+
+## 実装
+
+`minkowski_sum` が返す頂点列は反時計回りで、最後に開始点を重複して付けない。開始点は下端になる。
+
+```cpp
+#include <algorithm>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+Point plus(Point a,Point b){return {a.x+b.x,a.y+b.y};}
+Point minus(Point a,Point b){return {a.x-b.x,a.y-b.y};}
+int half(Point a){return a.y>0 || (a.y==0 && a.x>=0)?0:1;}
+i128 cross(Point a,Point b){return i128(a.x)*b.y-i128(a.y)*b.x;}
+std::vector<Point> minkowski_sum(std::vector<Point> p,std::vector<Point> q){
+    auto prepare=[](std::vector<Point>& a){int s=0;for(int i=1;i<int(a.size());++i)if(a[i].y<a[s].y || (a[i].y==a[s].y && a[i].x<a[s].x))s=i;
+        std::rotate(a.begin(),a.begin()+s,a.end());};
+    prepare(p);prepare(q);int n=p.size(),m=q.size();
+    std::vector<Point> a(n),b(m);for(int i=0;i<n;++i)a[i]=minus(p[(i+1)%n],p[i]);for(int j=0;j<m;++j)b[j]=minus(q[(j+1)%m],q[j]);
+    Point current=plus(p[0],q[0]);std::vector<Point> result{current};
+    int i=0,j=0;
+    while(i<n || j<m){Point step;
+        if(i==n)step=b[j++];else if(j==m)step=a[i++];
+        else if(half(a[i])==half(b[j]) && cross(a[i],b[j])==0)step=plus(a[i++],b[j++]);
+        else if(half(a[i])<half(b[j]) || (half(a[i])==half(b[j]) && cross(a[i],b[j])>0))step=a[i++];
+        else step=b[j++];
+        current=plus(current,step);result.push_back(current);
+    }
+    result.pop_back();return result;
+}
+```
+
+## 関連する手法
+
+[凸多角形の内外を、一頂点からの扇形の二分探索で判定する](/flowchartcp/techniques/convex-point-membership/) ・ [凸包](/flowchartcp/techniques/convex-hull/)
+
+## 参考資料
+
+- [Codeforces：Mogohu-Rea Idol（原典）](https://codeforces.com/problemset/problem/87/E)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="convex-minkowski-sum" />

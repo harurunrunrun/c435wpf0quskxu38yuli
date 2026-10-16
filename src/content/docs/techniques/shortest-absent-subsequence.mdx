@@ -1,0 +1,76 @@
+---
+title: "部分列にできない最短の文字列を、次の出現位置から逆算する"
+description: "各接尾辞で最短の失敗までの長さを求め、同じ長さを保つ文字を辞書順に選ぶ。"
+techniqueId: shortest-absent-subsequence
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+与えられた本文に含まれない部分列を、できるだけ短く作りたい。単に使われていない一文字を探すだけでは、全ての文字が現れる本文に対応できない。最短の答えが複数ある場合に、辞書順最小まで求める。
+
+## 考え方
+
+位置 $i$ 以降で文字 $c$ が最初に現れる位置を $next[i][c]$ とする。現れなければ、その一文字を選んだ時点で失敗できる。現れるなら、最も早い位置で一致させ、残りをその次の接尾辞へ渡す。
+
+接尾辞 $S[i..N)$ に含まれない最短部分列の長さを $d_i$ と置く。
+
+$$d_i=\min_c\begin{cases}1&next[i][c]=N\\1+d_{next[i][c]+1}&\text{それ以外}\end{cases}$$
+
+右から $d_i$ を計算する。復元では小さい文字から調べ、上式が $d_i$ と等しくなる最初の文字を採用する。本文にその文字がなければ終了し、あれば次の位置へ進む。
+
+## 適用条件
+
+本文は固定され、部分列では文字の順番だけを保つ。文字種が小さく、列挙できることが必要である。実装は連続した文字 `a` から `a+sigma-1` を使い、$1\le sigma\le26$、本文長は $2\times10^5$ 以下とする。連続部分文字列を避ける問題とは状態が異なる。
+
+## なぜ正しいか
+
+ある文字を選んだ後に使える位置は、その文字を最も早く一致させた場合が最大になる。そこでも残りが部分列にならないなら、後の一致位置でもならない。逆に最も早く一致させた後で残りが一致できれば、全体も一致できる。このため次の出現位置への一つの遷移で十分である。
+
+全ての最初の文字を比較した漸化式は、最短の失敗までの長さを与える。復元で最短長を維持する最小の文字を選ぶことを繰り返すと、最短解の中の辞書順最小になる。
+
+## 計算量
+
+候補文字列を長さ順に列挙すると、長さ $L$ までに $\sigma^L$ 個の候補がある。次出現表と DP は $O(\sigma N)$ 時間。復元は $O(\sigma L)$ 時間で、$L\le N+1$。実装の表は26文字分を確保するので $O(26N)$ 空間。
+
+## 実装
+
+`shortest_absent_subsequence` は最短の失敗文字列を返す。空の本文も扱える。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <string>
+#include <vector>
+std::string shortest_absent_subsequence(const std::string& s,int sigma=26){
+    int n=int(s.size());
+    std::vector<std::array<int,26>> next(n+1);
+    next[n].fill(n);
+    std::vector<int> distance(n+1,1);
+    for(int i=n-1;i>=0;--i){
+        next[i]=next[i+1];next[i][s[i]-'a']=i;
+        distance[i]=n+1;
+        for(int c=0;c<sigma;++c){int j=next[i][c];distance[i]=std::min(distance[i],j==n?1:1+distance[j+1]);}
+    }
+    std::string answer;int position=0;
+    while(true){
+        for(int c=0;c<sigma;++c){
+            int j=next[position][c],candidate=j==n?1:1+distance[j+1];
+            if(candidate!=distance[position])continue;
+            answer.push_back(char('a'+c));
+            if(j==n)return answer;
+            position=j+1;break;
+        }
+    }
+}
+```
+
+## 関連する手法
+
+[部分列の一致を、各文字の次の出現位置で進める](/flowchartcp/techniques/substring-subsequence-next/) ・ [残す部分列を前後に分け、最早・最遅の一致位置の間を消す](/flowchartcp/techniques/subsequence-delete-gap/)
+
+## 参考資料
+
+- [AtCoder：Don't Be a Subsequence（原典）](https://atcoder.jp/contests/arc081/tasks/arc081_c)。
+
+<TechniqueReferences techniqueId="shortest-absent-subsequence" />

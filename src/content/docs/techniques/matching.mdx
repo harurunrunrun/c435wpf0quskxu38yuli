@@ -1,0 +1,72 @@
+---
+title: "二部マッチング"
+description: "二部グラフから、端点を共有しない辺をできるだけ多く選びます。"
+techniqueId: matching
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+二部グラフから、端点を共有しない辺をできるだけ多く選びます。
+
+別名：Bipartite Matching / Maximum Bipartite Matching / Kuhn Algorithm
+
+## 使う場面
+
+人と仕事、白マスと黒マスなど、2種類の要素から一対一の組を選ぶ問題で使います。許される組に辺を張り、左側と右側の各頂点を高々1回使うようにします。単に空いている相手を選ぶ貪欲では、後の選択を妨げることがあります。
+
+## 考え方
+
+まだ相手のいない左頂点から、選んでいない辺と選んだ辺を交互にたどります。まだ相手のいない右頂点へ到達した経路を増加路と呼びます。その経路上で、選んだ辺と選んでいない辺を入れ替えると、組の数が1増えます。
+
+Kuhn法は、左頂点ごとにDFSでこの経路を探します。既存の相手を別の相手へ移せるかを調べることで、割当を組み替えます。
+
+## 適用条件
+
+以下は二部グラフの、重みのない最大マッチングです。一般のグラフでは奇数長の閉路を扱う必要があり、Blossom法などを使います。費用を最小にしたい場合は最小費用流やHungarian法へ帰着します。
+
+各頂点を複数回使える場合は、容量を持つフローへ変えます。Kuhn法では、左頂点を一つ処理するごとに訪問状態を初期化します。
+
+## なぜ正しいか
+
+増加路の内部では、辺を入れ替えても各頂点を1回だけ使う条件を保てます。両端だけが新しく使われるため、組の数は1増えます。
+
+現在のマッチングより大きいものがあるなら、2つの辺集合の差に増加路が含まれます。したがって、増加路が存在しなくなれば、そのマッチングが最大です。
+
+## 計算量
+
+左頂点数を $L$、辺数を $E$ とすると、Kuhn法は $O(LE)$ 時間、$O(V+E)$ 空間です。左右を入れ替えて小さい側から探索すると、有利になることがあります。大規模な入力には $O(E\sqrt V)$ のHopcroft–Karp法などを使います。
+
+## 実装
+
+右頂点ごとに、組になった左頂点の番号を返します。`-1` は相手がいないことを表し、`-1` 以外の個数が最大マッチングのサイズです。DFSは再帰を使うため、非常に長い増加路を扱う場合は、反復探索などを検討してください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// g[left] lists valid right ids in [0,right_count).
+vector<int> bipartite_match(const vector<vector<int>>& g,int right_count) {
+    vector<int> match(right_count,-1); vector<bool> seen(g.size());
+    auto dfs=[&](auto&& self,int v)->bool {
+        if(seen[v]) return false;
+        seen[v]=true;
+        for(int u:g[v]) if(match[u]<0 || self(self,match[u])) {
+            match[u]=v; return true;
+        }
+        return false;
+    };
+    for(int v=0;v<int(g.size());++v) {
+        fill(seen.begin(),seen.end(),false); dfs(dfs,v);
+    }
+    return match; // right -> left; -1 means unmatched
+}
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/) ・ [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [cp-algorithms: Kuhn maximum bipartite matching](https://cp-algorithms.com/graph/kuhn_maximum_bipartite_matching.html)
+- [AtCoder Library: 最大流による二部割当の公式例](https://atcoder.github.io/ac-library/production/document_ja/maxflow.html)
+
+<TechniqueReferences techniqueId="matching" />

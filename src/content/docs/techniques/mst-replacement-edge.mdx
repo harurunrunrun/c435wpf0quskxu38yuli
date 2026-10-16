@@ -1,0 +1,103 @@
+---
+title: "辺を一本追加した全域木を、パス上の最大辺との交換で求める"
+description: "元の最小全域木を一度作り、新辺が作る閉路から最も重い辺を外す。"
+techniqueId: mst-replacement-edge
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定された無向連結グラフへ、仮に辺 $(u,v,w)$ を一本追加する。その辺が最小全域木に使えるか、新しい最小総重みはいくらかを、多数の独立した質問で求めたい。
+
+## 考え方
+
+元の最小全域木 $T$ を作る。その総重みを $W$、$T$ の $u$–$v$ パスの最大辺重みを $m$ とする。新辺を必ず使う全域木の最小総重みは
+
+$$ W+w-m $$
+
+になる。新辺を使わない選択も許すなら $W+\min(0,w-m)$。
+
+`w<m` なら新辺を入れる方が改善し、`w=m` なら新辺を含む同じ総重みの最小全域木も存在する。`w>m` なら新辺はどの最小全域木にも入らない。パスの最大値を祖先表へ載せ、各質問を対数時間で処理する。
+
+## 適用条件
+
+質問間で元のグラフは変わらない。実際に追加した辺が後の質問でも残る場合、最小全域木や祖先表の更新が必要である。自己ループは全域木に入れられない。元のグラフが非連結なら最小全域木自体がないので、同じ式を使わない。
+
+同じ重みがある場合、「ある最小全域木に入る」と「必ず入る」を区別する。下の判定は前者に対応する。原典は重みが相異なるため、等号の場合がない。
+
+## なぜ正しいか
+
+$T$ に新辺を入れると唯一の閉路ができる。そのパスの最大辺を消すと、総重み $W+w-m$ の全域木になる。逆に新辺を含む任意の木から新辺を消して二成分に分けると、$T$ の $u$–$v$ パスにその二成分を結ぶ辺がある。その重みは高々 $m$ なので、この辺で結び直した木の重みが $W$ 以上という事実から、元の候補木は $W+w-m$ 以上である。
+
+## 計算量
+
+質問ごとにKruskal法を行う $O(QM\log M)$ 時間を、前処理 $O(M\log M+N\log N)$ と各質問 $O(\log N)$ へ変える。空間は $O(M+N\log N)$。
+
+## 実装
+
+`ForcedEdgeMST` に辺 `(u,v,w)` を渡す。`forced_cost` はその新辺を必ず使う最小総重みで、非連結または自己ループなら `std::nullopt`。総重みは128ビット。負の重み、多重辺、同じ重みにも対応する。
+
+```cpp
+#include <vector>
+#include <tuple>
+#include <utility>
+#include <algorithm>
+#include <optional>
+#include <limits>
+#include <cassert>
+struct ForcedEdgeMST {
+    std::vector<std::vector<int>> up;
+    std::vector<std::vector<long long>> mx;
+    std::vector<int> depth;bool connected;__int128 total=0;
+    ForcedEdgeMST(int n,std::vector<std::tuple<int,int,long long>> edges):depth(n,-1),connected(false) {
+        assert(n>0);std::sort(edges.begin(),edges.end(),[](auto a,auto b){return std::get<2>(a)<std::get<2>(b);});
+        std::vector<int> p(n,-1);
+        auto root=[&](int v) {int r=v;while(p[r]>=0) r=p[r];while(v!=r) {int next=p[v];p[v]=r;v=next;}return r;};
+        std::vector<std::vector<std::pair<int,long long>>> tree(n);int taken=0;
+        for(auto [a,b,w]:edges) {
+            int ra=root(a),rb=root(b);if(ra==rb) continue;
+            if(p[ra]>p[rb]) std::swap(ra,rb);
+            p[ra]+=p[rb];p[rb]=ra;total+=w;++taken;
+            tree[a].push_back({b,w});tree[b].push_back({a,w});
+        }
+        connected=taken==n-1;
+        int lg=1;while((1LL<<lg)<=n) ++lg;
+        up.assign(lg,std::vector<int>(n));mx.assign(lg,std::vector<long long>(n,std::numeric_limits<long long>::lowest()));
+        for(int s=0;s<n;++s) if(depth[s]<0) {
+            std::vector<int> stack{s};depth[s]=0;up[0][s]=s;
+            while(!stack.empty()) {
+                int v=stack.back();stack.pop_back();
+                for(auto [u,w]:tree[v]) if(depth[u]<0) {depth[u]=depth[v]+1;up[0][u]=v;mx[0][u]=w;stack.push_back(u);}
+            }
+        }
+        for(int k=1;k<lg;++k) for(int v=0;v<n;++v) {
+            up[k][v]=up[k-1][up[k-1][v]];mx[k][v]=std::max(mx[k-1][v],mx[k-1][up[k-1][v]]);
+        }
+    }
+    long long path_maximum(int a,int b) const {
+        long long result=std::numeric_limits<long long>::lowest();
+        if(depth[a]<depth[b]) std::swap(a,b);
+        int gap=depth[a]-depth[b];
+        for(int k=0;k<int(up.size());++k) if((gap>>k)&1) {result=std::max(result,mx[k][a]);a=up[k][a];}
+        if(a==b) return result;
+        for(int k=int(up.size())-1;k>=0;--k) if(up[k][a]!=up[k][b]) {
+            result=std::max({result,mx[k][a],mx[k][b]});a=up[k][a];b=up[k][b];
+        }
+        return std::max({result,mx[0][a],mx[0][b]});
+    }
+    std::optional<__int128> forced_cost(int a,int b,long long w) const {
+        if(!connected||a==b) return std::nullopt;
+        return total+__int128(w)-path_maximum(a,b);
+    }
+};
+```
+
+## 関連する手法
+
+[Union-Find](/flowchartcp/techniques/union-find/) ・ [ダブリング](/flowchartcp/techniques/doubling/) ・ [重みのしきい値順に辺を追加して連結性を共有する](/flowchartcp/techniques/dsu-threshold-queries/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC235 E（追加辺とパス最大値の扱い）](https://atcoder.jp/contests/abc235/editorial/3263)
+
+<TechniqueReferences techniqueId="mst-replacement-edge" />

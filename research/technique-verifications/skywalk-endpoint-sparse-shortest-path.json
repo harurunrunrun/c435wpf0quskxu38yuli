@@ -1,0 +1,814 @@
+{
+  "techniqueId": "skywalk-endpoint-sparse-shortest-path",
+  "status": "verified-and-integrated",
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+    "statementTranslationUrls": [
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf"
+    ],
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+    "provenance": "IOI2019公式配布アーカイブに置かれた原典/主催翻訳とEnglish(HSC) Review。非公式競技者コードは原典の根拠にしない。",
+    "numericBoundsVerified": true,
+    "numericAcquisition": "公式LVA/IDN翻訳の検索本文で各行を実取得。PDF画像目視の主張なし。KGZ検索本文の一部添字末尾が欠けるため主根拠にはしない。",
+    "sourceBounds": {
+      "N": "1..100000",
+      "M": "1..100000",
+      "x": "0<=x[0]<...<x[N-1]<=1000000000",
+      "h": "1..1000000000",
+      "l/r": "0<=l[j]<r[j]<N",
+      "y": "1<=y[j]<=min(h[l[j]],h[r[j]])",
+      "s/g": "0<=s,g<N;s!=g",
+      "segments": "Two skywalks may share points only at their endpoints."
+    },
+    "date": "2019-08-08",
+    "day": 2,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoff": "2026-10-14",
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": false,
+    "visualInspectionClaimed": false,
+    "apiContainsEntireSourceRange": true,
+    "statementPages": 3,
+    "editorialPages": 2,
+    "officialEditorialProvenance": "IOI大会史アーカイブのDay2 Sky walking（作者Riku Kawasaki）からReviewへ直接リンク。PDFのEnglish(HSC)表記を確認。公式本部IOI2019ページもSolutions to all problemsへリンク。",
+    "officialArchiveUrl": "https://ioi.te.lv/locations/ioi19/contest/index.shtml",
+    "officialHeadquartersUrl": "https://ioinformatics.org/page/ioi-2019/51",
+    "originalSourceRangeContainsNoAdditionalSubtaskAssumptions": true,
+    "fullOriginalContractVerified": true,
+    "originalAbsentPathNumericMarkerVerified": true,
+    "implementationNoticeUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf",
+    "implementationNoticeBounds": {
+      "timeSeconds": 4,
+      "memoryMB": 1024,
+      "cppInt64": "long long",
+      "cppIntArray": "std::vector"
+    },
+    "numericSearchQueries": [
+      "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/ \"n, m\" \"100000\" \"10^9\"",
+      "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/ \"1 ≤ h\" \"s ≠ g\""
+    ],
+    "consultedIndependentExplanation": {
+      "url": "https://koosaga.com/237",
+      "kind": "original-author-public-editorial-sketch",
+      "scope": "Read original analyst blog; distinguishes its non-fully-rigorous case/Jordan sketches from officialReview. Its x-monotone/extreme-column outline is not used as a complete proof of the general-terminal solution. Published rectangle-boundary replacement and lexicographic proof are independently supplied here."
+    },
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedRequiredLemmas": [],
+    "originalAbsentPathValue": -1,
+    "originalAbsentPathEvidenceUrls": [
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf"
+    ],
+    "initialReturnMarkerExtractionFailure": "Original English/JPN PDF web extraction yields return[missingformula]; official translations search currently retrieved statement/constraints, not return paragraph. DMOJ mirror visibly says -1, but it is not used as a primary verification claim. No successful PDF screenshot/image content received.",
+    "returnMarkerAcquisition": {
+      "method": "Official distributed MAC/AZE translation PDF search-visible text, not screenshot/visual inspection.",
+      "successfulSearchQuery": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf \"返回\"",
+      "observedMacPage": 1,
+      "observedMacContract": "Absent path returns -1. This explicit final clause was retrieved inside the implementation paragraph.",
+      "observedAzePage": 2,
+      "crossCheck": "AZE search excerpt also explicitly gives absent-path −1.",
+      "previousProvisionalSidecarSha256": "64b9a751a0b0d13b86419a04c6c642e98a6b71834af021446e0c610e92e15c25",
+      "retrievedSnippets": [
+        {
+          "query": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf \"返回\"",
+          "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+          "page": 1,
+          "text": "否則，該函數應該返回 `-1`。",
+          "acquisition": "search-visible official translation text; no PDF image received"
+        },
+        {
+          "query": "site:ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf \"27\"",
+          "url": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf",
+          "page": 2,
+          "text": "yol olmadığı təqdirdə isə −1 qaytarmalıdır.",
+          "acquisition": "search returned a different official translation than the exact URL in the query; record actual returned AZE URL; no PDF image received"
+        }
+      ]
+    }
+  },
+  "initialAuditPolicy": "初回Walkのunconfirmed/numericBoundsVerified:false/停止位置/statusを一切編集しない。後続の確認は別証拠として保存。",
+  "proof": {
+    "status": "independently-complete",
+    "fullGraph": "All skywalk/building intersections and terminal roots, connect consecutive points on each segment with geometric lengths. Coordinate merging permits same-height endpoint contacts. This graph is metrically exact.",
+    "terminalCuts": "For each original walk, include original endpoints plus predecessor<=t and successor>=t in the height>=walkY building set for each strict-interior terminal t=s/g. At most6points per original. A resulting piece that strictly contains t has no eligible internal building; therefore every piece with an internal intersection has neither terminal in its open x span.",
+    "rectangleReplacement": "For a bad vertical edge with upper point v internal to piece atY, lower endpoint u is in the open rectangle between piece endpoint columns and0..Y. Its column cannot be a terminal because that would have become a cut. If used upward, the source-to-u prefix enters the rectangle from an endpoint vertical side or the horizontal top: bottom entry from negative height is impossible, and there is no ground walking. Replace from such boundary point p through endpoint vertical plus top to v, or directly along top if p is on top. This is a physically available Manhattan-length route <=old route. For downward use apply the same argument to the reversed suffix from goal.",
+    "termination": "Choose shortest path minimizing lexicographic counts of bad vertical-edge uses ordered by descending top height. Replacement removes a bad edge atY and introduces none with top>=Y: atY the new vertical top is a piece endpoint, all other vertical tops are lower. Remove any cycles. Contradiction proves existence of a shortest path with no bad edges.",
+    "sameHeight": "Original same-height walks have disjoint interiors, possibly shared endpoints. Cuts preserve this. New vertical top at a piece endpoint cannot simultaneously lie in another piece interior; all equal-height contacts share a global coordinate/node.",
+    "projection": "At a cutpoint(building,Y), active skywalks are exactly closed intervals covering that building due start-query-end ordering. The greatest strictly smaller height is the next actual intersection below. It necessarily lies on the building since its height<Y<=buildingH. Arbitrary choice among coincident lower same-height endpoints is safe after global coordinate union.",
+    "roots": "If no lower skywalk exists, connect down to0 only for s/g. Every skywalk actually meeting s/g has that terminal as a cut, so no needed initial/final vertical edge is missed. Other building roots are dead ends and omitted.",
+    "horizontalContraction": "Register each cutpoint and lower projection on its owning original walk. Globally unify points by(building,height), sort touches by(walk,building), connect unique neighboring touches. Remaining omitted vertices only subdivide horizontal travel; metric contraction is exact.",
+    "sparsity": "P<=6M cutpoint occurrences. At mostP vertical edges, at mostP lower projected occurrences, total<=2P+2 coordinate occurrences including roots. Horizontal edges<=2P and total undirected edges<=3P.",
+    "complexity": "Height descending building insertion+cut queries, x event sort/active set, coordinate sort and per-segment sort, indexed-heap Dijkstra are O((N+M)log(N+M+1)) time, O(N+M) space.",
+    "unconfirmedLemmas": []
+  },
+  "auditGapId": "skywalk-endpoint-sparse-shortest-path",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-skywalk-article.mdx",
+    "checker": "/tmp/flowchartcp-skywalk-checker.py",
+    "sidecar": "/tmp/flowchartcp-skywalk-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/skywalk-endpoint-sparse-shortest-path.mdx",
+    "checker": "scripts/check_skywalk_sparse_shortest_path_cpp.py",
+    "metadata": "data/techniques-specific-graph-extensions.json",
+    "reference": "data/references-specific-graph-extensions.json",
+    "feature": "data/skywalk-shortest-path-problem-features.json"
+  },
+  "metadata": {
+    "id": "skywalk-endpoint-sparse-shortest-path",
+    "title": "空中通路を必要な交点だけのグラフに縮めて、最短距離を求める",
+    "summary": "始終点に近い十分高いビルで通路を分け、通路の端から下への接続だけを残す。矩形への進入を置き換える補題で距離を保存し、全交点を作らず最短路を求める。",
+    "aliases": [
+      "IOI2019 Sky Walking endpoint sparse shortest path",
+      "skywalk terminal nearest tall building vertical projection Dijkstra",
+      "空中通路 始終点切分け 矩形境界置換 全交点疎化"
+    ],
+    "family": "交点を絞る幾何グラフの最短路",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "dijkstra",
+      "graph-reduction",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioinformatics.org/files/ioi2019problem6.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Notice/KGZ.pdf"
+    ]
+  },
+  "reference": {
+    "techniqueId": "skywalk-endpoint-sparse-shortest-path",
+    "source": "IOI",
+    "problemId": "ioi2019_walk",
+    "title": "Sky Walking",
+    "url": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+    "evidence": "地面からの鉛直ビルと正高さの水平通路上だけを移動し、指定二ビル根元の最短距離を求める。始終点の左右で高さが足りる直近ビルに切れ目を追加し、各切れ目から直下の通路への鉛直接続と通路上の隣接点だけを残す。矩形への進入の置換と高い不要辺からの辞書式最小性により最短距離を保存し、全交点を列挙せずO((N+M)log(N+M+1))時間で処理する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2019-08-08",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に公式原典/English(HSC)Reviewと主催LVA/IDN翻訳の検索本文を再確認。N/M各1..100000、昇順x0..1e9、h1..1e9、l<rと端点上限、正のy<=両端h、s!=g、通路同士は端点接触のみを実取得。JP委員会一覧から2019-08-08競技日2を確認し難度null。公式Reviewの始終点まわりの分割と上端内部の鉛直辺除去の方針に沿い、全交点モデル・端末近傍の切れ目の性質・矩形境界への進入のManhattan置換・上端高さ順の辞書式最小性・下方投影生成・同高さ接触・水平辺縮約を独立に完全証明。一般s/gにx単調性を仮定しない。完全C++20を実MDX単一fenceから抽出、全小N1..4/高さ1..3/隣接x差1,2/全有効通路集合108279と全端末対1716019、乱択4000全対を、全交点直接生成の独立literalグラフと比較。反転/座標拡大平行移動/通路順入替/通路分割の15440検査、不正24・再呼出し・入力非変更・原典例27/21・64bit3e9を確認。原典最大N=M100000の7構成を閉形式と比較し最大99998999890004、密な全長通路10^10交点を作らず成功。通常/ASan+UBSanとも9280397 checks/checksum9377741248886004889、通常4.98573s/RSS79036KiB、san81.6905s/RSS783140KiB。英語/JPN抽出で欠落した到達不能返値は、主催MAC実装段落とAZE検索本文で-1を実取得して補完。画像目視は主張しない。初回unconfirmedと共有データは未変更。"
+  },
+  "api": {
+    "function": "long long skywalk_shortest_distance(const std::vector<int>& x,const std::vector<int>& h,const std::vector<int>& l,const std::vector<int>& r,const std::vector<int>& y,int s,int g)",
+    "originalAdapter": "long long min_distance(std::vector<int> x,std::vector<int> h,std::vector<int> l,std::vector<int> r,std::vector<int> y,int s,int g), included in the same complete fence, no unresolved external grader symbols. Passing lvalues to the original byvalue adapter may copy caller arrays.",
+    "bounds": "N1..100000,M0..100000; matching vector lengths;0<=x[0]<...<x[N-1]<=1e9;h1..1e9;0<=l<r<N;1<=y<=min(h[l],h[r]);same-height intervals may only touch endpoints;0<=s,g<N",
+    "result": "64bit shortest distance; -1 if unreachable (official MAC/AZE contract verified);0 for equal terminals as an extension.",
+    "extensions": [
+      "M=0 allowed",
+      "s=g allowed after full validation",
+      "N=1 valid when no skywalks"
+    ],
+    "errors": "invalid_argument for every array length/size, coordinate, height, endpoint, terminal or same-height interior overlap violation. Validate every segment and overlap before s=g/M0 shortcut. Standard allocation exceptions propagate.",
+    "state": "All mutable state local; const-reference API does not modify input, no persistent caches, safe fresh calls after invalid input. Helpers in skywalk_detail require their documented validated precondition; public callers use only the validating API.",
+    "integerSafety": [
+      "N/M checked as size_t before conversion to int. P<=6M<=600000, vertices<=1200002, undirected edges<=1800000, arcs<=3600000, heap child index<=2400003. int statically required to represent1e9.",
+      "All x/h/y validated in0..1e9 or1..1e9. Vertical yHigh-yLow and increasing-x differences lie1..1e9; no coordinate sum/product in int.",
+      "Simple path distance<=(2P+1)*1e9<=1200001000000000; relaxation plus one edge also fits int64. infinity=int64max/4; unreachable infinity values never enter heap or get relaxed.",
+      "Input order same-height overlap sorted by(y,l,r), strict previousR>nextL rejection; endpoint equality accepted. Active set keyed(height,segment), lower_bound({upperY,-1}) excludes all equal-height pieces."
+    ],
+    "stackSafety": "No input-linear recursion. std::sort uses logarithmic internal depth; graph traversal and indexed heap are iterative."
+  },
+  "complexity": {
+    "time": "O((N+M)log(N+M+1))",
+    "space": "O(N+M)",
+    "cutpointBound": "P<=6M",
+    "vertexBound": "V<=2P+2<=12M+2",
+    "undirectedEdgeBound": "E<=3P<=18M",
+    "originalMaximumVertices": 1200002,
+    "originalMaximumUndirectedEdges": 1800000,
+    "majorPayloadBytesForInt32": "construction:Touches(2P+2)*16 + linksP*12 + mapping(2P+2)*4 + head(2P+2)*4 + arcs6P*12 =132P+48 <=79200048;events/sets destroyed before head/arcs reserve. Dijkstra arrays+graph<=112P+40; callerinput/byvaluecopy/vector-metadata/allocator and library sort stack separate.",
+    "heap": "Indexed binary heap, one slot per unsettled vertex; no duplicate stale entries.",
+    "majorPayloadScope": "132P+48 describes only coordinate union/adjacency construction, after every sweep set/event buffer has been destroyed. Earlier cut generation has eventcapacity8M records=96M bytes and permutationN+M ints=4(N+M), plus a tall-building std::set with<=N nodes. Query sweep has events96M+touches32P+32+links12P and active std::set<=M nodes. Sets/allocator/node management/caller input/copies are separate. Indexed-heap search graph+arrays<=112P+40."
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-skywalk-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-skywalk-checker.py --sanitize",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "normal": {
+      "checks": 9280397,
+      "instances": 112287,
+      "exhaustiveInstances": 108279,
+      "exhaustiveTerminalPairs": 1716019,
+      "randomInstances": 4000,
+      "literalGraphNodes": 1445299,
+      "literalGraphDirectedEdges": 3187422,
+      "metamorphicChecks": 15440,
+      "invalidCalls": 24,
+      "checksum": "9377741248886004889",
+      "seconds": 4.98573,
+      "peakRSSKiB": 79036,
+      "maximumCases": [
+        {
+          "name": "all full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 333330002,
+          "seconds": 0.425951
+        },
+        {
+          "name": "all high full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 2333130002,
+          "seconds": 0.430859
+        },
+        {
+          "name": "alternating serial chain",
+          "vertices": 200002,
+          "undirectedEdges": 200002,
+          "distance": 99998999890004,
+          "seconds": 0.144093
+        },
+        {
+          "name": "disconnected halves",
+          "vertices": 200002,
+          "undirectedEdges": 299998,
+          "distance": -1,
+          "seconds": 0.245706
+        },
+        {
+          "name": "short source under high spans",
+          "vertices": 300001,
+          "undirectedEdges": 499996,
+          "distance": 2666460004,
+          "seconds": 0.31039
+        },
+        {
+          "name": "both short terminal detours",
+          "vertices": 599994,
+          "undirectedEdges": 1099978,
+          "distance": 2333170004,
+          "seconds": 0.719035
+        },
+        {
+          "name": "same-height endpoint chain",
+          "vertices": 100004,
+          "undirectedEdges": 100005,
+          "distance": 2399990000,
+          "seconds": 0.127128
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "article": "/tmp/flowchartcp-skywalk-article.mdx"
+    },
+    "asanUbsan": {
+      "checks": 9280397,
+      "instances": 112287,
+      "exhaustiveInstances": 108279,
+      "exhaustiveTerminalPairs": 1716019,
+      "randomInstances": 4000,
+      "literalGraphNodes": 1445299,
+      "literalGraphDirectedEdges": 3187422,
+      "metamorphicChecks": 15440,
+      "invalidCalls": 24,
+      "checksum": "9377741248886004889",
+      "seconds": 81.6905,
+      "peakRSSKiB": 783140,
+      "maximumCases": [
+        {
+          "name": "all full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 333330002,
+          "seconds": 7.07929
+        },
+        {
+          "name": "all high full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 2333130002,
+          "seconds": 7.21664
+        },
+        {
+          "name": "alternating serial chain",
+          "vertices": 200002,
+          "undirectedEdges": 200002,
+          "distance": 99998999890004,
+          "seconds": 3.04334
+        },
+        {
+          "name": "disconnected halves",
+          "vertices": 200002,
+          "undirectedEdges": 299998,
+          "distance": -1,
+          "seconds": 3.99994
+        },
+        {
+          "name": "short source under high spans",
+          "vertices": 300001,
+          "undirectedEdges": 499996,
+          "distance": 2666460004,
+          "seconds": 5.13745
+        },
+        {
+          "name": "both short terminal detours",
+          "vertices": 599994,
+          "undirectedEdges": 1099978,
+          "distance": 2333170004,
+          "seconds": 10.3782
+        },
+        {
+          "name": "same-height endpoint chain",
+          "vertices": 100004,
+          "undirectedEdges": 100005,
+          "distance": 2399990000,
+          "seconds": 3.00027
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "article": "/tmp/flowchartcp-skywalk-article.mdx"
+    },
+    "leakSanitizer": {
+      "enabled": false,
+      "reason": "LeakSanitizer disabled in ptrace environment; ASan and UBSan remain enabled."
+    },
+    "oracle": "Build all literal intersections by checking every building against every original skywalk. Add a distinct ground node for each building but no ground-horizontal edges; these extra nonterminal bottoms are dead ends and do not change root distances. Sort all levels on each building, connect all consecutive intersections vertically; for each original skywalk connect all consecutive intersecting buildings horizontally. Independent std::priority_queue Dijkstra from every building root. Does not use cuts, active sweeps, nearest tall selection, sparse-edge deletion or indexed heap.",
+    "exhaustiveScope": "Every N1..4; x0=0 and every adjacent x gap1or2; each h in1..3; every possible set of permitted horizontal segments with integer y1..min endpointH and no same-height interior overlap, including M0 extension; every ordered terminal pair including s=g extension. 108279 physical instances,1716019 terminal pairs. Does not claim exhaustiveness over arbitrary 1e9 coordinates/heights.",
+    "randomScope": "4000 deterministic instances,N2..12, heights1..9, nonuniform positive x gaps; attempt80random segments and retain all non-overlapping valid ones. All ordered terminal pairs tested by literal graph.",
+    "metamorphicScope": "15440 checks total: reflection, uniform coordinate/height scaling13 plus x translation17, reversed segment order, and available geometric skywalk split at an actual internal building intersection. All use literal base graph answers.",
+    "maximumScope": "Seven N=M100000 instances. Every expected answer uses explicit closed form from the construction, not a large literal graph; includes10^10 potential full-span intersections, 64bit high spans and alternating serial cost, unreachable components, short source below high spans, both terminals requiring outward detours with allfour cuts distinct, same-height contact chain. Each case calls API in both terminal directions and independently rebuilds its sparse graph to check V/E/edge-index/weight bounds. Original byvalue adapter executed on maximum high full-span case.",
+    "maximumTimingScope": "Each maximumCase.seconds includes2 full API calls plus a third sparse-graph build and edge-bound checks. Overall seconds/RSS include exhaustive/random/literal/metamorphic/API tests and caller input/oracle storage, not solely one algorithm call.",
+    "otherChecks": [
+      "Original examples27/21",
+      "N1/M0/s=g extension; unreachable; long long3e9",
+      "Short source/goal inside a high walk, both outward detours, building height equals skywalk",
+      "24invalid calls: lengths, oversizedN/M, strictxorder/range,heights,endpointorder/range,positivey/endpointheight,overlap/duplicatewalk,terminalINT_MIN/MAX,invalid even s=g;valid call after each invalid",
+      "Nonmutation of all five input vectors; original byvalue adapter on representative/exhaustive/random/maximum inputs; repeated interleaved fresh calls"
+    ],
+    "counterScope": "checks counts require assertions, including per-edge bounds on all seven maximum constructed graphs; not a count of distinct input instances. literalGraphNodes/DirectedEdges aggregate each literal graph construction, including the repeated random literal pass used for metamorphic expected values.",
+    "sharedFilesModified": false,
+    "initialAuditModified": false
+  },
+  "flowSuggestion": {
+    "entryGraphId": "graphs",
+    "existingChoices": [
+      "walk-goals",
+      "distance",
+      "many-connections"
+    ],
+    "parentGraphId": "shortest-shared-connection-goals",
+    "parentNodeId": "movement",
+    "newAnswerId": "skywalks",
+    "newAnswerLabel": "地面から伸びるビルと空中通路を伝う最短距離",
+    "guardGraphId": "skywalk-shortest-path-conditions",
+    "guards": [
+      {
+        "id": "grounded-buildings",
+        "question": "地面から伸びる鉛直ビルと水平通路の上だけを歩き、地上では横移動しませんか？",
+        "explanation": "途中のビルとの交点でも乗り換えられます。通路は正の高さにあり、両端のビルはその高さまで届きます。"
+      },
+      {
+        "id": "endpoint-contacts",
+        "question": "通路同士は端点でだけ接し、指定二ビルの根元間の最短距離を求めますか？",
+        "explanation": "同じ高さの通路は内部で重なりません。始終点は中央のビルでもよく、到達できない場合も判定します。"
+      },
+      {
+        "id": "bounds",
+        "question": "ビル・通路は各10万以下で、座標と高さは10億以下ですか？",
+        "explanation": "ビルの横位置は真に増加し、高さは正です。全ての線分と始終点が最初から分かり、距離は64bit整数で扱います。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "skywalk-endpoint-sparse-shortest-path"
+    ],
+    "groupSuggestion": "graph-extensions",
+    "note": "Parent alone integrates after independent review;initial audit rootstop/options/status preserved."
+  },
+  "editorNotes": [
+    "本文は技巧・証明・API説明に集中し、取得経緯・件数はこのsidecarへ置く。",
+    "初回unconfirmed/numericBoundsVerified:false/公式解説未確認は保存。新確認はresolution.sourceVerificationと明示positive subsequentSolutionReviewへ。",
+    "原典全入力範囲と到達不能返値-1を公式配布の検索本文で確認済み。主要未確認補題0。記事/コードは完成し、外部独立review完了まで公開登録は保留。"
+  ],
+  "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2019_walk",
+    "title": "Sky Walking",
+    "url": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+    "techniqueIds": [
+      "skywalk-endpoint-sparse-shortest-path"
+    ],
+    "features": [
+      "地面から伸びる高さ付き鉛直ビルと正高さの水平通路の和集合上だけを歩き、地上の横移動はできない。",
+      "通路の途中のビルとの交点でも乗り換えられ、同高さ通路は端点同士だけで接する。指定二ビルの根元間の最短距離または到達不能を判定する。",
+      "原典N,M各1..100000、x昇順0..1e9、h1..1e9、0<=l<r<N、1<=y<=min両端h、異なるs,g。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-08",
+    "exactDateVerified": true,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "notes": "地面からの鉛直ビルと正高さの水平通路上だけを移動し、指定二ビル根元の最短距離を求める。始終点の左右で高さが足りる直近ビルに切れ目を追加し、各切れ目から直下の通路への鉛直接続と通路上の隣接点だけを残す。矩形への進入の置換と高い不要辺からの辞書式最小性により最短距離を保存し、全交点を列挙せずO((N+M)log(N+M+1))時間で処理する。",
+    "discoveredBy": "ioi-2019"
+  },
+  "subsequentSolutionReview": {
+    "reviewedAt": "2026-10-15",
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem6.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "evidenceUrls": [
+      "https://ioinformatics.org/files/ioi2019problem6.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/review.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/LVA.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/IDN.pdf",
+      "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/MAC.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day2/Walk/AZE.pdf"
+    ],
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "solution": "retrieved-and-reviewed",
+      "officialEditorialVerified": false
+    },
+    "notes": "2026-10-15に公式原典/English(HSC)Reviewと主催LVA/IDN翻訳の検索本文を再確認。N/M各1..100000、昇順x0..1e9、h1..1e9、l<rと端点上限、正のy<=両端h、s!=g、通路同士は端点接触のみを実取得。JP委員会一覧から2019-08-08競技日2を確認し難度null。公式Reviewの始終点まわりの分割と上端内部の鉛直辺除去の方針に沿い、全交点モデル・端末近傍の切れ目の性質・矩形境界への進入のManhattan置換・上端高さ順の辞書式最小性・下方投影生成・同高さ接触・水平辺縮約を独立に完全証明。一般s/gにx単調性を仮定しない。完全C++20を実MDX単一fenceから抽出、全小N1..4/高さ1..3/隣接x差1,2/全有効通路集合108279と全端末対1716019、乱択4000全対を、全交点直接生成の独立literalグラフと比較。反転/座標拡大平行移動/通路順入替/通路分割の15440検査、不正24・再呼出し・入力非変更・原典例27/21・64bit3e9を確認。原典最大N=M100000の7構成を閉形式と比較し最大99998999890004、密な全長通路10^10交点を作らず成功。通常/ASan+UBSanとも9280397 checks/checksum9377741248886004889、通常4.98573s/RSS79036KiB、san81.6905s/RSS783140KiB。英語/JPN抽出で欠落した到達不能返値は、主催MAC実装段落とAZE検索本文で-1を実取得して補完。画像目視は主張しない。初回unconfirmedと共有データは未変更。"
+  },
+  "artifactSha256": {
+    "article": "5b36a08a7301ad43b0674ba680298cfdf9eb7efac3f5ec41f14aa5a77c6df717",
+    "checker": "be9363901c53ff89ed40f4a8196c1545180ee1cc52b23073c9a5e7ef3cd1b38a",
+    "publishedArticle": "c10ac9a01c57169c418f17dcbf2c2f765b7dfbac9f4dae36040ab8fe8f6dc881",
+    "publishedChecker": "99df56da9f0c74181afdd764d9076d554c6b22aa7767871e177db38dadb62f0b"
+  },
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/skywalk-endpoint-sparse-shortest-path.mdx",
+    "checker": "scripts/check_skywalk_sparse_shortest_path_cpp.py",
+    "metadataGroup": "graph-extensions",
+    "entryGraphId": "graphs",
+    "choices": [
+      "walk-goals",
+      "distance",
+      "many-connections",
+      "skywalks",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "separatePositiveReviewAdded": true,
+    "officialEditorialFullVerificationNotClaimed": true,
+    "proseNormalization": "Only natural Japanese names for terminal/heap/sort/payload/allocator/lvalue. Entry points use the shared advanced/complexity/reasoning catalog. Source proof and C++ unchanged.",
+    "reviewSnapshotNote": "Nested author/root evidence describes the artifact at each original review time; final separate review, flow regression and complete build verification are recorded in research/verification-2026-10-15-skywalk.json."
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "techniqueId": "skywalk-endpoint-sparse-shortest-path",
+      "reviewedAt": "2026-10-15",
+      "reviewer": "root",
+      "status": "root-review-passed-awaiting-separate-review",
+      "allEightSectionsAndCompleteCppRead": true,
+      "primaryBoundsAndReturnMarkerAndDateRechecked": true,
+      "primaryReturnMarker": "MAC official translation search-visible implementation paragraph explicitly -1; no image claim",
+      "sourceBounds": "N/M1..100000,x strictly increasing0..1e9,h1..1e9,l<r,y1..minendpointheight,s!=g,sameheight only endpoint contacts",
+      "codeSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "normal": {
+        "checks": 9280397,
+        "instances": 112287,
+        "exhaustiveInstances": 108279,
+        "exhaustiveTerminalPairs": 1716019,
+        "randomInstances": 4000,
+        "literalGraphNodes": 1445299,
+        "literalGraphDirectedEdges": 3187422,
+        "metamorphicChecks": 15440,
+        "invalidCalls": 24,
+        "checksum": "9377741248886004889",
+        "seconds": 4.93373,
+        "peakRSSKiB": 79144,
+        "maximumCases": [
+          {
+            "name": "all full spans",
+            "vertices": 400002,
+            "undirectedEdges": 699998,
+            "distance": 333330002,
+            "seconds": 0.417666
+          },
+          {
+            "name": "all high full spans",
+            "vertices": 400002,
+            "undirectedEdges": 699998,
+            "distance": 2333130002,
+            "seconds": 0.422579
+          },
+          {
+            "name": "alternating serial chain",
+            "vertices": 200002,
+            "undirectedEdges": 200002,
+            "distance": 99998999890004,
+            "seconds": 0.137513
+          },
+          {
+            "name": "disconnected halves",
+            "vertices": 200002,
+            "undirectedEdges": 299998,
+            "distance": -1,
+            "seconds": 0.231031
+          },
+          {
+            "name": "short source under high spans",
+            "vertices": 300001,
+            "undirectedEdges": 499996,
+            "distance": 2666460004,
+            "seconds": 0.293966
+          },
+          {
+            "name": "both short terminal detours",
+            "vertices": 599994,
+            "undirectedEdges": 1099978,
+            "distance": 2333170004,
+            "seconds": 0.702811
+          },
+          {
+            "name": "same-height endpoint chain",
+            "vertices": 100004,
+            "undirectedEdges": 100005,
+            "distance": 2399990000,
+            "seconds": 0.126714
+          }
+        ],
+        "sanitized": false,
+        "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+        "article": "/tmp/flowchartcp-skywalk-article.mdx"
+      },
+      "materialFindings": [],
+      "correctedDocumentationFinding": "132P describes the coordinate-merge/adjacency construction stage. Preceding building order depends on N even when P is small; author added separate earlier-stage arrays, no C++ change.",
+      "proofReview": [
+        "Full intersection graph models all geometry; omitted nonterminal bases do not permit horizontal ground travel.",
+        "Terminal cuts ensure a piece with any internal building intersection has no terminal x in its interior. Later cuts preserve this.",
+        "For an irrelevant vertical edge, the prefix/suffix enters its rectangle via top or a side. Manhattan replacement along side/top exists and cannot increase length. No bottom entry is possible: y>=0, no horizontal ground edge, terminal lies outside or on side.",
+        "Replacing an up edge uses prefix; replacing down uses reversed suffix. New irrelevant vertical edges have strictly lower top. A lexicographically smallest bad-edge-count vector among shortest simple paths excludes all irrelevant edges, without assuming x monotonicity for general s/g.",
+        "Sweep start/query/end ordering and strict lower-height predecessor preserve touching skywalks; merged equal coordinates connect both touching segments. Horizontal adjacency is exact contraction.",
+        "P<=6M; touches<=2P+2, vertical edges<=P, horizontal<=2P. Indexed heap has at most one unsettled entry, logarithmic decrease-key; array lifetimes match corrected stages."
+      ],
+      "apiReview": [
+        "All lengths checked before index narrowing; endpoint guards short-circuit to guarantee safe h indexes, even negative r or too-large l. Coordinates and heights bounded, sameheight overlaps rejected, N1/M0/s=g extensions validate before returning.",
+        "All cut tall-set lower_bound/prev dereferences exist because the original segment endpoints are tall and enclose terminal. Exactly six cuts fit, unused array slots filled by r deduplicate harmlessly.",
+        "Touch IDs captured before push, preserved through coordinate sort, then mapped before overwrite. Same-coordinate lower endpoints merge, duplicate arcs harmless and bounded. Graph source/target root vertices always present.",
+        "Heap decrease only on unseen/unsettled nodes; pop only nonempty. Distances never approach inf, all weights positive <=1e9 and signed index counts fit verified int layout. Original long long by-value adapter matches grader; no caller input mutations or persistent state."
+      ],
+      "remaining": [
+        "Separate independent reviewer is running raster/unit-grid oracle and geometric equivalences.",
+        "Shared article/flow/audit not registered yet."
+      ],
+      "asanUbsan": {
+        "checks": 9280397,
+        "instances": 112287,
+        "exhaustiveInstances": 108279,
+        "exhaustiveTerminalPairs": 1716019,
+        "randomInstances": 4000,
+        "literalGraphNodes": 1445299,
+        "literalGraphDirectedEdges": 3187422,
+        "metamorphicChecks": 15440,
+        "invalidCalls": 24,
+        "checksum": "9377741248886004889",
+        "seconds": 82.2637,
+        "peakRSSKiB": 783096,
+        "maximumCases": [
+          {
+            "name": "all full spans",
+            "vertices": 400002,
+            "undirectedEdges": 699998,
+            "distance": 333330002,
+            "seconds": 7.17057
+          },
+          {
+            "name": "all high full spans",
+            "vertices": 400002,
+            "undirectedEdges": 699998,
+            "distance": 2333130002,
+            "seconds": 7.19816
+          },
+          {
+            "name": "alternating serial chain",
+            "vertices": 200002,
+            "undirectedEdges": 200002,
+            "distance": 99998999890004,
+            "seconds": 3.06844
+          },
+          {
+            "name": "disconnected halves",
+            "vertices": 200002,
+            "undirectedEdges": 299998,
+            "distance": -1,
+            "seconds": 4.02504
+          },
+          {
+            "name": "short source under high spans",
+            "vertices": 300001,
+            "undirectedEdges": 499996,
+            "distance": 2666460004,
+            "seconds": 5.17426
+          },
+          {
+            "name": "both short terminal detours",
+            "vertices": 599994,
+            "undirectedEdges": 1099978,
+            "distance": 2333170004,
+            "seconds": 10.3838
+          },
+          {
+            "name": "same-height endpoint chain",
+            "vertices": 100004,
+            "undirectedEdges": 100005,
+            "distance": 2399990000,
+            "seconds": 2.97466
+          }
+        ],
+        "sanitized": true,
+        "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+        "article": "/tmp/flowchartcp-skywalk-article.mdx"
+      }
+    },
+    "normal": {
+      "checks": 9280397,
+      "instances": 112287,
+      "exhaustiveInstances": 108279,
+      "exhaustiveTerminalPairs": 1716019,
+      "randomInstances": 4000,
+      "literalGraphNodes": 1445299,
+      "literalGraphDirectedEdges": 3187422,
+      "metamorphicChecks": 15440,
+      "invalidCalls": 24,
+      "checksum": "9377741248886004889",
+      "seconds": 4.93373,
+      "peakRSSKiB": 79144,
+      "maximumCases": [
+        {
+          "name": "all full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 333330002,
+          "seconds": 0.417666
+        },
+        {
+          "name": "all high full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 2333130002,
+          "seconds": 0.422579
+        },
+        {
+          "name": "alternating serial chain",
+          "vertices": 200002,
+          "undirectedEdges": 200002,
+          "distance": 99998999890004,
+          "seconds": 0.137513
+        },
+        {
+          "name": "disconnected halves",
+          "vertices": 200002,
+          "undirectedEdges": 299998,
+          "distance": -1,
+          "seconds": 0.231031
+        },
+        {
+          "name": "short source under high spans",
+          "vertices": 300001,
+          "undirectedEdges": 499996,
+          "distance": 2666460004,
+          "seconds": 0.293966
+        },
+        {
+          "name": "both short terminal detours",
+          "vertices": 599994,
+          "undirectedEdges": 1099978,
+          "distance": 2333170004,
+          "seconds": 0.702811
+        },
+        {
+          "name": "same-height endpoint chain",
+          "vertices": 100004,
+          "undirectedEdges": 100005,
+          "distance": 2399990000,
+          "seconds": 0.126714
+        }
+      ],
+      "sanitized": false,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "article": "/tmp/flowchartcp-skywalk-article.mdx"
+    },
+    "asanUbsan": {
+      "checks": 9280397,
+      "instances": 112287,
+      "exhaustiveInstances": 108279,
+      "exhaustiveTerminalPairs": 1716019,
+      "randomInstances": 4000,
+      "literalGraphNodes": 1445299,
+      "literalGraphDirectedEdges": 3187422,
+      "metamorphicChecks": 15440,
+      "invalidCalls": 24,
+      "checksum": "9377741248886004889",
+      "seconds": 82.2637,
+      "peakRSSKiB": 783096,
+      "maximumCases": [
+        {
+          "name": "all full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 333330002,
+          "seconds": 7.17057
+        },
+        {
+          "name": "all high full spans",
+          "vertices": 400002,
+          "undirectedEdges": 699998,
+          "distance": 2333130002,
+          "seconds": 7.19816
+        },
+        {
+          "name": "alternating serial chain",
+          "vertices": 200002,
+          "undirectedEdges": 200002,
+          "distance": 99998999890004,
+          "seconds": 3.06844
+        },
+        {
+          "name": "disconnected halves",
+          "vertices": 200002,
+          "undirectedEdges": 299998,
+          "distance": -1,
+          "seconds": 4.02504
+        },
+        {
+          "name": "short source under high spans",
+          "vertices": 300001,
+          "undirectedEdges": 499996,
+          "distance": 2666460004,
+          "seconds": 5.17426
+        },
+        {
+          "name": "both short terminal detours",
+          "vertices": 599994,
+          "undirectedEdges": 1099978,
+          "distance": 2333170004,
+          "seconds": 10.3838
+        },
+        {
+          "name": "same-height endpoint chain",
+          "vertices": 100004,
+          "undirectedEdges": 100005,
+          "distance": 2399990000,
+          "seconds": 2.97466
+        }
+      ],
+      "sanitized": true,
+      "cppSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "article": "/tmp/flowchartcp-skywalk-article.mdx"
+    },
+    "additionalReviewFile": "research/probes/skywalk-shortest-path-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  },
+  "statusAtAuthorFreeze": "implementation-complete-awaiting-independent-review"
+}

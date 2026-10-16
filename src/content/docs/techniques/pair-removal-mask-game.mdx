@@ -1,0 +1,58 @@
+---
+title: "相性のよい二個を消すゲームは、残った集合だけで勝敗を持つ"
+description: "消した順番を捨て、残り集合の同じ局面をまとめます。"
+techniqueId: "pair-removal-mask-game"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+小さい個数の品物から、条件を満たす二個を選んで消す対戦。どの二個が消せるかが固定され、既に消した順番が次の合法手に影響しないなら、残っている集合だけで局面が決まります。
+
+## 考え方
+
+集合 $S$ をビットマスクにし、$\operatorname{win}(S)$ を手番の側が勝てるかとします。消せる組 $(i,j)$ があり、$\operatorname{win}(S\setminus\{i,j\})$ が偽なら $S$ は勝ち。それ以外は負けです。消せる組のマスクを先に作ると、値の比較を各状態で繰り返さずに済みます。
+
+## 適用条件
+
+一手で必ず二個を削除し、削除以外の操作がないこと。消せる条件は残った品物の二個だけで決まり、操作不能で負ける通常ルールです。原典は $N\le18$、表面同士か裏面同士の値が等しい組を削除します。色の同じ個数などが条件に入るなら、その集合から条件を再計算します。
+
+## なぜ正しいか
+
+削除後のマスクは元のマスクより小さいので、数値の昇順でも遷移先が計算済みです。負けの局面へ渡せる手があれば勝ち、全ての手が相手の勝ちへ渡すなら負けという再帰を全ての集合で評価します。同じ残り集合なら合法手が等しいため、異なる削除順を区別しなくてよいです。
+
+## 計算量
+
+削除順を区別する探索には最大 $N!$ に比例する枝があります。集合でまとめると時間 $O(N^2 2^N)$、空間 $O(2^N+N^2)$。勝敗を求めるだけなら Grundy 数全体を計算する必要はありません。
+
+## 実装
+
+`pair_removal_first_wins` は二つの値が付いたカードを受け取ります。原典と同じ上限18でビットマスクと配列を作ります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+bool pair_removal_first_wins(const vector<pair<long long,long long>>& cards){
+    int n=cards.size();assert(n<=18);
+    vector<unsigned> moves;
+    for(int i=0;i<n;++i)for(int j=i+1;j<n;++j)
+        if(cards[i].first==cards[j].first || cards[i].second==cards[j].second)
+            moves.push_back((1u<<i)|(1u<<j));
+    vector<unsigned char> win(1u<<n);
+    for(unsigned mask=1;mask<win.size();++mask)
+        for(unsigned removed:moves)if((mask&removed)==removed && !win[mask^removed]){
+            win[mask]=1;break;
+        }
+    return win.back();
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/)、[状態の設計](/flowchartcp/techniques/state-design/)、[Grundy数](/flowchartcp/techniques/game-theory/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc354/editorial/10046)
+
+<TechniqueReferences techniqueId="pair-removal-mask-game" />

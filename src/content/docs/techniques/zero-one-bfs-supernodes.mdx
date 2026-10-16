@@ -1,0 +1,67 @@
+---
+title: "同じ集合内の移動を仮想頂点への入場と退出に分ける"
+description: "集合内の全頂点対へ辺を張らず、一度の入場にだけコストを付けて0-1 BFSを使う。"
+techniqueId: zero-one-bfs-supernodes
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+いくつかの集合が与えられ、一つの集合に属するどの要素からでも、同じ集合の別の要素へコスト1で移動できる。要素は複数の集合に所属してよい。集合の大きさの二乗の辺を張る処理を省きたい。
+
+## 考え方
+
+集合ごとに仮想頂点を一つ作る。要素から所属集合へコスト1、集合から要素へコスト0の有向辺を張る。要素から要素への一回の移動は、入場1＋退出0で表される。
+
+両方向にコスト1を付けると移動費用が倍になり、両方向0なら無料になる。何を一回として数えるかに合わせ、費用を片側だけへ置く。
+
+共通要素を持つ集合同士を結合する問題でも同じ所属関係を使える。目的の二要素を結ぶのに必要な集合の個数を $k$ と数えたなら、結合操作は $k-1$ 回になる。最初の集合を選ぶこと自体を結合一回に数えない。
+
+## 適用条件
+
+集合内の任意の二要素間の移動費用が同じで、どの要素から入ったかで退出条件が変わらない場合に使う。退出先ごとに異なる追加費用や、元の場所へ戻る必要がある場合は、その情報を状態へ追加する。
+
+以下は各集合の使用がコスト1のモデル。重みが0と1なので0-1 BFSが使える。異なる非負の入場料なら、仮想頂点の表現は保ちつつダイクストラ法へ変える。
+
+## なぜ正しいか
+
+各集合内の移動に対し、対応する仮想頂点を経由する同費用の経路がある。逆に元の要素から次の元の要素へ向かう補助グラフの区間は、必ず一つの所属集合への入場とその集合からの退出になるため、許された移動へ戻せる。余分な仮想経路を作らず、最短距離を保つ。
+
+## 計算量
+
+所属数の総和を $A$、集合数を $K$ とする。全頂点対へ張ると $O(\sum_i |S_i|^2)$ 本の辺。仮想頂点では $N+K$ 頂点、$2A$ 辺となり、構築と最短路は $O(N+K+A)$ 時間・空間。
+
+## 実装
+
+`group_move_distances(n,groups,start)` は要素 `start` から各要素までの最小使用集合数を返す。到達不能は `GROUP_INF`。同じ要素への0回の移動は距離0とする。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <deque>
+#include <limits>
+constexpr int GROUP_INF=std::numeric_limits<int>::max()/4;
+std::vector<int> group_move_distances(int n,const std::vector<std::vector<int>>& groups,int start) {
+    int k=int(groups.size());std::vector<std::vector<std::pair<int,int>>> g(n+k);
+    for(int i=0;i<k;++i) for(int v:groups[i]) {g[v].push_back({n+i,1});g[n+i].push_back({v,0});}
+    std::vector<int> dist(n+k,GROUP_INF);dist[start]=0;
+    std::deque<std::pair<int,int>> q;q.push_front({0,start});
+    while(!q.empty()) {
+        auto [d,v]=q.front();q.pop_front();if(d!=dist[v]) continue;
+        for(auto [u,w]:g[v]) if(d+w<dist[u]) {
+            dist[u]=d+w;if(w==0) q.push_front({dist[u],u});else q.push_back({dist[u],u});
+        }
+    }
+    dist.resize(n);return dist;
+}
+```
+
+## 関連する手法
+
+[0-1 BFS](/flowchartcp/techniques/zero-one-bfs/) ・ [点から区間・区間から点への移動を二つの区間木で張る](/flowchartcp/techniques/dijkstra-range-edges/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC302 F（集合と要素の仮想頂点）](https://atcoder.jp/contests/abc302/editorial/6508)。公式の単位コスト辺による表現を、集合への入場だけを数える0/1コストへ変形している。
+
+<TechniqueReferences techniqueId="zero-one-bfs-supernodes" />

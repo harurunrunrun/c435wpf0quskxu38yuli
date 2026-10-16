@@ -1,0 +1,251 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "次数を保つ任意木の構築と、初期重み1の比例増殖の上位合計期待値を追加。IOI2017本競技6問を技巧照合前に固定した初回監査も登録。",
+  "counts": {
+    "specificTechniques": 424,
+    "foundationArticles": 78,
+    "allArticles": 502,
+    "exampleMappings": 523,
+    "originalUrls": 485,
+    "graphs": 469,
+    "nodes": 3685,
+    "questions": 1678,
+    "answerEdges": 5472,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 519,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "tree-degree-preservation-budget-construction",
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "record": "research/technique-verifications/tree-degree-preservation-budget-construction.json",
+      "originalSourceRangeAndApiContainmentVerified": true,
+      "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+    },
+    {
+      "id": "polya-urn-uniform-composition-top-r-sum",
+      "articleSha256": "869ea45db8e12b19f5c2c71f70cf2561936568616cb888b221ae62f300638cec",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "record": "research/technique-verifications/polya-urn-uniform-composition-top-r-sum.json",
+      "originalSourceRangeAndApiContainmentVerified": true,
+      "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+    }
+  ],
+  "verification": {
+    "native": {
+      "command": "node --test --test-concurrency=1 tests/degree-tree-cpp.test.mjs tests/polya-top-r-cpp.test.mjs",
+      "fileGroups": 2,
+      "passedGroups": 2,
+      "definedSubtests": 4,
+      "failed": 0,
+      "durationMs": 10014.327534,
+      "scope": "Both complete published-fence checkers and two distinct independent probes executed with unchanged reviewed CPP hashes."
+    },
+    "newFlow": {
+      "degreeTree": {
+        "testFile": "tests/degree-tree-flow.test.mjs",
+        "testSha256": "5dc6167dfdf01cd6dedc51dcb13f7604cd5a6d4c8a20514936613c89253a6098",
+        "command": "node tests/degree-tree-flow.test.mjs",
+        "exitCode": 0,
+        "tests": 10,
+        "passed": 10,
+        "failed": 0,
+        "durationMs": 5228.533618,
+        "baseline": {
+          "articles": 500,
+          "graphs": 467,
+          "nodes": 3673,
+          "walks": 521,
+          "corpora": 8
+        },
+        "frozenFixtureSha256": "03f5fa7a0987945920e32ae367984d95f5c2f8f7233d1be6ec997b925b2efece",
+        "verified": [
+          "Each of three guards is necessary and has no/unknown continuation.",
+          "Questions, diagram labels, links, share and complete Back histories agree.",
+          "Grouped metadata, source date and null difficulty, source features and actual code fence agree.",
+          "All521 old full records, independent raw replay, questions, labels, targets and terminals unchanged.",
+          "All467 old graphs/3673 nodes preserve every old field and option/answer order.",
+          "593local prefixes and404completed share histories stay fixed.",
+          "All8 old corpora preserve all original fields and old resolutions.",
+          "K adds a resolution only, no duplicate positive research review.",
+          "Live missing source/reference/metadata/walk/steps lowers K coverage exactlyone; later independent resolutions may still increase the other coverage.",
+          "An actual empty code fence in an isolated read-only-source mirror fails product preflight and removes coverage."
+        ]
+      },
+      "polya": {
+        "status": "passed",
+        "command": [
+          "node",
+          "/tmp/flowchartcp-polya-top-r-flow.test.mjs"
+        ],
+        "exitCode": 0,
+        "tests": 10,
+        "passed": 10,
+        "failed": 0,
+        "durationSeconds": 4.7408050970116165,
+        "testFile": "/tmp/flowchartcp-polya-top-r-flow.test.mjs",
+        "testSha256": "f1c71bf467727724fa712b9ea2b1ae46f4d7f5dc4805186ac6467e4eb4014f5c",
+        "tapFile": "/tmp/flowchartcp-polya-top-r-flow-results.tap",
+        "tapSha256": "ebad1e648e5e4fb79aa9eb1cf4e1a576d0ba45fbbb2beb7a111eecdea4345793",
+        "caseFile": "/tmp/flowchartcp-polya-top-r-flow-case.json",
+        "caseSha256": "eefaa0aee0c6e533508c3b8ddd1421fc1d4934b615590b9ccbd7e03518198346",
+        "frozenBaseline": {
+          "articles": 501,
+          "graphs": 468,
+          "nodes": 3679,
+          "walks": 522,
+          "corpora": 8,
+          "rawSha256": {
+            "flows": "1849db5c3579aaea074a5f7caf64d07315c44e51b2dacab42aaa4b4a31c14d64",
+            "walks": "37bb61dbe09b69be84c437d6bd12ee0b0c49e3ecc00eed5e319e02a22f03838f",
+            "icpc2018-audit": "5bf3d22003312435296fb163db83f9a57c56002918098f7fd9f9208196d1034a",
+            "audits": "33d008adfafd73835014f10aa64c8201263008456d3e2b109d9b1402bd58b56d"
+          }
+        },
+        "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+        "sharedFilesModified": false,
+        "coveragePolicy": "Initial ICPC research9/11 and all8 prior initial audits preserved; live coverage>=4, deleting targetD evidence reduces coverage by1; an invalid actual MDX fence fails real preflight and makes preflight-dependent corpus coverage0. Additional later corpora and legal same-corpus resolutions are permitted.",
+        "permanentTest": "tests/polya-top-r-flow.test.mjs"
+      }
+    },
+    "broadRegression": {
+      "groups": 61,
+      "passed": 61,
+      "failed": 0,
+      "durationMs": 88792.734568,
+      "scope": "All prior58 flow/corpus/ledger/collector groups plus DegreeTree, Polya and fixedIOI2017; historical fields including previous resolutions remain fixed."
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 502,
+      "mappings": 523,
+      "diagrams": 469,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 502,
+      "recentArticlesChecked": 32,
+      "japaneseEnglishFullWidthQueries": 129,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 469,
+      "completeAnswerLabels": 5472,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed both new detailed diagrams and both expanded parent choice graphs as raster images; no node/label/arrow overlap. Separate viewer remains wheel-zoomable."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1449,
+      "linksAssets": 29382,
+      "diagrams": 469,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    },
+    "ioi2017PermanentProbe": {
+      "command": "python3 research/probes/ioi-2017-research-checks.py [optional-new-output.json]",
+      "allFrozenMathematicalCountersAndRootRoutesReproduced": true,
+      "elapsedSeconds": 15.68301,
+      "originalInitialProbeUnchanged": true,
+      "productionApiValidationClaimed": false
+    }
+  },
+  "proofAndOracleEvidence": [
+    "DegreeTree: preserve-cost d_i−1 budget N−2 gives smallest-feasible-prefix optimum; residual assigned to first rejected vertex cannot make it match. Target positive degrees with total2N−2 are realized by Prüfer decoding. All original connected multigraph inputs and full64bit desired-degree extension validated, O(M alphaN+NlogN)/O(N).",
+    "DegreeTree actualfence4721765 checks/263049 API/checksum9025324404316664252: all small actual labeled-tree edge sets,59139 connected multigraphs, full-degree-assignment DP, random/max/INT64 cases and allocation failures. Distinct composition enumeration21790 checks/6619600 candidates/checksum14600543257379776778 supplements author oracle.",
+    "Polya: labeled weak compositions uniform; subtract common1 then choose positive labels gives nonnegative sum DP. Source sketch sum-base corrected independently. gamma501501 path/error proof plus denominator/serialization guarantees source1e−6; both tables total6016008 element bytes, not sanitizer harness RSS. Time includes binomial precomputation O((N+D)(D+1)) as well as O(N²D+N).",
+    "Polya actualfence2292379 checks/759821API/checksum7563957929397653268: all203489 small compositions,2821488 owner histories with exact probabilities,3653 arbitrary-precision tail comparisons incl13 maximum cases,753001 boundaries. Separate62497 integer partitions/1085 rational comparisons and requested-memory/stream checks; checksum9209358677489316410.",
+    "All old records/steps/full questions/answer labels/terminals/targets, graph/node fields and option/answer ordering preserved. New techniques gated by three premises with no/unknown exits. Existing593 local prefixes/404 old shares with Back and both displays pass. Both initial ICPC positive rows receive only resolution; no duplicate research-positive reviews.",
+    "IOI2017 initial six records/status/selection bytes preserved. Original statements/numerics6, selected major proofs4, unfinished APIs0, coverage0, principal unconfirmed2. Core921 raw hashes vs later571 dependency hashes are distinct epochs. Permanent original32 files include13 full nearbyMDX; all1492 original hashes retained without claiming all bytes retained. Nine fixed-corpus tests compile12 nearbyC++ fences and Python scope witness, root-replay allsix, preserve all old8corpora and reject forged coverage."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 523,
+    "reviewedProblems": 483,
+    "corpusStatementsReviewed": 71,
+    "corpusSolutionsReviewed": 63,
+    "allSolutionsReviewed": 494
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "4/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "0/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 20,
+  "limitations": [
+    "Global denominator unknown; world-wide coverage incomplete.",
+    "Nowruz original10 files/fullscore not validated; Prize adaptive5000-call full strategy remains unconfirmed.",
+    "IOI2017 research proofs are not production API/article completion; Books final statement and old editorial draft contracts are distinguished.",
+    "Optional Polya faster PIE, Routing PIE/determinant/BEST and Simurgh ear-decomposition work remains separate from completed selected methods.",
+    "Production Astro/Starlight/Pagefind and real-browser checks remain unverified after earlier environment failures; no install/server/browser retried.",
+    "No all-example external-link liveness check. No push/upload/publication."
+  ],
+  "inProgress": [
+    "ICPC2018 F space-river source/model/proof and author C++ checks complete; root/independent review ongoing, not yet integrated.",
+    "IOI2017 Wiring and Toy Train full-range C++ articles/API/checkers are being implemented; not yet covered."
+  ]
+}

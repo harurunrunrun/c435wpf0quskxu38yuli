@@ -1,0 +1,61 @@
+---
+title: "線分の交差を、四つの向きと座標区間で判定する"
+description: "交点の割り算をせず、端点接触・共線重なり・一点の線分を同じ規則で扱う。"
+techniqueId: segment-intersection-orientation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+整数座標の二本の閉線分に共通点があるかを判定したい。傾きや連立方程式を使うと、垂直線、平行線、端点上の交差を別々に扱うことになる。
+
+## 考え方
+
+線分 $ab$ に対し、点 $c,d$ の向き $o_1=\operatorname{cross}(b-a,c-a)$、$o_2=\operatorname{cross}(b-a,d-a)$ を求める。同様に線分 $cd$ に対する $a,b$ の向き $o_3,o_4$ を求める。
+
+両方の組で正負が厳密に反対なら、線分は内部で交差する。いずれかの向きが0なら、その点が相手の線分の座標範囲内にあるかを確認する。この境界確認を先に行えば、共線な重なりや一点に退化した線分も処理できる。
+
+「符号が反対」を積 $o_1o_2<0$ で調べると、外積が型に収まっていても積があふれる。符号を個別に比較する。
+
+## 適用条件
+
+端点を含む閉線分の交差を判定する。端点を除く、接触を交差と数えない、といった条件では境界の規則を変える必要がある。
+
+座標の絶対値は $10^{12}$ 以下を想定する。外積を128ビットで計算し、符号の判定に外積同士の積は作らない。
+
+## なぜ正しいか
+
+非共線の二直線では、交点が線分 $cd$ に入ることと、$c,d$ が直線 $ab$ の反対側または上にあることが同値である。相手側についても同じ条件を課すと交点が両線分に入る。
+
+共線の場合、この反対側条件だけでは無関係な遠い線分も通ってしまう。共通点がある二つの閉区間は、少なくとも片方の端点を相手の区間内に含むため、四つの端点の境界確認でちょうど判定できる。
+
+## 計算量
+
+一組 $O(1)$ 時間、$O(1)$ 空間。多数の線分の全交差を列挙する場合、この判定だけでは全組 $O(N^2)$ が必要なので、候補を減らす走査などを別に考える。
+
+## 実装
+
+`segments_intersect` は長さ0の線分も受け取れる。CSESの原典は各線分の端点が異なるが、この退化ケースも境界判定で確認している。
+
+```cpp
+#include <algorithm>
+struct Point { long long x,y; };
+using i128=__int128_t;
+i128 orientation(Point a,Point b,Point c){return (i128(b.x)-a.x)*(i128(c.y)-a.y)-(i128(b.y)-a.y)*(i128(c.x)-a.x);}
+bool on_segment(Point a,Point b,Point q){return orientation(a,b,q)==0 && std::min(a.x,b.x)<=q.x && q.x<=std::max(a.x,b.x) && std::min(a.y,b.y)<=q.y && q.y<=std::max(a.y,b.y);}
+bool segments_intersect(Point a,Point b,Point c,Point d){
+    i128 x=orientation(a,b,c),y=orientation(a,b,d),z=orientation(c,d,a),w=orientation(c,d,b);
+    if((x==0 && on_segment(a,b,c)) || (y==0 && on_segment(a,b,d)) || (z==0 && on_segment(c,d,a)) || (w==0 && on_segment(c,d,b)))return true;
+    return ((x<0 && y>0)||(x>0 && y<0)) && ((z<0 && w>0)||(z>0 && w<0));
+}
+```
+
+## 関連する手法
+
+[凹多角形の内外を、半開区間の交差と外積で判定する](/flowchartcp/techniques/polygon-winding-integer/)
+
+## 参考資料
+
+- [CSES：Line Segment Intersection（原典）](https://cses.fi/problemset/task/2190)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="segment-intersection-orientation" />

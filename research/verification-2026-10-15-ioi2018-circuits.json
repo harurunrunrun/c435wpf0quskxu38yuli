@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2018 Dollの交互スイッチ列生成とHighwayの二重み距離による未知端点探索の不足解消",
+  "counts": {
+    "specificTechniques": 412,
+    "foundationArticles": 78,
+    "allArticles": 490,
+    "exampleMappings": 511,
+    "originalUrls": 473,
+    "graphs": 457,
+    "nodes": 3613,
+    "questions": 1642,
+    "answerEdges": 5352,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 507,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "alternating-switch-bit-reversal-pruned-router",
+      "articleSha256": "72fa6695bf06d8e8eb13a8784e72f507c96844c5be76c9d4dfb9539b0ebb8465",
+      "codeSha256": "ec7888a3cf046dd5d72d48429c83b1113d401c82558d0e36899cb1591be7a973",
+      "checks": 117243125,
+      "normalAndAsanUbsanAuthorAndRootPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    },
+    {
+      "id": "binary-weight-distance-oracle-edge-split-endpoint-search",
+      "articleSha256": "7209d07782ac116496a224b32d3d6515b77eb0d2271279d6fcb44bb79bc441a0",
+      "codeSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715",
+      "checks": 178526522,
+      "normalAndAsanUbsanAuthorAndRootPassed": true,
+      "originalSourceAndApiContainmentVerified": true
+    }
+  ],
+  "verified": [
+    "Dollの空間的な葉prefix剪定とビット反転訪問順、列末尾の初回原点復帰/全状態X、S=N−popcount(N)+hと反転数の整数式を作者/独立review者/rootで確認。主催者配布原典/Review/翻訳の数値出典を区別し、SYR検索本文の反転数誤記を20mの根拠に使っていない。",
+    "Doll掲載C++を全小列と境界/乱択/原典最大でliteral toggleと照合。117243125checks/checksum17302177393877592427を通常とASan/UBSanで再現。全N1..200000の整数予算評価は各Nの実配線構築とは区別。独立の空間subtree再帰式と誤った時間prefix剪定の反例を恒久probeに保存。",
+    "Highwayの初増加辺は少なくとも一本の元最短路上という存在条件、strict BFS二集合の経路閉包、二BFS木とpivotでの基準距離保存/唯一all-A経路、任意整数A<Bでの閾値と丸上げ込み50問を独立証明。全小単純連結graph/全対/5重み、原典最大6構成とactual50問/64bit/APIを独立Dijkstraで照合。178526522checks/checksum13151808493442697981、通常とASan/UBSanで再現。",
+    "独立flow9検査は新2入口/6guardとno/unknown12経路、両表示/SVG全label/記事href/share/Back/出典date/null/numeric/C++SHAを確認。旧509walk全文/手順/終端、455graph3601旧node全field/option順/target/result、initial6行/status/snapshotと既存3resolutionsを保存。既確認研究への重複reviewは付加しない。",
+    "公開fence抽出native wrapper3/3、広範囲51テスト群全成功。その後Doll最終guardの表記を短く明確化し、配置/折返し/当該flowの3テスト群を再実行して成功。",
+    "最終build:local成功。490記事の直近20記事で日英/全角81検索、数式/コード/出典一覧を確認。457SVG pairsと図専用ページ、5352回答label、404旧共有URLを照合。新2図をraster目視し重なりなし、最終Doll説明は全3行表示で省略なし。",
+    "最終verify:localは1413 HTML/SVGの28773 localリンク/資産を検証。研究表25/25行でidentity/和集合/公開対応の列を照合。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 59,
+    "fixedCorpusSolutionsReviewed": 50,
+    "publishedExamplesSolutionsReviewed": 471,
+    "allDistinctSolutionsReviewed": 481,
+    "corpora": [
+      {
+        "id": "usaco-2020-dec-2021-jan-platinum",
+        "research": "6/6",
+        "covered": "6/6",
+        "coverageComplete": true
+      },
+      {
+        "id": "icpc-2017-world-finals",
+        "research": "11/12",
+        "covered": "9/12",
+        "coverageComplete": false
+      },
+      {
+        "id": "joi-2020-spring",
+        "research": "9/12",
+        "covered": "9/12",
+        "coverageComplete": false
+      },
+      {
+        "id": "ioi-2020",
+        "research": "6/6",
+        "covered": "6/6",
+        "coverageComplete": true
+      },
+      {
+        "id": "ioi-2019",
+        "research": "3/6",
+        "covered": "3/6",
+        "coverageComplete": false
+      },
+      {
+        "id": "icpc-2018-world-finals",
+        "research": "9/11",
+        "covered": "2/11",
+        "coverageComplete": false
+      },
+      {
+        "id": "ioi-2018",
+        "research": "6/6",
+        "covered": "5/6",
+        "coverageComplete": false
+      }
+    ],
+    "remainingKnownGaps": 20,
+    "note": "Doll/Highwayは既に固定群で解法確認済みのため、distinct review unionは481のまま。"
+  },
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。固定群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは以前の環境上の失敗後に再試行しておらず未検証。",
+    "外部リンク全件の生存確認は未実施。",
+    "push・アップロード・公開は未実施。"
+  ],
+  "inProgress": [
+    "IOI2018 Meetingsの完成実装/独立レビューが揃い、rootで再現と特徴分岐を統合中。",
+    "USACO2021Feb/USOpen Platinum全6題を技巧照合前に固定し、488記事/455図/509walkのsnapshotで監査中。未登録・現在集計へ含めない。"
+  ]
+}

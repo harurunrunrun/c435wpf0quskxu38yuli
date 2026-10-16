@@ -1,0 +1,136 @@
+---
+title: "木の経路のk番目の値は、根からの頻度を四つの版で引き合わせる"
+description: "値の頻度を親の版から一個ずつ増やし、経路の頻度を引き算して順位を探す。"
+techniqueId: tree-path-kth-persistent
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+値の頻度を親の版から一個ずつ増やし、経路の頻度を引き算して順位を探す。
+
+## 使う場面
+
+頂点に固定の値があり、二頂点を結ぶ経路の中で k 番目に小さい値を何度も質問される。長い経路を毎回取り出して並べ替える時間を省きたい。
+
+## 考え方
+
+値を昇順に圧縮する。各頂点 $v$ に、根から $v$ までの頂点値の頻度を表す永続セグメント木 $R_v$ を用意する。親の版に $v$ の値を一つ加えるだけで次の版を作れる。
+
+$c=\mathrm{LCA}(u,v)$ とすると、経路の頻度は
+
+$$R_u+R_v-R_c-R_{\mathrm{parent}(c)}$$
+
+になる。$c$ が根なら親の版は空の版とする。左半分の頻度をこの四つの版から計算し、$k$ がその個数以内なら左へ、そうでなければ個数を引いて右へ進む。
+
+## 適用条件
+
+頂点の値は準備後に変わらない。$k$ は1から、両端を含む経路の頂点数まで。値は比較可能な整数で、重複した値は別々の要素として数える。辺の値を対象にする場合はLCA側の差し引きを変える。
+
+## なぜ正しいか
+
+根から両端への経路は、根からLCAまでを二重に含む。$R_c$ とその親の版を引くと、LCAより上を二度取り除き、LCA自身は一度残る。したがってどの値区間でも四版の合計が経路内の個数に等しい。左右の個数で順位を分ける探索は通常の多重集合の第 $k$ 小と同じになる。
+
+## 計算量
+
+経路を取り出して並べ替えると一問 $O(N\log N)$。異なる値の数を $\sigma$ とすると、準備は圧縮・祖先表・版の作成を含め $O(N\log N+N\log\sigma)$、一問 $O(\log N+\log\sigma)$。空間は $O(N\log N+N\log\sigma)$。
+
+## 実装
+
+`PathKth` は固定値と木を受け取り、`kth(u,v,k)` を返す。根の前の空版をノード0で表す。再帰するのは値域の二分木だけで、深さは $O(\log\sigma)$。木の形の探索は反復で行う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct TreeIndex {
+    int n, lg=1;
+    vector<int> parent,depth,tin,tout,order;
+    vector<vector<int>> up;
+    explicit TreeIndex(const vector<vector<int>>& g,int root=0)
+        :n(g.size()),parent(n,-1),depth(n),tin(n),tout(n) {
+        assert(n>0 && 0<=root && root<n);
+        while((1LL<<lg)<=n) ++lg;
+        parent[root]=root;
+        vector<pair<int,int>> stack{{root,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;
+            int& i=stack.back().second;
+            if(i==0) { tin[v]=order.size();order.push_back(v); }
+            if(i==int(g[v].size())) { tout[v]=order.size();stack.pop_back();continue; }
+            int u=g[v][i++];
+            if(u==parent[v]) continue;
+            parent[u]=v;depth[u]=depth[v]+1;stack.push_back({u,0});
+        }
+        assert(int(order.size())==n);
+        up.assign(lg,vector<int>(n));up[0]=parent;
+        for(int k=1;k<lg;++k) for(int v=0;v<n;++v)
+            up[k][v]=up[k-1][up[k-1][v]];
+    }
+    bool ancestor(int a,int b) const {return tin[a]<=tin[b] && tin[b]<tout[a];}
+    int jump(int v,int steps) const {
+        assert(0<=steps && steps<=depth[v]);
+        for(int k=0;k<lg;++k) if((steps>>k)&1) v=up[k][v];
+        return v;
+    }
+    int lca(int a,int b) const {
+        if(ancestor(a,b)) return a;
+        if(ancestor(b,a)) return b;
+        for(int k=lg-1;k>=0;--k) if(!ancestor(up[k][a],b)) a=up[k][a];
+        return parent[a];
+    }
+};
+
+struct PathKth {
+    struct Node {int left=0,right=0,count=0;};
+    TreeIndex tree;
+    vector<long long> values;
+    vector<int> version;
+    vector<Node> nodes{{}};
+    PathKth(const vector<vector<int>>& g,const vector<long long>& weight,int root=0)
+        :tree(g,root),values(weight),version(g.size()) {
+        assert(weight.size()==g.size());
+        sort(values.begin(),values.end());
+        values.erase(unique(values.begin(),values.end()),values.end());
+        for(int v:tree.order) {
+            int old=(v==root?0:version[tree.parent[v]]);
+            int rank=lower_bound(values.begin(),values.end(),weight[v])-values.begin();
+            version[v]=insert(old,0,values.size(),rank);
+        }
+    }
+    int insert(int old,int l,int r,int p) {
+        int current=nodes.size();nodes.push_back(nodes[old]);++nodes[current].count;
+        if(r-l>1) {
+            int mid=(l+r)/2;
+            if(p<mid) nodes[current].left=insert(nodes[old].left,l,mid,p);
+            else nodes[current].right=insert(nodes[old].right,mid,r,p);
+        }
+        return current;
+    }
+    long long kth(int u,int v,int k) const {
+        int c=tree.lca(u,v);
+        int length=tree.depth[u]+tree.depth[v]-2*tree.depth[c]+1;
+        if(k<1 || k>length) throw out_of_range("path rank");
+        array<int,4> roots={version[u],version[v],version[c],
+            c==tree.order[0]?0:version[tree.parent[c]]};
+        int l=0,r=values.size();
+        while(r-l>1) {
+            int count=0;
+            for(int j=0;j<4;++j) count+=(j<2?1:-1)*nodes[nodes[roots[j]].left].count;
+            bool left=(k<=count);
+            if(!left) k-=count;
+            for(int& x:roots) x=left?nodes[x].left:nodes[x].right;
+            int mid=(l+r)/2;
+            if(left) r=mid; else l=mid;
+        }
+        return values[l];
+    }
+};
+```
+
+## 関連する手法
+
+[木の経路和を根からの累積和とLCAで求める](/flowchartcp/techniques/tree-path-prefix-lca/) ・ [永続セグメント木](/flowchartcp/techniques/persistent-segment-tree/)
+
+## 参考資料
+
+- [SPOJ：Count on a tree](https://www.spoj.com/problems/COT/en/)
+
+<TechniqueReferences techniqueId="tree-path-kth-persistent" />

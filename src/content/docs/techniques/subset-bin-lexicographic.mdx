@@ -1,0 +1,66 @@
+---
+title: "同じ容量の箱への分配は、箱数と最後の使用量の二値だけ残す"
+description: "同じ集合を詰め終えた状態を、箱数を優先し、同数なら最後の箱が軽い方へまとめます。"
+techniqueId: subset-bin-lexicographic
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+小さい個数の荷物を同容量の箱へ分ける問題です。箱ごとの中身や負荷を全て状態に持つ代わりに、荷物の順序を一つずつ決めて最後の箱へ追加します。
+
+## 考え方
+
+使用済み集合 $S$ に対して、辞書順最小の組 $(b,w)$ を持ちます。$b$ は箱数、$w$ は最後の箱の使用量です。空集合は、追加待ちの空箱を一つ用意した $(1,0)$ とします。
+
+未使用の重さ $x$ を加えるとき、$w+x\le C$ なら $(b,w+x)$、それ以外なら $(b+1,x)$ です。同じ集合へ来た組のうち、箱数が少ないものを優先し、同数なら $w$ の小さいものだけ残します。空の入力に対する返り値だけは箱数0へ直します。
+
+## 適用条件
+
+荷物の重さは $0\le x\le C$、箱の容量は共通です。箱の種類、最大荷物数、荷物同士の相性などがある場合にはこの二値では情報が足りません。実装の集合サイズは20以下、容量は正の64ビット整数です。
+
+## なぜ正しいか
+
+箱数が同じなら、最後の負荷が小さい状態は、その後のどの追加でも相手以上に不利になりません。箱数が一つ少ない状態が途中で新しい箱を開いて同数になる場合も、新箱の負荷は追加した $x$ だけであり、相手の最後の負荷に $x$ を足した値以下です。よって遷移は辞書順の優劣を保ちます。
+
+また、どの箱分けも箱ごとに荷物を並べた順序として表せます。その順序の途中で想定より少ない箱に入ることは、目的値を改善するだけです。全順序を集合DPが扱い、劣った状態を捨てても最適値は失われません。
+
+## 計算量
+
+全順序なら $O(n!)$、全ての箱分けの直接列挙も指数的に増えます。改善後は時間 $O(n2^n)$、空間 $O(2^n)$。容量 $C$ の値を配列の軸にしません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+pair<int, long long> minimum_bins(const vector<long long>& weight, long long capacity) {
+    int n = int(weight.size());
+    if (n > 20 || capacity <= 0) throw invalid_argument("size or capacity");
+    for (long long w : weight) if (w < 0 || w > capacity) throw invalid_argument("weight");
+    if (n == 0) return {0, 0};
+    vector<pair<int, long long>> dp(1 << n, {n + 1, 0});
+    dp[0] = {1, 0};
+    for (int mask = 1; mask < (1 << n); ++mask) {
+        for (int i = 0; i < n; ++i) if (mask & (1 << i)) {
+            auto [bins, load] = dp[mask ^ (1 << i)];
+            pair<int, long long> next;
+            if (weight[i] <= capacity - load) next = {bins, load + weight[i]};
+            else next = {bins + 1, weight[i]};
+            dp[mask] = min(dp[mask], next);
+        }
+    }
+    return dp.back();
+}
+```
+
+## 関連する手法
+
+- [bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [原典の問題条件](https://cses.fi/problemset/task/1653)
+
+<TechniqueReferences techniqueId="subset-bin-lexicographic" />

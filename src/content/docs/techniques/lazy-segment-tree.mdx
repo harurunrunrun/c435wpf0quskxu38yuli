@@ -1,0 +1,68 @@
+---
+title: "遅延セグメント木"
+description: "区間への更新をまとめて保持し、区間和や最小値などを対数時間で求めます。"
+techniqueId: lazy-segment-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+区間への更新をまとめて保持し、区間和や最小値などを対数時間で求めます。
+
+別名：Lazy Segment Tree / Lazy Propagation
+
+## 使う場面
+
+配列の区間全体に加算・代入などを行い、その途中で別の区間の和や最大値を求める場合に使います。更新を要素ごとに処理すると $O(N)$ かかるため、区間の集計値を直接更新する方法を考えます。
+
+## 考え方
+
+各ノードに区間の集計値と、子へまだ伝えていない更新を持ちます。区間がノードの担当範囲をすべて覆うときは、集計値を更新し、遅延更新へ合成します。途中まで覆うときは、遅延更新を子へ渡してから再帰します。
+
+たとえば、各要素に $x\leftarrow bx+c$ を適用して区間和を求めるなら、集計値は和 $s$ と長さ $n$ の組です。更新後の和は $bs+cn$ なので、区間内の要素を読まずに計算できます。
+
+## 適用条件
+
+集計値の結合に結合法則があり、更新がその結合を保つ必要があります。つまり、2区間を結合してから更新しても、別々に更新して結合しても同じ結果になることが必要です。
+
+また、2回の更新を1つに合成できなければなりません。ACLの `composition(f, g)` は、先に `g`、後に `f` を適用する更新を返します。区間の要素を上限で切る更新と区間和のように、現在の集計値だけでは更新結果が決まらない操作には、追加情報やSegment Tree Beatsが必要です。
+
+## なぜ正しいか
+
+ノードの集計値は、担当区間にすべての更新を適用した結果を表します。遅延更新は、そのうち子へ伝わっていない操作を表します。子へ降りる前に伝え、処理後に子の集計を結合し直せば、この関係を保てます。
+
+## 計算量
+
+結合・更新・合成を $O(1)$ で計算できるなら、構築は $O(N)$、区間更新と区間集計はそれぞれ $O(\log N)$、空間は $O(N)$ です。集計値に行列などを使う場合は、各計算にかかる時間も掛け合わせます。
+
+## 実装
+
+以下は法998244353での区間一次変換と区間和です。AtCoder Libraryを利用します。`make_tree` で構築し、`apply(l, r, F)` で半開区間 $[l,r)$ を更新します。和は `prod(l, r).sum.val()` で取得できます。
+
+```cpp
+#include <atcoder/lazysegtree>
+#include <atcoder/modint>
+#include <vector>
+using mint=atcoder::modint998244353;
+struct S { mint sum; int len; };
+struct F { mint a,b; }; // x -> a*x+b
+S op(S x,S y) { return {x.sum+y.sum,x.len+y.len}; }
+S e() { return {0,0}; }
+S mapping(F f,S x) { return {f.a*x.sum+f.b*x.len,x.len}; }
+F composition(F f,F g) { return {f.a*g.a,f.a*g.b+f.b}; }
+F id() { return {1,0}; }
+using AffineSum=atcoder::lazy_segtree<S,op,e,F,mapping,composition,id>;
+AffineSum make_tree(const std::vector<long long>& a) {
+    std::vector<S> s;
+    for(long long x:a) s.push_back({mint(x),1});
+    return AffineSum(s);
+}
+```
+
+## 関連する手法
+
+[セグメント木](/flowchartcp/techniques/segment-tree/) ・ [いもす法](/flowchartcp/techniques/difference-array/)
+
+## 参考資料
+
+- [AtCoder Library: Lazy Segtree（公式仕様・使用例）](https://atcoder.github.io/ac-library/production/document_ja/lazysegtree.html)
+
+<TechniqueReferences techniqueId="lazy-segment-tree" />

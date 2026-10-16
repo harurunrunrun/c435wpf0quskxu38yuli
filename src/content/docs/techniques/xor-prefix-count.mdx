@@ -1,0 +1,59 @@
+---
+title: "区間 XOR が K となる個数を接頭 XOR の頻度で数える"
+description: "右端の接頭 XOR に対し、XOR が K になる左端の頻度を足します。"
+techniqueId: "xor-prefix-count"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+列の連続部分列のうち XOR が $K$ になるものを数えたいとき。多数の区間問い合わせでは、この計数を追加・削除できる形にして Mo 法と組み合わせることもできます。
+
+## 考え方
+
+$P[0]=0$、$P[r]=a_0\mathbin{\mathrm{xor}}\cdots\mathbin{\mathrm{xor}}a_{r-1}$ とすると、$[l,r)$ の XOR は $P[l]\mathbin{\mathrm{xor}}P[r]$。目標値が $K$ なら $P[l]=P[r]\mathbin{\mathrm{xor}}K$ です。
+
+$P[r]$ を登録する前に、この値の頻度を加えます。先に登録すると $K=0$ のとき空区間を数えてしまいます。
+
+## 適用条件
+
+区間が連続で、演算が XOR であること。単一の全体集計に使う頻度表を、そのまま任意の範囲クエリへ使い回すことはできません。接頭 XOR の添字区間が元の区間より一つ長い点にも注意します。
+
+## なぜ正しいか
+
+同じ左側の部分が XOR で打ち消され、区間の要素だけが残ります。右端を固定したとき、既に登録した各左端の値の一致条件を頻度表がちょうど数えます。
+
+## 計算量
+
+全ての区間を調べる改善前は $O(N^2)$。ハッシュ表による改善後は期待時間 $O(N)$、空間 $O(N)$。決定的な上界が必要なら平衡木で $O(N\log N)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long count_subarray_xor(const vector<unsigned long long>& a,
+                             unsigned long long k){
+    unordered_map<unsigned long long,long long> count;
+    count.reserve(a.size()*2+1); count[0]=1;
+    unsigned long long prefix=0;
+    long long answer=0;
+    for(auto x:a){
+        prefix^=x;
+        auto it=count.find(prefix^k);
+        if(it!=count.end()) answer+=it->second;
+        ++count[prefix];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[和が指定値になる区間を累積和の頻度で数える](/flowchartcp/techniques/subarray-prefix-frequency/)、[オフラインクエリ](/flowchartcp/techniques/offline-queries/)
+
+## 参考資料
+
+- [Codeforces：XOR and Favorite Number の問題文](https://codeforces.com/problemset/problem/617/E)
+
+<TechniqueReferences techniqueId="xor-prefix-count" />

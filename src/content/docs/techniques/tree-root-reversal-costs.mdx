@@ -1,0 +1,122 @@
+---
+title: "木を根から全頂点へ進める向きに直す費用は、根を一辺動かした差で求める"
+description: "一つの根で逆向きの辺の費用を集め、隣の根へ移すたびにその一辺の費用だけを足し引きする。"
+techniqueId: tree-root-reversal-costs
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+無向化すると木になるグラフがあり、各辺には最初の向きが一つだけ付いている。辺を反転する費用を払い、選んだ根から全ての頂点へ進めるようにしたい。全ての根の最小費用や、費用が最も小さい根を求める。
+
+根を変えるたびに全辺を調べる必要はない。根を隣の頂点へ移すと、必要な向きが変わるのは、**根が通った一辺だけ**である。
+
+## 考え方
+
+最初に根を0へ固定する。根から各頂点へ至る経路は一つなので、全ての辺を親から子へ向ける必要がある。最初の向きが子から親である辺の費用を足すと、$F(0)$ が得られる。
+
+次に、隣接する $u,v$ の間で根を $u$ から $v$ へ移す。辺の反転費用を $w$ とする。
+
+- 最初の向きが $u\to v$ なら、根が $u$ のときは反転不要、根が $v$ のときは反転が必要なので $F(v)=F(u)+w$。
+- 最初の向きが $v\to u$ なら、逆に反転が不要になるので $F(v)=F(u)-w$。
+
+他の辺では、根が辺のどちら側にあるかは変わらない。必要な向きも変わらないため、上の差だけで答えを移せる。
+
+全辺の費用が1なら、隣接する根の答えの差は $+1$ または $-1$。辺ごとに異なる非負の費用を持つ場合も、同じ式で処理できる。
+
+## 適用条件
+
+- 各辺に最初の向きが一つあり、無向化すると連結な木になる。
+- 求めるのは根から全頂点への到達で、全頂点から根へ戻れることは要求しない。
+- 各辺を反転する費用は独立で非負。必要な辺を反転する以外の操作や、反転本数の制約はない。
+
+無向の閉路があると、別の道を使って辺の反転を避けられるため、全辺を外向きにする必要はなくなる。この木の計算を、そのまま一般の有向グラフへ使えない。
+
+一つの根だけが必要なら最初の走査で十分。全ての根や最良の根が必要な場合に、差分の伝播で計算を共有する。
+
+## なぜ正しいか
+
+木の辺を一本取り除くと、二つの成分に分かれる。根が属する成分から反対の成分へ到達するには、この辺をその方向へ向ける以外の方法がない。従って、根を決めると全辺の必要な向きは一意に決まる。
+
+必要な向きと異なる辺だけを一回ずつ反転すれば全頂点に届く。必要な辺を反転しない解は存在せず、余分に反転しても非負の費用を減らせないので、その費用和が最小である。
+
+隣接する頂点 $u,v$ を根として比べる。辺 $uv$ 以外を切ってできる二成分について、$u,v$ は同じ側にある。そのため、その辺に必要な向きは両方の根で同じになる。辺 $uv$ だけは根の側が入れ替わり、必要な向きが逆になる。反転費用一辺分の増減だけを伝えれば、各根の最小費用を正しく求められる。
+
+## 計算量
+
+全ての根で別々に走査すると $O(N^2)$ 時間。一つの根で親子関係と最初の費用を求め、親から子へ差を伝えると、$O(N)$ 時間・$O(N)$ 追加空間になる。
+
+最良の根を全て求める場合も、計算済みの答えを一度走査して最小値と同値の頂点を集めればよい。
+
+## 実装
+
+`minimum_root_reversal_costs(n, edges)` は、各頂点を根にした最小費用を頂点順に返す。頂点は0始まり。`RootReversalEdge{from, to, cost}` は、最初の向きと、それを反転する費用を表す。
+
+$1\le N\le200000$、辺数は $N-1$、無向化したグラフは木、費用は非負の符号付き64ビット整数とする。全ての入力違反は `invalid_argument`。頂点一つ・辺なしなら `{0}` を返す。
+
+費用の合計と根の移動差は `__int128` で保持する。走査は配列で行い、長い一本道でも再帰の深さに依存しない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct RootReversalEdge {
+    int from, to;
+    long long cost;
+};
+
+vector<__int128> minimum_root_reversal_costs(
+        int n, const vector<RootReversalEdge>& edges) {
+    if (n < 1 || n > 200000 || edges.size() != size_t(n - 1))
+        throw invalid_argument("require a nonempty tree");
+    struct Arc {
+        int to;
+        long long cost;
+        bool forward;
+    };
+    vector<vector<Arc>> graph(n);
+    for (auto edge : edges) {
+        if (edge.from < 0 || edge.from >= n || edge.to < 0 || edge.to >= n ||
+            edge.from == edge.to || edge.cost < 0)
+            throw invalid_argument("invalid edge");
+        graph[edge.from].push_back({edge.to, edge.cost, true});
+        graph[edge.to].push_back({edge.from, edge.cost, false});
+    }
+    vector<int> parent(n, -2), order{0};
+    vector<__int128> change(n), answer(n);
+    parent[0] = -1;
+    __int128 first = 0;
+    for (size_t i = 0; i < order.size(); ++i) {
+        int u = order[i];
+        for (auto edge : graph[u]) {
+            int v = edge.to;
+            if (v == parent[u]) continue;
+            if (parent[v] != -2) throw invalid_argument("cycle or parallel edge");
+            parent[v] = u;
+            order.push_back(v);
+            if (!edge.forward) first += __int128(edge.cost);
+            change[v] = edge.forward ? __int128(edge.cost) : -__int128(edge.cost);
+        }
+    }
+    if (order.size() != size_t(n)) throw invalid_argument("disconnected tree");
+    answer[0] = first;
+    for (int i = 1; i < n; ++i) {
+        int v = order[i];
+        answer[v] = answer[parent[v]] + change[v];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [根を動かして需要重み付き距離の和を求める](/flowchartcp/techniques/weighted-tree-distance-reroot/)：こちらは両側の頂点の距離が変わるため、部分木の重みを使って差を計算する。
+- [辺の向きごとの状態で全方位木DPを設計する](/flowchartcp/techniques/reroot-directed-edge-state/)：一辺の差だけでは求まらない集計を各方向から合成する。
+- [橋を確かめて全体を行き来できる向きを付ける](/flowchartcp/techniques/bridgeless-strong-orientation/)：戻る方向の到達も必要な場合。
+
+## 参考資料
+
+- [Codeforces 219D：Choosing Capital for Treeland](https://codeforces.com/problemset/problem/219/D) — 最少本数の反転で全都市へ出発できる首都を選ぶ原典。
+- [問題ページ掲載の英語ユーザー解説、D節](https://codeforces.com/blog/entry/5160) — 最初の根で逆向きの辺を数え、根への経路上の向きの変化から各頂点の答えを求める。
+
+<TechniqueReferences techniqueId="tree-root-reversal-costs" />

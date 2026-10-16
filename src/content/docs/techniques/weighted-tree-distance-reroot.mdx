@@ -1,0 +1,88 @@
+---
+title: "木で需要重みを掛けた距離の和は、隣へ動いた差だけで全始点を求める"
+description: "一辺を越えると、片側の需要は近くなり、もう片側の需要は遠くなる。"
+techniqueId: weighted-tree-distance-reroot
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の各頂点に需要や人数があり、施設を置く頂点からの距離に需要を掛けた総費用を求める。施設の候補が全頂点にあり、候補ごとに探索し直すと間に合わない。全候補の値、またはその最小値が欲しい。
+
+## 考え方
+
+根を固定し、$W=\sum_x c_x$ を全需要、$s_u$ を子 $u$ の部分木内の需要合計とする。$F(v)=\sum_x c_xd(v,x)$ とおく。
+
+親 $v$ から子 $u$ へ長さ $\ell$ の辺を越えると、子側への距離は全て $\ell$ 短くなり、その他への距離は全て $\ell$ 長くなる。よって
+
+$$F(u)=F(v)+\ell(W-2s_u).$$
+
+最初の根の $F$ だけ距離を直接足して求める。需要の部分木和を下から集計し、その後、根から順にこの式で各頂点の値を求める。
+
+需要が非負なら、総需要の半分を超える側へ移動すると費用は下がる。全方向の需要が半分以下になる頂点は最小値を取る。最小値だけ欲しい場合、この性質から重み付きの重心を探す方法もある。
+
+## 適用条件
+
+木の形と需要が固定で、費用は「需要×経路長」の加算である。最大距離や距離の二乗を求める場合、この一つの差分式にはならない。更新が混ざる場合も一度の計算では足りない。
+
+差分式そのものは負の需要でも成立するが、半分側へ向かう最小化の説明には非負需要を要する。掲載実装は $N\le200000$、需要と辺長を $0$ 以上 $10^9$ 以下に限定する。長さ0、需要0、頂点1個も扱う。原典の辺長は全て1である。
+
+## なぜ正しいか
+
+辺を取り除くと頂点集合がちょうど二つに分かれる。木の経路が一意なので、子側の頂点へ行く経路は親から子へ向かう辺を通り、親側の頂点へ行く経路はその逆となる。従って距離の増減は各側で一様で、需要を足した $-\ell s_u+\ell(W-s_u)$ が費用の差になる。
+
+根の費用を直接計算し、親の費用から子の費用へ正しい差を足すので、根からの帰納で全頂点の値が正しくなる。非負需要の場合、最小化のための移動方向もこの符号から決まる。
+
+## 計算量
+
+全候補から木を探索する $O(N^2)$ 時間から、部分木和・根の費用・差分の伝播の各1回で $O(N)$ 時間へ改善する。空間 $O(N)$。辺長を使う一般形では距離と需要の積が64ビットを超えうるため、掲載実装は途中の距離・需要和・答えに `__int128` を使う。
+
+## 実装
+
+`weighted_tree_distance_sums(demand, edges, root)` が全頂点の値を返す。辺は `(u,v,length)`、頂点は0始まり。最小値は返値の最小要素。返値は128ビット整数なので、出力時は整数を10進文字列へ変換する。再帰を使わず、長い一本道にも対応する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<__int128> weighted_tree_distance_sums(const vector<long long>& demand,
+        const vector<tuple<int,int,long long>>& edges,int root=0) {
+    int n=demand.size();
+    assert(1<=n && n<=200000 && 0<=root && root<n);
+    assert(int(edges.size())==n-1);
+    vector<vector<pair<int,long long>>> g(n);
+    for(long long c:demand) assert(0<=c && c<=1000000000);
+    for(auto [u,v,w]:edges) {
+        assert(0<=u && u<n && 0<=v && v<n && 0<=w && w<=1000000000);
+        g[u].push_back({v,w});g[v].push_back({u,w});
+    }
+    vector<int> parent(n,-2),order{root};parent[root]=-1;
+    vector<long long> edge_to_parent(n);
+    vector<__int128> distance(n),sub(demand.begin(),demand.end()),answer(n);
+    for(size_t i=0;i<order.size();++i) {
+        int v=order[i];
+        for(auto [u,w]:g[v]) if(u!=parent[v]) {
+            assert(parent[u]==-2);parent[u]=v;edge_to_parent[u]=w;
+            distance[u]=distance[v]+w;order.push_back(u);
+        }
+    }
+    assert(int(order.size())==n);
+    for(int v:order) answer[root]+=distance[v]*demand[v];
+    for(int i=n-1;i>0;--i) {int v=order[i];sub[parent[v]]+=sub[v];}
+    for(int i=1;i<n;++i) {
+        int v=order[i];
+        answer[v]=answer[parent[v]]+(__int128)edge_to_parent[v]*(sub[root]-2*sub[v]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全方位木DPの状態を辺の向きごとに定義する](/flowchartcp/techniques/reroot-directed-edge-state/) ・ [重心分解](/flowchartcp/techniques/centroid-decomposition/)
+
+## 参考資料
+
+- [AtCoder：Minimize Sum of Distances](https://atcoder.jp/contests/abc348/tasks/abc348_e)
+- [AtCoder公式解説](https://atcoder.jp/contests/abc348/editorial/9774)
+
+<TechniqueReferences techniqueId="weighted-tree-distance-reroot" />

@@ -1,0 +1,61 @@
+---
+title: "不変量"
+description: "どの操作でも変わらない量を見つけ、到達できる状態を絞る。"
+techniqueId: invariant
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+どの操作でも変わらない量を見つけ、到達できる状態を絞る。
+
+## 使う場面
+
+操作を何回でも行える問題で、目標の状態に到達できるかを調べるときに使う。操作の履歴を追う前に、和、XOR、偶奇、ある数で割った余りなどが保存されないかを確認する。
+
+## 考え方
+
+状態に対して計算できる量を一つ決め、すべての合法な操作について、その値が変わらないことを調べる。初期状態と目標状態でその量が異なれば、目標には到達できない。
+
+格子では交互に符号を付けた和、置換では転倒数の偶奇なども候補になる。操作ごとに必ず増える・減る量は不変量ではないが、必要な操作回数や処理の終了を示すために使える。
+
+## 適用条件
+
+すべての種類の操作で保存されることが必要になる。一部の操作だけで保存されても、不変量とはいえない。
+
+不変量が一致することは、通常は到達可能性の必要条件である。一致しただけで到達できると結論せず、実際の構築や状態間のつながりを別に示す。
+
+## なぜ正しいか
+
+一回の操作で量が変わらないなら、二回目以降も同じ値を保つ。操作回数に関する帰納法により、何回操作しても初期の値から変わらない。したがって、異なる値を持つ目標状態には到達できない。
+
+## 計算量
+
+配列の総和をある数で割った余りなら、時間 $O(N)$、追加空間 $O(1)$ で求められる。複数の不変量を使う場合は、それぞれの計算量を足す。
+
+## 実装
+
+`sum_mod(a, modulus)` は、総和を正の `modulus` で割った余りを返す。負の値も扱い、結果は0以上 `modulus` 未満になる。この値が不変量になるかは、対象の操作で総和の余りが保たれるかによって決まる。
+
+```cpp
+#include <vector>
+#include <stdexcept>
+long long sum_mod(const std::vector<long long>& a, long long modulus) {
+    if (modulus <= 0) throw std::invalid_argument("positive modulus");
+    long long value = 0;
+    for (long long x : a) {
+        long long r = x % modulus;
+        if (r < 0) r += modulus;
+        value = (static_cast<__int128>(value) + r) % modulus;
+    }
+    return value;
+}
+```
+
+## 関連する手法
+
+[対称性](../symmetry/) ・ [Grundy数](../game-theory/)
+
+## 参考資料
+
+- [AtCoder公式解説：ARC135 D](https://atcoder.jp/contests/arc135/editorial/3381)
+
+<TechniqueReferences techniqueId="invariant" />

@@ -1,0 +1,64 @@
+---
+title: "必ず小さくなる状態の期待値を一手目で分ける"
+description: "確率的な遷移で状態が必ず小さくなるなら、遷移先の期待値から順に計算できます。"
+techniqueId: "expectation-first-step"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+現在の整数状態からランダムに小さい状態へ移り、終了までの総費用の期待値を求めたいとき。遷移の履歴は次の状態以外に影響しないとします。
+
+## 考え方
+
+状態 $s$ の一手の費用を $c_s$、遷移先 $t$ の確率を $p_{s,t}$ とすると、
+
+$$E_s=c_s+\sum_t p_{s,t}E_t,\qquad E_0=0.$$
+
+全て $t<s$ なら小さい順に計算できます。例えば $s\mapsto\lfloor s/d\rfloor$、$d\ge2$ なら、到達した状態だけメモ化することもできます。確率を決める前の最小値と、結果を見てから選ぶ最小値を混同しないようにします。
+
+## 適用条件
+
+終了状態が決まっており、遷移先が必ず小さいこと。各状態の確率は非負で合計 1。自己ループや循環があれば、この順序の DP をそのまま使えません。最適な選択をする場合は選択ごとの式を比較します。
+
+## なぜ正しいか
+
+一手目で遷移先を条件付けして期待値を分けます。一手の費用と残りの費用の和に線形性を使い、状態の小さい順の帰納法で式が正しいと分かります。
+
+## 計算量
+
+経路全体の列挙は経路数に比例します。下の実装は状態数 $S$、遷移総数 $T$ に対して時間 $O(S+T)$、追加空間 $O(S)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long double> decreasing_expectations(
+    const vector<long double>& cost,
+    const vector<vector<pair<int,long double>>>& transitions) {
+    int n=cost.size();
+    assert(n==(int)transitions.size() && n>=1);
+    vector<long double> e(n);
+    for(int s=1;s<n;++s){
+        long double total=0;
+        e[s]=cost[s];
+        for(auto [t,p]:transitions[s]){
+            assert(0<=t && t<s && p>=0);
+            total+=p; e[s]+=p*e[t];
+        }
+        assert(fabsl(total-1)<1e-12L);
+    }
+    return e;
+}
+```
+
+## 関連する手法
+
+[同じ状態に戻る確率を期待値の式から除く](/flowchartcp/techniques/expectation-self-loop/)
+
+## 参考資料
+
+- [AtCoder：Toward 0 の公式解説](https://atcoder.jp/contests/abc350/editorial/9871)
+
+<TechniqueReferences techniqueId="expectation-first-step" />

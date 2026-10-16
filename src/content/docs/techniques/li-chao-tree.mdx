@@ -1,0 +1,84 @@
+---
+title: "Li Chao木"
+description: "追加順が任意の直線について、指定した座標での最小値を求めます。"
+techniqueId: li-chao-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+追加順が任意の直線について、指定した座標での最小値を求めます。
+
+別名：Li Chao Tree / Li Chao Segment Tree
+
+## 使う場面
+
+凸包トリックに書き換えられるものの、傾きの追加順や問い合わせ座標が単調でない場合に使います。すべての問い合わせ座標が事前に分かるなら、その座標だけを使う圧縮版を作れます。整数の値域だけが決まっている場合は、必要なノードだけを作る動的な木も使えます。
+
+## 考え方
+
+座標の区間を二分する木を作り、各ノードに1本の直線を保存します。直線を追加するときは、区間の中央で小さい値を取る方をそのノードに残します。残らなかった直線が最小値になる可能性がある側だけに、処理を続けます。
+
+問い合わせでは、対応する葉までの経路に保存された直線をすべて評価します。座標圧縮をしていても、直線の評価には順位ではなく元の座標を使います。
+
+## 適用条件
+
+基本形は直線の集合を扱います。より一般の関数に広げるには、任意の2関数の大小関係が座標順に高々1回しか入れ替わらないことが必要です。一般の二次関数の集合では、この条件は成立しません。
+
+以下の実装は、事前に集めた座標上での最小値を扱います。問い合わせる座標を構築時に渡しておきます。直線がまだ1本もなければ、問い合わせは空の `optional` を返します。
+
+## なぜ正しいか
+
+中央で負けた直線は、残った直線と高々1回しか交わりません。したがって、左右の両側で勝つことはありません。勝つ可能性がある側にだけ保存すれば十分です。
+
+この処理を繰り返すと、どの問い合わせ座標でも、真の最小値を与える直線がその葉までの経路に残ります。経路上の評価値の最小を取ることで答えが得られます。
+
+## 計算量
+
+異なる座標が $M$ 個なら、座標の準備に $O(M\log M)$、直線の追加と問い合わせはそれぞれ $O(\log M)$、空間は $O(M)$ です。整数の値域幅が $W$ の動的な実装では、1操作は $O(\log W)$ になります。
+
+## 実装
+
+係数と座標を `long long` で受け取り、評価値は128ビットで計算します。以下は座標圧縮版で、直線はすべての問い合わせ座標で有効です。直線が特定の区間だけで有効な場合には、区間への追加処理を別に実装する必要があります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std; using i128=__int128_t;
+struct LiChao {
+    struct Line { long long a,b; i128 at(long long x) const { return i128(a)*x+b; } };
+    vector<long long> x; vector<optional<Line>> t;
+    explicit LiChao(vector<long long> xs):x(move(xs)) {
+        sort(x.begin(),x.end()); x.erase(unique(x.begin(),x.end()),x.end());
+        assert(!x.empty()); t.resize(4*x.size());
+    }
+    void add(Line z,int v,int l,int r) {
+        if(!t[v]) { t[v]=z; return; }
+        int m=(l+r)/2;
+        bool left=z.at(x[l])<t[v]->at(x[l]),mid=z.at(x[m])<t[v]->at(x[m]);
+        if(mid) swap(z,*t[v]);
+        if(l==r) return;
+        if(left!=mid) add(z,v*2,l,m); else add(z,v*2+1,m+1,r);
+    }
+    void add(long long a,long long b) { add({a,b},1,0,x.size()-1); }
+    optional<i128> get(long long at) const {
+        int k=lower_bound(x.begin(),x.end(),at)-x.begin();
+        assert(k<int(x.size()) && x[k]==at);
+        int v=1,l=0,r=x.size()-1; optional<i128> ans;
+        while(true) {
+            if(t[v]) { auto z=t[v]->at(at); if(!ans || z<*ans) ans=z; }
+            if(l==r) break;
+            int m=(l+r)/2;
+            if(k<=m) { v*=2; r=m; } else { v=v*2+1; l=m+1; }
+        }
+        return ans;
+    }
+};
+```
+
+## 関連する手法
+
+[セグメント木](/flowchartcp/techniques/segment-tree/) ・ [凸包トリック](/flowchartcp/techniques/convex-hull-trick/)
+
+## 参考資料
+
+- [cp-algorithms: Li Chao tree](https://cp-algorithms.com/geometry/convex_hull_trick.html)
+
+<TechniqueReferences techniqueId="li-chao-tree" />

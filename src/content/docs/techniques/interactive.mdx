@@ -1,0 +1,61 @@
+---
+title: "対話問題の質問設計"
+description: "質問で候補を絞り、問い合わせ回数の上限内で答えを特定する。"
+techniqueId: interactive
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+質問で候補を絞り、問い合わせ回数の上限内で答えを特定する。
+
+## 使う場面
+
+入力の一部が隠され、質問への返答から答えを求める問題で使う。実行時間だけでなく、質問できる回数が制約になるため、一回の質問でどれだけ候補を減らせるかを考える。
+
+## 考え方
+
+隠れた答えの候補を定義し、どの返答でも必要な候補が残るように更新する。二分探索では、候補をほぼ半分に分ける質問を使う。グラフ探索では、新しい場所へ進む回数だけでなく、戻る回数も含めて見積もる。
+
+質問の出力と返答の読み取りは、一つの関数にまとめる。質問を出した後に必ず出力を送信してから返答を読むと、探索の処理と通信の処理を分けて検証できる。
+
+## 適用条件
+
+質問の形式、引数の範囲、回数の上限、最終回答の形式を確認する。失敗を示す返答や入力終了を受けたら、指定された通りに終了する。標準出力にはデバッグ用の文字を出さない。
+
+返答が固定の入力からではなく、その場で選ばれる方式でも、可能なすべての返答に対して必要な回数を保証する。
+
+## なぜ正しいか
+
+質問の後も真の答えが候補に残るようにする。候補が一つになるまで減らせれば、その候補が答えである。各質問で候補を半分以下にできる場合は、高々 $\lceil\log_2 N
+ceil$ 回で特定できる。
+
+## 計算量
+
+候補数 $N$ を半減させる質問の回数は $O(\log N)$。計算時間と空間は、候補の表し方によって変わる。最後の確認や移動も質問に数えられる場合は、それらも上限に含める。
+
+## 実装
+
+`ask_interval` は、`? left right` を出力して整数の返答を読む例。出力を `flush` してから待ち、回数超過、入力終了、失敗を示す `-1` で終了する。実際に使う場合は、質問の文字列と返答の意味を、その問題の通信形式に合わせる。
+
+```cpp
+#include <cstdlib>
+#include <iostream>
+int ask_interval(int left, int right, int& used, int budget) {
+    if (used >= budget) std::exit(0);
+    ++used;
+    std::cout << "? " << left << ' ' << right << '\n' << std::flush;
+    int reply;
+    if (!(std::cin >> reply) || reply == -1) std::exit(0);
+    return reply;
+}
+```
+
+## 関連する手法
+
+[二分探索](../binary-search/) ・ [不変量](../invariant/) ・ [幅優先探索](../bfs/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC269 E](https://atcoder.jp/contests/abc269/editorial/4897)
+- [AtCoder公式解説：ABC305 F](https://atcoder.jp/contests/abc305/editorial/6554)
+
+<TechniqueReferences techniqueId="interactive" />

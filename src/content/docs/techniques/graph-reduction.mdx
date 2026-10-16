@@ -1,0 +1,63 @@
+---
+title: "グラフへの帰着"
+description: "状態を頂点、操作を辺として表し、既知のグラフアルゴリズムを使う。"
+techniqueId: graph-reduction
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+状態を頂点、操作を辺として表し、既知のグラフアルゴリズムを使う。
+
+## 使う場面
+
+移動、変換、選択の間に費用や制約があるときに使う。状態間の関係をグラフに表すと、最短路や最小カット、マッチングなどの問題として扱える場合がある。
+
+## 考え方
+
+頂点が何を表すか、辺がどの操作に対応するか、辺の重みが何かを決める。
+
+同じグループの任意の頂点へ費用1で移動できる例では、全組に辺を張ると二乗本になる。グループごとに補助頂点を一つ作り、通常の頂点から補助頂点へ重み0、補助頂点から各頂点へ重み1の辺を張る。二本の辺で元の一回の移動を表せる。
+
+## 適用条件
+
+元の合法な操作を表すだけでなく、グラフに元にはない有利な操作を作らないことが必要になる。補助頂点を通る経路も、元の操作列に戻せなければならない。
+
+重みが0と1なら0-1 BFS、一般の非負の重みならダイクストラ法を使う。グラフの構築時間と辺数も見積もる。
+
+## なぜ正しいか
+
+元の一操作は、グラフの同じ費用の経路に置き換えられる。逆に、補助頂点を通る一組の辺は、そのグループ内の移動に置き換えられる。この両方向の対応を示せば、最短距離は元の最小費用と一致する。
+
+## 計算量
+
+通常の頂点数 $N$、グループ数 $G$、グループへの所属の総数 $S$ なら、頂点数は $N+G$、辺数は $2S$。構築と0-1 BFSは、時間・空間ともに $O(N+G+S)$。
+
+## 実装
+
+`group_hubs` はグループ内を費用1で移動するグラフを作る。元の頂点番号は0から `n-1`、補助頂点番号は `n` 以降になる。返されたグラフに0-1 BFSを適用する。
+
+```cpp
+#include <utility>
+#include <vector>
+using Graph01 = std::vector<std::vector<std::pair<int, int>>>;
+Graph01 group_hubs(int n, const std::vector<std::vector<int>>& groups) {
+    Graph01 graph(n + groups.size());
+    for (int i = 0; i < int(groups.size()); ++i) {
+        int hub = n + i;
+        for (int member : groups[i]) {
+            graph[member].push_back({hub, 0});
+            graph[hub].push_back({member, 1});
+        }
+    }
+    return graph;
+}
+```
+
+## 関連する手法
+
+[0-1 BFS](../zero-one-bfs/) ・ [ダイクストラ法](../dijkstra/) ・ [状態の設計](../state-design/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC232 G](https://atcoder.jp/contests/abc232/editorial/3158)
+
+<TechniqueReferences techniqueId="graph-reduction" />

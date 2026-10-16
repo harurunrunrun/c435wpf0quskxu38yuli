@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "diagonal-square-union-cover-monge-penalty-cht",
+  "problemId": "ioi2016_aliens",
+  "reviewer": "independent agent /root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "independently-reviewed-no-material-issues",
+  "materialIssues": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "allEightSectionsRead": true,
+    "allPublishedCppRead": true,
+    "completeSuppliedCheckerRead": true,
+    "completeSidecarRead": true,
+    "sourcesReadIndependently": true,
+    "authorArtifactsModified": false,
+    "sharedFilesModified": false,
+    "noNewSubagents": true
+  },
+  "artifacts": {
+    "article": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-article.mdx",
+      "sha256": "9ffeea2f648567b08d27e64cb97dfc4b73f9542f0079c2a5e09a3183261fdc1c",
+      "unchanged": true
+    },
+    "checker": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-checker.py",
+      "sha256": "320830946144e78c33c0d047aa503f00545bdd0cfadcb9b3c5bcbddf09099028",
+      "unchanged": true
+    },
+    "sidecar": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-sidecar.json",
+      "sha256": "d2345c2cbcd3701232388605371420a94a5702db5f523bb4ea67f9f45e371562",
+      "unchanged": true
+    },
+    "cppFence": {
+      "sha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "alwaysVisibleFenceCount": 1
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-independent-normal.json",
+      "sha256": "a64d031fd84cbbcb230c7655c01e7e3649c1183906704775625ab8741c4ce2e0"
+    },
+    "independent-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-independent-sanitize.json",
+      "sha256": "7fd849714ed336efb70c19953f59d9a6dc293c9f94c3726b59e5b288f996895e"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-independent-probe.py",
+      "sha256": "446ca90f54ba5ea3eebc7004e07db9838e96234b3d97b7722c8cf2efa3173b1d"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-independent-probe.json",
+      "sha256": "62d42e2858212c44fe91d19f766e3538e20bfa900bad80eb1e3d4203bd4757e2"
+    },
+    "independent-probe-sanitize.json": {
+      "path": "/tmp/flowchartcp-ioi2016-aliens-independent-probe-sanitize.json",
+      "sha256": "0e2ad7c0445a86161ac52651b4f6383d108eef58a696066c484f836bd484abcf"
+    }
+  },
+  "primarySourceReview": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf",
+      "pages": 3,
+      "reviewedVia": "primary PDF web text, including detached formula glyph lines assembled by their page context; not a visual screenshot claim",
+      "confirmed": {
+        "N": [
+          1,
+          100000
+        ],
+        "M": [
+          1,
+          1000000
+        ],
+        "K": "1..N",
+        "r_i": "0..M-1",
+        "c_i": "0..M-1",
+        "duplicatePointsAllowed": true,
+        "photoShape": "cell-aligned square with opposite corners on main diagonal",
+        "objective": "union cardinality of photographed cells",
+        "photoLimit": "at most K",
+        "examples": [
+          25,
+          16
+        ]
+      },
+      "boundsLocation": "one-based p3 full subtask6 and global K constraint; coordinate indexing and duplicates p1; generic signature p1"
+    },
+    "solutions": {
+      "archiveUrl": "https://ioi.te.lv/locations/ioi16/contest/",
+      "actualSolutionsLinkId": 1012,
+      "actualSolutionsLinkFollowed": true,
+      "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "totalPages": 17,
+      "relevantOneBasedPages": [
+        14,
+        15,
+        16,
+        17
+      ],
+      "printedAuthor": "Chethiya Abeysinghe",
+      "readScope": "all Aliens text/formulas on these four pages; unrelated tasks not claimed rereviewed",
+      "officialScope": "interval reduction, containment filtering, overlap-corrected DP, monotone hull, discrete convexity theorem, penalty/count search and full time bound",
+      "independentSupplementsClearlySeparated": [
+        "consecutive-group completeness and full union overlap justification",
+        "constructive q-1/q+1 to q/q exchange proof of discrete convexity",
+        "integer tie/count encoding and first-penalty interpolation",
+        "full numeric and cross-product bounds"
+      ],
+      "unusedKnuthAlternativeNotVerified": true
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "pages": 1,
+      "confirmedTypes": {
+        "int64": "long long",
+        "int[]": "std::vector<int>"
+      },
+      "confirmedTimeSeconds": 2,
+      "confirmedMemoryGB": 2
+    },
+    "cppHeader": {
+      "actualBytesRetrieved": false,
+      "derivedFrom": "statement generic signature plus primary Notice type map",
+      "derivedSignature": "long long take_photos(int,int,int,std::vector<int>,std::vector<int>)",
+      "realArchiveHeaderCompilationClaimed": false
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+      "contestDate": "2016-08-16",
+      "day": 2,
+      "precision": "day",
+      "exactDateVerified": true,
+      "difficulty": null
+    },
+    "textReproduction": "Only factual bounds, formula reasoning and source locations recorded; no original statement body reproduced."
+  },
+  "independentMathematicalReview": [
+    {
+      "step": "interval equivalence and filter",
+      "verdict": "verified",
+      "reason": "[a,b]^2 contains (r,c) exactly when [min(r,c),max(r,c)] is contained in [a,b]. Sort left ascending/right descending and keep strictly growing right endpoints: every discarded demand lies in a retained demand; retained left and right endpoints are strict."
+    },
+    {
+      "step": "consecutive groups preserve optimum",
+      "verdict": "verified",
+      "reason": "Remove contained photos and photos assigned no demand. The remaining photo left/right endpoints have the same strict order. Assign each demand to its first covering photo: an inversion would force the earlier photo also to cover the earlier demand. Shrinking each assigned photo to its extreme demand endpoints keeps coverage and cannot increase union."
+    },
+    {
+      "step": "all union intersections reduce to previous photo",
+      "verdict": "verified",
+      "reason": "For the new group [L(t+1),R(i)]^2, all earlier left endpoints are at most its left, and all earlier right endpoints are at most R(t). Each new/earlier intersection is therefore contained in the new/previous intersection. The exact union increment is new side squared minus max(0,R(t)-L(t+1)+1)^2. Triple overlap is consequently counted once."
+    },
+    {
+      "step": "Monge identity",
+      "verdict": "verified",
+      "identity": "W(a,c)+W(b,d)-W(a,d)-W(b,c)=-2*(L[b+1]-L[a+1])*(R[d]-R[c])<=0 for a<=b<c<=d",
+      "reason": "Departure-only overlap constants cancel. All new edges in the nested-edge exchange are legal strict-forward edges."
+    },
+    {
+      "step": "constructive cardinality balancing",
+      "verdict": "verified",
+      "reason": "If a shared cut has Q-prefix edge count one above P, swap suffixes there and both paths have q edges at unchanged total cost. Otherwise the first coordinate where Q internal cuts exceed P by two is Q-only d. Its previous Q cut b and enclosing P edge a->c satisfy a<=b<d<c and prefixQ(b)=prefixP(a)+1. Replacing a->c,b->d by a->d,b->c and exchanging tails makes two q-edge paths and does not increase their cost by the Monge identity. This proves 2F(q)<=F(q-1)+F(q+1), without relying on empirical convexity."
+    },
+    {
+      "step": "at most K versus exact after filtering",
+      "verdict": "verified",
+      "reason": "Splitting a group yields two photos inside its previous photo, so union cannot increase; all q=1..B are feasible. Exact F(min(K,B)) equals the at-most-K optimum even with original duplicate/contained demands."
+    },
+    {
+      "step": "integer penalty and fewer-count ties",
+      "verdict": "verified",
+      "reason": "Nonincreasing integer savings F(q-1)-F(q) give an integer supporting penalty at each cardinality. At the first integer lambda choosing count<=K, K is itself an optimal penalized count, including jump/plateau cases. Thus G(lambda)-lambda*K is exact. At lambda=M^2, one-photo cost is at most 2*M^2 and every >=2-photo candidate is strictly larger since union is positive."
+    },
+    {
+      "step": "lex encoding and monotone hull",
+      "verdict": "verified",
+      "reason": "H=B+1 exceeds every feasible count, so H*(area+lambda*count)+count exactly orders cost then fewer photos. Strictly increasing filtered L makes slopes strictly decrease, and filtered R makes query x increase. Back deletion uses exact 128-bit intersection ordering; head deletion at equal values keeps a future-optimal lower slope without losing any primary/count tie. Each line enters and leaves at most once."
+    }
+  ],
+  "apiAndNumericReview": {
+    "fullOriginalRangeIncluded": true,
+    "core": "std::int64_t minimum_diagonal_square_union(const std::vector<std::pair<int,int>>&,int,int)",
+    "adapter": "long long take_photos(int,int,int,std::vector<int>,std::vector<int>)",
+    "validation": "Complete size/grid/K/coordinate validation precedes the two core scratch allocations; K is validated against original point count before clamping to filtered B. Empty input and out-of-contract integers reject; all inputs are const or by value and remain unchanged on success, invalid_argument and allocation failure.",
+    "state": "All mutable state local; shared scratch resets head/tail/value for every penalty; no recursion except implementation sort stack. Internal penalized preconditions explicitly documented; it is not a checked public API.",
+    "answerBound": 1000000000000,
+    "penaltyRange": [
+      0,
+      1000000000000
+    ],
+    "integerReasoning": "H<=100001. Each penalized prefix has a one-photo witness with cost<=2*M^2. Encoded saved values/intercepts have absolute value<5e17; slopes<3e11; intersection products<1e30<2^127. Casts to Wide happen before difference/product; start=-1 at L=0 is signed and safe. Count remainder is valid because final encoded DP value is nonnegative and count<H. Penalty*K<=1e17 is signed-64-safe.",
+    "complexity": "O(N log N + N log(M+1)) time and O(N) auxiliary space; equivalently usual O(N log N+N log M) convention for M>=2. Hull workspace allocated once and reused. Each penalty pass is linear even when many lines are popped.",
+    "memory": "On the tested ABI vector payload is 8*N+16*B<=2.4MB in the core; caller points excluded. By-value adapter adds input copies and the pair vector, total approximately4MB payload at N100000. RSS and sanitizer RSS are observed process measurements, not these payload formulas or official limits.",
+    "maximumAndExceptionCoverage": "Supplied literal/structural maxima cover N100000/M1000000/K1..N, filtered B1, wide overlap, far coordinates, same-coordinate duplicates, arbitrary order, K-clamping, repeated calls, invalid extremes and bad_alloc recovery. New dilation checks create near-maximum coordinates with varied overlap boundaries."
+  },
+  "suppliedCheckerIndependentReproduction": {
+    "command": "python3 /tmp/flowchartcp-ioi2016-aliens-checker.py [--sanitize]",
+    "normal": {
+      "checks": 5427033,
+      "apiCalls": 696640,
+      "originalAdapterCalls": 589343,
+      "allInterestSubsetsM1to5": 33861,
+      "literalAllPhotoSubsets": 33940,
+      "literalRequestedPhotoLimits": 251085,
+      "penaltyCostAndFewerCountComparisons": 884000,
+      "convexityAndMonotonicityChecks": 86212,
+      "allOrderedCellArraysM1to3N1to5": 67798,
+      "randomAllKCases": 3500,
+      "literalUnionPartitionCases": 444,
+      "literalUnionPartitionAssignments": 65176,
+      "metamorphicChecks": 40637,
+      "maximumOriginalCases": 30,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 36,
+      "allocationFailuresInjected": 14,
+      "checksum": "8361293455850997735",
+      "seconds": 1.50534,
+      "peakRSSKiB": 19092,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 5427033,
+      "apiCalls": 696640,
+      "originalAdapterCalls": 589343,
+      "allInterestSubsetsM1to5": 33861,
+      "literalAllPhotoSubsets": 33940,
+      "literalRequestedPhotoLimits": 251085,
+      "penaltyCostAndFewerCountComparisons": 884000,
+      "convexityAndMonotonicityChecks": 86212,
+      "allOrderedCellArraysM1to3N1to5": 67798,
+      "randomAllKCases": 3500,
+      "literalUnionPartitionCases": 444,
+      "literalUnionPartitionAssignments": 65176,
+      "metamorphicChecks": 40637,
+      "maximumOriginalCases": 30,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 36,
+      "allocationFailuresInjected": 14,
+      "checksum": "8361293455850997735",
+      "seconds": 12.692,
+      "peakRSSKiB": 812200,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": true
+    },
+    "allDeterministicFieldsIdentical": true,
+    "attribution": "These 5427033 checks rerun the author checker and are reproduction, not a separate newly designed oracle. Normal and sanitizer are two executions of the same cases, not twice as many distinct cases.",
+    "oracleReview": "Read full checker: literal all-photo subsets form actual cell unions, pairwise containment is independent of production sorting, and generic square-union sweeps do not use the neighbor correction. Cubic exact-count DP and exhaustive penalty/fewer-count comparisons separately test the actual hull. Requested counts include original N when B is smaller. Allocation-failure counts are tested-toolchain observations."
+  },
+  "newIndependentProbe": {
+    "script": "/tmp/flowchartcp-ioi2016-aliens-independent-probe.py",
+    "command": "python3 /tmp/flowchartcp-ioi2016-aliens-independent-probe.py [--sanitize]",
+    "normal": {
+      "checks": 14271756,
+      "strictIntervalChainsGrid1to9": 23703,
+      "literalCellUnionPartitions": 324065,
+      "constructiveTwoPathExchanges": 969547,
+      "commonCutExchanges": 301541,
+      "nestedEdgeExchanges": 668006,
+      "apiCalls": 110763,
+      "cellDilationCases": 3000,
+      "checksum": "17963117431430617432",
+      "seconds": 0.165969,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": false,
+      "peakRSSKiB": 4316
+    },
+    "asanUbsan": {
+      "checks": 14271756,
+      "strictIntervalChainsGrid1to9": 23703,
+      "literalCellUnionPartitions": 324065,
+      "constructiveTwoPathExchanges": 969547,
+      "commonCutExchanges": 301541,
+      "nestedEdgeExchanges": 668006,
+      "apiCalls": 110763,
+      "cellDilationCases": 3000,
+      "checksum": "17963117431430617432",
+      "seconds": 2.83439,
+      "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+      "sanitized": true,
+      "peakRSSKiB": 583092
+    },
+    "allDeterministicFieldsIdentical": true,
+    "independence": "A new structural lemma checker, not another implementation of the same DP: enumerate every strict interval chain with integer endpoints on grid sizes1..9, every partition, and every q-1/q+1 path pair; construct q/q paths by the specified branch. Costs come from literal 128-bit cell sets, not W or the DP. W is compared against those literal sets as a separate assertion. The public API is also compared against exhaustive literal partition minima. In addition, cell dilation [L,R]->[dL+t,d(R+1)+t-1] must scale optimum by d^2; reflected duplicates and contained requirements preserve it.",
+    "limits": "Partition oracle restricts photo choices to the normal form whose completeness was proved independently above; it does not replace the author all-arbitrary-photo-subset oracle on grids<=5. The finite exhaustive exchange checks support, but do not replace, the general Monge proof. Dilation reuses production on the base instance and is a metamorphic check, not an independent optimum oracle."
+  },
+  "nonBlockingEditorialClarifications": [
+    {
+      "location": "article なぜ正しいか / shared-cut sentence",
+      "detail": "Parent plans to qualify suffix exchange at a shared cut with Q prefix having exactly one extra edge over P. This is the precise count condition and is confirmed by the new constructive probe. The primary first-imbalance-two nested-edge argument is valid independently.",
+      "authorRawModified": false,
+      "cppChangeRequired": false
+    }
+  ],
+  "executionNotes": {
+    "asanCoordination": "Root authorized after Prize peer finished its author ASan; no other large sanitizer job intentionally overlapped. Main reproduction and independent supplemental sanitizer both finished; root notified the ASan slot was free.",
+    "sanitizer": "address+undefined, detect_leaks=0 (no LSan claim), halt_on_error, exact extracted fence unchanged",
+    "initialProbeCompileCorrection": "Own new probe initially triggered -Wmisleading-indentation at two same-line if statements; separated them before any test run. No author issue/change."
+  },
+  "initialAuditPreservation": {
+    "path": "/home/admin2/flowchartcp/site/data/corpus-audits/ioi-2016.json",
+    "rawSha256AtIndependentReview": "5566aa59d65f12c1fc18e16be87e08d419daa9febe255a77b9f691a828430beb",
+    "statusSha256CanonicalAtReview": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialRowSha256CanonicalAtReview": "0f0a06e074e14d87b05bb681d4da3827b0f5dd9b7517e1df47b61569fe0e4093",
+    "initialResearchCount": 6,
+    "initialCoveredCount": 0,
+    "initialFullImplementationCount": 0,
+    "initialClassification": "missing-technique",
+    "rowHadNoResolutionAtReview": true,
+    "modified": false,
+    "policy": "Do not rewrite any frozen first-pass field/status/snapshot. Since research was already positive, only parent may add resolution after real article/reference/canonical-walk integration; this review does not register coverage."
+  },
+  "publicationAssessment": {
+    "implementationAndRequiredProofApproved": true,
+    "officialHeaderRetrievalClaimApproved": false,
+    "optionalSmallerSubtaskKnuthProofRequired": false,
+    "registrationPerformed": false,
+    "resolutionOnlyAfterIntegration": true
+  },
+  "originalReviewSha256": "2d980621b401973ba9213a50cc16917bedd908abf92866767bbe26ceeffb3317",
+  "publishedArticle": "src/content/docs/techniques/diagonal-square-union-cover-monge-penalty-cht.mdx",
+  "permanentProbe": {
+    "script": "research/probes/diagonal-square-union-independent.py",
+    "normalizedSha256": "beea78f372af1767973bd1dab421e429183d828a748209cd9d3ae8d89e726481",
+    "normalization": "Only MDX path; all constructive path exchanges/literal cell-union partitions/dilation and default stdout unchanged."
+  }
+}

@@ -1,0 +1,139 @@
+---
+title: "行と列の最大高さを保つ最小配置は、同じ高さの証拠を対応で共有する"
+description: "非零セルへ先に1を残し、行・列の最大値を実現する追加量を二部マッチングで節約する。"
+techniqueId: row-column-maxima-height-matching
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+非負整数の高さ表があり、各行の最大値、各列の最大値、各セルが0か正かを変えずに、残す高さの総和を最小にしたい。元の総和から最小残量を引けば、取り除ける総量の最大値になる。
+
+ICPC World Finals 2017 C「Mission Improbable」では、三方向のカメラの像を保ちながら箱を盗む。残す箱は積み直せるので、あるセルの最終的な高さが元の高さを超えてもよい。元が0のセルは0のままにする。
+
+## 考え方
+
+行の最大値を $R_i$、列の最大値を $C_j$、正のセル数を $B$ とする。まず全ての正のセルへ高さ1を残す。これが上からの像を保つ基礎費用 $B$ になる。
+
+最大値が $h>1$ の行には、どこか一セルへさらに $h-1$ を足す必要がある。列についても同じである。行と列で別々に用意した場合の費用は
+
+$$
+B+\sum_i\max(R_i-1,0)+\sum_j\max(C_j-1,0)
+$$
+
+となる。一つのセルが行と列の最大値を同時に実現するには、$R_i=C_j=h$ で、元のセルが正でなければならない。この場合、追加量 $h-1$ を一回分共有できる。
+
+高さ $h$ の行を左頂点、同じ高さの列を右頂点とし、元が正のセルだけに辺を張る。同じ行や列の要求を二回共有しても得をしないので、共有する組はマッチングになる。高さ $h$ ごとの最大対応数を $M_h$ とすると、最小残量は
+
+$$
+B+\sum_i\max(R_i-1,0)+\sum_j\max(C_j-1,0)
+-\sum_{h>1}(h-1)M_h
+$$
+
+である。異なる高さの間には辺がないため、全ての高さを一つのグラフに入れて通常の最大マッチングを求めてもよい。各高さの成分が独立に最大化される。
+
+## 適用条件
+
+保つのは行・列の最大値と0か正かの支持だけで、正のセル間の積み替えを許す。最終高さの上限は $\min(R_i,C_j)$ であり、元のセルの高さではない。行和・列和や、セルごとの別の上限がある場合には、この式はそのまま使えない。
+
+例えば元の表が `[[2,1,1],[2,0,0],[1,2,2]]` なら、`[[1,2,1],[2,0,0],[1,1,2]]` として総量を11から10へ減らせる。元が1のセルへ2を置くことで、三つの行と三つの列の証拠を三セルにまとめている。元の高さを各セルの上限にすると、この配置を誤って除外する。
+
+高さ1の行・列は基礎配置だけで満たす。最大値0の行・列には正のセルがなく、追加する要求もない。
+
+## なぜ正しいか
+
+任意の合法な配置から、高さが1を超える各行と各列について、最大値を実現する証拠のセルを一つ選ぶ。あるセルが両方の証拠なら、その行と列の最大値は同じ高さ $h$ で、元も正である。各要求に選ぶ証拠は一つなので、共有された対は高さごとのマッチングをなす。共有数は $M_h$ を超えず、それ以外の証拠には追加量を別々に払う必要がある。よって上の式は全ての合法配置に対する下界である。
+
+逆に、最大対応の各辺のセルを、その行・列の最大高さにする。まだ満たしていない行と列には、元の表でその最大値を持っていたセルへ必要な高さを置く。それ以外の正のセルは1にする。同じセルへの指定が重なれば大きい高さを採用する。
+
+どの指定も、その行と列の最大値以下である。元の証拠セルの高さも、当然この上限を満たす。したがって支持と最大値を保ち、費用は基礎費用と全要求の追加量から、対応で共有した分を引いた値以下になる。下界と一致するので式が最適値になる。
+
+## 計算量
+
+行数を $H$、列数を $W$、同じ最大高さを結ぶ候補辺数を $E\le HW$ とする。掲載する増加路法は $O(HW+H+W+HE)$ 時間、$O(HW+H+W)$ 空間。$H,W>0$ なら時間は $O(HW+HE)$ と書ける。空の幅を許すAPIでは、行の検査に掛かる $O(H)$ も含める。行・列がそれぞれ100以下なら十分に扱える。
+
+高さの値を1から最大値まで走査する必要はない。元の総量は最大 $100\cdot100\cdot10^9=10^{13}$ になるため、費用と答えには64ビット整数を使う。
+
+## 実装
+
+`minimize_height_with_fixed_silhouettes(a)` は、最小残量 `minimum_remaining` と最大除去量 `maximum_removed` を返す。行数・列数はそれぞれ100以下、高さは $0..10^9$。空の表と、全行の幅が0の長方形の答えはどちらも0とする。不整形、寸法の上限超過、負の高さ、高さの上限超過は `invalid_argument`。
+
+返すのは最適値であり、配置は返さない。増加路の再帰の深さは行数以下である。
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <stdexcept>
+#include <vector>
+
+struct HeightSilhouetteResult {
+    long long minimum_remaining;
+    long long maximum_removed;
+};
+
+HeightSilhouetteResult minimize_height_with_fixed_silhouettes(
+    const std::vector<std::vector<long long>>& a) {
+    if (a.size() > 100) throw std::invalid_argument("too many rows");
+    const std::size_t width = a.empty() ? 0 : a.front().size();
+    if (width > 100) throw std::invalid_argument("too many columns");
+    for (const auto& row : a) {
+        if (row.size() != width) throw std::invalid_argument("ragged grid");
+        for (long long value : row)
+            if (value < 0 || value > 1000000000LL)
+                throw std::invalid_argument("height outside supported range");
+    }
+    const int h = static_cast<int>(a.size());
+    const int w = static_cast<int>(width);
+    std::vector<long long> row_max(h), col_max(w);
+    long long original = 0, remaining = 0;
+    for (int i = 0; i < h; ++i) {
+        for (int j = 0; j < w; ++j) {
+            original += a[i][j];
+            remaining += (a[i][j] > 0);
+            row_max[i] = std::max(row_max[i], a[i][j]);
+            col_max[j] = std::max(col_max[j], a[i][j]);
+        }
+    }
+    for (long long value : row_max) remaining += std::max(value - 1, 0LL);
+    for (long long value : col_max) remaining += std::max(value - 1, 0LL);
+
+    std::vector<std::vector<int>> edges(h);
+    for (int i = 0; i < h; ++i)
+        for (int j = 0; j < w; ++j)
+            if (a[i][j] > 0 && row_max[i] > 1 && row_max[i] == col_max[j])
+                edges[i].push_back(j);
+    std::vector<int> matched_row(w, -1);
+    std::vector<bool> seen(w);
+    std::function<bool(int)> augment = [&](int row) {
+        for (int col : edges[row]) {
+            if (seen[col]) continue;
+            seen[col] = true;
+            if (matched_row[col] == -1 || augment(matched_row[col])) {
+                matched_row[col] = row;
+                return true;
+            }
+        }
+        return false;
+    };
+    for (int i = 0; i < h; ++i) {
+        std::fill(seen.begin(), seen.end(), false);
+        augment(i);
+    }
+    for (int j = 0; j < w; ++j)
+        if (matched_row[j] != -1) remaining -= col_max[j] - 1;
+    return {remaining, original - remaining};
+}
+```
+
+## 関連する手法
+
+- [二部マッチング](/flowchartcp/techniques/matching/)：行と列の要求を一度ずつ組にする。
+- [横・縦通路を頂点にするカメラ被覆](/flowchartcp/techniques/grid-corridor-cover-matching/)：格子のセルを、行側と列側を結ぶ辺として表す別の帰着。
+- [各要素の寄与を数える](/flowchartcp/techniques/contribution/)：正のセルの基礎費用と、最大値の追加費用を分ける。
+
+## 参考資料
+
+- [ACM-ICPC World Finals 2017 C：Mission Improbable 原典、5–6ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=5)。残る箱の積み直しを許し、元セルの高さを上限にしない。
+- [Per Austrin・Jakub Onufry Wojtaszczyk による公開解法スケッチ、3–4ページ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=3)。ICPC公式サイト掲載だが、本文は **unofficial analysis** と明記する。高さごとの共有を二部マッチングで求める方針を確認し、費用式の証明と掲載実装はここで組み立てた。
+
+<TechniqueReferences techniqueId="row-column-maxima-height-matching" />

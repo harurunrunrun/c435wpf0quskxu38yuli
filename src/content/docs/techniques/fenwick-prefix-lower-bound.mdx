@@ -1,0 +1,72 @@
+---
+title: "累積個数が目標へ届く位置を、木の内部で探す"
+description: "外側の二分探索を省き、Fenwick木の大きな区間から順に飛ぶ。"
+techniqueId: fenwick-prefix-lower-bound
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+要素を削除しながら残った集合のk番目を求めたい。または位置ごとの個数を加減し、累積個数が初めて目標以上になる位置を繰り返し探したい。
+
+## 考え方
+
+Fenwick木の節点は一定の二進区間の総和を持つ。先頭から確定した位置 $p$ と残りの目標を持ち、大きな2の冪幅から試す。
+
+次の節点に保存された総和が残り目標より小さければ、その区間を丸ごと飛び、目標から総和を引く。そうでなければ飛ばずに幅を半分にする。最終的な $p$ が、累積個数が目標へ届く最初の0始まりの位置になる。
+
+整数集合の挿入・削除では、全操作に出る値を先に圧縮し、一値の個数を0か1に保ちます。再挿入と存在しない値の削除で個数を変えず、指定値未満の個数はその値の圧縮位置までの累積個数で求めます。総個数を超えた順位は不在です。
+
+円環の削除では、次に消す人の「残った人の中での順位」を人数で割った余りにし、逆引きした位置を0へ変える。
+
+## 適用条件
+
+位置ごとの個数が常に非負で、累積和が単調であることが必要。更新量に負数が含まれても、削除後の個数が非負ならよい。値の総和に負の要素を含む一般のFenwick木には適用できない。目標は正数とし、総個数を超えたら位置Nを返す。
+
+## なぜ正しいか
+
+試した区間の累積個数が目標未満なら、単調性によりその区間内には答えがない。区間を飛んでその総和を引くと、残り区間で同じ問題になる。2の冪を大きい順に試すことで、目標未満の最大接頭辞を確定する。その次の位置が目標へ届く最初の位置である。
+
+## 計算量
+
+累積和取得を使う外側の二分探索は $O(\log^2 N)$。内部探索なら一回 $O(\log N)$、空間 $O(N)$。N人の削除列全体は初期化込みで $O(N\log N)$ 時間。
+
+## 実装
+
+`lower_bound(target)` の位置は0始まり。`josephus_order(n,skipped)` はk人を飛ばして次を消す原典の規則で、削除される0始まりの位置列を返す。個数と総和が64ビットに収まる範囲で使う。
+
+```cpp
+#include <vector>
+#include <cassert>
+#include <cstdint>
+struct NonnegativeFenwick {
+    int n;std::vector<long long> bit,frequency;
+    explicit NonnegativeFenwick(int count):n(count),bit(count+1),frequency(count) {}
+    void add(int p,long long delta) {assert(0<=p&&p<n&&frequency[p]+delta>=0);frequency[p]+=delta;for(++p;p<=n;p+=p&-p) bit[p]+=delta;}
+    long long prefix(int r) const {long long s=0;for(;r;r-=r&-r) s+=bit[r];return s;}
+    int lower_bound(long long target) const {
+        assert(target>0);int p=0,step=1;while(step<=n/2) step*=2;
+        for(;step>0;step/=2) {int next=p+step;if(next<=n&&bit[next]<target) {target-=bit[next];p=next;}}
+        return p; // first index with prefix(index+1)>=target; n if absent
+    }
+};
+std::vector<int> josephus_order(int n,std::uint64_t skipped) {
+    NonnegativeFenwick f(n);for(int i=0;i<n;++i) f.add(i,1);
+    std::vector<int> answer;std::uint64_t rank=0;
+    for(int alive=n;alive>0;--alive) {rank=(rank+skipped%alive)%alive;int p=f.lower_bound(rank+1);answer.push_back(p);f.add(p,-1);}
+    return answer;
+}
+```
+
+## 関連する手法
+
+[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [二つの接頭辞の頻度差から、区間のk番目へ降りる](/flowchartcp/techniques/persistent-prefix-kth/) ・ [値の桁で安定に二分し、区間の順位を写し替える](/flowchartcp/techniques/wavelet-range-kth/)
+
+## 参考資料
+
+- [SPOJ：Order statistic set の原典](https://www.spoj.com/problems/ORDERSET/)
+- [SPOJ 公式の問題本文](https://www.spoj.com/SPOJ/problems/ORDERSET/en/)
+
+- [CSES：Josephus Problem II（原典の条件）](https://cses.fi/problemset/task/2163)
+
+<TechniqueReferences techniqueId="fenwick-prefix-lower-bound" />

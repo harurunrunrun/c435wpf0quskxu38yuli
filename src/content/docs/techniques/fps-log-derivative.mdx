@@ -1,0 +1,125 @@
+---
+title: "対数の係数を、微分・逆数・積分へ分ける"
+description: "何乗も足す対数の定義を使わず、微分すると元の列の逆数との積になることを使います。"
+techniqueId: fps-log-derivative
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$F(0)=1$ の係数列から、$\log F$ の先頭 $N$ 項を求めます。たとえば積で定義された列を、部品ごとの和に分けたい場面です。$\log(F_1F_2)=\log F_1+\log F_2$ が使えます。
+
+$\sum_{k\ge1}(-1)^{k+1}(F-1)^k/k$ をそのまま計算すると、冪を何度も作るため重くなります。
+
+## 考え方
+
+微分すると冪の和がなくなります。
+
+$$(\log F)'=\frac{F'}{F},\qquad \log F=\int F'F^{-1}\,dx.$$
+
+$F$ を微分し、逆数を求め、二つを掛け、係数を積分します。定数項は 0 に固定します。たとえば $F=1+x$ なら、$\log F=x-x^2/2+x^3/3-\cdots$ です。
+
+## 適用条件
+
+元の定数項を 1、結果の定数項を 0 とします。それ以外の定数の対数を、この形式的な係数列だけで決めることはしません。
+
+積分で割る $1,2,\ldots,N-1$ の逆元が必要です。素数の法 $p$ では $N\le p$ が必要で、係数の次数が法以上になる精度では同じ式を使えません。掲載実装は法 998244353、$0\le N\le2^{21}$、入力係数 $[0,p)$ です。入力の先頭以外の係数が足りないときは 0 を補います。
+
+## なぜ正しいか
+
+$F-1$ の定数項が 0 なので、対数を定義する無限和でも、各次数には有限個の項だけが寄与します。その和を微分すると、幾何級数の和から $F'/F$ が得られます。
+
+微分で失った定数を 0 とし、各次数を割って積分すれば、元の対数が一意に戻ります。したがって、有限精度の微分・逆数・積分だけで必要な係数を求められます。
+
+## 計算量
+
+係数比較で $F(\log F)'=F'$ を一項ずつ解くと時間 $O(N^2)$ です。逆数と積を NTT で計算すれば時間 $O(N\log N)$、空間 $O(N)$ になります。微分と積分は $O(N)$ です。積分用の逆元は一つずつ累乗で求めず、線形時間で用意します。
+
+## 実装
+
+`fps_logarithm(f,n)` は定数項が 0 の `n` 項を返します。逆数と NTT のコードも含むので、このコードだけで呼び出せます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+
+vector<int> fps_inverse(const vector<int>& f,int n) {
+    assert(0<=n && n<=(1<<21));
+    if(n==0) return {};
+    assert(!f.empty() && f[0]!=0);
+    vector<int> g{ntt998::power(f[0],ntt998::MOD-2)};
+    while(int(g.size())<n) {
+        int m=min(n,2*int(g.size()));
+        vector<int> part(f.begin(),f.begin()+min(m,int(f.size())));
+        auto correction=ntt998::convolution(part,g);
+        correction.resize(m);
+        for(int& x:correction) x=(ntt998::MOD-x)%ntt998::MOD;
+        correction[0]=(correction[0]+2)%ntt998::MOD;
+        g=ntt998::convolution(g,correction);
+        g.resize(m);
+    }
+    return g;
+}
+
+vector<int> fps_logarithm(const vector<int>& f,int n) {
+    assert(0<=n && n<=(1<<21));
+    if(n==0) return {};
+    assert(!f.empty() && f[0]==1);
+    vector<int> derivative(max(0,min(n,int(f.size()))-1));
+    for(int i=1;i<=int(derivative.size());++i)
+        derivative[i-1]=1LL*i*f[i]%ntt998::MOD;
+    auto quotient=ntt998::convolution(derivative,fps_inverse(f,n));
+    quotient.resize(n-1);
+    vector<int> result(n),inverse(n);
+    if(n>1) inverse[1]=1;
+    for(int i=2;i<n;++i)
+        inverse[i]=ntt998::MOD-1LL*(ntt998::MOD/i)*inverse[ntt998::MOD%i]%ntt998::MOD;
+    for(int i=1;i<n;++i) result[i]=1LL*quotient[i-1]*inverse[i]%ntt998::MOD;
+    return result;
+}
+```
+
+## 関連する手法
+
+[積を 1 にする係数列を、誤差を二乗して伸ばす](/flowchartcp/techniques/fps-inverse-newton/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/log_of_formal_power_series/task.md)
+
+<TechniqueReferences techniqueId="fps-log-derivative" />

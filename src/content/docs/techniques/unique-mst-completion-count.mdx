@@ -1,0 +1,88 @@
+---
+title: "指定した木を唯一の最小全域木にする追加辺は、結合される成分の頂点対で数える"
+description: "追加辺の重みを経路最大より大きく制限し、その最大値が決まる頂点対を重み順にまとめる。"
+techniqueId: unique-mst-completion-count
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+重みが決まった木を残したまま、まだ存在しない頂点対へ辺を追加する。追加後もその木だけが最小全域木になる、辺の有無と重みの選び方の数を求める。全頂点対を直接調べると多いが、木の辺数は少ない。
+
+## 考え方
+
+木での $u$–$v$ 経路の最大辺重みを $M(u,v)$ とする。追加辺の重みは、唯一性を守るために $M(u,v)$ より**厳密に大きく**なければならない。上限が $S$ なら、可能な重みは $S-M(u,v)$ 個で、辺を置かない選択を加えると $S-M(u,v)+1$ 通りになる。
+
+木の辺を重み順に追加する。重み $w$ の辺が、頂点数 $a,b$ の別成分を結んだとき、その間の $ab$ 対はこの時点で初めてつながる。それぞれの木の経路最大重みは $w$。このうち現在の木の辺1本は既に固定されているので、自由な対は $ab-1$ 個である。
+
+したがって各結合で、$(S-w+1)^{ab-1}$ を答えへ掛ける。同じ重みの辺はどの順に処理してもよい。
+
+## 適用条件
+
+単純な無向グラフで、各頂点対に辺は高々1本。与えられた木の全辺は必ず残し、その重みは整数で $1\le w\le S$。追加辺の重み上限が全て同じであり、対ごとの禁止条件はない。
+
+唯一性を要求せず「この木も最小全域木である」だけなら等しい重みも許され、追加辺の選択肢は $S-M+2$ 通りに変わる。完全グラフへ必ず補う場合は「辺なし」の1通りを除く。これらは別の条件である。
+
+## なぜ正しいか
+
+追加辺と木の経路でできる閉路を考える。追加辺が経路最大より小さければ、最大の木の辺を交換して木の重みを減らせる。等しければ同じ重みの別の全域木ができる。よって厳密に大きいことが必要。
+
+逆に全追加辺がその条件を満たすとする。木の任意の辺 $e$ を消してできる二成分をまたぐ追加辺 $f$ の木の経路は $e$ を含むため、$w_f> M(f)\ge w_e$ である。つまり $e$ はその切断をまたぐ辺の中で唯一の最軽量辺。最小全域木はこの辺を必ず含むので、全ての木の辺が強制され、最小全域木は一意になる。
+
+各自由な頂点対の重み条件は互いに独立。成分結合の前は経路が未完成で、結合時には経路の全辺重みが $w$ 以下となり、現在の辺も含む。従ってこの結合に割り当てた全対の最大値はちょうど $w$。全対は一度だけ割り当てられるため、積が過不足なく全構成を数える。
+
+## 計算量
+
+全頂点対の経路最大を準備して掛ける方法は、LCAを使っても $O(N^2\log N)$ 時間。成分結合による数え上げは整列 $O(N\log N)$、Union-Find $O(N\alpha(N))$、各累乗 $O(\log N)$ で、全体 $O(N\log N)$ 時間、空間 $O(N)$。指数は $ab-1$ なので64ビットで計算する。
+
+## 実装
+
+`count_unique_mst_completions(n, upper, edges)` は法998244353で個数を返す。頂点は0始まり、`edges` は指定木の `(u,v,w)`。重み1の木に上限1を指定した場合、全追加辺は禁止され、木だけの1通りになる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long count_unique_mst_completions(int n,long long upper,
+        vector<tuple<int,int,long long>> edges) {
+    constexpr long long mod=998244353;
+    assert(1<=n && n<=200000 && 1<=upper && upper<=1000000000);
+    assert(int(edges.size())==n-1);
+    sort(edges.begin(),edges.end(),[](const auto& a,const auto& b) {
+        return get<2>(a)<get<2>(b);
+    });
+    vector<int> parent(n),size(n,1);iota(parent.begin(),parent.end(),0);
+    auto find=[&](int v) {
+        while(parent[v]!=v) {parent[v]=parent[parent[v]];v=parent[v];}
+        return v;
+    };
+    auto power=[&](long long base,long long exponent) {
+        long long result=1;base%=mod;
+        while(exponent) {
+            if(exponent&1) result=result*base%mod;
+            base=base*base%mod;exponent>>=1;
+        }
+        return result;
+    };
+    long long answer=1;
+    for(auto [u,v,w]:edges) {
+        assert(0<=u && u<n && 0<=v && v<n && 1<=w && w<=upper);
+        u=find(u);v=find(v);assert(u!=v);
+        long long free_pairs=1LL*size[u]*size[v]-1;
+        answer=answer*power(upper-w+1,free_pairs)%mod;
+        if(size[u]<size[v]) swap(u,v);
+        parent[v]=u;size[u]+=size[v];
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[辺を一本追加した全域木を、パス上の最大辺との交換で求める](/flowchartcp/techniques/mst-replacement-edge/) ・ [重みのしきい値順に辺を追加して連結性を共有する](/flowchartcp/techniques/dsu-threshold-queries/)
+
+## 参考資料
+
+- [Codeforces：Counting Graphs](https://codeforces.com/problemset/problem/1857/G)
+- [Codeforces公式解説](https://codeforces.com/blog/entry/119134)
+
+<TechniqueReferences techniqueId="unique-mst-completion-count" />

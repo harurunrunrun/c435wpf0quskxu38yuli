@@ -1,0 +1,77 @@
+---
+title: "合流する有向経路の到達先は、頂点集合のビット列を後ろから共有する"
+description: "子の到達数を足さず、集合の論理和で重複した到達先を一度だけ数える。"
+techniqueId: dag-reachable-bitsets
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+子の到達数を足さず、集合の論理和で重複した到達先を一度だけ数える。
+
+## 使う場面
+
+有向経路が合流するグラフで、全ての始点から到達できる頂点数を求めたい。経路数ではなく到達先の種類数なので、子の答えを足すだけでは同じ頂点を何度も数える。
+
+## 考え方
+
+頂点 $v$ の到達集合をビット列 $R_v$ で表し、$v$ のビットを立てる。後続の頂点を先に処理する順番で
+
+$$R_v=\{v\}\cup\bigcup_{v\to u}R_u$$
+
+を計算する。64頂点分を一語にまとめれば、各語の論理和一回で64個の候補を併合できる。最後に各語の立っているビット数を足す。
+
+隣接頂点の集合が重なるかどうかを個別に調べる必要はない。論理和は一つの到達先を何度加えても一つに保つ。
+
+## 適用条件
+
+入力はDAG。全ての始点に対する到達先を管理するため、$N\lceil N/64\rceil$ 語のメモリが必要になる。64ビット語なら $N=50000$ で約313MBであり、メモリ上限を先に確認する。
+
+各頂点自身も到達集合に含む。閉路がある場合、そのままの逆順処理はできない。強連結成分へまとめるなら、到達成分の大きさを重みとして数え直す必要がある。掲載実装は $1\le N\le50000$ とする。
+
+## なぜ正しいか
+
+DAGの頂点を後続から処理する。後続 $u$ の集合が正しければ、$v$ から $u$ への一辺に続く全到達先が $R_u$ に入る。$v$ 自身以外に到達する経路は必ず最初の一辺を持つため、全ての後続の和集合で過不足なく得られる。集合和が重複を消すので、経路の合流や平行辺があっても一頂点を一度だけ数える。
+
+## 計算量
+
+全始点を一つずつ探索すると $O(N(N+M))$ 時間・$O(N+M)$ 空間。到達集合を記録すると、語長 $B=64$ に対して $O((N+M)\lceil N/B\rceil)$ 時間へ減らす。集合用空間は $O(N\lceil N/B\rceil)$ 語、グラフと順序に $O(N+M)$。メモリを減らしたい場合は、到達先をいくつかのブロックに分けて同じ処理を繰り返す選択肢もある。
+
+## 実装
+
+`reachable_node_counts` は自分を含む到達数を返す。集合を一つの連続配列に置き、行ごとの余分な確保を省く。閉路がある入力は例外にする。頂点番号は0始まり。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> reachable_node_counts(const vector<vector<int>>& g) {
+    int n=g.size();if(n<1 || n>50000) throw invalid_argument("vertex count");
+    vector<int> indegree(n),order;order.reserve(n);
+    for(const auto& row:g) for(int u:row) ++indegree[u];
+    for(int v=0;v<n;++v) if(indegree[v]==0) order.push_back(v);
+    for(int i=0;i<int(order.size());++i)
+        for(int u:g[order[i]]) if(--indegree[u]==0) order.push_back(u);
+    if(int(order.size())!=n) throw invalid_argument("DAG required");
+    int words=(n+63)/64;
+    vector<uint64_t> bits(size_t(n)*words);
+    vector<int> answer(n);
+    for(int i=n-1;i>=0;--i) {
+        int v=order[i];uint64_t* current=bits.data()+size_t(v)*words;
+        current[v/64]|=uint64_t(1)<<(v%64);
+        for(int u:g[v]) {
+            const uint64_t* next=bits.data()+size_t(u)*words;
+            for(int k=0;k<words;++k) current[k]|=next[k];
+        }
+        for(int k=0;k<words;++k) answer[v]+=popcount(current[k]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[DAG上のDP](/flowchartcp/techniques/dag-dp/) ・ [強連結成分分解](/flowchartcp/techniques/scc/)
+
+## 参考資料
+
+- [CSES：Reachable Nodes](https://cses.fi/problemset/task/2138)
+
+<TechniqueReferences techniqueId="dag-reachable-bitsets" />

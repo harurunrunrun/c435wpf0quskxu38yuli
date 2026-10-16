@@ -1,0 +1,33 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1118",
+    "title": "Counting Graphs",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+    "techniqueIds": [
+      "parity-walk-profile-layer-inclusion-exclusion-count"
+    ],
+    "features": [
+      "連結無向・単位長のグラフで、固定始点から各ラベル付き頂点へ到達できる全ての歩数の真偽を保つ。辺・頂点の再訪を許す。",
+      "自己ループ可・多重辺不可、新しい辺を自由に選べる。同じ頂点ラベルのまま、辺集合の違う全実現の個数を剰余で求める。最小辺数や元の辺の部分集合だけの数ではない。",
+      "原典N2..100、T1..25000、総N²<=100000、法1000000007。掲載APIは任意始点・任意の正の32bit法へ拡張し、合成数/法1も扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationYearMonth": "2021-02",
+    "publicationDate": "2021-02",
+    "publicationDatePrecision": "month",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=feb21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "notes": "1117の最小辺数APIとは別に、余分な許容辺も含む全graphを数える専用DP。原典1118を、同名CF1857GやUSACOJanuary別課題へ取り替えない。"
+  }
+]

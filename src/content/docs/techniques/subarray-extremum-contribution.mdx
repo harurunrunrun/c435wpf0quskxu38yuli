@@ -1,0 +1,63 @@
+---
+title: "全区間の最大値を各要素の寄与に分ける"
+description: "左右で最大値が変わる境界を求め、端点の選び方を掛けて数える。"
+techniqueId: subarray-extremum-contribution
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+左右で最大値が変わる境界を求め、端点の選び方を掛けて数える。
+
+## 使う場面
+
+配列のすべての非空区間について、最大値の合計を求めたい。区間ごとに最大値を求めると、区間の個数だけで $O(N^2)$ かかる。最小値の合計や、最大値と最小値の差の合計にも応用できる。
+
+## 考え方
+
+同じ最大値が複数ある区間は、最も右の要素を担当にする。位置 $i$ の左側で直近の $a_i$ より大きい位置を $L_i$、右側で直近の $a_i$ 以上の位置を $R_i$ とする。存在しない境界は $-1,N$ とする。
+
+要素 $i$ が担当する区間の数は $(i-L_i)(R_i-i)$。したがって答えは $\sum_i a_i(i-L_i)(R_i-i)$。境界は単調スタックで求める。
+
+## 適用条件
+
+同じ値の扱いを左右で非対称にすることが必要になる。両側を「より大きい」にすると、$[2,2]$ のような区間を二度数える。両側を「以上」にすると、その区間をどちらも担当しなくなる。最小値では比較を反転する。
+
+## なぜ正しいか
+
+境界の内側で左端・右端を選ぶと、$a_i$ より大きい値は含まれず、右側の等しい値も含まれない。したがって $i$ が右端側の最大値の担当になる。逆に $i$ が担当する区間は、必ずこの境界の内側に収まる。各区間を一つの要素だけに対応させているため、寄与を足せる。
+
+## 計算量
+
+区間の列挙は $O(N^2)$。各要素は単調スタックに一度追加・削除されるので、境界と合計の計算は時間・空間ともに $O(N)$。
+
+## 実装
+
+`all_interval_maximum_sum` は全非空区間の最大値の合計を返す。負数も扱える。答えと寄与の積はGNU C++の `__int128` で計算する。
+
+```cpp
+#include <vector>
+__int128 all_interval_maximum_sum(const std::vector<long long>& a) {
+    int n=a.size();std::vector<int> left(n),right(n),stack;
+    for(int i=0;i<n;++i) {
+        while(!stack.empty() && a[stack.back()]<=a[i]) stack.pop_back();
+        left[i]=stack.empty()?-1:stack.back();stack.push_back(i);
+    }
+    stack.clear();
+    for(int i=n-1;i>=0;--i) {
+        while(!stack.empty() && a[stack.back()]<a[i]) stack.pop_back();
+        right[i]=stack.empty()?n:stack.back();stack.push_back(i);
+    }
+    __int128 answer=0;
+    for(int i=0;i<n;++i) answer+=(__int128)a[i]*(i-left[i])*(right[i]-i);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC407 F](https://atcoder.jp/contests/abc407/editorial/13108)
+
+<TechniqueReferences techniqueId="subarray-extremum-contribution" />

@@ -1,0 +1,96 @@
+[
+  {
+    "source": "CSES",
+    "problemId": "1644",
+    "title": "Maximum Subarray Sum II",
+    "url": "https://cses.fi/problemset/task/1644",
+    "techniqueIds": [
+      "dp-sliding-min"
+    ],
+    "features": [
+      "負数を含む配列",
+      "長さa以上b以下の非空連続区間",
+      "区間和を最大化",
+      "右端rの左端候補は[r−b,r−a]"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1644",
+    "statementEvidenceUrl": "https://cses.fi/problemset/task/1644",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "長さ制約の左端候補が右へ動く。累積和の最小値を単調キューで持つP_r−min P_lの式を独立に導出し、掲載した追加関数を全区間列挙と比較した。 原典で掲載日を確認できず、基準日以前の掲載とは断定しない。"
+  },
+  {
+    "source": "USACO",
+    "problemId": "2018-jan-gold-mootube",
+    "title": "MooTube (Gold)",
+    "url": "https://usaco.org/index.php?cpid=789&page=viewproblem2",
+    "techniqueIds": [
+      "dsu-threshold-queries"
+    ],
+    "features": [
+      "重み付きの無向木",
+      "関連度は二点の経路の最小の辺重み",
+      "しきい値K以上で届く始点以外の頂点数",
+      "全質問は先に読める"
+    ],
+    "evidenceUrl": "https://usaco.org/current/data/sol_mootube_gold_jan18.html",
+    "statementEvidenceUrl": "https://usaco.org/index.php?cpid=789&page=viewproblem2",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "公式解説は辺と質問を降順に並べ、重みがK以上の辺を追加して成分サイズから1を引く。掲載した降順集計関数を同じしきい値の探索と比較した。 原典の年月が基準日以前であることを確認。"
+  },
+  {
+    "source": "SPOJ",
+    "problemId": "MKTHNUM",
+    "title": "K-th Number",
+    "url": "https://www.spoj.com/problems/MKTHNUM/",
+    "techniqueIds": [
+      "persistent-prefix-kth",
+      "wavelet-range-kth",
+      "offline-kth-divide-values"
+    ],
+    "features": [
+      "全値が異なる静的な整数配列",
+      "多数の閉区間のk番目の値",
+      "負の値も含み、全質問は先に読める",
+      "N≤100000、質問≤5000"
+    ],
+    "evidenceUrl": "https://new3.spoj.com/problems/MKTHNUM/",
+    "statementEvidenceUrl": "https://new3.spoj.com/problems/MKTHNUM/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典の静的区間順位を確認。圧縮した値の区間頻度差、桁ごとの順位移動、答えの値による一括分割の各方法が同じ順位を計算する。最後の方法は代入のない特殊場合として使う。掲載実装の全順位比較で確認。 原典の年月が基準日以前であることを確認。"
+  },
+  {
+    "source": "SPOJ",
+    "problemId": "ORDERSET",
+    "title": "Order statistic set",
+    "url": "https://www.spoj.com/problems/ORDERSET/",
+    "techniqueIds": [
+      "fenwick-prefix-lower-bound"
+    ],
+    "features": [
+      "整数集合への挿入・削除",
+      "同じ値の再挿入は個数を増やさない",
+      "k番目と指定値未満の個数",
+      "全操作は入力から先に読める、存在しない順位もある"
+    ],
+    "evidenceUrl": "https://www.spoj.com/SPOJ/problems/ORDERSET/en/",
+    "statementEvidenceUrl": "https://www.spoj.com/SPOJ/problems/ORDERSET/en/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "全操作の値を圧縮し、集合の各値の個数を0か1に保つ。非負の累積個数を内部で逆引きすればk番目を求められ、総個数を超える順位は不在として返せる。 原典の年月が基準日以前であることを確認。"
+  }
+]

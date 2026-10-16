@@ -1,0 +1,79 @@
+---
+title: "一本ずつ辺を禁止する最短距離は、選んだ最短路の辺だけ再探索する"
+description: "使っていない辺を消しても、残した一つの最短路がそのまま答えの証拠になる。"
+techniqueId: unweighted-edge-removal-shortest
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+使っていない辺を消しても、残した一つの最短路がそのまま答えの証拠になる。
+
+## 使う場面
+
+同じ始点と終点について、各辺を一本だけ通れなくしたときの最短距離を全て求める。全ての辺を禁止して探索し直すと、密なグラフで回数が多くなる。
+
+## 考え方
+
+まず通常のBFSで一つの最短経路 $P$ を復元する。答えを全て通常の距離で初期化し、$P$ 上の辺を禁止する場合だけBFSをやり直す。
+
+$P$ にない辺を消しても $P$ は残る。別の最短路を全て求めたり、各辺が全最短路に共通かを判定したりする必要はない。
+
+辺を端点対だけでなく入力順の番号で管理すれば、平行辺も一本だけ禁止できる。
+
+## 適用条件
+
+辺の長さは全て1、始点と終点は全質問で同じ。削除は各辺を独立に一本ずつ試す。削除が累積したり、始点終点が変わったりする場合は、残る経路の証拠を使い回せない。
+
+重み付きでも一つの最短路外の削除を省く考え方は使えるが、再探索の方法と計算量は変わる。掲載実装は単位辺で、初めから到達不能なら全回答を -1 とする。
+
+## なぜ正しいか
+
+辺の削除によって、最短距離が元より短くなることはない。一方で $P$ 外の辺を消した場合は、元の距離を持つ $P$ が残る。下限と上限が一致するので答えは元の距離になる。$P$ 上の辺の削除は残る経路をBFSで直接確かめるため、全ての回答が正しい。
+
+## 計算量
+
+全辺を一本ずつ再探索すると $O(M(N+M))$ 時間・$O(N+M)$ 空間。一つの最短路の辺数 $L\le N-1$ に対して $O((L+1)(N+M)+M)$ 時間へ減らす。最悪 $O(N(N+M))$、空間は $O(N+M)$。長い疎な鎖では回数の改善は小さいが、密なグラフでは $M$ 回を高々 $N-1$ 回にできる。
+
+## 実装
+
+`distances_after_each_edge_removal` の返値は入力の辺順。始点と終点が同じなら全て0になる。辺の番号をBFSで記録し、同じ端点を持つ別の辺を誤って消さない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> distances_after_each_edge_removal(int n,const vector<pair<int,int>>& edges,
+        int source,int target) {
+    assert(n>0 && 0<=source && source<n && 0<=target && target<n);
+    int m=edges.size();vector<vector<pair<int,int>>> g(n);
+    for(int i=0;i<m;++i) g[edges[i].first].push_back({edges[i].second,i});
+    vector<int> parent_edge(n,-1);
+    auto bfs=[&](int banned,bool keep_parent) {
+        vector<int> d(n,-1),queue{source};d[source]=0;
+        for(int i=0;i<int(queue.size());++i) {
+            int v=queue[i];
+            for(auto [u,id]:g[v]) if(id!=banned && d[u]==-1) {
+                d[u]=d[v]+1;queue.push_back(u);
+                if(keep_parent) parent_edge[u]=id;
+            }
+        }
+        return d[target];
+    };
+    int original=bfs(-1,true);
+    vector<int> answer(m,original);
+    if(original<0) return answer;
+    for(int v=target;v!=source;) {
+        int edge=parent_edge[v];answer[edge]=bfs(edge,false);
+        v=edges[edge].first;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[幅優先探索](/flowchartcp/techniques/bfs/) ・ [最短路の個数と辺数は、正の辺からなる最短距離の順でまとめる](/flowchartcp/techniques/shortest-tight-dag-statistics/)
+
+## 参考資料
+
+- [AtCoder：Blocked Roads](https://atcoder.jp/contests/abc218/tasks/abc218_f)
+
+<TechniqueReferences techniqueId="unweighted-edge-removal-shortest" />

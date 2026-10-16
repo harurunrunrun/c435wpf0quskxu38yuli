@@ -1,0 +1,198 @@
+---
+title: "直線上の全点を異色の点につなぐ最小費用を求める"
+description: "各点を何本にも使える配線で、隣接する同色のまとまりだけを結ぶ。境界の一点共有を許すDPを、二方向の最小値で線形時間にする。"
+techniqueId: line-bipartite-edge-cover-monochromatic-block-prefix-dp
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+直線上に赤と青の点があり、異なる色の二点を結べる。各点に少なくとも一本の線を接続し、線の長さの合計を最小にしたい。一つの点へ複数本を接続してもよい。
+
+赤が座標0・2、青が座標1にある場合は、青の点から両方の赤へ結んで費用2になる。点を一度ずつしか使えないマッチングとは条件が違う。全ての異色対を辺にする代わりに、座標順のまとまりを使う。
+
+## 考え方
+
+二つの整列済みの列を併合し、同じ色が連続する最大の区間をblockと呼ぶ。最適解では、隣り合うblockの間だけに線を引けばよい。さらに、一つのblockでは左へ結ぶ点を先頭側、右へ結ぶ点を末尾側へ分けられる。両方へ結ぶ点は、境界の高々一点だけになる。
+
+座標列の最初の $t$ 点を全て覆う最小費用を $D[t]$ とする。次の右blockが添字 $q$ から始まるとき、その先頭 $j$ 点を、左blockの末尾 $k$ 点へ接続する。左側の最初の点を前の解でも使うことがあるので、引継ぐ費用は
+
+$$P[k]=\min\bigl(D[q-k],D[q-k+1]\bigr)$$
+
+となる。右の $j$ 点と左の $k$ 点を全て覆う費用を $C(k,j)$ とすると、
+
+$$D[q+j]=\min_{1\le k\le A}\{P[k]+C(k,j)\}$$
+
+で更新できる。$A$ は左blockの長さである。$C$ は $k\le j$ と $k\ge j$ で分かれ、前者を先頭からの最小値、後者を末尾からの最小値でまとめる。
+
+## 適用条件
+
+線の費用は二点の座標差の絶対値で、各点の次数には「1以上」という下限だけがある。同色同士は結べない。点は相異なる座標を持ち、二色とも存在する。線同士の交差や接触を禁止する条件、線ごとの容量、点の次数上限が加わる場合は、このまま適用しない。
+
+掲載関数 `min_line_bichromatic_edge_cover(red, blue)` は、各長さ1〜10万、座標0〜10億、厳密な昇順の二つの `std::vector<int>` を受け取る。二列を通じて座標は全て相異なり、返り値は最小費用の `std::int64_t` である。接続する線そのものは返さない。この範囲は原典の全入力を含む。
+
+空列、長さ超過、座標範囲違反、整列違反、同色内・異色間の同座標は `std::invalid_argument`。入力を変更せず、呼出し間で状態を持たない。割当失敗などの標準例外はそのまま伝わる。
+
+末尾には原典用の `long long min_total_length(std::vector<int> r, std::vector<int> b)` も載せる。値渡しの二列を本体へ渡すだけで、標準入出力やgraderの状態に依存しない。
+
+## なぜ正しいか
+
+**隣接するblockだけに線を残せる。** 赤い $x$ から遠い青い $y$ へ、三つ以上のblock境界を飛ぶ線があるとする。その間には青い $b$、赤い $a$ を $x<b<a<y$ の順に選べる。線 $xy$ を $xb$ と $ay$ に替えると、元の両端を覆ったまま $a-b>0$ だけ短くなる。既存の線と重なる場合は、その線を追加しなくてよいのでさらに安い。従って最適解にそのような長い線はない。
+
+**一つのblockで共有する点は高々一つでよい。** 同色の $u<v$ について、$u$ が右の $w$、$v$ が左の $z$ へ結ばれているとする。$z<u<v<w$ なので、二本を $zu$ と $vw$ へ替えると $2(v-u)>0$ だけ短くなる。従って、左へ結ぶ点の後に右へ結ぶ点が並ぶ。二点が両側へ結ばれていても同じ交換ができるため、両側への接続を共有するのは境界の一点だけである。
+
+**二つの離れた群を覆う費用は閉じた式になる。** 左の $k$ 点の座標和を $S_A(k)$、右の $j$ 点の和を $S_B(j)$ とし、左の最後を $a$、右の最初を $b$ とする。各点から境界までの距離を一度ずつ払い、隙間 $b-a$ を少なくとも $\max(k,j)$ 本で渡る必要がある。
+
+$$C(k,j)=\sum_{x\in A}(a-x)+\sum_{y\in B}(y-b)+\max(k,j)(b-a).$$
+
+点の多い側では各点を一本ずつ使う。少ない側の各点も一度は使い、余った接続を境界に一番近い点へ集めれば、この下界を達成する。整理すると
+
+$$
+C(k,j)=
+\begin{cases}
+S_B(j)-S_A(k)+(k-j)b & k\ge j,\\
+S_B(j)-S_A(k)+(k-j)a & k\le j.
+\end{cases}
+$$
+
+**DPは共有の有無をちょうど二通りで表す。** 最後の右blockの点は、その左blockへ結ばれる。接続に使う左の末尾を $k$ 点とすると、前の解が覆う範囲は、その $k$ 点を全て除く最初の $q-k$ 点か、最初の一点だけを共有する $q-k+1$ 点である。上の交換性からそれ以外の重複は要らない。最適解をこの二群に分けると漸化式の候補に入り、逆に各候補の二つの配線を合わせれば全点を覆える。従って漸化式は必要十分である。
+
+添字 $q-k+1$ は $q$ 以下なので、右blockの更新途中の値は参照しない。$D[0]=0$、最初の単色blockだけの非空prefixは接続不能なので無限大とする。最後のblockについても、その全長の $j$ まで計算すれば、最後の点を含む全体の答えになる。
+
+**候補の最小値を二方向にまとめられる。** $P[k]$ を固定すると、$k\le j$ 側は
+
+$$S_B(j)-ja+\min_{k\le j}\{P[k]+ka-S_A(k)\},$$
+
+$k\ge j$ 側は
+
+$$S_B(j)-jb+\min_{k\ge j}\{P[k]+kb-S_A(k)\}$$
+
+である。前者は先頭から、後者は末尾からの最小値を一度作ればよい。$j>A$ では後者が空になるが、前者は全ての $k$ を候補に持つ。$j=k$ は両式が一致するため、両方へ含めてよい。
+
+## 計算量
+
+赤青の点数の和を $N$ とする。入力の検査と二列の併合、blockの抽出は $O(N)$。隣接する二blockについて、左の長さを $A$、右を $B$ とすると、座標和と二つの最小値を作り、全ての右prefixを更新する時間は $O(A+B)$ である。各blockがこの和に現れるのは高々二回なので、全体で **$O(N)$ 時間、$O(N)$ 空間**。点列を改めてソートする処理はない。
+
+座標が0〜$10^9$ なので、全点を二つの星で覆う $N-1$ 本以下の配線を作れば、各有限の $D[t]$ は $(t-1)10^9$ 以下になる。$k$ と座標の積、座標和、変形後の候補、答えには符号付き64bitを使う。最大20万点でもこれらの絶対値は $4\times10^{14}$ 未満である。無限大を表す $2^{60}$ は候補式へ代入せず、実在しない候補はそのまま残す。再帰は使わない。
+
+## 実装
+
+`left_min[k]` は $k$ 以下の候補の最小値、`right_min[k]` は $k$ 以上の候補の最小値である。二つの作業配列は最大block長だけ確保し、境界ごとに使い回す。異色間の同座標も併合の前に検査する。
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+
+std::int64_t min_line_bichromatic_edge_cover(
+    const std::vector<int>& red, const std::vector<int>& blue) {
+    static_assert(std::numeric_limits<int>::max() >= 1000000000);
+    static_assert(std::numeric_limits<long long>::digits >= 63);
+    constexpr std::size_t limit = 100000;
+    constexpr int coordinate_limit = 1000000000;
+    constexpr std::int64_t infinity = std::int64_t{1} << 60;
+    const auto validate = [&](const std::vector<int>& points) {
+        if (points.empty() || points.size() > limit)
+            throw std::invalid_argument("invalid point count");
+        for (std::size_t i = 0; i < points.size(); ++i) {
+            if (points[i] < 0 || points[i] > coordinate_limit ||
+                (i != 0 && points[i - 1] >= points[i]))
+                throw std::invalid_argument("coordinates must be distinct and increasing");
+        }
+    };
+    validate(red);
+    validate(blue);
+    for (std::size_t i = 0, j = 0; i < red.size() && j < blue.size();) {
+        if (red[i] == blue[j])
+            throw std::invalid_argument("red and blue coordinates coincide");
+        if (red[i] < blue[j]) ++i;
+        else ++j;
+    }
+
+    const int n = static_cast<int>(red.size() + blue.size());
+    std::vector<int> x;
+    std::vector<unsigned char> color;
+    x.reserve(n);
+    color.reserve(n);
+    std::size_t i = 0, j = 0;
+    while (i < red.size() || j < blue.size()) {
+        const bool take_red = j == blue.size() ||
+            (i < red.size() && red[i] < blue[j]);
+        x.push_back(take_red ? red[i++] : blue[j++]);
+        color.push_back(take_red ? 0 : 1);
+    }
+    std::vector<int> start;
+    start.reserve(n + 1);
+    start.push_back(0);
+    for (int t = 1; t < n; ++t)
+        if (color[t] != color[t - 1]) start.push_back(t);
+    start.push_back(n);
+    int largest = 0;
+    for (std::size_t b = 0; b + 1 < start.size(); ++b)
+        largest = std::max(largest, start[b + 1] - start[b]);
+
+    std::vector<std::int64_t> dp(n + 1, infinity);
+    std::vector<std::int64_t> left_min(largest + 1, infinity);
+    std::vector<std::int64_t> right_min(largest + 2, infinity);
+    dp[0] = 0;
+    for (std::size_t block = 1; block + 1 < start.size(); ++block) {
+        const int p = start[block - 1];
+        const int q = start[block];
+        const int r = start[block + 1];
+        const int a_count = q - p;
+        const std::int64_t a = x[q - 1], b = x[q];
+        left_min[0] = infinity;
+        right_min[a_count + 1] = infinity;
+        std::int64_t sum_a = 0;
+        for (int k = 1; k <= a_count; ++k) {
+            sum_a += x[q - k];
+            const auto previous = std::min(dp[q - k], dp[q - k + 1]);
+            left_min[k] = left_min[k - 1];
+            right_min[k] = infinity;
+            if (previous != infinity) {
+                left_min[k] = std::min(left_min[k], previous + k * a - sum_a);
+                right_min[k] = previous + k * b - sum_a;
+            }
+        }
+        for (int k = a_count - 1; k >= 1; --k)
+            right_min[k] = std::min(right_min[k], right_min[k + 1]);
+        std::int64_t sum_b = 0;
+        for (int count = 1; count <= r - q; ++count) {
+            sum_b += x[q + count - 1];
+            std::int64_t best = infinity;
+            const auto first = left_min[std::min(count, a_count)];
+            if (first != infinity) best = first - count * a;
+            if (count <= a_count && right_min[count] != infinity)
+                best = std::min(best, right_min[count] - count * b);
+            dp[q + count] = sum_b + best;
+        }
+    }
+    return dp[n];
+}
+
+long long min_total_length(std::vector<int> r, std::vector<int> b) {
+    return static_cast<long long>(min_line_bichromatic_edge_cover(r, b));
+}
+```
+
+## 関連する手法
+
+[二部マッチング](/flowchartcp/techniques/matching/)は、同じ点を二度使わずに組を選ぶ場合に使う。ここでは一点を複数回使い、全点を少なくとも一度覆う。
+
+[最小費用流](/flowchartcp/techniques/min-cost-flow/)は、容量と費用を明示したグラフで割当量を決める一般手段である。この設定では全異色対を作ると辺数が赤点数と青点数の積になるため、直線上の交換性を使って候補をまとめる。
+
+[累積和](/flowchartcp/techniques/prefix-sum/)で群の座標和を表し、最小値の先頭側・末尾側への累積でDPの候補を消去する。区間ごとに同じ最小値を走査し直す必要はない。
+
+## 参考資料
+
+- [IOI 2017 Wiring 原典](https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf)
+- [IOI公式配布のWiring Editorial](https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf)：隣接する同色群と線形DPの方針。上の一点共有の漸化式と二方向の最小値は、その方針を具体化した独立の証明である。
+- [日本語原典](https://ioi.te.lv/locations/ioi17/contest/day1/wiring/wiring-JPN.pdf)
+- [Day1実装上の注意](https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf)：型の対応、標準入出力を使わない関数形式。
+- [日本委員会の公式課題一覧](https://www2.ioi-jp.org/ioi/2017/tasks/index.html)：本競技Day1は2017-07-30。
+
+<TechniqueReferences techniqueId="line-bipartite-edge-cover-monochromatic-block-prefix-dp" />

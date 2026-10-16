@@ -1,0 +1,80 @@
+---
+title: "全方位木DPの状態を辺の向きごとに定義する"
+description: "辺を切った片側の情報を保存し、根を変えても意味が変わらない状態にする。"
+techniqueId: reroot-directed-edge-state
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+辺を切った片側の情報を保存し、根を変えても意味が変わらない状態にする。
+
+## 使う場面
+
+どの頂点を出発点にしても同じ種類の最大値を求めたい。親側と子側を別々に書くと、どの費用を含むかが分かりにくくなる。辺を切って得られる二つの側を使って、状態の意味を固定する。
+
+## 考え方
+
+各頂点 $x$ に報酬 $D_x$ があり、各出発点 $v$ について、自分以外の頂点への $d(v,x)+D_x$ の最大値を求める例を考える。
+
+有向辺 $u\to v$ の値を、辺を切った $u$ 側にある頂点 $x$ の $d(u,x)+D_x$ の最大値とする。これは $D_u$ と、$v$ 以外の隣から来た値に辺の長さを足したものの最大になる。頂点の答えは、すべての隣からの値に辺の長さを足した最大値になる。
+
+## 適用条件
+
+状態に、自分自身の報酬を含むか、辺の長さを含むかを一貫させる。以下は辺を越える前の値を状態にする。
+
+子から届いた値を、その子へ返す値にも含めると循環参照になる。自分以外を目的地にする答えでは、自分自身の報酬を最終候補に含めない。
+
+## なぜ正しいか
+
+辺を切った片側は、頂点 $u$ 自身と、$v$ を除く隣接方向の部分に分かれる。これらは重ならず、その側の全頂点を覆う。最大値を合成して辺を越える費用を加えれば、別の向きの状態も同じ定義で作れる。葉から子側を求め、根から親側を渡す二回の走査で両方向が確定する。
+
+## 計算量
+
+各出発点で探索し直すと $O(N^2)$。一方向を除く最大値を上位二つから求める実装では、時間・空間ともに $O(N)$。同じ最大値が複数ある場合も、二番目の候補として残す。
+
+## 実装
+
+`best_rewarded_destination` は自分以外の頂点を目的地にした最大値を返す。辺長と報酬は非負。頂点が一つだけなら目的地がなく、`NEG` が入る。各距離と報酬の和は符号付き64ビット整数に収まることを確認する。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <limits>
+#include <cassert>
+std::vector<long long> best_rewarded_destination(const std::vector<std::vector<std::pair<int,long long>>>& g,const std::vector<long long>& reward) {
+    const long long NEG=std::numeric_limits<long long>::lowest()/4;
+    int n=g.size();assert(int(reward.size())==n);if(!n) return {};
+    std::vector<int> parent(n,-1),order{0};parent[0]=0;
+    std::vector<long long> down=reward,from_parent(n,NEG),answer(n,NEG);
+    for(int i=0;i<int(order.size());++i)
+        for(auto [u,w]:g[order[i]]) if(u!=parent[order[i]]) { parent[u]=order[i];order.push_back(u); }
+    for(int i=n-1;i>=0;--i) {
+        int v=order[i];
+        for(auto [u,w]:g[v]) if(parent[u]==v && u!=v) down[v]=std::max(down[v],down[u]+w);
+    }
+    for(int v:order) {
+        long long first=NEG,second=NEG;int best_neighbor=-1;
+        for(auto [u,w]:g[v]) {
+            long long value=u==parent[v]?from_parent[v]:down[u]+w;
+            if(value>first) { second=first;first=value;best_neighbor=u; }
+            else second=std::max(second,value);
+        }
+        answer[v]=first;
+        for(auto [u,w]:g[v]) if(parent[u]==v && u!=v) {
+            long long except=u==best_neighbor?second:first;
+            from_parent[u]=std::max(reward[v],except)+w;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全方位木DP](/flowchartcp/techniques/rerooting/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC222 F](https://atcoder.jp/contests/abc222/editorial/2763)
+
+<TechniqueReferences techniqueId="reroot-directed-edge-state" />

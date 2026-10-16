@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2016",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "independent agent /root/usaco_cowmistry_article",
+  "status": "passed-initial-fixed-corpus-research-audit",
+  "materialIssues": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "unconfirmedRequiredLemmas": [],
+  "scope": "Initial research audit only. This review confirms six chosen mathematical full-range procedures, not six completed C++ APIs or published source mappings.",
+  "fixedSelection": {
+    "sha256": "3505ba77043d0ff594b6b66fe763cf9e7b1cd97082a79ff4dc30cbca809c3350",
+    "fixedBeforeTechniqueMatching": true,
+    "taskIds": [
+      "molecules",
+      "railroad",
+      "shortcut",
+      "paint",
+      "messy",
+      "aliens"
+    ],
+    "day1": "2016-08-14",
+    "day2": "2016-08-16",
+    "difficulty": null,
+    "practiceAndLanguageDuplicatesExcluded": true
+  },
+  "authorFrozenArtifacts": {
+    "selection.json": {
+      "path": "/tmp/flowchartcp-ioi2016-selection.json",
+      "sha256": "3505ba77043d0ff594b6b66fe763cf9e7b1cd97082a79ff4dc30cbca809c3350"
+    },
+    "audit.json": {
+      "path": "/tmp/flowchartcp-ioi2016-audit.json",
+      "sha256": "d69b49d6672dcbf4145ef36c7d265bc135fb848a3561f4523677bd76d7318b83"
+    },
+    "audit-notes.md": {
+      "path": "/tmp/flowchartcp-ioi2016-audit-notes.md",
+      "sha256": "bb4e16f1465575453d6284c2ebf46afd3d07b8ec2745616b08133e2f5e5bb92c"
+    },
+    "probe.py": {
+      "path": "/tmp/flowchartcp-ioi2016-probe.py",
+      "sha256": "2cc576c2b9c99fd3f7718239de76829049bbc0039d98ee978a298a2243fd7869"
+    },
+    "probe.json": {
+      "path": "/tmp/flowchartcp-ioi2016-probe.json",
+      "sha256": "f029dfc00a9010178d3e4ba14adabcbf42aba54c86a401ac5b26d409d0152908"
+    },
+    "registration-proposal.json": {
+      "path": "/tmp/flowchartcp-ioi2016-registration-proposal.json",
+      "sha256": "d926952b065a6fed3f64edef1f544ae1e9a9875873df68116468799ea73a6bbf"
+    },
+    "replay.py": {
+      "path": "/tmp/flowchartcp-ioi2016-replay.py",
+      "sha256": "ec2ffddd82113ce40a93e4ffa4b6ddf20012624b69343c81f201d0cfd4b716e6"
+    },
+    "routes.json": {
+      "path": "/tmp/flowchartcp-ioi2016-routes.json",
+      "sha256": "c8dbb6d0e6d245a4bea539714bafd24a111b83e6d804087f988dcd1b0459f7e9"
+    },
+    "runtime-replay.mjs": {
+      "path": "/tmp/flowchartcp-ioi2016-runtime-replay.mjs",
+      "sha256": "14b54d8e0b28c4fbec5dc67556373820535f7565fca146df3b9f3c9fa72ed24d"
+    },
+    "runtime-replay.json": {
+      "path": "/tmp/flowchartcp-ioi2016-runtime-replay.json",
+      "sha256": "fba15fba099fea2095e1816e13ff2f87ef9b086ed18f1e287970dc521b4175d1"
+    },
+    "scope-checks.py": {
+      "path": "/tmp/flowchartcp-ioi2016-scope-checks.py",
+      "sha256": "32a2f489c0c8a94e7ee7288e19353cd1842d17c2fdbf86164bae53950890f882"
+    },
+    "scope-checks.json": {
+      "path": "/tmp/flowchartcp-ioi2016-scope-checks.json",
+      "sha256": "df7d2079ca944a1a0c42f813e371cd2104e96e22c24377855f82a5f004a84b93"
+    },
+    "frozen-scope-checks.cpp": {
+      "path": "/tmp/flowchartcp-ioi2016-frozen-scope-checks.cpp",
+      "sha256": "b29c1cb1a5e69ab0e8c665fda9cf59fd204fc0aad4dce3fadd6eaa49af3020dc"
+    },
+    "schema-check.json": {
+      "path": "/tmp/flowchartcp-ioi2016-schema-check.json",
+      "sha256": "2271009d69ae05b2d728734881aae3c5e1c574dabf6847c6b6b0966574e26f2a"
+    },
+    "assess-corpus.json": {
+      "path": "/tmp/flowchartcp-ioi2016-assess-corpus.json",
+      "sha256": "fdad74bc25a6cc5ec0c48d6879169ca7053ec7b069c66e5942f006da0a09f6fc"
+    },
+    "build-audit.py": {
+      "path": "/tmp/flowchartcp-ioi2016-build-audit.py",
+      "sha256": "431d95e7381b549a735d75508cf3312ba53edccfa54f5cc5501d5e68ce41d586"
+    },
+    "baseline/manifest.json": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/manifest.json",
+      "sha256": "cc27a3e4b8fc71957827f96c970bd67c62ca859c300930e54fa7636574dffdf7"
+    },
+    "baseline/SHA256SUMS": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/SHA256SUMS",
+      "sha256": "dd7151810d712521a5f3f19c206eecb7630c3b9688575c6243dee4b170992a56"
+    },
+    "baseline/CORE_SHA256SUMS": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/CORE_SHA256SUMS",
+      "sha256": "5c76f569d8093b743896da6498b3828d1f2ea283b6efccff34fe2ceee506ed3a"
+    },
+    "baseline/hashes-before.json": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/hashes-before.json",
+      "sha256": "5283640905be52fc5619aad70902431cb89121e1b89c2c4f32c02b06c14774fa"
+    },
+    "baseline/hashes-after.json": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/hashes-after.json",
+      "sha256": "5283640905be52fc5619aad70902431cb89121e1b89c2c4f32c02b06c14774fa"
+    },
+    "baseline/vendor-hashes-before.json": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/vendor-hashes-before.json",
+      "sha256": "7c63e8d526612a0059c44ca3af68f32528167bc7ba76460ec4b5c09497e1523c"
+    },
+    "baseline/vendor-hashes-after.json": {
+      "path": "/tmp/flowchartcp-ioi2016-baseline/vendor-hashes-after.json",
+      "sha256": "7c63e8d526612a0059c44ca3af68f32528167bc7ba76460ec4b5c09497e1523c"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-ioi2016-sidecar.json",
+      "sha256": "ac908d90611e83bd7fd5e3d8cfbce18b86158236787bda841770adaf0923edf5"
+    }
+  },
+  "preservation": {
+    "allArtifactHashes": 23,
+    "rawFiles": 1431,
+    "coreFiles": 959,
+    "publicSameEpoch": 472,
+    "vendorLaterEpoch": 105,
+    "oldAudits": 9,
+    "nearestMdxAndCpp": 19,
+    "initialMetadata": 504,
+    "initialWalks": 525,
+    "initialGraphs": 471,
+    "initialResearch": 6,
+    "initialProductionApi": 0,
+    "initialCoverage": 0,
+    "rawLedgerSha256": "dd7151810d712521a5f3f19c206eecb7630c3b9688575c6243dee4b170992a56",
+    "initialRecordsProjectionSha256": "1fd300bf660b59cfe36cf0a9a16c41a83ed05a399e799801fce12a1e6e3f6584",
+    "initialStatusSha256": "fb4ee5ff70f3a3e2a5a029ddd383bf678dafd551b4d9f3e3c5e75de1b49bc77a",
+    "initialSelectionSha256": "203a4b9f29e2711a5c680ee99496647b0066fec106c3d2393be318c498561c7e",
+    "initialSnapshotSha256": "e8a57e1f82671067c45c714f870c7d4f9e652a885ce79fb258c0c23987ff59ce"
+  },
+  "primaryVerification": {
+    "method": "Independently reopened official Japanese committee task index/report, six English original PDFs, both Notice PDFs, official archive index and actual17-page Solutions link using web text extraction; formulas/constraints reassembled from displaced numeric text. No unread images or actual C++ header bytes claimed.",
+    "statementUrls": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-molecules-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-shortcut-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-aliens-ISC.pdf"
+    ],
+    "taskIndexUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "scheduleUrl": "https://www2.ioi-jp.org/ioi/2016/report.html",
+    "officialSolutionsIndex": "https://ioi.te.lv/locations/ioi16/contest/",
+    "actualSolutionsUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "actualSolutionsIndexLinkId": 1012,
+    "officialSolutionsPages": 17,
+    "noticeUrls": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf"
+    ],
+    "limitsVerified": {
+      "moleculesTimeSeconds": 1,
+      "otherFiveTimeSeconds": 2,
+      "allMemoryGB": 2
+    },
+    "allSixNumericBoundsVerified": true,
+    "actualCppHeadersRead": false,
+    "moleculesEditionDifference": {
+      "jpPrimaryFunction": "int[] solve(int l,int u,int[] w)",
+      "archivePrimaryFunction": "int[] find_subset(int l,int u,int[] w)",
+      "archiveUrl": "https://ioi.te.lv/locations/ioi16/contest/day1/molecules.pdf",
+      "archiveEvidence": "Official English link432 and primary indexed search text Country:api-ISC with full generic implementation section.",
+      "query": "site:ioi.te.lv/locations/ioi16 \"find_subset\"",
+      "relativePublicationChronologyVerified": false
+    }
+  },
+  "mathematicalAndScopeReviews": [
+    {
+      "task": "molecules",
+      "verified": true,
+      "bounds": "N1..200000; positive w,l,u<2^31;u-l>=maxw-minw;original distinct-index witness or empty",
+      "principalProof": "Fix an arbitrary solution cardinality k. Smallest-k sum<=u and largest-k sum>=l. Sorted contiguous k-window sums are monotone, each jump<=spread<=u-l, so the first window crossing l cannot jump beyond u. Positive-window two pointers preserves a witness and original indices.",
+      "provenance": "Official Greedy2 plus explicit independent endpoint/jump proof; printed Greedy1 maxSum<=l is not used.",
+      "scopeGap": "Existing interval count, capacity-indexed value DP and sum-bits API do not include the cardinality-window existence transfer, original-index witness and full numeric range."
+    },
+    {
+      "task": "railroad",
+      "verified": true,
+      "bounds": "N2..200000;s,t1..1e9;initial speed1;nonnegative integer track lengths;positive speed;every section exactly once",
+      "principalProof": "A connection costs max(0,t_i-s_j). Add (max_i max(s_i,t_i),1), close the order and cut after that section. Free abstract upward movement models acceptance below an entry upper bound. Each coordinate cut requires max(balance,0) paid downward crossings. After forced balancing, contracting known connections leaves a minimum connected augmentation; adjacent zero-balance double edges realize the component MST lower bound. Balanced weak connectivity supplies an Euler circuit and hence an order.",
+      "provenance": "Official coordinate-cut balance/MST solution plus independent bidirectional correspondence to the no-physical-acceleration statement.",
+      "scopeGap": "Euler-path and DSU primitives omit paid augmentation, free acceptance edges and the connectivity cost optimum."
+    },
+    {
+      "task": "shortcut",
+      "verified": true,
+      "bounds": "N2..1000000;l,c1..1e9;d0..1e9;distinct main endpoints, adjacent allowed;one optional leaf per main station",
+      "principalProof": "For sorted station and shortcut endpoints, uncrossing makes the forward shortcut orientation no longer than reverse. Only pairs whose original distance exceeds K impose the four sum/difference bounds, each including c. The sum of the two largest distinct branch lengths is a necessary lower bound; under it, a_i<b_j-K excludes i>j, and keeping two extrema excludes i=j. The two sort orders are independent of K. For candidate y, the lower bound max(Slo-y,y+Dlo) is V-shaped; clipping the second index to >first retains two monotone phases, so the discrete endpoint scan is O(N).",
+      "provenance": "Official sorted-extrema full-score method plus independent self-exclusion, branch lower bound, c restoration and discrete endpoint proof. Optional dominance-filter alternative is not claimed verified.",
+      "scopeGap": "Binary-search callback and fixed-tree/fixed-point diameter routines do not provide the required shortcut feasibility or full source API."
+    },
+    {
+      "task": "paint",
+      "verified": true,
+      "bounds": "N1..200000;K1..min(N,100);positive clues<=N;input X/_/. and output X/_/?;at least one full solution",
+      "principalProof": "Prefix feasibility splits completely by a final white cell versus the final specified black block with its separator. The reverse table is analogous. A cell is white iff a prefix/suffix block split joins there. A legal block placement is characterized by no forced white inside, available white neighbors, and feasible outside prefix/suffix; difference marking collects every possible black cell. Guaranteed consistency makes the union/intersection classification exhaustive.",
+      "provenance": "Official prefix/suffix feasibility solution; edge sentinels and future inconsistent-input policy kept explicit.",
+      "scopeGap": "Parity BFS and one-LCS reconstruction do not compute forced colors over all run-length completions."
+    },
+    {
+      "task": "messy",
+      "verified": true,
+      "bounds": "Power-of-two N, scored8/32/128;all stated write/read budgets;strict full128/896/896;all writes then exactly one compile then reads;fixed p",
+      "principalProof": "At a partition block of size m, signatures have outside bits1 and one left-half marker. Different depths have different Hamming weights; equal-depth blocks have nonempty zero supports in disjoint position sets. Hence membership is not contaminated by another block. After compile the current output-position set identifies the original interval; one marker distinguishes its half, and a leaf writes answer[outputPosition]=originalIndex. Calls are exactly (N/2)log2N writes and Nlog2N reads:80/160 at32 and448/896 at128, including both asymmetric budgets. Character operations are O(N²logN), distinct from oracle-call count.",
+      "provenance": "Official balanced signature method, with independent collision/direction/budget proof. The randomized restricted method remains optional/unverified.",
+      "scopeGap": "The generic reached interactive article uses stdio (forbidden by Notice), while one-hidden-item testing does not recover a whole compiled bit permutation."
+    },
+    {
+      "task": "aliens",
+      "verified": true,
+      "bounds": "N1..100000;M1..1000000;1<=K<=N;r,c0..M-1;duplicates allowed;at mostK diagonal cell-aligned squares;union cells counted once",
+      "principalProof": "Transform each cell to [min(r,c),max(r,c)] and remove contained requirements. Remaining L/R increase strictly. Photos can cover contiguous requirement groups and be shrunk to group extremes; new union area subtracts exactly the previous boundary overlap square. The expanded edge weight is Monge. For q-1 and q+1 partition paths, a common rank-difference-one cut or the first Q-minus-P cut imbalance2 provides an explicit nonincreasing-cost suffix exchange into two q-edge paths, proving discrete convexity. Integer marginal savings and fewer-photo ties then justify G(lambda)-lambda*K at the first <=K count. Strictly ordered slopes/queries give linear monotone CHT per penalty, plus one sort.",
+      "provenance": "Official union correction/CHT/penalty solution; independent constructive convexity and integer tie-boundary proof. Small-subtask Knuth is not claimed verified.",
+      "scopeGap": "Generic WQS, scalar CHT/Li Chao and nonadjacent selection components omit the geometric reduction, overlap correction, photo-count ties and complete source-range API."
+    }
+  ],
+  "routeVerification": {
+    "entryRoots": [
+      "ranges",
+      "dp",
+      "graphs",
+      "flow-matching",
+      "strings",
+      "math",
+      "geometry",
+      "game-probability",
+      "thinking",
+      "heuristic",
+      "condition-check",
+      "set-operations",
+      "interactive-oracles",
+      "grid-arrangements",
+      "fixed-output"
+    ],
+    "canonicalRoutes": 6,
+    "fullQuestionAndAnswerLabels": 8,
+    "existingWalks": 525,
+    "existingWalkSteps": 2781,
+    "genericInteractiveReachedButUncovered": true
+  },
+  "prototypeRerun": {
+    "command": [
+      "python3",
+      "/tmp/flowchartcp-ioi2016-probe.py",
+      "/tmp/flowchartcp-ioi2016-independent-probe-rerun.json"
+    ],
+    "seconds": 8.152484577003634,
+    "semanticJsonExactlyEqualIgnoringElapsedSeconds": true,
+    "allSixPassed": true,
+    "resultPath": "/tmp/flowchartcp-ioi2016-independent-probe-rerun.json",
+    "resultSha256": "0a0851af1b9348fce2cb83e641c8dabb719683ba109e5e72021e2c93245ae3d7",
+    "counterSemanticsReviewed": true,
+    "counterNotes": [
+      "Molecules471040 counts represented subset assignments, not distinct sum states or explicit subset-loop executions.",
+      "Railroad1174270 counts literal section permutations actually tried.",
+      "Shortcut1548 exhaustive networks and1800 random networks each use every legal express endpoint pair and actual augmented-graph Floyd;21861 counts thresholds.",
+      "Paint62701 groups combine86870 literal full-row/reveal pairs;all-zero black mask omitted because source K>=1.",
+      "Messy40347 enumerates N1/2/4/8 permutations;1/2/4 are explicit generalizations,400 random tests use original32/128.",
+      "Aliens437 counts actual photo subsets with at mostM photos;1094 nonempty requirement sets on M1..4 cover every relevant diagonal interval;union bitmaps count overlap once."
+    ],
+    "productionImplementationValidated": false,
+    "sanitizerRun": false
+  },
+  "copiedAuthorCheckReruns": {
+    "resultsPath": "/tmp/flowchartcp-ioi2016-independent-reruns.json",
+    "resultsSha256": "394f811586e0ca8e44c25458d617edcf3c7158c44b5b24bb8961f40ac5026d08",
+    "allExitCodesZero": true,
+    "onlyOutputAndTemporaryDirectoryPathsChanged": true,
+    "scopeFencesCompiled": 19,
+    "nativeComponentCalls": 18,
+    "protocolCompileOnly": 1,
+    "scopeOutputEqual": true,
+    "rawRouteOutputEqual": true,
+    "runtimeOutputEqual": true,
+    "runtimeCompilerVendorIsLaterEpoch": true,
+    "productionSolverApiValidation": false
+  },
+  "newIndependentValidation": {
+    "probePath": "/tmp/flowchartcp-ioi2016-independent-probe.py",
+    "probeSha256": "f9387a408cd858d16ab0fa8c600cc30e98d592c9af2dd6665ee87a32b86b1859",
+    "resultPath": "/tmp/flowchartcp-ioi2016-independent-probe-results.json",
+    "resultSha256": "7c12c840a484caa51c100caa0977a752ecb73e9a772c2f0280fd3c066390ffd3",
+    "additionalMath": {
+      "railroadHeldKarpCasesN2to12": 220,
+      "railroadPositiveAffineCases": 120,
+      "shortcutArbitraryRotatedRectangleEndpointCases": 209916,
+      "aliensAbstractIntervalSets": 260,
+      "aliensDirectMongeChecks": 17987,
+      "aliensConstructivePathPairExchanges": 44799,
+      "productionApiValidated": false,
+      "sanitizerRun": false
+    },
+    "algorithmIndependence": [
+      "Railroad subset/last Held-Karp DP never uses coordinate balances, DSU or MST and does not enumerate full permutations;larger N2..12 and speed values1e9 included.",
+      "Shortcut oracle enumerates every ordered distinct endpoint pair directly against arbitrary four bounds, independent of bad-pair generation.",
+      "Aliens explicitly constructs and prices both balanced paths for44799 path pairs with counts differing by2;not merely a numerical second-difference check."
+    ],
+    "sourceMaximumProductionImplementationTested": false
+  },
+  "schemaAndCoverage": {
+    "scriptPath": "/tmp/flowchartcp-ioi2016-independent-schema.mjs",
+    "scriptSha256": "55e4bb283e22c5333865411259e51f660f95ff83c143dc50c3b79ffd64de037c",
+    "resultPath": "/tmp/flowchartcp-ioi2016-independent-schema-results.json",
+    "resultSha256": "2d95c897e77cb0861f6623db25f083498c491aeffce8b39e767d3ffc2683b414",
+    "realFrozenPreflightErrors": 0,
+    "existingFrozenHelperStatements": 6,
+    "existingFrozenHelperResearch": 6,
+    "existingFrozenHelperCoverage": 0,
+    "allSixCompletedApiFlagsFalse": true,
+    "allSixExpectedTechniqueIdsEmpty": true,
+    "genericInteractiveTerminalNotCoverage": true,
+    "noResearchPrototypePromotedToProductionValidation": true,
+    "noGlobalCompletionClaim": true
+  },
+  "nonblockingClarifications": [
+    {
+      "location": "audit-notes Railroad s_max",
+      "note": "Use max_i max(s_i,t_i) for auxiliary entry speed. Audit technicalFindings and probe already use this exact bound; parent will append clarification without rewriting initial raw notes.",
+      "requiresInitialRawMutation": false
+    }
+  ],
+  "optionalUnknownsPreserved": [
+    "Molecules API-edition relative chronology.",
+    "Actual six grader C++ headers/zip bytes and const/reference spellings beyond generic Notice correspondence.",
+    "Shortcut dominance-filter alternative,Aliens restricted Knuth,Molecules other greedy variants,Paint white-only greedy,Messy randomized restricted variant.",
+    "All six production C++20/source-maximum/invalid/reentrant/sanitizer/article/rootwalk/reference validation remains future work."
+  ],
+  "registrationRecommendations": {
+    "retainInitialAuditAndSelectionBytes": true,
+    "fixedRegression": "Freeze all initial six row/status/selection/snapshot fields and raw SHA;permit only later resolution/review additions. Protect all old9audit fields including existing resolutions and reviews. Assert research6/coverage0 initially and test real target/source/steps/preflight mutations after any resolution.",
+    "permanentBundle": "Parent decision to retain all1431 initial raw files,including all504MDX/all472public,is stronger than original nearest19-only proposal. Keep original proposal/raw audit bytes unchanged;record retention expansion in normalized manifest.",
+    "vendor": "Retain105vendor files under a separately identified epoch;never label them initial SVG bytes.",
+    "manualProbe": "Normalize only input/output plumbing to restore the complete permanent bundle to temp and verify every original1431SHA;preserve semantic JSON/counter definitions;default stdout and write results only on explicit output argument.",
+    "noAutomaticCollectionOrScheduleRequested": true
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "publishingOrPushPerformed": false,
+  "globalLearningComplete": false,
+  "globalCoverageComplete": false,
+  "permanentNormalization": {
+    "originalReviewSha256": "460cf6a1e39f0d710e9021ce5d96c997972dd2f1b807e7adfa5d3443ae341a29",
+    "normalizedProbeFile": "research/probes/ioi-2016-independent-checks.py",
+    "normalizedProbeSha256": "f48abd3335c856a6453b124d1029da4c02d88c400d74c3d0b394a9c92673c063",
+    "normalization": "Only restore every1536raw plus exact original artifacts/ledgers and remap artifact paths; eliminate default result-file overwrite. All preservation/math/walker checks unchanged.",
+    "historicalRawProposalRetained": true,
+    "initialRawFilesPermanentlyRetained": 1431,
+    "fullMdxPermanentlyRetained": 504,
+    "vendorLaterEpochPermanentlyRetained": 105
+  }
+}

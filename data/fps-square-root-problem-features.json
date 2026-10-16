@@ -1,0 +1,23 @@
+[
+  {
+    "source": "Library Checker",
+    "problemId": "sqrt_of_formal_power_series",
+    "title": "Sqrt of Formal Power Series",
+    "url": "https://judge.yosupo.jp/problem/sqrt_of_formal_power_series",
+    "evidenceUrl": "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/polynomial/sqrt_of_formal_power_series/sol/correct.cpp",
+    "verification": "reference-solution",
+    "reviewStatus": "verified",
+    "techniqueIds": [
+      "fps-square-root"
+    ],
+    "features": [
+      "有限体の係数列が与えられ、二乗がその列と先頭N項で一致する列を一つ返す。",
+      "元の列の定数項が零でもよく、解が存在しない場合はそう報告する。必要な項数は最大500000。"
+    ],
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "source-before-cutoff",
+    "sourceDate": "2019-09-20",
+    "cutoffEvidenceUrl": "https://github.com/yosupo06/library-checker-problems/issues/73",
+    "publicationNotes": "公開案の日付で問題の定式化が基準日以前に存在したことを確認。判定システムの公開日は未確認。"
+  }
+]

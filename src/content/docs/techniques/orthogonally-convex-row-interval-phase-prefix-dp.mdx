@@ -1,0 +1,180 @@
+---
+title: "行と列が途切れない連結なマス集合を、両端の動きと累積和で数える"
+description: "各行の選択を一区間で表し、左端が内向きになったか、右端が内向きになったかを記録する。隣接行の重なりと厳密な転換を矩形和にまとめ、同じ集合を重複せず数える。"
+techniqueId: orthogonally-convex-row-interval-phase-prefix-dp
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+使えるマスが指定された格子から、空でない部分集合を選びたい。選んだマスは上下左右で連結し、どの行でもどの列でも、選んだマスが途中で途切れないことを求める。このような集合の個数を数える。
+
+選ぶ集合は長方形に限らない。例えば、上から `GG`、`.G` の形も条件を満たす。一方、上から `GG`、`.G`、`GG` とすると、左の列に穴ができる。斜めだけで触れる二マスも、上下左右で連結しないので受理しない。
+
+## 考え方
+
+選択を含む行は連続する。各行の選択区間を $[L_i,R_i]$ とすると、隣接する区間が重なることが連結性の条件になる。
+
+列も途切れないためには、左端 $L_i$ は最初に外へ広がる向き、すなわち非増加に動き、その後は内へ縮む向き、すなわち非減少に動く必要がある。右端 $R_i$ はその逆で、非減少から非増加へ移る。それぞれ一度だけ向きを変えられる。
+
+現在の区間 $[L,R]$ と、左右について**厳密な内向きの移動が既に起きたか**の二つのフラグを状態にする。等しい端点ではフラグを変えない。各端の動きが変わった位置を好きに選ぶと、平らな部分を持つ同じ集合を何度も数えてしまうためである。
+
+前行の区間を $[l,r]$ とした遷移は、$l,r$ の長方形範囲に分かれる。四状態それぞれの二次元累積和から、定数回の矩形和で次行を求める。
+
+## 適用条件
+
+`count_row_column_convex_subsets(grid)` は、`G` を使えるマス、`.` を使えないマスとする格子を受け取り、条件を満たす非空部分集合の個数を $1000000007$ で割った余りを返す。原典の $1\le N\le150$ の正方形全域を含み、行数・列数がそれぞれ0から150の長方形にも対応する。空格子や幅0の格子は0を返す。
+
+幅の違う行、150を超える行数・列数、`G` と `.` 以外の文字は `std::invalid_argument`。空の列や全て使用不能の場合でも、入力の検査を省かない。入力を変更せず、全状態は呼出し内に置く。割当例外はそのまま伝える。
+
+連結性は4近傍であり、斜めの接触では足りない。部分集合の外接長方形の個数や、使用可能マス全体の連結成分数を数えるAPIではない。
+
+## なぜ正しいか
+
+**行区間と連結性。** 行内で途切れない条件から、各非空行は一区間である。4連結なら、途中に空行はなく、隣接する非空行の区間は少なくとも一列で重なる。逆に、連続する行の区間が毎回重なれば、各行内の横の接続と行間の縦の接続によって、全マスが一つの4近傍成分になる。
+
+**左右の一転換。** 左端が非増加から非減少へ移る形でないと、ある列 $c$ に対して、左端が $c$ 以下の行、$c$ より右の行、再び $c$ 以下の行がこの順に現れる。左端が $c$ を越える直前の行は、次行との重なりにより右端が $c$ より右にある。同様に左端が $c$ 以下へ戻った行も、直前の行との重なりにより右端が $c$ より右にある。その二行は列 $c$ を選ぶのに、間の行は選ばず、列の連続性に反する。右端も左右を反転した同じ議論で、非減少から非増加へ一度だけ移る。
+
+逆に左端が谷型なら、$L_i\le c$ を満たす行の集合は区間になる。右端が山型なら、$R_i\ge c$ を満たす行の集合も区間になる。その共通部分が列 $c$ を選ぶ行そのものなので、各列は途切れない。従って、行区間の重なりと左右の一転換は、元の条件と必要十分である。
+
+**一意なフラグ。** 左フラグが0なら、まだ厳密な左端増加はない。新しい左端 $L$ が前の $l$ 以下なら0を保ち、$L>l$ なら初めて1へ移す。既に1なら $L\ge l$ のみ許す。右フラグも、初めて $R<r$ になったときだけ1へ移す。この決め方なら、各区間列にフラグ列がただ一つ対応する。
+
+**遷移範囲。** 新区間 $[L,R]$ との重なりは $l\le R$ かつ $r\ge L$ である。これと端の条件を合わせると、左端については次の範囲になる。
+
+| 旧フラグ→新フラグ | 前行の左端 $l$ |
+| --- | --- |
+| 0→0 | $L\le l\le R$ |
+| 0→1 | $0\le l<L$ |
+| 1→1 | $0\le l\le L$ |
+
+右端は次の範囲になる。
+
+| 旧フラグ→新フラグ | 前行の右端 $r$ |
+| --- | --- |
+| 0→0 | $L\le r\le R$ |
+| 0→1 | $R<r<W$ |
+| 1→1 | $R\le r<W$ |
+
+左右の範囲を組み合わせた長方形を、対応する旧状態の表で足せばよい。$l>r$ の状態は常に0なので、不正な旧区間は含まれない。0→1にだけ厳密不等号を使い、既に1の平らな部分は1→1として受け継ぐ。
+
+**開始と終了。** 現在行の区間が全て `G` なら、新しく単一行の集合を作る1通りをフラグ00に加える。続ける場合は直前の行の状態だけを使うため、空行を飛び越えない。全ての底行・区間・フラグの値を答えに加えると、各非空集合を、その最下行を処理したときに一度だけ数える。
+
+## 計算量
+
+元の行数を $A$、列数を $B$ とする。必要なら行と列を読み替え、状態の幅を $W=\min(A,B)$、走査する長さを $H=\max(A,B)$ にする。行列に対する条件は対称なので、この読み替えで答えは変わらない。
+
+空格子は $O(1)$、幅0の格子は $O(A)$ 時間で行長を検査して0を返す。以下は行数・列数がともに正の場合を考える。
+
+各行に $O(W^2)$ 区間があり、一状態は定数回の矩形和で求められる。四表の累積和も各行 $O(W^2)$ なので、時間は **$O(AB+HW^2)$**、補助空間は **$O(W^2)$**。原典の正方形では $O(N^3)$ 時間、$O(N^2)$ 空間となる。
+
+保持する配列は四枚の現在行DPと四枚の累積和だけで、要素数は $4W^2+4(W+1)^2$。32bit整数の場合、$W=150$ で主要な補助配列のデータ量は724816 byteとなる。入力を転置した複製や、全行のDPは作らない。再帰も使わない。
+
+全ての表要素と答えは法未満に正規化する。累積和の加減算、最大四項の遷移和は64bitで計算してから剰余を取る。矩形和の差が負になる場合も補正する。表の一辺は151以下で、添字の積は `std::size_t` で計算する。
+
+## 実装
+
+`rect` は前行DPの半開長方形和を返す。状態番号は左フラグを上位ビット、右フラグを下位ビットとする。現在行を全て求めてから、その値で次の行用の累積和を作り直す。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+namespace convex_row_subset_detail {
+constexpr int modulus = 1000000007;
+static_assert(std::numeric_limits<int>::max() >= modulus);
+int normalized(std::int64_t value) {
+    value %= modulus;
+    if (value < 0) value += modulus;
+    return int(value);
+}
+} // namespace convex_row_subset_detail
+
+int count_row_column_convex_subsets(const std::vector<std::string>& grid) {
+    using convex_row_subset_detail::normalized;
+    if (grid.size() > 150) throw std::invalid_argument("too many rows");
+    const std::size_t columns = grid.empty() ? 0 : grid.front().size();
+    if (columns > 150) throw std::invalid_argument("too many columns");
+    for (const std::string& row : grid) {
+        if (row.size() != columns) throw std::invalid_argument("ragged grid");
+        for (char cell : row) if (cell != 'G' && cell != '.')
+            throw std::invalid_argument("invalid cell");
+    }
+    if (grid.empty() || columns == 0) return 0;
+    const int rows = int(grid.size()), cols = int(columns);
+    const bool transpose = rows < cols;
+    const int height = std::max(rows,cols), width = std::min(rows,cols);
+    const std::size_t stride = std::size_t(width)+1;
+    std::array<std::vector<int>,4> current, prefix;
+    for (int state = 0; state < 4; ++state) {
+        current[state].assign(std::size_t(width)*width,0);
+        prefix[state].assign(stride*stride,0);
+    }
+    auto rect = [&](int state,int l0,int l1,int r0,int r1) -> int {
+        if (l0 >= l1 || r0 >= r1) return 0;
+        const auto& table = prefix[state];
+        return normalized(std::int64_t(table[std::size_t(l1)*stride+r1])
+            - table[std::size_t(l0)*stride+r1]
+            - table[std::size_t(l1)*stride+r0]
+            + table[std::size_t(l0)*stride+r0]);
+    };
+    int answer = 0;
+    for (int row = 0; row < height; ++row) {
+        for (auto& table : current) std::fill(table.begin(),table.end(),0);
+        for (int left = 0; left < width; ++left) {
+            for (int right = left; right < width; ++right) {
+                const char cell = transpose ? grid[right][row] : grid[row][right];
+                if (cell != 'G') break;
+                const std::array<int,4> value = {
+                    normalized(1LL + rect(0,left,right+1,left,right+1)),
+                    normalized(std::int64_t(rect(0,left,right+1,right+1,width))
+                        + rect(1,left,right+1,right,width)),
+                    normalized(std::int64_t(rect(0,0,left,left,right+1))
+                        + rect(2,0,left+1,left,right+1)),
+                    normalized(std::int64_t(rect(0,0,left,right+1,width))
+                        + rect(1,0,left,right,width)
+                        + rect(2,0,left+1,right+1,width)
+                        + rect(3,0,left+1,right,width))
+                };
+                const std::size_t at = std::size_t(left)*width+right;
+                for (int state = 0; state < 4; ++state) {
+                    current[state][at] = value[state];
+                    answer = normalized(std::int64_t(answer)+value[state]);
+                }
+            }
+        }
+        for (int state = 0; state < 4; ++state) {
+            auto& table = prefix[state];
+            std::fill(table.begin(),table.end(),0);
+            for (int left = 0; left < width; ++left)
+                for (int right = 0; right < width; ++right)
+                    table[std::size_t(left+1)*stride+right+1] = normalized(
+                        std::int64_t(current[state][std::size_t(left)*width+right])
+                        + table[std::size_t(left)*stride+right+1]
+                        + table[std::size_t(left+1)*stride+right]
+                        - table[std::size_t(left)*stride+right]);
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [状態の設計](/flowchartcp/techniques/state-design/)：過去の全形ではなく、現在行の区間と向きの転換だけを覚える。
+- [累積和](/flowchartcp/techniques/prefix-sum/)：前行の二端点について、条件を満たす長方形範囲をまとめて足す。
+- [不変量](/flowchartcp/techniques/invariant/)：等号ではflagを変えず、各形に状態列が一つだけ対応することを保つ。
+
+## 参考資料
+
+- [USACO Balanced Subsets 原典](https://usaco.org/index.php?page=viewproblem2&cpid=1142)
+- [USACO公式解説](https://usaco.org/current/data/sol_prob3_platinum_open21.html)
+- [USACO 2021 US Open公式結果](https://usaco.org/index.php?page=open21results)
+
+<TechniqueReferences techniqueId="orthogonally-convex-row-interval-phase-prefix-dp" />

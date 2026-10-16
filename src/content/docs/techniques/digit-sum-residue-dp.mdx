@@ -1,0 +1,61 @@
+---
+title: "桁和の条件は合計でなく余りだけを持つ"
+description: "非常に長い上限までの整数を、桁和の余りと上限との一致で数えます。"
+techniqueId: "digit-sum-residue-dp"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+上限 $K$ が機械の整数型に入らず、桁和が $D$ の倍数になる正整数を数えたいとき。桁和そのものを持つと、桁数が増えるたびに状態の範囲も広がります。
+
+## 考え方
+
+左から桁を選び、状態を「桁和の余り $r$」「ここまでが上限と一致しているか $t$」にします。数字 $d$ を追加すると、$r'=(r+d)\bmod D$。整数の値の余りを持つ $r'=(10r+d)\bmod D$ とは異なります。
+
+先頭を 0 で埋めても桁和は変わりません。0 以上 $K$ 以下を数えた後、全桁 0 の一通りを引きます。
+
+## 適用条件
+
+桁和だけで将来の判定が決まり、先頭の 0 が条件を変えないこと。使った数字の種類や連続する数字にも条件がある場合、その履歴を別に持つ必要があります。法は正整数、$D\ge1$ とします。
+
+## なぜ正しいか
+
+各整数は上限と同じ長さに 0 埋めした列と一対一です。桁和が同じ余りになる履歴は、どの続きを足しても最終余りが同じなので統合できます。上限と一致した状態だけ次の桁の上限を制限すれば、許される列を過不足なく列挙します。
+
+## 計算量
+
+全整数の列挙は $O(KL)$。桁和そのものを持つ DP は時間 $O(L^2)$、層ごとの空間 $O(L)$。余りだけなら時間 $O(10LD)$、空間 $O(D)$。$L$ は上限の桁数です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long count_digit_sum_mod(const string& upper,int d,long long mod=1000000007){
+    assert(d>=1 && mod>0 && !upper.empty());
+    vector<array<long long,2>> dp(d), next(d);
+    dp[0][1]=1%mod;
+    for(char c:upper){
+        assert('0'<=c && c<='9');
+        fill(next.begin(),next.end(),array<long long,2>{0,0});
+        for(int r=0;r<d;++r)for(int tight=0;tight<2;++tight)
+            for(int digit=0;digit<=(tight ? c-'0':9);++digit){
+                int nr=(r+digit)%d, nt=tight && digit==c-'0';
+                next[nr][nt]=((__int128)next[nr][nt]+dp[r][tight])%mod;
+            }
+        dp.swap(next);
+    }
+    return ((__int128)dp[0][0]+dp[0][1]+mod-1)%mod;
+}
+```
+
+## 関連する手法
+
+[桁DPでは先頭の0と数字としての0を分ける](/flowchartcp/techniques/digit-dp-leading-zero/)
+
+## 参考資料
+
+- [AtCoder：Digit Sum の問題文](https://atcoder.jp/contests/dp/tasks/dp_s)
+
+<TechniqueReferences techniqueId="digit-sum-residue-dp" />

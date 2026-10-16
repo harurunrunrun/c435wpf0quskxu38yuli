@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "全交点の列挙が巨大になる空中通路を、一般の始点・終点でも距離を保つ疎グラフへ変える不足を解消",
+  "counts": {
+    "specificTechniques": 418,
+    "foundationArticles": 78,
+    "allArticles": 496,
+    "exampleMappings": 517,
+    "originalUrls": 479,
+    "graphs": 463,
+    "nodes": 3649,
+    "questions": 1660,
+    "answerEdges": 5412,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 513,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "skywalk-endpoint-sparse-shortest-path",
+      "articleSha256": "c10ac9a01c57169c418f17dcbf2c2f765b7dfbac9f4dae36040ab8fe8f6dc881",
+      "codeSha256": "8623c4854f945e096e2b74d1f3fdcf0aa88da3543e9fe658b6ccec9d99595bd6",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    }
+  ],
+  "verification": {
+    "native": {
+      "command": "node tests/skywalk-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 18804.119415
+    },
+    "newFlow": {
+      "command": "node tests/skywalk-flow.test.mjs",
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 4303.36038,
+      "record": "research/probes/skywalk-flow-results.json"
+    },
+    "broadRegression": {
+      "groups": 56,
+      "passed": 56,
+      "failed": 0,
+      "durationMs": 70742.925169,
+      "scope": "Navigation, guard, share/back/legacy, both displays, geometry/text, fixed-corpus/ledger/collector regressions."
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 496,
+      "mappings": 517,
+      "diagrams": 463,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 496,
+      "recentArticlesChecked": 26,
+      "japaneseEnglishFullWidthQueries": 105,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 463,
+      "completeAnswerLabels": 5412,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "The new detailed diagram and its parent diagram were rasterized and viewed; complete questions, labels, nodes and arrows do not overlap."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1431,
+      "linksAssets": 29079,
+      "diagrams": 463,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "Nearest sufficiently tall buildings split each skywalk about both terminals. Every remaining piece with an internal intersection excludes terminals from its open horizontal span. An irrelevant vertical edge can be replaced through rectangle sides/top at Manhattan length no greater than the original prefix/suffix. Lexicographically minimal bad-edge counts by descending top height eliminate all such edges simultaneously, without assuming x-monotone paths.",
+    "Start/query/end event ordering, strict lower-height projection, same-height endpoint transfers, coordinate union and horizontal contraction checked. P<=6M, vertices<=2P+2, undirected edges<=3P. Indexed heap contains each unsettled vertex once. Payload132P+48 is limited to the coordinate-union/adjacency stage; preceding N-dependent order/event/set storage separately stated.",
+    "The complete validating API includes originalN/M100000, coordinates/heights1e9, arbitrary distinct source terminals and original long long by-value min_distance adapter. M0/s=g/N1 are explicit extensions and validated before shortcut returns. All indexing, integer distances, array lifetimes and no shared state checked.",
+    "Actual visible C++ fence:9280397checks/checksum9377741248886004889;108279exhaustive small physical instances/1716019ordered terminal pairs,4000random all-pair comparisons to independently built literal full-intersection weighted graph,15440metamorphic checks,invalid24. SevenN=M100000constructions include1e10literal intersections,599994sparse vertices/1099978edges,internal short-terminal detours,same-height touches,unreachable and distance99998999890004. Author/root/separate reviewer normal andASan/UBSan all passed.",
+    "Extra independent oracle explicitly creates every unit-length lattice edge and runs unweighted BFS, using neither intersection compression nor Dijkstra.10624inputs/1750018checks/checksum17658587268103824764; includes roof-tail height invariance and inserting a dead-end building with only one contact. Permanent probe rerun on the published fence.",
+    "Primary all-input bounds were reobtained from official LVA/IDN/AZE translations. Missing English/Japanese PDF absent-path formula was independently verified as-1 in the official MAC implementation paragraph and AZE search-visible text. Exact date2019-08-08 from Japanese national committee listing; difficulty null. Successful image inspection not claimed. Official Review omits the general correctness details, so original officialEditorialVerified:false remains and the complete proof is independent-analysis.",
+    "All old516walk records/steps/terminals/full text/answer labels,462graphs3643nodes/every field/old option and answer-key order,593localprefix and404shared completed histories/Back preserved. Three guards, six negative/unknown exits, display switches, share, SVG complete labels and applicability checked.",
+    "Initial all6IOI2019 records/status/selection/snapshot/false flags and4existing resolution rows preserved. Add exactly one subsequent positive independent review and one resolution; research5/6/covered5/6 returns to4/4 without review and5/4 without resolution. Actual walk/reference/article-target mutations also lower covered count without forging initial historical rows."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 517,
+    "reviewedProblems": 477,
+    "corpusStatementsReviewed": 65,
+    "corpusSolutionsReviewed": 58,
+    "allSolutionsReviewed": 489
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "5/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "2/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "3/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 20,
+  "counterNote": "Walk was initially unconfirmed. Exactly one new distinct solution review increases the union488→489; the new published identity is also inside the fixed review set and is not double-counted. Original URLs479 include separately pending examples.",
+  "limitations": [
+    "Global denominator unknown; world-wide coverage incomplete.",
+    "Production Astro/Starlight/Pagefind build and real browser remain unverified after earlier environment failures; no dependency installs/server/browser retried.",
+    "External-link liveness for all examples was not verified.",
+    "No push, upload or publication."
+  ],
+  "inProgress": [
+    "CountingGraphs complete API/proof/actual-fence checker frozen; root normal/ASan passed, separate review underway; not published.",
+    "Balanced Subsets complete API/proof/literal-subset/max checker frozen, root reproduction and separate review pending; not published.",
+    "Routing Schemes complete frontier technique being authored; optional PIE/determinant/BEST remains separate unconfirmed nextWork.",
+    "IOI2019 Line full-score construction and omitted connection lemmas being investigated; original unconfirmed record retained."
+  ]
+}

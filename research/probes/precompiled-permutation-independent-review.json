@@ -1,0 +1,278 @@
+{
+  "techniqueId": "precompiled-permutation-partition-signature-membership",
+  "reviewer": "/root/usaco_mincost_flow_tests",
+  "reviewedAt": "2026-10-15",
+  "status": "independently-verified",
+  "materialFindings": [],
+  "minorFindings": [],
+  "requiredUnconfirmedLemmas": [],
+  "frozenArtifacts": [
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-article.mdx",
+      "sha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "bytes": 10920
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-checker.py",
+      "sha256": "2bde8894a26f14644b210045e482a1d8b0c2edea4b372f2ca04ff5fb681b6254",
+      "bytes": 17609
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-sidecar.json",
+      "sha256": "6cc40fff6223ea6619008f79122afa44609b36d67838c6ea91d4ad2a67fa1939",
+      "bytes": 82697
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-independent-normal.json",
+      "sha256": "28e7d184d344bb42830413d5efd2c7e65313c442433bf326165baaafab1723be",
+      "bytes": 7371
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-independent-asan.json",
+      "sha256": "376a705fd1c6651463d1fcb2c4fac7cbb8683e1aa58770e3b429d26e71c7fb0c",
+      "bytes": 7490
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-independent-extra.py",
+      "sha256": "2d1d7016b69dd11e423a9f06199787a2ac929a186db3e95e6dcc96a124bda030",
+      "bytes": 12014
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-independent-extra-normal.json",
+      "sha256": "9c5ce5515fbee282be6df9cae1690d8d4f64496492ce80b5f90bac66bb785ba1",
+      "bytes": 563
+    },
+    {
+      "path": "/tmp/flowchartcp-ioi2016-messy-independent-extra-asan.json",
+      "sha256": "e3a3ba2d1b4ca5679fe655cb6732c1d0a71c47a51e631b9ce6ab9a4289f1dfaf",
+      "bytes": 563
+    }
+  ],
+  "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+  "authorArtifactsEdited": false,
+  "sharedFilesEdited": false,
+  "primarySources": [
+    {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "pages": 4,
+      "read": "complete primary PDF web extraction; displaced formulas assembled across original p1 and p3",
+      "verified": [
+        "p is fixed before restore; new[i]=old[p[i]] and the returned vector is p, not inverse",
+        "initial empty set; duplicate insertion has set semantics but invocation consumes budget",
+        "all writes before exactly one compile; all membership queries afterward",
+        "generic restore/add/compile/check types; first character is most significant bit",
+        "five scored N/write/read budgets exactly 8/256/256,32/320/1024,32/1024/320,128/1792/1792,128/896/896; first group moves at most two positions"
+      ]
+    },
+    {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf",
+      "pages": 3,
+      "read": "complete Japanese primary web extraction",
+      "verified": [
+        "independent crosscheck of transform direction, phase order and all five score-table rows"
+      ]
+    },
+    {
+      "url": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "relevantOneBasedPages": [
+        11,
+        12,
+        13
+      ],
+      "read": "complete selected divide/conquer procedure and adjacent alternatives; official archive actual Solutions link",
+      "verified": [
+        "outside-one original-block signatures and marker in left half; memberships split current output positions",
+        "printed author Shi-Chun Tsai; this is official, unlike public unofficial sketches from other corpora",
+        "balanced method suffices for all actual original budgets; unused random/asymmetric alternatives are not needed"
+      ]
+    },
+    {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "pages": 1,
+      "verified": [
+        "int[] -> vector<int>,string -> string,boolean -> bool",
+        "2 seconds,2 GB; no standard IO; exact declaration qualifiers still belong to the supplied language template"
+      ]
+    },
+    {
+      "url": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+      "verified": [
+        "Day2 held 2016-08-16; day precision justified, difficulty null"
+      ]
+    }
+  ],
+  "proofReview": {
+    "collisionExclusion": "For size m blocks, each signature has N-m+1 ones. Distinct depths therefore cannot collide. Equal-depth disjoint blocks have nonempty zero supports contained in disjoint blocks, so their signatures cannot collide either; the shared bijection preserves these distinctions.",
+    "induction": "Current output set is p^{-1}(I). Pulling its query back to original coordinates leaves exactly one marker p[v] inside I, which was registered iff p[v] is in the original left half. Inductively the two child sets are exact, and a leaf writes answer[output]=original=p[output].",
+    "fixedCounts": "Each depth has N/2 writes and N reads; no query result is used to change a registration. All registration recursion finishes before one compile, and decoding only starts afterward.",
+    "sourceBudgets": {
+      "N32": [
+        80,
+        160
+      ],
+      "N128": [
+        448,
+        896
+      ],
+      "allFiveOriginalBudgetsCovered": true
+    },
+    "complexity": "Own operations excluding callback bodies O(N^2+NlogN), linear-length callback argument copies O(N^2logN). Parent/sibling candidate-vector lengths on one active branch form a geometric series; buffers are destroyed before descending, so O(N) own space and depth 7 edges/8 frames for N128. All integer counts fit int.",
+    "api": "All N/power-of-two and sufficient-method budget checks precede callbacks. N1 still compiles once with no write/read. Function-local lists/buffers and referenced callback objects support independent nested/repeated calls. Concepts require exact void/void/bool return types. Inconsistent side sizes throw; callbacks must still implement the fixed truthful set contract.",
+    "adapter": "The by-value adapter string creates its own mutable local before calling the header-declared function, so value/const-reference/mutable-reference library signatures all work without modifying the generic buffer. The actual header is not claimed retrieved; synthetic declarations are only compatibility tests.",
+    "exceptions": "Callback and standard allocation exceptions propagate; external side effects are not rolled back. No external session is reused after a failure in the independent recovery checks."
+  },
+  "authorCheckerReproduction": {
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2016-messy-checker.py",
+      "python3 /tmp/flowchartcp-ioi2016-messy-checker.py --sanitize"
+    ],
+    "allSemanticFieldsMatchAuthorSidecarAndBothModes": true,
+    "checks": 95249053,
+    "apiCalls": 42080,
+    "generic": {
+      "checks": 77823670,
+      "apiCalls": 41705,
+      "allSmallPermutations": 40347,
+      "allSmallReplyBitstrings": 261,
+      "compatibleCompleteTranscripts": 27,
+      "sourceBudgetCases": 830,
+      "extensionCases": 205,
+      "randomCases": 1000,
+      "invalidApiCalls": 39,
+      "oracleGuardTests": 5,
+      "callbackFailures": 7,
+      "nestedCalls": 1,
+      "writes": 685019,
+      "compiles": 41403,
+      "reads": 1369940,
+      "callbackCharacters": 75559262,
+      "checksum": "4045640110253301528"
+    },
+    "syntheticAdapterCountsEach": {
+      "checks": 5808461,
+      "apiCalls": 125,
+      "checksum": "16364191081451181720",
+      "variants": [
+        "value",
+        "const reference",
+        "mutable reference with argument modification"
+      ]
+    },
+    "measurements": {
+      "normalGeneric": {
+        "seconds": 0.184338,
+        "peakRSSKiB": 21724
+      },
+      "asanGeneric": {
+        "seconds": 1.94878,
+        "peakRSSKiB": 379888
+      },
+      "normalAdapters": [
+        {
+          "seconds": 0.0156016,
+          "peakRSSKiB": 21724
+        },
+        {
+          "seconds": 0.0148802,
+          "peakRSSKiB": 21724
+        },
+        {
+          "seconds": 0.0183293,
+          "peakRSSKiB": 21724
+        }
+      ],
+      "asanAdapters": [
+        {
+          "seconds": 0.119337,
+          "peakRSSKiB": 57440
+        },
+        {
+          "seconds": 0.101374,
+          "peakRSSKiB": 46144
+        },
+        {
+          "seconds": 0.105324,
+          "peakRSSKiB": 46420
+        }
+      ]
+    },
+    "counterCaveat": "The 95,249,053 assertions include each query/write character binary check; they are not unique inputs. This reproduction is distinct from the additional oracle below."
+  },
+  "additionalIndependentValidation": {
+    "script": "/tmp/flowchartcp-ioi2016-messy-independent-extra.py",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2016-messy-independent-extra.py --output /tmp/flowchartcp-ioi2016-messy-independent-extra-normal.json",
+      "python3 /tmp/flowchartcp-ioi2016-messy-independent-extra.py --sanitize --output /tmp/flowchartcp-ioi2016-messy-independent-extra-asan.json"
+    ],
+    "oracle": "Integer two-word masks; reply pulls the output query back with old[p[out]]=query[out]. Membership is decided without consulting stored insertions: there must be exactly m-1 zeros in one aligned power-of-two block of size m, with the unique one inside that block lying in its left half. Writes independently satisfy this characterization; total count and uniqueness prove the registered set equals the characterized set.",
+    "oracleSelfcheck": "168726 mask checks against a separately enumerated complete source-word set: all 65814 bitstrings for N1/2/4/8/16, then all signatures and all one-bit neighbours plus 10000 random words each at N32/64/128.",
+    "permutations": "All 40347 permutations at N1/2/4/8. For N8, all 40320 compiled sets in the permutation orbit are separately built as sorted integer-code arrays and are distinct, proving the registered set has no nontrivial automorphism. Additionally 2859 affine permutation occurrences, all 10760 transpositions at N16/32/64/128, and 256 arbitrary random N128 permutations.",
+    "allocationFaults": "All 510 observed allocation failure points of a complete N128 call, plus the first successful allocation budget. The oracle itself uses a fixed-size array during injection. Each unwind restores exact live allocation bytes; a new independent full call succeeds immediately afterward. The number 510 describes the tested GCC implementation and is not a portable API contract.",
+    "callbackExceptions": "At N16 every 97 write/compile/read event is tested immediately before and immediately after its side effect: 194 unchanged custom exceptions. Each failed session is followed by a fresh successful one.",
+    "callableTypes": "All three callbacks move-only with lvalue-qualified call operators and deleted rvalue operators, passed as rvalues and via reference_wrapper; additional const lvalue callbacks with INT_MAX budgets.",
+    "normal": {
+      "checks": 1803910389,
+      "apiCalls": 55634,
+      "allSmallPermutations": 40347,
+      "affinePermutations": 2859,
+      "allTranspositions": 10760,
+      "randomFull128": 256,
+      "allocationFailures": 510,
+      "callbackExceptionsBeforeAfter": 194,
+      "callbackTypeCases": 3,
+      "oracleSelfchecks": 168726,
+      "checksum": "5007159836349817482",
+      "seconds": 2.81055,
+      "peakRSSKiB": 21780,
+      "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+      "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "sanitize": false
+    },
+    "asanUbsan": {
+      "checks": 1803910389,
+      "apiCalls": 55634,
+      "allSmallPermutations": 40347,
+      "affinePermutations": 2859,
+      "allTranspositions": 10760,
+      "randomFull128": 256,
+      "allocationFailures": 510,
+      "callbackExceptionsBeforeAfter": 194,
+      "callbackTypeCases": 3,
+      "oracleSelfchecks": 168726,
+      "checksum": "5007159836349817482",
+      "seconds": 13.9666,
+      "peakRSSKiB": 618072,
+      "cppSha256": "b4497f26102e1d3ba262a63f98943aebe81c72b5b7ef6b18b283c2c11edbc609",
+      "articleSha256": "a90f114914176f0b8fbd7a24681bf024f904e755d6cff8f2047e8892f87edb63",
+      "sanitize": true
+    },
+    "allSemanticFieldsMatch": true,
+    "counterCaveat": "1,803,910,389 assertions are dominated by per-character binary checks over repeated callback strings. 55,634 restore invocations are separately counted; they include failing/recovery calls and overlap across named families. No sum of family counts is advertised as unique hidden arrays."
+  },
+  "initialAuditPreservation": {
+    "originalResearchCount": 6,
+    "originalCompletedApiCount": 0,
+    "originalCoverageCount": 0,
+    "initialSixRecordsAndStatusUnchanged": true,
+    "allThreeResolutionsSavedByAuthorStillBytewiseEqualInCanonicalJson": true,
+    "rootFlowBaselineAudit": "/tmp/flowchartcp-before-ioi2016-messy-ioi2016-audit.json",
+    "rootFlowBaselineSha256": "94c7a850190fa8992dce41bf5b4d53bf157467e1ef7180cbe5557d40402ce056",
+    "entireBaselineOldFieldProjectionUnchanged": true,
+    "baselineExistingResolutionCount": 4,
+    "researchPrototypeNotClaimedProduction": true,
+    "futureIntegrationResolutionOnly": true
+  },
+  "integrationNotes": [
+    "Public feature date field names should follow publicationDate/publicationDatePrecision/publicationYear with originalNumericBoundsVerified, as requested by root; draft sourceDate facts are correct. This is an integration normalization, not a mathematical defect.",
+    "Author and shared files remain read-only throughout review. Actual original messy.h bytes/qualifiers remain unacquired; header compatibility is conditional on the provided declarations."
+  ],
+  "sanitizerCoordination": "Root explicitly allowed this job after Shortcut peer released its slot. Author checker ASan and independent additional ASan were run sequentially, both exited 0; root and Shortcut peer were notified of release. No unsupported claim about unrelated earlier wall-clock overlap is made.",
+  "recommendation": "Accept selected complete deterministic method and API after root feature/flow/reference registration gates; preserve original audit fields and add only the new resolution.",
+  "originalReviewSha256": "b975136ca86ef19644b3c5d409166bf3543c89ae3c1a1f9f42c8a759548d343c",
+  "publishedArticle": "src/content/docs/techniques/precompiled-permutation-partition-signature-membership.mdx",
+  "permanentProbe": {
+    "script": "research/probes/precompiled-permutation-independent.py",
+    "normalizedSha256": "d01c59a139e6b3b0f9a317d9e95ac5804ed877088549210fbc4782a10345d26a",
+    "normalization": "Only MDX path;integer zero-support oracle,selfchecks,group action,all transpositions,allocation/callback faults unchanged."
+  }
+}

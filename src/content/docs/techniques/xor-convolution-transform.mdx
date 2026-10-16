@@ -1,0 +1,81 @@
+---
+title: "添字の XOR ごとの積和を、和と差の変換で求める"
+description: "添字の和ではなく XOR でまとまる二重和を、各ビットでの和と差に変換します。"
+techniqueId: xor-convolution-transform
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$c_k=\sum_{i\mathbin{\mathrm{XOR}}j=k}a_ib_j$ を全ての $k$ で求めます。たとえば各値の頻度から、XOR が一定になる二つの選択の組数をまとめて数える場合です。
+
+一つの $k$ だけなら $j=i\mathbin{\mathrm{XOR}}k$ を使って線形に計算できます。全ての $k$ が必要なときに変換が有効になります。
+
+## 考え方
+
+各ビットについて、ビットが 0 の部分と 1 の部分を二つに分け、$(u,v)$ を $(u+v,u-v)$ に置き換えます。全ビットを処理した二つの列を、同じ添字で掛けます。最後に同じ変換を掛け、列の長さで割ります。
+
+一ビットなら、$(a_0+a_1)(b_0+b_1)$ と $(a_0-a_1)(b_0-b_1)$ の和と差から、XOR 0 と XOR 1 の積和が復元されます。
+
+## 適用条件
+
+二つの入力を同じ $L=2^d$ 長にそろえます。値の上限が 2 の冪でなければ、上の 2 の冪まで 0 を補います。整数の XOR であることが条件で、添字の和の畳み込みとは変換が異なります。
+
+逆変換で $L$ の逆元が必要です。掲載実装の法は奇素数 998244353 であり、$L<p$ を要求します。法 2 では和と差が同じになり、同じ逆変換は使えません。頻度の畳み込みでは順序付きの組を数えるので、同じ配列から相異なる二つを選ぶ場合は対角と重複を別に処理します。
+
+## なぜ正しいか
+
+変換の $s$ 番目は
+
+$$\widehat a_s=\sum_i(-1)^{\operatorname{popcount}(s\mathbin{\&}i)}a_i$$
+
+です。符号は XOR について掛け合わさるため、$i\mathbin{\mathrm{XOR}}j=k$ の二重和を変換すると、$\widehat c_s=\widehat a_s\widehat b_s$ になります。
+
+同じ変換を二回掛けると、同じ添字の係数は $L$ 倍、異なる添字の係数は符号が相殺されて 0 になります。よって $L$ で割ると元に戻ります。
+
+## 計算量
+
+全ペアを計算する時間 $O(L^2)$ を、時間 $O(L\log L)$ へ減らします。空間は $O(L)$ です。一つの目標 XOR に対してだけ答える線形計算を、高速化する方法ではありません。
+
+## 実装
+
+`xor_convolution(a,b)` は入力を法の範囲へ正規化してから変換します。長さ 1 の場合も、唯一の係数の積を返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> xor_convolution(vector<int> a,vector<int> b) {
+    constexpr int P=998244353;
+    int n=a.size();
+    assert(n>0 && n==int(b.size()) && (n&(n-1))==0 && n<P);
+    auto transform=[&](vector<int>& values,bool inverse) {
+        for(int half=1;half<n;half*=2) for(int start=0;start<n;start+=2*half)
+            for(int j=0;j<half;++j) {
+                int x=values[start+j],y=values[start+half+j];
+                values[start+j]=(x+y)%P;
+                values[start+half+j]=(x-y+P)%P;
+            }
+        if(inverse) {
+            long long factor=1,base=n;
+            for(int exponent=P-2;exponent;exponent>>=1,base=base*base%P)
+                if(exponent&1) factor=factor*base%P;
+            for(int& x:values) x=x*factor%P;
+        }
+    };
+    for(int& x:a) x=(x%P+P)%P;
+    for(int& x:b) x=(x%P+P)%P;
+    transform(a,false);transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%P;
+    transform(a,true);return a;
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/convolution/bitwise_xor_convolution/task.md)
+
+<TechniqueReferences techniqueId="xor-convolution-transform" />

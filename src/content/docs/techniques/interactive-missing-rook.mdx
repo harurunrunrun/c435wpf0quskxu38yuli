@@ -1,0 +1,70 @@
+---
+title: "各行列に高々一個の駒があるなら、欠けた行と列を別々に探す"
+description: "全列または全行を覆う質問にして、二次元の位置を二つの探索へ分けます。"
+techniqueId: "interactive-missing-rook"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$n\times n$ の盤面に $n-1$ 個の駒があり、各行・各列に高々一個ずつ置かれているとき。長方形の中の駒の個数が聞ければ、駒の配置全体を復元せず空いた行と列だけを探せます。
+
+## 考え方
+
+全列を覆う行区間を質問します。行数と同じ個数が返れば、その区間には欠けた行がありません。行数より一個少なければ、その区間に欠けた行があります。候補区間の左半分を聞いて二分し、空いた行を特定します。全行を覆って同じことを行えば空いた列も特定でき、その交点に置けます。
+
+## 適用条件
+
+駒はちょうど $n-1$ 個で、各行と各列に高々一個です。欠損が複数なら最後の交点一つをこの方法で一意に求める説明は使えません。一行に複数置ける場合も、行数と個数の差を欠損判定にできません。原典は $n\le1000$、20回まで。
+
+## なぜ正しいか
+
+条件から駒がある行はちょうど $n-1$ 行なので、空いた行は一つです。候補区間には常にその行があり、左半分の個数は「長さ」または「長さ-1」の二通りです。この差で候補の片側を確実に捨てます。列も同様で、空いた行と空いた列の交点は全駒と行・列を共有しません。
+
+## 計算量
+
+各位置を調べる代わりに、質問は最大 $2\lceil\log_2 n\rceil$ 回、質問以外の時間 $O(\log n)$、空間 $O(1)$。原典の最大サイズで20回です。
+
+## 実装
+
+API は0始まり・半開区間の長方形を使い、返り値も0始まりです。原典のプロトコルへ出す関数は1始まり・閉区間へ変換します。各質問と最終回答を flush し、-1や読み取り失敗で直ちに終了します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+template<class Query>
+pair<int,int> find_missing_rook(int n,Query ask,int budget=20){
+    assert(n>=1);int required=0;for(int width=n;width>1;width=width/2+width%2)++required;
+    if(2*required>budget)throw invalid_argument("query budget is too small");
+    auto find_axis=[&](bool rows){
+        int l=0,r=n;
+        while(r-l>1){int m=l+(r-l)/2;
+            int count=rows ? ask(l,m,0,n) : ask(0,n,l,m);
+            if(count==m-l-1)r=m;
+            else if(count==m-l)l=m;
+            else throw runtime_error("inconsistent response");
+        }
+        return l;
+    };
+    int row=find_axis(true),column=find_axis(false);return {row,column};
+}
+void solve_missing_rook_protocol(){
+    int n;if(!(cin>>n))return;
+    auto ask=[](int a,int b,int c,int d){
+        cout<<"? "<<a+1<<' '<<b<<' '<<c+1<<' '<<d<<endl;
+        int count;if(!(cin>>count) || count<0)exit(0);return count;
+    };
+    auto [row,column]=find_missing_rook(n,ask);
+    cout<<"! "<<row+1<<' '<<column+1<<endl;
+}
+```
+
+## 関連する手法
+
+[対話問題の質問設計](/flowchartcp/techniques/interactive/)、[二分探索](/flowchartcp/techniques/binary-search/)、[状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc269/editorial/4897)
+
+<TechniqueReferences techniqueId="interactive-missing-rook" />

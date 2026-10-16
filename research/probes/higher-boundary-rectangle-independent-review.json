@@ -1,0 +1,176 @@
+{
+  "techniqueId": "grid-enclosing-higher-boundary-rectangle-candidates",
+  "problemId": "ioi2019_rect",
+  "reviewer": "/root/usaco_mincost_flow_tests",
+  "reviewedAt": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "conclusion": "掲載した独立手順の候補完全性・重複除去・厳密比較・二方向run照合・API全域・整数・時間空間に実質的な問題なし。公式の16構造や欠落指数の全確認とは区別している。",
+  "reviewedArtifacts": {
+    "article": {
+      "path": "/tmp/flowchartcp-rect-article.mdx",
+      "sha256": "15b1f1dcc9a09313b7f09e71419babf0d2dd01fb4c12bdce885bad7866eb270d"
+    },
+    "checker": {
+      "path": "/tmp/flowchartcp-rect-checker.py",
+      "sha256": "70f6bef274ce108cfd5acb736b2658f3094c684bc7a50ecb4d5718527ae9b7fd"
+    },
+    "sidecar": {
+      "path": "/tmp/flowchartcp-rect-sidecar.json",
+      "sha256": "fe5310c9c9e54fdf9c5abd6fe3ffcf7aa7505fe915a01f115a3d46d31747b9e9"
+    }
+  },
+  "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+  "finalFreezeVerification": {
+    "articleAndCheckerMatchSidecar": true,
+    "visibleCppFenceCount": 1,
+    "sectionCount": 8,
+    "cppAndCheckerUnchangedDuringMinorArticleEdits": true,
+    "onlyAuthorAppliedArticleCorrections": true
+  },
+  "resolvedNonblockingFindings": [
+    {
+      "finding": "関連手法3リンクの/techniques/に配置base/flowchartcpが欠けていた。",
+      "resolution": "作者が/flowchartcp/techniques/へ修正、astro.config.mjsのbaseと一致。"
+    },
+    {
+      "finding": "候補上界P<=(n-2)(m-2)がn,m>=3に明示限定されず、片方1の場合に右辺が負となる形式上の問題。",
+      "resolution": "作者がn,m>=3を明記し、3未満は全入力検査O(nm)後0を返すと補足。掲載コードは当初から正しかった。"
+    },
+    {
+      "finding": "計算量節に公式PDF抽出の履歴を説明するメタ文があった。",
+      "resolution": "作者が本文から削除。sidecarのprovenance/未確認別手順の記録は保持。"
+    }
+  ],
+  "sourceReview": {
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem3.pdf",
+    "statementPages": 3,
+    "statementModelVerified": "内部セルは対応する同一行の左右外側セルと同一列の上下外側セルの四つ全てよりstrictlylower。外周に触れる長方形不可、非空、外側四隅は条件にない。",
+    "officialReviewUrl": "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/review.pdf",
+    "reviewPages": 2,
+    "reviewProvenance": "既存固定auditの主催配布English(HSC) Rect Reviewと同一URLを再取得。good pair/stack方針と別の16 blockcorner構造が実際に記載される。",
+    "officialAlternativeDetailsVerified": false,
+    "limitation": "通常web PDF抽出では指数/数式の一部が欠ける。16構造と原典公式手順の欠落細部を新たに確認済みとせず、掲載最大セル候補＋連続run手順を独立に証明した。ローカルPDF/画像目視は主張しない。",
+    "numericBoundsVerified": true,
+    "numericEvidenceUrls": [
+      "https://www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf"
+    ],
+    "reproducedSearchQueries": [
+      "site:www2.ioi-jp.org/ioi/2019/tasks/day1-rect-JPN.pdf \"2500\" \"7000000\"",
+      "site:ioi.te.lv/locations/ioi19/contest/day1/Rect/TWN.pdf \"2500\" \"7000000\""
+    ],
+    "numericEvidence": "両方の実際の検索本文で1<=n,m<=2500、0<=a[i][j]<=7000000の全行を独立確認。APIは全範囲を含む。",
+    "sourceDate": "2019-08-06",
+    "exactDateVerified": true,
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2019/tasks/index.html",
+    "dateEvidence": "JP公式一覧の競技日1実施日とその下のrectリンクを再確認。",
+    "difficulty": null
+  },
+  "proofReview": {
+    "candidateCompleteness": "任意の有効矩形の任意の内部最大セルを取ると、同じ行・列の全内部値はその値以下、対応する外側四セルはその値より真に高い。四方向nearest-strictly-greaterはちょうど外境界。同値最大が複数でも全て同じ矩形を生成する。",
+    "candidateBound": "一セルの四最初高位境界は一意。全有効矩形が候補にあるためセルを共有する選択は起きず、候補数/正解数<=内部セル数。無効候補の存在を両方向検査で落とす必要も確認。",
+    "allGoodPairs": "ある内部セルのneareststrictgreater二端の間は全てそのセル以下、端はそれより高いのでgoodpair。逆に任意goodpairは内部最大のneareststrictgreater二端として生成される。内部空の隣接端は使わず、距離>=2のみ。",
+    "ties": "neighborsで<=をpopすることにより同値を境界にしない。各行/列の複数最大が同じpairを出しても同一stamp更新を無視し、連続startをリセットしない。",
+    "runs": "現在の下端/右端の全pairをnoteしてから検査。last==現在かつstart<=始端が区間全行/全列でpair出現の必要十分条件。staleなentryやgapが誤って通らず、初期stamp0は実stamp1..2500と分離。",
+    "dedupAndAxes": "firstpack=(bottom,top,right,left)の48bit keyをsort/uniqueして全候補重複を除く。水平filterのwriteはreadで消費済みの位置以下で未読要素を壊さない。pack(right,left,bottom,top)は座標の単射な置換なので重複を再作成しない。第二sortと縦run検査で必要十分な四条件全てを満たすものを一度ずつ数える。",
+    "thinShapes": "n<3またはm<3は有効領域がない。全入力検査後のearlyreturn0と本文の限定を確認。"
+  },
+  "apiAndComplexityReview": {
+    "input": "nonemptyrectangularvector<vector<int>>, n,m1..2500, heights0..7000000。空/ragged/大きすぎる形/height上下限違反を計算前に拒否し、小さい形も検査。",
+    "adapter": "原典count_rectangles(vector<vector<int>>)の値渡し定義を同一fenceで提供し、constreferencecoreへ渡す。原典全合法入力を含み、lvalueコピーの時間/領域も本文/sidecarで区別。",
+    "stateAndErrors": "全mutable状態はcalllocal、const入力は変更しない。標準割当例外は伝わり、例外後もfresh呼出しに状態残留なし。",
+    "integer": "n/m検査後のみint変換、height比較のみ。rowmajor/pair積はsize_t。2500までのcoords/stampsは12bit、uint16absent65535と分離。runはstart/last各12bitをuint32へ格納。keyはuint64上48bit、radixshift0..40。pairtable最大3123750entry、key候補最大6240004、answerlonglong。",
+    "time": "O(nm+n^2+m^2): 全neighbor走査O(nm)、候補<=nm、二度の固定6passradixO(nm)、row/col table初期化O(m²+n²)。",
+    "space": "O(nm+max(n²,m²)) additional。row/col tableは異なるscopeで逐次確保、left/right配列もsort前に破棄。",
+    "payload": "検証した4byteint環境の主要配列はflat4C+keys8P+scratch8Pで最大125MB以下、O(n+m)小配列とallocator/vector管理は別。callergrid25MBとbyvalueadapterlvaluecopy25MBを別計上し、最大入力で実際にadapterも実行。",
+    "stack": "No recursion; neighbor indexstack/linebuffers<=2500, radix256counters。"
+  },
+  "publishedCheckerReproduction": {
+    "scope": "既存checkerの再現であり、新規独立oracleの件数と混同しない。実MDXの単一可視完全C++fenceを抽出してcompile。",
+    "normalCommand": "python3 /tmp/flowchartcp-rect-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-rect-checker.py --sanitize",
+    "normal": {
+      "checks": 2884927,
+      "binaryGrids": 74954,
+      "ternaryGrids": 1082565,
+      "literalRectangles": 5096743,
+      "randomGrids": 1000,
+      "maximumCases": 7,
+      "maximumRows": 2500,
+      "maximumColumns": 2500,
+      "maximumHeight": 7000000,
+      "invalidCalls": 11,
+      "checksum": "16899164946917607117",
+      "seconds": 2.71328,
+      "peakRSSKiB": 199292,
+      "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 2884927,
+      "binaryGrids": 74954,
+      "ternaryGrids": 1082565,
+      "literalRectangles": 5096743,
+      "randomGrids": 1000,
+      "maximumCases": 7,
+      "maximumRows": 2500,
+      "maximumColumns": 2500,
+      "maximumHeight": 7000000,
+      "invalidCalls": 11,
+      "checksum": "16899164946917607117",
+      "seconds": 18.7528,
+      "peakRSSKiB": 1102596,
+      "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2",
+      "sanitized": true
+    },
+    "matchesAuthorCountersChecksumAndCpp": true,
+    "leakSanitizerEnabled": false,
+    "sanitizers": "address and undefined active; detect_leaks=0 as authorchecker specified。",
+    "maximumCoverage": "2500x2500の7構成、H最大7000000、単行/単列長2500、原典値渡し入口の最大外枠を含む。閉形式/独立quadratic1D/二値componentbboxのoracleを読み数学的妥当性を確認。RSSはchecker/caller/oracleを含みAPIだけのメモリではない。"
+  },
+  "additionalIndependentProbe": {
+    "script": "research/probes/higher-boundary-rectangle-independent.py",
+    "scriptSha256": "6f2e3a35b4abaab4dce5f4d710a4a00373449bcd61c16745113d07a98585a433",
+    "resultFile": "research/probes/higher-boundary-rectangle-independent-results.json",
+    "resultSha256": "a39a6b2310d8f0d7e3c354731a6637907d34d49fd4c4b4ef515b4a5910f4e03a",
+    "command": "python3 research/probes/higher-boundary-rectangle-independent.py",
+    "result": {
+      "checks": 2444422,
+      "cases": 394563,
+      "distinct3x3Permutations": 362880,
+      "ternary5x5FramedInteriors": 19683,
+      "randomGrids": 12000,
+      "rectangles": 190182034,
+      "validRectangles": 438720,
+      "allMaximumWitnesses": 822011,
+      "duplicateCandidateEmissions": 508047,
+      "spuriousCandidates": 561845,
+      "checksum": "13428659320025481575",
+      "seconds": 0.918728,
+      "peakRSSKiB": 4748,
+      "cppSha256": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2"
+    },
+    "oracle": "各行/列で外側端点ごとの内部最大をrunningmaxで計算し、条件違反Booleanをもう一軸でprefixsum。全内部矩形を列挙して両違反区間和0を検査。個数oracleはnearestneighbor/stack/candidate/runs/key/radixを使わない。",
+    "newCoverage": "全362880通りの3x3distinct全順列、外枠7000000/隅0の5x5内部全19683ternary、12000乱択/plateau/valley/checkerboard/稀なoutlier/細長3x60と60x3。全190182034長方形で厳密条件を確認。",
+    "structuralChecks": "独立oracleが認めた全矩形の全最大セル822011個について4方向を直接走査し元矩形を生成することを追加確認。直接scanの候補setへ全有効矩形が含まれること、重複候補508047/不成立候補561845を実際に通したことも確認。個数oracleと構造検査は区別。",
+    "originalSourceSha256": "ff503085b26059c86b018f8f3264e02e1a20909b4e6f9afe0fa49d3af80dbd9b"
+  },
+  "preservation": {
+    "sharedFilesModified": false,
+    "authorArtifactsModifiedByReviewer": false,
+    "initialAuditModifiedByReviewer": false,
+    "initialAuditFile": "data/corpus-audits/ioi-2019.json",
+    "initialRowObserved": "ioi2019_rectのclassification/reviewStatus=unconfirmed, numericBoundsVerified=false, officialEditorialVerified=falseを読み取り確認。親が後続review+resolutionを別追加する方針を支持。",
+    "finalRegistration": "Parent owns sharedarticle/metadata/reference/feature/flow/walk and laterresolution; review itself does not claim registration complete。"
+  },
+  "originalReviewSha256": "4ceef577b66f18092c12b28a41085208ddb86673dc5f6230eb15e7865ec8ee8e",
+  "reproductionCommands": [
+    "python3 scripts/check_enclosed_rectangle_candidates_cpp.py",
+    "python3 scripts/check_enclosed_rectangle_candidates_cpp.py --sanitize",
+    "python3 research/probes/higher-boundary-rectangle-independent.py"
+  ],
+  "scope": "元author最終記事への独立レビュー。恒久probeは公開記事参照とstdout出力だけへ正規化。統合時のtitle/summary/一部日本語調整で本文SHAは変わったが、全C++SHAは同一。元3artifact/元review/元probeのSHAを保持。"
+}

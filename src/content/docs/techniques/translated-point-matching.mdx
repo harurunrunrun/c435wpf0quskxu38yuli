@@ -1,0 +1,156 @@
+---
+title: "移動前後の点を、少数の移動先だけ照合して一対一に対応させる"
+description: "全点対の距離を調べず、許された変位を足した座標だけを辞書で引く。"
+techniqueId: translated-point-matching
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+前後の位置だけが分かり、どの対象がどこへ移ったか不明。各対象の変位は少数の候補から選ぶ。同じ到着位置を二つの対象に割り当てられない。
+
+## 考え方
+
+到着点を座標から番号を引く辞書へ入れる。出発点 $a_i$ と変位 $d$ ごとに $a_i+d$ が辞書にあるかだけ確認し、存在すれば候補辺を張る。
+
+出発点と到着点を左右にして全点を使う対応を求める。辺に記録した方向を復元する。方向が一つの対象から決めても、残る曖昧な対象どうしの競合は解決しないため、対応として扱う。
+
+## 適用条件
+
+前後の点はそれぞれ重複せず同数。変位数 $D$ が小さく、整数座標を正確に検索できる。掲載版は8方向、正整数の移動時間、座標と時間の絶対値 $10^{12}$ 以下。
+
+同じ位置に複数の対象がある場合、辞書へ一番号だけを入れてはいけない。位置の個数を容量として扱うモデルが必要。
+
+## なぜ正しいか
+
+照合で張る辺は許された変位で到着できる組だけであり、合法な移動の組は必ず照合で見つかる。完全対応は出発点と到着点を一度ずつ使うので全員の移動と同じ条件。辺に方向を保存すると出力も復元できる。
+
+## 計算量
+
+全点対の照合は $O(N^2)$。平衡木辞書で候補生成 $O(DN\log N)$、辺数 $O(DN)$。対応を含め $O(DN\log N+DN\sqrt N)$ 時間、$O(DN+N)$ 空間。掲載版は $D=8$。
+
+## 実装
+
+方向は右から反時計回りに1..8。destination は到着点の入力番号。完全対応がなければ nullopt。辞書は map を使い最悪時の検索計算量を保つ。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+#include <array>
+#include <map>
+#include <optional>
+using Coordinate=std::pair<long long,long long>;
+struct PointAssignment { int destination,direction; };
+std::optional<std::vector<PointAssignment>> match_translated_points(
+    const std::vector<Coordinate>& before,const std::vector<Coordinate>& after,
+    long long time) {
+    int n=before.size(),s=2*n,t=s+1; FlowNetwork g(t+1);
+    const std::array<Coordinate,8> direction{{
+        {1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}
+    }};
+    std::map<Coordinate,int> index;
+    for(int i=0;i<n;++i) { index.emplace(after[i],i); g.add(s,i,1); g.add(n+i,t,1); }
+    struct Candidate { int from,to,direction,id; }; std::vector<Candidate> candidates;
+    for(int i=0;i<n;++i) for(int k=0;k<8;++k) {
+        auto [dx,dy]=direction[k];
+        Coordinate target{before[i].first+time*dx,before[i].second+time*dy};
+        auto found=index.find(target);
+        if(found!=index.end())
+            candidates.push_back({i,found->second,k+1,g.add(i,n+found->second,1)});
+    }
+    if(g.flow(s,t,n)!=n) return std::nullopt;
+    std::vector<PointAssignment> result(n);
+    for(auto e:candidates) if(g.used(e.id)) result[e.from]={e.to,e.direction};
+    return result;
+}
+```
+
+## 関連する手法
+
+[二部マッチング](/flowchartcp/techniques/matching/)
+
+## 参考資料
+
+- [AtCoder：077 - Planes on a 2D Plane（★7）（原典）](https://atcoder.jp/contests/typical90/tasks/typical90_by)
+
+<TechniqueReferences techniqueId="translated-point-matching" />

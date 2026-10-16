@@ -1,0 +1,77 @@
+---
+title: "出力のみの問題"
+description: "固定入力の出力を保存し、合法性を確かめながら解を改善する。"
+techniqueId: output-only
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+固定入力の出力を保存し、合法性を確かめながら解を改善する。
+
+## 使う場面
+
+プログラムではなく、与えられた入力に対する出力ファイルを提出する形式で使う。同じ入力に何度も探索を行い、以前の出力から改善できる。
+
+## 考え方
+
+各入力に対して、まず条件を満たす解を作る。公式の評価器で合法性と得点を確かめ、保存する。新しい候補ができたら評価し、保存済みの解より良い場合だけ置き換える。
+
+複数の探索法を試す場合は、入力ごとに最良の出力を管理する。乱数の初期値や探索時間も記録すると、改善を再現しやすい。提出するファイルは最後に再読込して検証する。
+
+## 適用条件
+
+出力ファイルを提出する形式であることを確認する。通常のプログラム提出では、未知の入力にも答えられる実装が必要になる。
+
+出力の形式、合法性の条件、得点の方向、各入力の扱いをそろえる。無効な候補で、保存済みの有効な解を上書きしない。
+
+## なぜ正しいか
+
+探索だけでは、最適な解を見つけたとは保証できない。一方、合法性を検証し、得点が改善した場合だけ保存すれば、保存済みの解は常に合法であり、得点も悪化しない。
+
+## 計算量
+
+探索に使う時間は、入力ごとに決める。長さ $L$ の出力を書き出す時間は $O(L)$。合法性の確認と採点の時間は、課題と評価器によって変わる。
+
+## 実装
+
+`save_if_better` は最大化する得点を想定し、`validate` と `score` で候補を確認する。有効で得点が高い候補だけを、一時ファイルを使って保存先へ置き換える。最小化する場合は、得点の比較を逆にする。
+
+```python
+import os
+import tempfile
+from pathlib import Path
+
+def save_if_better(output_path, candidate, validate, score):
+    target = Path(output_path)
+    if not validate(candidate):
+        return False
+    if target.exists():
+        previous = target.read_text()
+        if validate(previous) and score(candidate) <= score(previous):
+            return False
+    target.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", dir=target.parent,
+                                         delete=False) as file:
+            temporary = file.name
+            file.write(candidate)
+            file.flush()
+            os.fsync(file.fileno())
+        os.replace(temporary, target)
+        temporary = None
+        return True
+    finally:
+        if temporary is not None:
+            os.unlink(temporary)
+```
+
+## 関連する手法
+
+[局所探索](../local-search/) ・ [焼きなまし法](../simulated-annealing/) ・ [ビームサーチ](../beam-search/)
+
+## 参考資料
+
+- [日本情報オリンピック：IOI 2010 Maze 公式日本語訳](https://www2.ioi-jp.org/ioi/2010/tasks/tasks_jpn/day2/t3_maze/index.html)
+- [IOI 2010 の課題資料](https://ioinformatics.org/page/ioi-2010/36)
+
+<TechniqueReferences techniqueId="output-only" />

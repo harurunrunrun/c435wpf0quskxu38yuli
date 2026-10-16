@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "全域木への共通辺数質問から、基準木の基本閉路交換・森の補完・葉の二分で隠れた木を最悪5990回で復元する技巧を追加。",
+  "counts": {
+    "specificTechniques": 429,
+    "foundationArticles": 78,
+    "allArticles": 507,
+    "exampleMappings": 528,
+    "originalUrls": 490,
+    "graphs": 474,
+    "nodes": 3715,
+    "questions": 1693,
+    "answerEdges": 5522,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 524,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+    "articleSha256": "6cd1438ead81d6a4d87a53b81f918b0ee2bb65f285c558ba8d9968ed881137f4",
+    "cppSha256": "890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd",
+    "record": "research/technique-verifications/spanning-tree-overlap-oracle-reference-labeling-leaf-peeling.json",
+    "originalSourceRangeAndApiContainmentVerified": true,
+    "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2017-simurgh-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 7755.869872
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "record": "research/probes/ioi2017-simurgh-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 10,
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 20536.279776,
+      "scope": "Simurgh and Books flows, prior specific-expansion/layout/domain-viewerclients/legacy-continuation/IOI2017fixed/ledger. All527priorwalks/473graphs/everyoldfield/nineaudits withWiring+Train+Booksresolutions preserved.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "previousFollowingChangeRecord": "research/verification-2026-10-15-ioi2017-books.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 507,
+      "mappings": 528,
+      "diagrams": 474,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 507,
+      "recentArticlesChecked": 37,
+      "japaneseEnglishFullWidthQueries": 152,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 474,
+      "completeAnswerLabels": 5522,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized expanded interactive-oracles and new hidden-spanning-tree-overlap-conditions. New nodes/labels do not overlap, and full detail questions/explanations are visible. Existing parent has many branches and is read with separate wheel-zoom viewer; no browser inspection claimed."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1464,
+      "linksAssets": 29634,
+      "diagrams": 474,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "ForbaselineT andnon-treee,exchangeT−f+eislegalanddelta=w(e)−w(f). Knownanchorclassifies e thenunknownpathlabels. Allunknowndeltas0impliesallcyclelabels0sinceall1wouldcontradicthiddentreeacyclicity. RemainingunclassifiedTedgescrossnootheredgeandarebridges1. UnknownTedgechargedonce/anchoroncepernewclassificationgroup gives1+2(N−1).",
+    "EveryforestcompletedbyknownTedgeshasexactlyonequeryminusknownaddedcontribution. Simpleincidentstarsgivehidden degrees. Residualhiddentreeinvariant/activeendpointfilter/leafbinaryhalves/neighbor-degreesgiveN−1trueedges. DegreeNqueriesand(N−1)ceil(log2(N−1))searches yieldQ<=5990andentries<=2989010at500. Universalproofnotobservedtiming.",
+    "FullN2..500/MN−1..N(N−1)/2 simpleconnectedundirected,fixedsecret andeveryquestionactualspanningtreeincluded. Samplegrader30000notfullscore8000. Generic standalone compileswithoutgrader;macroincludesdistributedheaderwhenavailable andpassesmutablelocalvectorlvalue. Actualheaderbytes/constqualificationunretrieved;syntheticconstrefandmutablerefexplicit. Callbackspanlifetime,originalnonmutation,exceptionsandnoexternalrollback documented.",
+    "VisibleC++890af3ba0d61b726576a464272e51ac2816e3ca2bf59facee194b58a5f0972bd author/root/peer normal+ASan/UBSan:full711667checks/11275recoverCalls/checksum14758130767299308416,mutablerefAPI1559/checksum141949014370290246. All771connectedgraphs/all8135smallsecrets,1296K6Prufer,400random/1200metamorphic,36invalid,8maxN500/M124750. All371287questions/37828515entriesindependentlyBFSvalidated.",
+    "Distinct ordinary-only coherent-transcript oracle keepsallcompatibleCayleytreesinanonemptyreplybucket andchecksfinalsingletonagainst everypriorreply:396transcripts/11917leafstrippingtreechecks/30227assertions/checksum2819309625694043276.32budgets/29callbackthrows/276allocationfailures;freshcallsandlivepayloadunwinding. Measured2713370Bforonecomplete500/path-referenceconstruction only;notuniversalmaxbyteclaim. Extra probe has no sanitizer claim;fullauthorcheckerASan/UBSan separatelypassed.",
+    "InitialIOI2017sixrecords/status/research4/API0/coverage0 andprior3resolutionsunchanged;Simurghresolutiononly. InitialofficialEditorialVerifiedfalse andoptionalear-decompositionproofunconfirmedretained;newselectedmethoddoesnotuseears. Currentresearch4/6,covered4/6,15knowngaps. All527oldwalk/473graph/nineaudits/593localprefix/404legacyshareBack preserved;featureguardscovereveryNo/unknownexit andrealinvalidCPPpreflightremovescoverage."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 528,
+    "reviewedProblems": 488,
+    "corpusStatementsReviewed": 71,
+    "corpusSolutionsReviewed": 63,
+    "allSolutionsReviewed": 494
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "4/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 15,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual official simurgh.h bytes not acquired; both oracle reference variants tested via expressly synthetic headers.",
+    "Official optional ear-decomposition compression detail remains unconfirmed and unused.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures. No install/server/browser retried.",
+    "External example-link liveness not checked. No push/upload/publication."
+  ],
+  "inProgress": [
+    "IOI2017 Prize deterministic query-budget proof and native validation underway; initialunconfirmed row retained.",
+    "IOI2016 fixedsix/1431raw baseline frozen, initialresearch6/coverage0 readyforseparatereview; notregistered.",
+    "IOI2016 Aliens complete API/article author work underway."
+  ]
+}

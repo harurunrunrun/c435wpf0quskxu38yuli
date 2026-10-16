@@ -1,0 +1,76 @@
+---
+title: "逆順処理"
+description: "操作を最後からたどり、削除や上書きを扱いやすい処理に変える。"
+techniqueId: reverse-thinking
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+操作を最後からたどり、削除や上書きを扱いやすい処理に変える。
+
+## 使う場面
+
+辺や頂点を削除しながら連結性を調べるとき、最後の状態だけを求める上書き操作が多いときなどに使う。順方向で難しい操作が、逆方向では簡単な操作になるかを考える。
+
+## 考え方
+
+操作列が先に分かっているなら、最終状態から最後の操作を順に戻す。削除だけのグラフでは、逆順にすると追加だけになり、Union-Findで連結性を管理できる。
+
+上書きの最終結果では、後の操作ほど優先される。逆順に見て、まだ決まっていない位置だけを確定すると、同じ位置を何度も処理せずに済む。元の問い合わせ時点と逆順の状態の対応を確認して、出力順を戻す。
+
+## 適用条件
+
+操作列と最終状態を取得できることが必要になる。直前の答えによって次の入力が決まる場合は、そのまま逆順にできない。
+
+同じ要素を複数回削除する操作がある場合は、逆順でいつ実際に復活するかを区別する。追加と削除の両方がある場合は、順序を反転するだけでは追加だけにならない。
+
+## なぜ正しいか
+
+元の時刻の状態と、最終状態から対応する回数だけ戻した状態が一致するように処理する。頂点を追加すると成分数は1増え、異なる成分同士を結ぶ辺を追加すると1減る。これを繰り返せば、各時点の連結成分数を正しく求められる。
+
+## 計算量
+
+頂点数 $N$、辺数 $M$ について、各頂点を一度ずつ追加する例は時間 $O((N+M)\alpha(N))$、空間 $O(N+M)$。同じ頂点を繰り返す追加指示が $Q$ 件ある場合は、指示の走査時間 $O(Q)$ も加える。
+
+## 実装
+
+`components_after_additions` は、空のグラフから指定順に頂点を有効にし、各追加後の連結成分数を返す。入力は無向グラフとする。すでに有効な頂点を指定した場合は状態を変えず、その時点の成分数を返す。
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <vector>
+std::vector<int> components_after_additions(
+    const std::vector<std::vector<int>>& g,
+    const std::vector<int>& order) {
+    int n = g.size(), components = 0;
+    std::vector<int> parent(n), size(n, 1), active(n), answer;
+    std::iota(parent.begin(), parent.end(), 0);
+    auto find = [&](int v) {
+        while (parent[v] != v) { parent[v] = parent[parent[v]]; v = parent[v]; }
+        return v;
+    };
+    for (int v : order) {
+        if (!active[v]) {
+            active[v] = 1; ++components;
+            for (int u : g[v]) if (active[u]) {
+                int a = find(v), b = find(u);
+                if (a == b) continue;
+                if (size[a] < size[b]) std::swap(a, b);
+                parent[b] = a; size[a] += size[b]; --components;
+            }
+        }
+        answer.push_back(components);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[オフラインクエリ](../offline-queries/) ・ [Union-Find](../union-find/) ・ [不変量](../invariant/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC229 E](https://atcoder.jp/contests/abc229/editorial/2985)
+
+<TechniqueReferences techniqueId="reverse-thinking" />

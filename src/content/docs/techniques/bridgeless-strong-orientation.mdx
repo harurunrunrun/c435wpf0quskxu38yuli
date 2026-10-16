@@ -1,0 +1,86 @@
+---
+title: "全頂点間を行き来できる一方通行化は、橋を確かめて木の辺を下へ戻り辺を上へ向ける"
+description: "片方向にしても往復できる条件は連結性と橋の不存在で、深さ優先探索の向きが構成を与える。"
+techniqueId: bridgeless-strong-orientation
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+片方向にしても往復できる条件は連結性と橋の不存在で、深さ優先探索の向きが構成を与える。
+
+## 使う場面
+
+双方向の道を全て一方通行にし、それでも任意の場所から任意の場所へ行けるようにしたい。各辺の向きを全列挙する前に、一本しかない往復の接続を調べる。
+
+## 考え方
+
+まず深さ優先探索で、木の辺を親から子へ、木以外の辺を深い頂点から祖先へ向ける。同時に、部分木からどの祖先まで戻れるかを `low` に記録する。
+
+木の辺 $(p,v)$ に対して $low_v>tin_p$ なら橋であり、その辺をどちらに向けても逆方向へ渡れないため不可能。全頂点を探索でき、橋がなければ、上の向き付けが強連結になる。
+
+平行辺がある場合は、親頂点への全辺を省かず、通ってきた一本の辺番号だけを除く。
+
+## 適用条件
+
+辺は元々無向で、どちらの向きも自由に選べる。全頂点を一つの強連結グラフにしたい。特定の辺の向きが固定された混在グラフには、同じ条件だけでは足りない。
+
+連結かつ橋がないことが必要十分。掲載実装は自己ループと平行辺にも対応する。頂点一つだけなら、辺がなくてもその頂点は自分自身に到達できるため構成可能。
+
+## なぜ正しいか
+
+非連結な二部分は向き付けでつながらず、橋の両側は橋一辺だけを通るので一方向にした時点で片側から戻れない。これが必要性。
+
+DFS木の向きで根から全頂点へ行ける。橋がなければ、各子部分木から親またはそれより上へ届く戻り辺がある。部分木内の木辺を下向きに進み、その戻り辺を上向きに使うことで、各頂点からより浅い頂点へ行ける。深さを下げ続けて根へ到達できるので、任意の二頂点は根を経由して互いに行き来できる。
+
+## 計算量
+
+向きを一通りずつ試す全列挙は $O(2^M(N+M))$ 時間・$O(N+M)$ 空間。橋の確認と向き付けは一度のDFSで $O(N+M)$ 時間・空間。掲載実装は反復DFSで、長い鎖や長い閉路でも探索深さによる再帰を使わない。
+
+## 実装
+
+`strong_orientation` は入力順の辺の向きを返し、構成不能なら `nullopt`。無向の辺番号を一度だけ消費し、その時点で向きを確定する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<vector<pair<int,int>>> strong_orientation(int n,const vector<pair<int,int>>& edges) {
+    assert(n>0);
+    int m=edges.size();vector<vector<pair<int,int>>> g(n);
+    for(int i=0;i<m;++i) {auto [a,b]=edges[i];g[a].push_back({b,i});g[b].push_back({a,i});}
+    vector<int> tin(n,-1),low(n),parent(n,-1),parent_edge(n,-1);
+    vector<char> used(m);vector<pair<int,int>> direction(m);
+    int timer=0;bool bridge=false;
+    tin[0]=low[0]=timer++;
+    vector<pair<int,int>> stack{{0,0}};
+    while(!stack.empty()) {
+        int v=stack.back().first;int& i=stack.back().second;
+        if(i==int(g[v].size())) {
+            stack.pop_back();
+            if(parent[v]!=-1) {
+                int p=parent[v];
+                if(low[v]>tin[p]) bridge=true;
+                low[p]=min(low[p],low[v]);
+            }
+            continue;
+        }
+        auto [u,id]=g[v][i++];
+        if(id==parent_edge[v] || used[id]) continue;
+        used[id]=true;direction[id]={v,u};
+        if(tin[u]==-1) {
+            parent[u]=v;parent_edge[u]=id;tin[u]=low[u]=timer++;
+            stack.push_back({u,0});
+        } else low[v]=min(low[v],tin[u]);
+    }
+    if(timer!=n || bridge) return nullopt;
+    return direction;
+}
+```
+
+## 関連する手法
+
+[一本の辺を失うと切断される場所を一度の探索で求める](/flowchartcp/techniques/bridge-edge-failure/) ・ [強連結成分分解](/flowchartcp/techniques/scc/)
+
+## 参考資料
+
+- [CSES：Strongly Connected Edges](https://cses.fi/problemset/task/2177)
+
+<TechniqueReferences techniqueId="bridgeless-strong-orientation" />

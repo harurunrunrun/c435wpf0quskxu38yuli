@@ -1,0 +1,62 @@
+---
+title: "部分和の可否だけならビット列をずらしてまとめて更新する"
+description: "個数や最大価値が不要な DP を、64 状態ずつのシフトと OR に変えます。"
+techniqueId: "knapsack-bitset-shift"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+各重さを一回まで選び、和が $s$ になるかだけを求める DP。通り数や価値の最大値を持たなくてよいとき、真偽値の遷移をまとめられます。
+
+## 考え方
+
+到達できる和 $s$ のビットを 1 とした $B$ を持ちます。重さ $w$ を処理した後は $B\gets B\mathbin{\mathrm{OR}}(B\ll w)$。シフトした側がその品物を選んだ場合です。
+
+動的長のビット列を 64 bit のワードで実装する場合は、高いワードから更新します。低い方から更新すると同じ品物を繰り返し使うことがあります。
+
+## 適用条件
+
+重さは非負、求めるものは可否のみで、和の上限 $S$ がメモリに入ること。通り数の DP には OR を使えません。シフト 64 の未定義動作を避け、上限を越えたビットも消します。下の実装では $S$ は非負の int。
+
+## なぜ正しいか
+
+前の到達集合から、選ばない和と重さ $w$ を足した和の和集合を作っています。高い方から走査すれば、シフト元の低いワードはまだ前の層のままなので、一つの品物を一回だけ使う遷移になります。
+
+## 計算量
+
+通常の真偽値 DP は時間 $O(NS)$、空間 $O(S)$。ワードを単位とすると、時間 $O(N\lceil(S+1)/64\rceil)$、空間 $O(\lceil(S+1)/64\rceil)$ ワードです。固定 64 bit の計算機上の定数倍の高速化です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+void shift_or_sum(vector<unsigned long long>& bits,int value,int limit){
+    assert(value>=0 && limit>=0);if(value>limit)return;
+    int words=value/64,shift=value%64;
+    for(int i=(int)bits.size()-1;i>=words;--i){
+        unsigned long long moved=bits[i-words]<<shift;
+        if(shift && i>words)moved|=bits[i-words-1]>>(64-shift);
+        bits[i]|=moved;
+    }
+    int remainder=(limit+1LL)%64;
+    if(remainder)bits.back()&=(1ULL<<remainder)-1;
+}
+vector<unsigned long long> subset_sum_bits(const vector<int>& values,int limit){
+    assert(limit>=0);
+    vector<unsigned long long> bits(limit/64+1);bits[0]=1;
+    for(int value:values)shift_or_sum(bits,value,limit);
+    return bits;
+}
+```
+
+## 関連する手法
+
+[同じ重さを c 個まで選ぶときは個数を二進分解する](/flowchartcp/techniques/subset-sum-repeated-binary/)
+
+## 参考資料
+
+- [AtCoder：Cooking の問題文](https://atcoder.jp/contests/abc204/tasks/abc204_d)
+
+<TechniqueReferences techniqueId="knapsack-bitset-shift" />

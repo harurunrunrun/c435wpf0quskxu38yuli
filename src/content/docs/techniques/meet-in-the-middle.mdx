@@ -1,0 +1,73 @@
+---
+title: "半分全列挙"
+description: "選択肢を二つに分けて列挙し、両側の結果を組み合わせる。"
+techniqueId: meet-in-the-middle
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+選択肢を二つに分けて列挙し、両側の結果を組み合わせる。
+
+## 使う場面
+
+要素数が40程度で、$2^N$ 通りの部分集合は列挙できないが、$2^{N/2}$ 通りなら列挙できるときに使う。値が大きく、合計値を状態にするDPも難しい場合に有効である。
+
+## 考え方
+
+配列を前半と後半に分け、各側の部分集合の和をすべて求める。一方をソートしておけば、もう一方の和 $x$ に対し、必要な和 $K-x$ を二分探索できる。
+
+和が $K$ になる部分集合を数えるなら、$K-x$ と等しい値の個数を足す。和が $K$ 以下で最大となる組を求めるなら、$K-x$ 以下の最大値を探す。複数の属性を持つ場合は、ソート後の累積最大値などと組み合わせる。
+
+## 適用条件
+
+前半と後半の選択を、それぞれの和などの情報から結合できる必要がある。両側をまたぐ順序や相互作用がある場合は、それを表す情報も残す。
+
+個数を数える場合、同じ和になる異なる部分集合を削除してはいけない。また、列挙する値が数百万個になることもあるため、時間だけでなくメモリも確認する。
+
+## なぜ正しいか
+
+全体の部分集合は、前半で選ぶ集合と後半で選ぶ集合に一意に分かれる。逆に、両側の集合を一つずつ選ぶと全体の部分集合が一つ決まる。各側を漏れなく列挙し、条件を満たす組を数えれば、全体の選択も漏れなく一度ずつ数えられる。
+
+## 計算量
+
+両側の列挙には $O(2^{N/2})$ 時間・空間が必要になる。ソートと二分探索を含めると、時間は $O(N2^{N/2})$。
+
+## 実装
+
+`count_subset_sum(a, target)` は、和が `target` になる部分集合の個数を返す。空集合も含むため、`target` が0なら空集合も数えられる。部分和、差、答えの個数が符号付き64ビット整数に収まる必要がある。
+
+```cpp
+#include <vector>
+#include <algorithm>
+using namespace std;
+vector<long long> subset_sums(const vector<long long>& a) {
+    vector<long long> sums(1,0);
+    for(long long x:a) {
+        size_t n=sums.size();
+        sums.reserve(n*2);
+        for(size_t i=0;i<n;++i) sums.push_back(sums[i]+x);
+    }
+    return sums;
+}
+long long count_subset_sum(const vector<long long>& a,long long target) {
+    int m=a.size()/2;
+    auto left=subset_sums(vector<long long>(a.begin(),a.begin()+m));
+    auto right=subset_sums(vector<long long>(a.begin()+m,a.end()));
+    sort(right.begin(),right.end());
+    long long ans=0;
+    for(long long x:left) {
+        auto [l,r]=equal_range(right.begin(),right.end(),target-x);
+        ans+=r-l;
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/) ・ [ナップサックDP](/flowchartcp/techniques/knapsack/) ・ [二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [USACO Guide: Meet In The Middle](https://usaco.guide/gold/meet-in-the-middle)
+
+<TechniqueReferences techniqueId="meet-in-the-middle" />

@@ -1,0 +1,65 @@
+---
+title: "開催日の変更は、前後の間隔を分ける積だけで減点差を求める"
+description: "日ごとの経過日数を数え直さず、同じ種類の前後の開催日を管理します。"
+techniqueId: "heuristic-schedule-gap-delta"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+種類ごとに、前回の開催からの日数に比例して毎日減点される日程を、一日ずつ変更するとき。一日の変更はそれ以降にも影響しますが、同じ種類が次に開かれた日で影響が止まります。
+
+## 考え方
+
+同じ種類の開催日 $a<b$ の間の減点は $c(b-a)(b-a-1)/2$。日 $d$ をこの間へ追加すると、減点が $c(d-a)(b-d)$ だけ減ります。削除なら同じ量だけ増えます。
+種類ごとの開催日を整列集合へ置き、0日と $D+1$ 日を番兵にします。0日は初日の前回開催日を表し、$D+1$ 日は最後の開催後から $D$ 日までの減点を同じ式で数えるための終端です。番兵の日自体に満足度や減点は加えません。変更する日の満足度の差と、旧種類からの削除・新種類への挿入による二つの積を足せば、日程全体の評価差が得られます。
+
+## 適用条件
+
+減点が「前回からの日数×種類ごとの定数」で、開催日の満足度が日と種類だけで決まること。日により減点係数が変わる、他種類との組合せによる報酬がある場合は式を変える必要があります。番兵は最後の日の未開催ペナルティを含めるために必要です。
+
+## なぜ正しいか
+
+間隔の三角数の差を展開すると、$T(b-a)-T(d-a)-T(b-d)=(d-a)(b-d)$ になります。挿入・削除で変わるのはこの間隔だけで、他の開催間隔は変わりません。旧種類と新種類の減点差に、当日の満足度差を加えることで全再計算と一致します。原典Cでは更新後の評価を正確に返す部品です。
+
+## 計算量
+
+毎変更の全再計算は $O(DK)$。開催日集合の前処理は $O(D\log(D+1)+K)$、一変更は $O(\log(D+1))$、空間は日別満足度を含め $O(DK+D+K)$。積と評価の和を128 bitで計算します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class ScheduleGapScore {
+    int days,kinds;vector<long long> decay;vector<vector<long long>> reward;vector<int> types;vector<set<int>> dates;__int128 total=0;
+    static __int128 triangle(long long gap){return (__int128)gap*(gap-1)/2;}
+public:
+    ScheduleGapScore(vector<long long> c,vector<vector<long long>> s,vector<int> t):days(t.size()),kinds(c.size()),decay(move(c)),reward(move(s)),types(move(t)),dates(kinds){
+        assert(kinds>0 && (int)reward.size()==days);
+        for(int i=0;i<kinds;++i){assert(decay[i]>=0);dates[i].insert(0);dates[i].insert(days+1);}
+        for(int d=1;d<=days;++d){assert((int)reward[d-1].size()==kinds && 0<=types[d-1] && types[d-1]<kinds);dates[types[d-1]].insert(d);total+=reward[d-1][types[d-1]];}
+        for(int i=0;i<kinds;++i){auto previous=dates[i].begin();for(auto current=next(previous);current!=dates[i].end();++current){total-=(__int128)decay[i]*triangle(*current-*previous);previous=current;}}
+    }
+    __int128 delta(int day,int new_type)const{
+        assert(1<=day && day<=days && 0<=new_type && new_type<kinds);int old_type=types[day-1];if(old_type==new_type)return 0;
+        auto old=dates[old_type].find(day);int a=*prev(old),b=*next(old);
+        auto right=dates[new_type].lower_bound(day);int x=*prev(right),y=*right;
+        return (__int128)reward[day-1][new_type]-reward[day-1][old_type]
+            -(__int128)decay[old_type]*(day-a)*(b-day)+(__int128)decay[new_type]*(day-x)*(y-day);
+    }
+    __int128 change(int day,int new_type){__int128 diff=delta(day,new_type);int old=types[day-1];if(old!=new_type){dates[old].erase(day);dates[new_type].insert(day);types[day-1]=new_type;}total+=diff;return diff;}
+    int type_at(int day)const{assert(1<=day && day<=days);return types[day-1];}
+    __int128 score()const{return total;}
+};
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_c)
+
+<TechniqueReferences techniqueId="heuristic-schedule-gap-delta" />

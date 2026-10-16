@@ -1,0 +1,70 @@
+---
+title: "木の個数DPは部分木サイズまでに範囲を絞って併合する"
+description: "子のDPを合わせる二重ループは、実際に存在する個数の範囲だけを回します。"
+techniqueId: tree-knapsack-cardinality
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+子のDPを合わせる二重ループは、実際に存在する個数の範囲だけを回します。
+
+## 使う場面
+
+木の部分木で、選んだ頂点数などの個数別DPを持つ場合です。親側の $A[p]$ と子側の $B[q]$ を $p+q$ の状態へ合わせます。各併合で全体の頂点数 $N$ までループすると、$O(N^3)$ になることがあります。
+
+## 考え方
+
+すでに処理した側の頂点数を $X$、子の頂点数を $Y$ とすると、$0\le p\le X$、$0\le q\le Y$ だけを調べます。
+
+以下の例では、根を含む連結な頂点集合を個数ごとに数えます。子から0個選ぶか、子の根を含む連結集合を選びます。独立な選択の通り数を掛け、選んだ個数の和の状態へ足します。
+
+## 適用条件
+
+添字の個数が部分木サイズ以下になることが必要です。頂点の重さの合計など、サイズより大きい値を添字にする場合は、同じ範囲削減を使えません。子同士の相互作用がある場合は、境界条件を追加の状態として保持します。
+
+## なぜ正しいか
+
+根を含む連結集合が子の部分木から頂点を選ぶなら、必ずその子自身も含みます。したがって、0個か子を含む連結集合かに分ければ、すべての選び方を重複なく表せます。
+
+また、2つの集合を併合するときの $XY$ 組は、それぞれの頂点間の組へ対応させられます。各頂点ペアが別々の側から合流するのは1回だけなので、全併合の二重ループの総量は $O(N^2)$ です。
+
+## 計算量
+
+添字を毎回 $N$ まで回す $O(N^3)$ 時間を、部分木サイズの範囲だけにして $O(N^2)$ にします。全頂点の個数DPを保存すると $O(N^2)$ 空間ですが、以下では子を併合後に捨てるため、木と作業配列を合わせて $O(N)$ 空間です。
+
+## 実装
+
+`root_connected_counts(g, root)` は根を含む連結集合の個数別の通り数を法 $10^9+7$ で返します。入力は非空の無向木です。深い木では再帰スタックに注意し、必要なら帰りがけ順の反復処理へ変えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<long long> root_connected_counts(const vector<vector<int>>& g,int root=0) {
+    const long long MOD=1000000007;
+    assert(!g.empty() && 0<=root && root<int(g.size()));
+    auto dfs=[&](auto&& self,int v,int parent)->vector<long long> {
+        vector<long long> current{0,1};
+        for(int u:g[v]) if(u!=parent) {
+            auto child=self(self,u,v);
+            vector<long long> next(current.size()+child.size()-1);
+            for(int p=1;p<int(current.size());++p) {
+                next[p]=(next[p]+current[p])%MOD;
+                for(int q=1;q<int(child.size());++q)
+                    next[p+q]=(next[p+q]+current[p]*child[q])%MOD;
+            }
+            current.swap(next);
+        }
+        return current;
+    };
+    return dfs(dfs,root,-1);
+}
+```
+
+## 関連する手法
+
+[木DP](/flowchartcp/techniques/tree-dp/) ・ [寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [AtCoder：F - Tree Patrollingの解説・実装](https://atcoder.jp/contests/ABC207/editorial/2155?lang=ja)
+
+<TechniqueReferences techniqueId="tree-knapsack-cardinality" />

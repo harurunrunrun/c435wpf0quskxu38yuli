@@ -1,0 +1,127 @@
+---
+title: "向きのある木の経路集計は、正順と逆順の要約を両方持つ"
+description: "一次関数の合成など順序を変えられない集計を、両端から順序を保ってつなぐ。"
+techniqueId: tree-path-directed-composition
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+一次関数の合成など順序を変えられない集計を、両端から順序を保ってつなぐ。
+
+## 使う場面
+
+木の頂点に関数や行列があり、値の変更と経路集計を繰り返す。始点から終点への順番で合成するため、経路を逆向きにたどると答えが変わる。
+
+## 考え方
+
+木の経路を、重い子へ続く連続した鎖に分ける。鎖は深い方向へ添字を振り、セグメント木の各区間に「左から右の合成」と「右から左の合成」を持つ。
+
+$A$ を先に、$B$ を後に適用する合成を $A\star B=B\circ A$ と書く。隣り合う区間 $L,R$ の要約は
+
+$$forward=L_f\star R_f,\qquad backward=R_b\star L_b$$
+
+となる。$u$ 側から取り出した上向き区間は逆順で左の答えの末尾へ足す。$v$ 側から取り出した下向き区間は正順で右の答えの先頭へ足す。両頂点が同じ鎖になったら、残る区間を一度だけ取り出して左右をつなぐ。
+
+## 適用条件
+
+集計は結合則を満たし、空区間の単位元がある。交換則は不要。掲載例は法 $998244353$ の一次関数で、係数を0以上法未満に正規化して渡す。木の形は固定し、頂点の関数は点更新できる。
+
+区間の向きと合成の順番を明示する必要がある。頂点の集計なので、両側の合流点は一度だけ数える。
+
+## なぜ正しいか
+
+区間の要約は、左の関数列の後に右の関数列を適用した結果を正順に、逆の並びを逆順に保存する。結合則により区間をまとめても値は変わらない。経路の分割では始点側で既に回収した列を末尾へ、終点側で回収した列を先頭へ置くため、最終的な列が元の $u\to v$ の頂点順と一致する。
+
+## 計算量
+
+経路を毎回たどる $O(N)$ を、一問 $O(\log^2 N)$ に減らす。点更新は $O(\log N)$。鎖への分割とセグメント木の準備は $O(N)$、空間は $O(N)$。
+
+## 実装
+
+`PathComposition::path(u,v)` は始点の関数を最初に、終点の関数を最後に適用する一次関数を返す。`apply(x)` で値を評価する。`set(v,f)` は一頂点の関数を変える。木の深さに依存する再帰は使わない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+constexpr long long MOD=998244353;
+struct Affine {
+    long long a=1,b=0;
+    long long apply(long long x) const {return (a*x+b)%MOD;}
+};
+Affine then(Affine first,Affine second) {
+    return {first.a*second.a%MOD,(first.b*second.a+second.b)%MOD};
+}
+struct Both {Affine forward,backward;};
+Both join(Both left,Both right) {
+    return {then(left.forward,right.forward),then(right.backward,left.backward)};
+}
+struct PathComposition {
+    int n,base=1;
+    vector<int> parent,depth,size,heavy,head,pos;
+    vector<Both> seg;
+    PathComposition(const vector<vector<int>>& g,const vector<Affine>& functions)
+        :n(g.size()),parent(n,-1),depth(n),size(n,1),heavy(n,-1),head(n),pos(n) {
+        assert(n>0 && int(functions.size())==n);
+        vector<int> order{0};parent[0]=0;
+        for(int i=0;i<n;++i) {
+            int v=order[i];
+            for(int u:g[v]) if(u!=parent[v]) {
+                parent[u]=v;depth[u]=depth[v]+1;order.push_back(u);
+            }
+        }
+        for(int i=n-1;i>0;--i) {
+            int v=order[i],p=parent[v];size[p]+=size[v];
+            if(heavy[p]==-1 || size[v]>size[heavy[p]]) heavy[p]=v;
+        }
+        int timer=0;
+        vector<pair<int,int>> tasks{{0,0}};
+        while(!tasks.empty()) {
+            auto [v,h]=tasks.back();tasks.pop_back();
+            for(;v!=-1;v=heavy[v]) {
+                head[v]=h;pos[v]=timer++;
+                for(int u:g[v]) if(parent[u]==v && u!=v && u!=heavy[v]) tasks.push_back({u,u});
+            }
+        }
+        while(base<n) base*=2;
+        seg.resize(2*base);
+        for(int v=0;v<n;++v) seg[base+pos[v]]={functions[v],functions[v]};
+        for(int i=base-1;i>0;--i) seg[i]=join(seg[2*i],seg[2*i+1]);
+    }
+    void set(int v,Affine f) {
+        int p=base+pos[v];seg[p]={f,f};
+        for(p/=2;p>0;p/=2) seg[p]=join(seg[2*p],seg[2*p+1]);
+    }
+    Both range(int l,int r) const {
+        Both left{},right{};
+        for(l+=base,r+=base;l<r;l/=2,r/=2) {
+            if(l&1) left=join(left,seg[l++]);
+            if(r&1) right=join(seg[--r],right);
+        }
+        return join(left,right);
+    }
+    Affine path(int u,int v) const {
+        Affine left{},right{};
+        while(head[u]!=head[v]) {
+            if(depth[head[u]]>=depth[head[v]]) {
+                left=then(left,range(pos[head[u]],pos[u]+1).backward);
+                u=parent[head[u]];
+            } else {
+                right=then(range(pos[head[v]],pos[v]+1).forward,right);
+                v=parent[head[v]];
+            }
+        }
+        if(depth[u]>=depth[v]) left=then(left,range(pos[v],pos[u]+1).backward);
+        else left=then(left,range(pos[u],pos[v]+1).forward);
+        return then(left,right);
+    }
+};
+```
+
+## 関連する手法
+
+[区間の一次変換を合成して遅延伝播する](/flowchartcp/techniques/affine-lazy-composition/) ・ [HL分解](/flowchartcp/techniques/heavy-light-decomposition/)
+
+## 参考資料
+
+- [Library Checker：Vertex Set Path Composite](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/tree/vertex_set_path_composite/task.md)
+
+<TechniqueReferences techniqueId="tree-path-directed-composition" />

@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/home/admin2/flowchartcp/site/tests/ioi2017-prize-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 7.707708463000017,
+  "testFile": "tests/ioi2017-prize-flow.test.mjs",
+  "testSha256": "f10bc69b94da139ab209224e0215f1a428d6f45c4fcf196b5af9c8c3f36cb7eb",
+  "preparedTmpFile": "/tmp/flowchartcp-ioi2017-prize-flow.test.mjs",
+  "preparedAndPublishedBytesIdentical": true,
+  "tapFile": "/tmp/flowchartcp-ioi2017-prize-flow-results.tap",
+  "tapSha256": "cc7c18dfd69f4bd6b4a6263db651d6e151459651dfb9f651b72ea0e33131e652",
+  "caseFile": "/tmp/flowchartcp-ioi2017-prize-flow-case.json",
+  "caseSha256": "cc446ef29feca805772131cf9f4cd31ddf26ce5b99ce9bf083a7c0b1f9fc5a16",
+  "frozenBaseline": {
+    "articles": 508,
+    "graphs": 475,
+    "nodes": 3721,
+    "walks": 529,
+    "corpora": 10,
+    "datasetJsonMembers": 79,
+    "rawSha256": {
+      "flows": "25cc2002d24e223303de0f00e6c3b2a057f27561d5288bec6f2f02a8317ea771",
+      "walks": "475115678fb4cf1181ab232846fef9550aa81d3315b68ba75e15bb235c508684",
+      "ioi2017-audit": "760a48642322f2cae73568ae22d4589956fdfe3edf95db87a92cf321a39cdd09",
+      "dataset": "36056d3fc06d00b44f6228b904bb1f6392ecd179fe9dd5cea779405fa0cc65e6"
+    }
+  },
+  "cppSha256": "af538cebe18119d7f93b645d56ee74ff3432d7225dcffe630f4d5bcff6a1947b",
+  "allowedSharedFiles": [
+    "tests/ioi2017-prize-flow.test.mjs",
+    "research/probes/ioi2017-prize-flow-results.json"
+  ],
+  "otherSharedFilesModified": false,
+  "coveragePolicy": "Every prior field of ten fixed corpora and every existing resolution remains unchanged. Initial Prize unknown/official-editorial-false/completedApi-false and frozen initial4/6 research plus coverage0/6 stay fixed. Only one explicit later positive independent review and resolution are added. Current research>=5 and coverage>=5; deleting Prize positive review or its production support reduces the relevant count by1. Future legitimate resolutions are allowed. An invalid actual MDX fence fails real preflight and gates all corpus coverage to0.",
+  "scope": [
+    "complete old529-record hash and independent raw replay with targets/questions/labels/terminals",
+    "every old475 graph and3721 node field/order/target/result",
+    "all79 frozen dataset raw hashes and all ten corpus initial fields",
+    "593 local prefixes/404 completed historical share URLs with Back",
+    "all six new no/unknown guards, both displays, SVG answer labels and article href",
+    "4779 deterministic adaptive full-score source/proof/native/header provenance",
+    "small actual generic and synthetic-grader-adapter coherent-completion smoke",
+    "metadata/reference/source/walk/steps negative coverage and positive-review rejection",
+    "read-only-mirror actual broken C++ fence preflight"
+  ],
+  "resultsFile": "research/probes/ioi2017-prize-flow-results.json"
+}

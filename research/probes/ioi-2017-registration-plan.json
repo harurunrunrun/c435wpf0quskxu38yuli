@@ -1,0 +1,220 @@
+{
+  "corpusAddition": {
+    "id": "ioi-2017",
+    "title": "IOI2017 本競技全6題の固定監査",
+    "source": "IOI",
+    "scope": "IOI2017 official competition, exactly3tasks on day1 and3 on day2; exclude practice and translation duplicates.",
+    "expectedProblems": 6,
+    "state": "audited",
+    "auditFile": "data/corpus-audits/ioi-2017.json",
+    "selectionRule": "Take every official English task in the two competition-day sections of the Japanese national committee listing. Canonical task IDs and statement URLs are to be confirmed from actual linked originals, not guessed from names.",
+    "fixedProblems": [
+      {
+        "source": "ioi",
+        "problemId": "ioi2017_nowruz",
+        "officialTaskId": "nowruz",
+        "day": 1,
+        "date": "2017-07-30",
+        "title": "ノウルーズ",
+        "englishTitle": "Nowruz",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-nowruz-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/nowruz.pdf",
+        "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/nowruz.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2017_wiring",
+        "officialTaskId": "wiring",
+        "day": 1,
+        "date": "2017-07-30",
+        "title": "配線",
+        "englishTitle": "Wiring",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+        "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/wiring.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2017_train",
+        "officialTaskId": "train",
+        "day": 1,
+        "date": "2017-07-30",
+        "title": "電車のおもちゃ",
+        "englishTitle": "Toy Train",
+        "statementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+        "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2017_prize",
+        "officialTaskId": "prize",
+        "day": 2,
+        "date": "2017-08-01",
+        "title": "The Big Prize",
+        "englishTitle": "The Big Prize",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+        "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/prize.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2017_simurgh",
+        "officialTaskId": "simurgh",
+        "day": 2,
+        "date": "2017-08-01",
+        "title": "Simurgh",
+        "englishTitle": "Simurgh",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+        "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2017_books",
+        "officialTaskId": "books",
+        "day": 2,
+        "date": "2017-08-01",
+        "title": "古文書",
+        "englishTitle": "Ancient Books",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+        "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+        "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day2/books.pdf"
+      }
+    ]
+  },
+  "knownGapAdditions": [
+    {
+      "id": "induced-grid-tree-single-neighbor-leaf-growth",
+      "features": "固定入力の障害物盤面で残す自由セルを選び、その4近傍誘導グラフを木にする。 次数1のセルを目標個数以上にし、10個の出力ファイルを提出する。",
+      "techniqueIds": [
+        "induced-grid-tree-single-neighbor-leaf-growth"
+      ],
+      "state": "unconfirmed",
+      "discoveredBy": "ioi-2017",
+      "problemId": "ioi2017_nowruz"
+    },
+    {
+      "id": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+      "features": "直線上の赤点/青点を、各点が少なくとも一本の異色間の線に接続するように結ぶ。 一つの点を何本にも使えて、全配線長の合計を最小にする。",
+      "techniqueIds": [
+        "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+      ],
+      "state": "pending",
+      "discoveredBy": "ioi-2017",
+      "problemId": "ioi2017_wiring"
+    },
+    {
+      "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+      "features": "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。 無限に充電駅を訪れる側と、やがて電池切れにする側の勝敗を全開始点で求める。",
+      "techniqueIds": [
+        "buchi-owned-graph-repeated-target-attractor-elimination"
+      ],
+      "state": "pending",
+      "discoveredBy": "ioi-2017",
+      "problemId": "ioi2017_train"
+    },
+    {
+      "id": "rank-count-oracle-equal-level-interval-pruning",
+      "features": "位置を質問すると、その箱より高価な箱の左右の個数が返る。種類ごとの個数は前の種類の二乗より多い。 返答列に整合する配列を適応的に選ぶgraderを相手に、唯一の最上位の箱を満点質問数で探す。",
+      "techniqueIds": [
+        "rank-count-oracle-equal-level-interval-pruning"
+      ],
+      "state": "unconfirmed",
+      "discoveredBy": "ioi-2017",
+      "problemId": "ioi2017_prize"
+    },
+    {
+      "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+      "features": "既知の単純連結無向グラフで、隠れた全域木を特定する。 質問も全域木に限られ、隠れた木との共通辺数が返る。満点は8000回以内。",
+      "techniqueIds": [
+        "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling"
+      ],
+      "state": "pending",
+      "discoveredBy": "ioi-2017",
+      "problemId": "ioi2017_simurgh"
+    },
+    {
+      "id": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+      "features": "一冊だけ持って直線棚の本を置換し、開始位置へ戻るまでの歩行距離を最小にする。 順列cycleの運搬下界と、実際に触れたcycleの区間閉包を利用する。",
+      "techniqueIds": [
+        "permutation-cycle-interval-closure-two-sided-walk-greedy"
+      ],
+      "state": "pending",
+      "discoveredBy": "ioi-2017",
+      "problemId": "ioi2017_books"
+    }
+  ],
+  "sharedMutationAuthorizedTo": "parent only after independent review",
+  "preserveExistingPlanEntries": true,
+  "notResolvedBeforeArticleImplementation": true,
+  "expectedNewStageCounts": {
+    "statements": 6,
+    "solutions": 4,
+    "fullApi": 0,
+    "covered": 0,
+    "unconfirmed": 2
+  },
+  "requiredCopies": [
+    "data/corpus-audits/ioi-2017.json",
+    "research/ioi-2017-audit-notes.md",
+    "research/probes/ioi-2017-initial-probe-results.json",
+    "research/probes/ioi-2017-research-checks-results.json",
+    "research/probes/ioi-2017-research-checks.py",
+    "research/snapshots/ioi-2017-flow.json.gz",
+    "research/snapshots/ioi-2017-manifest.json",
+    "research/snapshots/ioi-2017-original-audit.json.gz",
+    "research/snapshots/ioi-2017-original-notes.md.gz",
+    "research/snapshots/ioi-2017-original-probe.py.gz",
+    "research/snapshots/ioi-2017-reference.json.gz",
+    "research/snapshots/ioi-2017-retained-raw.json.gz",
+    "research/snapshots/ioi-2017-selection.json",
+    "research/snapshots/ioi-2017-source.json.gz",
+    "research/snapshots/ioi-2017-technique.json.gz",
+    "research/snapshots/ioi-2017-walk.json.gz",
+    "tests/ioi-2017-fixed-corpus.test.mjs"
+  ],
+  "requiredCopiesSha256": {
+    "data/corpus-audits/ioi-2017.json": "980a693ea1e0de787635c077098f72b8590a410d61586e63848dc7b7ba9038e6",
+    "research/ioi-2017-audit-notes.md": "1ce69c0c7a2bf893be8cfdbc992217dcdbdc8b6da84b1b3c9fa8b478d48b282e",
+    "research/probes/ioi-2017-initial-probe-results.json": "0dd485bd81d30093e810a17dc582fec023eed2b537ca21716b39db4fe26ed41a",
+    "research/probes/ioi-2017-research-checks-results.json": "3aa1f44357dde8ef331b3df6a48a07e38f766858b03b7c6592e074c360123084",
+    "research/probes/ioi-2017-research-checks.py": "9377be37621997f5c06c996cab3c1c6fc54b06da72bea58ea27fa50bbdf5eefa",
+    "research/snapshots/ioi-2017-flow.json.gz": "2cce0d0cc5066190521859f4ae567b387b0ee85234ba5e85fac234408797fb19",
+    "research/snapshots/ioi-2017-manifest.json": "b90b3af7a72cc9c6485662606109f1bea9ac4bb2eef8a643c9b46fd79514beae",
+    "research/snapshots/ioi-2017-original-audit.json.gz": "92b98f911f6b484038e3dd7cef925b29a33d858d4fff4efed64c62c438e7dad9",
+    "research/snapshots/ioi-2017-original-notes.md.gz": "804e100ae9a28b372c106f5986fee5f7a085f0dc89c8bfa9bb0daed4093be860",
+    "research/snapshots/ioi-2017-original-probe.py.gz": "86619fac02431fe54aeb12e55def29b241cda0a873a525d88d8b9d57101556f7",
+    "research/snapshots/ioi-2017-reference.json.gz": "a2070f83a9b4ec025b478d4b5b2ab9523ec824dce64e6eba3a0eb582a4d28054",
+    "research/snapshots/ioi-2017-retained-raw.json.gz": "c98888dc0c643499509b986cedcbaa290b6a04d653184415efe3f15d95ce207f",
+    "research/snapshots/ioi-2017-selection.json": "3b93bcdae6d32392e837c062c3db01d16d991abc2c679b59b17624d82cc2e762",
+    "research/snapshots/ioi-2017-source.json.gz": "ddfbfd3265d01a0dd5a4fa6ffecaf93f9459496619540e8fc1ac3b61ce5d2fbc",
+    "research/snapshots/ioi-2017-technique.json.gz": "eecd090fb6d1da0c8713c7e609191d21532a206b2edf27ddfd88b01be8ed7d81",
+    "research/snapshots/ioi-2017-walk.json.gz": "323af0ddaf35fbad765cae0bd2048dba048a7a5eec7d55bc853aa6d9a1414f52",
+    "tests/ioi-2017-fixed-corpus.test.mjs": "fc00ed98b891e3bb48d1ce1390bbe1146151f2826fe507e9a2f660665e129f6b"
+  },
+  "preservedOld8Policy": "For every frozen old audit, retain every old top-level key and every old record key including baseline resolution/subsequent arrays as complete equal values. Only new top/record keys may be added.",
+  "stagedValidation": {
+    "testFile": "tests/ioi-2017-fixed-corpus.test.mjs",
+    "caseCount": 9,
+    "passed": 9,
+    "nativeNearbyApis": {
+      "cpp": 12,
+      "python": 1
+    },
+    "normalizedProbeElapsedSeconds": 15.761239,
+    "normalizedMathematicalCountersEqualOriginal": true,
+    "preRegistrationLiveFailures": 0,
+    "siteStagedOnly": true,
+    "futureResolutionRequiresActualAssessCorpusCoverage": true,
+    "liveResearchAtLeastInitialFour": true,
+    "initialRowsUnchanged": true,
+    "nativeRunner": "promisified execFile"
+  },
+  "normalizedEnvelopeAddition": {
+    "field": "selection.fixedBeforeTechniqueSearch",
+    "value": true,
+    "reason": "schema alias of preserved selectionBeforeTechniqueMatching:true; original raw audit/selection unchanged",
+    "originalSelectionAllKeysProjectionSha256": "bb013c3e8c0bcd395c856d51dab383be26e82b8907d3e74a9ebce5f18b170d61"
+  }
+}

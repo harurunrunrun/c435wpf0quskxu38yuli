@@ -1,0 +1,84 @@
+---
+title: "異なる部分文字列を、状態が受け持つ長さの区間へ一つずつ足す"
+description: "一状態に含まれる文字列の長さは連続するので、差分配列で全ての長さの個数を求める。"
+techniqueId: sam-length-distribution
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+本文の異なる部分文字列数を、長さごとに全て求めたい。長さを一つずつ固定して集合を作ると、同じ本文を何度も調べることになる。
+
+## 考え方
+
+suffix automaton の状態 $v$ の最長の文字列長を $len_v$ とする。根以外の状態が受け持つ長さは
+
+$$len_{link(v)}+1,\ldots,len_v$$
+
+で、この各長さに一つずつ異なる文字列がある。よって状態ごとにこの区間へ1を足す。差分配列の左端に1、右端の次に $-1$ を置き、最後に累積和を取れば、全ての長さの個数になる。
+
+## 適用条件
+
+本文は固定された英小文字列、$N\le2\times10^5$ とする。同じ文字列が複数回現れても一種類として数える。全ての出現数なら長さ $l$ ごとに $N-l+1$ であり、この集計は不要である。空文字列は含めない。
+
+## なぜ正しいか
+
+同じ終端位置集合を持つ文字列は、最長の文字列の接尾辞になり、各長さに高々一つある。suffix link の先は、終端位置集合が初めて変わる最長の接尾辞である。したがって、その長さより長い接尾辞が全て元の状態に入り、上の区間をちょうど作る。
+
+全ての非空部分文字列は一つの状態に属する。状態の区間へ一つずつ加えると、同じ長さの異なる文字列を重複なく数えられる。出現回数を加えると別の集計になるので、各状態の寄与は常に1である。
+
+## 計算量
+
+長さごとに全候補を文字列として保存・比較する方法は、合計で二次個以上の候補処理が必要になる。固定26文字での構築は $O(26N)$、区間差分の集計は $O(N)$ 時間。空間は $O(26N)$。
+
+## 実装
+
+戻り値の添字 `length` にその長さの個数を置く。添字0は0。空の本文なら要素数1になる。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <optional>
+#include <string>
+#include <vector>
+class SubstringStates {
+public:
+    struct State {std::array<int,26> next;int link=-1,length=0;long long occurrences=0;State(){next.fill(-1);}};
+    std::vector<State> state;
+    std::vector<int> order;
+    explicit SubstringStates(const std::string& text){
+        state.reserve(2*text.size()+1);state.emplace_back();int last=0;
+        for(char ch:text){
+            int c=ch-'a',cur=int(state.size());state.emplace_back();state[cur].length=state[last].length+1;state[cur].occurrences=1;
+            int p=last;while(p!=-1 && state[p].next[c]==-1){state[p].next[c]=cur;p=state[p].link;}
+            if(p==-1)state[cur].link=0;
+            else {int q=state[p].next[c];if(state[p].length+1==state[q].length)state[cur].link=q;
+                else {int clone=int(state.size());state.push_back(state[q]);state[clone].length=state[p].length+1;state[clone].occurrences=0;
+                    while(p!=-1 && state[p].next[c]==q){state[p].next[c]=clone;p=state[p].link;}
+                    state[q].link=state[cur].link=clone;
+                }
+            }
+            last=cur;
+        }
+        std::vector<int> count(text.size()+1);for(const auto& v:state)++count[v.length];
+        for(int i=1;i<int(count.size());++i)count[i]+=count[i-1];
+        order.resize(state.size());for(int i=int(state.size())-1;i>=0;--i)order[--count[state[i].length]]=i;
+        for(int i=int(order.size())-1;i>0;--i){int v=order[i];state[state[v].link].occurrences+=state[v].occurrences;}
+    }
+};
+std::vector<long long> distinct_substring_counts_by_length(const std::string& text){
+    SubstringStates automaton(text);int n=int(text.size());std::vector<long long> difference(n+2);
+    for(int v=1;v<int(automaton.state.size());++v){int l=automaton.state[automaton.state[v].link].length+1,r=automaton.state[v].length;++difference[l];--difference[r+1];}
+    std::vector<long long> answer(n+1);for(int length=1;length<=n;++length)answer[length]=answer[length-1]+difference[length];return answer;
+}
+```
+
+## 関連する手法
+
+[異なる部分文字列を、直前の接尾辞との差だけ数える](/flowchartcp/techniques/lcp-distinct-substrings/) ・ [異なる部分文字列の辞書順 K 番目を、遷移先の個数で選ぶ](/flowchartcp/techniques/sam-kth-distinct-substring/)
+
+## 参考資料
+
+- [CSES：Substring Distribution（原典）](https://cses.fi/problemset/task/2110)。
+
+<TechniqueReferences techniqueId="sam-length-distribution" />

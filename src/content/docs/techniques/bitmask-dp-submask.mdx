@@ -1,0 +1,67 @@
+---
+title: "集合を分割するDPはその集合の部分集合だけを列挙する"
+description: "全マスク同士を組み合わせず、有効な部分集合だけをビット演算で列挙します。"
+techniqueId: bitmask-dp-submask
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+全マスク同士を組み合わせず、有効な部分集合だけをビット演算で列挙します。
+
+## 使う場面
+
+集合 $S$ を複数のグループへ分けるDPです。グループとして使える集合 $T$ の費用が $c[T]$ なら、$dp[S]=\min_{\varnothing\ne T\subseteq S}(c[T]+dp[S\setminus T])$ となります。すべてのマスクを試して $T\subseteq S$ を判定する部分を削れます。
+
+## 考え方
+
+`sub = mask` から始め、`sub = (sub - 1) & mask` と更新すると、`mask` の非空部分集合だけを降順に列挙できます。残りの集合は `mask ^ sub` です。
+
+以下では、グラフの頂点をクリークに分ける最小グループ数を求めます。クリークの部分集合だけを1グループとして取り出し、残りの最小分割数に1を加えます。
+
+## 適用条件
+
+頂点数が小さく、$O(3^N)$ が実行可能な場合に使います。0を含めたい場合は、終了条件を別に書きます。空集合を費用1のグループとして遷移させると、自分自身へ依存するので除きます。
+
+グループ数の最小化では分割の順序を重複して調べても問題ありません。分割の通り数を数える場合は、特定の頂点を含むグループだけ選ぶなど、同じ分割を繰り返し数えない規則が必要です。
+
+## なぜ正しいか
+
+ビットを引いてから元のマスクとのANDを取ると、元の集合にないビットを除いた次の部分集合になります。したがって必要な候補を過不足なく列挙できます。
+
+各最適な分割から1グループ $T$ を取り出せば、残りは $S\setminus T$ の分割です。すべての有効な $T$ を試す式は、必ず最適な分割も含みます。
+
+## 計算量
+
+全体の候補数は $O(4^N)$ から $O(3^N)$ になります。各頂点が「$T$ に含む」「$S$ だけに含む」「どちらにも含まない」の3通りだからです。空間は改善前後とも $O(2^N)$ です。以下のクリーク判定の前計算は $O(2^N)$ です。
+
+## 実装
+
+`minimum_clique_partition(adj)` は無向グラフの最小クリーク分割数を返します。`adj[v]` の各ビットが隣接頂点です。$N\le20$ とし、自己辺は不要です。空グラフの頂点集合が空なら0を返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int minimum_clique_partition(const vector<unsigned>& adj) {
+    int n=adj.size(); assert(n<=20); unsigned size=1u<<n;
+    vector<char> clique(size); clique[0]=true;
+    vector<int> dp(size,n+1); dp[0]=0;
+    for(unsigned mask=1;mask<size;++mask) {
+        unsigned bit=mask&-mask,rest=mask^bit;
+        int v=__builtin_ctz(bit);
+        clique[mask]=clique[rest] && (rest&~adj[v])==0;
+        if(clique[mask]) { dp[mask]=1; continue; }
+        for(unsigned sub=mask;sub;sub=(sub-1)&mask)
+            if(clique[sub]) dp[mask]=min(dp[mask],1+dp[mask^sub]);
+    }
+    return dp.back();
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/) ・ [部分集合ゼータ変換](/flowchartcp/techniques/subset-transform/)
+
+## 参考資料
+
+- [AtCoder：F - Close Groupの解説・実装](https://atcoder.jp/contests/abc187/editorial/502)
+
+<TechniqueReferences techniqueId="bitmask-dp-submask" />

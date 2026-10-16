@@ -1,0 +1,47 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2016_railroad",
+    "title": "ジェットコースター (Roller Coaster Railroad)",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+    "verificationKind": "independent-analysis",
+    "reviewStatus": "verified",
+    "features": [
+      "入口上限以下なら使用でき、出口速度が固定の全区間を一度ずつ自由な順序で並べる",
+      "初速1から単位距離ごとに速度が1減る接続を置き、その距離の合計を最小にする",
+      "区間2〜20万・速度1〜10億の整数で、等しい区間や入口と出口が同じ区間も許す"
+    ],
+    "entryGraphId": "graphs",
+    "choices": [
+      "walk-goals",
+      "section-connections",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "expectedTechniqueIds": [
+      "directed-line-balance-euler-augmentation-mst"
+    ],
+    "conditions": [
+      "entry-exit-model",
+      "linear-slowdown",
+      "bounds"
+    ],
+    "date": "2016-08-14",
+    "difficulty": null,
+    "publicationDate": "2016-08-14",
+    "publicationYear": 2016,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true,
+    "techniqueIds": [
+      "directed-line-balance-euler-augmentation-mst"
+    ],
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "verification": "independent-analysis",
+    "sourceDate": "2016-08-14",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff"
+  }
+]

@@ -1,0 +1,65 @@
+---
+title: "短い整数区間では共通する小さい素数だけを持つ"
+description: "互いに素な部分集合を、区間幅以下の素因数の使用状況で数えます。"
+techniqueId: "subset-coprime-small-primes"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+非常に大きい整数の短い連続区間から、選んだどの二数も互いに素になる部分集合を数えたいとき。各数を完全に素因数分解すると、数値の大きさが負担になります。
+
+## 考え方
+
+区間幅を $W=B-A$ とします。異なる二数 $x,y$ の共通素因数 $p$ は $x-y$ も割るので、$p\le|x-y|\le W$。したがって $W$ 以下の素数だけを調べれば十分です。
+
+各数を、それらの素数で割り切れるかを表すマスク $m$ に変えます。使用済み素数の集合 $S$ と $S\cap m=\varnothing$ なら、その数を加えられます。指数の大きさは互いに素の判定に不要です。
+
+## 適用条件
+
+区間の整数は正で、同じ整数を二度選びません。幅以下の素数の個数 $P$ が小さいことが必要です。積が指定値になる問題には、指数を捨てるこの状態をそのまま使えません。マスクが 0 の数も別の選択肢なので、選ぶ・選ばないの二通りを数えます。
+
+## なぜ正しいか
+
+共通素因数があるなら幅以下の素因数がマスクで重なり、重なる素因数があればその二数は互いに素でありません。これは必要十分条件です。数を一度ずつ処理し、選ぶ・選ばないを別の前の層から更新するため、各部分集合を一度だけ数えます。
+
+## 計算量
+
+部分集合全列挙は $O(2^{W+1}(W+1)^2\log B)$。改善後は時間 $O((W+1)2^P+WP)$、空間 $O(2^P)$。$W\le72$ では $P\le20$。実装では個数の上界 $2^{73}$ が収まる 128 bit を使います。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+unsigned __int128 count_pairwise_coprime_interval(long long a,long long b){
+    assert(1<=a && a<=b && b-a<=72);
+    int width=b-a;
+    vector<int> primes;
+    for(int p=2;p<=width;++p){
+        bool prime=true;for(int q=2;q*q<=p;++q)if(p%q==0)prime=false;
+        if(prime)primes.push_back(p);
+    }
+    int states=1<<primes.size();
+    vector<unsigned __int128> dp(states);dp[0]=1;
+    for(long long x=a;;++x){
+        int mask=0;
+        for(int i=0;i<(int)primes.size();++i)if(x%primes[i]==0)mask|=1<<i;
+        auto next=dp;
+        for(int s=0;s<states;++s)if(!(s&mask))next[s|mask]+=dp[s];
+        dp.swap(next);if(x==b)break;
+    }
+    unsigned __int128 answer=0;for(auto ways:dp)answer+=ways;
+    return answer;
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [AtCoder：Coprime Present の解説](https://atcoder.jp/contests/abc195/editorial/858?lang=ja)
+
+<TechniqueReferences techniqueId="subset-coprime-small-primes" />

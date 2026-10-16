@@ -1,0 +1,118 @@
+---
+title: "二色が行や列を共有しない配置は、使う行・列を分けて空行と空列を引く"
+description: "各色が使う行と列を先に選び、その部分盤面の全行列を使う配置を二次元の包除で数える。"
+techniqueId: grid-active-rows-cols
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+二色の点や駒を置き、一つの行や列に異なる色を混在させたくない。使用する行列を選ぶだけだと、選んだのに一つも駒を置かなかった行列が生じ、同じ配置を重複して数える。
+
+## 考え方
+
+$i$ 行 $j$ 列の固定した部分盤面で、ちょうど $b$ マスを選び、全ての行・列を一回以上使う方法を $F_b(i,j)$ とする。空行と空列を禁止する二次元包除で
+
+$$F_b(i,j)=\sum_{x=0}^{i}\sum_{y=0}^{j}(-1)^{x+y}\binom ix\binom jy\binom{(i-x)(j-y)}b.$$
+
+黒が $i$ 行 $j$ 列、白が $k$ 行 $l$ 列を使うなら、行列集合の選択数は
+
+$$\binom Ni\binom{N-i}k\binom Mj\binom{M-j}l.$$
+
+これに $F_B(i,j)F_W(k,l)$ を掛け、$i+k\le N,j+l\le M$ を満たす四つ組を足す。実装では白側を「選べる行列数まで」の集計へ先にまとめることで、四つ組の本体を二重ループにできる。
+
+## 適用条件
+
+異なる色は行も列も共有できず、同色の駒同士は区別しない。各マス高々一個で、同色の駒は同じ行列に複数置ける。「同色も互いに攻撃してはいけない」場合は別の式になる。
+
+飛車の遮蔽がある設定でも、ある行に二色が混在すれば、行順で隣り合う異色の二駒は互いを攻撃する。したがって異色が攻撃しないことと、各行・列が一色だけを持つことは同値である。
+
+掲載実装は $1\le N,M\le50$、$0\le B,W\le NM$、$B+W\le NM<P=998244353$ を扱う。駒が0個の色は使う行・列数も0であり、$F_0(0,0)=1$ だけが残る。
+
+## なぜ正しいか
+
+固定した使う行・列のうち実際に使わなかった行を $r$ 個、列を $c$ 個持つ配置は、包除で $(1-1)^r(1-1)^c$ 回数えられる。空行列がなければ1回、あれば0回になる。
+
+完成した配置から黒と白の使う行・列集合が一意に復元できるため、二色の使用集合を選ぶ段階で重複しない。行列集合が分離していれば異色が同じマスに置かれることもなく、二色の配置数は独立に掛けられる。
+
+## 計算量
+
+盤面上の三状態を全列挙すると $O(3^{NM})$ 時間。全 $F_b(i,j)$ の二次元包除に $O(N^2M^2)$ 時間、白側の集計にも $O(N^2M^2)$ 時間、最後の黒側の和に $O(NM)$ 時間。階乗表は $NM$ まで必要で、全体の補助空間は $O(NM)$。50行50列では、二色の包除と白側の集計を合わせて約530万項で済む。
+
+## 実装
+
+`active_row_column_counts` は固定した使う行・列の全使用数を返す。`count_separated_two_colors` は選ぶ行列数までをまとめた表を作り、二色の合計を返す。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+template<long long P> struct BinomialTable {
+    std::vector<long long> fact, inverse_fact;
+    static long long power(long long x, long long e) {
+        long long r=1;
+        for (;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    }
+    explicit BinomialTable(int n) {
+        if(n<0 || n>=P) throw std::invalid_argument("factorial range");
+        fact.assign(n+1,1);inverse_fact.assign(n+1,1);
+        for(int i=1;i<=n;++i) fact[i]=fact[i-1]*i%P;
+        inverse_fact[n]=power(fact[n],P-2);
+        for(int i=n;i>0;--i) inverse_fact[i-1]=inverse_fact[i]*i%P;
+    }
+    long long choose(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[k]%P*inverse_fact[n-k]%P;
+    }
+    long long falling(int n,int k) const {
+        if(n<0 || k<0 || k>n) return 0;
+        return fact.at(n)*inverse_fact[n-k]%P;
+    }
+};
+constexpr long long GRID_COUNT_MOD=998244353;
+using GridCounts=std::vector<std::vector<long long>>;
+GridCounts active_row_column_counts(int n,int m,int stones,const BinomialTable<GRID_COUNT_MOD>& combinations) {
+    GridCounts result(n+1,std::vector<long long>(m+1));
+    for(int i=0;i<=n;++i) for(int j=0;j<=m;++j) {
+        long long value=0;
+        for(int x=0;x<=i;++x) for(int y=0;y<=j;++y) {
+            long long term=combinations.choose(i,x)*combinations.choose(j,y)%GRID_COUNT_MOD;
+            term=term*combinations.choose((i-x)*(j-y),stones)%GRID_COUNT_MOD;
+            value=(value+(((x+y)&1)?GRID_COUNT_MOD-term:term))%GRID_COUNT_MOD;
+        }
+        result[i][j]=value;
+    }
+    return result;
+}
+long long count_separated_two_colors(int n,int m,int black,int white) {
+    if(n<1 || m<1 || n>50 || m>50 || black<0 || white<0 || black>n*m || white>n*m || black+white>n*m)
+        throw std::invalid_argument("range");
+    BinomialTable<GRID_COUNT_MOD> combinations(n*m);
+    auto b=active_row_column_counts(n,m,black,combinations);
+    auto w=active_row_column_counts(n,m,white,combinations);
+    GridCounts available(n+1,std::vector<long long>(m+1));
+    for(int rows=0;rows<=n;++rows) for(int cols=0;cols<=m;++cols) {
+        for(int i=0;i<=rows;++i) for(int j=0;j<=cols;++j) {
+            long long term=combinations.choose(rows,i)*combinations.choose(cols,j)%GRID_COUNT_MOD;
+            available[rows][cols]=(available[rows][cols]+term*w[i][j])%GRID_COUNT_MOD;
+        }
+    }
+    long long answer=0;
+    for(int i=0;i<=n;++i) for(int j=0;j<=m;++j) {
+        long long term=combinations.choose(n,i)*combinations.choose(m,j)%GRID_COUNT_MOD;
+        term=term*b[i][j]%GRID_COUNT_MOD;
+        answer=(answer+term*available[n-i][m-j])%GRID_COUNT_MOD;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全ての指定文字を含む列を、欠ける文字から数える](/flowchartcp/techniques/inclusion-exclusion-forbidden/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [AtCoder：F - Black and White Rooks（原典）](https://atcoder.jp/contests/abc242/tasks/abc242_f)。
+
+<TechniqueReferences techniqueId="grid-active-rows-cols" />

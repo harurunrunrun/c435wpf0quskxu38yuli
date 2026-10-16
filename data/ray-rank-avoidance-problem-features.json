@@ -1,0 +1,138 @@
+[
+  {
+    "source": "AtCoder",
+    "problemId": "abc140_e",
+    "title": "Second Sum",
+    "url": "https://atcoder.jp/contests/abc140/tasks/abc140_e",
+    "techniqueIds": [
+      "second-maximum-subarray-contribution"
+    ],
+    "features": [
+      "静的な順列の全ての連続区間を対象とする",
+      "長さ2以上の各区間で、二番目に大きい値を求めて合計する",
+      "区間長などの追加制限はなく、Nは100000以下"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc140/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次問題でNは2以上100000以下、値1..Nの順列、二番目の値を全区間で合計する条件と開催日2019-09-07を確認。公式PDFの日本語5ページ目・英語12ページ目で左右二位置の寄与式、降順処理、setによるO(NlogN)を確認。記事の重複・負数対応は値と添字による全順序で独立に拡張している。実MDXのC++を抽出してコンパイルし、signed64極値を含む短配列全列挙、N=8までの全順列について各区間を独立にソートする比較、200000要素の128ビット総和と長さ例外を確認。",
+    "publicationDate": "2019-09-07"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "220B",
+    "title": "Little Elephant and Array",
+    "url": "https://codeforces.com/problemset/problem/220/B",
+    "techniqueIds": [
+      "frequency-equals-value-offline"
+    ],
+    "features": [
+      "値1..10^9の正整数配列があり、途中の更新はない",
+      "各指定区間で、値xがちょうどx回出る正整数xの種類数を求める",
+      "全ての質問を先に読め、Nと質問数はそれぞれ100000以下"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/5177",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次問題でN,Qは1以上100000以下、値1..10^9、静的区間ごとの頻度と値の一致、難易度1800を確認。一次問題からリンクされた公式解説entry5177の220B節で、右端ごとの質問処理と出現位置三点の差分更新O(NlogN)を確認した。掲載実装はその双対となる左端範囲への加算・一点取得を使い、質問を右端バケットへ分ける。正確な開催日は未確認。実MDXのC++を抽出してコンパイルし、短配列全区間をmapで直接集計した結果と比較。空区間・質問の重複と並べ替え・N,Q=200000・値と範囲の例外を確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc183_e",
+    "title": "Queen on Grid",
+    "url": "https://atcoder.jp/contests/abc183/tasks/abc183_e",
+    "techniqueIds": [
+      "grid-ray-direction-prefix"
+    ],
+    "features": [
+      "高さと幅がそれぞれ最大2000の、壁の配置が固定された格子である",
+      "右・下・右下の三方向へ、正の距離だけ任意に進める",
+      "通過する全てのマスが道でなければならず、壁を越えられない",
+      "左上から右下への移動列の数を、法1000000007で求める"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc183/editorial/344",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典でH,Wは2以上2000以下、始終点は道、法1000000007を確認。開催日は2020年11月15日。公式解説344で三方向の累積とO(HW)時間、行圧縮によるO(W)空間を確認。掲載実装は空盤面・一マス盤面・始終点の壁も受け付ける契約へ拡張する。掲載C++を抽出し、4×4までの全ての壁配置で一マスずつ滑走する直接DPと比較。2000×2000の対角通路、空・始終点の壁・不正文字・非矩形・寸法上限の境界を検証し一致した。",
+    "publicationDate": "2020-11-15"
+  },
+  {
+    "source": "LeetCode",
+    "problemId": "629",
+    "title": "K Inverse Pairs Array",
+    "url": "https://leetcode.com/problems/k-inverse-pairs-array/",
+    "techniqueIds": [
+      "permutation-inversion-window-dp"
+    ],
+    "features": [
+      "1からNの異なる整数を、それぞれ一度ずつ使って並べる",
+      "左の値が右の値より大きい添字の組が、ちょうどK個となる並べ方を数える",
+      "位置ごとの値や隣接要素の大小など、転倒数以外の条件はない",
+      "NとKはそれぞれ最大1000、答えの法は1000000007である"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/k-inverse-pairs-array/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典でNは1以上1000以下、Kは0以上1000以下、法1000000007、公式難易度Hardを確認。公式editorialのURLは取得したが本文を読めなかったため、解説確認済みとはせず、問題設定から導いた独立検証に分類する。公開日を確認できないためundated-archiveを付ける。掲載C++を抽出し、N最大9の全順列の転倒数分布と比較。最大N,K=1000は窓DPとは別の生成関数の分子展開と二項係数から求めた係数に一致した。空順列・転倒数の対称性・不可能値・例外も確認した。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc291_f",
+    "title": "Teleporter and Closed off",
+    "url": "https://atcoder.jp/contests/abc291/tasks/abc291_f",
+    "techniqueIds": [
+      "forward-dag-vertex-avoidance-intervals"
+    ],
+    "features": [
+      "都市の番号が厳密に増える向きの辺だけがある",
+      "一移動の費用は1で、始点と終点が固定される",
+      "各途中の都市を一つずつ独立に禁止し、最小移動回数を求める",
+      "都市数は最大100000で、原典ではジャンプ幅が10以下である"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc291/tasks/abc291_f",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次原典でN最大100000、最大ジャンプ幅10、辺費用1、番号を戻らない辺、途中の都市を一つずつ禁止、開催日2023年2月26日を確認。公式解説5864で飛び越す辺と前後の距離の式を確認したが、記事の幅制限を不要にする区間候補ヒープは掲載されていないため独立導出に分類。掲載APIは頂点200000、辺2000000、幅制限なし、多重辺、始終点の削除結果-1へ拡張。実MDXのC++を抽出し、N6以下の全前向きグラフで各頂点削除BFSと比較。到達不能、全域ジャンプ、隣接辺、N200000・辺2000000、不正端点・後ろ向き・自己ループ・上限を独立checkerで確認。",
+    "publicationDate": "2023-02-26"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "219D",
+    "title": "Choosing Capital for Treeland",
+    "url": "https://codeforces.com/problemset/problem/219/D",
+    "techniqueIds": [
+      "tree-root-reversal-costs"
+    ],
+    "features": [
+      "各辺は一方向で、向きを無視すると全体が木になる",
+      "根に選ぶ都市から、全ての都市へ到達できるようにする",
+      "必要な辺を反転し、反転本数が最小になる全ての根を求める",
+      "頂点数は最大200000で、各辺の反転費用は原典では1である"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/5160",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次原典でN最大200000、無向化すると木、一方向の各辺、首都から全都市への到達、最少反転数と全ての最適根、難易度1700を確認。問題ページのTutorial #2として掲載されるユーザー解説5160のD節で、初期逆向き辺数と根への経路上の向きの変化から全根を求める式を確認。正確な開催日は未確認。掲載APIは非負の辺別反転費用を導入し、隣接根の差を±費用へ拡張、合計を128ビットで保持。実MDXのC++を抽出し、N6以下の全ラベル付き木・全向きを各根から直接走査する方法と比較。0費用、signed64最大、200000頂点の鎖・星、単独頂点・不正木・負費用・例外を独立checkerで確認。",
+    "cutoffVerification": "undated-archive"
+  }
+]

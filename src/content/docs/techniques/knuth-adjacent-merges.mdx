@@ -1,0 +1,84 @@
+---
+title: "隣接区間の併合費用が非負の和なら、最適な切れ目を両隣から挟む"
+description: "区間を二つに分けるDPで、二つの短い区間の最適位置の間だけを調べます。"
+techniqueId: knuth-adjacent-merges
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+最後の併合で左右の区間に分かれ、併合費用が切れ目に依存しない場面です。切れ目を全て試す $O(n^3)$ の区間DPから出発します。
+
+## 考え方
+
+半開区間 $[l,r)$ の最小費用を $D(l,r)$、重さの和を $W(l,r)$ とすると、
+
+$$D(l,r)=W(l,r)+\min_{l<k<r}\{D(l,k)+D(k,r)\}.$$
+
+同じ最小値なら最も右の $k$ を $K(l,r)$ に選びます。Knuth–Yao の条件が成立すると、
+
+$$K(l,r-1)\le K(l,r)\le K(l+1,r).$$
+
+長さ順に計算し、この範囲を合法な切れ目 $l+1\ldots r-1$ と交差させます。分割統治DPの「一つの層の中で切れ目が単調」とは異なり、区間の両端を一つずつ縮めた二つの答えが範囲を決めます。
+
+## 適用条件
+
+重さは非負で、費用は区間和そのものです。一般の区間費用へ広げるなら、区間包含に関する単調性と四角不等式を証明します。負の重さや切れ目依存の追加費用には、この実装を適用できません。実装は $n\le 5000$、各重さ $\le 10^{12}$ を想定し、費用を128ビットで持ちます。配列は二乗なので、実際の上限はメモリで決めます。
+
+## なぜ正しいか
+
+最後の併合で二つの連続区間ができるため、再帰式は全ての併合木を漏れなく扱います。
+
+非負の区間和は、$a\le b\le c\le d$ に対して $W(b,c)\le W(a,d)$ を満たし、
+
+$$W(a,c)+W(b,d)=W(a,d)+W(b,c)$$
+
+も満たします。これは Knuth–Yao の区間DPの十分条件です。この定理では費用の四角不等式が最適値へ引き継がれ、二つの切れ目の比較から、右側を選ぶ同値処理をした $K$ の上記単調性が従います。したがって範囲外にさらによい切れ目はありません。条件を検証した後に定理を使うことが重要です。
+
+## 計算量
+
+切れ目を全列挙すると時間 $O(n^3)$、空間 $O(n^2)$。改善後は時間 $O(n^2)$、空間 $O(n^2)$ です。同じ長さの区間について探索幅を足すと、隣り合う $K$ が相殺されて $O(n)$ になります。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 minimum_adjacent_merge(const vector<long long>& a) {
+    int n = int(a.size());
+    if (n == 0) return 0;
+    if (n > 5000) throw invalid_argument("quadratic storage");
+    vector<__int128> prefix(n + 1);
+    for (int i = 0; i < n; ++i) {
+        if (a[i] < 0 || a[i] > 1000000000000LL) throw invalid_argument("weight");
+        prefix[i + 1] = prefix[i] + a[i];
+    }
+    vector<vector<__int128>> dp(n, vector<__int128>(n + 1));
+    vector<vector<int>> opt(n, vector<int>(n + 1));
+    for (int l = 0; l < n; ++l) opt[l][l + 1] = l + 1;
+    for (int len = 2; len <= n; ++len) for (int l = 0; l + len <= n; ++l) {
+        int r = l + len;
+        int lo = max(l + 1, opt[l][r - 1]);
+        int hi = min(r - 1, opt[l + 1][r]);
+        __int128 best = (__int128(1) << 120);
+        for (int k = lo; k <= hi; ++k) {
+            __int128 candidate = dp[l][k] + dp[k][r] + prefix[r] - prefix[l];
+            if (candidate <= best) { best = candidate; opt[l][r] = k; }
+        }
+        dp[l][r] = best;
+    }
+    return dp[0][n];
+}
+```
+
+## 関連する手法
+
+- [区間分割DPの最適な切れ目が単調なら分割統治する](/flowchartcp/techniques/dp-monotone-split/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/dp/tasks/dp_n)
+- [Yao：Efficient dynamic programming using quadrangle inequalities](https://doi.org/10.1145/800141.804691)
+
+<TechniqueReferences techniqueId="knuth-adjacent-merges" />

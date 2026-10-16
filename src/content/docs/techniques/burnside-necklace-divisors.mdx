@@ -1,0 +1,82 @@
+---
+title: "回転で同じ色列を、回転の周期の約数ごとに数える"
+description: "各回転で変わらない列の数を求め、同じ最大公約数を持つ回転をオイラー関数でまとめる。"
+techniqueId: burnside-necklace-divisors
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+## 使う場面
+
+環に色や記号を置き、回転して重なる配置を一つに数えたい。全ての配置を列挙して代表を決めると $m^n$ 通りになる。「位置を固定した列の数を $n$ で割る」だけでは、周期が短い列を正しく扱えない。
+
+## 考え方
+
+$r$ 箇所の回転で位置を移すと、位置は $\gcd(n,r)$ 個の巡回に分かれる。回転後も同じ列であるには、各巡回の色が同じでなければならない。したがって固定される列は $m^{\gcd(n,r)}$ 個。
+
+全回転で固定される列の数を足して $n$ で割る。
+
+$$N(n,m)=\frac1n\sum_{r=0}^{n-1}m^{\gcd(n,r)}=\frac1n\sum_{d\mid n}\varphi(d)m^{n/d}.$$
+
+ここで $d=n/\gcd(n,r)$ とした。同じ $d$ を持つ回転は $\varphi(d)$ 個ある。$n$ の素因数分解から、約数 $d$ と $\varphi(d)$ を同時に列挙する。
+
+## 適用条件
+
+回転だけを同一視し、色の名前は区別する。各位置を独立に塗れることが必要で、色ごとの使用数や隣接制約がある場合は固定配置の数え方を変える。裏返しも同一視する場合は反転を加える。
+
+掲載実装は素数 $P=10^9+7$ と $1\le n<P$ を使う。法での $1/n$ は逆元で計算する。$n$ が法の倍数なら逆元は存在せず、整数として割ってから剰余を取る方法などが必要になる。色数は非負の64ビット整数で、色数0の答えは0。
+
+## なぜ正しいか
+
+一つの回転同値類の大きさを $s$ とする。各列を固定する回転は $n/s$ 個なので、この同値類から「回転と、その回転が固定する列」の組へ寄与する数は $s(n/s)=n$。全ての同値類がちょうど $n$ 組を作るため、総数を $n$ で割ると同値類数になる。
+
+回転 $r$ の巡回数は $\gcd(n,r)$。巡回ごとの一色を選ぶことと固定列を作ることは一対一なので、固定列数の式も成り立つ。
+
+## 計算量
+
+全列の列挙は $O(nm^n)$ 時間。全ての回転を一つずつ調べる方法は $O(n\log n)$ 回の整数演算になる。約数にまとめる実装は、試し割りに $O(\sqrt n)$、約数の列挙と累乗に $O(\tau(n)\log n+\log P)$ 時間。補助空間は $O(\tau(n))$。$\tau(n)$ は約数の個数である。
+
+## 実装
+
+`count_rotation_necklaces(n, colors)` は回転を同一視した個数の剰余を返す。約数とオイラー関数の組は素因数ごとに伸ばす。
+
+```cpp
+#include <stdexcept>
+#include <utility>
+#include <vector>
+long long count_rotation_necklaces(int n,long long colors) {
+    constexpr long long P=1000000007;
+    if(n<1 || n>=P || colors<0) throw std::invalid_argument("range");
+    auto power=[&](long long x,long long e) {
+        long long r=1;
+        for(;e;e>>=1,x=x*x%P) if(e&1) r=r*x%P;
+        return r;
+    };
+    std::vector<std::pair<int,int>> divisors{{1,1}};
+    int remaining=n;
+    for(int p=2;1LL*p*p<=remaining;++p) if(remaining%p==0) {
+        int exponent=0;
+        while(remaining%p==0) {remaining/=p;++exponent;}
+        int size=int(divisors.size()),pk=1,phi=1;
+        for(int e=1;e<=exponent;++e) {
+            pk*=p;phi=(e==1)?p-1:phi*p;
+            for(int j=0;j<size;++j) divisors.push_back({divisors[j].first*pk,divisors[j].second*phi});
+        }
+    }
+    if(remaining>1) {
+        int size=int(divisors.size());
+        for(int j=0;j<size;++j) divisors.push_back({divisors[j].first*remaining,divisors[j].second*(remaining-1)});
+    }
+    long long sum=0;
+    for(auto [d,phi]:divisors) sum=(sum+phi*power(colors%P,n/d))%P;
+    return sum*power(n,P-2)%P;
+}
+```
+
+## 関連する手法
+
+[裏返しも同じ環状配置は、反転軸を奇数長と偶数長で分ける](/flowchartcp/techniques/burnside-bracelet-reflections/) ・ [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [CSES：Counting Necklaces（原典）](https://cses.fi/problemset/task/2209)。
+
+<TechniqueReferences techniqueId="burnside-necklace-divisors" />

@@ -1,0 +1,60 @@
+---
+title: "最大値と最小値の差の合計は、開いている組数で積み上げる"
+description: "値の順に処理し、組の両端の差を隣り合う値の間隔へ分けます。"
+techniqueId: "dp-open-groups-gap-cost"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+要素を名前のない複数の組へ分け、各組の最大値と最小値の差の合計が上限以下になる分け方を数えるとき。最小値と最大値の位置だけが費用を決めることに注目します。
+
+## 考え方
+
+値を $a_0\le\cdots\le a_{N-1}$ に整列します。最小値は決まり最大値はまだ決まっていない組を「開いた組」とし、その数 $j$ と費用 $c$ を持ちます。次の値へ進む前に、開いた全ての組が間隔をまたぐので $j(a_i-a_{i-1})$ を加算します。
+現在の要素は、単独で完成する一組、開いた組の途中へ入れる $j$ 通り、新しい組を開く一通り、開いた組を閉じる $j$ 通りに分かれます。組数を変えない遷移の係数は $j+1$ です。最後は開いた組数 0 だけを足します。
+
+## 適用条件
+
+費用が各組の最大値と最小値の差で、組の中間の要素は費用に影響しないこと。組は名前を持たず、各要素は区別します。同じ値でも一つずつ処理し、間隔を 0 とすれば数え分けられます。整列後の間隔は非負なので、費用上限を超えた状態を捨てられます。
+
+## なぜ正しいか
+
+一つの組の差は、その最小値と最大値の間にある隣接間隔の和です。間隔ごとに数え直すと、その間隔をまたぐ開いた組数が係数になります。各分割は整列順で最初に現れる要素が開き、最後が閉じる一意な履歴を持つので、四種類の遷移で一度だけ数えます。
+
+## 計算量
+
+全ての集合分割を試す方法は Bell 数規模。費用上限 $K$ なら時間 $O(N^2(K+1))$、空間 $O(N(K+1))$。処理済み個数の層は二つで使い回します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long count_range_cost_partitions(vector<long long> a,int limit){
+    constexpr long long mod=1000000007;assert(limit>=0);sort(a.begin(),a.end());
+    int n=a.size();vector<vector<long long>> dp(n+1,vector<long long>(limit+1));dp[0][0]=1;
+    for(int i=0;i<n;++i){vector<vector<long long>> next(n+1,vector<long long>(limit+1));
+        __int128 gap=i ? (__int128)a[i]-a[i-1] : 0;
+        auto put=[&](int j,int c,long long value){next[j][c]=(next[j][c]+value)%mod;};
+        for(int j=0;j<=i;++j)for(int c=0;c<=limit;++c)if(dp[j][c]){
+            __int128 shifted=(__int128)c+j*gap;if(shifted>limit)continue;int cost=shifted;
+            put(j,cost,dp[j][c]*(j+1)%mod);
+            put(j+1,cost,dp[j][c]);
+            if(j)put(j-1,cost,dp[j][c]*j%mod);
+        }
+        dp.swap(next);
+    }
+    long long answer=0;for(long long value:dp[0])answer=(answer+value)%mod;return answer;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/)、[寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [出典の解説](https://codeforces.com/blog/entry/23522)
+
+<TechniqueReferences techniqueId="dp-open-groups-gap-cost" />

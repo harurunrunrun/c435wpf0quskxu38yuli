@@ -1,0 +1,75 @@
+---
+title: "全区間で一度だけ現れる要素は、前後の同じ値に挟まれた端点数で数える"
+description: "一出現の担当範囲を、左端と右端の選び方の積にして足す。"
+techniqueId: singleton-subarray-contribution
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+一出現の担当範囲を、左端と右端の選び方の積にして足す。
+
+## 使う場面
+
+全ての連続区間について、ちょうど一回現れる値の個数を合計したい。同じ値が二回以上ある区間では、その値は寄与しない。
+
+## 考え方
+
+位置 $i$ の値と同じ値が直前に出る位置を $p_i$、直後を $q_i$ とする。存在しなければ $p_i=-1,q_i=N$。
+
+この出現が区間内で唯一になる端点は
+
+$$p_i<L\le i,\qquad i\le R<q_i$$
+
+なので、担当する区間数は $(i-p_i)(q_i-i)$。全位置について足す。値ごとではなく出現位置ごとに担当を分けることが大事になる。
+
+## 適用条件
+
+位置で区別する全ての連続区間を対象とし、一度だけ現れる値の個数を合計する。異なる内容の部分文字列だけを数える問題ではなく、同内容でも位置が違えば別の区間として数える。
+
+掲載実装は任意の64ビット整数値、$N\le200000$。文字列にも文字を整数へ変換して使える。特定の長さだけに制限する場合は端点の選び方が独立でなくなり、この積をそのまま使えない。
+
+## なぜ正しいか
+
+ある区間で一度だけ現れる値は、その唯一の出現位置 $i$ に割り当てられる。前後の同値位置を含まない条件が、二つの端点不等式と一致する。
+
+逆にこの端点条件を満たす区間は $i$ を含み、他の同値位置を含まないため、$i$ の値がちょうど一度現れる。一区間一値に対して担当位置が一つなので、寄与の重複も漏れもない。
+
+## 計算量
+
+各区間を読み直すと $O(N^3)$ 時間。頻度を更新しながら全区間を延ばす方法でも $O(N^2)$ 回の更新と $O(D)$ 空間が必要になる。掲載実装は整列による圧縮と前後の走査で $O(N\log N)$ 時間・$O(N)$ 空間。英大文字など値域が小さく固定なら $O(N)$ 時間・$O(N)$ 空間へできる。
+
+## 実装
+
+`total_singleton_occurrences` は全位置区間の合計を返す。空配列は0。答えは全区間長の合計 $N(N+1)(N+2)/6$ 以下なので、掲載上限では64ビットに収まる。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+long long total_singleton_occurrences(const std::vector<long long>& a) {
+    int n=a.size();if(n>200000) throw std::invalid_argument("too many values");
+    auto values=a;std::sort(values.begin(),values.end());
+    values.erase(std::unique(values.begin(),values.end()),values.end());
+    std::vector<int> rank(n),previous(n),next(n),last(values.size(),-1);
+    for(int i=0;i<n;++i) {
+        rank[i]=std::lower_bound(values.begin(),values.end(),a[i])-values.begin();
+        previous[i]=last[rank[i]];last[rank[i]]=i;
+    }
+    std::fill(last.begin(),last.end(),n);
+    long long answer=0;
+    for(int i=n-1;i>=0;--i) {
+        next[i]=last[rank[i]];last[rank[i]]=i;
+        answer+=1LL*(i-previous[i])*(next[i]-i);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全区間の最大値を各要素の寄与に分ける](/flowchartcp/techniques/subarray-extremum-contribution/) ・ [区間に一度だけ現れる値は、最新位置の直前出現が左端より前かで探す](/flowchartcp/techniques/offline-range-singleton-witness/)
+
+## 参考資料
+
+- [LeetCode：Count Unique Characters of All Substrings of a Given String](https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/description/)
+
+<TechniqueReferences techniqueId="singleton-subarray-contribution" />

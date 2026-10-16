@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "ICPC2017不足5技巧・USACO Spaceship・係数列平方根、およびJOI2020春合宿の固定全12題の初回監査",
+  "counts": {
+    "specificTechniques": 380,
+    "foundationArticles": 78,
+    "allArticles": 458,
+    "exampleMappings": 479,
+    "originalUrls": 441,
+    "graphs": 423,
+    "nodes": 3404,
+    "questions": 1537,
+    "answerEdges": 5001,
+    "verifiedWalks": 475,
+    "pendingWalks": 4
+  },
+  "completedChecks": [
+    "新規7実装の実MDXフェンスをC++20 -O2 -Wall -Wextra -Werrorでコンパイルし、独立全探索/素朴計算/係数比較と照合",
+    "ICPC/Spaceship登録後32テスト群PASS、平方根の分岐追加後29群PASS。後者では未変更の4 C++群を重ねて実行せず、平方根の実C++検証を別途実行",
+    "平方根追加後の以前の478回答経路は手順・到達ノードとも変更0",
+    "台帳の確定種別・出典別名の重複除去と監査の完了判定を修正し、最終の収集/台帳/監査/JOI凍結再生/旧履歴の5群PASS",
+    "npm run build:local で458記事・479対応・423図を生成",
+    "実際に生成した検索UIで日英・全角33クエリ、新規7記事の数式・出典・根拠文・カタログを照合",
+    "423 SVGの原データ/生成物の一致、図専用ページ、5001回答ラベル、404旧問題URLの再生を照合",
+    "npm run verify:local で1313 HTML/SVGの27078内部リンク・資産を確認",
+    "最大利益の分岐SVGをPNGへ変換して目視確認"
+  ],
+  "limitations": [
+    "全世界の問題の母数は未確定。既知不足は23項目で、網羅未完了。",
+    "JOI2020春合宿は原典12/12、主要解法8/12、完成記事・実装への対応0/12。4件の主要補題は未確認。",
+    "productionのAstro/Starlight/Pagefindビルドと実ブラウザ操作は未検証。以前の環境制約による失敗後、再試行していない。",
+    "リンク検証は外部リクエストを無効として実施。全479外部リンクの一括生存検査ではない。",
+    "push・アップロード・公開は実施していない。"
+  ],
+  "inProgress": [
+    "interactive-hidden-bipartite-edge-color-pair-recovery",
+    "tree-color-closure-sink-scc",
+    "grid-triplet-conflict-packing"
+  ]
+}

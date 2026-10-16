@@ -1,0 +1,29 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2020_biscuits",
+    "title": "ビスケットの袋詰め (Packing Biscuits)",
+    "url": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+    "evidenceUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf",
+    "techniqueIds": [
+      "bounded-power-two-equal-bag-prefix-cap-memoization"
+    ],
+    "features": [
+      "重さが2^iの品物について各種類の在庫があり、正のx袋の合計を全て同じ非負整数tにする。余った品物を残し、空袋も許す。",
+      "配り方の数ではなく、全袋を同時に作れる相異なる合計値tの個数を数える。各袋に同じ種類構成を入れる必要はない。",
+      "原典は種類数1〜60、袋数1..10^18、各在庫0..10^18、重み付き総供給は10^18以下。全1000呼出しを扱う。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2020-09-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+    "notes": "重さ2^iの品物に有限の在庫があり、正のx袋全てを同じ合計tにできる相異なるtの個数を数える。各下位接頭供給S_iに対するx(t mod 2^(i+1))<=S_iが必要十分で、F(U)=F(H)+F(max(0,min(U,floor(S_i/x)+1)-H))により配り方の重複なく数えられる。二冪未満最大Hで分割し、状態をstd::mapへ記憶する。",
+    "sourceBoundsEvidenceUrl": "https://ioi.te.lv/locations/ioi20/contest/day2/Biscuits/HUN.pdf",
+    "originalNumericBoundsVerified": true
+  }
+]

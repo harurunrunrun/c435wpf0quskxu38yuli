@@ -1,0 +1,85 @@
+---
+title: "有効な語の切り替えを、末尾一致の木の部分木加算にする"
+description: "固定した辞書の語を有効・無効にし、本文を読む各状態で有効な接尾辞の数を得る。"
+techniqueId: aho-active-failure-subtree
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+多数の検索語があり、検索対象に含める語だけが切り替わる。各本文について、有効な語の出現回数を合計したい。語ごとに本文を検索し直すと、本文長と辞書数の積になる。
+
+## 考え方
+
+辞書全体で Aho–Corasick の遷移を一度作る。各状態の failure link を親とする木を考える。本文を読んだ現在状態を $v$、ある語の終端を $u$ とすると、その語が今の位置で終わることと、$u$ が $v$ の祖先であることは同値である。
+
+そこで語を有効にするとき、終端 $u$ の部分木全体へ1を加える。無効にするときは1を引く。木の DFS 順序では部分木が連続区間なので、差分を Fenwick 木に持てば、部分木加算と一点取得ができる。本文を一文字読むたび、現在状態の値を答えに加える。
+
+## 適用条件
+
+辞書は固定で、操作は語の有効・無効の切り替えである。新しい語の追加は遷移構造を変えるので、この実装では扱わない。空語は含めない。小文字26種類、辞書の長さの合計は $10^6$ 以下を想定する。全出現を数えるので、重なった出現も含まれる。
+
+同じ語を複数の ID で渡すこともできる。その場合は ID ごとに有効状態を管理し、同じ出現を有効な ID の数だけ数える。既に有効な語を再び有効にする操作は何もしない。
+
+## なぜ正しいか
+
+現在状態から failure link を辿ると、本文の末尾と一致する辞書の接頭辞が長い順に現れる。語の終端がこの列にあるとき、その語が現在位置で終わる。これは failure 木で終端が現在状態の祖先になる条件である。
+
+終端の部分木に加えた値は、ちょうどその終端を祖先に持つ状態だけに届く。よって一点の合計は、現在位置で終わる全ての有効語の数になる。各出現は末尾の位置が一つに決まるので、本文の各位置で足すと過不足がない。
+
+## 計算量
+
+辞書長の合計を $M$、状態数を $V\le M+1$、全文本長を $T$、切替回数を $Q$ とする。各語を別に探す方法は $O(KT)$。遷移と木の構築は $O(26V)$、初期有効化を含め $O(K\log V)$。切替は $O(\log V)$、本文処理は $O(T\log V)$、空間は $O(26V+K)$。実装は子リストを配列にし、DFS を反復で行うため、長い一列の辞書でも再帰の深さに依存しない。
+
+## 実装
+
+語の ID は0始まり。構築時は既定で全て有効になる。本文の走査状態は質問ごとに根へ戻す。
+
+```cpp
+#include <array>
+#include <queue>
+#include <string>
+#include <utility>
+#include <vector>
+class ActiveDictionary {
+    struct State {std::array<int,26> next{};int link=0;};
+    std::vector<State> nodes;
+    std::vector<int> terminal,tin,tout,bit;
+    std::vector<char> active;
+    void add(int p,int value){for(++p;p<int(bit.size());p+=p&-p)bit[p]+=value;}
+    int point(int p) const{int result=0;for(++p;p;p-=p&-p)result+=bit[p];return result;}
+public:
+    explicit ActiveDictionary(const std::vector<std::string>& words,bool initially_active=true){
+        std::size_t capacity=1;for(const auto& w:words)capacity+=w.size();nodes.reserve(capacity);nodes.emplace_back();
+        for(const auto& word:words){int v=0;for(char ch:word){int c=ch-'a';if(!nodes[v].next[c]){nodes[v].next[c]=int(nodes.size());nodes.emplace_back();}v=nodes[v].next[c];}terminal.push_back(v);}
+        int count=int(nodes.size());std::queue<int> queue;
+        for(int c=0;c<26;++c)if(nodes[0].next[c])queue.push(nodes[0].next[c]);
+        while(!queue.empty()){int v=queue.front();queue.pop();for(int c=0;c<26;++c){int u=nodes[v].next[c];if(u){nodes[u].link=nodes[nodes[v].link].next[c];queue.push(u);}else nodes[v].next[c]=nodes[nodes[v].link].next[c];}}
+        std::vector<int> head(count,-1),sibling(count,-1);
+        for(int v=1;v<count;++v){int p=nodes[v].link;sibling[v]=head[p];head[p]=v;}
+        tin.resize(count);tout.resize(count);int timer=0;
+        std::vector<std::pair<int,bool>> stack{{0,false}};
+        while(!stack.empty()){auto [v,exit]=stack.back();stack.pop_back();if(exit){tout[v]=timer;continue;}tin[v]=timer++;stack.push_back({v,true});for(int u=head[v];u!=-1;u=sibling[u])stack.push_back({u,false});}
+        bit.resize(count+2);active.resize(words.size());
+        if(initially_active)for(int i=0;i<int(words.size());++i)set_active(i,true);
+    }
+    void set_active(int id,bool enabled){
+        if(bool(active[id])==enabled)return;
+        int difference=enabled?1:-1,u=terminal[id];add(tin[u],difference);add(tout[u],-difference);active[id]=enabled;
+    }
+    long long count(const std::string& text) const{
+        long long result=0;int v=0;for(char ch:text){v=nodes[v].next[ch-'a'];result+=point(tin[v]);}return result;
+    }
+};
+```
+
+## 関連する手法
+
+[多数のパターンの出現回数を failure link で逆向きに集める](/flowchartcp/techniques/aho-failure-aggregation/) ・ [部分木をDFS順の連続区間に変換する](/flowchartcp/techniques/subtree-euler-interval/)
+
+## 参考資料
+
+- [Codeforces：e-Government（原典）](https://codeforces.com/problemset/problem/163/E)。
+- [Codeforces：公式解説](https://codeforces.com/blog/entry/4187)。辞書の終端から failure 木の根までの重みの和を求める方針を確認できる。
+
+<TechniqueReferences techniqueId="aho-active-failure-subtree" />

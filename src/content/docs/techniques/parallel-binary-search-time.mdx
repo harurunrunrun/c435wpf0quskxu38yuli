@@ -1,0 +1,78 @@
+---
+title: "初めて条件を満たす時刻を、全対象の二分探索で共有する"
+description: "二分探索の中点を時刻別にまとめ、更新列を一度走査して全対象を判定する。"
+techniqueId: parallel-binary-search-time
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+位置ごとの累積値が非負の区間加算で増える。各位置の所属先について、所属位置の総和が目標以上になる最初の更新番号を求めたい。所属先ごとに独立した二分探索をすると、同じ更新列を何度も再生してしまう。
+
+## 考え方
+
+すべての所属先に答えの候補区間を持つ。一巡ごとに各候補区間の中点 $t_g$ を取り、判定対象を中点の時刻でまとめる。値を0へ戻して更新1から順に一度だけ適用し、時刻 $t$ で判定する対象だけを調べる。
+
+区間加算・一点取得は差分のFenwick木で処理する。円環をまたぐ区間は末尾と先頭の二つに分ける。対象の判定では所属位置を足し、目標へ達したら打ち切る。毎巡、同じ位置を調べる回数は高々一回。
+
+更新数 $K$ に対し候補を $[1,K+1]$ とし、$K+1$ は未達を表す番兵にする。番兵自体の判定は不要。目標が0以下なら時刻0で達成とする。
+
+## 適用条件
+
+判定が時刻について単調であることを先に証明する。この総和判定では、更新量が非負なら成立する。減算を含む場合や「総和がちょうど目標」は単調とは限らない。全操作が既知で、毎巡の状態を正しく初期化できる必要がある。大きな総和は64ビットに収まらないことがある。
+
+## なぜ正しいか
+
+時刻ごとの累積値を一度の走査で正確に再現するので、各中点の判定は独立に再生した場合と一致する。単調性により、達成なら答えは中点以下、未達なら中点より後である。すべての対象の候補区間が毎巡縮み、一点へ収束する。所属位置を重複なしで分けるため、一巡の位置取得数は全位置数以下。
+
+## 計算量
+
+対象数 $G$、位置数 $M$、更新数 $K$。独立再生は最悪 $O(G(K+M)\log(M+1)\log(K+2))$。共有後は $O((G+K+M\log(M+1)+K\log(M+1))\log(K+2))$ 時間、$O(G+M+K)$ 空間。$K=0$ の場合も番兵で未達を処理する。
+
+## 実装
+
+`owner[p]` は位置の所属先。更新の端点は両端を含み、`l>r` なら円環をまたぐ。答えは1始まりの更新番号、未達は `-1`。木と判定の総和を128ビットにする。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct CyclicIncrement {int l,r;long long delta;}; // inclusive ends, l>r wraps
+std::vector<int> first_target_times(const std::vector<int>& owner,
+    const std::vector<long long>& target,const std::vector<CyclicIncrement>& updates) {
+    int m=int(owner.size()),n=int(target.size()),k=int(updates.size());assert(m>0);
+    std::vector<std::vector<int>> positions(n);
+    for(int p=0;p<m;++p) {assert(0<=owner[p]&&owner[p]<n);positions[owner[p]].push_back(p);}
+    std::vector<int> low(n,1),high(n,k+1);
+    for(int g=0;g<n;++g) if(target[g]<=0) low[g]=high[g]=0;
+    for(auto u:updates) assert(0<=u.l&&u.l<m&&0<=u.r&&u.r<m&&u.delta>=0);
+    while(true) {
+        bool active=false;std::vector<std::vector<int>> bucket(k+1);
+        for(int g=0;g<n;++g) if(low[g]<high[g]) {active=true;bucket[(low[g]+high[g])/2].push_back(g);}
+        if(!active) break;
+        std::vector<__int128> bit(m+1);
+        auto add=[&](int p,__int128 v) {for(++p;p<=m;p+=p&-p) bit[p]+=v;};
+        auto range_add=[&](int l,int r,long long v) {add(l,v);if(r<m) add(r,-__int128(v));};
+        auto value=[&](int p) {__int128 s=0;for(++p;p>0;p-=p&-p) s+=bit[p];return s;};
+        for(int time=1;time<=k;++time) {
+            auto u=updates[time-1];if(u.l<=u.r) range_add(u.l,u.r+1,u.delta);
+            else {range_add(u.l,m,u.delta);range_add(0,u.r+1,u.delta);}
+            for(int g:bucket[time]) {
+                __int128 sum=0;for(int p:positions[g]) {sum+=value(p);if(sum>=target[g]) break;}
+                if(sum>=target[g]) high[g]=time;else low[g]=time+1;
+            }
+        }
+    }
+    for(int& t:low) if(t==k+1) t=-1;
+    return low;
+}
+```
+
+## 関連する手法
+
+[二分探索](/flowchartcp/techniques/binary-search/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) ・ [重みのしきい値順に辺を追加して連結性を共有する](/flowchartcp/techniques/dsu-threshold-queries/)
+
+## 参考資料
+
+- [Polish Olympiad in Informatics：Meteory（公式冊子の原典・解説、pp.181–184）](https://www.oi.edu.pl/media/attachment/20120215/oi18.pdf)。同時に中点を判定する方法を確認。
+
+<TechniqueReferences techniqueId="parallel-binary-search-time" />

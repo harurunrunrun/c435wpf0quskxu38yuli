@@ -1,0 +1,242 @@
+---
+title: "相互辺で結ばれた成分を併合し、有向閉包の辺数を保つ"
+description: "個体から終点成分への辺と成分間の相互隣接を分け、連鎖する併合をsmall-to-largeで処理する。"
+techniqueId: directed-reciprocal-closure-dsu-small-to-large
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+有向辺を追加するたびに、$x\to y$ と $y\leftrightarrow z$ があれば $x\to z$ を補う。この規則を適用し尽くしたグラフの辺数を、全ての辺を展開せずに更新する。
+
+## 使う場面
+
+相互に結ばれた相手への辺だけを伝播する規則があり、入力の辺が追加されるたびに閉包の大きさを知りたいときに使う。相互辺でつながる集団の内部は完全な有向グラフになるため、その集団を Union-Find の成分にまとめる。
+
+有向の到達可能性を求める規則とは区別する。$a\to b\to c\to a$ の三角閉路だけなら相互辺はなく、この規則では辺は一本も増えない。三頂点は強連結だが、ここで併合する成分は三つのままである。
+
+## 考え方
+
+相互辺の無向な連結成分を $C$ とする。相互辺の鎖に沿って規則を適用すると、$C$ 内の異なる二頂点間には両方向の辺がそろう。また、外の個体 $x$ が $C$ の一頂点へ辺を持てば、$x$ から $C$ の全頂点へ辺を補える。
+
+そこで、成分 $C$ ごとに次の情報を分けて持つ。
+
+- `in[C]`：$C$ 外にあり、$C$ へ辺を持つ**個々の頂点**の集合。
+- `out[C]` と `reverse[C]`：$C$ から出る辺、$C$ に入る辺が存在する相手成分の集合。互いに逆引きできるようにする。
+- `reciprocal[C]`：成分間に両方向の辺が存在する相手の集合。ここにある二成分は併合できる。
+- `members[C]` と `size[C]`：成分を構成する頂点とその個数。
+
+`out[C]` は成分内の**誰か**が相手成分へ辺を持つという存在情報であり、全員が持つとは限らない。例えば $A=\{a_0,a_1\}$、$B=\{b_0,b_1\}$ がそれぞれ相互成分で、外向きの入力が $a_0\to b_0$ だけなら、$A$ から $B$ への閉包辺は二本である。$a_1$ からの二本は生えない。この違いを保存するため、`in[B]` の $a_0$ を代表元へ置き換えてはいけない。
+
+成分 $C$ を終点とする辺の本数は、$s=|C|$ として
+
+$$
+F(C)=s(s-1)+s\,|\operatorname{in}[C]|
+$$
+
+になる。第一項が内部の全ての有向辺、第二項が外からの辺である。答えは全成分の $F(C)$ の和とする。
+
+新しい $u\to v$ の追加では、始点と終点の成分を $A,B$ とする。同じ成分なら内部の辺なので変化しない。異なる成分なら `in[B]` に個体 $u$ を挿入し、初めて入ったときだけ答えを $|B|$ 増やす。成分間の隣接も挿入し、逆向きの隣接があれば併合待ちにする。
+
+二成分の併合では、頂点数の小さい $B$ を大きい $A$ へ移す。先に $F(A)+F(B)$ を答えから引き、流入元の集合を重複なく統合し、併合後に内部となる流入元を除き、最後に新しい $F(A)$ を足す。`B` を参照していた全ての成分間の辺と相互隣接も `A` へ付け替える。この操作で別の相互隣接が生まれるため、待ち行列が空になるまで併合を続ける。
+
+待ち行列には相互隣接を持つ成分の番号を入れ、一つの番号を同時に二回入れない。取り出した成分が既に消滅した代表元なら捨てる。生きていれば `reciprocal` の相手を一つ併合し、残る相互隣接は併合先を再度待ち行列へ入れることで処理する。辺の付け替え中に次の併合へ再帰しないため、集合の走査中に別の併合が割り込まない。
+
+## 適用条件
+
+自己ループのない単純有向グラフを扱い、辺は追加だけとする。閉包規則は「$x\to y$、$y\to z$、$z\to y$ から、$x\ne z$ のとき $x\to z$ を加える」である。片方向の二段の辺だけから新しい辺を補う規則へは、そのまま適用できない。
+
+閉包を全て列挙せず、辺数とこの表現だけが必要な場合に向く。成分の分割を伴う削除には対応しない。入力に同じ辺がなくても、以前の閉包で補った辺を後から追加することがあるため、挿入の重複判定は必要である。
+
+掲載 API は頂点番号を 0 始まりとし、頂点数を 1 以上 100000 以下、成功した追加操作を 300000 回以下に制限する。同じ辺の再追加は辺数を変えず、追加回数には数える。範囲外の番号、自己ループ、回数上限超過は、状態を変える前に例外とする。
+
+## なぜ正しいか
+
+まず相互辺の鎖 $a\leftrightarrow b\leftrightarrow c$ から、規則により $a\to c$ と $c\to a$ を補える。これを鎖の長さについて繰り返すと、一つの相互成分の内部は完全になる。外の個体から成分への辺も、同じ鎖をたどって全ての終点へ補える。したがって `in` と内部の完全グラフが表す辺は、全て規則によって実現できる。
+
+次に、異なる成分 $A,B$ の間に両方向の存在情報があるとする。ある $a\in A$ は $B$ の全頂点へ、ある $b\in B$ は $A$ の全頂点へ辺を持つので、$a\leftrightarrow b$ が成立する。この二成分を併合することは正しい。併合後の外部流入元は、二つの `in` の和集合から新成分の頂点を取り除いたものになる。内部の頂点による外向きの辺を他の個体へ一律にコピーする操作は行わない。
+
+待ち行列が空のとき、異なる成分間に両方向の隣接は残らない。規則を適用できる組では $y\leftrightarrow z$ が必要なので、$y,z$ は同じ成分に属する。その成分内の $x$ なら内部辺に、成分外の $x$ なら `in` から展開する辺に、既に $x\to z$ が含まれている。従って表現するグラフは規則で閉じている。入力を含み、補った辺は全て実現可能であり、これ以上補える辺がないので、求める閉包そのものである。終点の成分で辺を分ければ二重に数えず、$\sum_C F(C)$ が正しい辺数になる。
+
+この閉包は辺を取り除かない単調な規則の最小固定点である。$\operatorname{cl}$ を閉包とすると、入力集合 $G$ と新しい辺 $e$ に対して
+
+$$
+\operatorname{cl}(\operatorname{cl}(G)\cup\{e\})
+=\operatorname{cl}(G\cup\{e\})
+$$
+
+が成立する。よって毎回の入力だけから作り直す必要はなく、前回の閉包を更新してよい。規則を適用する順番によって最終の辺数が変わることもない。
+
+## 計算量
+
+頂点数を $N$、重複を含む追加回数を $M$ とする。平衡二分探索木の `set` を用いる掲載実装の全追加にかかる時間は $O(N+M\log^2(N+1))$、空間は $O(N+M)$。一回の追加で多数の成分が連鎖して併合されることがあり、一回ごとの対数時間を保証するものではない。
+
+大小の比較には集合のキー数ではなく**成分の頂点数**を使う。小さい成分に属して移る頂点は、所属成分の大きさが毎回少なくとも二倍になるので、高々 $\lfloor\log_2N\rfloor$ 回しか移らない。
+
+外部の `in` の一要素には、その個体からその終点成分への入力辺を一つ対応させられる。成分間の隣接にも、それを目撃する入力辺を対応させられる。小さい側の集合を走査するたびに、この入力辺の始点または終点の所属成分が倍増する。重複して消える要素には、それ以降の処理はない。従って各集合の走査は全体で $O(M\log(N+1))$ 回であり、一回の集合操作が $O(\log(N+1))$ なので上の時間になる。頂点の移動・内部流入元の削除も、辺に触れる頂点が高々 $\min(N,2M)$ 個なので、この上界に含まれる。全頂点の初期化の $O(N)$ は別に必要である。
+
+外部の `in` の要素数、`out` の要素数、`reverse` の要素数は、それぞれ全成分で高々入力辺数である。`reciprocal` は `out` の部分集合なので、四種類の集合のキーは合計高々 $4M$ 個。付け替えは古い要素を消してから挿入する。待ち行列も同時に高々 $N$ 個であり、消えた成分の `members` の領域は解放する。明示的な閉包が $N(N-1)$ 本になっても、この保持量は増えない。
+
+$N=100000,M=300000$ なら、集合のキーは高々 1200000 個で、各頂点の小さい側からの移動は高々 16 回である。`set` のノードや管理領域のバイト数は標準ライブラリ依存だが、入力上限から二乗個の辺を確保することはない。答えの最大値 $9999900000$ と差分計算には符号付き 64 ビット整数を使う。
+
+[公式の制限表](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/2020-sp-constraints-all.pdf)は対応する出題例について実行時間 3.0 秒、メモリ 1024 MB としている。別環境の実行時間制限とは混同しない。本実装は最大規模の片方向辺、併合の鎖、最後の一本による全成分の連鎖併合、離れた行先を持つ均等な併合でも比較確認している。実測は実行環境に依存し、時間上限の保証そのものは上の漸近評価と併せて判断する。
+
+## 実装
+
+`DirectedReciprocalClosure state(n)` で空のグラフを作り、`state.add_edge(u,v)` は一本追加して閉包を更新した後の辺数を返す。`state.edge_count()` は現在の辺数を返す。初期構築を含めて再帰を使わない。入力番号の範囲外は `out_of_range`、不正な頂点数・自己ループは `invalid_argument`、追加回数の超過は `length_error` とする。
+
+`in_` だけが個体番号を持ち、他の三集合は現在の代表元を持つ。小さい側を消してから大きい側へ移す順番と、全ての付け替えを終えてから待ち行列の次の要素を処理する順番を保つ。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <numeric>
+#include <queue>
+#include <set>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+class DirectedReciprocalClosure {
+    static int checked_n(int n) {
+        if (n < 1 || n > 100000)
+            throw std::invalid_argument("n must be in [1,100000]");
+        return n;
+    }
+
+    int n_;
+    int updates_ = 0;
+    std::int64_t answer_ = 0;
+    std::vector<int> parent_, size_;
+    std::vector<std::vector<int>> members_;
+    // in_[c] has individual vertices; the other three have component roots.
+    std::vector<std::set<int>> in_, out_, reverse_, reciprocal_;
+    std::queue<int> ready_;
+    std::vector<unsigned char> queued_;
+
+    int find(int x) {
+        while (parent_[x] != x) {
+            parent_[x] = parent_[parent_[x]];
+            x = parent_[x];
+        }
+        return x;
+    }
+
+    std::int64_t contribution(int c) const {
+        const std::int64_t s = size_[c];
+        return s * (s - 1) + s * std::int64_t(in_[c].size());
+    }
+
+    void schedule(int c) {
+        if (!reciprocal_[c].empty() && !queued_[c]) {
+            queued_[c] = 1;
+            ready_.push(c);
+        }
+    }
+
+    void mark_reciprocal(int a, int b) {
+        reciprocal_[a].insert(b);
+        reciprocal_[b].insert(a);
+        schedule(a);
+    }
+
+    void unite(int a, int b) {
+        if (size_[a] < size_[b]) std::swap(a, b);
+        answer_ -= contribution(a) + contribution(b);
+        parent_[b] = a;
+        size_[a] += size_[b];
+
+        // Retarget every known reciprocal neighbor of the smaller component.
+        while (!reciprocal_[b].empty()) {
+            int c = *reciprocal_[b].begin();
+            reciprocal_[b].erase(c);
+            reciprocal_[c].erase(b);
+            if (c != a) {
+                reciprocal_[a].insert(c);
+                reciprocal_[c].insert(a);
+            }
+        }
+
+        // Keep the source as an individual vertex, even after a DSU merge.
+        while (!in_[b].empty()) {
+            auto node = in_[b].extract(in_[b].begin());
+            if (find(node.value()) != a) in_[a].insert(std::move(node));
+        }
+        for (int x : members_[b]) in_[a].erase(x);
+
+        // Replace b by a at both ends of the component adjacency lists.
+        while (!out_[b].empty()) {
+            int c = *out_[b].begin();
+            out_[b].erase(c);
+            reverse_[c].erase(b);
+            if (c != a && out_[a].insert(c).second) {
+                reverse_[c].insert(a);
+                if (out_[c].contains(a)) mark_reciprocal(a, c);
+            }
+        }
+        while (!reverse_[b].empty()) {
+            int c = *reverse_[b].begin();
+            reverse_[b].erase(c);
+            out_[c].erase(b);
+            if (c != a && out_[c].insert(a).second) {
+                reverse_[a].insert(c);
+                if (out_[a].contains(c)) mark_reciprocal(a, c);
+            }
+        }
+
+        members_[a].insert(members_[a].end(),
+                           members_[b].begin(), members_[b].end());
+        std::vector<int>().swap(members_[b]);
+        answer_ += contribution(a);
+        schedule(a);
+    }
+
+    void drain() {
+        while (!ready_.empty()) {
+            int a = ready_.front();
+            ready_.pop();
+            queued_[a] = 0;
+            // A retired root can still have one old queue entry.
+            if (parent_[a] != a || reciprocal_[a].empty()) continue;
+            unite(a, *reciprocal_[a].begin());
+        }
+    }
+
+public:
+    explicit DirectedReciprocalClosure(int n)
+        : n_(checked_n(n)), parent_(n_), size_(n_, 1), members_(n_),
+          in_(n_), out_(n_), reverse_(n_), reciprocal_(n_), queued_(n_, 0) {
+        std::iota(parent_.begin(), parent_.end(), 0);
+        for (int x = 0; x < n_; ++x) members_[x].push_back(x);
+    }
+
+    std::int64_t edge_count() const { return answer_; }
+
+    std::int64_t add_edge(int from, int to) {
+        if (from < 0 || from >= n_ || to < 0 || to >= n_)
+            throw std::out_of_range("vertex index");
+        if (from == to) throw std::invalid_argument("self loop");
+        if (updates_ == 300000) throw std::length_error("too many updates");
+        ++updates_;
+        int a = find(from), b = find(to);
+        if (a == b) return answer_;
+        if (in_[b].insert(from).second) answer_ += size_[b];
+        if (out_[a].insert(b).second) {
+            reverse_[b].insert(a);
+            if (out_[b].contains(a)) mark_reciprocal(a, b);
+        }
+        drain();
+        return answer_;
+    }
+};
+```
+
+## 関連する手法
+
+[Union-Find](/flowchartcp/techniques/union-find/) が併合と代表元を管理し、[マージテク](/flowchartcp/techniques/small-to-large/) が隣接情報の移動回数を抑える。[強連結成分分解](/flowchartcp/techniques/scc/) は有向の到達可能性をまとめる手法なので、ここで必要な相互辺の成分とは判定条件が異なる。
+
+## 参考資料
+
+- [JOI 2019/2020 春季トレーニング合宿・公式課題一覧](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html)：競技 2 の実施日は 2020 年 3 月 21 日。
+- [ジョイッターで友だちをつくろう・公式原典](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/joitter2.pdf)：辺の追加と相互辺を介する補完規則、$N\le100000,M\le300000$。
+- [同・公式解説](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/joitter2-review.pdf)：相互成分、個体と終点成分の組、待ち行列による連鎖併合、小さい成分からの併合という方針。掲載コードと、$M$ を含む時間・空間評価は本記事で具体化した。
+
+<TechniqueReferences techniqueId="directed-reciprocal-closure-dsu-small-to-large" />

@@ -1,0 +1,55 @@
+---
+title: "床関数の商が同じ区間をまとめる"
+description: "floor(N/i) が変わる位置だけ処理し、N 項の和を平方根程度の区間にまとめます。"
+techniqueId: "quotient-blocks"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+整数 $N$ が非常に大きく、$\sum_{i=1}^N\lfloor N/i\rfloor$ や、商だけで値が決まる和を計算したいとき。項を一つずつ足すと $O(N)$ かかります。
+
+## 考え方
+
+左端を $l$ とし、$q=\lfloor N/l\rfloor$ を求めます。商が $q$ のまま続く最後の添字は $r=\lfloor N/q\rfloor$ です。区間 $[l,r]$ をまとめて足し、次を $l=r+1$ とします。
+
+重みがある場合、$\sum_{i=l}^r w_i$ を別に高速に計算できれば、寄与は $q\sum_{i=l}^r w_i$ です。商が同じでも重みまで同じとは限りません。
+
+## 適用条件
+
+$N$ は非負整数。$l\ge1$ とし、$q=0$ の区間では割り算しません。重み付きの和には区間の重みを集計する手段が必要です。結果の総和は 64 bit を超える場合があります。
+
+## なぜ正しいか
+
+$\lfloor N/i\rfloor=q$ は $N/(q+1)<i\le N/q$ と同値なので、現在の区間の右端は正しく $\lfloor N/q\rfloor$ になります。$i\le\sqrt N$ の添字は高々 $\sqrt N$ 個、残りでは商が高々 $\sqrt N$ 種類です。
+
+## 計算量
+
+改善前は時間 $O(N)$。改善後は時間 $O(\sqrt N)$、追加空間 $O(1)$。重み付きでは区間和を求める費用を掛けます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+__int128 floor_sum_by_blocks(long long n) {
+    __int128 ans = 0;
+    for (long long l = 1; l <= n; ) {
+        long long q = n / l, r = n / q;
+        ans += (__int128)(r - l + 1) * q;
+        if (r == n) break; // r+1 のオーバーフローも避ける
+        l = r + 1;
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[約数ごとの集計を倍数側から配る](/flowchartcp/techniques/divisor-multiple-reversal/)
+
+## 参考資料
+
+- [AtCoder：Fraction Floor Sum の公式解説](https://atcoder.jp/contests/abc230/editorial/3015)
+
+<TechniqueReferences techniqueId="quotient-blocks" />

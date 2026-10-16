@@ -1,0 +1,97 @@
+---
+title: "累乗が目標値になる最初の指数を、区間と位置に分けて探す"
+description: "指数を区間番号と区間内の位置に分けて衝突を探し、底と法が互いに素でない部分は先に外します。"
+techniqueId: primitive-root-discrete-log
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+$a^k\equiv b\pmod m$ となる最小の非負整数 $k$ を求めます。毎回同じ値を掛ける遷移が目標へ到達する回数です。法が大きいと、余りが繰り返すまで順番に累乗を調べることができません。
+
+底が原始根である必要はありません。生成する余りの集合に $b$ がなければ解なしになります。
+
+## 考え方
+
+まず $\gcd(a,m)=1$ の場合を考えます。$s=\lceil\sqrt m\rceil$ とし、$k=is+j$、$0\le j<s$ に分けます。
+
+$$a^j=b(a^{-s})^i\pmod m.$$
+
+左側を全て保存し、右側を $i=0,1,\ldots$ と調べます。同じ値の最小 $j$ を保存し、$i$ を小さい順に調べると、最小の指数が得られます。
+
+互いに素でない場合は、$a^k t\equiv b\pmod m$ を保ちます。$b=t$ なら残り指数 0。そうでなければ $g=\gcd(a,m)$ が $b$ を割るかを調べ、割れれば一回分を外して $m,b$ を $g$ で割り、$t$ に $a/g$ を掛けます。
+
+## 適用条件
+
+掲載実装は $1\le m\le10^9$ です。$0^0=1$ とし、法 1 では全て同じ余りなので答えは 0 です。非互いに素の底も受け取ります。負の $a,b$ は正規化します。
+
+素数の法であっても $a=0$ は可逆ではありません。非互いに素のまま逆元を使うと破綻します。たとえば $2^k\equiv3\pmod8$ は解なし、$2^k\equiv0\pmod8$ の最小解は 3 です。
+
+## なぜ正しいか
+
+互いに素なら累乗は有限群の中を巡り、解があれば最小解は $m$ 未満です。全ての $0\le k<m$ は $is+j$ の範囲に含まれ、一致した組は合同式を満たします。重複する小さい側には最小 $j$ を保存するため、最初の一致が最小解です。
+
+非互いに素の場合、残り指数が正なら左辺は $g$ の倍数です。$b$ が倍数でなければ不可能で、倍数なら合同式全体を $g$ で割れます。この同値変形を、残り指数 0 を毎回確認しながら行うため、小さい解を捨てません。
+
+## 計算量
+
+累乗の余りを全て巡る方法は、最悪で時間・空間 $O(m)$ です。二つに分ける方法はハッシュ表の期待時間で $O(\sqrt m+\log^2 m)$、空間 $O(\sqrt m)$ です。最大公約数による縮小は高々 $O(\log m)$ 回です。ハッシュ表を平衡二分木に変えると、最悪時間を $O(\sqrt m\log m+\log^2 m)$ にできます。
+
+## 実装
+
+`discrete_log(a,b,m)` は解があれば `optional` の中へ最小指数を返し、解なしなら `nullopt` を返します。素因数分解や原始根を用意する必要はありません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long log_power(long long a,long long exponent,long long modulus) {
+    long long result=1%modulus;
+    for(;exponent;exponent>>=1,a=a*a%modulus) if(exponent&1) result=result*a%modulus;
+    return result;
+}
+long long log_inverse(long long a,long long modulus) {
+    long long b=modulus,x=1,y=0;
+    while(b) {long long q=a/b;a-=q*b;swap(a,b);x-=q*y;swap(x,y);}
+    assert(a==1);return (x%modulus+modulus)%modulus;
+}
+optional<long long> discrete_log(long long a,long long b,long long modulus) {
+    assert(1<=modulus && modulus<=1000000000);
+    a=(a%modulus+modulus)%modulus;b=(b%modulus+modulus)%modulus;
+    long long removed=0,multiplier=1%modulus;
+    while(true) {
+        if(b==multiplier) return removed;
+        long long g=gcd(a,modulus);
+        if(g==1) break;
+        if(b%g) return nullopt;
+        b/=g;modulus/=g;++removed;
+        multiplier=multiplier*(a/g)%modulus;
+    }
+    long long target=b*log_inverse(multiplier,modulus)%modulus;
+    long long width=1;
+    while(width*width<modulus) ++width;
+    unordered_map<long long,long long> baby;
+    baby.reserve(2*width);
+    long long value=1;
+    for(long long j=0;j<width;++j) {
+        baby.emplace(value,j);value=value*a%modulus;
+    }
+    long long step=log_inverse(log_power(a,width,modulus),modulus);
+    value=target;
+    for(long long i=0;i<=width;++i) {
+        auto found=baby.find(value);
+        if(found!=baby.end()) return removed+i*width+found->second;
+        value=value*step%modulus;
+    }
+    return nullopt;
+}
+```
+
+## 関連する手法
+
+[一次合同式は GCD で解の有無を判定してから割る](/flowchartcp/techniques/linear-congruence-gcd/)
+
+## 参考資料
+
+- [Library Checker: 問題の定義](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/number_theory/discrete_logarithm_mod/task.md)
+
+<TechniqueReferences techniqueId="primitive-root-discrete-log" />

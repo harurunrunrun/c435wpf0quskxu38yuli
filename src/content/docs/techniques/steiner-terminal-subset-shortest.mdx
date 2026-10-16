@@ -1,0 +1,131 @@
+---
+title: "少数の指定頂点をつなぐ最小費用は、頂点集合の分割と最短路を交互に使う"
+description: "共有する辺の費用を一度だけ払う接続を、同じ頂点での部分集合の結合と、接続点の移動に分ける。"
+techniqueId: steiner-terminal-subset-shortest
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+非負の費用を持つ無向グラフで、指定された少数の頂点を全てつなぎたい。途中に指定外の頂点を使ってよく、選んだ辺の費用は、何本の経路で共有しても一度だけ払う。
+
+指定頂点間の最短距離だけで最小全域木を作ると、共通部分の費用を重複して数える場合がある。例えば、三つの指定頂点が、指定外の中央頂点へ費用1の辺でつながるなら、必要な費用は3である。指定頂点間の距離2だけで木を作ると4になる。
+
+指定頂点の数を $K$ とし、**どの指定頂点をつないだか**と、**どこを接続点にするか**を同時に持つ。
+
+## 考え方
+
+$dp[S][v]$ を、指定頂点の部分集合 $S$ と頂点 $v$ を含む連結部分グラフの最小費用とする。$S$ に入っていない指定頂点を途中で使ってもよい。
+
+指定頂点 $t_i$ 一つの初期状態を $dp[\{i\}][t_i]=0$ とし、部分集合を小さい順に処理する。一つの集合 $S$ について、次の二段階を行う。
+
+1. **接続点を変えずに結合する。** 空でない真部分集合 $A\subset S$ を選び、全ての $v$ について $dp[S][v]$ を $dp[A][v]+dp[S\setminus A][v]$ で改善する。
+2. **接続点を移す。** 結合後の各 $dp[S][v]$ を始点距離として、多始点Dijkstra法を一度実行する。辺 $v\! -\! u$ の費用を足して、$dp[S][u]$ を改善する。
+
+各集合で一度行う最短路計算は、結合が終わった後に置く。先に小さい集合の接続を一か所で合わせ、その結果をグラフ全体へ広げる。
+
+答えは $\min_v dp[\{0,\ldots,K-1\}][v]$。根や最終の接続点を指定する必要はない。
+
+## 適用条件
+
+- 辺は無向で、費用は非負である。指定外の頂点も使える。
+- 指定頂点の全てを、一つの連結成分へまとめればよい。
+- 使った辺ごとに一度だけ費用を払い、経路ごとの支払い回数や通過容量に制限がない。
+- $3^K N$ と $2^K$ 回の最短路計算を扱える程度に、指定頂点数 $K$ が小さい。
+
+「全頂点を必ずつなぐ」なら最小全域木が候補になる。「一台が全指定頂点を巡回する」なら、接続した部分グラフの費用とは別の量である。辺を使うたびに課金される場合や、有向グラフ、負の費用を含む場合にも、この実装をそのまま使わない。
+
+## なぜ正しいか
+
+まず、どの遷移から得た値にも、その値以下の費用で実現できる連結部分グラフが存在する。結合では二つの部分グラフの和集合を使う。辺が重なっていれば実費は和以下になる。接続点の移動でも、既存部分グラフに経路を足せばよい。費用が非負なので、重複して足した候補が真の最適値より小さくなることはない。
+
+逆に、$S$ と $v$ をつなぐ最適な部分グラフから、連結性を保ったまま閉路と不要な葉を取り除ける。費用は増えないので、木を考えれば十分である。
+
+まず $S$ が一頂点だけなら、その頂点から $v$ への最短路でよい。$S$ が二頂点以上のとき、その木を $v$ からたどる。$v$ が $S$ の指定頂点なら、その頂点一つと残りに分割できる。そうでなければ、最初の $S$ の指定頂点または分岐点まで進む。その頂点で、二つの空でない指定頂点集合に分かれる部分木を結合できる。そこから $v$ までの経路を付ければ元の木を得る。$S$ に含まれない指定頂点は、ここでは通常の経由頂点として扱う。
+
+従って、空でない真部分集合の結合と、その後の最短路計算によって最適解も候補になる。集合の要素数について帰納すると、全ての状態と最終の答えが正しい。
+
+## 計算量
+
+部分集合とその部分集合の組は、指定頂点を「$A$ に入れる・$S\setminus A$ に入れる・$S$ に入れない」の三通りに分けるので、全体で $O(3^K)$ 個ある。結合に $O(3^K N)$ 時間を使う。
+
+各集合で一回、距離を更新できる集合を用いたDijkstra法を行い、$O((N+M)\log(N+1))$ 時間を使う。合計は $O(3^K N+2^K(N+M)\log(N+1))$ 時間、$O(2^K N+N+M)$ 空間である。
+
+指定頂点が空または一種類だけの場合は、入力の検査後に答え0を返す。
+
+## 実装
+
+`minimum_steiner_tree_cost(n, edges, terminals)` は最小の辺費用の和を返す。指定頂点を全てつなげられなければ $-1$、指定頂点が空または一種類だけなら0。
+
+頂点数は $1..200$、辺数は20000以下、指定頂点の入力件数は10以下。頂点番号は $0..N-1$、各費用は $0..10^9$ とする。指定頂点の重複は一つにまとめる。自己ループ・多重辺・非連結グラフも受け付ける。入力が契約に反する場合は `invalid_argument`。
+
+最適な木は高々 $N-1$ 辺なので、費用は64ビット整数に収まる。到達不能の状態は結合せず、十分大きい定数を保つ。Dijkstra法の待ち集合は `(距離, 頂点)` を持ち、改善前の要素を削除するので、大きさは高々 $N$ になる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long minimum_steiner_tree_cost(
+        int n, const vector<tuple<int,int,long long>>& edges,
+        const vector<int>& terminals) {
+    if (n < 1 || n > 200 || edges.size() > 20000 || terminals.size() > 10)
+        throw invalid_argument("input size out of range");
+    vector<vector<pair<int,long long>>> graph(n);
+    for (auto [u, v, weight] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || weight < 0 || weight > 1000000000LL)
+            throw invalid_argument("invalid edge");
+        if (u == v) continue;
+        graph[u].emplace_back(v, weight);
+        graph[v].emplace_back(u, weight);
+    }
+    vector<int> required = terminals;
+    for (int v : required) if (v < 0 || v >= n)
+        throw invalid_argument("invalid terminal");
+    sort(required.begin(), required.end());
+    required.erase(unique(required.begin(), required.end()), required.end());
+    const int k = int(required.size());
+    if (k <= 1) return 0;
+
+    constexpr long long infinity = 1LL << 60;
+    vector<vector<long long>> dp(1 << k, vector<long long>(n, infinity));
+    for (int i = 0; i < k; ++i) dp[1 << i][required[i]] = 0;
+    for (int mask = 1; mask < (1 << k); ++mask) {
+        for (int part = (mask - 1) & mask; part; part = (part - 1) & mask) {
+            int other = mask ^ part;
+            if (part > other) continue;
+            for (int v = 0; v < n; ++v) {
+                if (dp[part][v] == infinity || dp[other][v] == infinity) continue;
+                dp[mask][v] = min(dp[mask][v], dp[part][v] + dp[other][v]);
+            }
+        }
+        set<pair<long long,int>> pending;
+        for (int v = 0; v < n; ++v)
+            if (dp[mask][v] != infinity) pending.emplace(dp[mask][v], v);
+        while (!pending.empty()) {
+            auto [distance, u] = *pending.begin();
+            pending.erase(pending.begin());
+            for (auto [v, weight] : graph[u]) {
+                long long candidate = distance + weight;
+                if (candidate >= dp[mask][v]) continue;
+                pending.erase({dp[mask][v], v});
+                dp[mask][v] = candidate;
+                pending.emplace(candidate, v);
+            }
+        }
+    }
+    long long answer = *min_element(dp.back().begin(), dp.back().end());
+    return answer == infinity ? -1 : answer;
+}
+```
+
+## 関連する手法
+
+- [Dijkstra法](/flowchartcp/techniques/dijkstra/)：現在の接続点ごとの費用を、初期距離として全頂点へ広げる。
+- [立ち寄る頂点を部分集合で管理する](/flowchartcp/techniques/grid-waypoint-subset/)：巡回順に沿う費用を求める場合。共有辺を一度だけ払う接続とは目的が異なる。
+- [部分集合変換](/flowchartcp/techniques/subset-transform/)：集合を状態に持つ別の集計。ここで使う最小値の分割結合を、和の変換へそのまま置き換えることはできない。
+
+## 参考資料
+
+- [Luogu P6192：【模板】最小斯坦纳树](https://www.luogu.com.cn/problem/P6192) — 少数の指定頂点を含む連結部分グラフの最小費用を求める原典。問題設定を確認し、状態と遷移は独立に導出した。原典は連結・正費用であり、掲載実装は非連結・費用0も扱う。
+
+<TechniqueReferences techniqueId="steiner-terminal-subset-shortest" />

@@ -1,0 +1,28 @@
+[
+  {
+    "source": "ICPC",
+    "problemId": "wf2018_b",
+    "title": "Comma Sprinkler",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=3",
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=2",
+    "techniqueIds": [
+      "word-boundary-comma-closure"
+    ],
+    "features": [
+      "同じ語のある出現の直前に読点があれば、全文の他の同語の直前にも追加する。直後の規則もあり、反復して増えなくなるまで続ける。",
+      "語・語順・句点・空白は固定し、文頭前/文末後へ読点を追加しない。同じ語を通じて別の文の内部へ伝播することはある。",
+      "英小文字の非空語からなる2..1000000文字。語間は空白一つ、読点と空白、句点と空白のいずれかで、最後は句点。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "discoveredBy": "icpc-2018-world-finals",
+    "notes": "同じ語の前・後の読点を全文の同じ側へ反復して追加し、文頭・文末は除く。語ごとに前後の二状態を分け、同じ文の隣接二語の前語後状態と後語前状態を無向辺で結ぶ。既存読点の両端から到達する状態を求めれば、規則の反復が作る最小不動点と一致する。"
+  }
+]

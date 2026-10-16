@@ -1,0 +1,72 @@
+---
+title: "指数も累乗で巨大なら、底が法の倍数かを分けて指数を法の一つ手前で計算する"
+description: "素数の法で底が非零のときだけ指数をp−1で縮め、指数0の扱いを先に確定します。"
+techniqueId: prime-mod-power-tower
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+通り数が $M^{K^N}$ のように指数の中でも累乗になり、指数自体を64bitで持てない。通常の二分累乗に指数の整数を渡す方法では間に合わない。
+
+## 考え方
+
+素数の法を $p$ とする。まず実際の指数 $K^N$ が0か、底 $M$ が $p$ の倍数かを判定する。指数0なら結果は1。指数が正で底が法の倍数なら結果は0。
+
+それ以外では $M^{p-1}\equiv1\pmod p$ により
+
+$$M^{K^N}\equiv M^{K^N\bmod(p-1)}\pmod p.$$
+
+内側は法 $p-1$、外側は法 $p$ で二分累乗する。指数を $p$ で割った余りにしてはいけない。$p-1$ は合成数でも、内側の累乗計算そのものには問題がない。
+
+## 適用条件
+
+法は固定の素数 $998244353$。指数の剰余だけで縮約できるのは、底が法と互いに素な場合。合成数の法へ置き換えたときは、素因数ごとの指数や互いに素でない部分を別に扱う必要があり、この実装は使えない。
+
+原典の $N,K,M$ は全て正で、$K^N>0$ が保証される。実装は0も許す拡張として、内外の $0^0=1$ を定義する。実際の指数が正なのに剰余だけが0になったケースと、実際に指数が0であるケースを混同しない。
+
+## なぜ正しいか
+
+指数0の分岐は定義どおり。底が法の倍数なら、正の回数を掛けた積も法の倍数になる。
+
+残りは底が法に対して可逆であり、指数を $q(p-1)+r$ と分けると、$M^{q(p-1)+r}=(M^{p-1})^qM^r\equiv M^r$。内側の累乗を法 $p-1$ で正確に計算すれば、その $r$ を得られる。底が法の倍数のときにこの式を使うと、正の指数が余り0になった場合に誤って1を返すため、先の分岐が必要である。
+
+## 計算量
+
+指数を一つずつ積む方法は $O(K^N)$ 回の演算になる。指数を多倍長で直接作っても、そのビット数は $\Theta(N\log K)$。二段の二分累乗なら時間 $O(\log(N+1)+\log p)$、追加空間 $O(1)$。
+
+## 実装
+
+```cpp
+#include <cstdint>
+#include <stdexcept>
+std::uint64_t integer_power_mod(std::uint64_t base,std::uint64_t exponent,std::uint64_t mod) {
+    if(mod==0) throw std::invalid_argument("positive modulus required");
+    base%=mod;std::uint64_t result=1%mod;
+    while(exponent) {
+        if(exponent&1) result=static_cast<__uint128_t>(result)*base%mod;
+        base=static_cast<__uint128_t>(base)*base%mod;exponent>>=1;
+    }
+    return result;
+}
+std::uint64_t prime_mod_power_tower(std::uint64_t n,std::uint64_t k,std::uint64_t m) {
+    constexpr std::uint64_t p=998244353;
+    if(k==0 && n>0) return 1;
+    if(m%p==0) return 0;
+    std::uint64_t reduced=integer_power_mod(k,n,p-1);
+    return integer_power_mod(m,reduced,p);
+}
+```
+
+## 関連する手法
+
+- [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+- [行列累乗](/flowchartcp/techniques/matrix-exponentiation/)
+
+## 参考資料
+
+- [AtCoder — Integer Sequence Fair](https://atcoder.jp/contests/abc228/tasks/abc228_e)
+- [公式解説](https://atcoder.jp/contests/abc228/editorial/2954)
+
+<TechniqueReferences techniqueId="prime-mod-power-tower" />

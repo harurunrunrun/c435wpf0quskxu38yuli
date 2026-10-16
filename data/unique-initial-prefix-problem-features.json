@@ -1,0 +1,29 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2018_combo",
+    "title": "Combo",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+    "techniqueIds": [
+      "unique-first-symbol-prefix-oracle-multiplexing"
+    ],
+    "features": [
+      "四記号からなる長さ既知の固定秘密列に対し、質問内に部分文字列として現れる秘密列の最長接頭辞長を返すoracle。",
+      "秘密列の先頭記号は、その後に再出現しない。既知接頭辞と複数候補を連結し、中間の一文字を三値で決める。",
+      "N1..2000、各質問長0..4N、hard8000回・満点N+2回。"
+    ],
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-03",
+    "notes": "4記号からなる未知列の長さが既知で、先頭記号は以後に再出現しない。質問文字列に部分文字列として現れる未知列の最長接頭辞長が返る。先頭を二質問で確定し、既知接頭辞Pと残る記号a,b,cからPaa+Pab+Pac+Pbを質問すると、中間の次文字を返答|P|+2/|P|+1/|P|で一意に分けられる。末尾だけ最大二質問にしてN+2回以内かつ各質問長4N以内で復元する技巧が適用できる。",
+    "discoveredBy": "ioi-2018",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest1/CHE-combo.pdf"
+  }
+]

@@ -1,0 +1,354 @@
+{
+  "techniqueId": "tree-degree-preservation-budget-construction",
+  "problemId": "wf2018_k",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "status": "passed",
+  "materialIssues": [],
+  "unconfirmedMajorLemmas": [],
+  "scope": {
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "exactFrozenCppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+    "allEightSectionsRead": true,
+    "completeCppRead": true,
+    "checkerRead": true,
+    "sidecarRead": true,
+    "independentNativeReproduction": true
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-degree-tree-article.mdx",
+      "sha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-degree-tree-checker.py",
+      "sha256": "e0a9614e90e26c2dc508980c35397956e3f0e375d4e4f597f2a0ad973cd2ba89"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-degree-tree-sidecar.json",
+      "sha256": "e80b4770664e17c5518a8c0a22ef70146dcc107a3b8bf3ce21794e5f76643e82"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-degree-tree-independent-normal.json",
+      "sha256": "339e17309ada850b14cfa31afe224e4ee20465f506907daced9eace673b3904a"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-degree-tree-independent-asan.json",
+      "sha256": "fd37de6ec8930c153777d3656ec847cd7d19cb64876f9063379c68ab804445d3"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-degree-tree-independent-probe.py",
+      "sha256": "672b446a9fbe4cd3c6e1084c201e9f6ffcc2d5216bf4c6fffe0ce83325c345c4"
+    },
+    "independent-extra.json": {
+      "path": "/tmp/flowchartcp-degree-tree-independent-extra.json",
+      "sha256": "a8847388b1c3b45ccb1899a125594c348bdc978c5e98c898bbc74a418c91ac4f"
+    },
+    "independent-extra-asan.json": {
+      "path": "/tmp/flowchartcp-degree-tree-independent-extra-asan.json",
+      "sha256": "0f577184e2f1ec39073a868bf94a81d273c1db49e1e83e40ff3013c1b679b802"
+    }
+  },
+  "sourceReview": {
+    "sourceDate": "2018-04-19",
+    "datePrecision": "day",
+    "difficulty": null,
+    "statement": {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+      "publisher": "ICPC",
+      "pages": "21–22",
+      "retrieval": "Primary PDF web text, independently read. No local PDF/image inspection is claimed.",
+      "verifiedBounds": {
+        "n": [
+          2,
+          10000
+        ],
+        "m": [
+          1,
+          100000
+        ],
+        "vertexLabels": "0..n-1",
+        "connected": true,
+        "undirected": true,
+        "parallelEdgesAllowed": true,
+        "selfLoopsAllowed": false
+      },
+      "verifiedObjective": "Construct any tree on the same labeled vertices minimizing the number of vertices whose degrees differ. New edges are not restricted to the original graph.",
+      "verifiedOutput": "Changed-vertex count, then vertex/edge counts, then all edges. The constructed tree has n-1 edges."
+    },
+    "analysis": {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+      "pages": "12–13",
+      "kind": "public-editorial-sketch",
+      "officialHost": true,
+      "officialEditorialClaim": false,
+      "provenance": "The opening page explicitly calls the analysis unofficial; credited to Per Austrin and Jakub Onufry Wojtaszczyk. The greedy degree-increment budget agrees with the independent proof."
+    },
+    "dateEvidence": {
+      "url": "https://news.icpc.global/wf2018/",
+      "contestDate": "2018-04-19"
+    }
+  },
+  "independentMathematicalReview": [
+    "For n>=2, every target tree degree is positive and its sum is 2n-2. Preserving vertex i costs d_i-1 units of the residual n-2 degree budget. Every item has unit value, so the sorted cheapest feasible prefix gives a cardinality upper bound for every target tree.",
+    "At the first rejected vertex j, remaining budget b<d_j-1. Giving it target degree 1+b cannot accidentally preserve it. Every later rejected vertex has strictly positive cost and stays degree 1. Thus the construction preserves exactly the upper-bound number of vertices.",
+    "If all vertices fit, the API condition sum(d)>=2n-2 and budget feasibility force equality and zero leftover. No missing recipient exists.",
+    "Positive target degrees of sum 2n-2 yield a length n-2 Prüfer sequence. At each decoding step the next sequence vertex has remaining degree at least 2, so it differs from the selected leaf. Reversing leaf removal proves connectivity and acyclicity, and the degree counts are exact.",
+    "Multigraph degrees count every parallel edge independently. The graph API validates endpoints and loop prohibition before DSU access. Connectivity forces the degree-API lower-sum premise on all original instances.",
+    "The supplied four-vertex multigraph with degrees (5,2,2,1) is a useful model check: an arbitrary new path changes one degree, whereas restricting edges to the original star would change three. The implementation uses the required unrestricted construction."
+  ],
+  "apiAndResourceReview": {
+    "originalRangeFullyIncluded": true,
+    "singletonExtension": "n=1 accepts only a zero degree or an edgeless graph and returns the zero-degree singleton tree.",
+    "degreeExtension": "For n>=2 accepts any positive signed-64-bit degrees with sum at least 2n-2, including nongraphical and odd-sum desired vectors. Graph realizability of the original sequence is not claimed or needed.",
+    "overflow": "The validation sum is capped at 2n-2<=19998, yet every entry is still checked for positivity. d-1 is safe for positive int64. An original degree is converted to int only after cost<=budget<=9998; targets are <=n-1. Source degrees are <=100000 and DSU sizes <=10000.",
+    "complexity": "Degree API O(n log(n+1)) time/O(n) space; graph API adds O(m alpha(n)) time, with caller input excluded from auxiliary space. No input-depth recursion is used.",
+    "stateAndExceptions": "Inputs are read-only and not retained. Results own their vectors and copy/move normally. Invalid-input writer calls validate and construct before producing output. Allocation/stream exceptions propagate; no stronger rollback claim is made for stream failures."
+  },
+  "existingCheckerIndependentRerun": {
+    "classification": "Reproduction of the author checker, not a new independent oracle.",
+    "normal": {
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 4721765,
+      "apiCalls": 263049,
+      "completeGraphEdgeSubsets": 57501,
+      "labeledTrees": 18248,
+      "degreeVectors": 142073,
+      "literalTreeVectorComparisons": 24486515,
+      "connectedMultigraphs": 59139,
+      "randomCases": 2000,
+      "fullDegreeAssignmentDPStates": 22546158,
+      "metamorphicChecks": 400,
+      "invalidCalls": 31,
+      "checksum": "9025324404316664252",
+      "seconds": 0.195652,
+      "peakRSSKiB": 21544,
+      "maximumCases": [
+        {
+          "name": "two vertices,100000 parallel links",
+          "n": 2,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum path",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star with parallel hub pair",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum cycle",
+          "n": 10000,
+          "m": 10000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family0",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9141
+        },
+        {
+          "name": "maximum100000edge family1",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family2",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9473
+        },
+        {
+          "name": "10000 maximal int64 desired degrees",
+          "n": 10000,
+          "m": -1,
+          "changed": 10000
+        },
+        {
+          "name": "one maximal int64 desired degree",
+          "n": 10000,
+          "m": -1,
+          "changed": 1
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 4721765,
+      "apiCalls": 263049,
+      "completeGraphEdgeSubsets": 57501,
+      "labeledTrees": 18248,
+      "degreeVectors": 142073,
+      "literalTreeVectorComparisons": 24486515,
+      "connectedMultigraphs": 59139,
+      "randomCases": 2000,
+      "fullDegreeAssignmentDPStates": 22546158,
+      "metamorphicChecks": 400,
+      "invalidCalls": 31,
+      "checksum": "9025324404316664252",
+      "seconds": 3.39192,
+      "peakRSSKiB": 629028,
+      "maximumCases": [
+        {
+          "name": "two vertices,100000 parallel links",
+          "n": 2,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum path",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star",
+          "n": 10000,
+          "m": 9999,
+          "changed": 0
+        },
+        {
+          "name": "maximum star with parallel hub pair",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum cycle",
+          "n": 10000,
+          "m": 10000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family0",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9141
+        },
+        {
+          "name": "maximum100000edge family1",
+          "n": 10000,
+          "m": 100000,
+          "changed": 2
+        },
+        {
+          "name": "maximum100000edge family2",
+          "n": 10000,
+          "m": 100000,
+          "changed": 9473
+        },
+        {
+          "name": "10000 maximal int64 desired degrees",
+          "n": 10000,
+          "m": -1,
+          "changed": 10000
+        },
+        {
+          "name": "one maximal int64 desired degree",
+          "n": 10000,
+          "m": -1,
+          "changed": 1
+        }
+      ]
+    },
+    "finalCountsOnly": true,
+    "obsoleteResultExcluded": "Earlier 4721750/checksum16332042761470183845 predates the final model counterexample and is not used."
+  },
+  "newIndependentProbe": {
+    "script": {
+      "path": "/tmp/flowchartcp-degree-tree-independent-probe.py",
+      "sha256": "672b446a9fbe4cd3c6e1084c201e9f6ffcc2d5216bf4c6fffe0ce83325c345c4"
+    },
+    "normal": {
+      "checks": 21790,
+      "newDegreeInputs": 1800,
+      "literalPositiveDegreeCompositions": 6619600,
+      "allocationFailures": 17,
+      "checksum": "14600543257379776778",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "sanitize": false,
+      "seconds": 0.02743042200745549,
+      "leakSanitizerEnabled": false,
+      "method": "Literal enumeration of every positive target-degree composition; no sorting, budget selection, Prüfer oracle, or degree-assignment DP. Global allocation failure injection covers each allocation in both public APIs."
+    },
+    "asanUbsan": {
+      "checks": 21790,
+      "newDegreeInputs": 1800,
+      "literalPositiveDegreeCompositions": 6619600,
+      "allocationFailures": 17,
+      "checksum": "14600543257379776778",
+      "cppSha256": "361a44b414edbe2654d5d86b3c997ca0dd355565d1daf3cd3548c626c1f87029",
+      "articleSha256": "4aae1c1aa090a1c4cc9a0702f39e2a6a7a5c9f98fb6e6302a2c0d54de299a9c1",
+      "sanitize": true,
+      "seconds": 0.2377323510008864,
+      "leakSanitizerEnabled": false,
+      "method": "Literal enumeration of every positive target-degree composition; no sorting, budget selection, Prüfer oracle, or degree-assignment DP. Global allocation failure injection covers each allocation in both public APIs."
+    },
+    "oracle": "Enumerates every positive target-degree composition for each of 1800 new desired vectors (n=2..10), including INT64_MAX and int32 boundaries. This exhaustive oracle does not sort costs, decode a Prüfer oracle, or use the author degree-assignment DP. Return edges are independently checked by BFS and literal incidence counts.",
+    "allocationFailures": "Fails each successive global allocation in each API until it succeeds (17 exceptions total). Checks unchanged input and a valid fresh call after each failure.",
+    "environmentLimitation": "Initial extra ASan execution reached LeakSanitizer fatal ptrace restriction; rerun uses ASAN_OPTIONS=detect_leaks=0. AddressSanitizer and UndefinedBehaviorSanitizer remain enabled. No leak-check success is claimed."
+  },
+  "nonblockingIntegrationNotes": [
+    {
+      "field": "metadata.prerequisites",
+      "issue": "greedy is not a currently registered prerequisite ID. Parent will omit it in the public copy; exchange-argument and invariant remain. No author artifact was changed."
+    },
+    {
+      "field": "metadata.entryPoints",
+      "issue": "Parent will normalize to standard order advanced/complexity/reasoning."
+    }
+  ],
+  "coverageRecommendation": {
+    "solutionReviewed": true,
+    "productionApiValidated": true,
+    "originalBoundsVerified": true,
+    "resolutionOnlyAppropriate": true,
+    "initialAuditMustRemainUnchanged": true
+  },
+  "originalReviewSha256": "9b342ef33ad97283240ceed658ce09b13e1ed66b3bded29b5f437c5dccddc655",
+  "publishedArticle": "src/content/docs/techniques/tree-degree-preservation-budget-construction.mdx",
+  "permanentProbe": {
+    "script": "research/probes/tree-degree-preservation-independent.py",
+    "normalizedSha256": "b5ba0f3935f4d6478673aaa77be430f3311dd64c40c25323752d7dba0ed0d2d5",
+    "normalization": "Only MDX destination and removal of implicit /tmp result writes; oracle, allocation-failure logic and assertions unchanged."
+  }
+}

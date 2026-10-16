@@ -1,0 +1,177 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "全歩数を保つグラフの数え上げと、行・列が途切れない連結な格子部分集合の不足を解消",
+  "counts": {
+    "specificTechniques": 420,
+    "foundationArticles": 78,
+    "allArticles": 498,
+    "exampleMappings": 519,
+    "originalUrls": 481,
+    "graphs": 465,
+    "nodes": 3661,
+    "questions": 1666,
+    "answerEdges": 5432,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 515,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "parity-walk-profile-layer-inclusion-exclusion-count",
+      "articleSha256": "47f4e70fe47673344e2e82fbc2881e66558f4d854a05507890872c9e956ebfdf",
+      "codeSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    },
+    {
+      "id": "orthogonally-convex-row-interval-phase-prefix-dp",
+      "articleSha256": "2ac9ae4a7671ef962961d9c3e2dbb6d63f2043e3e773e010f4c98256ce7347db",
+      "codeSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6",
+      "authorRootAndSeparateReviewerNormalAndAsanUbsanPassed": true,
+      "originalSourceRangeAndApiContainmentVerified": true
+    }
+  ],
+  "verification": {
+    "native": {
+      "command": "node tests/countgraphs-balanced-cpp.test.mjs",
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 12650.088973
+    },
+    "newFlow": {
+      "command": "node tests/countgraphs-balanced-flow.test.mjs",
+      "passed": 13,
+      "failed": 0,
+      "durationMs": 4486.629893,
+      "record": "research/probes/countgraphs-balanced-flow-results.json"
+    },
+    "broadRegression": {
+      "groups": 57,
+      "passed": 57,
+      "failed": 0,
+      "durationMs": 80577.109461,
+      "scope": "Navigation, guard, share/back/legacy, both displays, geometry/text, fixed-corpus/ledger/collector regressions."
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 498,
+      "mappings": 519,
+      "diagrams": 465,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 498,
+      "recentArticlesChecked": 28,
+      "japaneseEnglishFullWidthQueries": 113,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 465,
+      "completeAnswerLabels": 5432,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Two new detailed diagrams and their two parent choice diagrams rasterized and viewed. New complete questions, labels, nodes and arrows do not overlap; the wide parent graph remains available in the separate zoom viewer."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1437,
+      "linksAssets": 29181,
+      "diagrams": 465,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "CountingGraphs: complete root walk language iff both parity minima agree. A/B/C inequalities and positive-distance predecessors are necessary and sufficient. Layer independence; exact unfilled-subset symmetry; specified nonempty rows/columns B inclusion-exclusion; forced-A rows; root positive-distance exception; gaps/empty buckets; C terminal required-nonisolation including selfloops independently proved. Terminal formula is an exercise in official prose and an explicit matching formula in official visible C++; these are distinguished.",
+    "CountingGraphs complete const/local-state API covers sourceN2..100,T25000,sumN²100000 and1e9+7, extends to arbitrary positive32bit modulus including composites/1 with no inverses. Every operation widens before arithmetic and reduces after each pair; table indexes, duplicate/endpoints checks before BFS, connectivity after BFS before tables/DP, finite profile bounds and summedO(N³+M)/O(N²+M) reviewed.",
+    "CountingGraphs actual visible C++:457134checks/151370APIcalls/checksum14785516314595030999. All23940connected optional-loop graphs N2..5/932exact complete-language groups; ALL1709056connectedN6graphs grouped into10263classes with one API representative per class, not everyN6graph call.74963literal matrices/2131019literal terminal graphs, seven moduli,119maximumN100calls,T25000,invalid20. Author/root/separate reviewer normal andASan/UBSan passed.",
+    "CountingGraphs extra exact oracle derives candidate edge implications and positive next-vertex clauses from the complete reachable-set prefix/cycle word, then uses Shannon absent/present recursion with unit propagation/memo/free-variable factors. No parity profiles/layers/A-B-C/PIE.35182inputs include all16807labeledN7trees without/with one loop,68long-path/root inputs and1500randomN7..10; the oracle counts ALL realizing output graphs, not just input tree families.527754checks/492548APIcalls/checksum14715201252465104520, modulo composites and CRT. Oracle itself crosschecked by12targets/all266240N4/N5edge assignments. Permanent probe rerun on published fence.",
+    "Balanced: nonempty row intervals, consecutive occupied rows and adjacent overlap characterize4-connectivity. Column convexity iff left endpoints are valley-shaped and right endpoints hill-shaped, with a threshold-crossing/overlap proof. First STRICT inward move gives a unique flag history, preserving equality without overcount. Exact left/right ranges give four-state rectangular sums, invalidl>r states stay0, fresh single-row00 and bottom-row accumulation count every shape once.",
+    "Balanced const/local-state API covers every original squareN1..150/G-or-dot/mod1e9+7 and extends to rectangles/empty/zero-width. Validate all lengths/chars before shortcut; transpose only access, no copied grid. All sums widen to64bit and negative modulo is normalized. Positive-dimensionO(AB+HW²)/O(W²), widthW=min(A,B); zero-widthO(A) validation explicitly separated from formula, empty outer gridO(1). Eight main arrays hold724816bytes atW150. Original C++ unchanged.",
+    "Balanced actual visible C++:83403checks/checksum5989455240367906907. All74954grassboards overH/W1..4 from literal cell-subset4-BFS/row-column-hole indicators,74938nonempty shapes,600randomliteralboards and909914actual subset candidates total,5400metamorphic,240direct-transition boards,10maximum constructions (eight original150² andtwo thin extensions). Author/root/separate reviewer normal andASan/UBSan passed.",
+    "Balanced extra oracle tracks each column as unseen/active/closed, explicitly forbids reentry and requires overlap with previous row. Uses no endpoint phases, unimodality or cumulative sums. All32768five-by-three availability boards in both orientations; independently self-validates against32767literal actual shapes/BFS.42height150width1..7patterns,420randomnarrowboards,20independent150²blocked-separator additive identities.99248checks/checksum16617549809945668858. Permanent probe rerun on published fence.",
+    "All old517walkrecords/steps/terminals/full text/answer labels,463graphs3649oldnodes/every field/old option and answer-key order,593localprefix and404completedshared histories/Back preserved. Six guards/twelve negative-or-unknown exits, display switches, share, SVG complete labels, source date precision/null and code hashes checked.",
+    "Initial USACO6records/status/selection/snapshot andthree existing resolutions preserved. Add two resolutions only, zero duplicate research reviews. Stage research6/6/covered5/6; removing new resolutions gives6/3, removing either actual new walk/reference/article target gives6/4, rejecting both new root-walk targets gives6/3. Routing optional PIE/determinant/BEST nextWork remains separate from chosen frontier method."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 519,
+    "reviewedProblems": 479,
+    "corpusStatementsReviewed": 65,
+    "corpusSolutionsReviewed": 58,
+    "allSolutionsReviewed": 489
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "5/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "2/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "5/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 18,
+  "counterNote": "Both added problems were already researched in the fixed spring corpus. Published identities rise477→479, fixed reviews58 and the distinct union489 remain unchanged. Original URLs481 include separately pending examples.",
+  "limitations": [
+    "Global denominator unknown; world-wide coverage incomplete.",
+    "Production Astro/Starlight/Pagefind build and real browser remain unverified after earlier environment failures; no dependency installs/server/browser retried.",
+    "External-link liveness for all examples was not verified.",
+    "No push, upload or publication."
+  ],
+  "inProgress": [
+    "Routing Schemes complete chosenO(N³) frontier article/API/checker frozen; author final8888553checks/checksum12131375425186710056 normal/ASan passed, separate review underway; root has not yet read it. OptionalO(N²)/PIE/determinant/BEST remains unconfirmed.",
+    "IOI2019 Line full-scoreN+3 construction proof/checker being authored. Official original numeric/scoring images reported verified by author, not yet root reviewed. Ten fixed original input files unavailable after GitHub binary/LFS and approved curl DNS failures; generated input tests must not be represented as those originals.",
+    "IOI2017 six official competition tasks selected from the national committee list BEFORE technique matching in /tmp/flowchartcp-ioi2017-selection.json. Complete raw snapshot and root audit delegated, not yet registered as a new corpus."
+  ]
+}

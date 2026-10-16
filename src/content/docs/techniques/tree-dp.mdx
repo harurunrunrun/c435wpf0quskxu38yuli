@@ -1,0 +1,78 @@
+---
+title: "木DP"
+description: "子の部分木の結果から、親の部分木の結果を求める。"
+techniqueId: tree-dp
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+子の部分木の結果から、親の部分木の結果を求める。
+
+## 使う場面
+
+木の頂点や辺の選び方、色の割り当てなどを最適化・数え上げするときに使う。根を決めると、各部分木は親への一本の辺だけで外部とつながる。この接続部分に必要な条件を状態にすれば、子の部分木を個別に処理できる。
+
+## 考え方
+
+各頂点について、親に伝える結果を保存する。隣り合う頂点を同時に選べない重み付き独立集合では、その頂点を選ぶ場合と選ばない場合の最大値を持つ。
+
+頂点を選ぶなら、子はすべて選べない。頂点を選ばないなら、各子について選ぶ・選ばないのうち大きい方を足す。部分木からちょうど $k$ 個選ぶ場合などは、子の結果をナップサックDPのように合成する。
+
+## 適用条件
+
+異なる子の部分木が、保存した状態を除いて互いに影響しないことが必要になる。一般のグラフでは子同士を結ぶ辺があるため、この分離が成立しないことがある。
+
+木であることだけでは、線形時間とは限らない。状態数と子の結果を合成する時間を見積もる。深い木では再帰がスタックの上限に達する場合があるため、明示的な処理順を使う方法もある。
+
+## なぜ正しいか
+
+頂点を選ぶかを固定すると、子の部分木の選択は互いに独立になる。各子で条件を満たす最適値を取って足せば、その頂点の状態に対する最適値になる。葉から順にこの議論を繰り返し、根の二状態の最大値を取れば木全体の答えが得られる。
+
+## 計算量
+
+重み付き独立集合の例は、各辺を定数回処理するので時間・空間ともに $O(N)$。一般の木DPでは、状態数と合成処理に応じて計算量が変わる。
+
+## 実装
+
+`max_weight_independent_set` は、隣接する頂点を同時に選ばずに得られる重みの最大合計を返す。入力は連結な無向木とする。何も選ばないことを許すため、負の重みが含まれていても使える。
+
+```cpp
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <cassert>
+using namespace std;
+long long max_weight_independent_set(const vector<vector<int>>& g,
+                                    const vector<long long>& weight) {
+    int n=g.size();
+    assert(int(weight.size())==n);
+    if(n==0) return 0;
+    vector<int> parent(n,-1),order{0};
+    parent[0]=0;
+    for(int i=0;i<int(order.size());++i) {
+        int v=order[i];
+        for(int u:g[v]) if(u!=parent[v]) {
+            parent[u]=v; order.push_back(u);
+        }
+    }
+    vector<array<long long,2>> dp(n);
+    for(int i=n-1;i>=0;--i) {
+        int v=order[i];
+        dp[v][1]=weight[v];
+        for(int u:g[v]) if(parent[u]==v && u!=v) {
+            dp[v][0]+=max(dp[u][0],dp[u][1]);
+            dp[v][1]+=dp[u][0];
+        }
+    }
+    return max(dp[0][0],dp[0][1]);
+}
+```
+
+## 関連する手法
+
+[全方位木DP](/flowchartcp/techniques/rerooting/) ・ [マージテク](/flowchartcp/techniques/small-to-large/) ・ [ナップサックDP](/flowchartcp/techniques/knapsack/)
+
+## 参考資料
+
+- [USACO Guide: DP on Trees](https://usaco.guide/gold/dp-trees)
+
+<TechniqueReferences techniqueId="tree-dp" />

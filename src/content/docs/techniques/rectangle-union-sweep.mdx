@@ -1,0 +1,78 @@
+---
+title: "長方形の和集合の面積を、覆われた縦の長さで積分する"
+description: "横に走査し、重なりを一度だけ数える区間長を更新します。"
+techniqueId: "rectangle-union-sweep"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+軸平行な長方形が多数あり、重なりを一回だけ数えた面積を求めたいとき。各長方形の面積を足すだけでは重複し、圧縮した全ての二次元マスを埋めると二乗になります。
+
+## 考え方
+
+左右の端をイベントにし、縦区間 $[y_1,y_2)$ の被覆数を $+1,-1$ します。隣り合う横座標の間で被覆は変わらず、面積の寄与は「横幅 × 被覆された縦の長さ」です。
+
+縦座標を圧縮したセグメント木に被覆数と被覆長を持ちます。ノード全体の被覆数が正なら長さは $y_r-y_l$。0 なら子の被覆長を足します。被覆数を足した総和とは異なります。
+
+## 適用条件
+
+長方形は軸平行で、更新は同じ縦区間の開始・終了として対応します。圧縮後の添字の差ではなく、元の座標の差を長さに使います。同じ横座標のイベントは、前の帯の面積を足した後に全て処理します。差分と長さが 64 bit、面積が 128 bit に収まる範囲を想定します。
+
+## なぜ正しいか
+
+被覆数が正のノードは全体が覆われています。0 なら左右の子に分かれた互いに重ならない区間の被覆長を足します。この規則を木の下から保つことで和集合の長さが得られます。横の帯も互いに重ならないので、各帯の寄与を足せます。
+
+## 計算量
+
+二次元の座標圧縮とマスの集計は時間・空間 $O(N^2)$。走査と被覆長の木による改善後は時間 $O(N\log N)$、空間 $O(N)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct UnionLengthTree{
+    vector<long long> y,length;vector<int> cover;
+    UnionLengthTree(vector<long long> ys):y(move(ys)),length(y.size()*4),cover(y.size()*4){}
+    void update(int ql,int qr,int delta,int v,int l,int r){
+        if(qr<=l || r<=ql)return;
+        if(ql<=l && r<=qr)cover[v]+=delta;
+        else{int m=(l+r)/2;update(ql,qr,delta,v*2,l,m);update(ql,qr,delta,v*2+1,m,r);}
+        if(cover[v]>0)length[v]=y[r]-y[l];
+        else length[v]=r-l==1 ? 0:length[v*2]+length[v*2+1];
+    }
+    void add(int l,int r,int delta){if(l<r)update(l,r,delta,1,0,(int)y.size()-1);}
+};
+__int128 rectangle_union_area(const vector<array<long long,4>>& rectangles){
+    vector<long long> ys;vector<array<long long,4>> events;
+    for(auto [x1,y1,x2,y2]:rectangles){
+        assert(x1<=x2 && y1<=y2);if(x1==x2 || y1==y2)continue;
+        ys.push_back(y1);ys.push_back(y2);
+        events.push_back({x1,y1,y2,1});events.push_back({x2,y1,y2,-1});
+    }
+    if(events.empty())return 0;
+    sort(ys.begin(),ys.end());ys.erase(unique(ys.begin(),ys.end()),ys.end());
+    sort(events.begin(),events.end());UnionLengthTree tree(ys);
+    long long previous=events[0][0];__int128 area=0;
+    for(int i=0;i<(int)events.size();){
+        long long x=events[i][0];area+=((__int128)x-previous)*tree.length[1];
+        do{auto [ex,y1,y2,delta]=events[i++];(void)ex;
+            int l=lower_bound(ys.begin(),ys.end(),y1)-ys.begin();
+            int r=lower_bound(ys.begin(),ys.end(),y2)-ys.begin();tree.add(l,r,delta);
+        }while(i<(int)events.size() && events[i][0]==x);
+        previous=x;
+    }
+    return area;
+}
+```
+
+## 関連する手法
+
+[長方形への加算を四隅に記録する](/flowchartcp/techniques/difference-2d-corners/)、[半開区間の開始と終了を同じ座標でまとめる](/flowchartcp/techniques/sweep-interval-endpoints/)
+
+## 参考資料
+
+- [CSES：Area of Rectangles の問題文](https://cses.fi/problemset/task/1741)
+
+<TechniqueReferences techniqueId="rectangle-union-sweep" />

@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "IOI2020 BiscuitsとICPC2017J Son of Pipe Streamの不足解消",
+  "counts": {
+    "specificTechniques": 399,
+    "foundationArticles": 78,
+    "allArticles": 477,
+    "exampleMappings": 498,
+    "originalUrls": 460,
+    "graphs": 444,
+    "nodes": 3535,
+    "questions": 1603,
+    "answerEdges": 5222,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 494,
+    "pendingWalks": 4
+  },
+  "articles": [
+    {
+      "id": "bounded-power-two-equal-bag-prefix-cap-memoization",
+      "articleSha256": "c624f05324aa9f18fccfd1035ead15f03947b40d5cdc65d4a04807d54b1124cf",
+      "codeSha256": "07287b4597296ecfab7e4aa97d7b19c5260f877a9d07b0013401928280a50f7c",
+      "checks": 139189,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true
+    },
+    {
+      "id": "two-source-concave-flow-mixture-decomposition",
+      "articleSha256": "1e4de99d6c43e670a683a56932137612605852d65094131df05dc8f345fd4ee0",
+      "codeSha256": "f92d803a26016214a043835434d054e45f597fbb83f01d5ab6977379edb6bb7b",
+      "checks": 830234,
+      "normalAndSanitizedAuthorChecksPassed": true,
+      "independentReviewPassed": true,
+      "publishedFenceNativeTestPassed": true
+    }
+  ],
+  "verified": [
+    "Biscuitsの全袋同時の必要十分条件、排他的上限による再帰、順序付き辞書の状態数上限を確認。139189検査、1456全小供給・37626900物理割当・原典最大1000呼出し、ASan/UBSanと独立レビューを通過。",
+    "Biscuitsの原典数値範囲K<=60、q<=1000、x/ai/総重み<=10^18を公式配布HUN/MNG本文で追加確認。初回の数値未確認記録を保持しsubsequentSourceVerificationsへ追記。",
+    "Mixtureの三最大流による配分領域、重み付き幾何平均の最適点、整数容量による同方向流の二種類への再分解を証明。全小グラフ756・91138194二種類流割当・最大200頂点19900辺・分母100億・12桁表示後の保存則と容量を含む830234検査、ASan/UBSanと独立レビューを通過。",
+    "旧496/497件の記録・各根からの回答列・到達結果・回答ラベルを固定hashと独立歩行で保存。Mixture前の全968到達nodeの識別子・type・技巧配列も保持。",
+    "IOI2020の初回記録と3件解消時点の生JSONをgzip保存し、後続更新に依存する回帰検査を当時のsnapshotへ移動。実データへの肯定確認・不正な解法レビューの拒否は保持。",
+    "公開MDXのC++20抽出wrapper2/2、分岐・配置・図切替・ホイール・履歴・固定群・収集器・台帳の42テスト群が成功。",
+    "最終npm run build:localは477記事498対応444図で成功。新7記事の日英・全角検索29件、数式・コード・使用例根拠・カタログを照合。",
+    "全444 SVG pairsと図専用ページ・5222回答ラベル・旧共有URL404件を照合。新しい詳細図をPNGで目視し、不自然な数式の折り返しを新設質問の日本語表現へ修正。",
+    "最終npm run verify:localは1374 HTML/SVG・28124内部リンク/資産を検証。研究表25行の観測・解法確認identity union・記事対応カウンタもデータと一致。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 53,
+    "fixedCorpusSolutionsReviewed": 42,
+    "publishedExamplesSolutionsReviewed": 458,
+    "allDistinctSolutionsReviewed": 473,
+    "usacoCovered": "6/6",
+    "icpc2017Covered": "8/12",
+    "joiCovered": "9/12",
+    "ioi2020Research": "4/6",
+    "ioi2020Covered": "4/6",
+    "ioi2019Research": "3/6",
+    "ioi2019Covered": "0/6",
+    "icpc2018Research": "9/11",
+    "icpc2018Covered": "0/11",
+    "remainingKnownGaps": 27
+  },
+  "limitations": [
+    "全世界の問題母数は未確定、網羅未完了。固定群の完成を世界全体の完成としない。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは環境上の失敗後に再試行しておらず未検証。",
+    "外部リンクの全件生存確認は未実施。",
+    "push・アップロード・公開は実施していない。"
+  ],
+  "inProgress": [
+    "IOI2019 Shoes/Vision/Splitの原典全域実装・独立レビューと特徴分岐への統合",
+    "ICPC2017 ReplicateとICPC2018 Timetableの専用技巧"
+  ],
+  "codeHashDefinition": "UTF-8 bytes of the single complete C++ fence, using the same extraction as the native checker, including final newline."
+}

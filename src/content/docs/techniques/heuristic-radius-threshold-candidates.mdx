@@ -1,0 +1,58 @@
+---
+title: "整数半径の候補は、覆う点までの距離の切り上げに絞る"
+description: "被覆集合が同じ半径を捨て、費用が最小になる境界値だけ残します。"
+techniqueId: "heuristic-radius-threshold-candidates"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+固定された局から円で点を覆い、整数半径の二乗が費用になるとき。半径を一つずつ変更しても、同じ点を覆うだけの候補が多くあります。
+
+## 考え方
+
+局から点までの距離を $d$ とすると、その点が初めて覆われる整数半径は $\lceil d\rceil$。候補を 0 と、上限以下の全ての $\lceil d\rceil$ へ絞り、同じ値をまとめます。平方根の近似だけに頼らず、得た整数を二乗距離で補正します。
+
+## 適用条件
+
+円周上も被覆に含み、半径が整数で、費用が半径とともに増えること。有効な局とケーブルの接続は固定した部分問題として扱います。電波の半径0が点を覆う設定なら、局と同じ座標の点は候補0で覆われます。掲載座標は各成分の絶対値10000以下です。
+
+## なぜ正しいか
+
+ある半径と同じ点集合を覆う最小半径は、覆う点の必要半径の最大値か、点がない場合の0です。その値は候補集合に含まれます。半径をそこへ下げても被覆は変わらず費用は増えません。従って局の接続を固定したときは、この候補へ絞っても最適値を失いません。接続や局の選択全体の最適性は保証しません。
+
+## 計算量
+
+点数 $K$、局数 $N$ とすると候補作成は $O(NK\log(K+1))$、保存空間 $O(NK)$。全ての整数半径 $0\ldots R$ の列挙を、一局当たり最大 $K+1$ 候補へ減らします。$K$ が上限半径より大きいときは候補数の削減効果を見積もります。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct BroadcastPoint {long long x,y;};
+long long required_integer_radius(BroadcastPoint a,BroadcastPoint b){
+    assert(-10000<=a.x && a.x<=10000 && -10000<=a.y && a.y<=10000 && -10000<=b.x && b.x<=10000 && -10000<=b.y && b.y<=10000);
+    long long dx=a.x-b.x,dy=a.y-b.y,square=dx*dx+dy*dy;
+    long long root=sqrtl((long double)square);
+    while((root+1)*(root+1)<=square)++root;
+    while(root*root>square)--root;
+    return root+(root*root<square);
+}
+
+vector<int> broadcast_radius_candidates(BroadcastPoint station,const vector<BroadcastPoint>& residents,int limit=5000){
+    assert(0<=limit && limit<=10000);vector<int> candidates{0};
+    for(auto p:residents){long long r=required_integer_radius(station,p);if(r<=limit)candidates.push_back(r);}
+    sort(candidates.begin(),candidates.end());candidates.erase(unique(candidates.begin(),candidates.end()),candidates.end());return candidates;
+}
+```
+
+## 関連する手法
+
+[円周が交わる条件を二乗距離の上下限に変える](/flowchartcp/techniques/circle-square-distance/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc020/tasks/ahc020_a)
+
+<TechniqueReferences techniqueId="heuristic-radius-threshold-candidates" />

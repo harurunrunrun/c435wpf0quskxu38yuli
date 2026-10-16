@@ -1,0 +1,69 @@
+---
+title: "幅二の矩形敷き詰めは、上段の二マスが同じ部品かだけを持つ"
+description: "長方形の高さを全部記録せず、中央のつながりと二本の継続境界の選び方を二状態の遷移にまとめる。"
+techniqueId: two-column-rectangle-tiles
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+幅二の盤面を、任意の正の整数幅・高さの長方形で敷き詰めたい。各部品が何段前から続くかを持つと、部品の高さ分だけ状態が増える。部品の高さに制限がなければ、その履歴を消せる。
+
+## 考え方
+
+下から $h$ 段を覆った時点で、上段の二マスが同じ長方形に入っている個数を $J_h$、別々の長方形に入っている個数を $S_h$ とする。最初の一段は $J_1=S_1=1$。
+
+次の一段へ伸ばすとき、
+
+$$J_{h+1}=2J_h+S_h,\qquad S_{h+1}=J_h+4S_h.$$
+
+同じ長方形の状態から同じ状態へは、幅二の部品を継続するか、一度切って新しい幅二の部品を置くかの二通り。別々の状態から同じ状態へは両方を切る一通り。
+
+同じ状態から別々へは一度切って二部品を置く一通り。別々から別々へは、左右の細い部品をそれぞれ継続するか切るかを選び、四通りある。答えは $J_n+S_n$。
+
+## 適用条件
+
+部品は軸に平行な長方形で、整数寸法の全ての部品を何個でも使える。高さの上限、使用数の制約、部品ごとの色や費用があると、継続している部品の履歴を追加する必要がある。幅三以上では中央の二状態だけで分離を表せない。
+
+鏡映・回転で重なる配置を同一視せず、実際の部品の境界が違えば別の敷き詰めである。実装は高さ $10^6$ まで、法 $10^9+7$。空の盤面を一通りとする高さ0も含める。
+
+## なぜ正しいか
+
+次段の部品が下段の部品へ接続するかどうかは、各幅一の位置の境界を切るかで決まる。左右が同じ幅二の部品なら、一方だけを継続させると部品が長方形でなくなるため不可能である。
+
+左右が別々なら、各部品は幅一なので独立に継続できる。新たに幅二の部品を作るときだけ両方の下の部品を終える必要がある。この全ての場合が遷移式の係数であり、部品の開始段や長さは将来の選択数へ影響しない。
+
+## 計算量
+
+部品の開始段を左右とも持つ表は、高さごとに $O(h^2)$ 状態を持つ。二状態へ縮めれば最大高さ $H$ までを $O(H)$ 時間で求められる。全質問へ使う答えの表は $O(H)$ 空間、一つの高さだけなら補助空間 $O(1)$。高さがさらに大きければ二状態の遷移行列を累乗できる。
+
+## 実装
+
+`two_column_rectangle_tilings(max_height)[h]` は幅二・高さ $h$ の敷き詰め数。質問で現れる最大高さまで一度だけ計算する。
+
+```cpp
+#include <stdexcept>
+#include <vector>
+std::vector<int> two_column_rectangle_tilings(int max_height) {
+    constexpr long long MOD=1000000007;
+    if(max_height<0 || max_height>1000000) throw std::invalid_argument("height");
+    std::vector<int> answer(max_height+1);answer[0]=1;
+    long long joined=1,separate=1;
+    for(int h=1;h<=max_height;++h) {
+        answer[h]=int((joined+separate)%MOD);
+        long long next_joined=(2*joined+separate)%MOD;
+        separate=(joined+4*separate)%MOD;joined=next_joined;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[細い盤面の敷き詰めは、境界をまたぐマスと合法な次列だけ持つ](/flowchartcp/techniques/domino-column-transition/) ・ [行列累乗](/flowchartcp/techniques/matrix-exponentiation/)
+
+## 参考資料
+
+- [CSES：Counting Towers（原典）](https://cses.fi/problemset/task/2413)。
+
+<TechniqueReferences techniqueId="two-column-rectangle-tiles" />

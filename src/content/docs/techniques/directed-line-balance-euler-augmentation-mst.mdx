@@ -1,0 +1,211 @@
+---
+title: "全ての速度変換区間を並べる費用は、境界の流量差と連結費用に分ける"
+description: "入口上限と出口速度から生じる減速費用を最小にする。数直線の境界ごとに必要な下降量を払い、残る成分を最小費用でつなぐと、全区間を一度ずつ使える順序が得られる。"
+techniqueId: directed-line-balance-euler-augmentation-mst
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+入口に許される速度の上限 $s_i$ と、通り抜けた後の速度 $t_i$ を持つ区間がある。全区間を一度ずつ、自由な順序で並べたい。区間の間では、距離1ごとに速度が1だけ減り、速度を上げる設備は置けない。
+
+区間 $i$ の直後に $j$ を置く費用は $\max(t_i-s_j,0)$ である。組の間の費用を全て作ると二乗個になるが、費用の根拠は数直線上の移動にある。速度の境界を何回ずつ越える必要があるかを見ると、必要な減速と、全区間を一続きにするための減速を分けられる。
+
+## 考え方
+
+速度を頂点とし、各区間を必ず使う有向辺 $s_i\to t_i$ にする。最大速度を $U=\max_i\max(s_i,t_i)$ として、補助の必須辺 $U\to1$ も一本加える。この辺の直後から始めれば、初速1の元の並べ方に戻せる。
+
+辺の間は、速度 $x$ から次の入口上限 $y$ への接続と考える。下向きなら $x-y$、上向きなら0である。ここで無料の上向き接続は、次の区間が今より大きい速度も受け入れられることを表す。実際の列車を加速させる操作ではない。
+
+使用する速度を昇順に $x_0=1<x_1<\cdots<x_{V-1}=U$ と並べる。隣接する速度の間について、必須辺の「右へ越える本数−左へ越える本数」を $b_j$ とする。
+
+- $b_j>0$ なら、反対向きに $b_j$ 本戻る必要があり、$b_j(x_{j+1}-x_j)$ は必ず払う。
+- $b_j<0$ なら、無料の上向き接続を $-b_j$ 本足せば釣り合う。
+- $b_j=0$ なら、本数の補正は要らない。ただし別の成分をつなぐために、上向きと下向きを一本ずつ足す候補になる。費用は $x_{j+1}-x_j$ である。
+
+必須辺と本数の補正で結ばれる頂点をUnion-Findでまとめる。残る候補を長さ順に採用して成分をつなげば、次数が釣り合い、全ての必須辺を含む一つのオイラー閉路が得られる。
+
+## 適用条件
+
+区間数は $2\le N\le200000$、入口上限と出口速度は共に $1\ldots10^9$ の整数とする。初速は1で、区間は入口速度が上限以下なら利用でき、出口速度は入口速度によらず指定値になる。全区間を一度ずつ使い、順序に他の制約を置かない。等しい区間や、入口と出口が同じ区間も許す。
+
+求めるのは、隣り合う区間をつなぐ距離の最小総和である。距離は非負整数で、単位距離ごとの減速は1。最後の区間から初速へ戻す距離は目的に含まれない。区間内で起こる速度の変化には、接続距離を課さない。
+
+一般には、全ての組 $(s_i,t_i)$ を使い、隣接する二組の費用が $\max(t_i-s_j,0)$ となる順序最適化にも使える。任意の有向辺の費用や、区間の使用回数・先行関係が変わる場合には、この境界ごとの補正はそのまま適用できない。
+
+## なぜ正しいか
+
+まず並べ方と有向グラフを対応させる。任意の並べ方に補助区間 $U\to1$ を付け、直前・直後も接続する。最後の出口速度は $U$ 以下なので補助区間へ無料で入り、補助区間の出口1から最初の区間へも無料で入れる。従って、閉路化しても元の費用は変わらない。
+
+反対に、必須辺と接続辺を全て使う閉路があれば、補助辺の直後で切り、必須辺が現れる順に元の区間を並べる。二つの必須辺の間に複数の接続辺があっても、下降量の総和は、始点 $x$ と終点 $y$ に対する $\max(x-y,0)$ 以上である。その部分を一つの接続に置き換えれば費用は増えない。
+
+この順序の実際の接続では、出口速度 $x$ を $\min(x,y)$ まで下げるだけでよい。入口上限 $y$ 以下であり、全ての速度は正である。無料の上向き辺を物理的な加速として使う必要はない。この両方向の対応から、元の最小費用と、必須辺を含む平衡で連結な有向グラフへ補う最小費用は等しい。
+
+次に、接続辺を全て隣接速度間の辺へ分割する。下向きの総距離も費用も変わらず、上向きの費用も0のままである。途中の頂点を通ることは許されるので、この形に限ってよい。
+
+境界 $j$ で、接続の上向き本数を $u_j$、下向き本数を $d_j$ とする。閉路では左右の横断回数が等しいので、
+
+$$d_j-u_j=b_j.$$
+
+非負整数による解は、ある $z_j\ge0$ を用いて
+
+$$d_j=\max(b_j,0)+z_j,\qquad u_j=\max(-b_j,0)+z_j$$
+
+と書ける。従って、どの解も必ず
+
+$$\sum_j\max(b_j,0)(x_{j+1}-x_j)$$
+
+を払い、その上に双方向の組を $z_j$ 本ずつ加えている。各頂点の必須の出次数−入次数を $\delta_i$ とすれば、$b_j=\sum_{i=0}^j\delta_i$ である。全ての境界差を0に補正すると、差を取ることで各頂点の次数差も0になる。
+
+必須辺と、上の最小本数の接続辺だけを加えたグラフを基準にする。$b_j\ne0$ の境界の両端は、既にこのグラフの同じ弱連結成分にある。その境界にさらに双方向の組を足しても、異なる基準成分を結ぶことはない。
+
+従って、連結性のために残るのは $b_j=0$ の境界である。ここに双方向の一組を足すと、次数差を変えずに両端を結べて、費用は境界の長さになる。どの実現可能な解でも、採用した境界は、縮約した基準成分を全て結ぶ必要がある。非負費用なので、その中の全域木以上の費用が必要となり、最小全域木が下界を与える。
+
+逆に、Kruskal法で得た木の各辺に双方向の一組を足せば、全頂点が弱連結となり、全頂点の入次数と出次数も等しい。従って全ての辺を使うオイラー閉路がある。候補は、既に結ばれた境界と合わせれば数直線全体をつなぐので、成分を結ぶ木は必ず存在する。必須の下降費用と、この木の費用の和が下界を達成する。
+
+## 計算量
+
+速度の種類は高々 $2N+1$。座標の整列、各端点の二分探索、候補辺の整列に $O(N\log N)$ 時間を使う。境界の走査とUnion-Findの操作は $O(N\alpha(N))$ で、その中に収まる。補正辺を本数分だけ実体化せず、次数差と必要な費用だけを数えることが重要である。
+
+補助空間は $O(N)$。座標、次数差、Union-Find、候補辺の四配列を使い、探索は反復で行う。標準ライブラリの整列が使うスタックは $O(\log N)$ である。
+
+本数の差は高々 $N+1$、境界の長さの総和は $10^9-1$ 以下である。全ての中間費用を $2(N+2)10^9$ 以下で抑えられ、64ビット符号付き整数に収まる。掛け算の前に64ビットへ変換する。最終解は、任意の順序を選ぶだけでも $(N-1)(10^9-1)$ 以下である。
+
+## 実装
+
+`minimum_section_connection_length(sections)` は、各組を `(入口上限, 出口速度)` として受け取り、最小接続距離を返す。入力を変更せず、呼び出し間で状態を共有しない。
+
+区間数や速度が適用範囲外なら `invalid_argument` とする。入力全体を検査してから作業領域を確保する。割り当て例外はそのまま伝播し、入力は変わらない。
+
+`plan_roller_coaster(s,t)` は原典のC++型へ合わせた入口である。二配列の長さと全要素を検査してから、組の配列へ変換する。値渡しの二配列を呼び出し側でコピーするときにも割り当てが発生し得る。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+static_assert(std::numeric_limits<int>::max() >= 1'000'000'000);
+
+namespace line_connection_detail {
+constexpr int maximum_sections = 200000;
+constexpr int maximum_speed = 1000000000;
+inline void validate_speed(int value) {
+    if (value < 1 || value > maximum_speed) {
+        throw std::invalid_argument("speed out of range");
+    }
+}
+class DisjointSet {
+    std::vector<int> parent;
+public:
+    explicit DisjointSet(int n) : parent(n, -1) {}
+    int root(int vertex) {
+        int result = vertex;
+        while (parent[result] >= 0) result = parent[result];
+        while (vertex != result) {
+            const int next = parent[vertex];
+            parent[vertex] = result;
+            vertex = next;
+        }
+        return result;
+    }
+    bool join(int a, int b) {
+        a = root(a); b = root(b);
+        if (a == b) return false;
+        if (parent[a] > parent[b]) std::swap(a, b);
+        parent[a] += parent[b]; parent[b] = a;
+        return true;
+    }
+};
+struct Candidate {
+    int length, left;
+};
+} // namespace line_connection_detail
+
+std::int64_t minimum_section_connection_length(
+    const std::vector<std::pair<int, int>>& sections) {
+    using namespace line_connection_detail;
+    if (sections.size() < 2 || sections.size() > maximum_sections) {
+        throw std::invalid_argument("section count");
+    }
+    for (const auto& [entry, exit] : sections) {
+        validate_speed(entry); validate_speed(exit);
+    }
+    const int n = static_cast<int>(sections.size());
+    std::vector<int> coordinate;
+    coordinate.reserve(2 * n + 1);
+    coordinate.push_back(1);
+    for (const auto& [entry, exit] : sections) {
+        coordinate.push_back(entry); coordinate.push_back(exit);
+    }
+    std::sort(coordinate.begin(), coordinate.end());
+    coordinate.erase(std::unique(coordinate.begin(), coordinate.end()), coordinate.end());
+    const int vertices = static_cast<int>(coordinate.size());
+    std::vector<int> delta(vertices, 0);
+    DisjointSet components(vertices);
+    auto index = [&](int value) {
+        return static_cast<int>(std::lower_bound(coordinate.begin(), coordinate.end(), value)
+                                - coordinate.begin());
+    };
+    for (const auto& [entry, exit] : sections) {
+        const int a = index(entry), b = index(exit);
+        ++delta[a]; --delta[b]; components.join(a, b);
+    }
+    // The maximum is over BOTH entries and exits; index0 represents speed1.
+    ++delta[vertices - 1]; --delta[0];
+    components.join(vertices - 1, 0);
+    std::vector<Candidate> optional;
+    optional.reserve(vertices - 1);
+    std::int64_t answer = 0;
+    int balance = 0;
+    for (int i = 0; i + 1 < vertices; ++i) {
+        balance += delta[i];
+        const int gap = coordinate[i + 1] - coordinate[i];
+        if (balance != 0) {
+            if (balance > 0) answer += std::int64_t(balance) * gap;
+            components.join(i, i + 1);
+        } else {
+            optional.push_back({gap, i});
+        }
+    }
+    std::sort(optional.begin(), optional.end(), [](const Candidate& a, const Candidate& b) {
+        if (a.length != b.length) return a.length < b.length;
+        return a.left < b.left;
+    });
+    for (const auto& edge : optional) {
+        if (components.join(edge.left, edge.left + 1)) answer += edge.length;
+    }
+    return answer;
+}
+
+long long plan_roller_coaster(std::vector<int> s, std::vector<int> t) {
+    using namespace line_connection_detail;
+    if (s.size() != t.size() || s.size() < 2 || s.size() > maximum_sections) {
+        throw std::invalid_argument("array sizes");
+    }
+    for (std::size_t i = 0; i < s.size(); ++i) {
+        validate_speed(s[i]); validate_speed(t[i]);
+    }
+    std::vector<std::pair<int, int>> sections;
+    sections.reserve(s.size());
+    for (std::size_t i = 0; i < s.size(); ++i) sections.emplace_back(s[i], t[i]);
+    return static_cast<long long>(minimum_section_connection_length(sections));
+}
+```
+
+## 関連する手法
+
+[有向辺を一度ずつ通る経路](/flowchartcp/techniques/euler-degree-connectivity/)は、完成した辺集合に対する次数と連結性を扱う。ここでは、その条件を満たすために足す辺の費用を、数直線の境界へ分解している。
+
+[Union-Find](/flowchartcp/techniques/union-find/)は、必須の接続で既に結ばれた成分を縮約し、追加する候補の採否を判断する。[グラフへの帰着](/flowchartcp/techniques/graph-reduction/)では、無料の上向き辺が入口上限の余裕を表すことまで確認して、元の操作へ戻せるモデルを作る。
+
+## 参考資料
+
+- [IOI 2016 Roller Coaster Railroad 公式原典](https://www2.ioi-jp.org/ioi/2016/tasks/day1-railroad-ISC.pdf)。入口上限・出口速度・正の速度・接続距離、全区間の任意順使用と `plan_roller_coaster` の契約。
+- [IOI 2016 公式Solutions](https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf)、[公式配布アーカイブ](https://ioi.te.lv/locations/ioi16/contest/)。Kento NikaidoによるRailroadの節は3〜4頁。補助区間による閉路化、境界の本数差、連結費用の最小全域木を扱う。
+- [公式Day 1 実装上の注意](https://www2.ioi-jp.org/ioi/2016/tasks/day1-notice-ISC.pdf)。C++の型対応と2秒・2GBの制限。
+- [日本委員会公式課題一覧](https://www2.ioi-jp.org/ioi/2016/tasks/index.html)。競技日1は2016年8月14日。
+
+<TechniqueReferences techniqueId="directed-line-balance-euler-augmentation-mst" />

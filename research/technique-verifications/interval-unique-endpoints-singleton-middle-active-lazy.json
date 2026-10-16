@@ -1,0 +1,443 @@
+{
+  "techniqueId": "interval-unique-endpoints-singleton-middle-active-lazy",
+  "auditGapId": "interval-unique-endpoints-singleton-middle-active-lazy",
+  "status": "implementation-complete-awaiting-independent-review",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-unitedcows-article.mdx",
+    "checker": "/tmp/flowchartcp-unitedcows-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/interval-unique-endpoints-singleton-middle-active-lazy.mdx",
+    "checker": "scripts/check_interval_unique_leaders_cpp.py",
+    "metadataGroup": "range-patterns",
+    "metadataFile": "data/techniques-specific-range-patterns.json",
+    "referenceFile": "data/references-specific-range-patterns.json",
+    "feature": "data/interval-unique-leader-problem-features.json"
+  },
+  "metadata": {
+    "id": "interval-unique-endpoints-singleton-middle-active-lazy",
+    "title": "両端と内部の一点が区間内で一度だけ現れる三点組を数える",
+    "summary": "両端と内部一点の値が、それぞれ区間全体で一度だけ現れる三点組を数える。有効な左端だけの重み和を持ち、前二出現から内部の単出現数を二つの区間加算で更新する。",
+    "aliases": [
+      "USACO United Cows of Farmer John Platinum",
+      "interval unique endpoints singleton middle active lazy",
+      "区間 両端 内部 三点 単出現 有効点 遅延加算"
+    ],
+    "family": "区間・配列の集計",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "coordinate-compression",
+      "lazy-segment-tree"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+      "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ]
+  },
+  "reference": {
+    "techniqueId": "interval-unique-endpoints-singleton-middle-active-lazy",
+    "source": "USACO",
+    "problemId": "1140",
+    "title": "United Cows of Farmer John (Platinum)",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+    "evidence": "原典Platinumは連続区間の両端と内部一点をleaderにし、各leaderのbreedが非leaderも含む全区間で一度だけ現れる選択数を求める。右端の直前同値位置より右にある、有効な左端の内部単出現数を足す。前二出現で単出現数への±1更新区間を決め、有効点数と有効点の重み和を持つ遅延木でO(NlogN)に集計する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "division": "Platinum",
+    "sourceDate": "2021",
+    "sourceDatePrecision": "year",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "原典1140のPlatinum表題/全文/N1..200000/breed1..Nと公式resultsのPlatinum第1問Solution直リンクを再読。Benjamin Qi公式解説と対応を確認し、選択三値の全区間内単出現、前二出現の正確な半開範囲、不可逆deactivate、active人数×lazy重み和、activate時の過去遅延非継承と問い合わせ先行を独立証明。実MDX C++20抽出checkerは通常/ASan+UBSanとも8876842checks/checksum11233411103425697573成功。全4ラベル長0..9の349525列/全literal三leader35091758件、全長1..8の毎757304時点で活動/重み/各suffixを照合し、2500smallrandom/500medium、最大N20万8構成も確認。日付は公式2021 US Openから年までのみ、月日を補わず難度null、同名Goldとは分離。"
+  },
+  "problemFeature": {
+    "source": "USACO",
+    "problemId": "1140",
+    "title": "United Cows of Farmer John (Platinum)",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+    "techniqueIds": [
+      "interval-unique-endpoints-singleton-middle-active-lazy"
+    ],
+    "features": [
+      "固定数列から区間を選び、両端と内部一点の三位置を選ぶ。三位置の各値は非選択位置も含む区間全体で一度だけ現れなければならない。",
+      "区間も内部の選択位置も異なれば別に数え、全ての選択の総数を求める。選ばない値の重複は許す。",
+      "原典N1..200000、breed1..N。掲載APIは任意int64ラベルと空列も扱い、位置は0始まりで処理する。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021",
+    "publicationDatePrecision": "year",
+    "exactDateVerified": false,
+    "exactMonthVerified": false,
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "notes": "cpid1140/Platinumを対象にし、同名Gold版の二leader等の条件へ読み替えない。各leader同士が異なるだけでは不足。active左端の内側singleton数を足す専用更新が必要。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "officialEditorialUrl": "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+    "officialResultsUrl": "https://usaco.org/index.php?page=open21results",
+    "statementFullTextVerified": true,
+    "numericBoundsVerified": true,
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "officialEditorialAuthor": "Benjamin Qi",
+    "problemCredit": "Benjamin Qi",
+    "officialEditorialProvenance": "USACO2021 US Open公式resultsのPlatinum第1問1140のSolution直接リンク。Goldに同じ問題名があるが別rowであり、対象を混同しない。",
+    "sourceBounds": {
+      "N": "1..200000",
+      "breeds": "each1..N",
+      "delegation": "contiguous interval length>=3",
+      "leaders": "exactly3, endpoints plus1 strictinterior position",
+      "uniqueness": "EVERY leaderbreed occurs exactlyonce in the ENTIREdelegation includingnonleaders",
+      "count": "differentintervals or differentleaders counted separately, exact64bit count"
+    },
+    "date": "2021",
+    "datePrecision": "year",
+    "exactDateVerified": false,
+    "exactContestMonthVerified": false,
+    "dateEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "dateLimitation": "Primary title/results confirmyear2021 only; no exactmonth/day asserted. No currentUSACOcalendar/crawl time imported as historicalcontestdate.",
+    "method": "Primary officialHTML fulltext/formulas/visiblecode reread throughweb; noPDF/visualclaim.",
+    "unconfirmedOriginalNumericBounds": [],
+    "unconfirmedRequiredLemmas": []
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "statementVerified": true,
+      "officialEditorialRetrieved": true,
+      "officialEditorialVerified": true,
+      "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-proof-supplements",
+      "solution": "retrieved-and-reviewed",
+      "numericBounds": "verified-from-full-official-statement"
+    },
+    "chosenFullSolutionVerified": true,
+    "fullImplementationValidated": true,
+    "evidenceUrls": [
+      "https://usaco.org/index.php?page=viewproblem2&cpid=1140",
+      "https://usaco.org/current/data/sol_prob1_platinum_open21.html",
+      "https://usaco.org/index.php?page=open21results"
+    ],
+    "notes": "初回固定監査のmissing-technique/旧route/旧停止質問/初回countsを変更しない。今回、任意int64ラベル圧縮・全点inactive初期化・葉replace時の重み/遅延reset・signed集計を持つ独立完全APIを作成し、通常/ASanとliteral全探索/毎時点invariant/原典最大を検証。独立review/共有flow接続/原典walk/回帰はparentが後続resolutionとして登録する。"
+  },
+  "api": {
+    "function": "std::int64_t count_interval_unique_leader_triples(const std::vector<std::int64_t>& values)",
+    "input": "0<=N<=200000, arbitrarysigned64 labels; equalityonly, orderhasnomeaning",
+    "result": "exact number ofl<m<r with eachofvalues[l],values[m],values[r] unique in inclusiveinterval[l,r]; empty/length1/2 return0",
+    "originalAdapter": "Read sourceN/b_i into vector<int64_t>, call function andprintreturned64bitinteger. Source1based(l,m,r) correspondsto0based(l-1,m-1,r-1); no inputqueryendpointsneed conversion.",
+    "originalProblemCoverage": "EverylegaloriginalN1..200000/breed1..N included. N0/arbitrarysignedlabels are explicitextensions, not sourceconstraints.",
+    "errors": "N>200000 throwsinvalid_argument beforeintconversion/copy/treeallocation. Thereisnorejectedint64labelvalue. Standardallocationexceptionspropagateunchanged, constcallerinputunchanged.",
+    "state": "Allpalette/last/secondlast/tree/answer local percall; no persistentcache, noinputsorting ormutation. Exceptiondoesnotleaveglobalstate.",
+    "implementationDetail": "unique_leader_detail::ActiveWeights is not a separatelyvalidatedpublicAPI. Callerinsidefunctionsupplies1<=n<=200000 andvalidhalfopen0<=begin<=end<=n/position0..n-1, withboundedupdatehistory. Arbitraryoutofrangehelpercallsareoutsidecontract.",
+    "integerSafety": [
+      "Lengthcheckedbeforeintcast. tree4*N<=800000node slots, mids/indicesfitstatic_assert intmax>=1000000. Allstoredpositionslast/secondlastin[-1,N-1], p+1in[0,right].",
+      "palette lower_bounddifference<=N fitsint; signed64 labelsarecomparedwithoutsubtraction/abs/hash/sentinelvalue. Position-1, not label0, isthesentinel.",
+      "weightw in0..N. count<=N, sum ofactiveweights<=N^2<=40000000000. sum and answer useint64.",
+      "Atmost2N original±1rangeupdates. Everylazy is a signed sum ofa subsetofunderlyingupdates since lastpush/reset, soabs<=2N<=400000. Applyingalazy productdelta*count startsinint64, absolute<=80000000000, safelywithinint64.",
+      "Answer<=C(N,3), atN200000 equals1333313333400000 andfitsint64. Prefixansweraddsnonnegativecounts; nofloating ormodulo.",
+      "Leafreplaceischeckedbeforepush, sochildindicesarenevertouchedatleaf. Integerhalfopenendpointsensurepartialnonemptyquerycannotneedpushatleaf."
+    ],
+    "time": "O(Nlog(N+1)), including sort/equalitycompression, binarylookup perposition, rangequery/pointreplacement/rangeupdates",
+    "space": "O(N) auxiliary, inputseparate",
+    "typicalPayload": "Onverified32bitint/64bitint64 targetNode is16bytes;4Nnodes64Nbytes, palette8N, last/second_last4N each, totalmainpayload<=80N=16000000bytes. Vector/allocator/sortstack/callerinput separate; noportableclaim aboutlayoutpadding.",
+    "recursion": "segmenttree height<=ceil(log2N)=18 edges atN200000, atmost19simultaneousframes alongonepath, plusstd::sort implementationstackO(logN)"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "contribution": "Beforeinsertingright r, active[l] means B_l occurs oncein[l,r). previousp ofB_r givesrightuniqueiff l>p. Bothendpointbreeds thenabsentinsideanddifferent, sotheinternal uniquevalues/positions in[l+1,r) areexactlythethirdleaderchoices. Querysum active*w over[p+1,r).",
+    "prevTwoRanges": "For q<p<r occurrencesofB_r, oldinternalcountzero iff l>=p; one iff q<=l<p; >=2iff l<q. Thus +1 on[max(p,0),r), -1on[max(q,0),p) onlyifp>=0. pbelongstoplusrangebecauseinternalstartsafterleft. Negativepositionsclampedonlyasleftbound, emptyrangesignored.",
+    "permanentActivity": "pwaslatestoccurrenceandactiveuntilr. Newduplicaterendersp permanentlyinvalidforallfuturerights. Onlypdeactivates; newr activatesw0. Everypositionactivatesonce anddeactivatesatmostonce.",
+    "activeWeightedLazy": "Node(c,s) stores activecount andsumactiveweights. Uniformdelta is(c,s+delta*c); childrengetidenticaltag. Beforechangingmembershipatleaf pushallancestor tags underoldcounts. Leafreplace resetscount/sum/lazy, ensuringpasttagsarenotinheritedbynewpointanddeadvaluesdontmatter.",
+    "updateOrder": "Queryusesinternal[l+1,r), beforeaddingr. Thenremove p, do twodisjoint±1updates andactivaterweight0. last/secondlast updatedonlyafterreadingbotholdpositions. Thisreestablishesinvariantforr+1.",
+    "uniquenessAndCounting": "A triple iscountedonceatitsrightandleftwithoneinternalchoice; alllegaltriplesmeetconditionsandallcontributionslegal. Length<3naturally0.",
+    "complexity": "CompressionO(NlogN), treeinitializationO(N). Perpositionatmost1query+1deactivate+2rangeupdates+1activate, eachO(logN). Noiterationoveractivepoints, noquadraticresurrection, initial,last,storageO(N).",
+    "unconfirmedLemmas": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "ranges",
+    "initialChoices": [
+      "aggregate-goals",
+      "window"
+    ],
+    "firstMissingGraphId": "range-window",
+    "firstMissingNodeId": "wanted",
+    "proposedAnswerId": "unique-leader-triples",
+    "proposedAnswerLabel": "区間の両端と内部一点を選び、各値が区間全体で一度だけ現れる選び方を数える",
+    "guardGraphId": "interval-unique-leader-conditions",
+    "guards": [
+      {
+        "id": "three-singleton-leaders",
+        "feature": "区間の両端と内部一点の三点を選び、それぞれの値が非選択位置も含む全区間で一度だけ現れる必要がある。"
+      },
+      {
+        "id": "all-fixed-intervals",
+        "feature": "固定列の全区間と内部の選択位置を合わせた総数を求める。区間端点や内部点が違えば別の選択である。"
+      },
+      {
+        "id": "bounds",
+        "feature": "N20万以下、値をint64の等号で識別でき、O(NlogN)時間/O(N)空間を使える。答えはint64。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "interval-unique-endpoints-singleton-middle-active-lazy"
+    ],
+    "canonicalNotYetRegistered": true,
+    "note": "Names/labels/parentdetailgraphareproposals.Parentfinalizessharednavigationandpreservesoldinitialrecords."
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalCommand": "python3 /tmp/flowchartcp-unitedcows-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-unitedcows-checker.py --sanitize",
+    "normal": {
+      "checks": 8876842,
+      "allFourLabelArrays": 349525,
+      "literalLeaderTriples": 35091758,
+      "invariantArrays": 87380,
+      "invariantSnapshots": 757304,
+      "invariantPoints": 2922420,
+      "randomCases": 2500,
+      "mediumCases": 500,
+      "primitiveSteps": 48000,
+      "maximumCases": 8,
+      "maximumElements": 1600000,
+      "maximumN": 200000,
+      "checksum": "11233411103425697573",
+      "seconds": 1.17302,
+      "peakRSSKiB": 23456,
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 8876842,
+      "allFourLabelArrays": 349525,
+      "literalLeaderTriples": 35091758,
+      "invariantArrays": 87380,
+      "invariantSnapshots": 757304,
+      "invariantPoints": 2922420,
+      "randomCases": 2500,
+      "mediumCases": 500,
+      "primitiveSteps": 48000,
+      "maximumCases": 8,
+      "maximumElements": 1600000,
+      "maximumN": 200000,
+      "checksum": "11233411103425697573",
+      "seconds": 7.62696,
+      "peakRSSKiB": 982352,
+      "sanitized": true
+    },
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizeFlags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-pie",
+      "-no-pie"
+    ],
+    "leakSanitizerEnabled": false,
+    "literalOracle": "EnumerateEVERYl<m<r andscanEVERYcellin[l,r]countingequalitytoEACHofthreeleaderlabels. Acceptiffallthreecounts1. Noactive/prev2/lazy/compressionformulaisusedbyliteraloracle.",
+    "allSmallScope": "All349525arrayslength0..9onalphabet{INT64_MIN,-1,0,INT64_MAX}. LiteralLeaderTriples35091758includesallexhaustive,smallrandomandclosed-formfixtureenumerations, notonlyexhaustives.",
+    "everyEventInvariant": "All87380nonemptyarrayslength1..8replayactualpublishedActiveWeightstree usingliteralbackwardscanforpreviouspositions. AfterinitialemptyandEACHprefixinsert(757304snapshots), directlybuildper-leftactualfrequencylistsandcompareactivity/active-weightatEVERYpoint(2922420points),EVERYsuffixcount+sum,prefixaggregateandfutureinactive. Beforeeachinsertcomparequerytoexactliteraltripleswiththatright. Thisisatraceofthepublisheddetailtree;fullpublicfunctionseparatelymatchesliteralcounts.",
+    "randomScope": "2500casesN0..45againstliteraltriples,500casesN30..180againstindependentO(N²)actualinterval-frequency-mapcount(uniqueendpoints?totalunique-2:0). Alluseequal/negative/zero/int64extremevalues; reflectionandbijectionreversinglabelorderalsoequaloriginalanswer.",
+    "primitiveScope": "48000arbitraryvalidinternaltreeoperations acrossN1,2,3,17,64,129, actualsignedrangeadd andmembershipreplaceversusliteralpointstate. Extraexplicitall-inactivehistoricaltag/newactivation/deactivation/negativependingtagresetfixtures. ThesehelpertestsarenotnewpublicAPIpromises.",
+    "maximumCases": [
+      {
+        "pattern": "allonebreed",
+        "N": 200000,
+        "expected": "0"
+      },
+      {
+        "pattern": "alldistinct",
+        "N": 200000,
+        "expected": "C(N,3)=1333313333400000"
+      },
+      {
+        "pattern": "alternatingtwo",
+        "N": 200000,
+        "expected": "0, impossiblethreeuniquebreeds"
+      },
+      {
+        "pattern": "period3distinctbreeds",
+        "N": 200000,
+        "expected": "N-2, onlylength3intervals"
+      },
+      {
+        "pattern": "period997distinctbreeds",
+        "N": 200000,
+        "expected": "sumL3..997(N-L+1)(L-2)"
+      },
+      {
+        "pattern": "periodN/2distinctbreedsrepeatedtwice",
+        "N": 200000,
+        "expected": "sumL3..N/2(N-L+1)(L-2)"
+      },
+      {
+        "pattern": "alldistinctexceptvalues[N/3]==values[2N/3]",
+        "N": 200000,
+        "expected": "C(N,3)-badU-badV+(N-2) byindependentinclusion-exclusion"
+      },
+      {
+        "pattern": "consecutiveequalpairs",
+        "N": 200000,
+        "expected": "0, endpointuniquenessleavesnointernalsingleton"
+      }
+    ],
+    "maximumOracleJustification": "ForperiodK, length>Kintervalhasrepeatedleftendpoint; everylength3..KintervalisalluniqueandhasL-2middlechoices. One-duplicatebadUcountsselecteduandintervalcontainingv, badVviceversa, overlapallN-2triplesselectingboth; closedformcomputedindependentlyandcheckedagainstliteraltriplesforALLN3..16positionsu<v. Everycycleperiod1..Nalso literalcheckedforALLN3..16. Maxpatternsuseoriginalbreed1..NandN200000.",
+    "apiBoundaryCases": [
+      "OriginalPlatinum7-cowsampleanswer9.",
+      "Pairwisedistinctleaderlabelsinsufficientwhenanonleaderrepeatsone;uniqueendpointscanstillhavezerouniquemiddle.",
+      "Empty/length1/2return0;fullint64MIN/MAX/0arevalidlabels.",
+      "N200001throwsinvalid_argumentbeforeintcast/allocationsandinputunchanged.",
+      "100interleavedoriginalsample/all-equalfreshcallsincludingafterexception.",
+      "Everyexhaustive/random/maxinputunchanged."
+    ],
+    "allocationFailureInjection": false,
+    "counterScope": "checks counts assertions, literalLeaderTriples counts testedtriplesincludinginvalidones; invariantSnapshotscountsaftereveryprefixeventplusinitialemptyfornonemptyN<=8. maximumElements=8*200000countsmaxinputelements. Selectedreturnedanswersfeedchecksum; notallassertionsfeedchecksum.",
+    "timingScope": "Nativewholecheckerincludingoracles,allsmall/random/maxcases; peakRSSincludescheckerandASanquarantine/callerinput, notonlyAPIpayload.",
+    "independentReview": "Parentassigned/root/usaco_cowmistry_articleread-onlyreviewpending.",
+    "sharedFilesModified": false,
+    "initialAuditModified": false,
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "自然な日本語8節と単一常時表示完全C++20API。固有problem解説ページを作らず、三点単出現を数える再利用技巧として記述。",
+    "調査履歴・件数・benchmarkはsidecarのみ。本文は場面/条件/証明/計算量/実装/関連資料。",
+    "原典/公式解説/公式resultsの全3URLは本文参考資料にも掲載。Gold同名課題とPlatinum1140を分離。",
+    "原典日付は2021年精度まで・exactfalse/月未確認・難度null。Platinumはdivisionfieldとして保持し未知numericratingへ転用しない。",
+    "初回fixedaudit6行/旧停止位置/分類/基準snapshotを変更せず、parent側の独立review/flow/walk後に後続resolutionを追加する。"
+  ],
+  "artifactSha256": {
+    "article": "e942d53e28a956c6c8b9b43ce57a20feba14cd2b7deccd22024e2c97865de0e3",
+    "checker": "20a8f57ff2321de28e76cbc998675186d6561d4593cbf9936fdf871b0be27617",
+    "originalArticle": "e942d53e28a956c6c8b9b43ce57a20feba14cd2b7deccd22024e2c97865de0e3",
+    "originalChecker": "20a8f57ff2321de28e76cbc998675186d6561d4593cbf9936fdf871b0be27617",
+    "publishedArticle": "c61d0662abef7f5f4fc02cf6be723bbcbc68c8b522ff62cbf07bbeb8b18fcb4c",
+    "publishedChecker": "fcde8f35e2fd471ccce23c4609ffc972d1be27a6086b84c3760a8d55e23e3088"
+  },
+  "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/interval-unique-endpoints-singleton-middle-active-lazy.mdx",
+    "checker": "scripts/check_interval_unique_leaders_cpp.py",
+    "metadataGroup": "range-patterns",
+    "entryGraphId": "ranges",
+    "choices": [
+      "aggregate-goals",
+      "window",
+      "unique-leader-triples",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "reviewedAt": "2026-10-15",
+      "techniqueId": "interval-unique-endpoints-singleton-middle-active-lazy",
+      "status": "passed",
+      "reviewer": "root",
+      "allEightSectionsAndCompleteCppRead": true,
+      "allPrimaryStatementBoundsAndChosenOfficialSolutionReread": true,
+      "codeSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf",
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "fullSourceInputRangeIncluded": true,
+      "normalAndAsanUbsanActualFenceSucceeded": true,
+      "referenceDifficulty": null,
+      "initialResearchAlreadyPositive": true,
+      "appendResolutionOnly": true,
+      "proofReview": [
+        "a_lは左端の単出現、w_lは内側[l+1,r)の単出現。l>prevで右端の単出現を満たすと、w_lがちょうど内部候補数。",
+        "queryを先に取り、前二出現で+1[max(0,p),r)/-1[max(0,q),p)へ分割。pの端点は正側。",
+        "旧左端pを永久無効化し、rを全加算後に重み0で有効化。",
+        "sum+=delta*activecount、点変更前pushとleaf resetで新しい左端が過去tagを受け継がない。"
+      ],
+      "apiReview": [
+        "任意符号付き64bitlabelは比較/等号だけで圧縮、極値でも演算しない。",
+        "N上限を縮小前に検査、N<3即0、const入力/多重呼出し/割当例外。",
+        "木4N、人数<=N、lazy絶対値<=2N、積/和/choose(N,3)<=1.34e15はint64内。O(Nlog(N+1))/O(N)。"
+      ]
+    },
+    "normal": {
+      "checks": 8876842,
+      "allFourLabelArrays": 349525,
+      "literalLeaderTriples": 35091758,
+      "invariantArrays": 87380,
+      "invariantSnapshots": 757304,
+      "invariantPoints": 2922420,
+      "randomCases": 2500,
+      "mediumCases": 500,
+      "primitiveSteps": 48000,
+      "maximumCases": 8,
+      "maximumElements": 1600000,
+      "maximumN": 200000,
+      "checksum": "11233411103425697573",
+      "seconds": 1.15987,
+      "peakRSSKiB": 23464,
+      "sanitized": false,
+      "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf"
+    },
+    "asanUbsan": {
+      "checks": 8876842,
+      "allFourLabelArrays": 349525,
+      "literalLeaderTriples": 35091758,
+      "invariantArrays": 87380,
+      "invariantSnapshots": 757304,
+      "invariantPoints": 2922420,
+      "randomCases": 2500,
+      "mediumCases": 500,
+      "primitiveSteps": 48000,
+      "maximumCases": 8,
+      "maximumElements": 1600000,
+      "maximumN": 200000,
+      "checksum": "11233411103425697573",
+      "seconds": 7.98553,
+      "peakRSSKiB": 982304,
+      "sanitized": true,
+      "cppSha256": "407284b9682e4d15c74625be2294fe2234c79b8e7f6e4671366a8af92c4b6fcf"
+    },
+    "additionalReviewFile": "research/probes/interval-unique-leader-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

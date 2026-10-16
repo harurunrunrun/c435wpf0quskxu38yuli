@@ -1,0 +1,136 @@
+---
+title: "二つの差の積で決まる最大利益は、劣る候補を除いて最適な相手の範囲を絞る"
+description: "価格と期間の両方で劣る点を消し、残った二群の最適な組が順序を逆転しないことを使う。"
+techniqueId: pareto-pruned-max-rectangle-monotone-partner
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+二群から一つずつ選ぶ。左の対象は単価 $p$ と開始時刻 $d$、右の対象は単価 $q$ と終了時刻 $e$ を持ち、$p<q$ かつ $d<e$ の場合に利益 $(q-p)(e-d)$ を得る。取引しない選択も許され、得られる利益の最大値を求めたい。
+
+各群に数十万件あると、全ての組を調べられない。まず、価格と時刻の両方で劣る候補を除く。その後に残る点の並び方から、**左の対象を順に動かすと、最適な右の対象も逆戻りしない**ことを示す。
+
+## 考え方
+
+左側では、価格が安く、開始が早いほど有利である。価格昇順、同価格では開始昇順に並べ、開始時刻がそれまでの最小値より小さくなる点だけ残す。残る列では $p$ が厳密に増え、$d$ が厳密に減る。同価格の候補は最も早い開始だけが残り、同じ二座標の重複も一つになる。
+
+右側では、高価格で買い、遅くまで取引する対象が有利である。価格降順、同価格では終了降順に見て、終了時刻がそれまでの最大値より大きくなる点だけ残す。最後に逆順にすれば、$q$ は厳密に増え、$e$ は厳密に減る。
+
+左の対象 $i$ にとって、正利益の候補は $q_j>p_i$ と $e_j>d_i$ を両方満たす右側である。前者は接尾側、後者は接頭側なので、共通部分は一つの連続範囲になる。価格条件を満たす最初の添字を `first`、時刻条件を満たす接頭部の直後を `past_last` とすれば、合法範囲は半開区間 `[first,past_last)` である。左の列を進むと $p$ は増え、$d$ は減るため、どちらの端も左へ戻らない。`first >= past_last` の行は除く。
+
+残った左の列の中央を選び、その行の最良の相手 $j$ を走査して求める。左半分の最適な相手は $j$ 以下、右半分は $j$ 以上にあるため、探索範囲を絞って再帰する。各行では、正利益になる範囲との共通部分だけを調べる。
+
+同率の場合は最小の相手の添字を選ぶ、と決めておく。対象を削除するときの同値の扱いと、最適添字の決め方を明示すれば、分割統治の境界も一意になる。
+
+## 適用条件
+
+- 利益が正のときだけ採用し、価格差と期間がともに正であることを要求する。
+- 利益は二差の積 $(q-p)(e-d)$ であり、他の組別費用や上限制約を持たない。
+- 二群から一つずつだけを選ぶ。複数の組の同時割当は行わない。
+- 支配される点を除くと、両群とも一座標が増え、もう一座標が減る順序になる。
+
+二つの差が両方負でも積だけは正になるが、それは合法な取引ではない。積を0で打ち切るだけではこの場合を除けないので、二つの不等式を別々に確認する。
+
+一般の二変数関数に、この最適添字の単調性があるとは限らない。候補を並べただけで分割統治を使わず、次の四点の不等式を証明する。
+
+## なぜ正しいか
+
+左側の点を、価格が高くなく、開始が遅くない点へ替えると、正利益の全ての右側に対して二つの差がともに小さくならない。右側についても、価格が安くなく、終了が早くない点への置換で同じことが言える。等号を含むこの支配関係と、同じ二座標の重複を使って候補を除いても、最大利益は失われない。
+
+残った左の添字 $i<h$ と右の添字 $j<k$ を取る。利益を $F(i,j)$ とすると、展開により
+
+$$
+F(i,j)+F(h,k)-F(i,k)-F(h,j)
+=(q_k-q_j)(d_i-d_h)+(p_h-p_i)(e_j-e_k)>0
+$$
+
+となる。もし行 $i$ の最適相手が $k$、後の行 $h$ の最適相手が $j$ なら、この二組が合法であることから、入れ替えた二組 $(i,j),(h,k)$ も合法になる。実際、$(i,j)$ は $q_j>p_h>p_i$ と $e_j>e_k>d_i$、$(h,k)$ は $q_k>q_j>p_h$ と $e_k>d_i>d_h$ を満たす。しかし式より、その二組の利益の合計は元より大きい。少なくとも片方の最適性に反するので、最適な相手の順序は逆転しない。
+
+候補を持たない行を除いても、残る行の二座標の順序は変わらない。各再帰では「対象となる全ての行について、最小の最適添字が探索範囲 `[lo,hi]` 内にある」を不変条件にする。最初は右側の全範囲なので成立する。中央の最適添字を $j$ とすれば、単調性により左半分は `[lo,j]`、右半分は `[j,hi]` に絞っても不変条件を保つ。
+
+各行の走査ではこの範囲と合法範囲の共通部分を取る。不変条件により、その共通部分は必ず最適添字を含み、空にはならない。昇順に走査し、利益が厳密に増えたときだけ更新すれば、同率では最小添字を選べる。よって全行の最適利益を取りこぼさず、最大値を求められる。
+
+## 計算量
+
+元の二群の大きさを $N,M$ とする。全組比較は $O(NM)$ 時間。並べ替えと候補の除去は $O(N\log(N+1)+M\log(M+1))$、合法範囲の作成は二本のポインタで $O(N+M)$ 時間になる。
+
+分割統治では同じ深さの探索範囲の重複は境界だけなので、合計 $O((N+M)\log(N+1))$ 時間。補助空間は $O(N+M)$、再帰の深さは $O(\log(N+1))$ である。
+
+## 実装
+
+`maximum_positive_rectangle_profit(producers,consumers)` は、二群の各要素を `(価格,時刻)` として受け取り、最大利益を `long long` で返す。各群500000件以下、全座標は $1..10^9$。条件違反は `invalid_argument`。空の群や正利益の組がない場合は0である。
+
+時刻は、左側が開始、右側が終了直後を表す。期間は $e-d$ で、1を足さない。積は $10^{18}$ 未満なので符号付き64ビットで計算できる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long maximum_positive_rectangle_profit(
+    const vector<pair<long long,long long>>& producers,
+    const vector<pair<long long,long long>>& consumers) {
+    for (const auto* group : {&producers, &consumers}) {
+        if (group->size() > 500000) throw invalid_argument("too many points");
+        for (auto [price, date] : *group)
+            if (price < 1 || price > 1000000000LL || date < 1 || date > 1000000000LL)
+                throw invalid_argument("coordinates outside supported range");
+    }
+    auto lower_sorted = producers, upper_sorted = consumers;
+    sort(lower_sorted.begin(), lower_sorted.end());
+    sort(upper_sorted.rbegin(), upper_sorted.rend());
+    vector<pair<long long,long long>> lower, upper;
+    long long smallest_start = numeric_limits<long long>::max();
+    for (auto point : lower_sorted) if (point.second < smallest_start) {
+        lower.push_back(point);
+        smallest_start = point.second;
+    }
+    long long largest_end = 0;
+    for (auto point : upper_sorted) if (point.second > largest_end) {
+        upper.push_back(point);
+        largest_end = point.second;
+    }
+    reverse(upper.begin(), upper.end());
+    if (lower.empty() || upper.empty()) return 0;
+
+    struct Row { long long price, date; int first, past_last; };
+    vector<Row> rows;
+    int first = 0, past_last = 0, width = static_cast<int>(upper.size());
+    for (auto [price, date] : lower) {
+        while (first < width && upper[first].first <= price) ++first;
+        while (past_last < width && upper[past_last].second > date) ++past_last;
+        if (first < past_last) rows.push_back({price, date, first, past_last});
+    }
+    long long answer = 0;
+    function<void(int,int,int,int)> solve = [&](int l, int r, int lo, int hi) {
+        if (l >= r) return;
+        int mid = (l + r) / 2;
+        const auto& row = rows[mid];
+        int from = max(lo, row.first), until = min(hi + 1, row.past_last);
+        long long best_value = -1;
+        int best = from;
+        for (int j = from; j < until; ++j) {
+            long long value = (upper[j].first - row.price) * (upper[j].second - row.date);
+            if (value > best_value) { best_value = value; best = j; }
+        }
+        answer = max(answer, best_value);
+        solve(l, mid, lo, best);
+        solve(mid + 1, r, best, hi);
+    };
+    if (!rows.empty()) solve(0, static_cast<int>(rows.size()), 0, width - 1);
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [同じ将来の選択なら劣る状態を捨てる](/flowchartcp/techniques/dp-state-dominance/)：二座標で支配される候補の除去。
+- [最適な切れ目の単調性による分割統治](/flowchartcp/techniques/dp-monotone-split/)：全ての相手を明示せず、最適添字が存在する範囲だけを引き継ぐ。
+- [Monge性による行の最適値探索](/flowchartcp/techniques/monge-smawk/)：四点の不等式と最適添字の順序を結び付ける。
+
+## 参考資料
+
+- [ICPC 2017 World Finals Problem D：Money for Nothing](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=7)
+- [公式サイト掲載の解法スケッチ](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=4) — 文書自身が非公式解析と明記する資料。支配点の除去と、最適相手の単調性を使う。
+
+<TechniqueReferences techniqueId="pareto-pruned-max-rectangle-monotone-partner" />

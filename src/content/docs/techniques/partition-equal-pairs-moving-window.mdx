@@ -1,0 +1,101 @@
+---
+title: "同値対の費用で区間分割するなら、切れ目の単調性と窓の頻度更新を組み合わせる"
+description: "離れた二範囲の同値対が非負であることからMonge性を示し、遷移の探索と費用評価を同時に減らす。"
+techniqueId: partition-equal-pairs-moving-window
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+全列をちょうど $K$ 個の区間へ分け、同じ値の二位置が同じ区間に入る対数を最小化したい。区間の費用を定数時間で引くために二乗の表を作るとメモリが足りず、切れ目の全比較も重い。
+
+## 考え方
+
+半開区間の費用を $C(l,r)=\sum_v\binom{cnt_v(l,r)}2$ とする。最終区間の開始を $l$ として
+
+$$dp_g(r)=\min_{g-1\le l<r}\{dp_{g-1}(l)+C(l,r)\}$$
+
+を計算する。費用の四点不等式から、同値なら小さい切れ目を選んだ最適位置が $r$ に対して非減少となる。中央の $r$ を計算した最適位置で、左右の探索範囲を制限できる。
+
+費用自体は一つの窓で保持する。値 $v$ を一個加える増分は追加前の $cnt_v$、除く減分は除いた後の $cnt_v$ である。掲載実装は探索を深さごとに左から行い、各深さの窓の左右端を右へ進める。
+
+## 適用条件
+
+費用は同値の異なる添字対の個数、区間は非空、全列を固定個数へ分ける。異なる費用でも使うなら四点不等式を別に証明する。小例で切れ目が単調に見えることだけでは根拠にしない。
+
+掲載コードは $1\le N\le10^5$、$1\le K\le\min(N,20)$。値は任意の64ビット整数。区間費用は最大 $N(N-1)/2$ なので64ビットで持つ。辺や位置による別の分割制約は扱わない。
+
+## なぜ正しいか
+
+$a\le b\le c\le d$ とする。二つの区間の費用を足し引きすると、
+
+$$C(a,d)+C(b,c)-C(a,c)-C(b,d)$$
+
+は $[a,b)$ と $[c,d)$ の間の同値対数になる。これは非負なのでMongeの不等式が成立する。
+
+右端 $r_1<r_2$ で、最適な切れ目が $x>y$ と逆転したと仮定する。不等式に $y,x,r_1,r_2$ を入れると、二つの最適解を交換した候補の合計は大きくならない。最適性から両方とも同値でなければならず、$r_1$ の解により小さい $y$ を選べるので、最小の最適位置という規約に反する。
+
+従って中央の最適位置で探索範囲を絞っても解を落とさない。各候補費用は窓の頻度から過不足なく求まり、元のDPの最小値と一致する。
+
+## 計算量
+
+費用表と全切れ目比較は $O(N^2)$ 空間・$O(KN^2)$ 時間。深さごとに処理する分割統治では、その深さの候補範囲は順番に並び、境界だけが重なる。右端も増加順なので、両端の総移動は一深さ $O(N)$。深さは $O(\log(N+1))$ で、圧縮込み $O(KN\log(N+1)+N\log N)$ 時間・$O(N)$ 補助空間となる。
+
+## 実装
+
+`minimum_equal_pair_partition(a,parts)` は最小費用を返す。同値の候補では最初の小さい切れ目を残す。各探索深さで空窓から始めるので、頻度配列の初期化も計算量に含む。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+long long minimum_equal_pair_partition(const std::vector<long long>& a,int parts) {
+    constexpr long long INF=(1LL<<60);
+    int n=int(a.size());
+    if(n<1 || n>100000 || parts<1 || parts>n || parts>20) throw std::invalid_argument("range");
+    auto values=a;std::sort(values.begin(),values.end());values.erase(std::unique(values.begin(),values.end()),values.end());
+    std::vector<int> id(n);
+    for(int i=0;i<n;++i) id[i]=std::lower_bound(values.begin(),values.end(),a[i])-values.begin();
+    struct Job {int left,right,first,last;};
+    std::vector<long long> before(n+1,INF);before[0]=0;
+    for(int groups=1;groups<=parts;++groups) {
+        std::vector<long long> current(n+1,INF);
+        std::vector<Job> jobs{{groups,n,groups-1,n-1}};
+        while(!jobs.empty()) {
+            std::vector<int> frequency(values.size());
+            int left=0,right=0;long long cost=0;
+            auto window=[&](int l,int r) {
+                while(right<r) {int v=id[right++];cost+=frequency[v]++;}
+                while(left<l) {int v=id[left++];cost-=--frequency[v];}
+                return cost;
+            };
+            std::vector<Job> next;
+            for(auto job:jobs) {
+                int middle=(job.left+job.right)/2,best=job.first;
+                for(int cut=job.first;cut<=std::min(job.last,middle-1);++cut) {
+                    long long segment=window(cut,middle);
+                    if(before[cut]!=INF && before[cut]+segment<current[middle]) {
+                        current[middle]=before[cut]+segment;best=cut;
+                    }
+                }
+                if(job.left<middle) next.push_back({job.left,middle-1,job.first,best});
+                if(middle<job.right) next.push_back({middle+1,job.right,best,job.last});
+            }
+            jobs.swap(next);
+        }
+        before.swap(current);
+    }
+    return before[n];
+}
+```
+
+## 関連する手法
+
+[区間の種類数で分割するDPは、直前の同値位置から増える候補だけへ加算する](/flowchartcp/techniques/partition-distinct-range-add/) ・ [区間の頻度二乗和を、要素の出し入れの差分で求める](/flowchartcp/techniques/mo-frequency-quadratic/)
+
+## 参考資料
+
+- [Codeforces：F. Yet Another Minimization Problem（原典）](https://codeforces.com/problemset/problem/868/F)
+
+<TechniqueReferences techniqueId="partition-equal-pairs-moving-window" />

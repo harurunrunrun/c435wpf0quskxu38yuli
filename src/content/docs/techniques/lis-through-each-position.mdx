@@ -1,0 +1,140 @@
+---
+title: "最長増加部分列に使える位置と必須の位置は、前後の長さと同じ段の候補数で分ける"
+description: "各位置で終わる長さと始まる長さを合わせ、最長の列に使える位置を絞ってから、各段に残る位置の数で必須性を判定します。"
+techniqueId: lis-through-each-position
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+数列の最長増加部分列（LIS）の長さだけでなく、各位置について「どの最長の列にも使わない」「一部で使う」「全てで使う」を知りたい場面です。一つの位置を削除してもLIS長が変わらないか、という問いにも同じ分類が使えます。
+
+最長の列を一つ復元しても、他の選び方にその位置が現れるかは分かりません。全ての列を列挙する代わりに、各位置を通る最長の長さを調べます。
+
+## 考え方
+
+列を $A$、全体のLIS長を $L$ とします。各位置 $i$ について、次の二つを計算します。
+
+- $l_i$：$A_i$ で終わる、狭義単調増加な部分列の最長の長さ。
+- $r_i$：$A_i$ で始まる、狭義単調増加な部分列の最長の長さ。
+
+$l_i$ は左から位置を処理し、それまでに現れた $A_i$ 未満の値に対する長さの最大値に1を足して求めます。$r_i$ は右から処理し、$A_i$ より大きい値に対する最大値を使います。座標圧縮した値をFenwick木やセグメント木に載せれば、いずれも $O(N\log N)$ 時間です。
+
+位置 $i$ を使う増加部分列の最長の長さは
+
+$$l_i+r_i-1$$
+
+です。したがって $l_i+r_i-1=L$ を満たす位置だけが、全体のLISに使えます。
+
+さらに、使える位置を $l_i$ ごとに分けます。$l_i=k$ の集まりは、LISの $k$ 番目の要素の候補です。この候補が1位置だけなら、全てのLISがその位置を使います。2位置以上あれば、どちらかを使わないLISが存在します。
+
+ここで数えるのは、先ほどの等式を満たす位置だけです。例えば `[1, 4, 2, 3]` で `4` と `2` は共に $l_i=2$ ですが、`4` は全体のLISに使えません。`2` は第2段の唯一の候補として必須です。
+
+## 適用条件
+
+元の添字の順序を保ち、値が**厳密に増加**する部分列を扱います。同じ値を隣につなげないよう、値の接頭辞を問い合わせるときに自分の値を含めません。非減少の部分列では比較の境界を変更する必要があります。
+
+位置を区別します。同じ値が複数あっても別の候補です。例えば `[2, 2]` のLIS長は1で、各位置は一部のLISに使われますが、どちらも必須ではありません。
+
+以下は更新のない列をまとめて分類する方法です。途中で値や順序が変わる場合、前後の長さも変わり得ます。また、最長の列の個数を法で数えて、その個数の一致から必須性を判定する方法は、剰余が偶然一致する可能性があります。この分類では個数の剰余を使いません。
+
+## なぜ正しいか
+
+$i$ で終わる最長の列と、$i$ で始まる最長の列を、$A_i$ を一度だけ使ってつなげます。前者の添字は $i$ 以下、値は $A_i$ 以下で、後者はそれぞれ逆側です。したがって増加部分列ができ、長さは $l_i+r_i-1$ です。
+
+逆に、$i$ を使う任意の増加部分列をその位置で二つに分けると、前半の長さは $l_i$ 以下、後半は $r_i$ 以下です。よって先の長さが上限でもあり、$i$ がLISに使える条件が得られます。
+
+LISの $k$ 番目に位置 $i$ があるとします。その前半の長さから $l_i\ge k$ です。もし $l_i>k$ なら、$i$ で終わるより長い前半と、元のLISの $i$ より後の部分をつなげ、長さ $L$ を超える列を作れてしまいます。したがって $l_i=k$ です。どのLISも、各段からちょうど1位置を選びます。
+
+ある段の使える位置が一つなら、全てのLISがそれを選びます。二つ以上なら、別の候補 $j$ を含むLISが存在します。そのLISは同じ段からもう一つの位置 $i$ を選べないため、$i$ を含みません。これで三つの分類が確定します。
+
+## 計算量
+
+座標圧縮を含め、時間は $O(N\log(N+1))$、追加空間は $O(N)$ です。各位置を一つずつ削除して計算し直す必要はありません。
+
+## 実装
+
+`classify_lis_positions(a)` は、全体の長さ `length`、前後の長さ `left`, `right`、分類 `kind` を返します。`kind[i]` は `0` が不使用、`1` が一部で使用、`2` が必須です。空列には長さ0と空の配列を返します。要素数は `int` に収まる範囲とします。
+
+右からの処理では圧縮後の順位を反転します。元の値を負にしないため、`LLONG_MIN` を含む整数列にも使えます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct LisClassification {
+    int length;
+    vector<int> left, right, kind;
+};
+
+LisClassification classify_lis_positions(const vector<long long>& a) {
+    assert(a.size() <= static_cast<size_t>(INT_MAX));
+    int n = static_cast<int>(a.size());
+    vector<long long> values = a;
+    sort(values.begin(), values.end());
+    values.erase(unique(values.begin(), values.end()), values.end());
+    int m = static_cast<int>(values.size());
+    vector<int> rank(n);
+    for (int i = 0; i < n; ++i) {
+        rank[i] = lower_bound(values.begin(), values.end(), a[i])
+                - values.begin();
+    }
+
+    struct PrefixMaximum {
+        vector<int> tree;
+        explicit PrefixMaximum(int n) : tree(static_cast<size_t>(n) + 1) {}
+        int query(int end) const { // 順位 [0, end) の最大値。
+            int answer = 0;
+            for (size_t p = end; p > 0; p -= p & -p)
+                answer = max(answer, tree[p]);
+            return answer;
+        }
+        void add(int position, int value) {
+            for (size_t p = static_cast<size_t>(position) + 1;
+                 p < tree.size(); p += p & -p)
+                tree[p] = max(tree[p], value);
+        }
+    };
+
+    LisClassification out{0, vector<int>(n), vector<int>(n), vector<int>(n)};
+    PrefixMaximum forward(m), backward(m);
+    for (int i = 0; i < n; ++i) {
+        out.left[i] = forward.query(rank[i]) + 1;
+        forward.add(rank[i], out.left[i]);
+        out.length = max(out.length, out.left[i]);
+    }
+    for (int i = n; i-- > 0;) {
+        int reversed_rank = m - 1 - rank[i];
+        out.right[i] = backward.query(reversed_rank) + 1;
+        backward.add(reversed_rank, out.right[i]);
+    }
+
+    vector<int> candidates(static_cast<size_t>(out.length) + 1);
+    for (int i = 0; i < n; ++i) {
+        if (static_cast<long long>(out.left[i]) + out.right[i] - 1
+            == out.length)
+            ++candidates[out.left[i]];
+    }
+    for (int i = 0; i < n; ++i) {
+        if (static_cast<long long>(out.left[i]) + out.right[i] - 1
+            == out.length)
+            out.kind[i] = (candidates[out.left[i]] == 1 ? 2 : 1);
+    }
+    return out;
+}
+```
+
+## 関連する手法
+
+- [同じ長さの増加部分列は末尾が小さい状態だけ残す](/flowchartcp/techniques/dp-state-dominance/)
+- [最長増加部分列の個数は、最大の長さと同率の個数を一緒にまとめる](/flowchartcp/techniques/lis-length-count-monoid/)
+- [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [AtCoder ABC354 F：公式解説](https://atcoder.jp/contests/abc354/editorial/10037) — 各位置の前後の最長の長さから、LISに含めるかを判定する方法。
+- [AtCoder ABC354 F：Useless for LIS](https://atcoder.jp/contests/abc354/tasks/abc354_f) — 各位置を含むLISが存在するかを問う原典。
+- [Codeforces 486E：LIS of Sequence](https://codeforces.com/problemset/problem/486/E) — 各位置を不使用・一部で使用・必須の三つに分類する原典。
+
+<TechniqueReferences techniqueId="lis-through-each-position" />

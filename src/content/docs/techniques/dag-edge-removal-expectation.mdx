@@ -1,0 +1,71 @@
+---
+title: "確率的な前進から一辺だけ除くなら、到達確率と局所的な改善を掛ける"
+description: "削除する辺の始点への到達確率は変わらないことを使い、候補ごとの期待値の再計算を省く。"
+techniqueId: "dag-edge-removal-expectation"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+前にしか進まないグラフで、次の辺を等確率に選ぶとき。一辺を削除して終了までの期待回数を最小化したいなら、辺ごとに最初から期待値を計算し直す必要はありません。
+
+## 考え方
+
+変更前に頂点 $v$ から終了するまでの期待回数を $E_v$、始点から $v$ を訪れる確率を $q_v$ とします。$E_v$ は逆トポロジカル順、$q_v$ は順トポロジカル順で求めます。
+
+出次数 $d>1$ の頂点では、$E_u$ が最大の子への辺を削るのが最善です。子の平均を $\mu_v$ とすると、その頂点での改善は
+$$\delta_v=\frac{\max_{v\to u}E_u-\mu_v}{d-1}.$$
+始点での改善は $q_v\delta_v$。全頂点の最大の改善を元の $E_{\mathrm{start}}$ から引きます。
+
+## 適用条件
+
+有向非巡回グラフで、各移動の費用が1、出辺を等確率に選ぶこと。終点が唯一の出次数0の頂点で、他は出次数が正であること。削除は一辺だけです。再訪のあるグラフや二辺以上の同時変更では到達確率や後続の期待値も変わり、この式をそのまま使えません。実装は任意の頂点番号を許し、始点0、終点 $N-1$ とします。
+
+## なぜ正しいか
+
+$v$ の出辺だけを変えても、初めて $v$ に到達するまでの過程は変わりません。DAGでは $v$ を二度訪れず、子から $v$ へも戻れないので、全体の改善は到達確率と到達後の改善の積です。辺を削る前後の子の平均を引くと $\delta_v$ が得られます。$d=1$ の辺は削ると行き止まりを作るので候補から除きます。
+
+## 計算量
+
+時間・空間ともに $O(N+M)$。候補ごとにDPをやり直す $O(M(N+M))$ を二回の走査へ減らします。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long double minimum_dag_expectation_after_removal(int n,const vector<pair<int,int>>& edges){
+    if(n<1||n>200000||edges.size()>300000)throw invalid_argument("graph size");
+    vector<vector<int>> out(n);vector<int> indegree(n);
+    for(auto [v,u]:edges){
+        if(v<0||v>=n||u<0||u>=n)throw invalid_argument("vertex");
+        out[v].push_back(u);++indegree[u];
+    }
+    for(int v=0;v<n;++v)if((v==n-1)!=out[v].empty())throw invalid_argument("unique goal sink");
+    queue<int> queue;for(int v=0;v<n;++v)if(indegree[v]==0)queue.push(v);
+    vector<int> order;
+    while(!queue.empty()){int v=queue.front();queue.pop();order.push_back(v);for(int u:out[v])if(--indegree[u]==0)queue.push(u);}
+    if(int(order.size())!=n)throw invalid_argument("cycle");
+    vector<long double> expected(n),reach(n);reach[0]=1;
+    for(int i=n-1;i>=0;--i){int v=order[i];if(v==n-1)continue;long double sum=0;for(int u:out[v])sum+=expected[u];expected[v]=1+sum/out[v].size();}
+    long double improvement=0;
+    for(int v:order){
+        if(out[v].empty())continue;
+        long double average=expected[v]-1,worst=0;
+        for(int u:out[v]){reach[u]+=reach[v]/out[v].size();worst=max(worst,expected[u]);}
+        if(out[v].size()>1)improvement=max(improvement,reach[v]*(worst-average)/(out[v].size()-1));
+    }
+    return expected[0]-improvement;
+}
+```
+
+## 関連する手法
+
+- [トポロジカルソート](/flowchartcp/techniques/topological-sort/)
+- [必ず小さくなる状態の期待値を一手目で分ける](/flowchartcp/techniques/expectation-first-step/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/abc144/tasks/abc144_f)
+
+<TechniqueReferences techniqueId="dag-edge-removal-expectation" />

@@ -1,0 +1,34 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2016_paint",
+    "title": "Paint By Numbers",
+    "url": "https://www2.ioi-jp.org/ioi/2016/tasks/day2-paint-ISC.pdf",
+    "techniqueIds": [
+      "fixed-run-row-prefix-suffix-feasibility-forced-colors"
+    ],
+    "features": [
+      "一列の既知黒X・既知白_・未定.と、左からの黒い連続区間の正の長さの並びが与えられる。",
+      "区間数・順序・長さを全て守り、隣り合う区間を少なくとも一マスの白で分離する。",
+      "全ての合法な完成行について、必ず黒・必ず白・両方可能な位置を出力する。少なくとも一解あり。",
+      "原典N1〜200000/K1〜min(N,100)/各長さ1〜N。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2016-08-16",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2016/tasks/index.html",
+    "notes": "黒い連続区間の個数・正の長さ・左からの順序が指定され、既知の黒白に合う全ての塗り方で共通する色を求める。前後の区間配置可否をつなぎ、各位置を白にできるかと各黒区間を置ける範囲を集めれば、全解で黒・白・両方のどれが可能かを判定できる。",
+    "discoveredBy": "ioi-2016",
+    "publicationDate": "2016-08-16",
+    "publicationDatePrecision": "day",
+    "publicationYear": 2016,
+    "originalNumericBoundsVerified": true
+  }
+]

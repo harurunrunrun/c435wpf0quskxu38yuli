@@ -1,0 +1,32 @@
+[
+  {
+    "source": "IOI",
+    "problemId": "ioi2017_wiring",
+    "title": "配線 (Wiring)",
+    "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-wiring-ISC.pdf",
+    "techniqueIds": [
+      "line-bipartite-edge-cover-monochromatic-block-prefix-dp"
+    ],
+    "features": [
+      "直線上の二色の点を、異色間の線で全て少なくとも一度覆う",
+      "同じ点を複数本へ使える、距離絶対値の費用",
+      "二色それぞれ座標昇順、全点相異、各10万点"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/wiring.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2017-07-30",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "notes": "直線上の赤青各10万点について、異色点の間に何本でも線を張り、全点の次数を1以上にして総長を最小にする。隣接する単色blockだけへ結ぶ交換法と、左右へ結ぶ点を高々一点だけ共有する分割からprefix DPを作る。二つの群の点被覆費用をk<=j/k>=jへ分け、prefix/suffix最小値で併合込みO(R+B)にする。最後のblock全長まで更新し、64bit費用を返す。",
+    "discoveredBy": "ioi-2017",
+    "publicationDate": "2017-07-30",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  }
+]

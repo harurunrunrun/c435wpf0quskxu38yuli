@@ -1,0 +1,82 @@
+---
+title: "Slope trick"
+description: "凸な折れ線としてDPを表し、折れ点をヒープで管理して更新します。"
+techniqueId: slope-trick
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+凸な折れ線としてDPを表し、折れ点をヒープで管理して更新します。
+
+別名：Slope Trick
+
+## 使う場面
+
+座標 $x$ を状態に持ち、絶対値の費用を加えるDPで使います。たとえば $f_i(x)=\min_{y\le x}f_{i-1}(y)+|x-a_i|$ という遷移です。座標の全範囲を配列で持つ代わりに、$f_i$ のグラフが凸な折れ線になることを利用します。
+
+## 考え方
+
+関数を
+
+$$f(x)=m+\sum_{a\in L}\max(a-x,0)+\sum_{b\in R}\max(x-b,0)$$
+
+と表します。$m$ は最小値です。左側の折れ点 $L$ は最大ヒープ、右側の折れ点 $R$ は最小ヒープに入れ、$L$ の最大値が $R$ の最小値以下になるように保ちます。
+
+絶対値 $|x-a|$ は左右の項を1つずつ加えることで表せます。接頭辞の最小値 $\min_{y\le x}f(y)$ を取るときは、最小点より右のグラフを水平にするので、右側のヒープを空にします。
+
+## 適用条件
+
+更新が凸性と区分線形性を保つことが必要です。任意の2関数の小さい方を取る操作や、負の重みの絶対値追加では、凸性を保てるとは限りません。
+
+以下のコードは、重み1の左右の項と絶対値の追加、接頭辞最小だけを扱います。座標の平行移動や重み付きの更新を行うには、対応する操作を追加してください。
+
+## なぜ正しいか
+
+左の折れ点 $l$ が右の折れ点 $r$ を越えた場合、
+
+$$\max(l-x,0)+\max(x-r,0)=(l-r)+\max(r-x,0)+\max(x-l,0)$$
+
+と書き直せます。折れ点を入れ替え、$l-r$ を最小値に加えることで、関数を変えずにヒープの順序を直せます。順序が整っていれば、左右の折れ点の間で両方の和が0になり、$m$ が最小値です。
+
+## 計算量
+
+折れ点の追加は1回 $O(\log N)$、最小値の取得は $O(1)$、空間は $O(N)$ です。接頭辞最小でヒープを空にする処理は、残っている要素数に比例します。ただし、捨てた要素は再び処理しないので、$N$ 回の追加を含む操作列全体は $O(N\log N)$ です。
+
+## 実装
+
+初期関数は $f(x)=0$ です。`add_abs(a)` で $|x-a|$ を加え、`prefix_min()` で接頭辞最小を取ります。現在の最小値は `minimum` に入っています。座標の差と最小値の総和が `long long` の範囲内になる入力を使ってください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct SlopeTrickCore {
+    long long minimum=0;
+    priority_queue<long long> L;
+    priority_queue<long long,vector<long long>,greater<long long>> R;
+    // f(x) += max(a-x,0)
+    void add_left(long long a) {
+        if(!R.empty() && R.top()<a) {
+            long long r=R.top(); R.pop(); minimum+=a-r;
+            L.push(r); R.push(a);
+        } else L.push(a);
+    }
+    // f(x) += max(x-a,0)
+    void add_right(long long a) {
+        if(!L.empty() && L.top()>a) {
+            long long l=L.top(); L.pop(); minimum+=l-a;
+            R.push(l); L.push(a);
+        } else R.push(a);
+    }
+    void add_abs(long long a) { add_left(a); add_right(a); }
+    void prefix_min() { R={}; } // f(x) <- min_{y<=x} f(y)
+};
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/) ・ [単調キュー](/flowchartcp/techniques/monotone-queue/)
+
+## 参考資料
+
+- [Nyaan: Slope Trick（作者実装・検証先）](https://nyaannyaan.github.io/library/data-structure/slope-trick.hpp.html)
+
+<TechniqueReferences techniqueId="slope-trick" />

@@ -1,0 +1,40 @@
+{
+  "artifact": "research/snapshots/usaco-2021-february-us-open-platinum-baseline.tar.gz",
+  "sha256": "be645b2f3192848bd482d5034e8fe79eca2e637e730d8ac893a6d5e5501c3913",
+  "bytes": 1710984,
+  "rawBaselineFiles": 620,
+  "totalArchiveMembers": 624,
+  "allRawHashesRechecked": true,
+  "allRawFilesRetained": true,
+  "manifestSha256": "b987cbfd25c7799b662801811ae0fd7a51daabe333abb6cf395cee4ec0c28337",
+  "fileLedgerSha256": "94fe3a533a7bea30ceab38e0134388265176d409c2ee414cfa5b1e7b4ea65b5c",
+  "archiveMetadata": "sorted names, gzip mtime0, tar mtime0 uid/gid0 mode0644; no file extraction required to verify",
+  "initialCounts": {
+    "articles": 488,
+    "graphs": 455,
+    "walks": 509,
+    "references": 509
+  },
+  "scope": "Technique matching began from this fixed snapshot. All620 raw baseline files plus original manifest/before/after hash JSON/SHA ledger retained. Current site counts are not substituted.",
+  "originalArtifactSha256": {
+    "audit.json": "fb8b4e886b43a19f0dfc66f7b62aeb8c11485cf858cdee95469d770ed59f9cfa",
+    "notes.md": "4497aa0c687ddeb3509a93eb76f42e06fdc8698eeba4bc64a3c998280d81f1ff",
+    "selection.json": "259b3642e7a8300aa41f6ecc871b2fcf425eef53ebf8180a0c62bf9f188001c9",
+    "registration-proposal.json": "79cf6619a8c9d54111bde7a9e4b8aa02a5b0c2ceb8b4cc63de440aa84570a3c1",
+    "probe.py": "ed3d68d4b7c76726f604c069c22e3b12c49a8e512523b9961c03dbe2957463bf",
+    "probe.json": "1a77239c750680c2dea49112b1021feeba6f6545506517b6ca9c8acb9626c78c",
+    "independent-review.py": "3e5488c721f0d208ee0202b8a855b63ff14686992e8e639e719295950a04c41b",
+    "independent-review.json": "cc834a44388831bd970e87b947b6c993f5ed577c3197511e21d405c8adb40f3f"
+  },
+  "normalizedProbeSha256": {
+    "research": "b1ef7ff30da40cbe40604dfc58700361a0a2bc8f92f50f86ce2ac677173d756d",
+    "independent": "34c0c72e1d93ee9268fae308b94d78ad54b4dfeb526ff5198d38372562e13f41"
+  },
+  "reproduction": [
+    "python3 research/probes/usaco-2021-spring-research-checks.py",
+    "python3 research/probes/usaco-2021-spring-independent-checks.py",
+    "node tests/usaco-2021-spring-fixed-corpus.test.mjs"
+  ],
+  "normalization": "元audit/selection/notes/proposal/review/resultsはbyte保存。実行scriptはsnapshotを恒久tarから一時展開、監査先を恒久JSON、出力をstdout/明示--outputだけに変更。研究用アルゴリズム/独立oracleは変更しない。元成果物の/tmpパスは初回履歴として保存。",
+  "originalNotesArtifact": "research/snapshots/usaco-2021-spring-audit-notes-original.md"
+}

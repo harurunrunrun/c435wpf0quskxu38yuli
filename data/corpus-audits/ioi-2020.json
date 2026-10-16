@@ -1,0 +1,1573 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2020",
+  "title": "IOI 2020 の公式競技全6題を先に固定した監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "fixedBeforeTechniqueSearch": true,
+    "fixedAt": "2026-10-15T03:19:23.553749+00:00",
+    "selectionRule": "指定されたIOI 2020公式アーカイブと主催者のContest Day 1/2各3題を全件固定。練習4題・Notice・翻訳重複は除外。題名、既存技巧、取得容易性で差替えない。",
+    "contests": [
+      {
+        "name": "IOI 2020",
+        "dates": [
+          "2020-09-16",
+          "2020-09-19"
+        ],
+        "timezone": "Asia/Singapore",
+        "exactDatesVerified": true,
+        "expectedProblemCount": 6,
+        "indexUrl": "https://ioinformatics.org/page/ioi-2020/54",
+        "hostIndexUrl": "https://ioi2020.sg/ioi-2020-tasks/index.html"
+      }
+    ],
+    "expectedProblems": 6,
+    "fixedProblems": [
+      {
+        "source": "ioi",
+        "problemId": "ioi2020_plants",
+        "officialTaskId": "plants",
+        "day": 1,
+        "date": "2020-09-16",
+        "title": "植物の比較",
+        "englishTitle": "Comparing Plants",
+        "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+        "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2020_supertrees",
+        "officialTaskId": "supertrees",
+        "day": 1,
+        "date": "2020-09-16",
+        "title": "スーパーツリーをつなげ",
+        "englishTitle": "Connecting Supertrees",
+        "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+        "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2020_tickets",
+        "officialTaskId": "tickets",
+        "day": 1,
+        "date": "2020-09-16",
+        "title": "カーニバルのチケット",
+        "englishTitle": "Carnival Tickets",
+        "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-tickets-ISC.pdf",
+        "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/tickets-solutions-ISC.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2020_biscuits",
+        "officialTaskId": "biscuits",
+        "day": 2,
+        "date": "2020-09-19",
+        "title": "ビスケットの袋詰め",
+        "englishTitle": "Packing Biscuits",
+        "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+        "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2020_mushrooms",
+        "officialTaskId": "mushrooms",
+        "day": 2,
+        "date": "2020-09-19",
+        "title": "キノコを数えよう",
+        "englishTitle": "Counting Mushrooms",
+        "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+        "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2020_stations",
+        "officialTaskId": "stations",
+        "day": 2,
+        "date": "2020-09-19",
+        "title": "ステーション",
+        "englishTitle": "Stations",
+        "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+        "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf"
+      }
+    ],
+    "countEvidence": {
+      "officialIndexStatement": "IOI公式アーカイブは競技2日・各3題と明記し、Day1 plants/supertrees/tickets、Day2 biscuits/mushrooms/stations を列挙。主催者一覧も同じ区分。",
+      "officialIndexUrl": "https://ioinformatics.org/page/ioi-2020/54",
+      "hostIndexUrl": "https://ioi2020.sg/ioi-2020-tasks/index.html",
+      "dateEvidenceUrls": [
+        "https://ioi2020.sg/schedule/index.html",
+        "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+      ],
+      "practiceTasksExcluded": [
+        "gift",
+        "jelly",
+        "routers",
+        "squares"
+      ]
+    }
+  },
+  "eventVerification": {
+    "status": "verified",
+    "format": "online competition hosted by Singapore",
+    "competitionDates": [
+      "2020-09-16",
+      "2020-09-19"
+    ],
+    "evidenceUrls": [
+      "https://ioinformatics.org/page/ioi-2020/54",
+      "https://ioi2020.sg/schedule/index.html",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ],
+    "notes": "9月13日の練習と競技日を区別。主催者日程は各19:00–00:00 Singapore Standard Time、閉会式は9月23日。"
+  },
+  "snapshot": {
+    "techniqueMetadataCount": 466,
+    "specificTechniqueCount": 388,
+    "registeredArticleCount": 466,
+    "articleCount": 466,
+    "flowGraphCount": 431,
+    "flowSnapshotFile": "research/snapshots/ioi-2020-flow.json.gz",
+    "techniqueSnapshotFile": "research/snapshots/ioi-2020-technique.json.gz",
+    "flowSha256": "febb504779ef0f015744f28713408fc1d02eae89509fa910677c898bf2151ca7",
+    "techniqueSha256": "2cd200111fd58479f6c5afb64de1d000558143ed201ae20a995c5aaf43bb116e",
+    "note": "技巧照合前に固定した466記事・431図のJSONをそのままgzip保存。SHA-256は展開した元のJSON bytesに対する値。後続追加はこの初回監査に含めない。",
+    "metadataArticleCountAudited": 466
+  },
+  "status": {
+    "fixedProblemListComplete": true,
+    "firstPassAuditComplete": true,
+    "fixedCorpusResearchComplete": false,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "officialEditorialRetrievedCount": 6,
+    "officialEditorialVerifiedCount": 1,
+    "solutionReviewedCount": 1,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 1,
+    "unconfirmedCount": 5,
+    "unavailableCount": 0,
+    "unconfirmedVisualOrMainLemmaCount": 5,
+    "firstPassAuditCompleteDefinition": "固定6題全件の原典/解説取得、確認済み方針と未確認主要補題の切り分け、凍結分野根から初回不足までの再生。全満点解の証明確認を意味しない。",
+    "fixedCorpusResearchCompleteDefinition": "固定全6題で原典と主要な満点解法・必要補題を確認したときだけtrue。",
+    "articleResolutionComplete": false,
+    "articleResolutionNotes": "今回の成果は監査記録のみ。新記事、実装、自然な分岐、独立比較のいずれも追加していない。"
+  },
+  "records": [
+    {
+      "source": "ioi",
+      "problemId": "ioi2020_plants",
+      "officialTaskId": "plants",
+      "day": 1,
+      "date": "2020-09-16",
+      "title": "植物の比較",
+      "englishTitle": "Comparing Plants",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+      "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+      "contest": {
+        "name": "IOI 2020",
+        "division": "Main competition",
+        "year": 2020,
+        "day": 1,
+        "date": "2020-09-16",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式2020年大会課題一覧と2020年9月の主催者原典・解説URLを確認。更新・クロール日を公開日とみなさない。",
+      "difficulty": null,
+      "features": [
+        "円周上の各位置について、直後のk−1本のうち自分より高い植物の本数だけが与えられる。",
+        "記録と整合する全ての相異なる高さの配置で、二本の大小が確定するかを多数回問う。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "notes": "PDFテキスト抽出で主要な数値と数式が欠ける。未取得画像を目視確認したとは記録しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "group-constraints"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "group-constraints",
+          "answerLabel": "組分け・割当・変数どうしの条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "cyclic-window-height-order-forced-comparisons",
+        "features": [
+          "円周上の各位置について、直後のk−1本のうち自分より高い植物の本数だけが与えられる。",
+          "記録と整合する全ての相異なる高さの配置で、二本の大小が確定するかを多数回問う。"
+        ],
+        "firstMissingGraphId": "graphs-group-constraints",
+        "firstMissingNodeId": "shortest",
+        "reason": "大小関係は未知で、入力はk近傍の順位個数である。二値禁止組・偶奇・差の等式の枝へは忠実に進めず、巡回順位制約を不変の半順序へ直す具体記事もない。一般DAG到達性やダブリングの一致だけでcoveredにはならない。",
+        "neededTechniqueIds": [
+          "cyclic-window-height-poset-two-neighbor-doubling"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "lazy-segment-tree",
+          "topological-sort",
+          "doubling",
+          "dag-reachable-bitsets"
+        ],
+        "currentOptions": [
+          {
+            "id": "assignment",
+            "label": "組を選ぶ・容量を割り当てる"
+          },
+          {
+            "id": "partition-small",
+            "label": "少数の頂点を、内部の全組に辺があるグループへ分ける"
+          },
+          {
+            "id": "constraints",
+            "label": "二つの値の禁止組・偶奇・差の条件を満たせるか"
+          },
+          {
+            "id": "tree-color-union",
+            "label": "木の色を丸ごと併合し、一色の全頂点を連結にする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "円周上の各位置について、直後のk−1本のうち自分より高い植物の本数だけが与えられる。",
+        "currentQuestion": "頂点・辺について何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI 2020主催者の公式課題一覧から直接EditorialとしてリンクされたISC解説PDF。",
+        "method": "公式解説は0の残余本数を持つ位置を再帰的に除去し、巡回区間を減算して一つの高さ順を生成する。全整合配置で不変な近距離比較の有向関係を作り、左右それぞれ高々一つの下位候補への辺へ圧縮し、二冪ジャンプで比較する方針を記す。",
+        "implementationRequirements": [
+          "巡回区間減算と0候補の依存を扱う取り出しを実装する。",
+          "左右辺への圧縮とジャンプ比較の証明を原図または独立検証で確定する。",
+          "全小順列から得た入力について、全整合配置の共通比較と照合する。"
+        ],
+        "complexity": "満点解の計算量または質問回数の正確な数式は未確認。一般アルゴリズム名から推測して補完しない。",
+        "sourceUrls": [
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf"
+        ],
+        "editorialPageCount": 4,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "抽出で消えた左右辺の正確な定義、ジャンプの停止条件、満点解の計算量の数式。",
+          "二本だけの辺への圧縮が全ての強制比較を保存する主要補題と、円周上の左右到達判定の必要十分性。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "officialEditorialRetrieved": true,
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-returned-reference-without-image-content",
+        "statementVerified": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "webによる公式PDF取得は成功。screenshotは参照IDのみ返し、画像本体を受け取っていない。ローカルPDF取得はsandbox DNS失敗後の権限確認が中断され、資料を保存・目視できていない。",
+        "本レコードの特徴・方法は要約であり、問題文や解説本文を転載しない。"
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "statement": "retrieved-and-visually-reviewed",
+            "officialEditorialRetrieved": true,
+            "officialEditorialVerified": false,
+            "officialEditorial": "official-source-retrieved-formulas-partly-unreadable",
+            "solution": "retrieved-and-reviewed"
+          },
+          "evidenceUrls": [
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/plants-solutions-ISC.pdf",
+            "https://ioi2020.sg/ioi-2020-tasks/",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/solution/plants-original-ac.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/task.yaml",
+            "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+          ],
+          "notes": "2026-10-15に主催者公式原典と公式Editorialを再読。公式PDFの通常web/ローカル抽出では数式が欠けるため、AOI公式配布repoで存在確認した英語原典をGitHub読取/base64で取得し、全3頁を画像化して実際に読み、2<=K<=N<=200000、1<=Q<=200000、0<=r[i]<=K−1、0<=x<y<N、全高さ相異/整合配置存在を確認した。公式Editorialの方針と配布満点modelを参照し、残余0選択と未知DAGのsourceの同値、同一除去順から近距離辺の不変性、整合高さ順と線形拡張、rank差帰納による左右2辺圧縮、lift上の折返し除去と目標初横断、最高下位候補の単調道への貪欲挿入を独立に証明した。初回audit未確認fieldsは変更せず、追加の確認として記録。実MDX単一可視完全C++20を抽出し、N<=8/K全値の全362879順列を同一観測215446群へまとめ、全整合順列の比較の共通部分と全13368156質問を照合。N<=6の全71992個数配列で存在判定を比較（不整合68872）。1500乱択/全1924051比較、N200000の6instanceで各200000質問、K1/2/100000/199999/200000、方向/曖昧0/同添字/循環境界/無効状態/copy-moveを検証。通常/ASan+UBSanとも19024422 checks、checksum3615291826092893586。通常1.66715秒/38980KiB、san8.52024秒/708200KiB。競技日2020-09-16は日本委員会公式日別一覧、難度null。",
+          "independentProofAndImplementationValidated": true
+        }
+      ],
+      "subsequentSourceVerifications": [
+        {
+          "checkedAt": "2026-10-15",
+          "status": "verified",
+          "kind": "official-committee-distributed-original-pdf-images",
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-plants-ISC.pdf",
+          "evidenceUrls": [
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-plants/statement/plants-en.pdf",
+            "https://ioi2020.sg/ioi-2020-tasks/",
+            "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+          ],
+          "numericBoundsVerified": true,
+          "notes": "初回auditの数式抽出欠落/未確認を履歴として保持し、今回の実画像確認で全数値と実装API範囲包含を追加確定。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "cyclic-window-height-poset-two-neighbor-doubling"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の未確認事項と停止位置・分類を保持。原典全画像・全数値とAPI包含、近距離比較の不変性、全線形拡張、二辺への圧縮、円周上の道の単調化と最高下位候補への交換を独立証明。全整合順列の比較、全小個数配列、原典最大N/Q、通常とASan/UBSan、独立閉包oracleで不足を解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2020_supertrees",
+      "officialTaskId": "supertrees",
+      "day": 1,
+      "date": "2020-09-16",
+      "title": "スーパーツリーをつなげ",
+      "englishTitle": "Connecting Supertrees",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+      "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf",
+      "contest": {
+        "name": "IOI 2020",
+        "division": "Main competition",
+        "year": 2020,
+        "day": 1,
+        "date": "2020-09-16",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式2020年大会課題一覧と2020年9月の主催者原典・解説URLを確認。更新・クロール日を公開日とみなさない。",
+      "difficulty": null,
+      "features": [
+        "無向単純グラフの全頂点対について、単純路の本数0/1/2/3を指定する行列が与えられる。",
+        "全ての本数を満たす辺集合を構築するか、不可能と判定する。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "notes": "PDFテキスト抽出で主要な数値と数式が欠ける。未取得画像を目視確認したとは記録しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "network-connection"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "network-connection",
+          "answerLabel": "全体の接続・接続の変化・道路の復元"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "simple-path-count-matrix-tree-cycle-construction",
+        "features": [
+          "無向単純グラフの全頂点対について、単純路の本数0/1/2/3を指定する行列が与えられる。",
+          "全ての本数を満たす辺集合を構築するか、不可能と判定する。"
+        ],
+        "firstMissingGraphId": "graphs-network-connection",
+        "firstMissingNodeId": "shortest",
+        "reason": "全二点の単純路本数表を満たす構築に対応する枝がない。距離表の復元、全域木数、単なる成分の併合では、要求1の木と要求2の代表環の条件を扱えない。要求3の排除証明も未確認。",
+        "neededTechniqueIds": [
+          "simple-path-count-matrix-tree-cycle-construction"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "union-find",
+          "construct-star-distance-two",
+          "graph-reduction"
+        ],
+        "currentOptions": [
+          {
+            "id": "connectivity",
+            "label": "到達する頂点・成分・全体をつなぐ操作"
+          },
+          {
+            "id": "spanning",
+            "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+          },
+          {
+            "id": "failures",
+            "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+          },
+          {
+            "id": "mst-replace",
+            "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+          },
+          {
+            "id": "distance-table",
+            "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+          },
+          {
+            "id": "specified-mst-count",
+            "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+          },
+          {
+            "id": "mst-roles",
+            "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+          },
+          {
+            "id": "steiner-terminals",
+            "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+          },
+          {
+            "id": "spanning-count",
+            "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "無向単純グラフの全頂点対について、単純路の本数0/1/2/3を指定する行列が与えられる。",
+        "currentQuestion": "頂点・辺について何を求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI 2020主催者の公式課題一覧から直接EditorialとしてリンクされたISC解説PDF。",
+        "method": "公式解説は正の要求を連結成分へ、要求1を木で結ぶ同値類へ分け、それぞれの代表を環で結ぶ。代表数2の環を拒否し、要求0と要求1の整合を検査する。要求3がある場合を不可能とする主張も掲載する。",
+        "implementationRequirements": [
+          "0/正と1の関係の推移整合を全組で検査する。",
+          "1同値類内の木と、代表数0/1/2/3以上の場合分けを構築する。",
+          "要求3の不可能性の主要証明を確認し、小グラフの全単純路計数と比較する。"
+        ],
+        "complexity": "満点解の計算量または質問回数の正確な数式は未確認。一般アルゴリズム名から推測して補完しない。",
+        "sourceUrls": [
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf"
+        ],
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "「ある対に単純路が3本あれば、別の対に少なくとも4本生じる」主張の証明を未確認。PDF抽出から比較記号と数値が欠けるため、満点の不可能条件を証明確認済みとしない。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "officialEditorialRetrieved": true,
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-returned-reference-without-image-content",
+        "statementVerified": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "webによる公式PDF取得は成功。screenshotは参照IDのみ返し、画像本体を受け取っていない。ローカルPDF取得はsandbox DNS失敗後の権限確認が中断され、資料を保存・目視できていない。",
+        "本レコードの特徴・方法は要約であり、問題文や解説本文を転載しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "simple-path-count-matrix-tree-cycle-construction"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の停止位置・不足分類・未確認事項は保持。後続の独立証明、完成C++20、実MDX抽出の直接全列挙比較、境界と最大規模検証、独立レビュー、特徴からの根経路によって解消した。原典の数式取得状況と独立に確立した事項を分けて記録する。"
+      },
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "evidenceUrls": [
+            "https://ioi2020.sg/ioi-2020-tasks/index.html",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-supertrees-ISC.pdf",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/supertrees-solutions-ISC.pdf",
+            "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+          ],
+          "notes": "2026-10-15にIOI2020主催者の原典3ページ・公式解説2ページ・公式課題一覧、およびJOI委員会の競技日一覧をwebで再確認。Supertreesは競技日1=2020-09-16、難度の公式値は不明のためnull。公式原典は無向単純グラフ・頂点を繰り返さない路・自分自身への路1つを定義し、例の0/1/2/3行列を読めた。公式解説の木と代表環の構築、代表2個の環を拒否する方針は読める。PDFの数式部分は引き続きテキスト抽出から欠落し、screenshotも参照とImageDisplayed文字だけを返して画像内容を受け取れないため、原典の数値上限を画像確認済み、またはSubtask6の3/4比較を全文読了したとは記録しない。掲載APIは固定の1000上限を設けず、正のNがintに収まり、行列を割り当てられる範囲を扱う。N=1000/1001/2000を検証規模として実行し、原典の上限とは主張しない。主要な不可能性は独立に証明した：二閉路の共有頂点が高々1個なら二方向ずつの組合せで4本、2個以上ならthetaを取り、単純グラフでは3枝中少なくとも2枝に内点があるためその二内点間に4本。従って全対<=3で各成分は木か単閉路＋木となり、単純路は1/2のみ。正の関係と1の関係の同値性、代表2個拒否、canonical構築の全本数も独立に証明した。実MDXの唯一の常時表示C++20 fenceを抽出し、-O2 -Wall -Wextra -Werrorでコンパイル。N<=6の全33867無向単純グラフで全対の全単純路を直接列挙し、実現可能行列集合を生成。N<=5の全1052741対称0..3・対角1行列をこの全グラフoracleと比較。返却グラフ9385件で全対を再計数した。3本を含む6886小グラフで必ず別対に4本以上が存在することも直接確認。公式3例、N=1000の孤立・全1・全2・木付き環の混合成分を全対再検査し、代表2個、後方の推移矛盾/正関係矛盾、3の拒否、不整形・非対称・対角不正・範囲外・INT_MIN/MAX・空を確認。さらに旧API上限を超えるN=1001と2000それぞれの孤立・全1・全2・木付き環の混合成分も、返却グラフの全対単純路を独立DFSで直接再計数した。合計52708028検査が一致した。実MDX抽出のASan/UBSanでも同件数が成功した（3.26746秒、ptrace環境のためLeakSanitizerのみ無効）。"
+        }
+      ]
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2020_tickets",
+      "officialTaskId": "tickets",
+      "day": 1,
+      "date": "2020-09-16",
+      "title": "カーニバルのチケット",
+      "englishTitle": "Carnival Tickets",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-tickets-ISC.pdf",
+      "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/tickets-solutions-ISC.pdf",
+      "contest": {
+        "name": "IOI 2020",
+        "division": "Main competition",
+        "year": 2020,
+        "day": 1,
+        "date": "2020-09-16",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式2020年大会課題一覧と2020年9月の主催者原典・解説URLを確認。更新・クロール日を公開日とみなさない。",
+      "difficulty": null,
+      "features": [
+        "偶数n色それぞれに値が整列したm枚の券があり、kラウンドで各色から一枚ずつ使う。",
+        "各ラウンドの得点は全券の値から最適な中央値への絶対差和で、合計最大値と実際の割当を求める。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "notes": "PDFテキスト抽出で主要な数値と数式が欠ける。未取得画像を目視確認したとは記録しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "new-technique-needed",
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "quantity-goals"
+      ],
+      "steps": [
+        {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "quantity-goals",
+          "answerLabel": "割当数量・行列の合計・費用・受取個数を制限する"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "median-ticket-extreme-selection-round-decomposition",
+        "features": [
+          "偶数n色それぞれに値が整列したm枚の券があり、kラウンドで各色から一枚ずつ使う。",
+          "各ラウンドの得点は全券の値から最適な中央値への絶対差和で、合計最大値と実際の割当を求める。"
+        ],
+        "firstMissingGraphId": "assignment-quantity-goals",
+        "firstMissingNodeId": "purpose",
+        "reason": "回ごとの中央値を選ぶ問題は、加法的な辺費用の割当へそのまま入れない。両端選択、正負の全体枚数制約、符号を各回へ再分配する具体的補題と実装が不足する。一般の最小費用流記事だけではこの帰着と効率的構築を埋めない。",
+        "neededTechniqueIds": [
+          "median-ticket-extreme-selection-round-decomposition"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "exchange-argument",
+          "matching",
+          "min-cost-flow"
+        ],
+        "currentOptions": [
+          {
+            "id": "margins",
+            "label": "行・列の合計と、各項の範囲を満たす整数表"
+          },
+          {
+            "id": "limits",
+            "label": "割り当てる量に上限・下限がある"
+          },
+          {
+            "id": "costs",
+            "label": "数量を満たし、割当の費用合計を最小にする"
+          },
+          {
+            "id": "receive-balance",
+            "label": "各品物を候補の人へ渡し、受取個数の最大と最小の差を小さくする"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "偶数n色それぞれに値が整列したm枚の券があり、kラウンドで各色から一枚ずつ使う。",
+        "currentQuestion": "対応や割当について、どの条件の答えを求めますか？"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial",
+        "editorialProvenance": "IOI 2020主催者の公式課題一覧から直接EditorialとしてリンクされたISC解説PDF。",
+        "method": "中央値への差和を上位半分の和−下位半分の和へ変換する。各色の小さいk枚を負側で開始し、負側最大券を未使用最大券へ交換して正側へ回す増分を最大ヒープで選ぶ。全体の正側枚数をnk/2へ合わせる。正側残数の多いn/2色を各ラウンドの正側へ割り当てることで、各色一枚・両符号n/2枚へ復元する。",
+        "implementationRequirements": [
+          "色ごとの両端選択と非増加の交換増分を保ち、合計nk/2回の交換を選ぶ。",
+          "各ラウンドで正側残数の大きいn/2色を選び、各色の残り正側枚数が残ラウンド数を超えない不変条件を保つ。",
+          "値が同じ券のindexを区別して復元し、中央値得点と符号和が一致する最適割当を小例全列挙と比較する。"
+        ],
+        "complexity": "公式解説は交換選択をpriority queueで高速化する。交換処理はO(nk log n)、毎回色の残数をソートする復元もO(nk log n)、入力・出力にO(nm)を要する。",
+        "sourceUrls": [
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day1-tickets-ISC.pdf",
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/tickets-solutions-ISC.pdf"
+        ],
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": []
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "officialEditorialRetrieved": true,
+        "solution": "retrieved-and-reviewed",
+        "visualDetails": "web-screenshot-returned-reference-without-image-content",
+        "statementVerified": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-official-editorial-reviewed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "webによる公式PDF取得は成功。screenshotは参照IDのみ返し、画像本体を受け取っていない。ローカルPDF取得はsandbox DNS失敗後の権限確認が中断され、資料を保存・目視できていない。",
+        "本レコードの特徴・方法は要約であり、問題文や解説本文を転載しない。"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "median-ticket-extreme-selection-round-decomposition"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の停止位置・不足分類・未確認事項は保持。後続の独立証明、完成C++20、実MDX抽出の直接全列挙比較、境界と最大規模検証、独立レビュー、特徴からの根経路によって解消した。原典の数式取得状況と独立に確立した事項を分けて記録する。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2020_biscuits",
+      "officialTaskId": "biscuits",
+      "day": 2,
+      "date": "2020-09-19",
+      "title": "ビスケットの袋詰め",
+      "englishTitle": "Packing Biscuits",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+      "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf",
+      "contest": {
+        "name": "IOI 2020",
+        "division": "Main competition",
+        "year": 2020,
+        "day": 2,
+        "date": "2020-09-19",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式2020年大会課題一覧と2020年9月の主催者原典・解説URLを確認。更新・クロール日を公開日とみなさない。",
+      "difficulty": null,
+      "features": [
+        "味が2の冪である各種類のビスケットに有限の個数がある。",
+        "x袋全ての味の和を同じtにできるような、異なる非負整数tの個数を数える。配り方の数は数えない。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "notes": "PDFテキスト抽出で主要な数値と数式が欠ける。未取得画像を目視確認したとは記録しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "math",
+      "choices": [
+        "counting-totals",
+        "count",
+        "select-values"
+      ],
+      "steps": [
+        {
+          "graphId": "math",
+          "nodeId": "number-task",
+          "question": "整数や式について何を求めますか？",
+          "answer": "counting-totals",
+          "answerLabel": "組合せ・式の係数・割り算の総和"
+        },
+        {
+          "graphId": "math-counting-totals",
+          "nodeId": "number-task",
+          "question": "整数や式について何を求めますか？",
+          "answer": "count",
+          "answerLabel": "組合せや配置の個数"
+        },
+        {
+          "graphId": "combinatorics",
+          "nodeId": "count-kind",
+          "question": "数える対象には、どの特徴がありますか？",
+          "answer": "select-values",
+          "answerLabel": "選ぶ個数・値・桁の条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "bounded-power-two-coins-equal-bag-value-count",
+        "features": [
+          "味が2の冪である各種類のビスケットに有限の個数がある。",
+          "x袋全ての味の和を同じtにできるような、異なる非負整数tの個数を数える。配り方の数は数えない。"
+        ],
+        "firstMissingGraphId": "count-selected-values",
+        "firstMissingNodeId": "count-kind",
+        "reason": "作れる味の総和の種類数を数えるが、x袋の同時実現という供給制約がある。二項係数、整数桁の一般論、通常の一袋の部分和だけでは二冪ごとの必要十分条件と上限再帰が欠ける。",
+        "neededTechniqueIds": [
+          "bounded-power-two-equal-bag-prefix-cap-memoization"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "knapsack",
+          "digit-dp",
+          "subset-sum-repeated-binary",
+          "state-design"
+        ],
+        "currentOptions": [
+          {
+            "id": "binomial",
+            "label": "N 個から K 個を選ぶ個数を、何度も求める"
+          },
+          {
+            "id": "digits",
+            "label": "各桁を選ぶ整数の個数"
+          },
+          {
+            "id": "monotone-values",
+            "label": "非減少に並ぶ K 個の整数の選び方"
+          },
+          {
+            "id": "composite-binomial",
+            "label": "法が合成数でもよい、多数の二項係数"
+          },
+          {
+            "id": "square-product",
+            "label": "積が平方数になる非空の添字集合を数える"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "味が2の冪である各種類のビスケットに有限の個数がある。",
+        "currentQuestion": "数える対象には、どの特徴がありますか？"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI 2020主催者の公式課題一覧から直接EditorialとしてリンクされたISC解説PDF。",
+        "method": "公式解説は小さいビスケット二枚を次の大きさへ繰り上げる性質、下位種類の味の総和によるtの可否条件、二冪境界での良い値の分割を使う。満点解は「ある上限より小さい良い値の個数」を記憶する再帰として掲載される。",
+        "implementationRequirements": [
+          "tの存在条件と分配数を混同せず、下位ビットの供給制約を定式化する。",
+          "公式再帰式を数式として再取得し、0、xが総味を超える場合、個数0の桁を扱う。",
+          "全小個数で実際のx袋分配の可否集合と比較する。"
+        ],
+        "complexity": "満点解の計算量または質問回数の正確な数式は未確認。一般アルゴリズム名から推測して補完しない。",
+        "sourceUrls": [
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf"
+        ],
+        "editorialPageCount": 3,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "満点解の再帰式、引数を切り詰めるminと二冪境界の式、初期値、計算量式がPDFテキスト抽出から欠落。",
+          "供給を繰り上げた後にx袋を全て同じにできる必要十分条件と、メモ化状態数の上界を未確認。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "officialEditorialRetrieved": true,
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-returned-reference-without-image-content",
+        "statementVerified": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "webによる公式PDF取得は成功。screenshotは参照IDのみ返し、画像本体を受け取っていない。ローカルPDF取得はsandbox DNS失敗後の権限確認が中断され、資料を保存・目視できていない。",
+        "本レコードの特徴・方法は要約であり、問題文や解説本文を転載しない。"
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "evidenceUrls": [
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf",
+            "https://www2.ioi-jp.org/ioi/2020/tasks/index.html",
+            "https://ioi.te.lv/locations/ioi20/contest/",
+            "https://ioi.te.lv/locations/ioi20/contest/day2/Biscuits/HUN.pdf"
+          ],
+          "notes": "2026-10-15に公式配布アーカイブのBiscuits/HUNリンクで配布元を確認し、公認ハンガリー語版の検索本文で原典の数値範囲を追加取得した。Korlátokに1<=k<=60、1<=q<=1000、1<=x<=10^18、0<=a[i]<=10^18、次ページ先頭に総味sum a[i]2^i<=10^18とあり、導入本文で重さ2^iも確認した。通常PDF openはcache missのため、PDF画像目視やダウンロードによる確認は主張しない。APIはk<=63、x<=INT64_MAX、T<=INT64_MAXを許し、原典全域を含む。原典の答え<=floor(T/x)+1<=10^18+1<INT64_MAXなので公式int64返却型へ安全に明示変換できる。原典のL<=60でmemo非基底状態<=1830。公式解説PDFは再帰/計算量の数式抽出が欠けているためverificationはindependent-analysisのまま、公式数式の全文読了を主張しない。prefix供給の必要十分性、仮想包の物理配分、F(U)再帰、M<=L(L+1)/2、決定的時間空間の独立証明は変更なし。実MDXの単一C++20 fenceを直接抽出し、通常およびASan/UBSanで139189検査、1456全在庫例、37626900実物配分、原典上限1000連続呼出しを検証。checksum247190460644545666、実測memo最大145、通常0.178484秒/4660KiB、ASan/UBSan2.01337秒/97452KiB。元の初回auditと初回未確認記録は書換えていない。",
+          "initialVerificationNotes": "2026-10-15に主催者公式原典3ページ・公式解説3ページ・日本委員会の日別課題一覧をweb再確認。Biscuitsは競技日2=2020-09-19、難度値は不明のためnull。原典は全袋同じ合計となる相異なる値の個数、未使用在庫、空袋を確認。原典の数値上限と公式再帰/計算量の数式はテキスト抽出で欠けており、目視確認や公式式全文読了を主張しない。二包を併合して各1桁につき全袋へ一包ずつ配る独立構成でprefix供給の十分性を示し、二冪境界での必要十分再帰と、L桁でM<=L(L+1)/2状態を独立に証明した。一般APIは0..63種類、袋数1..INT64_MAX、非負int64在庫、重み付き供給<=INT64_MAXを検査し、最大2^63の個数をuint64_tで返す。mapにより決定的O(K+63+L^2 log(L+1))時間、O(63+L^2)空間、L<=63・M<=2016・再帰深さ<=64。実MDXの単一C++20 fenceを直接抽出して-O2 -Wall -Wextra -Werrorでコンパイル。在庫0..2・種類数0..5・袋数1..4の全1456例で、各実物を未使用または各袋へ直接割り当てる37626900配分から、全袋同じ味の集合を作って種類数・全prefix可否・全排他的上限を比較した。公式2例、疎な高桁128例、全63桁の一種類閉形式、袋数INT64_MAX、在庫総和INT64_MAX、出力2^63、全二進部分集合、二袋と下位供給不足、桁移動/末尾0不変性2000例、ランダム63桁3000例、11不正入力を検証。通常/ASan/UBSanとも133189検査が成功、checksum15375709013044692154、実測最大memo145状態。通常0.173764秒/4632KiB、ASan/UBSan2.01824秒/90272KiB（ptrace環境のためLeakSanitizerだけ無効）。主要補題と掲載APIの性能に未確認事項なし。原典の数値上限の取得状況は独立に保持する。",
+          "originalNumericBoundsVerified": true,
+          "originalProblemScopeVerified": true,
+          "sourceVerified": true
+        }
+      ],
+      "subsequentSourceVerifications": [
+        {
+          "checkedAt": "2026-10-15",
+          "status": "verified",
+          "kind": "authorized-statement-translation",
+          "sourceVerified": true,
+          "originalNumericBoundsVerified": true,
+          "archiveIndexUrl": "https://ioi.te.lv/locations/ioi20/contest/",
+          "statementUrl": "https://ioi.te.lv/locations/ioi20/contest/day2/Biscuits/HUN.pdf",
+          "originalEnglishStatementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf",
+          "provenance": "Official distribution archive Biscuits row links HUN to this PDF (link 340 in retrieved index).",
+          "retrieval": "Archive HTML and search-indexed full PDF text; ordinary PDF open returned cache miss. No local PDF download or image inspection claimed.",
+          "sourceSections": [
+            "Introduction: denomination 2^i, unused supply and distinct feasible tastes",
+            "Korlátok: k, q, x and a[i] bounds",
+            "Following page first sentence: total biscuit tastiness bound"
+          ],
+          "originalConstraints": {
+            "k": {
+              "minimum": 1,
+              "maximum": 60
+            },
+            "q": {
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "x": {
+              "minimum": 1,
+              "maximum": "1000000000000000000"
+            },
+            "a_i": {
+              "minimum": 0,
+              "maximum": "1000000000000000000"
+            },
+            "weightedSupply": {
+              "expression": "sum(a[i] * 2^i)",
+              "maximum": "1000000000000000000",
+              "atLeastPerCall": true
+            },
+            "denomination": "2^i",
+            "independentCalls": true
+          },
+          "apiContainmentProof": [
+            "1<=k<=60 implies 0<=K<=63.",
+            "1<=x<=10^18<INT64_MAX.",
+            "0<=a[i]<=10^18<INT64_MAX.",
+            "T=sum(a[i]*2^i)<=10^18<INT64_MAX.",
+            "Each call creates its own memo, so q<=1000 does not change per-call validity."
+          ],
+          "originalReturnTypeSafety": "answer <= floor(T/x)+1 <= 10^18+1 < INT64_MAX; explicit int64_t conversion is safe for every original input.",
+          "originalStateBound": 1830,
+          "originalMaxBitWidth": 60,
+          "originalMaxRecursionDepth": 61,
+          "remainingOfficialExtractionGap": "English official editorial recurrence and complexity formula images remain unextracted; solution verification remains independent-analysis.",
+          "initialAuditPreserved": true
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "bounded-power-two-equal-bag-prefix-cap-memoization"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の未確認事項・停止位置を保持。供給条件と上限再帰、状態数を独立に証明し、実物の全袋配分、境界、原典最大範囲の1000連続呼出し、ASan/UBSan、独立レビューで検証。後続の公認配布HUN翻訳で原典数値を確認し、掲載APIが全範囲を含むことを確定して登録した。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2020_mushrooms",
+      "officialTaskId": "mushrooms",
+      "day": 2,
+      "date": "2020-09-19",
+      "title": "キノコを数えよう",
+      "englishTitle": "Counting Mushrooms",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+      "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+      "contest": {
+        "name": "IOI 2020",
+        "division": "Main competition",
+        "year": 2020,
+        "day": 2,
+        "date": "2020-09-19",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式2020年大会課題一覧と2020年9月の主催者原典・解説URLを確認。更新・クロール日を公開日とみなさない。",
+      "difficulty": null,
+      "features": [
+        "二種類のキノコがあり、0番だけがAと既知である。相異なる番号の列を質問すると、隣接する種類の変化回数が返る。",
+        "適応的graderにも正しく、質問回数と全質問長の制約内でAの総数を数える。満点は厳しい回数上限を要する。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "notes": "PDFテキスト抽出で主要な数値と数式が欠ける。未取得画像を目視確認したとは記録しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "interactive-oracles",
+      "choices": [],
+      "steps": [],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "adaptive-transition-count-two-species-batched-identification",
+        "features": [
+          "二種類のキノコがあり、0番だけがAと既知である。相異なる番号の列を質問すると、隣接する種類の変化回数が返る。",
+          "適応的graderにも正しく、質問回数と全質問長の制約内でAの総数を数える。満点は厳しい回数上限を要する。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "response",
+        "reason": "任意列の隣接変化数を返すオラクルの枝がない。部分集合に一個の不良対象があるかの返答や会合の色数とは返答の意味と適応制約が異なる。一般の対話設計記事では満点の二問識別木と回数保証が不足する。",
+        "neededTechniqueIds": [
+          "interactive-transition-count-species-decision-trees"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-bit-group-testing",
+          "interactive-hidden-bipartite-edge-color-pair-recovery",
+          "brute-force-observation"
+        ],
+        "currentOptions": [
+          {
+            "id": "tree-distance",
+            "label": "辺は未知だが、指定した二頂点の木距離"
+          },
+          {
+            "id": "unimodal-value",
+            "label": "隠れた単峰列の、指定位置の値"
+          },
+          {
+            "id": "rectangle-count",
+            "label": "各行列に高々一個の配置の、長方形内の個数"
+          },
+          {
+            "id": "batch-subsets",
+            "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+          },
+          {
+            "id": "navigation",
+            "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+          },
+          {
+            "id": "other",
+            "label": "その他の返答形式・通信条件"
+          },
+          {
+            "id": "changing-color-count",
+            "label": "任意集合の会合で、参加者によって変わる色の種類数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "二種類のキノコがあり、0番だけがAと既知である。相異なる番号の列を質問すると、隣接する種類の変化回数が返る。",
+        "currentQuestion": "質問すると何が返ってきますか？"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI 2020主催者の公式課題一覧から直接EditorialとしてリンクされたISC解説PDF。",
+        "method": "同種既知の個体と未知を交互に並べて一括計数し、返答の偶奇から端の一個の種類も得て既知集合を増やす。公式満点解は初期フェーズで少数未知を二問で識別する決定木を列挙し、既知A/Bの個数に応じた二種類の木を使い分ける。",
+        "implementationRequirements": [
+          "transition countの整数値と偶奇から、識別できる個数を厳密に決める。",
+          "決定木の全返答枝を列挙し、整合する二値割当だけを残して識別を保証する。",
+          "適応的graderに対し最悪質問回数と総質問長を計測して検証する。"
+        ],
+        "complexity": "満点解の計算量または質問回数の正確な数式は未確認。一般アルゴリズム名から推測して補完しない。",
+        "sourceUrls": [
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf"
+        ],
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "満点用決定木の実際の質問列、未知個数、必要既知個数と最後の最大質問回数の数式が抽出から欠ける。",
+          "全ての適応的返答分岐を覆う決定木と、全質問長および満点回数上限の保証を未確認。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "officialEditorialRetrieved": true,
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-returned-reference-without-image-content",
+        "statementVerified": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "webによる公式PDF取得は成功。screenshotは参照IDのみ返し、画像本体を受け取っていない。ローカルPDF取得はsandbox DNS失敗後の権限確認が中断され、資料を保存・目視できていない。",
+        "本レコードの特徴・方法は要約であり、問題文や解説本文を転載しない。"
+      ],
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "evidenceUrls": [
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml",
+            "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+          ],
+          "originalNumericBoundsVerified": true,
+          "originalProblemScopeVerified": true,
+          "notes": "2026-10-15に公式原典3ページ・公式解説2ページ・AOI国委員会の配布原典PDF/モデル解/manager/task設定を確認した。通常web抽出で欠ける原典数値は、GitHub read connectorのbase64 PDFを復号しpdftoppmで全3ページを描画してview_imageで実際に読んだ。N2..20000、列長2..N、番号0..N−1相異、総質問長100000、ハード20000問、満点Q<=226、各返答後の履歴整合性を確認し、配布managerの同じ規則・採点と照合した。2つの局所5未知決定木と多数派110切替は配布モデル解decision-tree-endagorion.cppを参照し、全32割当の葉一意性と基準反転を独立literal oracleで確認した。訓練t<=44/質問<=2t+1、後半容量max(110,ceil((1+5t+j)/2))、平方の床関数による整数和から最悪226問を独立に証明。総長17t+2(n−1−5t)<=40306、各列相異性/2..Nと全可変状態localも証明した。実MDX単一C++20 fenceを抽出して、macroあり原典adapterとmacro無し/stub無しcallbackの別実行ファイルを通常/ASan/UBSanで検証した。原典adapter側23642187検査・131304静的実行・局所128割当・適応5586状態/3814葉・訓練counts DP2611訪問状態・実現226問witness・936843質問・総列長10341444、checksum17036070644408443896、max実測総長40295。standalone側4099例・314871検査、checksum7379661480237581096。通常0.150602秒/4836KiB、ASan/UBSan1.97564秒/448900KiB（計測は原典adapter側、LeakSanitizerのみptrace環境のため無効）。原典全域と適応的最悪予算を確認済みで、主要補題未確認なし。公式解説の抽出で欠けた式を読めたとはせずverificationはindependent-analysis。初回auditのunconfirmed/数値falseは書換えず後続証拠として提出する。"
+        }
+      ],
+      "subsequentSourceVerifications": [
+        {
+          "checkedAt": "2026-10-15",
+          "status": "verified",
+          "kind": "national-committee-statement-distribution",
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+          "originalNumericBoundsVerified": true,
+          "evidenceUrls": [
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+            "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml"
+          ],
+          "originalConstraints": {
+            "n": {
+              "minimum": 2,
+              "maximum": 20000
+            },
+            "anchor": "species[0]=A",
+            "queryLength": "2..n",
+            "queryIndices": "distinct integers0..n-1",
+            "oracleResponse": "number of adjacent unequal species",
+            "hardQueryLimit": 20000,
+            "fullScoreQueryLimit": 226,
+            "totalQueryLengthLimit": 100000,
+            "adaptive": "after every interaction at least one fixed species sequence is consistent with the whole transcript"
+          },
+          "apiContainsEntireOriginalRange": true,
+          "apiExtraSingleton": true,
+          "initialAuditUnconfirmedAndNumericFalsePreserved": true,
+          "notes": "全3ページの原典画像と配布managerで確認。初回auditのconstraints/reviewStatus/technicalFindingsは書換えず後続に追記する。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "interactive-transition-count-species-decision-trees"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の調査・未確認事項・停止位置を保持。原典全域、主要補題と最悪予算、完成した再利用API、全小入力・最大入力・ASan/UBSan・独立レビューと特徴からの分岐で不足を解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2020_stations",
+      "officialTaskId": "stations",
+      "day": 2,
+      "date": "2020-09-19",
+      "title": "ステーション",
+      "englishTitle": "Stations",
+      "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+      "editorialUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf",
+      "contest": {
+        "name": "IOI 2020",
+        "division": "Main competition",
+        "year": 2020,
+        "day": 2,
+        "date": "2020-09-19",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "公式2020年大会課題一覧と2020年9月の主催者原典・解説URLを確認。更新・クロール日を公開日とみなさない。",
+      "difficulty": null,
+      "features": [
+        "木の全体を見られる準備段階で、各頂点へ相異なる小さい整数ラベルを付ける。",
+        "実行段階には現在地・目的地・隣接先のラベルだけを与え、目的地への最初の隣接先を返す。0..n−1への圧縮は満点のラベル範囲を満たす構成であり、その範囲を必須条件とはしない。"
+      ],
+      "constraints": {
+        "source": "official statement",
+        "numericBoundsVerified": false,
+        "notes": "PDFテキスト抽出で主要な数値と数式が欠ける。未取得画像を目視確認したとは記録しない。"
+      },
+      "reviewStatus": "unconfirmed",
+      "classification": "unconfirmed",
+      "auditOutcome": "proof-or-detail-unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "rooted-tree-goals",
+        "tree-range",
+        "ancestors-and-paths"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "rooted-tree-goals",
+          "answerLabel": "木の各点の答え・部分木・経路"
+        },
+        {
+          "graphId": "graphs-rooted-tree-goals",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "tree-range",
+          "answerLabel": "木の経路・部分木への問い合わせ"
+        },
+        {
+          "graphId": "tree-query",
+          "nodeId": "target",
+          "question": "木のどの部分について答えますか？",
+          "answer": "ancestors-and-paths",
+          "answerLabel": "祖先や、一本・複数の経路について答える"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "gap": {
+        "id": "tree-local-routing-alternating-dfs-labels",
+        "features": [
+          "木の全体を見られる準備段階で、各頂点へ相異なる小さい整数ラベルを付ける。",
+          "実行段階には現在地・目的地・隣接先のラベルだけを与え、目的地への最初の隣接先を返す。0..n−1への圧縮は満点のラベル範囲を満たす構成であり、その範囲を必須条件とはしない。"
+        ],
+        "firstMissingGraphId": "tree-ancestor-path-goals",
+        "firstMissingNodeId": "target",
+        "reason": "祖先や経路の集計を行う記事はあるが、問い合わせ時に木・親・深さ・LCA表を参照できない。各ラベル一つと隣接ラベルの順序から次の一歩を決める専用の構築と分岐がない。",
+        "neededTechniqueIds": [
+          "tree-local-routing-alternating-dfs-labels"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "subtree-euler-interval",
+          "rooted-tree-leaf-interval-labels",
+          "doubling",
+          "coordinate-compression"
+        ],
+        "currentOptions": [
+          {
+            "id": "ancestor",
+            "label": "何個か上の祖先・二頂点の共通祖先"
+          },
+          {
+            "id": "path-static",
+            "label": "値が変わらない一本の経路の集計・順位"
+          },
+          {
+            "id": "path-change",
+            "label": "値が変わる経路の集計・更新"
+          },
+          {
+            "id": "batch-paths",
+            "label": "全ての指定経路を足した後の、辺・頂点ごとの通過回数"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "proposedFeatureAnswer": "木の全体を見られる準備段階で、各頂点へ相異なる小さい整数ラベルを付ける。",
+        "currentQuestion": "木のどの部分について答えますか？"
+      },
+      "technicalFindings": {
+        "verification": "official-editorial-partial-with-unconfirmed-detail",
+        "editorialProvenance": "IOI 2020主催者の公式課題一覧から直接EditorialとしてリンクされたISC解説PDF。",
+        "method": "公式解説はDFSの入時刻と出時刻を深さの偶奇で交互にラベルへ採用し、現在地が隣接ラベルより小さいか大きいかで場合分けする。隣接先の順序から親方向と子の担当区間を復元する。最後にラベルの大小関係だけを保って0..n−1の順位へ圧縮する。",
+        "implementationRequirements": [
+          "全体のtreeを保存できない問い合わせ条件を守るラベル専用の関数を作る。",
+          "偶奇で入出順を変える区間規則と順位圧縮の正当性を確認する。",
+          "全小木の全始点終点で、返す隣接先を単純BFS経路と比較する。"
+        ],
+        "complexity": "満点解の計算量または質問回数の正確な数式は未確認。一般アルゴリズム名から推測して補完しない。",
+        "sourceUrls": [
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+          "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf"
+        ],
+        "editorialPageCount": 3,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [
+          "入時刻/出時刻のうち深さ偶奇で採る側と、隣接先から得る区間境界の正確な式が抽出から欠ける。",
+          "親方向を最大隣接または最小隣接とする場合分け、葉・根・目的地が境界の場合の完全な決定規則を未確認。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "officialEditorialRetrieved": true,
+        "solution": "retrieved-partially-reviewed",
+        "visualDetails": "web-screenshot-returned-reference-without-image-content",
+        "statementVerified": true,
+        "officialEditorialVerified": false,
+        "officialEditorial": "retrieved-partially-reviewed"
+      },
+      "collectionStatus": "statement-and-official-editorial-retrieved-detail-unconfirmed",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "verificationNotes": [
+        "webによる公式PDF取得は成功。screenshotは参照IDのみ返し、画像本体を受け取っていない。ローカルPDF取得はsandbox DNS失敗後の権限確認が中断され、資料を保存・目視できていない。",
+        "本レコードの特徴・方法は要約であり、問題文や解説本文を転載しない。"
+      ],
+      "subsequentMaterialCorrections": [
+        {
+          "reviewedAt": "2026-10-15",
+          "originalClaim": "満点は最大ラベルn−1を要する。",
+          "correctedClaim": "0..n−1への圧縮は満点のラベル範囲を満たす構成であり、その範囲を必須条件とはしない。",
+          "evidenceUrls": [
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf"
+          ],
+          "notes": "後続の公式原典の採点表確認で、満点条件の最大ラベルは1000と確認。0..n−1はそれを満たす構成で、必要条件ではない。主要な局所ルーティング規則の確認状態はunconfirmedを維持する。"
+        }
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "tree-local-routing-alternating-dfs-labels"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回の停止位置・不足分類・未確認事項は保持。後続の独立証明、完成C++20、実MDX抽出の直接全列挙比較、境界と最大規模検証、独立レビュー、特徴からの根経路によって解消した。原典の数式取得状況と独立に確立した事項を分けて記録する。"
+      },
+      "subsequentSolutionReviews": [
+        {
+          "statementUrl": "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+          "reviewedAt": "2026-10-15",
+          "reviewStatus": "verified",
+          "verification": "independent-analysis",
+          "collectionStatus": "statement-and-independent-analysis-verified",
+          "materialStatus": {
+            "solution": "retrieved-and-reviewed",
+            "officialEditorialVerified": false
+          },
+          "evidenceUrls": [
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-stations-ISC.pdf",
+            "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/stations-solutions-ISC.pdf",
+            "https://ioi2020.sg/ioi-2020-tasks/",
+            "https://ioi2020.sg/schedule/"
+          ],
+          "notes": "2026-10-15に主催者の公式原典5ページ・公式解説3ページ・公式課題一覧・公式日程をwebで再確認。公式日程でContest Day2は2020-09-19。難度値は確認できずnull。原典の通常PDF抽出は式が抜けるが、同じ公式PDFのweb検索本文では2<=N<=1000、シナリオr1..10、全シナリオ合計の隣接入力長100000以下、k>=N-1、異なるs,t、昇順の全隣接label、別processにlabelerのglobal/static状態が継承されない条件が読めた。部分課題5満点は最大label1000以下で、N-1は本構成が達成する最小範囲であり満点の必要条件とはしない。公式解説の入/出時刻を深さで交互に選ぶ方法と順位圧縮の文章は読めたが、偶奇で選ぶ記号と一部端点式はweb抽出が空欄のため公式で目視したとは記録しない。偶数深さの入時・奇数深さの出時で0..N-1を直接発行し、部分木が連続順位区間になり、子ラベルが交互に右端/左端になることから、完全な端点規則を独立に証明した。小さい型は(s,c0],(c0,c1],...からlower_bound(t)、外側は最大隣接の親。大きい型は[c0,c1),...,[cLast,s)からupper_bound(t)-1、外側は最小隣接の親。隣接labelと目標の等号、根・葉、current=target拒否を明記。全labelへの同一strict単調増加変換を許すが、異なる変換や順序反転は対象外。掲載実MDXの唯一の常時表示C++20 fenceを抽出し-O2 -Wall -Wextra -Werrorでコンパイル。Pruefer列でN1..7の全18249ラベル付き木・全根126126設定を列挙し、乱択/ラベル入替/辺順入替1000木も含め127126設定を検査。全異なるu,tの一歩を各目的地からの独立BFS親と照合し、実際の全routing経路も17352984hopでBFS一歩に一致。逆順neighborを未整列アダプタで、共通の非線形strict単調変換とINT_MAXを昇順routerで比較。current=targetの899046例とその他構造/範囲違反35例、合計899081拒否を確認。原典最大N1000,k999とk1e9、公式routing2例、拡張N200000の長鎖の全経路、星の次数199999と葉/中心の両root、同次数内部頂点を持つ均衡木の20万乱択経路を独立なindex/LCA oracleと比較。正常検査54792748件、checksum10724171460026289549、通常C++約1.198秒、peak RSS30164KiB。さらに準備関数をコードから除去したrouter-only executableをコンパイルし、別producer processが作る40木の局所tuple71696問だけを渡して全一致した。ASan/UBSanでも正常/拒否の同54792748件、同checksum、および別process71696問が成功（LeakSanitizerのみ無効）。検査付き昇順routerは入力検査O(deg)、規則自体O(log(deg+1))、未整列版O(deg log(deg+1))。準備O(N)時間/空間。公式式の抽出欠落は独立証明・全小木比較で補完し、技巧の主要補題に未確認事項はない。"
+        }
+      ]
+    }
+  ],
+  "classificationDefinitions": {
+    "covered": "問題全体に必要な具体技巧と実装があり、忠実な特徴から分野根を辿って到達できる。",
+    "missing-route": "必要な具体実装は既存だが自然な分岐がない。",
+    "missing-technique": "原典と主要解法を確認できたが具体帰着・実装が不足。",
+    "unconfirmed": "主要な証明、数式、満点戦略、実装対応のいずれか未確認。取得できたことだけで確認済みにしない。"
+  },
+  "knownGapsProposal": [
+    {
+      "id": "cyclic-window-height-order-forced-comparisons",
+      "source": "ioi",
+      "problemId": "ioi2020_plants",
+      "status": "unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "group-constraints"
+      ],
+      "neededTechniqueIds": [
+        "cyclic-window-height-poset-two-neighbor-doubling"
+      ],
+      "reason": "大小関係は未知で、入力はk近傍の順位個数である。二値禁止組・偶奇・差の等式の枝へは忠実に進めず、巡回順位制約を不変の半順序へ直す具体記事もない。一般DAG到達性やダブリングの一致だけでcoveredにはならない。",
+      "firstMissingGraphId": "graphs-group-constraints",
+      "firstMissingNodeId": "shortest",
+      "currentOptions": [
+        {
+          "id": "assignment",
+          "label": "組を選ぶ・容量を割り当てる"
+        },
+        {
+          "id": "partition-small",
+          "label": "少数の頂点を、内部の全組に辺があるグループへ分ける"
+        },
+        {
+          "id": "constraints",
+          "label": "二つの値の禁止組・偶奇・差の条件を満たせるか"
+        },
+        {
+          "id": "tree-color-union",
+          "label": "木の色を丸ごと併合し、一色の全頂点を連結にする"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "simple-path-count-matrix-tree-cycle-construction",
+      "source": "ioi",
+      "problemId": "ioi2020_supertrees",
+      "status": "unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "network-connection"
+      ],
+      "neededTechniqueIds": [
+        "simple-path-count-matrix-tree-cycle-construction"
+      ],
+      "reason": "全二点の単純路本数表を満たす構築に対応する枝がない。距離表の復元、全域木数、単なる成分の併合では、要求1の木と要求2の代表環の条件を扱えない。要求3の排除証明も未確認。",
+      "firstMissingGraphId": "graphs-network-connection",
+      "firstMissingNodeId": "shortest",
+      "currentOptions": [
+        {
+          "id": "connectivity",
+          "label": "到達する頂点・成分・全体をつなぐ操作"
+        },
+        {
+          "id": "spanning",
+          "label": "全頂点を安くつなぐとき、追加する辺を使うか"
+        },
+        {
+          "id": "failures",
+          "label": "辺や頂点を一つ禁止した後の、到達性・最短距離"
+        },
+        {
+          "id": "mst-replace",
+          "label": "全頂点を安くつなぐ辺を、追加辺と置き換える"
+        },
+        {
+          "id": "distance-table",
+          "label": "全二点間の最短距離表から、道路の長さの総和を最小にして復元する"
+        },
+        {
+          "id": "specified-mst-count",
+          "label": "指定された木が唯一の最小全域木になる、追加道路の選び方の個数"
+        },
+        {
+          "id": "mst-roles",
+          "label": "全頂点を安くつなぐ辺の必須性、または最小値より厳密に重い次の木"
+        },
+        {
+          "id": "steiner-terminals",
+          "label": "少数の指定頂点を全てつなぎ、共有する辺の費用は一度だけ払う"
+        },
+        {
+          "id": "spanning-count",
+          "label": "全頂点をつなぐ、閉路のない辺集合の個数を数える"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "median-ticket-extreme-selection-round-decomposition",
+      "source": "ioi",
+      "problemId": "ioi2020_tickets",
+      "status": "missing-technique",
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "quantity-goals"
+      ],
+      "neededTechniqueIds": [
+        "median-ticket-extreme-selection-round-decomposition"
+      ],
+      "reason": "回ごとの中央値を選ぶ問題は、加法的な辺費用の割当へそのまま入れない。両端選択、正負の全体枚数制約、符号を各回へ再分配する具体的補題と実装が不足する。一般の最小費用流記事だけではこの帰着と効率的構築を埋めない。",
+      "firstMissingGraphId": "assignment-quantity-goals",
+      "firstMissingNodeId": "purpose",
+      "currentOptions": [
+        {
+          "id": "margins",
+          "label": "行・列の合計と、各項の範囲を満たす整数表"
+        },
+        {
+          "id": "limits",
+          "label": "割り当てる量に上限・下限がある"
+        },
+        {
+          "id": "costs",
+          "label": "数量を満たし、割当の費用合計を最小にする"
+        },
+        {
+          "id": "receive-balance",
+          "label": "各品物を候補の人へ渡し、受取個数の最大と最小の差を小さくする"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "bounded-power-two-coins-equal-bag-value-count",
+      "source": "ioi",
+      "problemId": "ioi2020_biscuits",
+      "status": "unconfirmed",
+      "entryGraphId": "math",
+      "choices": [
+        "counting-totals",
+        "count",
+        "select-values"
+      ],
+      "neededTechniqueIds": [
+        "bounded-power-two-equal-bag-prefix-cap-memoization"
+      ],
+      "reason": "作れる味の総和の種類数を数えるが、x袋の同時実現という供給制約がある。二項係数、整数桁の一般論、通常の一袋の部分和だけでは二冪ごとの必要十分条件と上限再帰が欠ける。",
+      "firstMissingGraphId": "count-selected-values",
+      "firstMissingNodeId": "count-kind",
+      "currentOptions": [
+        {
+          "id": "binomial",
+          "label": "N 個から K 個を選ぶ個数を、何度も求める"
+        },
+        {
+          "id": "digits",
+          "label": "各桁を選ぶ整数の個数"
+        },
+        {
+          "id": "monotone-values",
+          "label": "非減少に並ぶ K 個の整数の選び方"
+        },
+        {
+          "id": "composite-binomial",
+          "label": "法が合成数でもよい、多数の二項係数"
+        },
+        {
+          "id": "square-product",
+          "label": "積が平方数になる非空の添字集合を数える"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "adaptive-transition-count-two-species-batched-identification",
+      "source": "ioi",
+      "problemId": "ioi2020_mushrooms",
+      "status": "unconfirmed",
+      "entryGraphId": "interactive-oracles",
+      "choices": [],
+      "neededTechniqueIds": [
+        "interactive-transition-count-species-decision-trees"
+      ],
+      "reason": "任意列の隣接変化数を返すオラクルの枝がない。部分集合に一個の不良対象があるかの返答や会合の色数とは返答の意味と適応制約が異なる。一般の対話設計記事では満点の二問識別木と回数保証が不足する。",
+      "firstMissingGraphId": "interactive-oracles",
+      "firstMissingNodeId": "response",
+      "currentOptions": [
+        {
+          "id": "tree-distance",
+          "label": "辺は未知だが、指定した二頂点の木距離"
+        },
+        {
+          "id": "unimodal-value",
+          "label": "隠れた単峰列の、指定位置の値"
+        },
+        {
+          "id": "rectangle-count",
+          "label": "各行列に高々一個の配置の、長方形内の個数"
+        },
+        {
+          "id": "batch-subsets",
+          "label": "一つの不良対象を含むかを、任意部分集合ごとに同時判定"
+        },
+        {
+          "id": "navigation",
+          "label": "今の隣接先一覧を返し、指定した隣接先へ移動する"
+        },
+        {
+          "id": "other",
+          "label": "その他の返答形式・通信条件"
+        },
+        {
+          "id": "changing-color-count",
+          "label": "任意集合の会合で、参加者によって変わる色の種類数"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    },
+    {
+      "id": "tree-local-routing-alternating-dfs-labels",
+      "source": "ioi",
+      "problemId": "ioi2020_stations",
+      "status": "unconfirmed",
+      "entryGraphId": "graphs",
+      "choices": [
+        "rooted-tree-goals",
+        "tree-range",
+        "ancestors-and-paths"
+      ],
+      "neededTechniqueIds": [
+        "tree-local-routing-alternating-dfs-labels"
+      ],
+      "reason": "祖先や経路の集計を行う記事はあるが、問い合わせ時に木・親・深さ・LCA表を参照できない。各ラベル一つと隣接ラベルの順序から次の一歩を決める専用の構築と分岐がない。",
+      "firstMissingGraphId": "tree-ancestor-path-goals",
+      "firstMissingNodeId": "target",
+      "currentOptions": [
+        {
+          "id": "ancestor",
+          "label": "何個か上の祖先・二頂点の共通祖先"
+        },
+        {
+          "id": "path-static",
+          "label": "値が変わらない一本の経路の集計・順位"
+        },
+        {
+          "id": "path-change",
+          "label": "値が変わる経路の集計・更新"
+        },
+        {
+          "id": "batch-paths",
+          "label": "全ての指定経路を足した後の、辺・頂点ごとの通過回数"
+        },
+        {
+          "id": "unknown",
+          "label": "わからない"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "IOI 2020競技全6題を固定した初回監査で、世界全体の網羅完了を意味しない。",
+    "原典6/6・解説取得6/6と、主要解法確認1/6を区別する。未確認5題を記事不足の確認済み件数に昇格しない。",
+    "数式の欠けるテキスト抽出を公式PDF全文の目視確認とみなさない。",
+    "一般DSU/DP/DFS/対話/ダブリングの名称一致は具体的な主要補題・実装の代わりにならない。",
+    "監査開始後に追加・変更された共有記事や分岐は466記事・431図スナップショットへ遡及しない。",
+    "共有data/articlesは編集せず、外部送信・push・公開も行っていない。"
+  ],
+  "validation": {
+    "actualFlowRuntimeReplay": "passed",
+    "canonicalIds": [
+      "ioi2020_plants",
+      "ioi2020_supertrees",
+      "ioi2020_tickets",
+      "ioi2020_biscuits",
+      "ioi2020_mushrooms",
+      "ioi2020_stations"
+    ],
+    "existingReferencesDuplicateCount": 0,
+    "existingReferencesDuplicateCheck": "data/references*.json, data/*problem-features.json, data/problem-walks.json に ioi2020_, IOI20_, ioi2020, IOI 2020, 各officialtaskid の既存参照一致なし。",
+    "replayedPaths": 6,
+    "replayedAgainstFlowSha256": "febb504779ef0f015744f28713408fc1d02eae89509fa910677c898bf2151ca7",
+    "relatedTechniqueIdsPresent": true,
+    "missingTechniqueProposalsNotRegistered": true,
+    "note": "製品walkFromRoot/getNodeOptions/getAnswerLabelを466記事・431図の凍結flowsへ適用し、全6題の回答ID、質問、回答ラベル、最初の不足ノード、表示選択肢を保存。全満点解または完成実装の検証を意味しない。",
+    "snapshotHashesVerified": true,
+    "completeRecordIdentitiesMatchFixedList": true
+  }
+}

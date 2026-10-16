@@ -1,0 +1,201 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed-current-scope-global-incomplete",
+  "scope": "IOI2016 Aliens full original-range reusable technique, guarded feature route and resolution-only registration.",
+  "counts": {
+    "specificTechniques": 430,
+    "foundationArticles": 78,
+    "allArticles": 508,
+    "exampleMappings": 529,
+    "originalUrls": 491,
+    "graphs": 475,
+    "nodes": 3721,
+    "questions": 1696,
+    "answerEdges": 5532,
+    "multiChoiceQuestions": 184,
+    "verifiedWalks": 525,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "diagonal-square-union-cover-monge-penalty-cht",
+    "title": "対角線に沿う正方形の被覆を、重なり補正と枚数の罰金で最小にする",
+    "verificationRecord": "research/technique-verifications/diagonal-square-union-cover-monge-penalty-cht.json",
+    "cppSha256": "97748db7491b31d9799fc9cdd1e672e4de97aef0221cc6c36a9bded5a874d42c",
+    "normalization": "Only shared-cut Q-prefix edge-count difference-one clarification and repository probe/checker paths; C++ unchanged."
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2016-aliens-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 6067.674396
+    },
+    "newFlow": {
+      "passed": 13,
+      "failed": 0,
+      "durationMs": 4995.038849,
+      "record": "research/probes/ioi2016-aliens-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 10,
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 26658.032988,
+      "scope": "ledger/domain/viewer/continuation/legacy/layout, IOI2016+2017 fixed corpora, Simurgh and prior specific expansion flows. Independent new13-case suite separately protects all528 prior walks/474graphs/all79data JSON.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 508,
+      "mappings": 529,
+      "diagrams": 475,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 508,
+      "recentArticlesChecked": 38,
+      "japaneseEnglishFullWidthQueries": 157,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 475,
+      "completeAnswerLabels": 5532,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized expanded point-set-shape-features and new diagonal-square-union-cover-conditions. New nodes, arrows and labels do not overlap; detail full questions/explanations visible. Parent is wide and uses separate wheel-zoom viewer; no browser inspection claimed."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1467,
+      "linksAssets": 29685,
+      "diagrams": 475,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": {
+    "source": "Complete sourceN1..100000/M1..1000000/K1..N and duplicate/union semantics included; generic+Notice-derived by-value take_photos adapter, actual header bytes not retrieved.",
+    "proof": [
+      "consecutive-group normal form",
+      "full union equals neighbor-overlap correction",
+      "Monge constructive q−1/q+1 to q/q balancing",
+      "integer supporting penalty including count jumps and fewer-count ties",
+      "exact encoded integer and128-bit linear monotone hull"
+    ],
+    "authorRootAndPeerNormalAsan": {
+      "checks": 5427033,
+      "coreCalls": 696640,
+      "adapterCalls": 589343,
+      "checksum": "8361293455850997735",
+      "literalInterestSets": 33861,
+      "distinctPhotoSets": 33866,
+      "photoSetExecutions": 33940,
+      "photoSetExecutionMeaning": "Includes74 repeated table entries; not33940 distinct photo sets."
+    },
+    "independentAdditional": {
+      "checks": 14271756,
+      "strictChains": 23703,
+      "literalPartitions": 324065,
+      "constructiveExchanges": 969547,
+      "commonCutExchanges": 301541,
+      "nestedEdgeExchanges": 668006,
+      "dilationCases": 3000,
+      "checksum": "17963117431430617432",
+      "ordinaryAndAsanPassed": true,
+      "executionAttributedToPeer": true
+    }
+  },
+  "reviewCounters": {
+    "verifiedMappings": 529,
+    "reviewedProblems": 489,
+    "corpusStatementsReviewed": 77,
+    "corpusSolutionsReviewed": 69,
+    "allSolutionsReviewed": 500
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "4/6",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2016",
+      "research": "6/6",
+      "covered": "1/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 20,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual official aliens header bytes not acquired; adapter derived from official generic signature+Notice and compiled explicitly.",
+    "ASan/UBSan pass with detect_leaks=0; no LeakSanitizer claim.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures. No install/server/browser retried.",
+    "External example-link liveness not checked. No commit/push/upload/publication."
+  ],
+  "inProgress": [
+    "Prize complete and independently reviewed; integration follows.",
+    "Molecules author implementation/checking.",
+    "Railroad author implementation."
+  ]
+}

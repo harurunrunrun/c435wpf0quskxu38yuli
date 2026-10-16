@@ -1,0 +1,79 @@
+---
+title: "一本の辺を失うと切断される場所を一度の探索で求める"
+description: "探索部分木から祖先へ戻れる辺の有無を記録し、辺ごとの再探索を省く。"
+techniqueId: bridge-edge-failure
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+無向グラフで、一本だけ通行不能になったときに連結性が変わる辺をすべて求めたい。辺を一本ずつ消して探索すると、同じ経路を何度も調べることになる。
+
+## 考え方
+
+深さ優先探索で頂点に訪問順 `tin[v]` を付ける。`low[v]` には、`v` の探索部分木から、木の辺を下向きにたどった後に後退辺を高々一本使って到達できる最小の訪問順を保存する。
+
+木の辺 `v → u` について、$low[u]>tin[v]$ なら、`u` 側から `v` またはその祖先へ戻る別の辺がない。この辺が橋である。等号なら `v` へ戻る辺が存在するので、橋ではない。
+
+## 適用条件
+
+無向グラフの単一辺の故障を扱う。有向グラフで同じ不等式を使っても正しくない。二本同時に消したときの切断も、この情報だけでは分からない。
+
+多重辺では「親頂点への辺を全部無視する」と誤る。探索で使った**辺番号一つだけ**を無視する。もう一本の平行辺は帰り道になる。自己ループは橋にならない。
+
+## なぜ正しいか
+
+DFSの異なる部分木の間には木の辺以外の横断辺がない。木の辺を消したとき、子側の部分木から外側へ出る経路が存在するのは、その部分木から親または祖先への後退辺があるときに限る。`low` の不等式がその有無を表す。探索木に使われなかった辺は、木の経路と閉路を作るため橋ではない。
+
+## 計算量
+
+各辺を削除して調べる方法は $O(M(N+M))$ 時間。訪問順と `low` を一度求める方法は $O(N+M)$ 時間、$O(N+M)$ 空間。
+
+## 実装
+
+`bridge_flags` は入力した辺と同じ順序の真偽値を返す。非連結グラフにも対応し、深い探索で再帰スタックを使わない。頂点番号は0から。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+std::vector<bool> bridge_flags(int n, const std::vector<std::pair<int,int>>& edges) {
+    std::vector<std::vector<std::pair<int,int>>> g(n);
+    for (int i=0;i<int(edges.size());++i) {
+        auto [a,b]=edges[i];g[a].push_back({b,i});g[b].push_back({a,i});
+    }
+    std::vector<int> tin(n,-1),low(n),parent(n,-1),pe(n,-1),next(n);
+    std::vector<bool> result(edges.size(),false);
+    int timer=0;
+    for (int root=0;root<n;++root) if (tin[root]<0) {
+        std::vector<int> stack{root};tin[root]=low[root]=timer++;
+        while (!stack.empty()) {
+            int v=stack.back();
+            if (next[v]<int(g[v].size())) {
+                auto [u,id]=g[v][next[v]++];
+                if (id==pe[v]) continue;
+                if (tin[u]<0) {
+                    parent[u]=v;pe[u]=id;tin[u]=low[u]=timer++;stack.push_back(u);
+                } else low[v]=std::min(low[v],tin[u]);
+            } else {
+                stack.pop_back();
+                if (parent[v]>=0) {
+                    int p=parent[v];result[pe[v]]=low[v]>tin[p];
+                    low[p]=std::min(low[p],low[v]);
+                }
+            }
+        }
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[一つの禁止頂点を避ける経路を分解木で判定する](/flowchartcp/techniques/block-cut-path/) ・ [辺の削除を逆順の追加に変える](/flowchartcp/techniques/reverse-edge-deletion/)
+
+## 参考資料
+
+- [CSES：Necessary Roads（原典）](https://cses.fi/problemset/task/2076)。上の判定法は原典の条件から導出し、各辺を削除する探索との比較で確認している。
+
+<TechniqueReferences techniqueId="bridge-edge-failure" />

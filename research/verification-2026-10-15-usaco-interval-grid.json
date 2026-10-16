@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "USACO固定6題のCowmistry・Paint by Lettersに不足した具体技巧と特徴分岐を追加",
+  "counts": {
+    "specificTechniques": 390,
+    "foundationArticles": 78,
+    "allArticles": 468,
+    "exampleMappings": 489,
+    "originalUrls": 451,
+    "graphs": 433,
+    "nodes": 3469,
+    "questions": 1570,
+    "answerEdges": 5112,
+    "verifiedWalks": 485,
+    "pendingWalks": 4
+  },
+  "verified": [
+    "実公開MDXから2実装を抽出しC++20 -O2 -Wall -Wextra -Werrorでコンパイル、移設後のcheckerを再実行してPASS。作者と別担当で証明・コード・原典条件を相互レビュー。",
+    "区間XOR三数計数は126072検査。[0,11]の全4096集合×全K=1..15を三数直接列挙と比較し、区間分割不変性、独立な三数同時桁DPと大区間、二冪境界、最大N20000と端点10^9を照合。",
+    "部分長方形同色成分数は二色74954・三色21297・四色8612・乱択2500盤面、8最大盤面、公式9質問、無効入力30例を含む8488341質問を局所BFSと比較。穴・外経由・斜め接触・26色・一行一列・繰返し照会の印解除を含む。",
+    "各作者のASan/UBSanでも両実装が同じ比較件数を通過。LeakSanitizerはptrace制約のため無効。",
+    "新2入口と各3必須条件、no/unknown全12経路、両表示共有/履歴/Back、記事/原典年月/監査解消の独立6テストを通過。日単位の公開日は捏造しない。",
+    "追加前487歩行はrecordsのSHAと実再生で手順を維持。全旧結果ノードの完全一致も登録時に照合。全489歩行を再生。",
+    "旧ローカル共有URLの質問を保持するため、XOR三数の新設入口は数え上げの対象を選ぶ図へ接続。既存834接頭辞の厳密比較は変更せず通過。",
+    "分岐・SVG配置・旧履歴・共有・調査台帳・固定群の全33テスト群PASS。",
+    "npm run build:local は468記事・489対応・433 SVGで成功。新2記事の日英/全角検索9件、数式、使用例根拠とカタログを照合。",
+    "433 SVGと図専用ページ、5112回答ラベル、404旧共有URLを照合。格子同色成分の新SVGを画像化して目視確認。",
+    "npm run verify:local は1343 HTML/SVGの27608内部リンク・資産を確認。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 30,
+    "fixedCorpusSolutionsReviewed": 26,
+    "publishedExamplesSolutionsReviewed": 449,
+    "allDistinctSolutionsReviewed": 457,
+    "usacoCovered": "5/6",
+    "icpcCovered": "6/12",
+    "joiCovered": "7/12",
+    "remainingKnownGaps": 13
+  },
+  "limitations": [
+    "世界全体の問題母数は未確定で網羅未完了。",
+    "IOI2020公式全6題は問題一覧を先に固定し、解法と特徴経路を調査中。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは環境上の失敗後に再試行しておらず未検証。",
+    "外部リンクの全件生存確認は行っていない。",
+    "push・アップロード・公開は行っていない。"
+  ],
+  "inProgress": [
+    "convex-piecewise-quadratic-suffix-cap",
+    "disjoint-candidate-sets-complement-lookup"
+  ]
+}

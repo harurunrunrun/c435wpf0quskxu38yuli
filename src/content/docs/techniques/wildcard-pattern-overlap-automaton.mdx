@@ -1,0 +1,117 @@
+---
+title: "文字を補って同じ語の出現数を最大化するときは、一致後も接尾辞の一致を残す"
+description: "末尾とパターンの接頭辞が一致する長さを状態にし、一致の完成を得点に変えて重複する出現を数える。"
+techniqueId: wildcard-pattern-overlap-automaton
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+一部が `?` になった文字列があり、各 `?` を一文字ずつ決められる。指定された一つの語が、連続部分文字列として現れる回数を最大にしたい。出現同士は重なってもよい。
+
+例えばパターンが `aba` なら、`ababa` には二回現れる。一度一致したところで照合状態を0に戻すと、最後の `a` が次の出現の先頭にもなることを捨ててしまう。必要なのは、出現を一回数えた後にも再利用できる末尾の一致である。
+
+## 考え方
+
+パターンを $P$、その長さを $M$ とする。接頭辞関数 $\pi[i]$ は、$P[0,i+1)$ の真に短い接頭辞のうち、接尾辞にもなっているものの最長長さである。
+
+文字列の先頭から文字を決め、$dp[q]$ を「処理済みの末尾が $P$ の接頭辞と長さ $q$ まで一致しているとき、既に完成した出現数の最大値」とする。状態は $0\le q<M$ だけ持つ。
+
+文字 $c$ を追加した後の一致長を $g(q,c)$ とする。$P[q]=c$ なら $g(q,c)=q+1$。一致しなければ、より短い一致先 $\pi[q-1]$ から同じ文字の遷移を使う。$q$ の昇順に遷移表を作れば、参照する行は常に完成している。一つの表要素ごとに一致先を何度もたどる必要はない。
+
+遷移で $g(q,c)=M$ になったら、現在の位置で一回の出現が完成する。得点に1を足し、次の状態を $\pi[M-1]$ にする。完成したパターンの末尾のうち、次のパターンの先頭として使える最長部分が、この長さだからである。
+
+固定文字ではその一文字の遷移だけ、`?` では英小文字26種類の遷移を試す。同じ次状態には最大得点だけを残す。例えば `aba` が完成した後の状態は $\pi[2]=1$ となり、続く `ba` でもう一度一致できる。
+
+## 適用条件
+
+対象は、一つの固定された非空パターンの連続出現である。各 `?` は独立に一文字へ置き換えられ、出現数は完成した回数の和で評価する。重複する出現も全て数える。
+
+空のパターンには別の出現数の定義が必要なので扱わない。パターン自身にワイルドカードがある場合、通常の文字の等しさから作る接頭辞関数をそのまま使うことはできない。重複を許さない場合にも、一致後の状態を残すこの遷移は仕様に合わない。
+
+複数の語を数えたいなら、各語の一致状態をまとめる別のオートマトンが必要になる。また「全体で文字 `a` をちょうど $K$ 個使う」などの条件があると、末尾の一致長だけでは将来の可否を判定できず、その制約の状態も加える必要がある。
+
+## なぜ正しいか
+
+将来のパターンに伸びる可能性がある処理済みの末尾は、全てパターンの接頭辞である。そのうち最長の一致長を知っていれば、それより短い一致は接頭辞関数の連鎖として復元できる。従って次の一文字でできる一致と出現は、現在の一致長だけから決まる。
+
+同じ一致長に到達した二つの補完済み接頭辞は、以後に選べる文字と、その文字列を加えたときに増える出現数が等しい。既に得た出現数の大きい方を残しても、最適解は失われない。
+
+一文字を追加して新しく終わる出現は、非空の一つのパターンでは高々一回である。長さ $M$ の一致を得た瞬間にだけ1を足せば、各出現をその終了位置で一度ずつ数える。その後に $\pi[M-1]$ へ移ることで、完成済みの語の一部を使う次の出現も保持される。
+
+各位置で許される全ての文字を試すため、全ての補完文字列をDP上で扱っている。各状態に最良の得点を残し続け、最後に全状態の最大値を取れば、達成できる出現数の最大値になる。
+
+## 計算量
+
+ワイルドカードが $K$ 個ある文字列を全て補完すると、最大 $26^K$ 通りになる。状態を一致長にまとめると、接頭辞関数が $O(M)$、遷移表が $O(26M)$、DPが最悪 $O(26NM)$ 時間になる。固定文字の位置では一状態につき一遷移でよい。
+
+補助空間は遷移表とDPの二層を合わせて $O(26M+M)$。各文字・各状態で一致先を繰り返したどって表を作ると、前処理が $O(26M^2)$ になり得るため、短い状態の完成済みの表を参照する。
+
+## 実装
+
+文字列の長さは $100000$ 以下、パターンの長さは $1$ 以上 $100000$ 以下、両者の長さの積は $10000000$ 以下とする。文字列は `a` から `z` または `?`、パターンは `a` から `z` のみを受け付ける。これらに違反すると全て `invalid_argument` を投げる。
+
+空文字列は $0$ を返す。パターンが文字列より長い場合も $0$。その場合も文字の検査を省略しない。答えは出現回数なので、`int` に収まる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int maximum_wildcard_pattern_occurrences(
+    const string& text, const string& pattern) {
+    if (text.size() > 100000 || pattern.empty() || pattern.size() > 100000
+        || text.size() * pattern.size() > 10000000)
+        throw invalid_argument("unsupported string lengths");
+    for (char c : text)
+        if ((c < 'a' || c > 'z') && c != '?')
+            throw invalid_argument("invalid text character");
+    for (char c : pattern)
+        if (c < 'a' || c > 'z')
+            throw invalid_argument("invalid pattern character");
+    if (pattern.size() > text.size()) return 0;
+
+    const int m = static_cast<int>(pattern.size());
+    vector<int> pi(m, 0);
+    for (int i = 1; i < m; ++i) {
+        int q = pi[i - 1];
+        while (q > 0 && pattern[q] != pattern[i]) q = pi[q - 1];
+        if (pattern[q] == pattern[i]) ++q;
+        pi[i] = q;
+    }
+    vector<array<int, 26>> go(m);
+    for (int q = 0; q < m; ++q)
+        for (int c = 0; c < 26; ++c)
+            go[q][c] = pattern[q] == 'a' + c
+                ? q + 1 : (q == 0 ? 0 : go[pi[q - 1]][c]);
+
+    constexpr int NEG = -1000000000;
+    vector<int> dp(m, NEG), next(m, NEG);
+    dp[0] = 0;
+    for (char letter : text) {
+        fill(next.begin(), next.end(), NEG);
+        const int first = letter == '?' ? 0 : letter - 'a';
+        const int last = letter == '?' ? 26 : first + 1;
+        for (int q = 0; q < m; ++q) {
+            if (dp[q] == NEG) continue;
+            for (int c = first; c < last; ++c) {
+                const int matched = go[q][c];
+                const bool completed = matched == m;
+                const int to = completed ? pi[m - 1] : matched;
+                next[to] = max(next[to], dp[q] + static_cast<int>(completed));
+            }
+        }
+        dp.swap(next);
+    }
+    return *max_element(dp.begin(), dp.end());
+}
+```
+
+## 関連する手法
+
+[禁止語を避けるDPに、末尾で一致している接頭辞の長さを持つ](/flowchartcp/techniques/automaton-forbidden-dp/) ・ [接頭辞の出現回数を、短い一致先へ集約する](/flowchartcp/techniques/prefix-border-occurrences/) ・ [DPの前後の層だけを持つ](/flowchartcp/techniques/dp-dimension-rolling/)
+
+## 参考資料
+
+- [Codeforces 808G：Anthem of Berland](https://codeforces.com/problemset/problem/808/G)
+
+<TechniqueReferences techniqueId="wildcard-pattern-overlap-automaton" />

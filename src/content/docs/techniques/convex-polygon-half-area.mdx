@@ -1,0 +1,71 @@
+---
+title: "凸多角形を切る弦の面積を、端点の単調移動で目標へ近づける"
+description: "連続した頂点の面積を外積の累積和で求め、目標を挟む二候補だけを調べる。"
+techniqueId: convex-polygon-half-area
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+凸多角形の非隣接な二頂点を結ぶ弦で切り、一方の面積を全体の一定割合へ近づけたい。全ての弦を調べると $O(N^2)$ になる。割合が固定なら、一方の端点を進めたときの面積の単調性を使える。
+
+## 考え方
+
+頂点列を二倍にし、境界の外積 $\operatorname{cross}(p_k,p_{k+1})$ の累積和を取る。$i$ から $j$ までの境界と弦で囲む領域の面積の二倍は
+
+$$A(i,j)=\sum_{k=i}^{j-1}\operatorname{cross}(p_k,p_{k+1})+\operatorname{cross}(p_j,p_i)$$
+
+で $O(1)$ で求まる。凸かつ反時計回りなら、$i$ 固定で $j$ を進めると領域へ三角形を足すので面積は減らない。
+
+全体の面積の二倍を $S$ とする。四分の一へ近づける場合は $|S-4A(i,j)|$ を最小化する。これは求める面積差の8倍に等しい。$4A\ge S$ になる最初の $j$ と直前を調べ、開始点 $i$ を次へ進める。
+
+## 適用条件
+
+頂点が反時計回りの凸多角形で、$N\ge4$。非隣接な二頂点で切り、片側を選べることを要求する。凹多角形では弦が外へ出たり面積が減ったりするので、このポインタの移動は正しくない。
+
+実装は四分の一を目標に固定し、両側の選択は頂点列の向き付き区間を全て調べることで含める。目標を別の有理数 $a/b$ にする場合は比較を $bA-aS$ へ置き換える。座標の絶対値 $10^9$ 以下、$N\le10^6$ とし、累積和も128ビットで保存する。
+
+## なぜ正しいか
+
+固定した $i$ に対して $A(i,j)$ は単調なので、絶対差の最小値は目標をまたぐ直前か直後で達成される。端点 $i$ を次へ進めると、同じ $j$ の領域から三角形を取り除くため面積は増えない。従って目標をまたぐ最初の $j$ が左へ戻ることはない。
+
+範囲を $i+2\le j\le i+N-2$ に限定すれば、隣接頂点による無効な切断を候補へ混ぜずに済む。
+
+## 計算量
+
+全弦の列挙は $O(N^2)$。累積和と端点の走査は $O(N)$ 時間、頂点を二倍にする配列と累積和に $O(N)$ 空間。
+
+## 実装
+
+`quarter_area_error` は面積差の8倍を128ビット整数で返す。入力の向きや凸性は呼び出し側で保証する。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+i128 quarter_area_error(const std::vector<Point>& polygon){
+    int n=polygon.size();if(n<4)throw std::invalid_argument("at least four vertices");
+    auto cross=[](Point a,Point b){return i128(a.x)*b.y-i128(a.y)*b.x;};
+    std::vector<Point> p=polygon;for(Point a:polygon)p.push_back(a);
+    std::vector<i128> prefix(2*n+1);for(int k=0;k<2*n;++k)prefix[k+1]=prefix[k]+cross(p[k],p[(k+1)%(2*n)]);
+    i128 total=prefix[n];
+    auto area=[&](int i,int j){return prefix[j]-prefix[i]+cross(p[j],p[i]);};
+    auto error=[&](int i,int j){i128 x=total-4*area(i,j);return x<0?-x:x;};
+    i128 answer=i128(1)<<120;int j=2;
+    for(int i=0;i<n;++i){j=std::max(j,i+2);while(j<i+n-2 && 4*area(i,j)<total)++j;
+        answer=std::min(answer,error(i,j));if(j-1>=i+2)answer=std::min(answer,error(i,j-1));}
+    return answer;
+}
+```
+
+## 関連する手法
+
+[凸多角形の内外を、一頂点からの扇形の二分探索で判定する](/flowchartcp/techniques/convex-point-membership/) ・ [尺取り法](/flowchartcp/techniques/two-pointers/) ・ [格子多角形の内点数を面積と辺上の GCD から求める](/flowchartcp/techniques/lattice-pick-area/)
+
+## 参考資料
+
+- [AtCoder：One Fourth（原典）](https://atcoder.jp/contests/abc250/tasks/abc250_f)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="convex-polygon-half-area" />

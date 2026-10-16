@@ -1,0 +1,224 @@
+---
+title: "元の次数を保つ頂点をできるだけ多くして、木を作り直す"
+description: "全頂点に次数1を与えた残りを予算とし、次数を保つ費用が小さい頂点から選ぶ。残りを一頂点へ置き、Prüfer列で任意の新しい木を構成する。"
+techniqueId: tree-degree-preservation-budget-construction
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+同じラベルの頂点を使って、無向グラフを新しい木へ作り直す。元と次数が変わる頂点の個数を最小にしたい。新しい辺の端点は自由に選べ、元の辺の一部を残すという制限はない。
+
+この条件では、元の辺の配置を最適化に持ち込む必要がない。平行辺も一本ずつ数えて各頂点の次数を求めた後は、次数列だけを使う。与えられたグラフから全域木を選ぶ場合には、辺の配置も制約になるため、この帰着は使えない。
+
+## 考え方
+
+頂点数を $N\ge2$、元の次数を $d_i$ とする。木では全頂点の次数が正で、次数和は $2N-2$ になる。まず全頂点に次数1を与えると、自由に配れる次数の増分は
+
+$$B=(2N-2)-N=N-2$$
+
+だけ残る。頂点 $i$ の次数を元と同じにするには、増分を $c_i=d_i-1$ 個使う。各頂点を保存する価値は等しく1なので、$c_i$ が小さい頂点から予算内で選ぶ。
+
+選べなくなったら、残予算を最初の未選択頂点へ全て与える。それでもその頂点の元次数には届かず、保存する頂点数は変わらない。他の未選択頂点の次数は1のままにする。
+
+例えば元次数が $(1,3,3,3,4)$ なら、予算は3。次数1と次数3を一つ保存して2を使い、残り1を別の頂点へ置く。新次数 $(1,3,2,1,1)$ は和が8で、元の次数を二頂点で保つ。最後に、この正の次数列をPrüfer列から木へ変換する。
+
+## 適用条件
+
+元のグラフは連結な無向多重グラフで、自己ループを持たない。平行辺は許し、それぞれ両端の次数へ1ずつ加える。新しいグラフには自己ループや平行辺のない木を要求する。頂点のラベルは変えず、保存数は同じ頂点同士の次数を比較して数える。
+
+掲載するグラフAPIは $2\le N\le10000$、$1\le M\le100000$ の原典全域を扱う。追加で、一頂点・辺なしも受け付け、次数0の木を返す。原典の下限は二頂点であり、この一頂点の場合はAPIの拡張である。自己ループを次数2として取り込む拡張はせず、不正入力として拒否する。
+
+次数だけを渡すAPIは、$N\ge2$ なら全次数が正、次数和が $2N-2$ 以上であることを要求する。連結グラフなら $M\ge N-1$ より必ず満たす。次数APIでは元の次数が $N-1$ より大きくてもよく、各値は64ビット符号付き整数の正の全域を扱う。このAPIは元の次数列がグラフとして実現可能かどうかを検査せず、条件を満たす任意の希望次数列に対して同じ最適化を行う。
+
+## なぜ正しいか
+
+木で次数を保存する頂点集合を $S$ とする。他の頂点にも少なくとも次数1が必要なので、
+
+$$\sum_{i\in S}(d_i-1)\le N-2$$
+
+が必要である。費用を昇順に $c_{(1)},\ldots,c_{(N)}$ と並べ、先頭から入る最大個数を $r$ とする。任意の $r+1$ 個の費用和は最小の $r+1$ 個の和以上で、予算を超える。従って、どの木でも保存できる頂点は高々 $r$ 個である。同費用の頂点は、どちらを先に選んでもこの上界は変わらない。
+
+次に、この上界を達成する次数列を作れることを示す。選んだ頂点の次数を元通りにし、未選択頂点は次数1から始める。残予算を $b$、最初の未選択頂点を $j$ とすると、選べなかったことから $b<d_j-1$。その頂点の新次数を $1+b$ にしても $d_j$ より小さい。以後の未選択頂点には費用0の頂点が残っていないため、次数1は元と異なる。従って保存数は正確に $r$ 個のままで、次数和は $2N-2$ になる。
+
+全頂点を選べた場合は、$\sum d_i\ge2N-2$ という入力条件と、全費用が予算内という条件から、$\sum d_i=2N-2$ となる。余りは0で、全次数をそのまま使える。この場合に余りを置く未選択頂点を探す必要はない。
+
+あとは、正の整数列 $t_i$ で $\sum t_i=2N-2$ なら、単純な木の次数列として実現できることを使う。各頂点 $i$ を $t_i-1$ 回並べた長さ $N-2$ の列を作り、これをPrüfer列として復号する。
+
+復号中の残次数は「残る列への出現回数＋1」である。残次数1の頂点を一つ取り出し、列の先頭頂点へ結んで取り除く。先頭頂点は残る列に出現するため、取り出した葉とは異なる。最後に残る二頂点を結ぶ。取り除いた頂点は一度しか新しい辺の端として使われず、葉の追加を逆順に見れば連結で閉路がない。従って自己ループも平行辺もなく、各頂点の次数は指定した $t_i$ になる。
+
+構築した木は、保存できる頂点数の上界 $r$ を達成する。よって返す変更頂点数 $N-r$ は最小である。元の辺がどこにあったかはこの証明に現れず、辺を自由に張り直せるという条件に対応している。
+
+## 計算量
+
+次数APIは費用の整列と、葉を取り出す優先度付きキューを使うPrüfer復号に $O(N\log(N+1))$ 時間、返す木を含めて $O(N)$ 空間を使う。Prüfer列の長さは常に $N-2$ であり、元次数が大きくても列をその次数分まで伸ばさない。
+
+グラフAPIは次数集計とDSUによる接続性検査を加えるため、$O(M\alpha(N)+N\log(N+1))$ 時間、入力辺の保存領域を除いて $O(N)$ 空間となる。$\alpha$ は逆Ackermann関数。出力の辺数は $N-1$。探索とDSUの処理に再帰を使わない。
+
+原典では元次数は $M\le100000$、次数和は $2M\le200000$。構築後の次数は $N-1$ 以下、予算は $N-2$ 以下である。次数APIで入力に最大64ビット値を与えても、和の検査は必要な値 $2N-2$ で打ち切るため、入力次数の総和によるオーバーフローは起こらない。
+
+## 実装
+
+`closest_tree_degrees(degrees)` は希望次数列から、最小変更数・実現した次数列・木の全辺を返す。`rebuild_tree_preserving_degrees(n, edges)` はグラフを検査し、平行辺を重複して数えてから同じ処理を行う。頂点は0始まりで、無向辺は一度だけ渡す。`write_rebuilt_tree` は変更数、頂点数と辺数、全辺の順で出力する。
+
+次数APIでは空列、10000を超す頂点数、一頂点で次数0以外、二頂点以上で非正の次数や不足する次数和を `invalid_argument` とする。グラフAPIでは頂点数・辺数上限、端点範囲、自己ループ、非連結を同じ例外で拒否する。平行辺と端点を逆に書いた辺は有効である。
+
+入力を変更せず、内部状態は全て呼び出しごとに作る。返値は自身の配列を持ち、コピー・移動できる。出力用関数は構築と検査を完了してから書き始めるため、不正入力による例外では何も出力しない。メモリ割り当てと出力ストリームの例外はそのまま伝播する。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <numeric>
+#include <ostream>
+#include <queue>
+#include <span>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+namespace degree_tree {
+using Edge = std::pair<int, int>;
+struct Result {
+    int changed_vertices;
+    std::vector<int> degree;
+    std::vector<Edge> edges;
+};
+
+Result closest_tree_degrees(std::span<const std::int64_t> original) {
+    if (original.empty() || original.size() > 10000) {
+        throw std::invalid_argument("vertex count");
+    }
+    const int n = static_cast<int>(original.size());
+    if (n == 1) {
+        if (original[0] != 0) throw std::invalid_argument("singleton degree");
+        return {0, {0}, {}};
+    }
+    const std::int64_t required_sum = 2LL * n - 2;
+    std::int64_t capped_sum = 0;
+    for (std::int64_t d : original) {
+        if (d <= 0) throw std::invalid_argument("nonpositive degree");
+        capped_sum += std::min(d, required_sum - capped_sum);
+    }
+    if (capped_sum < required_sum) {
+        throw std::invalid_argument("degree sum too small");
+    }
+
+    std::vector<int> order(n);
+    std::iota(order.begin(), order.end(), 0);
+    std::sort(order.begin(), order.end(), [&](int a, int b) {
+        if (original[a] != original[b]) return original[a] < original[b];
+        return a < b;
+    });
+    std::vector<int> target(n, 1);
+    int budget = n - 2;
+    int kept = 0;
+    while (kept < n) {
+        const int v = order[kept];
+        const std::int64_t cost = original[v] - 1;
+        if (cost > budget) break;
+        target[v] = static_cast<int>(original[v]);
+        budget -= static_cast<int>(cost);
+        ++kept;
+    }
+    if (kept < n) target[order[kept]] += budget;
+
+    std::vector<int> code;
+    code.reserve(n - 2);
+    for (int v = 0; v < n; ++v) {
+        for (int count = 1; count < target[v]; ++count) code.push_back(v);
+    }
+    std::vector<int> remaining = target;
+    std::priority_queue<int, std::vector<int>, std::greater<int>> leaves;
+    for (int v = 0; v < n; ++v) {
+        if (remaining[v] == 1) leaves.push(v);
+    }
+    std::vector<Edge> edges;
+    edges.reserve(n - 1);
+    for (int v : code) {
+        const int leaf = leaves.top();
+        leaves.pop();
+        edges.emplace_back(leaf, v);
+        remaining[leaf] = 0;
+        if (--remaining[v] == 1) leaves.push(v);
+    }
+    const int a = leaves.top();
+    leaves.pop();
+    const int b = leaves.top();
+    edges.emplace_back(a, b);
+    return {n - kept, std::move(target), std::move(edges)};
+}
+
+namespace detail {
+class DisjointSets {
+    std::vector<int> parent, size;
+public:
+    explicit DisjointSets(int n) : parent(n), size(n, 1) {
+        std::iota(parent.begin(), parent.end(), 0);
+    }
+    int find(int v) {
+        while (parent[v] != v) {
+            parent[v] = parent[parent[v]];
+            v = parent[v];
+        }
+        return v;
+    }
+    void unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a == b) return;
+        if (size[a] < size[b]) std::swap(a, b);
+        parent[b] = a;
+        size[a] += size[b];
+    }
+};
+} // namespace detail
+
+Result rebuild_tree_preserving_degrees(int n, std::span<const Edge> edges) {
+    if (n < 1 || n > 10000 || edges.size() > 100000) {
+        throw std::invalid_argument("graph size");
+    }
+    std::vector<std::int64_t> degrees(n, 0);
+    detail::DisjointSets components(n);
+    for (auto [a, b] : edges) {
+        if (a < 0 || a >= n || b < 0 || b >= n || a == b) {
+            throw std::invalid_argument("edge endpoints or self loop");
+        }
+        ++degrees[a];
+        ++degrees[b];
+        components.unite(a, b);
+    }
+    const int root = components.find(0);
+    for (int v = 1; v < n; ++v) {
+        if (components.find(v) != root) {
+            throw std::invalid_argument("disconnected graph");
+        }
+    }
+    return closest_tree_degrees(degrees);
+}
+
+void write_rebuilt_tree(std::ostream& output, int n,
+                       std::span<const Edge> edges) {
+    const Result result = rebuild_tree_preserving_degrees(n, edges);
+    output << result.changed_vertices << '\n';
+    output << n << ' ' << result.edges.size() << '\n';
+    for (auto [a, b] : result.edges) output << a << ' ' << b << '\n';
+}
+} // namespace degree_tree
+```
+
+## 関連する手法
+
+Prüfer列は、正の次数と木の全体構造を結ぶ道具になる。ここでは各頂点の出現回数だけを決めればよく、列の並び順は自由である。
+
+[交換法](/flowchartcp/techniques/exchange-argument/)は、同じ価値の候補を費用順に選べることを説明する。重み付きで「次数を保つ価値」が頂点ごとに異なる場合は、同じ選び方の最適性は保証されない。
+
+[木で次数上限を守る辺選択](/flowchartcp/techniques/tree-dp-degree-capacity/)では、使える辺が元の木に制限される。辺を自由に張れる今回とは適用条件が異なる。
+
+## 参考資料
+
+- [ICPC World Finals 2018 問題冊子・Problem K、21〜22頁](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21)。元グラフの条件と、次数変更数を最小にする任意の木の構成という適用根拠。
+- [Per Austrin・Jakub Onufry Wojtaszczyk, Solution sketches・Problem K、12〜13頁](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12)。ICPC公式ドメイン掲載の非公式分析。次数の増分を安い順に配る方針を参照し、余りの処理とPrüfer列による構成は本文で証明した。
+- [ICPC公式ニュース・World Finals 2018](https://news.icpc.global/wf2018/)。競技日2018年4月19日の確認資料。
+
+<TechniqueReferences techniqueId="tree-degree-preservation-budget-construction" />

@@ -1,0 +1,67 @@
+---
+title: "ナップサックDP"
+description: "合計の重さや価値を状態にして、品物を選ぶ最適な組み合わせを求める。"
+techniqueId: knapsack
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+合計の重さや価値を状態にして、品物を選ぶ最適な組み合わせを求める。
+
+## 使う場面
+
+品物を選ぶ・選ばないという選択が多く、全探索が難しいときに使う。容量や価値の合計が十分小さければ、選んだ品物の集合そのものを保存せず、合計値ごとに最適な結果を保存できる。
+
+## 考え方
+
+各品物を1回まで選べる場合は、品物を一つずつ処理する。「重さがちょうど $w$ のときの最大価値」を保存し、今の品物を使う場合と使わない場合を比較する。
+
+1次元の配列で更新するなら、重さを大きい方から処理する。これにより同じ品物を二度使わない。品物を何度でも使える場合は、逆に小さい方から更新する。重さの上限が大きくても、価値の総和が小さければ、「価値ごとの最小重さ」を状態にする方法が使える。
+
+## 適用条件
+
+重さが非負整数で、状態として持つ値域が十分小さい必要がある。「容量以下」と「容量ちょうど」では、答えの取り方が異なる。ちょうどの重さを保存する場合は、到達できない重さを0で初期化してはいけない。
+
+各品物を1回しか使えないのに昇順で更新すると、直前に更新した値を参照して同じ品物を再利用してしまう。
+
+## なぜ正しいか
+
+ある品物までの選択は、最後の品物を選ぶ場合と選ばない場合に分けられる。降順の更新では、参照する小さい重さの状態がまだ現在の品物で更新されていない。そのため、前の品物までの選択に現在の品物を一度だけ加えた状態を作れる。
+
+## 計算量
+
+品物数を $N$、容量を $W$ とすると、時間は $O(NW)$、空間は $O(W)$。数値としての容量に依存する計算量なので、容量が非常に大きい場合には使えない。
+
+## 実装
+
+`knapsack_exact` は、各重さをちょうど作る最大価値を返す。作れない重さには `NEG` が入る。容量以下の最大価値が必要なら、返された配列の最大値を取る。価値と途中の合計の絶対値は $2^{60}$ 未満とする。
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <cassert>
+using namespace std;
+struct Item { int weight; long long value; };
+vector<long long> knapsack_exact(const vector<Item>& items,int capacity) {
+    assert(capacity>=0);
+    const long long NEG=-(1LL<<60);
+    vector<long long> dp(capacity+1,NEG);
+    dp[0]=0;
+    for(auto [w,v]:items) {
+        assert(w>=0);
+        for(int x=capacity;x>=w;--x)
+            if(dp[x-w]!=NEG) dp[x]=max(dp[x],dp[x-w]+v);
+    }
+    return dp;
+}
+```
+
+## 関連する手法
+
+[半分全列挙](/flowchartcp/techniques/meet-in-the-middle/) ・ [bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [USACO Guide: Knapsack DP](https://usaco.guide/gold/knapsack)
+- [USACO Guide: Minimizing Coins solution](https://usaco.guide/problems/cses-1634-minimizing-coins/solution)
+
+<TechniqueReferences techniqueId="knapsack" />

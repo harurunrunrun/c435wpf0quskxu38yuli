@@ -1,0 +1,124 @@
+---
+title: "次と同じ色だけを除くDPは、末尾の色が異なる上位二つを残す"
+description: "削除数ごとに二つの候補を持ち、次の色と異なる最良値を定数時間で取り出します。"
+techniqueId: color-exclusion-two-best-dp
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+色と価値が付いた列からちょうど $K$ 個を削除し、残した列で同じ色が隣り合わないようにして、価値の和を最大化します。元の順番は変えられず、$N$ は大きい一方で $K$ は小さい、という条件が手掛かりです。
+
+削除数と末尾の色を状態にすると、色の種類数だけDPが膨らみます。しかし次の要素を残す際に調べるのは、「その色以外で最良なのはどれか」だけです。一つの色を除く最大値なら、異なる色の上位二つで足ります。
+
+## 考え方
+
+先頭から $i$ 個を処理したとき、$F_i(j,c)$ を「$j$ 個を削除し、末尾の色が $c$ である列の価値和の最大値」とします。空列には入力にない専用の色を割り当てます。
+
+次の色が $x$、価値が $v$ なら、遷移は二つです。
+
+- 削除する：末尾の色と価値を変えず、削除数を1増やす。
+- 残す：末尾の色が $x$ 以外の候補に $v$ を足し、新しい末尾を $x$ にする。
+
+各削除数について、色ごとの最大値のうち上位二つだけを、色と値の組で保存します。最良候補の色が $x$ なら二番目を使い、そうでなければ最良候補を使えます。二番目が存在しなければ、その遷移はできません。
+
+同じ色の候補が複数来たら、まずその色の最大値へまとめます。**同じ色を二枠に入れてはいけません。** 例えば `(赤, 10)`、`(赤, 9)`、`(青, 8)` から値だけで二つ選ぶと、次が赤のときに使える青を失います。同点で色が違う候補は、二つとも残して構いません。
+
+## 適用条件
+
+将来のつながり方が末尾の色だけで決まり、次の要素を残す際に禁止される末尾色が一つであることが条件です。禁止色が複数ある場合に、二つだけを残す根拠はありません。過去の色の使用回数や、二つ以上前の要素も制約に関わる場合には、追加の状態が必要です。
+
+削除は「ちょうど $K$ 個」です。最後に削除数 $K$ の状態だけから答えを取ります。$K$ 以下の全状態から最大を取ると別の条件になります。
+
+掲載実装は価値が負の場合と、全要素を削除してよい場合も扱います。負の答えと不可能を区別し、空列の価値は0とします。原典では価値は正、$K<N$ ですが、状態の圧縮にはその二条件を使っていません。選んだ位置の復元は含みません。
+
+## なぜ正しいか
+
+同じ削除数・同じ末尾色の二つの列は、以後に選べる要素が同じです。価値が小さい方を捨てても、最適値を失いません。
+
+異なる色の上位二つを持っていれば、禁止色を一つ除いた最大値を必ず得られます。最良の色が禁止されなければそれを選び、禁止されるなら、二番目は別の色なので選べます。
+
+さらに、次の状態の上位二つ自体も計算できます。削除によって来る候補は、一つ前の削除数の上位二つで十分です。そこへ「残す」遷移で得る色 $x$ の候補を加えます。削除元の三番目以下の色は、上位二つより良くなることがなく、残す遷移で値が変わる色も $x$ だけです。この高々三色をまとめれば、更新後の上位二つを失いません。
+
+初期状態は空列一つです。各段階で正しい上位二つを保つため、最終的な削除数 $K$ の最良値が答えです。
+
+## 計算量
+
+色数を $C$ とすると、色ごとの状態を全て保存しても $O(NKC)$ 時間・$O(KC)$ 空間が必要です。異なる色の二候補へまとめると、時間は $O(N(K+1))$、追加空間は $O(K+1)$ になります。$K=0$ も含むため、計算量には $K+1$ を用いています。
+
+## 実装
+
+`maximum_colorful_subsequence_value(colors, values, deletions)` は最適値を返し、不可能なら `nullopt` を返します。入力契約は $0\le N\le200000$、$0\le K\le\min(N,500)$、色は非負の `int`、価値は $-10^9$ 以上 $10^9$ 以下です。長さの不一致と契約外の値は `invalid_argument` にします。価値和の絶対値は $2\times10^{14}$ 以下なので、`long long` に収まります。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+optional<long long> maximum_colorful_subsequence_value(
+        const vector<int>& colors, const vector<long long>& values,
+        int deletions) {
+    if (colors.size() != values.size() || colors.size() > 200000)
+        throw invalid_argument("invalid sequence length");
+    int n = int(colors.size());
+    if (deletions < 0 || deletions > n || deletions > 500)
+        throw invalid_argument("invalid deletion count");
+    for (int i = 0; i < n; ++i) {
+        if (colors[i] < 0 || values[i] < -1000000000LL
+                          || values[i] > 1000000000LL)
+            throw invalid_argument("invalid color or value");
+    }
+
+    struct Candidate {
+        int color = -2;  // -2: no candidate, -1: empty sequence
+        long long value = 0;
+    };
+    using BestTwo = array<Candidate, 2>;
+    auto offer = [](BestTwo& best, Candidate candidate) {
+        if (candidate.color == -2) return;
+        for (int k = 0; k < 2; ++k) {
+            if (best[k].color != candidate.color) continue;
+            best[k].value = max(best[k].value, candidate.value);
+            if (k == 1 && best[1].value > best[0].value)
+                swap(best[0], best[1]);
+            return;
+        }
+        if (best[0].color == -2 || candidate.value > best[0].value) {
+            best[1] = best[0];
+            best[0] = candidate;
+        } else if (best[1].color == -2 || candidate.value > best[1].value) {
+            best[1] = candidate;
+        }
+    };
+
+    vector<BestTwo> dp(deletions + 1), next(deletions + 1);
+    dp[0][0] = {-1, 0};
+    for (int i = 0; i < n; ++i) {
+        fill(next.begin(), next.end(), BestTwo{});
+        for (int j = 0; j <= min(i, deletions); ++j) {
+            for (Candidate candidate : dp[j]) {
+                if (candidate.color == -2) continue;
+                if (j < deletions) offer(next[j + 1], candidate);
+                if (candidate.color != colors[i]) {
+                    offer(next[j], {colors[i], candidate.value + values[i]});
+                }
+            }
+        }
+        dp.swap(next);
+    }
+    if (dp[deletions][0].color == -2) return nullopt;
+    return dp[deletions][0].value;
+}
+```
+
+## 関連する手法
+
+- [同じ状態の劣る候補を捨てる](/flowchartcp/techniques/dp-state-dominance/)：将来の選択肢を比べ、残す候補を減らす考え方。
+- [木の距離に行先の値を足す最大値は、戻す子方向を上位二つから除く](/flowchartcp/techniques/tree-target-bonus-excluding-self/)：色の代わりに、候補が来た方向を区別して一つを除く場合。
+- [直前の層だけ保存する](/flowchartcp/techniques/dp-dimension-rolling/)：処理済み長さの軸を配列二枚へ減らす方法。
+
+## 参考資料
+
+- [AtCoder ABC345 E：Colorful Subsequence](https://atcoder.jp/contests/abc345/tasks/abc345_e) — 削除数を指定し、隣接同色を避けながら価値和を最大化する原典。
+- [AtCoder ABC345 E公式解説](https://atcoder.jp/contests/abc345/editorial/9590) — 末尾の色が異なる上位二候補を保存するDP。
+
+<TechniqueReferences techniqueId="color-exclusion-two-best-dp" />

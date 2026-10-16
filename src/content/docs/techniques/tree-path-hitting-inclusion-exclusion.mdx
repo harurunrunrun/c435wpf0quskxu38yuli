@@ -1,0 +1,93 @@
+---
+title: "少数の経路に黒辺を必ず置く条件は、失敗する経路の集合を包除する"
+description: "辺の色を全探索する代わりに、全て白になる経路を選び、その和集合だけ白へ固定する。"
+techniqueId: tree-path-hitting-inclusion-exclusion
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+独立に白黒を選べる多数の辺があり、少数の指定経路それぞれに黒い辺を1本以上置きたい。辺の全組合せは多いが、制約の個数なら全探索できる。制約の経路が重なっていて、単純な積では数えられない。
+
+## 考え方
+
+第 $i$ 条件の失敗を「経路 $i$ の辺が全て白」とする。失敗させる条件の集合 $S$ を固定すると、その経路の和集合 $U(S)$ の辺は全て白でなければならない。それ以外の辺は自由に2色を選べる。
+
+辺数を $E$ とすると、答えは
+
+$$\sum_{S\subseteq\{0,\ldots,M-1\}}(-1)^{|S|}2^{E-|U(S)|}.$$
+
+辺数が64以下なら、経路を辺集合のビット列にできる。根から各頂点までの辺集合を先に求めると、$u$–$v$ 経路の集合は二つの根経路のXORで得られる。共通部分は両方に現れて消える。
+
+部分集合ごとの和集合は、最下位の1ビットを取り除いた集合の和集合に、その経路をORして求める。これにより集合ごとに全経路を足し直さずに済む。
+
+## 適用条件
+
+辺の色を独立に選べて、各条件が「この辺集合内に黒が1本以上」である。黒い辺がちょうど1本、黒い辺同士が隣接不可、といった別条件はこの自由な2乗に含まれない。
+
+包除では制約数 $M$ が小さい必要がある。掲載実装は $1\le N\le64$、$M\le20$、辺集合を64ビットへ格納する。原典は $N\le50$。もっと大きい木なら複数語のビット列や木の差分で和集合を数え、包除自体は同様に使える。始点と終点が同じ経路の条件は満たせず、答えは0になる。
+
+## なぜ正しいか
+
+ある塗り方が失敗する条件の集合を $B$ とする。この塗り方は包除の和で、$S\subseteq B$ のときだけ数えられ、その係数の合計は $(1-1)^{|B|}$。失敗がない塗り方だけ1回残り、失敗のある塗り方は0回になる。
+
+失敗させる経路の和集合の全辺を白にした後は、残りの辺に何の条件も課していない。その塗り方の数は正確に $2^{E-|U(S)|}$。和集合はORで作るので、重なった辺を二重に引かない。
+
+## 計算量
+
+辺の色の全探索は $O(2^{N-1}MN)$ 時間。64ビット集合なら根経路の準備 $O(N)$、各制約の集合 $O(M)$、包除 $O(2^M)$ 時間へ改善する。空間は $O(N+2^M)$。一般の $B=\lceil E/64\rceil$ 語のビット列では時間・空間の集合部分が $B$ 倍になる。
+
+## 実装
+
+`count_path_hit_colorings(n, edges, paths)` は剰余を取らない正確な個数を返す。頂点は0始まり。辺数63以下なので最終値は `uint64_t` に入るが、包除の途中の正負の和は大きくなるため `__int128` にする。制約が0個の呼び出しも受け付ける。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+uint64_t count_path_hit_colorings(int n,const vector<pair<int,int>>& edges,
+        const vector<pair<int,int>>& paths) {
+    assert(1<=n && n<=64 && int(edges.size())==n-1 && paths.size()<=20);
+    vector<vector<pair<int,int>>> g(n);
+    for(int i=0;i<n-1;++i) {
+        auto [u,v]=edges[i];assert(0<=u && u<n && 0<=v && v<n);
+        g[u].push_back({v,i});g[v].push_back({u,i});
+    }
+    vector<int> parent(n,-2),order{0};parent[0]=-1;
+    vector<uint64_t> root_path(n);
+    for(size_t i=0;i<order.size();++i) {
+        int v=order[i];
+        for(auto [u,e]:g[v]) if(u!=parent[v]) {
+            assert(parent[u]==-2);parent[u]=v;
+            root_path[u]=root_path[v]^(uint64_t(1)<<e);order.push_back(u);
+        }
+    }
+    assert(int(order.size())==n);
+    vector<uint64_t> masks;
+    for(auto [u,v]:paths) {
+        assert(0<=u && u<n && 0<=v && v<n);
+        masks.push_back(root_path[u]^root_path[v]);
+    }
+    unsigned total=1u<<masks.size();
+    vector<uint64_t> united(total);
+    __int128 answer=0;
+    for(unsigned s=0;s<total;++s) {
+        if(s) {unsigned previous=s&(s-1);united[s]=united[previous]|masks[countr_zero(s)];}
+        int free_edges=n-1-popcount(united[s]);
+        __int128 ways=(__int128)(uint64_t(1)<<free_edges);
+        if(popcount(s)&1) answer-=ways;else answer+=ways;
+    }
+    assert(0<=answer && answer<=((__int128)1<<(n-1)));
+    return uint64_t(answer);
+}
+```
+
+## 関連する手法
+
+[多数の経路の辺通過回数は、端点とLCAに差分を置いて下から足す](/flowchartcp/techniques/tree-path-edge-difference/) ・ [全ての指定文字を含む列を、欠ける文字から数える](/flowchartcp/techniques/inclusion-exclusion-forbidden/)
+
+## 参考資料
+
+- [AtCoder：Tree and Constraints](https://atcoder.jp/contests/abc152/tasks/abc152_f)
+- [AtCoder公式解説](https://img.atcoder.jp/abc152/editorial.pdf)
+
+<TechniqueReferences techniqueId="tree-path-hitting-inclusion-exclusion" />

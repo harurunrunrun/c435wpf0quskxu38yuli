@@ -1,0 +1,91 @@
+---
+title: "区間内の同じ値の最短間隔は、連続する出現対を右端順に記録する"
+description: "最短の同値対は隣り合う出現から選べるので、右端までに閉じた対の距離を左位置へ置く。"
+techniqueId: offline-range-equal-gap
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+最短の同値対は隣り合う出現から選べるので、右端までに閉じた対の距離を左位置へ置く。
+
+## 使う場面
+
+固定配列の指定区間について、値が等しい異なる二位置の距離の最小を求めたい。全ての等値対を用意すると、同じ値が多い場合に二次個数になる。
+
+## 考え方
+
+同じ値の出現列で隣り合う対だけを候補にする。質問を右端の順に並べ、位置 $i$ に着いたら同値の直前位置 $p$ に距離 $i-p$ を記録する。
+
+右端 $R$ まで処理した時点では、記録済みの対は全て右位置が $R$ より前。区間 $[L,R)$ の答えは、左位置が $L$ 以上にある記録の区間最小値になる。
+
+単出現値を探す場合と違い、古い対の記録は消さない。それぞれの出現位置は、その直後の同値位置との対を一つだけ持つ。
+
+## 適用条件
+
+配列は固定、質問を並べ替え可能。距離は添字の差であり、値の差ではない。同じ値が隣り合う「出現」は、配列内の隣接位置に限らない。
+
+掲載実装は任意の64ビット整数値、配列と質問数はそれぞれ50万以下。二位置がない区間や同値対がない区間は -1。
+
+## なぜ正しいか
+
+区間内の同値対 $(i,j)$ の間に同値位置 $k$ があれば、$(i,k)$ か $(k,j)$ の方が距離は短い。間にある位置も同じ区間に入るため、最短対は全体の出現列で連続する対から選べる。
+
+右位置が処理済みの対を左位置へ記録すると、質問時には右端条件を既に満たしている。左位置の範囲を区間最小値で限定すれば、両端が質問区間に入る全候補だけを調べられる。
+
+## 計算量
+
+質問ごとに全位置対を比べる方法は $O(QN^2)$ 時間、前の同値位置を走査で探しても $O(QN\log N)$ 時間・$O(N+Q)$ 空間。圧縮と右端の整列、対の点記録、区間最小値により $O(N\log N+Q\log Q+(N+Q)\log(N+1))$ 時間・$O(N+Q)$ 空間。
+
+## 実装
+
+`range_equal_minimum_gaps` は半開区間の質問に対し、入力順の最小距離を返す。未記録の位置には $N+1$ を置き、実際の距離と区別する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> range_equal_minimum_gaps(const vector<long long>& a,
+        const vector<pair<int,int>>& queries) {
+    int n=a.size(),q=queries.size();
+    if(n>500000 || q>500000) throw invalid_argument("size bounds");
+    for(auto [l,r]:queries) if(l<0 || l>r || r>n) throw out_of_range("query range");
+    auto values=a;sort(values.begin(),values.end());values.erase(unique(values.begin(),values.end()),values.end());
+    vector<int> rank(n),last(values.size(),-1);
+    for(int i=0;i<n;++i) rank[i]=lower_bound(values.begin(),values.end(),a[i])-values.begin();
+    int base=1;while(base<n) base*=2;
+    int infinity=n+1;vector<int> tree(2*base,infinity);
+    auto set=[&](int p,int value) {
+        p+=base;tree[p]=value;
+        for(p/=2;p>0;p/=2) tree[p]=min(tree[2*p],tree[2*p+1]);
+    };
+    auto minimum=[&](int l,int r) {
+        int result=infinity;
+        for(l+=base,r+=base;l<r;l/=2,r/=2) {
+            if(l&1) result=min(result,tree[l++]);
+            if(r&1) result=min(result,tree[--r]);
+        }
+        return result;
+    };
+    vector<int> order(q);iota(order.begin(),order.end(),0);
+    sort(order.begin(),order.end(),[&](int x,int y){return queries[x].second<queries[y].second;});
+    vector<int> answer(q,-1);int next=0;
+    for(int id:order) {
+        auto [l,r]=queries[id];
+        while(next<r) {
+            int p=last[rank[next]];
+            if(p!=-1) set(p,next-p);
+            last[rank[next]]=next;++next;
+        }
+        int value=minimum(l,r);if(value!=infinity) answer[id]=value;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[区間に一度だけ現れる値は、最新位置の直前出現が左端より前かで探す](/flowchartcp/techniques/offline-range-singleton-witness/) ・ [区間の種類数を各値の最新位置だけで数える](/flowchartcp/techniques/offline-rightmost-occurrence/)
+
+## 参考資料
+
+- [Codeforces：Closest Equals](https://codeforces.com/problemset/problem/522/D)
+
+<TechniqueReferences techniqueId="offline-range-equal-gap" />

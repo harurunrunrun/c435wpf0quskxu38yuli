@@ -1,0 +1,86 @@
+---
+title: "ちょうどK個の価値和と種類ボーナスは、重複の最小値を未選択種類の最大値と交換する"
+description: "価値上位K個から始め、種類を一つ増やすたびに最小の交換損失だけ払い、各段階の得点を比べます。"
+techniqueId: fixed-size-diversity-exchange
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+価値の和だけなら上位 $K$ 個を選べばよいが、種類を増やすほど追加のボーナスがある。選択個数を維持しながら、価値の損失と種類数の増加を比べたいときに使う。
+
+## 考え方
+
+全要素を価値の降順に並べ、最初の $K$ 個を採用する。各種類の最大価値の一個は代表として残し、二個目以降を除外候補の最小ヒープへ入れる。
+
+残りを降順に走査し、まだ選んでいない種類が来たら、除外候補の最小価値と交換する。種類が一つ増えるたびに「価値和＋ボーナス」を評価し、最大を取る。代表を消すと種類が増えないため、除外候補に入れない。
+
+ボーナスは原典では $x^2$。実装は任意の非減少な配列 $B[x]$ を受け取る。
+
+## 適用条件
+
+選ぶ個数が固定で、各要素の種類は一つ。種類ボーナスは種類数のみで決まり、非減少であることが必要。特定の種類を集める追加利益や、種類ごとに異なる個数制限は扱わない。非減少でなければ初期集合より少ない種類を調べる必要があり、この実装では解けない。負の価値もよい。
+
+## なぜ正しいか
+
+初期集合は全ての $K$ 個選択の中で価値和が最大。そこでの種類数を $x_0$ とする。$x<x_0$ の集合は価値和もボーナスも初期集合以下なので調べる必要がない。
+
+初期集合にある種類の代表は、どれも未選択種類の代表以上の価値を持つ。同じ種類数の解で初期の代表を未選択種類へ置き換えていたら、初期の代表を戻しても悪化しない。よって $x_0$ 種の代表を保ったまま、残りの種類を増やす最適解が存在する。
+
+各追加種類ではその種類の最大価値の一個を使ってよい。残る重複枠を最大価値から埋めるのが最適であり、未選択の重複候補は初期の重複候補以下なので途中で新たに採用する必要もない。したがって、未選択種類の代表を大きい順に加え、重複候補を小さい順に外すと、各種類数での最大価値和が得られる。全ての到達可能な種類数で得点を比較する。
+
+## 計算量
+
+全 $K$ 個選択の検証は $O(\binom NK N)$ 時間、追加空間 $O(N)$。整列・種類の照合・最小ヒープを用いると時間 $O(N\log N)$、追加空間 $O(N+K)$。実装の種類集合は平衡木なので期待時間への依存はない。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <queue>
+#include <set>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+long long maximum_diversity_score(std::vector<std::pair<int,long long>> items,int k,
+                                  const std::vector<long long>& bonus) {
+    int n=static_cast<int>(items.size());
+    if (n>200000 || k<0 || k>n || bonus.size()!=static_cast<std::size_t>(k+1))
+        throw std::invalid_argument("size bounds");
+    for (auto [type,value]:items) {
+        (void)type;
+        if (value<-1000000000LL || value>1000000000LL) throw std::invalid_argument("value bounds");
+    }
+    for (int x=0;x<=k;++x) if (bonus[x]<-1000000000000LL || bonus[x]>1000000000000LL ||
+                              (x && bonus[x]<bonus[x-1])) throw std::invalid_argument("bonus bounds");
+    std::sort(items.begin(),items.end(),[](auto a,auto b){return a.second>b.second;});
+    std::set<int> types;
+    std::priority_queue<long long,std::vector<long long>,std::greater<long long>> duplicates;
+    long long sum=0;
+    for (int i=0;i<k;++i) {
+        sum+=items[i].second;
+        if (!types.insert(items[i].first).second) duplicates.push(items[i].second);
+    }
+    long long answer=sum+bonus[types.size()];
+    for (int i=k;i<n && !duplicates.empty();++i) {
+        if (types.count(items[i].first)) continue;
+        sum+=items[i].second-duplicates.top();duplicates.pop();
+        types.insert(items[i].first);
+        answer=std::max(answer,sum+bonus[types.size()]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder — Various Sushi](https://atcoder.jp/contests/abc116/tasks/abc116_d)
+- [公式解説](https://img.atcoder.jp/abc116/editorial.pdf)
+
+<TechniqueReferences techniqueId="fixed-size-diversity-exchange" />

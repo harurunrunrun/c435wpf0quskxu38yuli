@@ -1,0 +1,71 @@
+---
+title: "接頭辞の出現回数を、短い一致先へ集約する"
+description: "接頭辞と接尾辞の一致が連鎖する構造を使い、全ての接頭辞の出現回数を一度に求めます。"
+techniqueId: "prefix-border-occurrences"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+同じ文字列の接頭辞を何本も照合する場合。特に「接頭辞と接尾辞の両方になっている文字列」について、それぞれの出現回数も求めたいときに使います。出現が重なっていても数えられます。
+
+## 考え方
+
+$\pi[i]$ を、$s[0,i+1)$ の接頭辞でも接尾辞でもある**真に短い**文字列の最大長とします。長さ $k$ の接頭辞がある位置で終わるなら、長さ $\pi[k-1]$ の接頭辞も同じ位置で終わります。
+
+長さ $1,\ldots,N$ の各接頭辞に、まず「自分自身の末尾での出現」1 回を置きます。長いものから順に
+
+$$c[\pi[k-1]]\mathrel{+}=c[k]$$
+
+と配ると、短い接頭辞へ出現回数が集まります。全体の接尾辞にもなる長さは $N,\pi[N-1],\pi[\pi[N-1]-1],\ldots$ の連鎖だけです。
+
+## 適用条件
+
+通常の文字の一致を使う静的な列が対象です。ワイルドカードを「どの文字とも等しい」としてこの一致先を作ると、同じ連鎖は保証できません。
+
+ここでは全体の長さ $N$ も答えに含めます。真に短い接頭辞だけを求める仕様なら、最後の長さ $N$ を除きます。空文字列の出現数は別の定義になるため、返しません。
+
+## なぜ正しいか
+
+ある末尾で一致する接頭辞の長さは、最長の一致から $\pi$ を繰り返して得る長さと一致します。さらに一致する長さがあるなら、その長さは最長一致の真の接尾辞なので、同じ連鎖の中にあります。
+
+各末尾から始めた 1 回をその連鎖に沿って配るため、各接頭辞が現れる末尾をちょうど 1 回ずつ数えます。親の長さは必ず短いので、長さの降順で集約できます。
+
+## 計算量
+
+接頭辞ごとに独立した照合を行う改善前は $O(N^2)$。改善後は $\pi$ の構築・集約ともに $O(N)$、空間 $O(N)$ です。
+
+## 実装
+
+長さと出現回数の組を、長さの昇順で返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<pair<int,long long>> border_occurrences(const string& s) {
+    int n=int(s.size());
+    vector<int> pi(n);
+    for(int i=1;i<n;++i) {
+        int j=pi[i-1];
+        while(j>0 && s[i]!=s[j]) j=pi[j-1];
+        if(s[i]==s[j]) ++j;
+        pi[i]=j;
+    }
+    vector<long long> count(n+1,1);
+    count[0]=0;
+    for(int k=n;k>0;--k) count[pi[k-1]]+=count[k];
+    vector<pair<int,long long>> answer;
+    for(int k=n;k>0;k=pi[k-1]) answer.push_back({k,count[k]});
+    reverse(answer.begin(),answer.end());
+    return answer;
+}
+```
+
+## 関連する手法
+
+[周期の長さを接頭辞と接尾辞の一致から求める](/flowchartcp/techniques/period-from-border/)、[Zアルゴリズム](/flowchartcp/techniques/z-algorithm/)
+
+## 参考資料
+
+- [Codeforces Round 246 の公式解説：D](https://codeforces.com/blog/entry/12310)
+
+<TechniqueReferences techniqueId="prefix-border-occurrences" />

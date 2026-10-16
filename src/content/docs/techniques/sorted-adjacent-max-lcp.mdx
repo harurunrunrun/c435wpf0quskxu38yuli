@@ -1,0 +1,85 @@
+---
+title: "各文字列が他と共有する最長接頭辞は、辞書順で隣の二つだけ調べる"
+description: "同じ接頭辞を持つ文字列は連続するため、最も似た相手を全組から探す必要がない。"
+techniqueId: sorted-adjacent-max-lcp
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+同じ接頭辞を持つ文字列は連続するため、最も似た相手を全組から探す必要がない。
+
+## 使う場面
+
+各文字列について、他の文字列と先頭からどこまで共通するかの最大値を求めたい。全ての組を比べるには文字列が多すぎるが、本文の更新はない。
+
+## 考え方
+
+入力位置を辞書順に並べる。各隣接対のLCPを一度計算し、その値を両方の答えの候補にする。各文字列に必要なのは左隣・右隣とのLCPの最大だけ。
+
+同じ接頭辞を持つ文字列は、辞書順で固まって並ぶ。遠くの文字列と長い接頭辞を共有するなら、その方向の隣の文字列も少なくとも同じ長さを共有する。
+
+文字列自体を何度もコピーせず、元の入力位置だけを並べ替える。同じ内容の文字列も別の入力位置として残す。
+
+## 適用条件
+
+求める量は別の入力位置とのLCPの最大。全相手とのLCPの合計や一致相手の個数は隣接二つだけでは求められない。空文字列や、別の文字列の接頭辞そのものである入力も扱える。
+
+実装は文字列数・全長とも $500000$ 以下。入力が一つなら相手が存在しないため0とする。文字列の比較順序はC++の `std::string` に従う。
+
+## なぜ正しいか
+
+文字列 $A$ と離れた相手 $B$ が長さ $x$ の接頭辞を共有するとする。$A$ と $B$ の辞書順の間にある文字列がその接頭辞を持たないなら、初めて異なる位置で両方より小さいか両方より大きくなり、間には入れない。従ってその方向の隣接文字列も $x$ 文字以上を共有する。
+
+これで全ての相手の候補は左右の隣接対のどちらかに支配される。一方、隣接文字列は実際に使える相手なので、候補の最大は元の最大値そのものである。
+
+## 計算量
+
+文字列数 $N$、全長 $L$、最大長 $M$ とする。全対の比較は $O(N^2M)$ 時間。一般の比較ソートの単純な上界は $O(NM\log N)$ 時間となるため、実装では幅を倍増させるマージソートを使う。
+
+一回のマージでは、各比較で読んだ文字数を、その比較で出力する文字列の長さへ割り当てられる。各文字列はその段階で一度だけ出力されるので、一段の文字比較は $O(L+N)$。全段で $O((L+N)\log(N+1))$ 時間。隣接LCPの計算は $O(L+N)$ 時間、補助空間は入力を含めず $O(N)$。
+
+## 実装
+
+`maximum_other_lcp` は元の入力順に答えを返す。末尾の余ったマージ区間も同じ規則で処理する。
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <stdexcept>
+#include <string>
+#include <vector>
+std::vector<int> maximum_other_lcp(const std::vector<std::string>& words) {
+    if(words.size()>500000) throw std::invalid_argument("word count");
+    std::size_t total=0;for(const auto& s:words) total+=s.size();
+    if(total>500000) throw std::invalid_argument("total length");
+    int n=words.size();std::vector<int> order(n),buffer(n),answer(n);
+    std::iota(order.begin(),order.end(),0);
+    for(int width=1;width<n;width*=2) {
+        for(int begin=0;begin<n;begin+=2*width) {
+            int middle=std::min(n,begin+width),end=std::min(n,begin+2*width);
+            int i=begin,j=middle;
+            for(int out=begin;out<end;++out) {
+                if(j==end || (i<middle && words[order[i]]<=words[order[j]])) buffer[out]=order[i++];
+                else buffer[out]=order[j++];
+            }
+        }
+        order.swap(buffer);
+    }
+    for(int i=1;i<n;++i) {
+        int a=order[i-1],b=order[i],length=0;
+        while(length<int(words[a].size()) && length<int(words[b].size()) && words[a][length]==words[b][length]) ++length;
+        answer[a]=std::max(answer[a],length);answer[b]=std::max(answer[b],length);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[全接尾辞との共通接頭辞の和を集計する](/flowchartcp/techniques/suffix-lcp-pair-sum/) ・ [K回の反復をLCPの区間最小値にする](/flowchartcp/techniques/lcp-repeated-substring/)
+
+## 参考資料
+
+- [AtCoder：Karuta](https://atcoder.jp/contests/abc287/tasks/abc287_e)
+- [公式解説](https://atcoder.jp/contests/abc287/editorial/5639)
+
+<TechniqueReferences techniqueId="sorted-adjacent-max-lcp" />

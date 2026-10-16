@@ -1,0 +1,92 @@
+---
+title: "回文を中心の半径にまとめ、長さごとの出現数を数える"
+description: "一つの中心から生まれる全ての短い回文を、半径の頻度の接尾和で集計します。"
+techniqueId: "palindrome-center-contribution"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+回文の出現総数や、長さ別の出現数を求める場合。同じ `a` が 3 箇所にあるなら 3 回として数える仕様です。
+
+## 考え方
+
+奇数中心の半径 $d$ は、長さ $1,3,\ldots,2d-1$ の回文を一つずつ生みます。偶数中心の半径 $d$ は、長さ $2,4,\ldots,2d$ の回文を生みます。
+
+したがって全体の総数は、全中心の奇数半径と偶数半径の和です。長さ別にも求めるなら、半径 $d$ の中心数を頻度表へ入れて接尾和を取ります。
+
+$$\#\text{長さ }2k-1=\#\{i:\mathrm{odd}[i]\ge k\},$$
+$$\#\text{長さ }2k=\#\{i:\mathrm{even}[i]\ge k\}.$$
+
+`aaaa` の奇数半径は $1,2,2,1$、偶数半径は $0,1,2,1$ で、和の 10 が全出現数です。半径を足すときに最長回文の長さを足してはいけません。
+
+## 適用条件
+
+**出現位置ごとに数える**場合に使います。同じ内容を一度だけ数える異なる回文の個数では、別の中心に同内容が現れるため過大になります。その場合は回文木などで内容を管理します。
+
+特定の区間内に含まれる回文数を多数問い合わせる条件では、中心だけでなく左右端の範囲による制限も必要です。
+
+## なぜ正しいか
+
+全ての非空回文は、奇数・偶数のどちらか一つの中心を持ちます。同じ中心では最大回文を左右一文字ずつ縮めたものがちょうど全ての回文です。
+
+よって半径による列挙で各出現を一度だけ数えます。長さ $2k-1$ または $2k$ が作れる条件は半径が $k$ 以上であることなので、頻度の接尾和が長さ別の個数になります。
+
+## 計算量
+
+全区間を直接比較する改善前は $O(N^3)$、区間回文の DP を使っても $O(N^2)$ 時間・空間。改善後は Manacher 法と頻度集計を含めて $O(N)$ 時間、$O(N)$ 空間です。
+
+## 実装
+
+返り値の添字は長さで、添字 0 は 0 です。全体の出現数は返り値の総和で求められます。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct PalindromeCountRadii {
+    int n;
+    vector<int> odd,even;
+    explicit PalindromeCountRadii(const string& s):n(s.size()),odd(n),even(n) {
+        for(int i=0,l=0,r=-1;i<n;++i) {
+            int k=i>r ? 1 : min(odd[l+r-i],r-i+1);
+            while(i-k>=0 && i+k<n && s[i-k]==s[i+k]) ++k;
+            odd[i]=k;
+            if(i+k-1>r) {l=i-k+1;r=i+k-1;}
+        }
+        for(int i=0,l=0,r=-1;i<n;++i) {
+            int k=i>r ? 0 : min(even[l+r-i+1],r-i+1);
+            while(i-k-1>=0 && i+k<n && s[i-k-1]==s[i+k]) ++k;
+            even[i]=k;
+            if(i+k-1>r) {l=i-k;r=i+k-1;}
+        }
+    }
+    bool is_palindrome(int l,int r) const {
+        assert(0<=l && l<=r && r<=n);
+        int length=r-l;
+        if(length==0) return true;
+        int center=(l+r)/2;
+        return length%2 ? odd[center]>=length/2+1 : even[center]>=length/2;
+    }
+};
+vector<long long> palindrome_counts_by_length(const string& s) {
+    PalindromeCountRadii p(s);
+    int n=p.n;
+    vector<long long> odd(n+2),even(n+2),answer(n+1);
+    for(int d:p.odd) ++odd[d];
+    for(int d:p.even) ++even[d];
+    for(int d=n;d>0;--d) {odd[d]+=odd[d+1];even[d]+=even[d+1];}
+    for(int length=1;length<=n;++length)
+        answer[length]=length%2 ? odd[(length+1)/2] : even[length/2];
+    return answer;
+}
+```
+
+## 関連する手法
+
+[静的な区間の回文判定を、中心の最大半径だけで答える](/flowchartcp/techniques/palindrome-radius-range/)、[回文木](/flowchartcp/techniques/palindromic-tree/)
+
+## 参考資料
+
+- [Codeforces：Palindromic characteristics の問題文](https://codeforces.com/problemset/problem/835/D)
+- [Library Checker：中心ごとの最長回文の仕様](https://github.com/yosupo06/library-checker-problems/blob/master/string/enumerate_palindromes/task.md)
+
+<TechniqueReferences techniqueId="palindrome-center-contribution" />

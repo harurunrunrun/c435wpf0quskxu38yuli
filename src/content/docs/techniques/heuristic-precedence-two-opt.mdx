@@ -1,0 +1,68 @@
+---
+title: "受取が配達より先の巡回路では、両地点を含まない区間だけ反転する"
+description: "反転で壊れる先行条件を先に検査し、距離差は両端の二辺だけで求めます。"
+techniqueId: "heuristic-precedence-two-opt"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+注文の受取地点を配達地点より先に訪れる巡回路で、連続する訪問区間を反転する候補を試すとき。対称距離の通常の二辺交換でも、配達を先にしてしまう候補は棄却しなければなりません。
+
+## 考え方
+
+合法な訪問順で区間 $[l,r)$ を反転すると、受取と配達の両方がその区間内にある注文だけが逆順になります。片方だけなら、外側の相手との前後関係は変わりません。各地点の相手の位置を保存し、区間内に相手もいる注文を検出します。
+距離が対称なら、内部辺の向きが変わっても長さは同じ。距離差は $d(v_{l-1},v_{r-1})+d(v_l,v_r)-d(v_{l-1},v_l)-d(v_{r-1},v_r)$ だけです。
+
+## 適用条件
+
+一注文の受取と配達をそれぞれ一回だけ並べた、元から合法な訪問列に使います。積載上限や時間窓などの追加制約がなく、距離が対称であること。始点・終点は反転区間へ含めません。原典では同じ座標の注文地点もあり得るので、判定は座標ではなく注文地点IDで行います。
+
+## なぜ正しいか
+
+区間内の二地点は互いの順序が反転し、内外の二地点の相対順序は変わりません。従って両地点を含む注文がない条件が、先行制約を保つ必要十分条件です。内部辺は同じ両端の組を逆向きに通るため、対称距離なら変化するのは境界二辺だけです。この近傍内の評価は正確でも、巡回路全体の最短性は保証しません。
+
+## 計算量
+
+区間長 $k$ に対して合法性検査 $O(k)$、距離差 $O(1)$、反映と位置更新 $O(k)$。全巡回路の距離や全注文の先行条件を再検査する $O(L)$ を省きます。状態の空間 $O(L)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct DeliveryPoint {long long x,y;};
+__int128 delivery_distance(DeliveryPoint a,DeliveryPoint b){
+    __int128 x=(__int128)a.x-b.x,y=(__int128)a.y-b.y;return (x<0 ? -x : x)+(y<0 ? -y : y);
+}
+
+class PrecedenceTour {
+    vector<DeliveryPoint> points;vector<int> tour,position;int pairs;
+public:
+    // 受取=2j、配達=2j+1、始点と終点のID=2*pairs。
+    PrecedenceTour(vector<DeliveryPoint> p,vector<int> order):points(move(p)),tour(move(order)),pairs((int(points.size())-1)/2){
+        assert(points.size()%2==1 && (int)tour.size()==2*pairs+2 && tour.front()==2*pairs && tour.back()==2*pairs);
+        position.assign(2*pairs,-1);
+        for(int i=1;i+1<(int)tour.size();++i){int v=tour[i];assert(0<=v && v<2*pairs && position[v]==-1);position[v]=i;}
+        for(int j=0;j<pairs;++j)assert(position[2*j]<position[2*j+1]);
+    }
+    optional<__int128> reversal_delta(int l,int r)const{
+        assert(1<=l && l<=r && r<(int)tour.size());if(l==r)return 0;
+        for(int i=l;i<r;++i){int mate=position[tour[i]^1];if(l<=mate && mate<r)return nullopt;}
+        return delivery_distance(points[tour[l-1]],points[tour[r-1]])+delivery_distance(points[tour[l]],points[tour[r]])
+            -delivery_distance(points[tour[l-1]],points[tour[l]])-delivery_distance(points[tour[r-1]],points[tour[r]]);
+    }
+    bool reverse_interval(int l,int r){if(!reversal_delta(l,r))return false;reverse(tour.begin()+l,tour.begin()+r);for(int i=l;i<r;++i)position[tour[i]]=i;return true;}
+    const vector<int>& order()const{return tour;}
+};
+```
+
+## 関連する手法
+
+[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/ahc006/tasks/ahc006_a)
+
+<TechniqueReferences techniqueId="heuristic-precedence-two-opt" />

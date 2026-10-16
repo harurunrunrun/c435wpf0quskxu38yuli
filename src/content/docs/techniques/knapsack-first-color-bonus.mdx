@@ -1,0 +1,82 @@
+---
+title: "種類ごとに一度のボーナスは、その種類を初めて選ぶ遷移だけへ足す"
+description: "種類をまとめて処理し、未使用の前の層と、一個以上使った現在の層を分ける。"
+techniqueId: knapsack-first-color-bonus
+---
+
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各品物を一回まで選び、予算内で価値を最大化したい。さらに使った種類ごとに一回だけボーナスが付く。予算に加えて使用種類の集合を状態にすると、種類数の指数だけ増えてしまう。
+
+## 考え方
+
+同じ種類の品物をまとめて処理する。$old_b$ は前の種類までで価格がちょうど $b$ の最大価値、$used_b$ は現在の種類を一個以上使った最大価値とする。
+
+価格 $p$、価値 $u$ の品物には二つの入り方がある。
+
+$$used_b\gets\max(used_b,\ old_{b-p}+u+K,\ used_{b-p}+u).$$
+
+前の層から入るときだけボーナス $K$ を加える。現在の層へ追加する場合は既に受け取っている。価格を降順に回し、同じ品物の再利用を防ぐ。種類を処理し終わったら、使わない $old$ と使った $used$ の最大を次の層にする。
+
+## 適用条件
+
+種類ごとのボーナスは一回で、他の種類や品物の組合せに依存しない。価格は正整数で、各品物は0/1選択。使用種類間の相性や、同じ種類から選ぶ個数に応じた非線形の報酬にはこの二状態だけでは足りない。
+
+掲載コードは品物500個以下、予算50000以下。価格は1以上50000以下、価値とボーナスの絶対値は $10^9$ 以下。原典の価値・ボーナスは正だが、実装は負でも扱える。空選択を許すので答えは0以上。
+
+## なぜ正しいか
+
+現在の種類を使う全選択は、固定した品物の処理順で最初に選ぶ一個を持つ。その一個だけが $old$ から入る遷移となり、後続の選択は $used$ 内に留まる。従ってどの選択でもボーナスは過不足なく一回付く。
+
+未選択・現在の品物を最初に選択・既に選択済みでさらに選択、の三場合が全ての選択を覆う。降順の予算走査は更新前の小さい予算を参照するので、一品物を二度使わない。
+
+## 計算量
+
+使用種類集合まで持つと、種類数 $C$ に対して状態が最大 $2^C$ 倍になる。種類をまとめたDPは $O(NX+N\log N)$ 時間。二つの係数列と整列用の品物に $O(X+N)$ 空間を使う。
+
+## 実装
+
+`maximum_color_bonus_value` の各品物は価格・価値・種類番号を持つ。種類番号の大小に意味はなく、同値かだけを使う。到達不能な予算は負の無限大と区別し、そこから足さない。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+struct ColorBonusItem {int price;long long utility;int color;};
+long long maximum_color_bonus_value(std::vector<ColorBonusItem> items,int budget,long long bonus) {
+    constexpr long long NEG=-(1LL<<60);
+    if(items.size()>500 || budget<0 || budget>50000 || bonus<-1000000000 || bonus>1000000000)
+        throw std::invalid_argument("range");
+    for(auto item:items) if(item.price<1 || item.price>50000 || item.utility<-1000000000 || item.utility>1000000000)
+        throw std::invalid_argument("item");
+    std::sort(items.begin(),items.end(),[](auto a,auto b){return a.color<b.color;});
+    std::vector<long long> old(budget+1,NEG);old[0]=0;
+    for(int first=0;first<int(items.size());) {
+        int last=first;while(last<int(items.size()) && items[last].color==items[first].color)++last;
+        std::vector<long long> used(budget+1,NEG);
+        for(int i=first;i<last;++i) {
+            auto item=items[i];
+            for(int b=budget;b>=item.price;--b) {
+                if(old[b-item.price]!=NEG) used[b]=std::max(used[b],old[b-item.price]+item.utility+bonus);
+                if(used[b-item.price]!=NEG) used[b]=std::max(used[b],used[b-item.price]+item.utility);
+            }
+        }
+        for(int b=0;b<=budget;++b) old[b]=std::max(old[b],used[b]);
+        first=last;
+    }
+    return *std::max_element(old.begin(),old.end());
+}
+```
+
+## 関連する手法
+
+[ちょうどK個の価値和と種類ボーナスは、重複の最小値を未選択種類の最大値と交換する](/flowchartcp/techniques/fixed-size-diversity-exchange/) ・ [個数制限付きナップサックを重さの剰余ごとに処理する](/flowchartcp/techniques/bounded-knapsack-deque/)
+
+## 参考資料
+
+- [AtCoder：F - Diversity（原典）](https://atcoder.jp/contests/abc383/tasks/abc383_f)
+- [公式解説](https://atcoder.jp/contests/abc383/editorial/11840)
+
+<TechniqueReferences techniqueId="knapsack-first-color-bonus" />

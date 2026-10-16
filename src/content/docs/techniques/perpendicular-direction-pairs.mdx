@@ -1,0 +1,71 @@
+---
+title: "内積ゼロの禁止関係を、直線方向と直交方向の二群にまとめる"
+description: "反対向きを同じ群にし、互いに選べない方向の組ごとに部分集合数を掛ける。"
+techniqueId: perpendicular-direction-pairs
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+二成分の整数ベクトルが多数あり、どの二つの内積も0にならない非空部分集合を数えたい。全ての禁止組を作ると $O(N^2)$ の辺ができるが、禁止相手は方向だけで決まる。
+
+## 考え方
+
+非零ベクトルを最大公約数で割り、$y>0$ または $y=0,x>0$ に符号を統一する。一つの直線方向に $a$ 個、その直交方向に $b$ 個あるとする。
+
+この二群から選べるのは、一方の群だけから任意の部分集合を選ぶ場合である。両群で空集合を重複して数えるので、組の選び方は $2^a+2^b-1$ 通り。異なる直交組の間には禁止関係がないため、それらを全て掛け合わせる。
+
+最後に全体の空集合を引く。ゼロベクトルは非零ベクトルとも他のゼロベクトルとも内積0なので、ゼロベクトル一個だけを選ぶ場合を個数分加える。
+
+## 適用条件
+
+禁止条件が内積0だけである。長さ、符号、角度の大小といった追加制約がある場合、方向への集約が十分かを確認する。
+
+実装は各成分の絶対値 $10^{18}$ 以下を扱う。64ビット整数の最小値 `LLONG_MIN` は絶対値を同じ型へ収められないため入力範囲外。実際の内積は計算しない。重複するベクトルは異なる対象として数える。
+
+## なぜ正しいか
+
+非零ベクトルの直交方向は、符号を同一視すれば一意に決まり、90度回転を二回すると元の方向へ戻る。従って方向群の禁止関係は、互いに独立な二群の組へ分かれる。
+
+同じ非零方向の二ベクトルの内積は0にならないため、その群の任意の部分集合が使える。二群を両方非空にする場合だけが禁止なので、組の公式と組間の積が成立する。
+
+## 計算量
+
+全対象間の禁止関係は $O(N^2)$。順序付き辞書で方向をまとめると $O(N\log N)$ 時間、$O(N)$ 空間。2の累乗を先に $O(N)$ で用意する。
+
+## 実装
+
+`count_nonorthogonal_subsets` は非空の選び方を $10^9+7$ で割った余りで返す。入力が空なら0になる。
+
+```cpp
+#include <cstdlib>
+#include <map>
+#include <numeric>
+#include <set>
+#include <utility>
+#include <vector>
+long long count_nonorthogonal_subsets(const std::vector<std::pair<long long,long long>>& vectors){
+    const long long MOD=1000000007;
+    auto normalize=[](long long x,long long y){long long g=std::gcd(std::llabs(x),std::llabs(y));x/=g;y/=g;
+        if(y<0 || (y==0 && x<0)){x=-x;y=-y;}return std::pair{x,y};};
+    std::map<std::pair<long long,long long>,int> count;int zeros=0;
+    for(auto [x,y]:vectors){if(x==0 && y==0)++zeros;else ++count[normalize(x,y)];}
+    std::vector<long long> power(vectors.size()+1,1);for(int i=1;i<int(power.size());++i)power[i]=power[i-1]*2%MOD;
+    std::set<std::pair<long long,long long>> used;long long answer=1;
+    for(auto [direction,a]:count){if(used.contains(direction))continue;auto [x,y]=direction;auto other=normalize(-y,x);
+        auto it=count.find(other);int b=it==count.end()?0:it->second;
+        answer=answer*((power[a]+power[b]+MOD-1)%MOD)%MOD;used.insert(direction);used.insert(other);
+    }
+    return (answer+MOD-1+zeros)%MOD;
+}
+```
+
+## 関連する手法
+
+[同一直線の点を、最大公約数と向きの統一でまとめる](/flowchartcp/techniques/collinear-direction-gcd/) ・ [集合を分割するDPはその集合の部分集合だけを列挙する](/flowchartcp/techniques/bitmask-dp-submask/)
+
+## 参考資料
+
+- [AtCoder：∙ (Bullet)（原典）](https://atcoder.jp/contests/abc168/tasks/abc168_e)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="perpendicular-direction-pairs" />

@@ -1,0 +1,158 @@
+---
+title: "横か縦の通路で全マスを覆う選択を、二部の頂点被覆へ直す"
+description: "空マスを横通路と縦通路の交点として扱い、各交点のどちらかを選ぶ。"
+techniqueId: grid-corridor-cover-matching
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各空マスを横か縦の区間で覆う。障害物が区間を分断し、一つの空マスには候補の横区間と縦区間が一つずつ対応する。
+
+## 考え方
+
+障害物で区切られた最大の横通路・縦通路に番号を付ける。空マスごとに両通路を結ぶ辺を張る。全マスを覆うには各辺の端点を一つ以上選ぶ。これが二部の最小頂点被覆。
+
+最大対応を求め、使われていない左頂点から残余グラフを辿る。到達しない横通路と到達する縦通路を選ぶ。横の左端に右向き、縦の上端に下向きのカメラを置く。
+
+## 適用条件
+
+選んだ通路全体を一台で覆え、各カメラの性能と費用が同じ。同じマスに複数台置けるので横と縦のカメラが同じ端点を使ってもよい。
+
+途中から一方向を見るカメラは、通路の端から内向きに置くと監視範囲を増やせる。空マスの設置禁止や異なる費用がある場合は、この置換と単位容量の対応を改めて確認する。
+
+## なぜ正しいか
+
+空マスに対応する辺が選んだ通路のどちらかに接続することと、監視されることは同値。
+
+残余到達集合を $Z$ とする。未採用辺は左→右へ辿れるので左が $Z$ なら右も入る。採用辺でも、到達した左の相手の右は左へ逆向きに入る経路上にある。左の $Z$ 外と右の $Z$ 内で全辺を覆える。各採用辺からちょうど一端点を選ぶので被覆数は対応数。どの被覆も対応の各辺に一端点必要なので最小。
+
+## 計算量
+
+通路の選択全探索は指数時間。空マス数 $Q$ として通路数 $O(Q)$、辺数 $Q$。番号付けは $O(HW)$、対応と復元は $O(Q\sqrt Q)$。全体は $O(HW+Q\sqrt Q)$ 時間、$O(HW+Q)$ 空間。
+
+## 実装
+
+空マスはピリオド、障害物は #。返すカメラは0始まりの位置と方向 (dy,dx) を持つ。全辺は容量1にし、被覆を残余到達から復元する。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+#include <string>
+struct Camera { int row,column,dy,dx; };
+std::vector<Camera> cover_grid_corridors(const std::vector<std::string>& board) {
+    int h=board.size(),w=h?int(board[0].size()):0;
+    std::vector<std::vector<int>> horizontal(h,std::vector<int>(w,-1)),
+        vertical=horizontal;
+    std::vector<Camera> rows,columns;
+    for(int r=0;r<h;++r) for(int c=0;c<w;++c) if(board[r][c]=='.') {
+        if(c==0 || board[r][c-1]=='#') rows.push_back({r,c,0,1});
+        horizontal[r][c]=int(rows.size())-1;
+    }
+    for(int c=0;c<w;++c) for(int r=0;r<h;++r) if(board[r][c]=='.') {
+        if(r==0 || board[r-1][c]=='#') columns.push_back({r,c,1,0});
+        vertical[r][c]=int(columns.size())-1;
+    }
+    int left=rows.size(),right=columns.size(),s=left+right,t=s+1;
+    FlowNetwork g(t+1);
+    for(int r=0;r<left;++r) g.add(s,r,1);
+    for(int c=0;c<right;++c) g.add(left+c,t,1);
+    for(int r=0;r<h;++r) for(int c=0;c<w;++c) if(board[r][c]=='.')
+        g.add(horizontal[r][c],left+vertical[r][c],1);
+    g.flow(s,t); auto seen=g.reachable(s); std::vector<Camera> answer;
+    for(int r=0;r<left;++r) if(!seen[r]) answer.push_back(rows[r]);
+    for(int c=0;c<right;++c) if(seen[left+c]) answer.push_back(columns[c]);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[二部マッチング](/flowchartcp/techniques/matching/)
+
+## 参考資料
+
+- [AtCoder：Security Camera 3（原典）](https://atcoder.jp/contests/abc274/tasks/abc274_g)
+- [公式解説](https://atcoder.jp/contests/abc274/editorial/5084)
+
+<TechniqueReferences techniqueId="grid-corridor-cover-matching" />

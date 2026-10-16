@@ -1,0 +1,77 @@
+---
+title: "隣接二個を消す順序は、区間の個数に二項係数を掛けて混ぜる"
+description: "左端の相手を固定し、内側の完了後に消す一組と右側の操作列を合流させます。"
+techniqueId: interval-pair-removal-interleavings
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+消す相手は固定の相性表で決まり、列から二個ずつ消す問題です。最終的な組分けを数えるDPだけでは、独立な操作を何通りの順序で混ぜられるかが抜けます。
+
+## 考え方
+
+$D(l,r)$ を半開区間 $[l,r)$ を消す操作列の個数とします。左端 $l$ の相手を $k$ とすると、内側 $[l+1,k)$ を消した後に $(l,k)$ を消す列と、右側 $[k+1,r)$ を消す列があります。
+
+内側のペア数を $a=(k-l-1)/2$、右側を $b=(r-k-1)/2$ とすると、前者は $a+1$ 操作、後者は $b$ 操作です。
+
+$$D(l,r)=\sum_{\text{許可された }(l,k)}D(l+1,k)D(k+1,r)\binom{a+b+1}{a+1}.$$
+
+$k-l$ が奇数の相手だけを試します。空区間は一通りです。
+
+## 適用条件
+
+相性は元の対象IDで決まり、削除によって変化しません。二つの独立区間の操作を交ぜても合法性が保たれます。操作順を区別しない問題では、二項係数を掛けません。実装は対称な相性行列と偶数個の入力を受け、法998244353で数えます。
+
+## なぜ正しいか
+
+$l$ と $k$ が隣接する時点で、二者の間は必ず全て消えています。二者より右の対象と間の対象を組にすると、$(l,k)$ を消せなくなるため、内側と右側は独立です。
+
+内側の操作列の末尾へ $(l,k)$ を追加し、その相対順を保ったまま右側の操作列を混ぜる方法は二項係数で数えられます。逆にどの完成操作列からも、$l$ の相手と二つの操作列と混ぜ方を一意に取り出せます。これで漏れと重複がありません。
+
+## 計算量
+
+全ての相性が許される場合、操作列は $(2N-1)!!=(2N-1)(2N-3)\cdots1$ 通りです。$2N$ 個に対して区間DPは時間 $O(N^3)$、空間 $O(N^2)$。二項係数もPascalの三角形で $O(N^2)$ に前計算します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int count_pair_removal_orders(const vector<vector<bool>>& allowed) {
+    constexpr long long MOD = 998244353;
+    int n = int(allowed.size());
+    if (n % 2 || n > 400) throw invalid_argument("even size <= 400");
+    for (const auto& row : allowed) if (int(row.size()) != n) throw invalid_argument("matrix");
+    for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
+        if (allowed[i][j] != allowed[j][i]) throw invalid_argument("symmetric matrix");
+    vector<vector<long long>> choose(n / 2 + 1, vector<long long>(n / 2 + 1));
+    for (int i = 0; i <= n / 2; ++i) {
+        choose[i][0] = choose[i][i] = 1;
+        for (int j = 1; j < i; ++j) choose[i][j] = (choose[i - 1][j - 1] + choose[i - 1][j]) % MOD;
+    }
+    vector<vector<long long>> dp(n + 1, vector<long long>(n + 1));
+    for (int l = 0; l <= n; ++l) dp[l][l] = 1;
+    for (int len = 2; len <= n; len += 2) for (int l = 0; l + len <= n; ++l) {
+        int r = l + len;
+        for (int k = l + 1; k < r; k += 2) if (allowed[l][k]) {
+            long long term = dp[l + 1][k] * dp[k + 1][r] % MOD;
+            term = term * choose[len / 2][(k - l + 1) / 2] % MOD;
+            dp[l][r] = (dp[l][r] + term) % MOD;
+        }
+    }
+    return int(dp[0][n]);
+}
+```
+
+## 関連する手法
+
+- [組合せを何度も求めるときは逆階乗を前計算する](/flowchartcp/techniques/factorial-inverses/)
+
+## 参考資料
+
+- [原典の問題条件](https://atcoder.jp/contests/abc217/tasks/abc217_f)
+- [公式解説・根拠資料](https://atcoder.jp/contests/abc217/editorial/2618)
+
+<TechniqueReferences techniqueId="interval-pair-removal-interleavings" />

@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 1,
+  "techniqueId": "polya-urn-uniform-composition-top-r-sum",
+  "problemId": "wf2018_d",
+  "reviewer": "/root/ioi_2020_fixed_corpus_audit",
+  "reviewedAt": "2026-10-15",
+  "status": "passed",
+  "materialIssues": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "scope": {
+    "readAllEightSections": true,
+    "readCompleteActualCppFence": true,
+    "readCompleteChecker": true,
+    "readSidecar": true,
+    "sharedFilesModified": false,
+    "authorArtifactsModified": false,
+    "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51"
+  },
+  "artifacts": {
+    "article.mdx": {
+      "path": "/tmp/flowchartcp-polya-top-r-article.mdx",
+      "sha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef"
+    },
+    "checker.py": {
+      "path": "/tmp/flowchartcp-polya-top-r-checker.py",
+      "sha256": "37a8f64b343056480ef0879bfae2685887a7926aa7a059e415872a0fa4f8eaf7"
+    },
+    "sidecar.json": {
+      "path": "/tmp/flowchartcp-polya-top-r-sidecar.json",
+      "sha256": "1550464c56944d1ed9904e6e4d915b8684889bac67999e5e338ef96813e6b6b7"
+    },
+    "independent-normal.json": {
+      "path": "/tmp/flowchartcp-polya-top-r-independent-normal.json",
+      "sha256": "625dbb5a4a0b611c5558cc2d0e1b1d9ba7ae66ee23de162af4eed2767195126f"
+    },
+    "independent-asan.json": {
+      "path": "/tmp/flowchartcp-polya-top-r-independent-asan.json",
+      "sha256": "ef7f3d8b9b81318ec91002c484bc9bf912f1486141595d7a17f979f92e5d9528"
+    },
+    "independent-probe.py": {
+      "path": "/tmp/flowchartcp-polya-top-r-independent-probe.py",
+      "sha256": "29a29cdca1cdbfc189664c203579d74ec135521971c9aef54d7e8a13786921c7"
+    },
+    "independent-probe.json": {
+      "path": "/tmp/flowchartcp-polya-top-r-independent-probe.json",
+      "sha256": "15fb59e6fa2359b74576afec3b28dfd73d1077bdf261ea509ec159de4bed1c17"
+    }
+  },
+  "independentPrimarySourceReview": {
+    "statement": {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=7",
+      "page": 7,
+      "method": "Independently read official PDF web text; no image inspection is claimed.",
+      "bounds": {
+        "n": "1..500",
+        "d": "1..500",
+        "r": "1..n",
+        "timeSeconds": 3,
+        "allowedError": "absolute or relative <=1e-6"
+      },
+      "model": "Each owner starts with one gem. One uniformly chosen gem splits each night, so owner selection is proportional to current holdings. Objective is the total of the richest r, including any ties with the same sum."
+    },
+    "publicSketch": {
+      "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=5",
+      "pages": [
+        5,
+        6
+      ],
+      "kind": "public-editorial-sketch",
+      "officialDomain": true,
+      "officialEditorialVerified": false,
+      "openingDisclaimerRead": true,
+      "authors": [
+        "Per Austrin",
+        "Jakub Onufry Wojtaszczyk"
+      ],
+      "sourceBaseMismatch": "The source defines S as a sum across all distributions but prints S(n,d)=n+d for n<=r. At n=2,d=1,r=2 the two states each have total3, so the correct sum is6. The article explicitly uses (n+d)*C(n+d-1,d) as its independently completed base. It does not attribute this correction or its numerical proof to an official editorial."
+    },
+    "date": {
+      "url": "https://news.icpc.global/wf2018/",
+      "contestDate": "2018-04-19",
+      "datePrecision": "day",
+      "difficulty": null
+    }
+  },
+  "independentMathematicalReview": [
+    "Induction over reinforcement steps: a final positive weight vector g receives the common predecessor probability times sum(g_i-1)/(n+d-1)=d/(n+d-1). Terms with g_i=1 vanish. Thus every labeled weak composition of d increments has the same probability.",
+    "S_r(n,d) is a total across all compositions, not an expectation. The n<=r base must multiply (n+d) by the composition count. For n>r, subtract the common baseline1 from all n weights, contributing r per composition.",
+    "Choose the k positive residual labels. Each positive residual equals1 plus a nonnegative increment and their remaining sum is d-k, so the residual top-r sum is S_r(k,d-k). This is a reversible partition of the labeled states. k<r includes all positive residuals and padding zeros; ties do not change the sum. For d=0 the nonbaseline contribution is zero.",
+    "Every k>=1 transition decreases d, so outer increasing extra is a valid dependency order. The completed production method uses nonnegative additions and products followed by one division; no cancellation-heavy floating inversion is substituted."
+  ],
+  "independentNumericalReview": {
+    "unitRoundoff": "2^-53",
+    "pascalPathLengthBound": 999,
+    "basePathLengthBound": 1001,
+    "sumPathLength": "L(d)=1001(d+1)<=501501",
+    "pathReasoning": "A term combines a child state of extra d-k, a C(n,k) coefficient with path length<=500, one multiplication, and at most500 additions in its parent sum. Since k>=1, child L(d-k)+1001<=L(d). The baseline r*C and n<=r base are below the same bound. Products combine the two operand error paths; nonnegative addition propagates their maximum plus the addition count.",
+    "divisionReasoning": "Use the numerator gamma501501 bound, denominator conservatively gamma1000 and one final rounding. The upper relative error expression is (1+gamma501501)*(1+u)/(1-gamma1000)-1; it also dominates the negative-error magnitude. A separate Decimal110-digit recomputation verifies both sides and serialization allowance.",
+    "recomputedBounds": {
+      "relativeUpper": "5.57889290351252704453690151927575339981238121251876859548409800113583420406599183636769839361932164E-11",
+      "relativeLowerMagnitude": "5.578892903511287045170806859318707472147621497315545462928457356247217172763071798040975211980928672E-11",
+      "absoluteWithSerializationUpper": "5.57899290351252704453690151927575339981238121251876859548409800113583420406599183636769839361932164000E-8"
+    },
+    "exponentReasoning": "All mathematical coefficients are at most2^999. Every exact S and every nonnegative transition term/partial sum is bounded by the final relevant total, at most1000*2^999<2^1009. Including the small relative perturbation stays below2^1010, safely below binary64 overflow. Positive intermediates are integers>=1, and the final positive answer>=1; zero intermediates stay exact.",
+    "contract": "IEEE754 radix2/digits53/max_exponent>=1024 static checks and FE_TONEAREST runtime check are consistent with the proof. Normal floating semantics, without fast-math, are required. Early r0/D0/rN returns are exactly representable.",
+    "overallGuarantee": "Original full range and fixed12 serialization fit the source1e-6 absolute tolerance."
+  },
+  "apiReview": {
+    "sourceCoverage": "All original n,d1..500/r1..n. API additionally allows d0/r0 with explicitly documented exact answers. Singleton/full-r share exact early return.",
+    "invalid": "Integer ranges are checked before table size/index arithmetic; even early-return calls reject non-nearest rounding. Input extremes, negative counts, r>n and all three non-nearest modes are exercised. No call mutates rounding mode.",
+    "boundsAndMemory": "All table index products are <=501000 and251001; integer weights<=1000. Both vectors are local and all state indices are present. Time O((N+D)(D+1)+N^2D+N), table space O((N+D)(D+1)), constant-size early returns; no input-depth recursion.",
+    "requestedTableStorageMeasured": {
+      "memoryWriterChecks": 13,
+      "apiOnlyPeakRequestedAllocationBytes": 6016008,
+      "doubleBytes": 8,
+      "liveRequestedBytesAfterCall": 0
+    },
+    "memoryScope": "6016008 bytes is the two double-vector element payload, not a complete process RSS claim. Vector/allocator headers, local output buffering and executable/runtime memory are additional. The ~1.9GB sanitizer harness includes owner-history maps, arbitrary-precision exact tables/oracles and ASan allocator quarantine; it is not the API-only storage measurement.",
+    "writer": "Builds a classic-locale fixed12 complete line after validation/calculation, then uses unformatted ostream::write. This preserves the caller flags, precision, width, fill and locale. A custom comma locale with showpos/uppercase/scientific and width29 still receives exactly the expected dot-decimal line. Short writes set badbit; an enabled badbit exception mask and an original custom stream exception propagate under normal ostream rules. Invalid input emits nothing; no rollback of partially failing external streams is promised.",
+    "ownershipAndState": "All parameters by value; no retained references, global DP, or cross-call mutable state. Allocation and stream exceptions follow their documented standard behavior."
+  },
+  "authorCheckerReproduction": {
+    "classification": "Independent rerun of the supplied actual-MDX checker; its counts are not relabeled as a newly designed oracle.",
+    "normal": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 2292379,
+      "apiCalls": 759821,
+      "compositionParameterPairs": 104,
+      "allWeakCompositions": 203489,
+      "historyParameterPairs": 50,
+      "ownerHistories": 2821488,
+      "historyTerminalStates": 3002,
+      "exactTailOracleCalls": 3653,
+      "exactTailIntegerTerms": 105439,
+      "randomRankQueries": 2834,
+      "metamorphicChecks": 5488,
+      "boundaryApiCalls": 753001,
+      "invalidCases": 16,
+      "maximumAbsoluteError": 6.544209618652985e-13,
+      "checksum": "7563957929397653268",
+      "seconds": 0.682801088,
+      "peakRSSKiB": 56512,
+      "maximumCases": [
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 1,
+          "answer": 10.300789183514535,
+          "absoluteError": 5.340346220794601e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 2,
+          "answer": 19.15876289085194,
+          "absoluteError": 2.105954299835844e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 3,
+          "answer": 27.295060277324545,
+          "absoluteError": 6.050715484207103e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.32790897148946,
+          "absoluteError": 3.5561831257524545e-14
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 250,
+          "answer": 746.723323770303,
+          "absoluteError": 6.544209618652985e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 499,
+          "answer": 999.0000000000003,
+          "absoluteError": 3.410605131648481e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 500,
+          "answer": 1000,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 499,
+          "r": 1,
+          "answer": 10.286651364417166,
+          "absoluteError": 3.4807226545474634e-15
+        },
+        {
+          "n": 499,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.43694309125979,
+          "absoluteError": 5.804384750618397e-14
+        },
+        {
+          "n": 250,
+          "steps": 500,
+          "r": 125,
+          "answer": 583.1016570514605,
+          "absoluteError": 1.554312234475219e-14
+        },
+        {
+          "n": 347,
+          "steps": 431,
+          "r": 109,
+          "answer": 455.42195401891496,
+          "absoluteError": 2.3331336862497665e-13
+        },
+        {
+          "n": 1,
+          "steps": 500,
+          "r": 1,
+          "answer": 501,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 1,
+          "r": 499,
+          "answer": 500,
+          "absoluteError": 0
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 2292379,
+      "apiCalls": 759821,
+      "compositionParameterPairs": 104,
+      "allWeakCompositions": 203489,
+      "historyParameterPairs": 50,
+      "ownerHistories": 2821488,
+      "historyTerminalStates": 3002,
+      "exactTailOracleCalls": 3653,
+      "exactTailIntegerTerms": 105439,
+      "randomRankQueries": 2834,
+      "metamorphicChecks": 5488,
+      "boundaryApiCalls": 753001,
+      "invalidCases": 16,
+      "maximumAbsoluteError": 6.544209618652985e-13,
+      "checksum": "7563957929397653268",
+      "seconds": 8.689038598,
+      "peakRSSKiB": 1916752,
+      "maximumCases": [
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 1,
+          "answer": 10.300789183514535,
+          "absoluteError": 5.340346220794601e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 2,
+          "answer": 19.15876289085194,
+          "absoluteError": 2.105954299835844e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 3,
+          "answer": 27.295060277324545,
+          "absoluteError": 6.050715484207103e-15
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.32790897148946,
+          "absoluteError": 3.5561831257524545e-14
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 250,
+          "answer": 746.723323770303,
+          "absoluteError": 6.544209618652985e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 499,
+          "answer": 999.0000000000003,
+          "absoluteError": 3.410605131648481e-13
+        },
+        {
+          "n": 500,
+          "steps": 500,
+          "r": 500,
+          "answer": 1000,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 499,
+          "r": 1,
+          "answer": 10.286651364417166,
+          "absoluteError": 3.4807226545474634e-15
+        },
+        {
+          "n": 499,
+          "steps": 500,
+          "r": 17,
+          "answer": 115.43694309125979,
+          "absoluteError": 5.804384750618397e-14
+        },
+        {
+          "n": 250,
+          "steps": 500,
+          "r": 125,
+          "answer": 583.1016570514605,
+          "absoluteError": 1.554312234475219e-14
+        },
+        {
+          "n": 347,
+          "steps": 431,
+          "r": 109,
+          "answer": 455.42195401891496,
+          "absoluteError": 2.3331336862497665e-13
+        },
+        {
+          "n": 1,
+          "steps": 500,
+          "r": 1,
+          "answer": 501,
+          "absoluteError": 0
+        },
+        {
+          "n": 500,
+          "steps": 1,
+          "r": 499,
+          "answer": 500,
+          "absoluteError": 0
+        }
+      ]
+    },
+    "allFieldsExceptRuntimeAndRssMatchAuthorFreeze": true,
+    "sanitizerSequencing": "Started after parent explicitly notified its own ASan process had exited.",
+    "sanitizerLimit": "ASAN_OPTIONS detect_leaks=0 per author harness; address/undefined behavior checks enabled. No LeakSanitizer claim."
+  },
+  "newIndependentProbe": {
+    "script": {
+      "path": "/tmp/flowchartcp-polya-top-r-independent-probe.py",
+      "sha256": "29a29cdca1cdbfc189664c203579d74ec135521971c9aef54d7e8a13786921c7"
+    },
+    "results": {
+      "articleSha256": "18fd27ee2ccf2cfd396e4675ce465cff3d1f5d67253f485313842cb2ec9554ef",
+      "cppSha256": "ba1d3404002c8dac230479a6cecc63bf559fd5135ca50c6ef95c945f0f8e5d51",
+      "method": "Nonincreasing integer partitions weighted by N!/(N-k)! / product(multiplicity!) over positive parts; literal top-r sums. No labeled weak-composition enumeration, owner-history enumeration, peeling recurrence, or inclusion-exclusion/marked-subset inversion.",
+      "integerPartitions": 62497,
+      "parameterPairs": 200,
+      "expectedValueComparisons": 1085,
+      "additionalPositiveMinimumTailCases": 60,
+      "maximumExactRationalError": 6.821210263296962e-13,
+      "worstParameters": [
+        499,
+        500,
+        498
+      ],
+      "checksum": "9209358677489316410",
+      "apiMemoryAndWriter": {
+        "memoryWriterChecks": 13,
+        "apiOnlyPeakRequestedAllocationBytes": 6016008,
+        "doubleBytes": 8,
+        "liveRequestedBytesAfterCall": 0
+      },
+      "decimalErrorBoundRecalculation": {
+        "relativeUpper": "5.57889290351252704453690151927575339981238121251876859548409800113583420406599183636769839361932164E-11",
+        "relativeLowerMagnitude": "5.578892903511287045170806859318707472147621497315545462928457356247217172763071798040975211980928672E-11",
+        "absoluteWithSerializationUpper": "5.57899290351252704453690151927575339981238121251876859548409800113583420406599183636769839361932164000E-8"
+      },
+      "seconds": 0.8495603299961658,
+      "sanitizerForThisAdditionalProbe": false,
+      "sharedOrAuthorArtifactsModified": false
+    },
+    "partitionOracleExplanation": "Enumerate each nonincreasing partition of d into k positive parts. The number of labeled n-owner increment vectors of this multiset is n!/(n-k)! divided by the factorials of equal positive-part multiplicities. Sum exact integer top-r scores weighted by that number, then divide by C(n+d-1,d). This uses integer partitions and label multiplicities rather than the author weak-composition enumeration, owner histories, peeling DP or marked-subset inversion.",
+    "additionalFullRangeFormula": "For r=n-1, top-r = n+d-1-min(x). For each t>=1, the exact count of compositions with min(x)>=t is C(n+d-nt-1,d-nt); sum these positive terms and divide by total count. Sixty cases include D499/500 and N249/250/251/499/500 boundaries.",
+    "checks": {
+      "integerPartitions": 62497,
+      "parameterPairs": 200,
+      "expectedValues": 1085,
+      "memoryAndWriterAssertions": 13,
+      "checksum": "9209358677489316410"
+    },
+    "additionalProbeSanitized": false,
+    "maximumExactRationalError": 6.821210263296962e-13
+  },
+  "initialAuditPreservation": {
+    "initialRecordComparedDeepEqualAtReview": true,
+    "initialResearchPositive": true,
+    "newPositiveResearchReviewNeeded": false,
+    "recommendation": "resolution-only after parent integration and root navigation validation",
+    "preserve": "All original fields, missing-technique classification, verified initial research, officialEditorialVerified=false, original unimplemented status and optional unconfirmed faster inclusion-exclusion note. No initial fields or snapshots were modified."
+  },
+  "integrationReadiness": {
+    "mathematicalAndOriginalRangeApiReviewPassed": true,
+    "independentNormalAndAsanPassed": true,
+    "sharedRegistrationPerformedByReviewer": false,
+    "flowAndArticleResolutionIsParentResponsibility": true,
+    "metadataPrerequisitesExist": true,
+    "frontmatterDescriptionEqualsSummary": true
+  },
+  "originalReviewSha256": "47f86ca76aadf343155070630bedf235f2d83319fa2f5d68a398e44d42d75942",
+  "publishedArticle": "src/content/docs/techniques/polya-urn-uniform-composition-top-r-sum.mdx",
+  "permanentProbe": {
+    "script": "research/probes/unit-polya-top-sum-independent.py",
+    "normalizedSha256": "dad58af15c923cfdbfef2611e7a76843860020283e8d4196d8d32b57e7f16b9d",
+    "normalization": "Only MDX path and removal of implicit tmp result write; independent partition oracle, memory/writer checks and error calculation unchanged."
+  }
+}

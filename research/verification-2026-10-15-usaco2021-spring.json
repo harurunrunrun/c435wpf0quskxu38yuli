@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "2021February/USOpen Platinum各3題を先に固定し、不足6件を監査台帳へ登録。技巧記事や完成経路を未完成のまま増やしていない。",
+  "siteCounts": {
+    "specificTechniques": 413,
+    "foundationArticles": 78,
+    "allArticles": 491,
+    "exampleMappings": 512,
+    "originalUrls": 474,
+    "graphs": 458,
+    "nodes": 3619,
+    "questions": 1645,
+    "answerEdges": 5362,
+    "verifiedWalks": 508,
+    "pendingWalks": 4
+  },
+  "fixedCorpus": {
+    "id": "usaco-2021-february-us-open-platinum",
+    "problems": [
+      "1116",
+      "1117",
+      "1118",
+      "1140",
+      "1141",
+      "1142"
+    ],
+    "researchReviewed": 6,
+    "covered": 0,
+    "completedProductionApis": 0,
+    "initialAuditSha256": "fb8b4e886b43a19f0dfc66f7b62aeb8c11485cf858cdee95469d770ed59f9cfa",
+    "fixedBeforeTechniqueMatching": true,
+    "initialArticles": 488,
+    "initialGraphs": 455,
+    "initialWalks": 509,
+    "initialRawFiles": 620,
+    "exactCalendarDaysVerified": false,
+    "datePrecision": "February2021-02/month, USOpen2021/year; no remembered exact day inserted",
+    "difficulty": null
+  },
+  "preservation": {
+    "artifact": "research/snapshots/usaco-2021-february-us-open-platinum-baseline.tar.gz",
+    "sha256": "be645b2f3192848bd482d5034e8fe79eca2e637e730d8ac893a6d5e5501c3913",
+    "bytes": 1710984,
+    "rawBaselineFiles": 620,
+    "totalArchiveMembers": 624,
+    "allRawHashesRechecked": true,
+    "allRawFilesRetained": true,
+    "manifestSha256": "b987cbfd25c7799b662801811ae0fd7a51daabe333abb6cf395cee4ec0c28337",
+    "fileLedgerSha256": "94fe3a533a7bea30ceab38e0134388265176d409c2ee414cfa5b1e7b4ea65b5c",
+    "archiveMetadata": "sorted names, gzip mtime0, tar mtime0 uid/gid0 mode0644; no file extraction required to verify",
+    "initialCounts": {
+      "articles": 488,
+      "graphs": 455,
+      "walks": 509,
+      "references": 509
+    },
+    "scope": "Technique matching began from this fixed snapshot. All620 raw baseline files plus original manifest/before/after hash JSON/SHA ledger retained. Current site counts are not substituted.",
+    "originalArtifactSha256": {
+      "audit.json": "fb8b4e886b43a19f0dfc66f7b62aeb8c11485cf858cdee95469d770ed59f9cfa",
+      "notes.md": "4497aa0c687ddeb3509a93eb76f42e06fdc8698eeba4bc64a3c998280d81f1ff",
+      "selection.json": "259b3642e7a8300aa41f6ecc871b2fcf425eef53ebf8180a0c62bf9f188001c9",
+      "registration-proposal.json": "79cf6619a8c9d54111bde7a9e4b8aa02a5b0c2ceb8b4cc63de440aa84570a3c1",
+      "probe.py": "ed3d68d4b7c76726f604c069c22e3b12c49a8e512523b9961c03dbe2957463bf",
+      "probe.json": "1a77239c750680c2dea49112b1021feeba6f6545506517b6ca9c8acb9626c78c",
+      "independent-review.py": "3e5488c721f0d208ee0202b8a855b63ff14686992e8e639e719295950a04c41b",
+      "independent-review.json": "cc834a44388831bd970e87b947b6c993f5ed577c3197511e21d405c8adb40f3f"
+    },
+    "normalizedProbeSha256": {
+      "research": "b1ef7ff30da40cbe40604dfc58700361a0a2bc8f92f50f86ce2ac677173d756d",
+      "independent": "34c0c72e1d93ee9268fae308b94d78ad54b4dfeb526ff5198d38372562e13f41"
+    },
+    "reproduction": [
+      "python3 research/probes/usaco-2021-spring-research-checks.py",
+      "python3 research/probes/usaco-2021-spring-independent-checks.py",
+      "node tests/usaco-2021-spring-fixed-corpus.test.mjs"
+    ],
+    "normalization": "元audit/selection/notes/proposal/review/resultsはbyte保存。実行scriptはsnapshotを恒久tarから一時展開、監査先を恒久JSON、出力をstdout/明示--outputだけに変更。研究用アルゴリズム/独立oracleは変更しない。元成果物の/tmpパスは初回履歴として保存。",
+    "originalNotesArtifact": "research/snapshots/usaco-2021-spring-audit-notes-original.md"
+  },
+  "checksPassed": [
+    "原典全6と主催公式Solutionの選んだ満点手順/必須主要補題を作者と別review者で確認、近接18記録/15unique MDXのscope差分と凍結根6経路/8質問ラベルの不足を確認。",
+    "恒久tar624membersの全620raw bytes/SHAと原manifest/前後hash台帳/ledgerを保持。恒久research scriptをtarから再現し、全semantic JSONと決定的SHA915c586f90b6224b194dbe3b5b9cb68c1770f8b7147a6168614525e3446a559bが初回と一致。",
+    "別の恒久独立scriptも620raw/6routes、terminalCの全33867loopgraph/21必要頂点条件、一般技巧では足りない具体反例を再現。",
+    "既存台帳/coverage/固定群の9テスト群全成功、IOI2018 Meetings flow8/8を新群追加後も再実行して成功。",
+    "最終build:localは491記事/512対応/458図で成功。日英/全角85検索と直近21記事を再確認。研究表25/25行で観測identity/研究和集合/公開対応の列を照合。",
+    "最終local linkは1416 HTML/SVGの28824リンク/資産が成功。optional nextWork追加後のvalidateも成功。",
+    "新しい固定群回帰8/8成功。初回全6record/status/selection/snapshot、620raw/488MDX、6根/8質問、近接18記録、研究6/6/初回coverage0、恒久probeの全件再現と第8コーパスの6不足を確認。"
+  ],
+  "independentFixedCorpusRegression": {
+    "date": "2026-10-15",
+    "test": "tests/usaco-2021-spring-fixed-corpus.test.mjs",
+    "sha256": "fd1a5c721f47d41c4d002b81fa7c797f9612891945328c2c82c70b83eae43b62",
+    "command": "node tests/usaco-2021-spring-fixed-corpus.test.mjs",
+    "passed": 8,
+    "failed": 0,
+    "seconds": 1.577239749,
+    "snapshotRawFiles": 620,
+    "archiveMembers": 624,
+    "fullHistoricalMdxRetained": 488,
+    "frozenGraphs": 455,
+    "frozenWalks": 509,
+    "fixedProblemIdentities": [
+      "1116",
+      "1117",
+      "1118",
+      "1140",
+      "1141",
+      "1142"
+    ],
+    "rawRootWalks": 6,
+    "questionAnswerLabels": 8,
+    "nearbyArticleRecords": 18,
+    "uniqueNearbyArticles": 15,
+    "immutableInitialRecordsAndSelectionAndStatusAndSnapshot": true,
+    "subsequentResolutionsAllowedWithoutRewritingInitialFields": true,
+    "researchReviewed": 6,
+    "initialCompletedApis": 0,
+    "initialCovered": 0,
+    "normalizedResearchProbeReplayedFromPermanentArchive": true,
+    "deterministicResearchResultSha256": "915c586f90b6224b194dbe3b5b9cb68c1770f8b7147a6168614525e3446a559b",
+    "testHarnessAdjustment": "All eight assertions/probes retained. Child-process invocation changed from spawnSync capture, which failed with environment EPERM, to asynchronous execFile; full permanent research probe then ran and matched every deterministic result."
+  },
+  "reviewCounters": {
+    "verifiedMappings": 512,
+    "reviewedProblems": 472,
+    "corpusStatementsReviewed": 65,
+    "corpusSolutionsReviewed": 56,
+    "allSolutionsReviewed": 487
+  },
+  "unresolvedKnownProblemGaps": 25,
+  "optionalApproaches": "Routingの別O(N²)包除/小行列式とBEST経由の規約/証明は初回auditでも未確認。coverage用の一つの満点手順と混同せず、別のnextWorkとして保持。",
+  "limitations": [
+    "世界全体の母数は未確定、網羅完了ではない。",
+    "production Astro/Starlight/Pagefind build/実ブラウザ/外部リンク全件の生存確認は未検証。",
+    "push・アップロード・公開は未実施。"
+  ],
+  "inProgress": [
+    "NoTime完成C++は2702609checks/root通常ASan再現、別4色BFS551710も両モード成功。記事/元データは/tmp freeze、まだ未登録。",
+    "IOI2019Rectは作者/root/別review者の通常ASan2884927件、別oracle394563盤/190182034長方形まで確認済み。原典数値/dateも再取得。初回unconfirmedの後続確認と記事/経路の統合はまだ行っていない。",
+    "NoTime/Rectの追加前491/458/512baselineを凍結し、次の二記事の条件分岐・旧経路保存を別agentが準備中。",
+    "Minimizing EdgesとPlatinum United Cowsの完成API/技巧記事を別々に作成中。いずれも現在の413具体技巧には未加算。"
+  ]
+}

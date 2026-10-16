@@ -1,0 +1,81 @@
+---
+title: "一つ消した後の最小公倍数は、最大指数を一人だけが持つ素因数で区別する"
+description: "素因数ごとの最大指数と保持者数を調べ、消すと変化する要素だけを別の結果として数えます。"
+techniqueId: lcm-removal-unique-maximum
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+一つの要素を取り除いたときの最小公倍数を、全ての候補で求めたい。数が素因数分解で与えられ、実際の整数を多倍長で構築しても桁数が巨大になる。最小公倍数の値ではなく、指数の変化に注目する。
+
+一つの値を1へ置き換える操作も、その要素を計算から外すことと同じである。要素が一つだけなら、置き換え後の最小公倍数は1とする。
+
+## 考え方
+
+最小公倍数の素因数 $p$ の指数は、全要素の $p$ の指数の最大値。各 $p$ について最大指数、その最大を持つ要素数、唯一ならその要素番号を保存する。
+
+どれかの $p$ で唯一の最大を持つ要素を重要な要素とする。その個数を $C$、要素数を $N$ とすると、異なる結果は
+
+$$C+\mathbf1[C<N]$$
+
+個。重要でない要素を消した全結果は、元の最小公倍数と同じ一種類にまとまる。重要な要素を消した結果どうしは必ず異なるので、第二最大の指数や巨大な値を実際に計算する必要もない。
+
+## 適用条件
+
+消すのは一個だけで、目的は異なる最小公倍数の値の個数。結果そのものの出力や、二個以上の同時削除では最大保持者数だけでは足りない。各要素内の素因数は真の相異なる素数で昇順、指数は正とする。この実装は素数判定を行わず、素因数分解が正しいことを前提にする。
+
+入力の要素数と素因数項の合計は各20万以下。値1は空の因数列で表せる拡張も扱う。要素は少なくとも一個必要。
+
+## なぜ正しいか
+
+最大指数を複数の要素が持つ素因数は、一個消しても最大が残る。唯一の要素を消したときだけ指数が下がるので、重要性の判定は必要十分である。
+
+重要な $i$ の証拠となる素因数 $p$ を選ぶ。$i$ を消すと $p$ の指数が下がるが、別の $j$ を消すと $i$ が残り指数は元の最大のまま。よって $i$ と $j$ の結果は異なる。重要でない要素はどの指数も変えないので全て同じ。この区別で全結果をちょうど一回数えられる。
+
+## 計算量
+
+毎回全因数列を読み直して最小公倍数の指数を作ると、因数項数 $T$ に対し $O(NT\log(T+1))$ 時間、多倍長の値の構築にはさらに桁数ぶんの費用が掛かる。最大保持者の一走査は $O(T\log(T+1)+N)$ 時間、補助空間 $O(T+N)$。
+
+## 実装
+
+```cpp
+#include <map>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+int distinct_lcms_after_removing_one(const std::vector<std::vector<std::pair<int,int>>>& factors) {
+    int n=static_cast<int>(factors.size());
+    if(n<1 || n>200000) throw std::invalid_argument("size");
+    struct Maximum {int exponent=0,count=0,owner=-1;};
+    std::map<int,Maximum> maximum;std::size_t terms=0;
+    for(int i=0;i<n;++i) {
+        int previous=1;
+        for(auto [prime,exponent]:factors[i]) {
+            if(prime<=previous || prime>1000000000 || exponent<1 || exponent>1000000000)
+                throw std::invalid_argument("factor list");
+            previous=prime;
+            if(++terms>200000) throw std::invalid_argument("too many factors");
+            auto& state=maximum[prime];
+            if(exponent>state.exponent) state={exponent,1,i};
+            else if(exponent==state.exponent) ++state.count;
+        }
+    }
+    std::vector<bool> essential(n);
+    for(auto [prime,state]:maximum) { (void)prime;if(state.count==1) essential[state.owner]=true; }
+    int changed=0;for(bool yes:essential) changed+=yes;
+    return changed+(changed<n);
+}
+```
+
+## 関連する手法
+
+- [約数ごとの集計を倍数側から配る](/flowchartcp/techniques/divisor-multiple-reversal/)
+
+## 参考資料
+
+- [AtCoder — LCM on Whiteboard](https://atcoder.jp/contests/abc259/tasks/abc259_e)
+- [公式解説](https://atcoder.jp/contests/abc259/editorial/4294)
+
+<TechniqueReferences techniqueId="lcm-removal-unique-maximum" />

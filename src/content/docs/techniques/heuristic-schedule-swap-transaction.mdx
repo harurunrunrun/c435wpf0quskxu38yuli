@@ -1,0 +1,70 @@
+---
+title: "二日間の交換は、一つ目を反映してから二つ目の差を計算する"
+description: "相互に変わる開催間隔を順に更新し、棄却時は逆順に戻します。"
+techniqueId: "heuristic-schedule-swap-transaction"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+開催日程の二日間を交換する近傍で、同じ種類を開催する総回数を保ちながら間隔を調整したいとき。一点変更の差分を二つ足すだけでは、共通する開催間隔を二度使うことがあります。
+
+## 考え方
+
+日 a の種類を日 b の種類へ変更し、その新しい状態で日 b を日 a の元の種類へ変更します。二変更の差分を足した値が、交換の正確な差分です。候補を棄却するときは、二つ目、一つ目の順で元へ戻します。元の状態で独立に計算した二差分の和は使いません。
+
+## 適用条件
+
+一点変更とその逆操作を正確に実装していること。得点だけでなく開催日集合と種類配列も更新・復元します。同じ日、または同じ種類の交換は変化0です。中間状態で別の全体制約を満たさなくなる場合は、最終状態の検査と区別した仮更新が必要です。
+
+## なぜ正しいか
+
+状態を $S\to S_1\to S_2$ と変えると、評価差は $(f(S_1)-f(S))+(f(S_2)-f(S_1))=f(S_2)-f(S)$。逆順に操作を戻せば、二つ目が変更した開催間隔を先に復元でき、その後に一つ目を正確に取り消せます。得点の差は正確ですが、二日交換だけで最適日程が得られる保証はありません。
+
+## 計算量
+
+一候補は一点変更を高々4回行うため $O(\log(D+1))$、追加空間 $O(1)$。全日程を複製する $O(D)$ や全評価の $O(DK)$ を避けます。候補の選び方・探索回数は別に決めます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+class ScheduleGapScore {
+    int days,kinds;vector<long long> decay;vector<vector<long long>> reward;vector<int> types;vector<set<int>> dates;__int128 total=0;
+    static __int128 triangle(long long gap){return (__int128)gap*(gap-1)/2;}
+public:
+    ScheduleGapScore(vector<long long> c,vector<vector<long long>> s,vector<int> t):days(t.size()),kinds(c.size()),decay(move(c)),reward(move(s)),types(move(t)),dates(kinds){
+        assert(kinds>0 && (int)reward.size()==days);
+        for(int i=0;i<kinds;++i){assert(decay[i]>=0);dates[i].insert(0);dates[i].insert(days+1);}
+        for(int d=1;d<=days;++d){assert((int)reward[d-1].size()==kinds && 0<=types[d-1] && types[d-1]<kinds);dates[types[d-1]].insert(d);total+=reward[d-1][types[d-1]];}
+        for(int i=0;i<kinds;++i){auto previous=dates[i].begin();for(auto current=next(previous);current!=dates[i].end();++current){total-=(__int128)decay[i]*triangle(*current-*previous);previous=current;}}
+    }
+    __int128 delta(int day,int new_type)const{
+        assert(1<=day && day<=days && 0<=new_type && new_type<kinds);int old_type=types[day-1];if(old_type==new_type)return 0;
+        auto old=dates[old_type].find(day);int a=*prev(old),b=*next(old);
+        auto right=dates[new_type].lower_bound(day);int x=*prev(right),y=*right;
+        return (__int128)reward[day-1][new_type]-reward[day-1][old_type]
+            -(__int128)decay[old_type]*(day-a)*(b-day)+(__int128)decay[new_type]*(day-x)*(y-day);
+    }
+    __int128 change(int day,int new_type){__int128 diff=delta(day,new_type);int old=types[day-1];if(old!=new_type){dates[old].erase(day);dates[new_type].insert(day);types[day-1]=new_type;}total+=diff;return diff;}
+    int type_at(int day)const{assert(1<=day && day<=days);return types[day-1];}
+    __int128 score()const{return total;}
+};
+__int128 schedule_swap_delta(ScheduleGapScore& state,int a,int b,bool commit=false){
+    int x=state.type_at(a),y=state.type_at(b);if(a==b || x==y)return 0;
+    __int128 diff=state.change(a,y);diff+=state.change(b,x);
+    if(!commit){state.change(b,y);state.change(a,x);}
+    return diff;
+}
+```
+
+## 関連する手法
+
+[開催日の変更は、前後の間隔を分ける積だけで減点差を求める](/flowchartcp/techniques/heuristic-schedule-gap-delta/)
+
+## 参考資料
+
+- [AtCoder：原典の条件と評価式](https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a)
+
+<TechniqueReferences techniqueId="heuristic-schedule-swap-transaction" />

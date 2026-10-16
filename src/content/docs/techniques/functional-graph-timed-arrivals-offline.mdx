@@ -1,0 +1,298 @@
+---
+title: "行き先が一つの移動で、複数の始点からの累積到着を数える"
+description: "閉路を一辺切り、最初の到着を木で、繰り返す到着を周期で分け、時刻と位置の条件をまとめて数える。"
+techniqueId: functional-graph-timed-arrivals-offline
+---
+
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+各頂点の次の行き先が一つに決まり、移動に正の整数時間がかかる。複数の個体が、それぞれの頂点・時刻から動き始め、同じ行き先を何度もたどる。指定頂点への**時刻 $T$ ちょうどを含む累積到着回数**を、多数の問い合わせで求めたいときに使います。
+
+個体どうしは独立に動き、同じ頂点・時刻を持つ二個体も二回として数えます。始点に現れることも一回の到着です。時刻が非常に大きいので、一回ずつ移動させず、閉路の周期をまとめて計算します。
+
+円周上を全員が同速度で歩き、対象を取ってから一定時間後に再び取れる問題にも使えます。人を静止させる座標系へ変えると、対象を次に取る人と、その間の時間が直前の人だけで決まります。
+
+## 考え方
+
+頂点 $v$ から `next[v]` への移動時間を $w_v>0$ とします。出次数1のグラフの各連結成分は、閉路一つと、それに向かう木からなります。
+
+各閉路で一辺 $u\to r$ を切ります。全頂点が根 $u$ へ向かう木になるので、$d_v$ を $v$ から $u$ までの時間とします。個体が頂点 $s$ に時刻 $a$ に現れると、切った辺を初めて使う直前までは、$s$ から $u$ までを一度ずつ通ります。
+
+この個体が頂点 $v$ に届く条件は、逆向きに見た木で $s$ が $v$ の部分木にあることです。到着時刻は $a+d_s-d_v$。従って、$v,T$ の問い合わせでは
+
+$$s\in\operatorname{subtree}(v),\qquad a+d_s\le T+d_v$$
+
+を満たす個体を数えます。部分木を Euler 順の区間にし、個体を $a+d_s$、問い合わせを $T+d_v$ で整列します。時刻条件を満たした個体を Fenwick tree に追加すれば、部分木区間の和が求まります。ここでは**元から閉路にあった頂点にも**、最初の一回を数えます。
+
+切った辺を使った後は、個体が $r$ に初めて現れる時刻が
+
+$$b=a+d_s+w_u$$
+
+になります。閉路一周の時間を $D$ とすると、その後 $r$ への到着は $b,b+D,b+2D,\ldots$ です。閉路上の頂点 $v$ までの時間は $\delta_v=d_r-d_v$ なので、問い合わせ時刻を $U=T-\delta_v$ に移せば、$r$ で時刻 $U$ までの到着回数を数えればよくなります。閉路外の頂点に反復到着はありません。
+
+一個体の反復分は、$b\le U$ の場合に $\lfloor(U-b)/D\rfloor+1$、それ以外は0です。$U=pD+q$、$b=kD+c$ と書くと、**先に $b\le U$ の個体だけを有効化した上で**、合計は
+
+$$p\cdot\#\{b\le U\}-\sum_{b\le U}\left\lfloor\frac bD\right\rfloor
++\#\{b\le U:\ b\bmod D\le U\bmod D\}$$
+
+となります。$U$ の小さい順に処理し、有効な個体数、商の和、余りの Fenwick tree を持ちます。余りが等しい場合を含めて数えます。未到達の個体をこの式へ入れると、負の寄与が発生することがあります。
+
+円周への還元では、時計回りの人の初期位置を $A_i$、円周長を $L$、再生時間を $C$ とします。人を止めて木を反時計回りへ秒速1で動かします。人 $i$ が取った木は、$C$ 秒後に位置
+
+$$z=(A_i-(C\bmod L))\bmod L$$
+
+へ来ます。そこから反時計回りで最初に出会う人、つまり $z$ 以下で最大の初期位置の人 $j$ を次の行き先にします。いなければ最後の人へ回ります。$z$ と同じ位置の人は、ちょうど再生した実を取れます。辺時間は **$C$ に、再生後の待ち時間を足したもの**で、$w_i=C+(z-A_j+L)\bmod L$ です。$C$ 全体を $C\bmod L$ に置き換えてはいけません。
+
+初期位置 $B$ の木も、$B$ 以下で最大の初期位置の人 $j$ を最初の収穫者とし、開始時刻を $a=(B-A_j+L)\bmod L$ とします。人と木の初期位置が異なるので $1\le a<L$ です。木の番号は個体の番号であり、頂点は最後にその木を収穫した人を表します。
+
+## 適用条件
+
+一般 API は頂点数1〜200000、個体数・問い合わせ数0〜200000、辺時間1〜2000000000、各開始時刻と問い合わせ時刻0〜$10^{18}$ を扱います。頂点番号は0始まりです。同じ始点・開始時刻の個体、同じ問い合わせを重複して与えられ、答えは問い合わせの入力順です。全ての入力を検査し、範囲外、空のグラフ、辺配列の長さの不一致を `std::invalid_argument` にします。
+
+辺時間が0や負の場合、閉路で有限時刻内の到着回数が有限とは限らないので対象外です。個体間の衝突で移動が変わる場合や、次の行き先が個体・時刻で変わる場合も、このモデルへはそのまま当てはまりません。
+
+円周用 `circular_harvest_counts` は、全員が時計回りへ秒速1で進み、全ての木が時刻0に実を一つ持ち、収穫からちょうど $C$ 秒後に再生する場合のアダプタです。従業員数・木の数は各1〜200000、合計以上の整数 $L\le10^9$、$1\le C\le10^9$ とします。人・木の初期位置はそれぞれ昇順の整数で、全てが $[0,L)$ にあり、互いに異なる必要があります。未整列・重複・人と木の位置の一致も例外にします。人番号は0始まり、問い合わせは0〜200000件、時刻0〜$10^{18}$ です。原典の時刻1以上・問い合わせ1件以上を、0にも拡張しています。
+
+## なぜ正しいか
+
+正の時間付きの出次数1グラフでは、各個体は有限回の移動後に閉路へ入り、その後は同じ順序を繰り返します。一辺 $u\to r$ を切ると、全ての頂点は切った木で $u$ へ到達します。最初にその辺を使うまでの歩行と、その後の歩行は、各到着をちょうどどちらか一方へ分類します。
+
+前半で頂点 $v$ を訪れる始点は、逆向きの木における $v$ の部分木と一致します。辺時間の和の差が移動時間なので、時刻条件は $a+d_s\le T+d_v$ と等価です。Euler 区間と時刻の両条件で数える処理は、前半の到着を過不足なく一度ずつ数えます。
+
+後半では、個体が初めて $r$ に着く時刻は $b=a+d_s+w_u$ です。以降は正の周期 $D$ ごとに同じ閉路を回るので、閉路上の $v$ への時刻は $b+\delta_v+jD$、$j\ge0$ に一致します。従って時刻を $U=T-\delta_v$ へ移した等差数列の項数が反復分です。$U<0$ なら、全ての $b$ が正なので反復分は0です。
+
+$b\le U$ を満たした個体について、余りが $c\le q$ なら項数は $p-k+1$、$c>q$ なら $p-k$ です。商の和と余り以下の個数を使う式は、その和をそのまま書き直しています。有効化の時刻比較も余りの比較も等号を含むため、質問時刻ちょうどの到着を落としません。前半と後半は切った辺の初回使用で区切っているので、二重計上もありません。
+
+円周では人どうしの相対位置が変わらず、一つの木へ二人が同時に到着することもありません。人 $i$ の収穫から $C$ 秒後まで、木には次の実がありません。その時点から最初に出会う人が、必ず次の実を取ります。この位置と待ち時間は $i,L,C$ だけで決まり、木の種類や過去の収穫回数には依存しません。別の木の収穫は歩行を変えないので、木を独立な個体としてよく、頂点への到着回数がその人の収穫数になります。別々の木の同時収穫も、互いに干渉せず数えられます。
+
+## 計算量
+
+頂点数を $N$、個体数を $S$、問い合わせ数を $Q$ とします。閉路検出・一辺の切断・反復のない DFS は $O(N)$。二つの平面走査の整列と Fenwick tree の処理を合わせ、一般 API は $O((N+S+Q)\log(N+S+Q+1))$ 時間、$O(N+S+Q)$ 補助空間です。円周アダプタの行き先・始点構築は $O((N+M)\log(N+1))$ 時間で、全体も同じ次数に収まります。再帰 DFS を使わず、長さ200000の尾にも対応します。
+
+辺時間の上限から、木の距離と一周時間は $4\cdot10^{14}$ 以下です。開始時刻・問い合わせを距離だけ移した値は符号付き64ビットに収まります。一方、一般 API の答えと商の和は64ビットを超え得るため、`ArrivalCount=__int128_t` を使います。答えは $S(T+1)\le200000(10^{18}+1)$ 以下であり、128ビットで十分です。C++20 と GCC・Clang の128ビット整数拡張が必要です。
+
+円周アダプタでは、人が次の木に着くまで少なくとも整数1秒かかり、時刻0に人と木が重ならないため、一人の時刻 $T$ までの収穫数は $T$ 以下です。このため返す答えだけを符号付き64ビットへ戻せます。
+
+## 実装
+
+`functional_graph_arrival_counts(next, travel, sources, queries)` は、一般の独立した個体の到着回数を128ビット整数の配列で返します。`travel[v]` は $v$ から `next[v]` への時間です。`TimedSource{vertex, first_time}` と `ArrivalQuery{vertex, time}` を使います。
+
+`circular_harvest_counts(length, cooldown, workers, trees, queries)` は円周上の収穫数を64ビット整数で返します。`HarvestQuery{worker, time}` の人番号は0始まりです。API内では `C%L` で位置を求め、辺時間には $C$ 全体を残します。
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <queue>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+using ArrivalCount = __int128_t;
+struct TimedSource { int vertex; std::int64_t first_time; };
+struct ArrivalQuery { int vertex; std::int64_t time; };
+
+namespace timed_arrival_detail {
+struct Fenwick {
+    std::vector<std::int64_t> bit;
+    explicit Fenwick(int size) : bit(size + 1, 0) {}
+    void add(int index) {
+        for (++index; index < int(bit.size()); index += index & -index) ++bit[index];
+    }
+    std::int64_t prefix(int end) const { // Count indices in [0,end).
+        std::int64_t value = 0;
+        for (; end; end -= end & -end) value += bit[end];
+        return value;
+    }
+};
+}
+
+// Each source visits its initial vertex at first_time, then follows next forever.
+// Sources are independent and duplicates retain their multiplicity.
+std::vector<ArrivalCount> functional_graph_arrival_counts(
+    const std::vector<int>& next, const std::vector<std::int64_t>& travel,
+    const std::vector<TimedSource>& sources, const std::vector<ArrivalQuery>& queries) {
+    using I = std::int64_t;
+    constexpr I time_limit = 1000000000000000000LL;
+    const int n = int(next.size());
+    if (next.empty() || next.size() > 200000 || travel.size() != next.size()
+        || sources.size() > 200000 || queries.size() > 200000)
+        throw std::invalid_argument("graph or item count");
+    for (int v = 0; v < n; ++v)
+        if (next[v] < 0 || next[v] >= n || travel[v] < 1 || travel[v] > 2000000000)
+            throw std::invalid_argument("edge endpoint or positive travel time");
+    for (const auto& source : sources)
+        if (source.vertex < 0 || source.vertex >= n || source.first_time < 0 || source.first_time > time_limit)
+            throw std::invalid_argument("source");
+    for (const auto& query : queries)
+        if (query.vertex < 0 || query.vertex >= n || query.time < 0 || query.time > time_limit)
+            throw std::invalid_argument("query");
+    std::vector<ArrivalCount> answer(queries.size(), 0);
+    if (sources.empty() || queries.empty()) return answer;
+
+    std::vector<int> indegree(n, 0);
+    for (int v : next) ++indegree[v];
+    std::queue<int> leaves;
+    for (int v = 0; v < n; ++v) if (!indegree[v]) leaves.push(v);
+    while (!leaves.empty()) {
+        int v = leaves.front(); leaves.pop();
+        if (!--indegree[next[v]]) leaves.push(next[v]);
+    }
+    struct Component { int root, entry; I period; };
+    std::vector<Component> components;
+    std::vector<int> component(n, -1);
+    std::vector<unsigned char> cut(n, 0), on_cycle(n, 0);
+    for (int start = 0; start < n; ++start) if (indegree[start] && component[start] < 0) {
+        int id = int(components.size()), v = start, last = start;
+        I period = 0;
+        do {
+            component[v] = id; on_cycle[v] = 1;
+            period += travel[v]; last = v; v = next[v];
+        } while (v != start);
+        cut[last] = 1; // Remove last -> start; the resulting tree is rooted at last.
+        components.push_back({last, start, period});
+    }
+    std::vector<std::vector<int>> children(n);
+    for (int v = 0; v < n; ++v) if (!cut[v]) children[next[v]].push_back(v);
+    std::vector<int> tin(n), tout(n);
+    std::vector<I> distance(n, 0); // Time from a vertex to its component's cut root.
+    int timer = 0;
+    std::vector<std::pair<int, bool>> stack;
+    for (int id = 0; id < int(components.size()); ++id) {
+        stack.push_back({components[id].root, false});
+        while (!stack.empty()) {
+            auto [v, exit] = stack.back(); stack.pop_back();
+            if (exit) { tout[v] = timer; continue; }
+            component[v] = id; tin[v] = timer++;
+            stack.push_back({v, true});
+            for (int child : children[v]) {
+                distance[child] = distance[v] + travel[child];
+                stack.push_back({child, false});
+            }
+        }
+    }
+    struct Point { I height; int position; };
+    struct TreeQuery { I limit; int vertex, id; };
+    struct CycleQuery { I time; int id; };
+    std::vector<Point> points;
+    std::vector<TreeQuery> tree_queries;
+    std::vector<std::vector<I>> periodic(components.size());
+    std::vector<std::vector<CycleQuery>> cycle_queries(components.size());
+    for (const auto& source : sources) {
+        int v = source.vertex, id = component[v], root = components[id].root;
+        I height = source.first_time + distance[v];
+        points.push_back({height, tin[v]});
+        periodic[id].push_back(height + travel[root]);
+    }
+    for (int id = 0; id < int(queries.size()); ++id) {
+        const auto& query = queries[id];
+        int v = query.vertex, group = component[v];
+        tree_queries.push_back({query.time + distance[v], v, id});
+        if (on_cycle[v]) {
+            I offset = distance[components[group].entry] - distance[v];
+            I shifted = query.time - offset;
+            if (shifted >= 0) cycle_queries[group].push_back({shifted, id});
+        }
+    }
+    std::sort(points.begin(), points.end(), [](auto a, auto b) { return a.height < b.height; });
+    std::sort(tree_queries.begin(), tree_queries.end(), [](auto a, auto b) { return a.limit < b.limit; });
+    timed_arrival_detail::Fenwick tree_counts(n);
+    std::size_t at = 0;
+    for (const auto& query : tree_queries) {
+        while (at < points.size() && points[at].height <= query.limit)
+            tree_counts.add(points[at++].position);
+        answer[query.id] = tree_counts.prefix(tout[query.vertex]) - tree_counts.prefix(tin[query.vertex]);
+    }
+    for (int group = 0; group < int(components.size()); ++group) {
+        auto& starts = periodic[group];
+        auto& questions = cycle_queries[group];
+        if (starts.empty() || questions.empty()) continue;
+        I period = components[group].period;
+        std::sort(starts.begin(), starts.end());
+        std::sort(questions.begin(), questions.end(), [](auto a, auto b) { return a.time < b.time; });
+        std::vector<I> remainders;
+        for (I first : starts) remainders.push_back(first % period);
+        std::sort(remainders.begin(), remainders.end());
+        remainders.erase(std::unique(remainders.begin(), remainders.end()), remainders.end());
+        timed_arrival_detail::Fenwick residue_counts(int(remainders.size()));
+        std::size_t activated = 0;
+        ArrivalCount quotient_sum = 0;
+        for (const auto& query : questions) {
+            while (activated < starts.size() && starts[activated] <= query.time) {
+                I first = starts[activated++];
+                int index = int(std::lower_bound(remainders.begin(), remainders.end(), first % period) - remainders.begin());
+                residue_counts.add(index);
+                quotient_sum += first / period;
+            }
+            int end = int(std::upper_bound(remainders.begin(), remainders.end(), query.time % period) - remainders.begin());
+            answer[query.id] += ArrivalCount(activated) * (query.time / period) - quotient_sum
+                             + residue_counts.prefix(end);
+        }
+    }
+    return answer;
+}
+
+struct HarvestQuery { int worker; std::int64_t time; }; // Worker is zero-based.
+
+// Sorted, pairwise distinct integer positions in [0,length); all trees start ripe.
+std::vector<std::int64_t> circular_harvest_counts(
+    std::int64_t length, std::int64_t cooldown,
+    const std::vector<std::int64_t>& workers, const std::vector<std::int64_t>& trees,
+    const std::vector<HarvestQuery>& queries) {
+    using I = std::int64_t;
+    if (workers.empty() || trees.empty() || workers.size() > 200000 || trees.size() > 200000
+        || queries.size() > 200000 || length < I(workers.size() + trees.size()) || length > 1000000000
+        || cooldown < 1 || cooldown > 1000000000)
+        throw std::invalid_argument("harvest dimensions");
+    auto check_positions = [length](const std::vector<I>& positions) {
+        for (std::size_t i = 0; i < positions.size(); ++i)
+            if (positions[i] < 0 || positions[i] >= length || (i && positions[i - 1] >= positions[i]))
+                throw std::invalid_argument("positions must be sorted and distinct");
+    };
+    check_positions(workers); check_positions(trees);
+    std::size_t wi = 0;
+    for (I tree : trees) {
+        while (wi < workers.size() && workers[wi] < tree) ++wi;
+        if (wi < workers.size() && workers[wi] == tree) throw std::invalid_argument("tree at a worker");
+    }
+    auto predecessor = [&workers](I position) {
+        auto it = std::upper_bound(workers.begin(), workers.end(), position);
+        return it == workers.begin() ? int(workers.size()) - 1 : int(it - workers.begin()) - 1;
+    };
+    int n = int(workers.size());
+    std::vector<int> next(n);
+    std::vector<I> travel(n);
+    for (int i = 0; i < n; ++i) {
+        I position = (workers[i] - cooldown % length + length) % length;
+        next[i] = predecessor(position); // Equality is allowed: the fruit has just regrown.
+        travel[i] = cooldown + (position - workers[next[i]] + length) % length;
+    }
+    std::vector<TimedSource> sources;
+    for (I tree : trees) {
+        int worker = predecessor(tree);
+        sources.push_back({worker, (tree - workers[worker] + length) % length});
+    }
+    std::vector<ArrivalQuery> translated;
+    for (const auto& query : queries) translated.push_back({query.worker, query.time});
+    auto wide = functional_graph_arrival_counts(next, travel, sources, translated);
+    std::vector<I> answer;
+    for (ArrivalCount value : wide) answer.push_back(static_cast<I>(value));
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [Functional Graph の閉路と尾](/flowchartcp/techniques/functional-graph-cycle-tail/) — 一個体の一定歩数後の位置から、複数個体の時刻付き累積到着へ広げる。
+- [オフラインクエリ](/flowchartcp/techniques/offline-queries/) — 時刻の小さい順に個体を有効化し、残る座標条件だけをデータ構造に任せる。
+- [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/) — Euler 順の部分木区間と、圧縮した余りの以下個数を数える。
+- [座標圧縮](/flowchartcp/techniques/coordinate-compression/) — 閉路ごとの余りを、出現する値だけの配列にする。
+
+## 参考資料
+
+- [JOI 2019/2020 春季トレーニング合宿・公式課題一覧](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/index.html) — 競技3が2020年3月22日と確認できる。
+- [収穫 — 公式問題文](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/harvest.pdf) — 同速度の円周移動、再生時刻との同時到着、質問時刻ちょうどの収穫を含む条件。
+- [収穫 — 公式解説](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day3/harvest-review.pdf) — 円周から出次数1グラフへの還元、閉路を切る処理、木の矩形集計、周期の商・余りと未到達の個体の除外。掲載実装の式とAPIは、この分解から構成した。
+
+<TechniqueReferences techniqueId="functional-graph-timed-arrivals-offline" />

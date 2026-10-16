@@ -1,0 +1,73 @@
+---
+title: "分割統治によるDP高速化"
+description: "最適な遷移元の添字が単調に増える性質を使い、DPの各層を高速に計算します。"
+techniqueId: divide-conquer-dp
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+最適な遷移元の添字が単調に増える性質を使い、DPの各層を高速に計算します。
+
+別名：Divide and Conquer DP / Divide-and-Conquer Optimization / 決定点の単調性
+
+## 使う場面
+
+配列を $K$ 個の連続区間に分ける問題などで、各区間の右端に対してすべての分割点を試すと、計算量は $O(KN^2)$ になります。右端を右へ動かしたときに、最適な分割点も右へ動くことを証明できれば、調べる候補を減らせます。小さな入力で最適な分割点の表を作ることは、その性質に気づく手掛かりになります。
+
+## 考え方
+
+前の層の値を $P[k]$、区間 $[k,j)$ の費用を $C(k,j)$ として、次の層を
+
+$$D[j]=\min_{0\le k<j}\{P[k]+C(k,j)\}$$
+
+で計算するとします。まず中央の位置 $j=m$ を計算し、最適な遷移元 $q$ を求めます。左半分の最適な遷移元は $q$ 以下、右半分では $q$ 以上になるので、その範囲だけを再帰的に調べます。各層の計算を始める前に、前の層の値をすべて確定させます。
+
+## 適用条件
+
+同じ最小値を取る候補が複数ある場合は、最も小さい添字を選ぶなどの規則を固定します。その規則で選んだ添字を $\operatorname{opt}[j]$ としたとき、$\operatorname{opt}[j]\le\operatorname{opt}[j+1]$ が必要です。
+
+費用のMonge性は代表的な十分条件です。$a<b<c<d$ に対して $C(a,c)+C(b,d)\le C(a,d)+C(b,c)$ が成り立つかを調べます。ただし、実際に利用する遷移の範囲と、同じ値の候補を選ぶ規則まで含めて確認してください。同じ層の未計算の値に依存するDPには、以下の実装をそのまま使えません。
+
+## なぜ正しいか
+
+中央の最適な添字が $q$ なら、単調性によって左側の答えが $q$ より右に来ることも、右側の答えが $q$ より左に来ることもありません。したがって、再帰で候補の範囲を狭めても真の最適な遷移元は残ります。その範囲の候補をすべて比較するので、各DP値は元の式と一致します。
+
+## 計算量
+
+費用を $O(1)$ で計算できるなら、1層は $O(N\log N)$、$K$ 層は $O(KN\log N)$ です。各深さで候補範囲の長さの合計が $O(N)$ になり、再帰の深さが $O(\log N)$ になるためです。前後の2層だけを保存すれば、空間計算量は $O(N)$ です。
+
+## 実装
+
+`dc_layer(P, C)` は、確定済みの前の層 `P` から1層を計算します。添字が小さい候補を優先する規則を、値と添字の組の比較で実現しています。
+
+このコードは `P` のすべての値が有限で、各状態に有効な遷移元がある場合を扱います。ちょうど $K$ 区間に分けるDPでは到達不能な状態が生じるため、呼び出す範囲を制限するか、無限大への加算を避ける処理を加えてください。返り値の `D[0]` は計算対象に含めていません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+// P[0..n-1] is fixed. C(k,j) is the cost of [k,j).
+// Every j in [1,n] has a feasible predecessor; all sums fit long long.
+template<class Cost>
+vector<long long> dc_layer(const vector<long long>& P, Cost C) {
+    int n=P.size(); vector<long long> D(n+1);
+    auto solve=[&](auto&& self,int l,int r,int a,int b)->void {
+        if(l>r) return;
+        int m=(l+r)/2;
+        pair<long long,int> best={LLONG_MAX,INT_MAX};
+        for(int k=a;k<=min(b,m-1);++k)
+            best=min(best,make_pair(P[k]+C(k,m),k));
+        D[m]=best.first; int q=best.second;
+        self(self,l,m-1,a,q); self(self,m+1,r,q,b);
+    };
+    solve(solve,1,n,0,n-1); return D;
+}
+```
+
+## 関連する手法
+
+[区間DP](/flowchartcp/techniques/interval-dp/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [cp-algorithms: Divide and Conquer DP](https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html)
+
+<TechniqueReferences techniqueId="divide-conquer-dp" />

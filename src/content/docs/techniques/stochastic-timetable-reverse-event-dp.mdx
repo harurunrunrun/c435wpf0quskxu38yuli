@@ -1,0 +1,170 @@
+---
+title: "運休する便の時刻表から、期限内の最大到着確率を求める"
+description: "便の到着後の値を逆時刻順に保存し、運行成功と失敗後の待機を比較する。同時刻の候補は共通の待機値で一括して選ぶ。"
+techniqueId: stochastic-timetable-reverse-event-dp
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+出発・到着の時刻が固定された有向の便があり、それぞれが独立な確率で運行する。運休はその便に乗ろうとした時にだけ分かる。失敗したら同じ地点に残って後の便を待てるが、同じ地点・同じ出発時刻では一便しか試せない。期限までに目的地へ着く確率を、待機と便の選択によって最大にしたい。
+
+乗換には、到着が次の出発より**厳密に早い**必要がある。同時刻に到着した便からは乗り継げない。全便の運行状況を先に知ってから経路を選ぶモデルではない。
+
+## 考え方
+
+時刻を大きい方から処理する。時刻 $t$ の処理前に、`best[v]` を「地点 $v$ で、出発時刻が $t$ より後の便だけを使えるときの最良成功確率」とする。目的地では既に成功なので1、他の地点は初め0である。
+
+便 $i$ の到着時刻 $e_i$ に、行先の `best` を `after_arrival[i]` へ保存する。これは便が運行した場合の、その後の成功確率 $Q_i$ である。到着と同じ時刻の出発を含める前に保存するので、同時刻乗換を許さない。
+
+次に出発を処理する。同じ地点・同じ出発時刻の全候補は、共通の待機値 $W$ を使う。便 $i$ を試す候補は
+
+$$p_iQ_i+(1-p_i)W.$$
+
+便が運行すれば到着後の値、運休すれば後の便を待つ値になる。何も試さない $W$ とも比較し、最大の一つだけを次の `best` にする。候補を一便ずつ即時反映して次の便の失敗先に使うと、同時刻に二便以上を試せることになってしまう。
+
+掲載コードはイベントを「時刻の降順、到着を先、出発地点の順」に整列する。同時刻の到着値を全て保存した後、同じ出発地点の候補をまとめて計算する。地点が違う出発群は、保存済みの到着値だけを読むので順番に反映してよい。時刻が $10^{18}$ でも、実際の $2M$ イベントだけを扱えばよい。
+
+## 適用条件
+
+便の運行は互いに独立し、一便は試した時だけ成否が分かる。運休後は同じ地点に残る。待機は自由で、移動時間は正。同時刻には一便だけを試し、到着時刻と同時刻の便へ乗換できない。過去の成否で将来便の運行確率が変わる場合や、所持金・乗車回数などの追加状態がある場合には、地点と時刻だけでは足りない。
+
+API `maximum_timetable_success` は、地点数1〜100万、便数0〜100万、期限0〜$10^{18}$ を扱う。始点・目的地は有効な地点番号とし、同じでもよい。各便は異なる二地点を結び、$0\le s_i<e_i\le\text{deadline}$、運行確率は有限の `double` で0〜1。同じ時刻表の重複便も、独立な別の便として保持する。開始地点では時刻0の便にも乗れる状態で待っている。目的地への到着は期限と等しくても成功である。
+
+不正な地点数、便数、地点番号、自己ループ、時刻、NaN・無限・範囲外の確率は `std::invalid_argument`。始点が目的地の場合や空の便リストでも、他の全引数を検査してから答えを返す。割当失敗などの標準例外はそのまま伝わる。入力は変更しない。
+
+原典の範囲は $2\le N\le10^6$、$1\le M\le10^6$、$1\le K\le10^{18}$、$0\le s_i<e_i\le K$、異なる二地点、確率0〜1かつ小数10桁以内、絶対誤差 $10^{-6}$。この全体は掲載APIに含まれる。計算はIEEE 754のbinary64、通常の最近接丸めを前提とし、`fast-math` は使わない。
+
+## なぜ正しいか
+
+**時刻を逆に処理できる理由。** 一便の到着は出発より後なので、その出発を処理する前に、到着後の成功確率は保存済みである。時刻 $t$ の出発を処理する際、失敗後に使うのも $t$ より後の出発だけである。従って参照先は全て確定している。地点のグラフに閉路があっても、時刻は進むため循環した依存は生じない。
+
+**同時刻の到着を先に保存する理由。** 便で時刻 $t$ に到着した人は、出発時刻が $t$ の便へ乗れない。必要なのは時刻 $t$ の出発を含める前の `best` である。先に出発を反映すると、その時刻の便を使える値を到着先へ保存してしまう。よって同時刻の到着イベントを、どの地点の出発更新よりも先に処理する。
+
+**同じ出発群は一括して比較する理由。** 一便を選ぶ決定は成否を見る前に行う。運休しても、同じ時刻の別便を試すことはできないので、全候補の失敗先は同じ更新前の $W$ である。運行結果が独立なため、過去の結果を知っていても将来の分布は変わらず、式の $Q_i,W$ をそのまま使える。試す便ごとの期待成功値と待機値の最大は、この時刻で許される全行動を尽くす。行動の無作為な混合でも、その最大を超えられない。
+
+**目的地と初期状態。** 目的地では移動せず終了できるので成功確率は常に1である。目的地から出る便が存在しても、この待機値を下げない。最後のイベントより後には他の地点から移動できないため0が正しい。降順の各出発群で最良値を確定すると、全イベントを処理した後の始点の値が、時刻0の出発も含めた最適値となる。
+
+## 計算量
+
+$N$ 地点、$M$ 便について、入力検査は $O(N+M)$ 以下、$2M$ イベントの整列は $O(M\log(M+1))$、整列後の処理は $O(M)$。全体で **$O(N+M\log(M+1))$ 時間、$O(N+M)$ 補助空間**。再帰的な時刻DPや、地点ごとに全時刻の配列を持たない。
+
+典型的な64ビット環境では便の入力一件が32バイト、イベントが16バイトである。最大 $N=M=10^6$ では、イベント約32MB、便ごとの到着値約8MB、地点の値約8MBとなり、補助配列は計約48MB。入力の約32MBを含め約80MB、別にvector本体と整列の対数段のスタックがある。正確なバイト数は各型の `sizeof` に依存する。
+
+**誤差。** 保存値は0〜1である。$Q>W$ の候補を `fma(p, Q-W, W)` で計算し、最後に1以下へ切る。binary64の単位丸めを $u=2^{-53}$ とすると、引算とfma一回による局所絶対誤差を保守的に $2u$ 以下とできる。凸結合・最大値・区間への切詰めはいずれも最大絶対誤差を増幅しない。依存経路上の出発群は高々 $M$ 個なので、入力された二進確率に対する誤差は $2Mu$ 以下である。
+
+原典の十進確率を最近接のbinary64へ変換する誤差も考えると、一便あたり高々 $u$。独立な運行結果を同じ一様乱数で結合すれば、どれかの便の成否が変わる確率は高々その誤差の和であり、最適値の差も高々 $Mu$ である。合計は最大でも約 $3.4\times10^{-10}$。固定小数点12桁の表示による誤差を加えても、原典の絶対誤差 $10^{-6}$ を十分下回る。確率0や1では不要な除算や対数を使わない。
+
+
+
+## 実装
+
+`ScheduledTrip` の地点番号は0始まり。返り値は成功確率のみであり、便の選択列は復元しない。時刻は大小比較だけに使い、時刻へ1を足したり浮動小数へ変換したりしない。
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+
+static_assert(std::numeric_limits<int>::max() >= 1000000,
+              "int must represent every station index");
+static_assert(std::numeric_limits<double>::is_iec559 &&
+              std::numeric_limits<double>::radix == 2 &&
+              std::numeric_limits<double>::digits == 53,
+              "IEEE 754 binary64 required");
+
+struct ScheduledTrip {
+    int from, to;
+    std::int64_t departure, arrival;
+    double run_probability;
+};
+
+namespace timetable_detail {
+struct Event {
+    std::int64_t time;
+    std::uint32_t trip;
+    bool arrival;
+};
+} // namespace timetable_detail
+
+double maximum_timetable_success(
+    int station_count, const std::vector<ScheduledTrip>& trips,
+    int start, int destination, std::int64_t deadline) {
+    constexpr std::int64_t max_time = 1000000000000000000LL;
+    if (station_count < 1 || station_count > 1000000 || trips.size() > 1000000 ||
+        deadline < 0 || deadline > max_time)
+        throw std::invalid_argument("timetable size or deadline");
+    const auto valid_station = [station_count](int v) {
+        return 0 <= v && v < station_count;
+    };
+    if (!valid_station(start) || !valid_station(destination))
+        throw std::invalid_argument("start or destination");
+    for (const auto& trip : trips) {
+        if (!valid_station(trip.from) || !valid_station(trip.to) || trip.from == trip.to ||
+            trip.departure < 0 || trip.departure >= trip.arrival || trip.arrival > deadline ||
+            !std::isfinite(trip.run_probability) ||
+            trip.run_probability < 0 || trip.run_probability > 1)
+            throw std::invalid_argument("trip endpoint, time or probability");
+    }
+    if (start == destination) return 1;
+    if (trips.empty()) return 0;
+
+    std::vector<timetable_detail::Event> events;
+    events.reserve(2 * trips.size());
+    for (std::size_t i = 0; i < trips.size(); ++i) {
+        events.push_back({trips[i].arrival, static_cast<std::uint32_t>(i), true});
+        events.push_back({trips[i].departure, static_cast<std::uint32_t>(i), false});
+    }
+    std::sort(events.begin(), events.end(), [&trips](const auto& a, const auto& b) {
+        if (a.time != b.time) return a.time > b.time;
+        if (a.arrival != b.arrival) return a.arrival > b.arrival;
+        if (!a.arrival && trips[a.trip].from != trips[b.trip].from)
+            return trips[a.trip].from < trips[b.trip].from;
+        return a.trip < b.trip;
+    });
+    std::vector<double> best(station_count, 0), after_arrival(trips.size(), 0);
+    best[destination] = 1;
+    for (std::size_t at = 0; at < events.size();) {
+        const auto event = events[at];
+        if (event.arrival) {
+            after_arrival[event.trip] = best[trips[event.trip].to];
+            ++at;
+            continue;
+        }
+        const int from = trips[event.trip].from;
+        const double wait = best[from];
+        double next = wait;
+        do {
+            const auto& trip = trips[events[at].trip];
+            const double success = after_arrival[events[at].trip];
+            if (success > wait) {
+                const double candidate = std::fma(trip.run_probability, success - wait, wait);
+                next = std::max(next, std::min(1.0, candidate));
+            }
+            ++at;
+        } while (at < events.size() && !events[at].arrival &&
+                 events[at].time == event.time && trips[events[at].trip].from == from);
+        best[from] = next;
+    }
+    return best[start];
+}
+```
+
+## 関連する手法
+
+- [最初の一手で期待値を分ける](/flowchartcp/techniques/expectation-first-step/)：成否の前に行動を選ぶ点が共通する。ここでは成功確率と、時刻の異なる参照先を扱う。
+- [オフライン処理](/flowchartcp/techniques/offline-queries/)：時刻を整列して依存関係が確定する順に処理する。
+- [開始時刻の確率を足すDP](/flowchartcp/techniques/probability-start-time-window/)：選択が固定された独立過程とは異なり、本技巧では便を試すかを最適化し、失敗後の待機値を比較する。
+
+## 参考資料
+
+- [ICPC World Finals 2018 — 公式問題冊子、1〜2ページ](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1)。独立な運行、同時刻の試行制限、厳密な乗換条件と全数値範囲を確認した。
+- [Per Austrin・Jakub Onufry Wojtaszczyk — 公開solution sketches、1〜2ページ](https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1)。逆時刻の方針を参照した。資料自身がunofficial analysisと明記しており、公式解説とは扱わない。同時刻の全到着を先に保存する規則と、一括更新・誤差の根拠を本文で具体化した。
+- [ICPC公式大会ニュース](https://news.icpc.global/wf2018/)。競技日は2018年4月19日。難度の数値資料は不明のため設定しない。
+
+<TechniqueReferences techniqueId="stochastic-timetable-reverse-event-dp" />

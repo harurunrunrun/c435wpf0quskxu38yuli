@@ -1,0 +1,81 @@
+---
+title: "図形を挟む平行線の最小幅を、凸包の辺ごとに求める"
+description: "図形の凹みを無視できることを確認し、辺と向かい側の支持点の距離を一周で調べる。"
+techniqueId: convex-minimum-width
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+平面の図形を回転し、幅が一定の平行な壁の間に収めたい。求めるのは最小の幅であり、外周の最大距離ではない。図形が凹多角形でも、この目的には凸包だけが必要になる。
+
+## 考え方
+
+幅は、ある方向への射影の最大値と最小値の差である。線形関数の最大・最小は凸包上で同じ値になるため、入力点の凸包を取る。
+
+最小幅では片方の支持線を凸包の辺に沿わせられる。反時計回りの辺 $a\to b$ の反対側の最遠頂点 $c$ を求め、幅を
+
+$$w=\frac{\operatorname{cross}(b-a,c-a)}{\sqrt{(b_x-a_x)^2+(b_y-a_y)^2}}$$
+
+で評価する。辺を次へ進めると最遠頂点も戻らないので、全辺の高さの最大点を一周で調べる。
+
+## 適用条件
+
+平行な直線の間に図形全体を収める問題である。障害物との交差、面積や周長の保存、整数点だけの移動など、凹みが意味を持つ別条件では凸包への置換をそのまま使えない。
+
+実装は整数座標の絶対値 $10^9$ 以下を想定し、凸包の向きと最遠点は128ビットで厳密に比較する。返す幅は `long double` の近似値。厳密な有理数や平方根の比較が出力に必要な問題は、幅の二乗を多倍長整数で比べる設計に変える。UVaの原典は整数座標 $0..10^4$、小数2桁への切り上げを要求するので、出力の丸めは呼び出し側で行う。
+
+## なぜ正しいか
+
+二本の支持線がどちらも頂点だけに接している間、接触する頂点の組は変わらない。幅は二頂点の差の、支持線の法線方向への射影になる。接触点が固定された角度区間の内部で、この正の射影が最小になることはなく、最小値は区間の端で達成される。端では少なくとも片方の支持線が辺に接するため、全辺の評価で十分である。
+
+反対側の支持点は、辺の方向の回転とともに凸包を同じ向きに進む。従って全辺ごとに全頂点を探す必要はない。
+
+## 計算量
+
+各辺から全点への距離を調べると、凸包後でも $O(H^2)$ 時間。凸包 $O(N\log N)$、支持点の一周 $O(H)$、全体 $O(N\log N)$ 時間、$O(N)$ 空間。
+
+## 実装
+
+`minimum_width` は空集合・一点・共線の点集合なら0を返す。凹多角形の頂点列も、順序を問わず入力できる。
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <vector>
+struct Point { long long x,y; };
+using i128=__int128_t;
+i128 turn(Point a,Point b,Point c){return (i128(b.x)-a.x)*(i128(c.y)-a.y)-(i128(b.y)-a.y)*(i128(c.x)-a.x);}
+std::vector<Point> strict_hull(std::vector<Point> p){
+    std::sort(p.begin(),p.end(),[](Point a,Point b){return a.x!=b.x?a.x<b.x:a.y<b.y;});
+    p.erase(std::unique(p.begin(),p.end(),[](Point a,Point b){return a.x==b.x && a.y==b.y;}),p.end());
+    if(p.size()<=1)return p;
+    std::vector<Point> h;
+    for(Point a:p){while(h.size()>=2 && turn(h[h.size()-2],h.back(),a)<=0)h.pop_back();h.push_back(a);}
+    int lower=h.size();
+    for(int i=int(p.size())-2;i>=0;--i){while(int(h.size())>lower && turn(h[h.size()-2],h.back(),p[i])<=0)h.pop_back();h.push_back(p[i]);}
+    h.pop_back();return h;
+}
+long double minimum_width(std::vector<Point> p){
+    auto h=strict_hull(std::move(p));int n=h.size();if(n<=2)return 0;
+    int j=1;long double best=std::numeric_limits<long double>::infinity();
+    for(int i=0;i<n;++i){int k=(i+1)%n;
+        while(turn(h[i],h[k],h[(j+1)%n])>turn(h[i],h[k],h[j]))j=(j+1)%n;
+        i128 dx=i128(h[k].x)-h[i].x,dy=i128(h[k].y)-h[i].y;
+        long double width=(long double)turn(h[i],h[k],h[j])/std::sqrt((long double)(dx*dx+dy*dy));
+        best=std::min(best,width);
+    }
+    return best;
+}
+```
+
+## 関連する手法
+
+[最も遠い二点を凸包に絞り、向かい合う頂点を一周させる](/flowchartcp/techniques/convex-diameter-calipers/) ・ [凸包](/flowchartcp/techniques/convex-hull/)
+
+## 参考資料
+
+- [UVa Online Judge：Trash Removal（原典）](https://onlinejudge.org/external/11/1111.pdf)。問題条件から上の手法を導出し、本文の実装を素朴な計算との比較で確認している。
+
+<TechniqueReferences techniqueId="convex-minimum-width" />

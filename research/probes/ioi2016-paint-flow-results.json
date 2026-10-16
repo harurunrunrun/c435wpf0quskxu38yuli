@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/home/admin2/flowchartcp/site/tests/ioi2016-paint-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 6.157334229996195,
+  "testFile": "tests/ioi2016-paint-flow.test.mjs",
+  "testSha256": "f79f28d83cfefb49528b7f79c6abc2cfe71494acb467e90ed4ff42d9d5e64397",
+  "preparedTmpFile": "/tmp/flowchartcp-ioi2016-paint-flow.test.mjs",
+  "preparedAndPublishedBytesIdentical": true,
+  "tapFile": "/tmp/flowchartcp-ioi2016-paint-flow-results.tap",
+  "tapSha256": "509708ce57a9180e5c898c73a0f95fb6e50d1201f40b7410b4e094b4ca6a4d18",
+  "caseFile": "/tmp/flowchartcp-ioi2016-paint-flow-case.json",
+  "caseSha256": "4073f7c87d122bb539d422f39c6bc8f0b2c0462df4a02fb5607ca66ef4ac2a35",
+  "frozenBaseline": {
+    "articles": 511,
+    "graphs": 478,
+    "nodes": 3739,
+    "walks": 532,
+    "corpora": 10,
+    "datasetJsonMembers": 79,
+    "rawSha256": {
+      "flows": "3f7560040a56df9fe0152527e203246581b19cbcb01deef58cae8b998774e26e",
+      "walks": "92f0a55645fc3f57c5e15fa9d77025fb901aef8c1a0f0ff608fdcfa97e1e9dab",
+      "ioi2016-audit": "fbe26d18e4ffca7442d6f5f78df173087b646cc8ef305371b3cfd6778c096cf1",
+      "dataset": "7483d8938586e3d44a6fea2966a5a981957765c9f00f79055a167c2e8fb91b1e"
+    }
+  },
+  "cppSha256": "ec94273cd1ffaf3f0b71d23c9a58eadb00f964a42a62e86d2a9c7d375d08c29c",
+  "allowedSharedFiles": [
+    "tests/ioi2016-paint-flow.test.mjs",
+    "research/probes/ioi2016-paint-flow-results.json"
+  ],
+  "otherSharedFilesModified": false,
+  "coveragePolicy": "All ten prior fixed-corpus fields,Aliens/Molecules/Railroad prior resolutions,and all frozen metadata/references remain unchanged. Initial Paint researched-positive6/6/coverage0/6/API0 stays fixed. Only resolution is appended. Current research6/6 and coverage>=4;deleting Paint resolution or production article/ref/walk/valid steps reduces coverage by1. An invalid actual MDX fence fails real product preflight and gates all corpus coverage to0. Future legitimate resolutions are allowed.",
+  "scope": [
+    "complete old532 records/hash and independent raw replay including every target/question/answer label/terminal",
+    "every old478 graph and3739 node field/order/target/result",
+    "all79 frozen dataset raw hashes and all10 corpus initial fields+existing Aliens/Molecules/Railroad resolutions",
+    "every old metadata/reference field and relative order",
+    "593 local prefixes/404 completed share URLs with Back",
+    "new three guards/all six no-unknown branches/both displays/SVG answers and article href",
+    "primary full N/K/ordered positive run lengths/separators/known colors/all-completion output/Notice/date/null/header provenance",
+    "prefix/suffix feasibility/white seam/black-placement boundaries/difference union/optional contradictions and exact normal+ASan native counters",
+    "new independent117367 assertions/45193 API calls using direct block starts/singleton frames/pinned colors/14 allocation faults",
+    "actual standalone core+sourceadapter primary examples/empty/zero-run/contradictions/invalid/reentry smoke",
+    "missing article/ref/source/walk/validsteps coverage -1 and actual broken C++ fence preflight0"
+  ],
+  "resultsFile": "research/probes/ioi2016-paint-flow-results.json",
+  "firstRun": {
+    "status": "failed",
+    "passed": 9,
+    "failed": 1,
+    "reason": "New Paint feature lacked publicationDate/publicationDatePrecision/publicationYear/originalNumericBoundsVerified aliases despite confirmed sourceDate/datePrecision.",
+    "json": "/tmp/flowchartcp-ioi2016-paint-flow-first-date-schema-failure.json",
+    "tap": "/tmp/flowchartcp-ioi2016-paint-flow-first-date-schema-failure.tap",
+    "fix": "Root appended only the four source-confirmed aliases to the new feature and recorded normalization in sidecar.integration; former fields preserved.",
+    "assertionsChanged": false,
+    "sameTestSha256": "f79f28d83cfefb49528b7f79c6abc2cfe71494acb467e90ed4ff42d9d5e64397"
+  }
+}

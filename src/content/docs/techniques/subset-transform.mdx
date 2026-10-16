@@ -1,0 +1,63 @@
+---
+title: "部分集合ゼータ変換"
+description: "各集合の部分集合に対する総和を、ビットごとの加算でまとめて求める。"
+techniqueId: subset-transform
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+各集合の部分集合に対する総和を、ビットごとの加算でまとめて求める。
+
+## 使う場面
+
+集合 $S$ ごとに、$S$ に含まれるすべての部分集合 $T$ の値を合計したいときに使う。各集合で部分集合を直接列挙すると、全体で $3^N$ 回かかる。この処理を $N2^N$ 回程度に減らせる。
+
+## 考え方
+
+集合の値 $f(S)$ を、長さ $2^N$ の配列に保存する。ビットを一つずつ処理し、そのビットを含む集合に、ビットを除いた集合の値を加える。
+
+すべてのビットを処理すると、各位置には $S$ の部分集合の値の総和が入る。これは、各ビットを一つの軸とみなした多次元の累積和に相当する。この処理はSOS DPとも呼ばれる。加算を減算に変えると、元の配列に戻す部分集合メビウス変換になる。
+
+## 適用条件
+
+和のほか、最小値や最大値の集計にも同様の走査を使える。ただし、逆変換には逆演算が必要であり、最小値や最大値の集計を減算で元に戻すことはできない。
+
+集合のORに関する畳み込みには、この変換と積、逆変換を使える。互いに素な集合の和を扱う部分集合畳み込みには、集合の大きさごとの情報を持つ追加の処理が必要になる。
+
+## なぜ正しいか
+
+処理済みのビットについてだけ、含める・含めないの両方を集計した状態を保つ。次のビットでは、そのビットを含む部分集合と含まない部分集合を足し合わせる。全ビットを処理すると、すべての部分集合が一度ずつ含まれる。各段階の加算は減算で打ち消せるため、逆変換も成立する。
+
+## 計算量
+
+時間は $O(N2^N)$、配列の空間は $O(2^N)$。配列をその場で書き換える実装では、配列以外の追加空間は $O(1)$。
+
+## 実装
+
+配列長を2の累乗とする。`inverse` が `false` ならゼータ変換、`true` ならメビウス変換を行う。以下は整数版なので、変換途中の値も符号付き64ビット整数に収まる必要がある。
+
+```cpp
+#include <vector>
+#include <cassert>
+#include <cstddef>
+using namespace std;
+void subset_transform(vector<long long>& f,bool inverse=false) {
+    size_t size=f.size();
+    assert(size>0 && (size&(size-1))==0);
+    for(size_t bit=1;bit<size;bit<<=1)
+        for(size_t mask=0;mask<size;++mask)
+            if(mask&bit) {
+                if(inverse) f[mask]-=f[mask^bit];
+                else f[mask]+=f[mask^bit];
+            }
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [USACO Guide: Sum over Subsets DP](https://usaco.guide/plat/dp-sos)
+
+<TechniqueReferences techniqueId="subset-transform" />

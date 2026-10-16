@@ -1,0 +1,366 @@
+{
+  "techniqueId": "stochastic-timetable-reverse-event-dp",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-timetable-article.mdx",
+    "checker": "/tmp/flowchartcp-timetable-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/stochastic-timetable-reverse-event-dp.mdx",
+    "checker": "scripts/check_stochastic_timetable_cpp.py"
+  },
+  "metadata": {
+    "id": "stochastic-timetable-reverse-event-dp",
+    "title": "運休する便の時刻表から、期限内の最大到着確率を求める",
+    "summary": "便の到着後の値を逆時刻順に保存し、運行成功と失敗後の待機を比較する。同時刻の候補は共通の待機値で一括して選ぶ。",
+    "aliases": [
+      "ICPC 2018 Catch the Plane",
+      "stochastic timetable reverse event DP",
+      "strict transfer simultaneous departure batching",
+      "確率付き時刻表 逆時刻 到着値 待機"
+    ],
+    "family": "確率 DP",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "probability-expectation",
+      "state-design",
+      "offline-queries"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+      "https://news.icpc.global/wf2018/"
+    ]
+  },
+  "reference": {
+    "techniqueId": "stochastic-timetable-reverse-event-dp",
+    "source": "ICPC",
+    "problemId": "wf2018_a",
+    "title": "Catch the Plane",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+    "editorialUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+    "evidence": "独立な確率で実行される時刻表上で、試行時だけ運行成否を知り、失敗後は待機できる。同時刻は一便だけ、乗換は厳密な時刻差が必要。便の到着時点で後続成功値を保存し、出発時には運行後の値と失敗後の共通待機値を比較して最大の一行動を選ぶ。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-04-19",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "公式原典1〜2頁の全数値、独立な運行・試行時のみ成否判明・同時刻一便・厳密な乗換条件を2026-10-15に再確認。公式ドメイン配布solution sketchesは著者Per AustrinとJakub Onufry Wojtaszczykによるunofficial analysisと自称するため公式解説とは扱わない。逆時刻DPを参照し、全到着値を同時刻の全出発更新より先に保存する規則、同一地点同一出発時刻の共通待機値による比較、目的地の吸収、正の移動時間による依存の非循環性を独立に証明。掲載APIは原典N,M<=100万、期限<=10^18、確率0〜1・十進10桁、異なる端点を全て含む。実MDX単一可視C++20を抽出し、小時刻表19448件の全112146決定方策と独立な全運行worldを前向きに模擬、非零重みworld512294回に一致。最大100万地点・100万便の長鎖、同時刻100万候補、100万待機機会、確率0/1、等号、時刻0/10^18、目的地発便、任意始終点、重複便、入力順変更、不正引数を確認。通常/ASan+UBSanとも62915検査、checksum9809417411711479524。難度null、競技日2018-04-19をICPC公式ニュースで確認。"
+  },
+  "problemFeature": {
+    "source": "ICPC",
+    "problemId": "wf2018_a",
+    "title": "Catch the Plane",
+    "url": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+    "evidenceUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+    "techniqueIds": [
+      "stochastic-timetable-reverse-event-dp"
+    ],
+    "features": [
+      "出発・到着時刻が決まった有向の便が独立に運行し、成否はその便を試す時にだけ分かる。",
+      "失敗後は同じ地点で後の便を待てる。同じ出発時刻には一便だけを試し、乗換には到着が次の出発より厳密に早い必要がある。",
+      "待機と便を選び、期限までに目的地へ到着する確率を最大にする。原典は地点・便各100万以下、時刻10^18以下。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "notes": "独立な確率で実行される時刻表上で、試行時だけ運行成否を知り、失敗後は待機できる。同時刻は一便だけ、乗換は厳密な時刻差が必要。便の到着時点で後続成功値を保存し、出発時には運行後の値と失敗後の共通待機値を比較して最大の一行動を選ぶ。"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+    "statementPages": [
+      1,
+      2
+    ],
+    "statementTotalPages": 22,
+    "publicSketchUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+    "sketchPages": [
+      1,
+      2
+    ],
+    "sketchTotalPages": 13,
+    "sketchAuthors": [
+      "Per Austrin",
+      "Jakub Onufry Wojtaszczyk"
+    ],
+    "sketchProvenance": "Official ICPC domain hosts the document, but its own opening disclaimer calls it unofficial analysis; not an official editorial.",
+    "officialEditorialVerified": false,
+    "retrieval": "Official PDFs read as web-extracted text; every numeric bound and the strict/equal rules were visible. No local PDF download or image inspection claimed.",
+    "originalNumericBoundsVerified": true,
+    "originalConstraints": {
+      "stations": {
+        "minimum": 2,
+        "maximum": 1000000
+      },
+      "buses": {
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "deadline": {
+        "minimum": 1,
+        "maximum": 1000000000000000000
+      },
+      "endpoints": "0<=a,b<N; a!=b",
+      "times": "0<=s<e<=deadline",
+      "probability": "0<=p<=1, at most 10 digits after decimal point",
+      "independentRunning": true,
+      "resultObserved": "only when trying the selected bus",
+      "sameDepartureRule": "only one bus may be attempted at one station at that time",
+      "transfer": "arrival strictly before departure; equal forbidden",
+      "initialDepartureZeroAllowed": true,
+      "deadlineArrivalIncluded": true,
+      "start": 0,
+      "destination": 1,
+      "absoluteOutputTolerance": 1e-06,
+      "timeLimitSeconds": 10,
+      "memoryLimit": "not asserted"
+    },
+    "dateEvidenceUrl": "https://news.icpc.global/wf2018/",
+    "contestDate": "2018-04-19",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "apiContainsEntireOriginalRange": true,
+    "containmentProof": [
+      "Original N2..10^6 is included in API N1..10^6; original M1..10^6 is included in API M0..10^6.",
+      "All times are integers0..10^18 within int64_t and compared directly, without time+1 or conversion to floating point.",
+      "Original distinct valid endpoints and strictly positive durations satisfy all API checks.",
+      "Original start0/goal1 is an instance of arbitrary valid start/destination.",
+      "Each original decimal probability can be rounded to nearest binary64 in[0,1]; the combined parse and DP error bound is below1e-6."
+    ],
+    "unconfirmedTechniqueLemmas": []
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-public-sketch-reviewed-with-independent-proof",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed",
+      "solution": "retrieved-and-reviewed",
+      "publicEditorialSketch": "retrieved-and-reviewed",
+      "officialEditorialVerified": false,
+      "officialEditorial": "not-asserted-unofficial-disclaimer"
+    },
+    "evidenceUrls": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+      "https://news.icpc.global/wf2018/"
+    ],
+    "notes": "公式原典1〜2頁の全数値、独立な運行・試行時のみ成否判明・同時刻一便・厳密な乗換条件を2026-10-15に再確認。公式ドメイン配布solution sketchesは著者Per AustrinとJakub Onufry Wojtaszczykによるunofficial analysisと自称するため公式解説とは扱わない。逆時刻DPを参照し、全到着値を同時刻の全出発更新より先に保存する規則、同一地点同一出発時刻の共通待機値による比較、目的地の吸収、正の移動時間による依存の非循環性を独立に証明。掲載APIは原典N,M<=100万、期限<=10^18、確率0〜1・十進10桁、異なる端点を全て含む。実MDX単一可視C++20を抽出し、小時刻表19448件の全112146決定方策と独立な全運行worldを前向きに模擬、非零重みworld512294回に一致。最大100万地点・100万便の長鎖、同時刻100万候補、100万待機機会、確率0/1、等号、時刻0/10^18、目的地発便、任意始終点、重複便、入力順変更、不正引数を確認。通常/ASan+UBSanとも62915検査、checksum9809417411711479524。難度null、競技日2018-04-19をICPC公式ニュースで確認。"
+  },
+  "api": {
+    "signature": "double maximum_timetable_success(int station_count, const std::vector<ScheduledTrip>& trips, int start, int destination, std::int64_t deadline)",
+    "trip": "ScheduledTrip{int from,to; int64_t departure,arrival; double run_probability;}",
+    "stationCount": "1..1000000",
+    "tripCount": "0..1000000",
+    "deadline": "0..10^18",
+    "endpoints": "valid indices, from!=to; arbitrary valid start/destination may be equal",
+    "times": "0<=departure<arrival<=deadline",
+    "probabilities": "finite double in[0,1]; duplicate trips are distinct independent outcomes",
+    "initialState": "waiting at start, allowed to attempt departure at0",
+    "goal": "first reaching destination by deadline succeeds; outgoing goal trips cannot reduce success",
+    "empty": "0 when start!=goal;1 when start==goal; all other arguments still validated",
+    "errors": "std::invalid_argument for every invalid size, endpoint, self-loop, time, NaN/infinite/out-of-range probability. Allocation and other standard exceptions propagate.",
+    "inputUnchanged": true,
+    "persistentState": false,
+    "numericPlatform": "int can represent1000000 and IEEE754 binary64; static_assert. Ordinary round-to-nearest and no fast-math.",
+    "eventTripIndex": "uint32_t: trip count<=10^6",
+    "timeArithmetic": "comparison only; no subtraction in comparator, no increment at10^18",
+    "time": "O(N+M log(M+1)) worst case",
+    "auxiliarySpace": "O(N+M)",
+    "byteCountsOnTestPlatform": {
+      "sizeofScheduledTrip": 32,
+      "sizeofEvent": 16,
+      "atNAndM1000000": {
+        "events": 32000000,
+        "arrivalValues": 8000000,
+        "stationValues": 8000000,
+        "auxiliaryArrays": 48000000,
+        "inputPlusArrays": 80000000
+      },
+      "additional": "vector metadata and O(log M) std::sort stack; allocator and sanitizer overhead excluded"
+    },
+    "originalMaximumExecuted": {
+      "stations": 1000000,
+      "trips": 1000000,
+      "deadline": 1000000000000000000
+    }
+  },
+  "proofInvariants": [
+    "Before departures at time t, best[v] is optimal using only departures strictly later than t; destination is always1.",
+    "All arrivals at t save this old best before any departure at t is included. This excludes equal-time transfers regardless of station or sorting input order.",
+    "Every arrival cache is set before its own departure because departure<arrival. The saved value is independent of how its origin is updated.",
+    "For each (from,t) group, all candidates use the same unmodified wait. Candidate p*saved+(1-p)*wait covers success/failure; compare every candidate and waiting, then commit one maximum.",
+    "Departure groups at different stations may commit sequentially after all arrivals are saved; candidates only read their own common wait and saved arrival values.",
+    "Independence means histories reaching the same state leave the same future distribution. Deterministic choices at (station,departure) suffice; randomized mixtures cannot improve a maximum.",
+    "Finite decreasing event order has no dependency cycle even when the physical station graph has cycles.",
+    "The start answer after all events includes departures at0 and destination arrivals exactly at deadline."
+  ],
+  "floatingPointAnalysis": {
+    "u": "2^-53",
+    "singleCandidate": "For Q>W, fma(p,Q-W,W) has conservative absolute roundoff<=2u including the subtraction. Values are clamped at1 and remain in[0,1].",
+    "nonexpansiveness": "Convex combination, max and projection onto[0,1] are nonexpansive in sup norm. The Q<=W skip computes the same max as waiting.",
+    "pathLength": "At most M departure groups on any dependency path; numerical DP error<=2Mu.",
+    "decimalInput": "Nearest-binary64 rounding adds<=u per probability. Coupling all independent bus bits with shared uniform random values bounds any policy and then the optimum difference by sum|delta p|<=Mu.",
+    "combinedBound": "3*M*2^-53<=3.331e-10 for M<=10^6; fixed12-decimal rounding adds<=5e-13, below original1e-6.",
+    "maximumObservedAbsoluteError": 8.29603e-12,
+    "observedComparison": "Long-double product/complement formulas on million-step chain and waiting cases; observations support testing, while the analytical bound is separate.",
+    "noExactProbabilityClaim": true
+  },
+  "flowSuggestion": {
+    "entryGraphId": "game-probability",
+    "existingChoices": [
+      "repeated-trials"
+    ],
+    "firstMissingGraphId": "probability-processes",
+    "firstMissingNodeId": "goal",
+    "proposedAnswerId": "timetable",
+    "proposedAnswerLabel": "独立な運行の時刻表で、待機や便を選び期限内の到着確率を最大にする",
+    "guardGraphId": "stochastic-timetable-conditions",
+    "guards": [
+      {
+        "id": "independent-scheduled-trips",
+        "feature": "出発・到着が固定された独立な便で、運行成否は試す時だけ分かり、失敗後は同じ地点で待てる。"
+      },
+      {
+        "id": "strict-transfer-one-at-time",
+        "feature": "期限内の最良到着確率を求め、同じ時刻は一便だけ、乗換は到着が次の出発より厳密に早い。"
+      },
+      {
+        "id": "bounds",
+        "feature": "地点数は1〜100万、便数は0〜100万、時刻は0〜10^18の整数で正の移動時間、異なる端点、有限確率0〜1。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "stochastic-timetable-reverse-event-dp"
+    ]
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "flags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "checks": 62915,
+    "oracleCases": 19448,
+    "completeDeterministicStatePolicies": 112146,
+    "nonzeroWorldEvaluations": 512294,
+    "forwardDecisions": 612734,
+    "oracle": "Enumerate every deterministic policy choosing no bus or one indexed bus at each(station,departure). Enumerate all independent Bernoulli outcomes with exact integer mass over4^M, then simulate forward with strict ready<departure; choices cannot inspect untried outcomes. No reversed events, arrival cache or Bellman recurrence is used. Markov policies exhaust the optimum by independently proved history irrelevance.",
+    "exhaustiveDomains": [
+      {
+        "stations": 2,
+        "timePoints": [
+          0,
+          1,
+          2
+        ],
+        "probabilities": [
+          0,
+          0.5,
+          1
+        ],
+        "tripTypes": 18,
+        "allOrderedTripListsLength": "0..3 including duplicates",
+        "cases": 6175
+      },
+      {
+        "stations": 3,
+        "timePoints": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "probabilities": [
+          0,
+          0.5,
+          1
+        ],
+        "tripTypes": 108,
+        "allOrderedTripListsLength": "0..2 including duplicates",
+        "cases": 11773
+      }
+    ],
+    "randomCases": 1500,
+    "randomDomain": "N2..5,M1..6,integer times0..8,probability multiples of1/4,seed20180419; enumerate all policies/worlds, then verify reverse input order.",
+    "smallComparison": "Exact equality: all probabilities and all optimal candidate values in these small domains are dyadic with<=16 fractional bits.",
+    "maximumTrips": 1000000,
+    "maximumStations": 1000000,
+    "checksum": "9809417411711479524",
+    "normalCommand": "python3 /tmp/flowchartcp-timetable-checker.py /tmp/flowchartcp-timetable-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-timetable-checker.py /tmp/flowchartcp-timetable-article.mdx --sanitize",
+    "normalSeconds": 0.396055,
+    "normalPeakRSSKiB": 82208,
+    "normalMaximumSingleCallSeconds": 0.11551,
+    "asanUbsan": {
+      "passed": true,
+      "checks": 62915,
+      "oracleCases": 19448,
+      "checksum": "9809417411711479524",
+      "seconds": 1.43479,
+      "peakRSSKiB": 382656,
+      "leakSanitizer": false,
+      "maximumSingleCallSeconds": 0.44355
+    },
+    "cases": [
+      "Both official samples.",
+      "Arrival equal to next departure forbidden, strictly earlier allowed, departure0 and arrival exactly deadline.",
+      "Same-time identical independent buses permit one attempt only; later wait after failure; certain dead end loses to waiting.",
+      "p0/1, unreachable, goal with outgoing trip, arbitrary start/destination, empty, start==goal and deadline0.",
+      "Largest time10^18 without float time conversion or addition.",
+      "N=M10^6 long chain near10^18 with one half-probability link; all ten-digit near-one probabilities against a long-double product.",
+      "M10^6 simultaneous candidates gives maximum single candidate; M10^6 distinct-time waiting opportunities compared with stable -expm1(M*log1p(-p)).",
+      "Invalid N/M/endpoints/self-loop/time/deadline/NaN/infinities/probability range. Validate all trips even for start==goal. Repeated calls use no persistent state."
+    ],
+    "unconfirmedLemmas": [],
+    "sharedFilesModified": false
+  },
+  "editorNotes": [
+    "Eight technique sections and one complete always-visible C++20 API, without a per-problem explanation page.",
+    "Only requested /tmp article/checker/sidecar are edited; source problem prose and diagrams are not reproduced.",
+    "Initial fixed audit classification remains history; parent can add a later completed-code/navigation resolution after independent review.",
+    "No official editorial assertion: independent proof and code validation support the mapping.",
+    "No memory-limit guarantee asserted; measured memory is recorded separately from raw array count."
+  ],
+  "artifactSha256": {
+    "article": "7cf7d5cb9676d11f2d820f4f7af9131d04032011557e0853bb0d63ac757ea13b",
+    "checker": "049183557d2311064b8577ec23f34dc332725837a6bdd9fe8789bec0f3b20345"
+  },
+  "cppSha256": "85c2adfcb6d1a5ffa0daffd9c59c31c7c35bb2d181ae9adbfa52d1f6b129d1ea",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/stochastic-timetable-reverse-event-dp.mdx",
+    "checker": "scripts/check_stochastic_timetable_cpp.py",
+    "entryGraphId": "game-probability",
+    "choices": [
+      "repeated-trials",
+      "timetable",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "85c2adfcb6d1a5ffa0daffd9c59c31c7c35bb2d181ae9adbfa52d1f6b129d1ea",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true
+  }
+}

@@ -1,0 +1,81 @@
+---
+title: "和や平均の下限を累積和の大小関係に直す"
+description: "過去の累積和の頻度をFenwick Treeで管理し、負数を含む区間を数える。"
+techniqueId: subarray-prefix-order
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+過去の累積和の頻度をFenwick Treeで管理し、負数を含む区間を数える。
+
+## 使う場面
+
+負数を含む配列で、和が $K$ 以上の区間を数える。または、平均が $T$ 以上の区間を数える。尺取り法が使えなくても、累積和の値を比較すれば処理できる。
+
+## 考え方
+
+和の条件は $P_r-P_l\ge K$、つまり $P_l\le P_r-K$ になる。累積和を座標圧縮し、過去の値の出現回数をFenwick Treeに記録する。各右端で、$P_r-K$ 以下の値の個数を求める。
+
+平均が $T$ 以上という条件では、各要素を $a_i-T$ に置き換える。その区間和が0以上かを数えればよい。
+
+## 適用条件
+
+値の大小と、左端が右端より前という二つの条件を保つ。累積和をすべて登録してから問い合わせると、未来の位置まで数えてしまう。現在位置を登録する前に問い合わせる。
+
+「以上」と「より大きい」では、境界検索の使い方が異なる。実数の平均では精度に注意し、有理数で表せるなら整数倍して比較する方法がある。
+
+## なぜ正しいか
+
+Fenwick Treeに保存するのは現在の右端より前の累積和だけなので、時間順の条件が保たれる。しきい値以下の頻度の和は、条件を満たす左端の個数そのものになる。平均の変形は、区間長に $T$ を掛けて移項した同値な式である。
+
+## 計算量
+
+全区間を調べる $O(N^2)$ から、座標圧縮と木の操作を含めた $O(N\log N)$ に改善する。空間は $O(N)$。
+
+## 実装
+
+`count_sum_at_least` は和が `threshold` 以上の非空区間の個数を返す。しきい値自身を圧縮配列に登録する必要はなく、`upper_bound` で境界を求める。
+
+```cpp
+#include <vector>
+#include <cassert>
+struct SumBIT {
+    int n;
+    std::vector<long long> bit;
+    explicit SumBIT(int n):n(n),bit(n+1) {}
+    void add(int p,long long x) {
+        assert(0<=p && p<n);
+        for(int i=p+1;i<=n;i+=i&-i) bit[i]+=x;
+    }
+    long long prefix(int r) const {
+        assert(0<=r && r<=n);
+        long long s=0;
+        for(int i=r;i>0;i-=i&-i) s+=bit[i];
+        return s;
+    }
+};
+#include <algorithm>
+long long count_sum_at_least(const std::vector<long long>& a,long long threshold) {
+    std::vector<long long> p(a.size()+1);
+    for(int i=0;i<int(a.size());++i) p[i+1]=p[i]+a[i];
+    auto values=p;std::sort(values.begin(),values.end());
+    values.erase(std::unique(values.begin(),values.end()),values.end());
+    SumBIT bit(values.size());long long answer=0;
+    for(long long x:p) {
+        int boundary=std::upper_bound(values.begin(),values.end(),x-threshold)-values.begin();
+        answer+=bit.prefix(boundary);
+        int rank=std::lower_bound(values.begin(),values.end(),x)-values.begin();
+        bit.add(rank,1);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/) ・ [Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)
+
+## 参考資料
+
+- [AtCoder公式解説：ARC075 E](https://img.atcoder.jp/arc075/editorial.pdf)
+
+<TechniqueReferences techniqueId="subarray-prefix-order" />

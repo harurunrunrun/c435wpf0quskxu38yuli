@@ -1,0 +1,62 @@
+---
+title: "残す部分列を前後に分け、最早・最遅の一致位置の間を消す"
+description: "接頭辞をできるだけ左へ、接尾辞をできるだけ右へ寄せ、一つの連続区間の削除長を最大にする。"
+techniqueId: subsequence-delete-gap
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+目標文字列を本文の部分列として残しながら、一つの連続した区間をできるだけ長く削除したい。削除区間の両端を試す二次時間の探索を、目標をどこで二分するかの一次元の探索に変える。
+
+## 考え方
+
+目標の最初の $k$ 文字を残すのに必要な最後の本文位置を、左から貪欲に一致させて求める。これを $left_k$ とする。残りの文字を残すのに使える最初の本文位置は、右から貪欲に一致させて求め、$right_k$ とする。
+
+前半をできるだけ左へ、後半をできるだけ右へ寄せれば、間の
+
+$$[left_k+1,right_k)$$
+
+を全て消せる。$k=0,1,\ldots,|T|$ を試す。前半が空なら $left_0=-1$、後半が空なら $right_{|T|}=N$ とし、本文の先頭や末尾の削除も同じ式に含める。
+
+## 適用条件
+
+削除するのは一つの連続区間で、削除後も目標の順序を保つ。元から目標が本文の部分列であることが必要である。実装は長さ $2\times10^5$ 以下を想定し、条件を満たさない場合は `nullopt` を返す。目標が空なら本文全体を消せる。複数の削除区間を選ぶ問題では、この分割だけでは足りない。
+
+## なぜ正しいか
+
+ある削除区間を挟んで残った目標の文字は、前半 $k$ 文字と後半に分かれる。左からの貪欲一致は前半の末尾を最も左へ置くので、どの別の一致方法より削除開始位置を左へ寄せられる。右からの貪欲一致も後半の先頭を最も右へ置く。
+
+目標全体に少なくとも一つの一致があるため、最早の前半と最遅の後半は重ならず、順序も保たれる。よって各 $k$ の最長の隙間を求められ、全ての分割の最大値は全削除区間の最適値になる。
+
+## 計算量
+
+削除区間を全て試して再照合すると $O(N^3)$ 時間になる。二回の貪欲走査と分割の列挙は $O(N+|T|)$ 時間、補助空間は $O(|T|)$。
+
+## 実装
+
+返り値は削除する0始まりの半開区間 `[l,r)`。最大長が0の場合は空区間を返す。
+
+```cpp
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
+std::optional<std::pair<int,int>> longest_deletable_interval(const std::string& text,const std::string& target){
+    int n=int(text.size()),m=int(target.size());std::vector<int> left(m+1,-1),right(m+1,n);int p=0;
+    for(int k=0;k<m;++k){while(p<n && text[p]!=target[k])++p;if(p==n)return std::nullopt;left[k+1]=p++;}
+    p=n-1;for(int k=m-1;k>=0;--k){while(p>=0 && text[p]!=target[k])--p;right[k]=p--;}
+    std::pair<int,int> answer{0,0};
+    for(int k=0;k<=m;++k){int l=left[k]+1,r=right[k];if(r-l>answer.second-answer.first)answer={l,r};}return answer;
+}
+```
+
+## 関連する手法
+
+[部分列の一致を、各文字の次の出現位置で進める](/flowchartcp/techniques/substring-subsequence-next/) ・ [部分列にできない最短の文字列を、次の出現位置から逆算する](/flowchartcp/techniques/shortest-absent-subsequence/)
+
+## 参考資料
+
+- [Codeforces：Remove the Substring (hard version)（原典）](https://codeforces.com/problemset/problem/1203/D2)。
+
+<TechniqueReferences techniqueId="subsequence-delete-gap" />

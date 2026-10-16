@@ -1,0 +1,93 @@
+---
+title: "個数の和でDPを併合するときは多項式にする"
+description: "独立な選択の個数別DPを多項式としてまとめ、積を分割統治とNTTで求めます。"
+techniqueId: dp-polynomial-convolution
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+独立な選択の個数別DPを多項式としてまとめ、積を分割統治とNTTで求めます。
+
+## 使う場面
+
+種類 $i$ を選ぶ方法が $a_i$ 通りあり、各種類を高々1回選ぶとします。$dp_i[k]=dp_{i-1}[k]+a_i dp_{i-1}[k-1]$ で個数ごとの数を求めると、全個数の計算は $O(N^2)$ です。複数の集合を合わせる際の添字が足し算になることに注目します。
+
+## 考え方
+
+1種類のDPを $1+a_i x$ と表すと、全体の個数別DPは $\prod_i(1+a_i x)$ の係数です。区間を半分に分け、左右の多項式を畳み込んでまとめます。係数 $k$ は $\sum_{p+q=k}A[p]B[q]$ なので、NTTを使えます。
+
+## 適用条件
+
+左右の選択が独立で、組合せの数が積になることが条件です。最大値や最小値で併合するナップサックには、通常のNTTをそのまま使えません。以下は法998244353での計算です。整数そのものの数が必要な場合は、法での結果だけでは足りません。
+
+## なぜ正しいか
+
+積の係数を展開すると、選んだ種類に対応する $a_i x$ を取り、それ以外から1を取るすべての組合せが現れます。$x$ の次数が選んだ個数を表すため、係数は目的の通り数です。積は結合法則を満たすので、分割統治で掛ける順序を変えても同じ値になります。
+
+## 計算量
+
+1種類ずつ更新する $O(N^2)$ 時間を、NTTを使った積の木で $O(N\log^2 N)$ にできます。どちらも作業空間は $O(N)$ です。すべての個数の答えが必要なときに有効で、求める個数が小さい場合は通常の $O(NK)$ DPも比較します。
+
+## 実装
+
+`weighted_subset_counts(a)` は、選んだ個数ごとの重み付きの通り数を返します。以下にはNTTも含めます。$N+1\le2^{23}$ とし、各係数は法の範囲に正規化します。空入力では `{1}` です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+namespace ntt998 {
+constexpr int MOD=998244353;
+int power(int a,int n) {
+    int r=1; for(;n;n>>=1,a=1LL*a*a%MOD) if(n&1) r=1LL*r*a%MOD; return r;
+}
+void transform(vector<int>& a,bool inverse) {
+    int n=a.size(); assert(n>0 && (n&(n-1))==0 && n<=(1<<23));
+    for(int i=1,j=0;i<n;++i) {
+        int bit=n>>1; for(;j&bit;bit>>=1) j^=bit; j^=bit;
+        if(i<j) swap(a[i],a[j]);
+    }
+    for(int len=2;len<=n;len<<=1) {
+        int root=power(3,(MOD-1)/len); if(inverse) root=power(root,MOD-2);
+        for(int i=0;i<n;i+=len) {
+            int w=1;
+            for(int j=0;j<len/2;++j) {
+                int u=a[i+j],v=1LL*a[i+j+len/2]*w%MOD;
+                a[i+j]=u+v<MOD?u+v:u+v-MOD;
+                a[i+j+len/2]=u-v>=0?u-v:u-v+MOD; w=1LL*w*root%MOD;
+            }
+        }
+    }
+    if(inverse) { int inv=power(n,MOD-2); for(int& x:a) x=1LL*x*inv%MOD; }
+}
+vector<int> convolution(vector<int> a,vector<int> b) {
+    if(a.empty() || b.empty()) return {};
+    size_t need=a.size()+b.size()-1; assert(need<=size_t(1<<23));
+    int n=1; while(size_t(n)<need) n<<=1;
+    for(int& x:a) x=(x%MOD+MOD)%MOD;
+    for(int& x:b) x=(x%MOD+MOD)%MOD;
+    a.resize(n); b.resize(n); transform(a,false); transform(b,false);
+    for(int i=0;i<n;++i) a[i]=1LL*a[i]*b[i]%MOD;
+    transform(a,true); a.resize(need); return a;
+}
+}
+vector<int> weighted_subset_counts(const vector<int>& a) {
+    assert(a.size()+1<=size_t(1<<23));
+    auto product=[&](auto&& self,int l,int r)->vector<int> {
+        if(l==r) return {1};
+        if(r-l==1) return {1,(a[l]%ntt998::MOD+ntt998::MOD)%ntt998::MOD};
+        int m=(l+r)/2;
+        auto left=self(self,l,m),right=self(self,m,r);
+        return ntt998::convolution(move(left),move(right));
+    };
+    return product(product,0,a.size());
+}
+```
+
+## 関連する手法
+
+[NTT・畳み込み](/flowchartcp/techniques/ntt/) ・ [寄与の数え上げ](/flowchartcp/techniques/contribution/)
+
+## 参考資料
+
+- [AtCoder：G - Socks 3の解説・実装](https://atcoder.jp/contests/abc352/editorial/10214)
+
+<TechniqueReferences techniqueId="dp-polynomial-convolution" />

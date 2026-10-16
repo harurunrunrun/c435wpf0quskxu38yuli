@@ -1,0 +1,67 @@
+---
+title: "交換できる位置対が限られるなら、木の葉から目的の値を固定する"
+description: "連結成分を確認し、全域森の経路で値を運んで、完成した葉を処理対象から外します。"
+techniqueId: "permutation-tree-leaf-fix"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+順列の位置のうち、指定された位置対だけを交換でき、目標へ直す操作列が必要なとき。指定位置対を無向辺にすると、各値が動ける範囲は連結成分です。
+
+## 考え方
+
+各値の現在位置と目標位置が同じ成分なら、成分ごとに全域木を一つ選びます。子を先に処理する順序で頂点 $v$ を固定します。値 $v$ の現在位置から $v$ へ木の一意な経路を作り、辺に沿って交換して運びます。その後は $v$ を触りません。原典の辺番号を保存すれば操作番号をそのまま出力できます。
+
+## 適用条件
+
+順列の値が全て異なり、指定された各交換を何度でも使えること。連結成分の条件は必要十分ですが、操作回数の上限も別に確認します。この構築は最小回数を求める方法ではありません。
+
+## なぜ正しいか
+
+固定済みの頂点は、未固定部分から見て葉として取り除かれています。未固定の二頂点の経路がそこを通ることはないため、完成した位置を壊さずに次を直せます。最後の根には残った一つの正しい値が入ります。残り $k$ 頂点での経路は最大 $k-1$ 辺なので、全体で $N(N-1)/2$ 回以下です。
+
+## 計算量
+
+時間 $O(M+N^2)$、空間はグラフと位置配列が $O(N+M)$、保存する操作列が最大 $O(N^2)$。長い経路の出力そのものにも時間が掛かります。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<vector<int>> sort_permutation_on_edges(vector<int> p,const vector<pair<int,int>>& edges){
+    int n=p.size();vector<int> pos(n,-1);
+    for(int i=0;i<n;++i){assert(0<=p[i] && p[i]<n && pos[p[i]]==-1);pos[p[i]]=i;}
+    vector<vector<pair<int,int>>> g(n);
+    for(int id=0;id<(int)edges.size();++id){auto [v,u]=edges[id];assert(0<=v && v<n && 0<=u && u<n && v!=u);g[v].push_back({u,id});g[u].push_back({v,id});}
+    vector<int> parent(n,-2),pe(n,-1),depth(n),component(n,-1),order;
+    for(int root=0;root<n;++root)if(parent[root]==-2){parent[root]=-1;component[root]=root;order.push_back(root);
+        for(size_t i=order.size()-1;i<order.size();++i){int v=order[i];
+            for(auto [u,id]:g[v])if(parent[u]==-2){parent[u]=v;pe[u]=id;depth[u]=depth[v]+1;component[u]=root;order.push_back(u);}}
+    }
+    for(int v=0;v<n;++v)if(component[v]!=component[pos[v]])return nullopt;
+    vector<int> operations;
+    auto exchange_edge=[&](int id){auto [v,u]=edges[id];swap(p[v],p[u]);pos[p[v]]=v;pos[p[u]]=u;operations.push_back(id);};
+    for(auto it=order.rbegin();it!=order.rend();++it){int v=*it;if(parent[v]==-1)continue;
+        int a=pos[v],b=v;vector<int> up,down;
+        while(depth[a]>depth[b]){up.push_back(pe[a]);a=parent[a];}
+        while(depth[b]>depth[a]){down.push_back(pe[b]);b=parent[b];}
+        while(a!=b){up.push_back(pe[a]);down.push_back(pe[b]);a=parent[a];b=parent[b];}
+        for(int id:up)exchange_edge(id);
+        for(auto jt=down.rbegin();jt!=down.rend();++jt)exchange_edge(*jt);
+    }
+    for(int v=0;v<n;++v)assert(p[v]==v);
+    return operations;
+}
+```
+
+## 関連する手法
+
+[Union-Find](/flowchartcp/techniques/union-find/)、[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/contests/abc233/editorial/3187)
+
+<TechniqueReferences techniqueId="permutation-tree-leaf-fix" />

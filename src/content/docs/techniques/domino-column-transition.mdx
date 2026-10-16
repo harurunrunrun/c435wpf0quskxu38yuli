@@ -1,0 +1,77 @@
+---
+title: "細い盤面の敷き詰めは、境界をまたぐマスと合法な次列だけ持つ"
+description: "全てのマスク対を試さず、列の最初の空きマスから縦置き・横置きを作ります。"
+techniqueId: domino-column-transition
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+盤面は長いけれど、一方の辺が小さい場合です。全マスの使用状態を保存せず、処理済み部分と未処理部分の境界だけを状態にします。
+
+## 考え方
+
+短辺を $h$、長辺を $w$ とします。列に入るマスク $m$ の1は、左隣から伸びた横向きタイルが既に占有している行です。
+
+上から最初の空き行を選び、横向きに置いて次列の同じビットを立てるか、次の行も空きなら縦向きに置きます。全行を埋めた時点の次列マスクだけを遷移表へ入れます。最初はマスク0、最後もマスク0です。最後の列を越えるタイルは、この終端条件で除かれます。
+
+## 適用条件
+
+タイルは二マスのドミノで、盤面に障害物はありません。障害物がある場合は列ごとの占有情報を追加します。幅 $h\le 10$ を想定し、回転して短辺を境界にします。盤面の辺は非負で、零幅の盤面には空の敷き詰めを一通りと数えます。
+
+## なぜ正しいか
+
+最初の空きマスを覆うタイルは縦か横のどちらかで、DFSがちょうど一方の置き方へ分類します。それ以前のマスは全て埋まっているため、同じ敷き詰めを別の配置順で重複生成しません。
+
+列を越えて残る情報は横向きタイルの占有行だけです。したがって同じマスクの過去は、その後の敷き詰め候補が等しく、個数を足してよいことが分かります。
+
+## 計算量
+
+全ての入出力マスク対を毎列試すと $O(w4^h)$。合法遷移の総数を $T_h$ とすれば、前計算 $O(hT_h+h2^h)$、列の計算 $O(w(T_h+2^h))$、空間 $O(T_h+2^h)$ です。粗い上界は $T_h\le 3^h$ です。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int count_domino_tilings(int height, int width) {
+    constexpr int MOD = 1000000007;
+    if (height < 0 || width < 0) throw invalid_argument("dimension");
+    if (height == 0 || width == 0) return 1;
+    if (height > width) swap(height, width);
+    if (height > 10) throw invalid_argument("frontier width");
+    int size = 1 << height;
+    vector<vector<int>> next(size);
+    for (int mask = 0; mask < size; ++mask) {
+        auto dfs = [&](auto&& self, int row, int out) -> void {
+            if (row == height) { next[mask].push_back(out); return; }
+            if (mask & (1 << row)) { self(self, row + 1, out); return; }
+            self(self, row + 1, out | (1 << row));
+            if (row + 1 < height && !(mask & (1 << (row + 1)))) self(self, row + 2, out);
+        };
+        dfs(dfs, 0, 0);
+    }
+    vector<int> dp(size), ndp(size);
+    dp[0] = 1;
+    for (int col = 0; col < width; ++col) {
+        fill(ndp.begin(), ndp.end(), 0);
+        for (int in = 0; in < size; ++in) for (int out : next[in]) {
+            ndp[out] += dp[in];
+            if (ndp[out] >= MOD) ndp[out] -= MOD;
+        }
+        dp.swap(ndp);
+    }
+    return dp[0];
+}
+```
+
+## 関連する手法
+
+- [bit DP](/flowchartcp/techniques/bitmask-dp/)
+
+## 参考資料
+
+- [原典の問題条件](https://cses.fi/problemset/task/2181)
+
+<TechniqueReferences techniqueId="domino-column-transition" />

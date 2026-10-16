@@ -1,0 +1,7 @@
+---
+import { references, techniqueById } from '../lib/content';
+import { renderProblemReferences } from '../lib/presentation.mjs';
+interface Props { techniqueId: string; }
+const { techniqueId } = Astro.props;
+---
+<Fragment set:html={renderProblemReferences(references, techniqueId, techniqueById.get(techniqueId)?.aliases ?? [])} />

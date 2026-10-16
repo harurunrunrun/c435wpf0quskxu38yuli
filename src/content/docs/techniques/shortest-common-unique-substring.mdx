@@ -1,0 +1,157 @@
+---
+title: "二文字列に一回ずつ現れる最短部分文字列は、出現先別の回数と状態の最小長で探す"
+description: "終了位置が同じ部分文字列をまとめ、二つの本文での出現回数を別々に集計する。"
+techniqueId: shortest-common-unique-substring
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+二つの本文の両方に現れ、**どちらの本文にも一回ずつしか現れない**非空の部分文字列を、できるだけ短く選びたい。「合計二回」では、片方に二回、もう片方にゼロ回という候補まで混ざる。本文ごとの出現回数を区別する必要がある。
+
+同じ長さの候補を一個ずつ切り出すと二次個になる。終了位置の集合が同じ候補は、どちらの本文で何回現れるかも同じなので、まとめて扱える。
+
+## 考え方
+
+本文を $S,T$ とし、入力に含まれない区切り文字 `#` で $U=S\#T$ を作る。$U$ の suffix automaton を構築する。根以外の各状態 $v$ は、同じ終了位置集合を持つ部分文字列をまとめており、その長さの範囲は
+
+$$len_{link(v)}+1\le L\le len_v$$
+
+である。
+
+各文字を追加したときの新しい状態へ、終了位置が $S$ 内なら $cnt_S$、$T$ 内なら $cnt_T$ を一個だけ加算する。区切り文字の位置には印を付けない。状態を分割して作るクローンには印を付けない。
+
+次に状態の最長長の降順で、二種類の回数をそれぞれ接尾辞リンクへ加える。これで各状態の部分文字列が、各本文中で何回現れるかを求められる。
+
+両方の回数が1である状態だけを選び、**その状態の最小長** $len_{link(v)}+1$ を答えの候補にする。最長長 $len_v$ を選ぶと、同じ出現回数を保つ短い文字列を見落とす。回数は0、1、2回以上の区別だけあればよいので、加算のたびに2で打ち切ってよい。
+
+## 適用条件
+
+二つの固定された本文を扱い、文字を飛ばさない連続部分文字列を求める。各本文内の出現回数には、重なった出現も含む。部分列や、互いに重ならない出現の個数にはこの集計をそのまま使えない。
+
+区切り文字は入力の文字と区別する。実装は英小文字26種類を受け取り、区切り文字を27番目の記号として内部で使う。両方の回数が正である候補は $S$ 内にも存在するため、区切り文字を含まないことも保証される。
+
+実装は $|S|+|T|\le200000$ とする。解がない場合と、片方が空の場合は $-1$ を返す。空文字列を答えにはしない。英小文字以外は `std::invalid_argument`、合計長の超過は `std::length_error` とする。入力検査は空文字列の判定より先に行う。
+
+## なぜ正しいか
+
+suffix automatonの一状態に属する部分文字列は、$U$ 内の終了位置集合が同じである。その集合を $S$ 内と $T$ 内で分ければ、それぞれの出現回数も全て同じになる。よって一状態について二個の回数を調べれば、その状態の長さ範囲全体を判定できる。
+
+各終了位置は、文字を追加したときの状態に一個だけ印として記録される。ある状態の文字列がその位置で終わることと、印を付けた状態から接尾辞リンクをたどってその状態へ到達できることは同値である。長さ降順の加算で、各終了位置の印が全ての該当する接尾辞へ一回ずつ届く。クローンに初期の印を付けないことで、状態の分割を新しい出現と数えずに済む。
+
+両回数が1の状態に属する文字列は、どれも要求を満たす。その中では最小長が最良である。逆に、要求を満たす任意の文字列はいずれかの非空状態に属し、その状態も両回数が1なので候補から漏れない。全候補の最小値が求める長さになる。
+
+## 計算量
+
+$N=|S|+|T|+1$ とする。状態は $O(N)$ 個であり、固定27文字の配列を使う構築、計数ソートによる長さ順の作成、回数の伝播は全て $O(N)$ 時間。補助空間は $O(N)$。比較ソートで長さ順を作ると、その部分は $O(N\log N)$ になる。
+
+回数を2で打ち切っても、0・1・2以上の区別は加算後も保たれる。最大値の選択や減算をする別の集計では、この打ち切りをそのまま流用できるとは限らない。
+
+## 実装
+
+区切りを含む文字列そのものは作らず、$S$、記号26、$T$ の順に追加する。根の回数は答えに使わない。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+int shortest_common_unique_substring_length(
+    const std::string& s, const std::string& t) {
+    constexpr std::size_t limit = 200'000;
+    if (s.size() > limit || t.size() > limit - s.size()) {
+        throw std::length_error("total text length is too large");
+    }
+    for (const std::string* text : {&s, &t}) {
+        for (unsigned char c : *text) {
+            if (c < 'a' || c > 'z') {
+                throw std::invalid_argument("expected lowercase letters");
+            }
+        }
+    }
+    if (s.empty() || t.empty()) return -1;
+    const int n = int(s.size() + t.size() + 1);
+    struct State {
+        std::array<int, 27> next;
+        int link = -1;
+        int length = 0;
+        std::array<int, 2> count{};
+        State() { next.fill(-1); }
+    };
+    std::vector<State> state;
+    state.reserve(2 * n);
+    state.emplace_back();
+    int last = 0;
+    auto append = [&](int c, int owner) {
+        const int current = int(state.size());
+        state.emplace_back();
+        state[current].length = state[last].length + 1;
+        if (owner >= 0) state[current].count[owner] = 1;
+        int p = last;
+        while (p != -1 && state[p].next[c] == -1) {
+            state[p].next[c] = current;
+            p = state[p].link;
+        }
+        if (p == -1) {
+            state[current].link = 0;
+        } else {
+            const int q = state[p].next[c];
+            if (state[p].length + 1 == state[q].length) {
+                state[current].link = q;
+            } else {
+                const int clone = int(state.size());
+                state.push_back(state[q]);
+                state[clone].length = state[p].length + 1;
+                state[clone].count = {0, 0};
+                while (p != -1 && state[p].next[c] == q) {
+                    state[p].next[c] = clone;
+                    p = state[p].link;
+                }
+                state[q].link = state[current].link = clone;
+            }
+        }
+        last = current;
+    };
+    for (char c : s) append(c - 'a', 0);
+    append(26, -1);
+    for (char c : t) append(c - 'a', 1);
+
+    const int size = int(state.size());
+    std::vector<int> frequency(n + 1), order(size);
+    for (const auto& v : state) ++frequency[v.length];
+    for (int length = 1; length <= n; ++length) {
+        frequency[length] += frequency[length - 1];
+    }
+    for (int v = size - 1; v >= 0; --v) {
+        order[--frequency[state[v].length]] = v;
+    }
+    for (int i = size - 1; i > 0; --i) {
+        const int v = order[i];
+        const int parent = state[v].link;
+        for (int owner = 0; owner < 2; ++owner) {
+            state[parent].count[owner] = std::min(
+                2, state[parent].count[owner] + state[v].count[owner]);
+        }
+    }
+    int answer = n + 1;
+    for (int v = 1; v < size; ++v) {
+        if (state[v].count[0] == 1 && state[v].count[1] == 1) {
+            answer = std::min(answer, state[state[v].link].length + 1);
+        }
+    }
+    return answer == n + 1 ? -1 : answer;
+}
+```
+
+## 関連する手法
+
+[Suffix Automaton](/flowchartcp/techniques/suffix-automaton/) ・ [異なる部分文字列を長さごとに数える](/flowchartcp/techniques/sam-length-distribution/) ・ [複数の本文に共通する最長部分文字列](/flowchartcp/techniques/sam-common-all-strings/) ・ [区間に一度だけ現れる値を探す](/flowchartcp/techniques/offline-range-singleton-witness/)
+
+## 参考資料
+
+- [Codeforces 427D：Match & Catch](https://codeforces.com/problemset/problem/427/D)。両方の本文で一回だけ現れる最短部分文字列の長さを求める原典。
+- [Codeforces Round 244 公式解説](https://codeforces.com/blog/entry/12082)。LCPを使う方法を説明し、suffix automatonによる線形時間解法にも言及している。本文ごとに終了位置を分ける集計と実装は、状態の終了位置集合から導出したもの。
+
+<TechniqueReferences techniqueId="shortest-common-unique-substring" />

@@ -1,0 +1,117 @@
+---
+title: "一つの禁止頂点を避ける経路を分解木で判定する"
+description: "二重連結成分と元の頂点の木を作り、禁止頂点が必須の通過点かを調べる。"
+techniqueId: block-cut-path
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+固定された無向グラフに対し、「頂点 `c` を通らずに `a` から `b` へ行けるか」という質問が多数ある。禁止頂点は質問ごとに変わる。
+
+## 考え方
+
+グラフを頂点二重連結成分に分ける。橋だけの成分も二頂点の成分として扱う。各成分を新しい頂点にし、その成分に属する元の頂点すべてと結ぶ。この二部グラフは、元の各連結成分ごとに木になる。一般にblock-cut treeと呼ばれる構造で、ここでは関節点以外の元の頂点も葉として残す。
+
+同じ二重連結成分内では、端点以外の一頂点を避ける経路がある。一方、成分同士をつなぐ関節点は迂回できない。したがって、禁止された元の頂点 `c` が分解木の `a`–`b` パス上にあるかを調べればよい。木の距離を $d$ とすると、パス上の条件は $d(a,c)+d(c,b)=d(a,b)$。
+
+## 適用条件
+
+グラフは固定、禁止頂点は一つ。複数頂点を同時に禁止する場合、同じ成分内でも経路が切れるので、この判定は使えない。有向の到達性にも使わない。`c=a` または `c=b` なら経路はない。元から別成分の端点も到達不能である。
+
+## なぜ正しいか
+
+各二重連結成分内では、一つの内部頂点を除いても残った頂点の連結性を保てる。成分の連結は関節点だけを介するので、分解木上の唯一のパスに現れる元の頂点は必ず通る。そのパスにない禁止頂点は、訪れる各成分内で避けられる。葉として残した非関節点は、端点でない限りこのパスの内部に現れない。
+
+## 計算量
+
+質問ごとの探索は $O(Q(N+M))$ 時間。成分分解は $O(N+M)$、木の祖先表は $O((N+M)\log(N+M))$ 時間・空間、各質問は $O(\log(N+M))$ 時間。分解木のサイズは $O(N+M)$。
+
+## 実装
+
+`ForbiddenVertexPaths(n, edges)` を構築し、`reachable_without(a,b,c)` を呼ぶ。平行辺と非連結グラフに対応する。自己ループは連結性に影響しないので分解から除く。成分分解と木の探索は反復処理で行う。
+
+```cpp
+#include <vector>
+#include <utility>
+#include <algorithm>
+struct ForbiddenVertexPaths {
+    std::vector<std::vector<int>> tree,up;
+    std::vector<int> depth,component;
+    ForbiddenVertexPaths(int n,const std::vector<std::pair<int,int>>& edges):tree(n) {
+        std::vector<std::vector<std::pair<int,int>>> g(n);
+        for (int id=0;id<int(edges.size());++id) {
+            auto [a,b]=edges[id];if(a==b) continue;
+            g[a].push_back({b,id});g[b].push_back({a,id});
+        }
+        std::vector<int> tin(n,-1),low(n),par(n,-1),pe(n,-1),next(n),mark(n,-1),edge_stack;
+        int timer=0;
+        for(int root=0;root<n;++root) if(tin[root]<0) {
+            std::vector<int> stack{root};tin[root]=low[root]=timer++;
+            while(!stack.empty()) {
+                int v=stack.back();
+                if(next[v]<int(g[v].size())) {
+                    auto [u,id]=g[v][next[v]++];if(id==pe[v]) continue;
+                    if(tin[u]<0) {
+                        edge_stack.push_back(id);par[u]=v;pe[u]=id;
+                        tin[u]=low[u]=timer++;stack.push_back(u);
+                    } else if(tin[u]<tin[v]) {
+                        edge_stack.push_back(id);low[v]=std::min(low[v],tin[u]);
+                    }
+                } else {
+                    stack.pop_back();if(par[v]<0) continue;
+                    int p=par[v];low[p]=std::min(low[p],low[v]);
+                    if(low[v]>=tin[p]) {
+                        int block=int(tree.size());tree.emplace_back();
+                        while(true) {
+                            int id=edge_stack.back();edge_stack.pop_back();
+                            auto [a,b]=edges[id];
+                            for(int x:{a,b}) if(mark[x]!=block) {
+                                mark[x]=block;tree[x].push_back(block);tree[block].push_back(x);
+                            }
+                            if(id==pe[v]) break;
+                        }
+                    }
+                }
+            }
+        }
+        int count=int(tree.size()),lg=1;
+        while((1LL<<lg)<=count) ++lg;
+        up.assign(lg,std::vector<int>(count));depth.assign(count,0);component.assign(count,-1);
+        for(int root=0;root<count;++root) if(component[root]<0) {
+            std::vector<int> stack{root};component[root]=root;up[0][root]=root;
+            while(!stack.empty()) {
+                int v=stack.back();stack.pop_back();
+                for(int u:tree[v]) if(component[u]<0) {
+                    component[u]=root;up[0][u]=v;depth[u]=depth[v]+1;stack.push_back(u);
+                }
+            }
+        }
+        for(int k=1;k<lg;++k) for(int v=0;v<count;++v) up[k][v]=up[k-1][up[k-1][v]];
+    }
+    int lca(int a,int b) const {
+        if(depth[a]<depth[b]) std::swap(a,b);
+        int gap=depth[a]-depth[b];
+        for(int k=0;k<int(up.size());++k) if((gap>>k)&1) a=up[k][a];
+        if(a==b) return a;
+        for(int k=int(up.size())-1;k>=0;--k) if(up[k][a]!=up[k][b]) {a=up[k][a];b=up[k][b];}
+        return up[0][a];
+    }
+    int distance(int a,int b) const {return depth[a]+depth[b]-2*depth[lca(a,b)];}
+    bool reachable_without(int a,int b,int c) const {
+        if(a==c||b==c||component[a]!=component[b]) return false;
+        if(component[c]!=component[a]) return true;
+        return distance(a,c)+distance(c,b)!=distance(a,b);
+    }
+};
+```
+
+## 関連する手法
+
+[一本の辺を失うと切断される場所を一度の探索で求める](/flowchartcp/techniques/bridge-edge-failure/) ・ [ダブリング](/flowchartcp/techniques/doubling/)
+
+## 参考資料
+
+- [CSES：Forbidden Cities（原典）](https://cses.fi/problemset/task/1705)。分解木による判定は原典の条件から導出し、禁止頂点を除いた探索との比較で確認している。
+
+<TechniqueReferences techniqueId="block-cut-path" />

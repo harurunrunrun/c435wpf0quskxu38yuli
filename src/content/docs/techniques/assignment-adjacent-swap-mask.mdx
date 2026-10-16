@@ -1,0 +1,82 @@
+---
+title: "値の編集と隣接交換の最小費用は、対応を決めるたびに転倒数を足す"
+description: "元の添字を次の位置へ割り当て、既に選んだ大きい添字の数を交換費用にすることで、対応順全体を集合へ縮める。"
+techniqueId: assignment-adjacent-swap-mask
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+列を目的の列へ変える操作として、一要素の値の増減と隣接交換がある。どの値をどの位置へ運ぶかまで選べるため、現在の数列をそのまま状態にすると値の範囲も操作回数も大きくなる。
+
+## 考え方
+
+元の各要素に添字の札を付け、目的列の左から順に札を割り当てる。対応順を $p_0,p_1,\ldots$ とした費用は
+
+$$X\sum_i|A_{p_i}-B_i|+Y\,\mathrm{inv}(p).$$
+
+既に使った札の集合を $S$ とすると、次の目的位置は $|S|$ である。札 $j\notin S$ を次に使ったとき、新たに確定する転倒は、$S$ のうち元の添字が $j$ より大きいものだけ。
+
+$$dp[S\cup\{j\}]\leftarrow\min\left(dp[S\cup\{j\}],dp[S]+X|A_j-B_{|S|}|+Y\,\#\{i\in S:i>j\}\right).$$
+
+最後の個数は、ビット集合を右へ $j+1$ 桁ずらした値の `popcount` で求められる。
+
+## 適用条件
+
+値の増減費用は位置や時刻によらず一律で、隣接交換費用も一律・非負。増減には上下限がなく、どの元要素もどの目的位置へ運べる。異なる位置の編集費用や、特定の組だけ交換可能な設定では、この交換回数の式を使えない。
+
+実装は $N\le18$、値の絶対値 $10^8$ 以下、$0\le X\le10^8$、$0\le Y\le10^{16}$。この範囲では総費用を64ビット整数に収められる。等値でも元の札を区別して列挙し、最後に最小値を取る。空の列や無料の操作も扱う。
+
+## なぜ正しいか
+
+値の増減と、その要素を動かす交換は順序を入れ替えられる。従って全ての交換を先に、編集を後にした操作列を同じ費用で作れる。札の並べ替えに必要な隣接交換の最小回数は転倒数であり、編集には絶対差の回数が必要十分である。
+
+対応順の転倒のうち、二つ目の札が $j$ になった時点で数えるものは「既に置いた札の添字が $j$ より大きい」という組である。各転倒をちょうど一回数え、次の増分は以前の札の具体的な順序によらず集合だけで決まる。よって同じ集合では最小費用一つを残せる。
+
+## 計算量
+
+全対応の列挙は $N!$ 通りで、転倒数を直接求めると $O(N^2N!)$ 時間。集合の表と定数時間のビット個数を使えば $O(N2^N)$ 時間、$O(2^N+N)$ 空間。札を一つずつ列挙して転倒増分を求める実装より、さらに一因子 $N$ を減らす。
+
+## 実装
+
+返り値は最小の総費用。札の番号は0始まりで、集合内の個数が次の目的位置となる。
+
+```cpp
+#include <algorithm>
+#include <bit>
+#include <cstdlib>
+#include <stdexcept>
+#include <vector>
+long long edit_and_adjacent_swap_cost(const std::vector<long long>& a,const std::vector<long long>& b,
+                                      long long edit_cost,long long swap_cost) {
+    int n=int(a.size());
+    if(a.size()!=b.size() || n>18 || edit_cost<0 || edit_cost>100000000 || swap_cost<0 || swap_cost>10000000000000000LL)
+        throw std::invalid_argument("range");
+    for(long long x:a) if(x<-100000000 || x>100000000) throw std::invalid_argument("value");
+    for(long long x:b) if(x<-100000000 || x>100000000) throw std::invalid_argument("value");
+    constexpr long long INF=4000000000000000000LL;
+    unsigned states=1u<<n;
+    std::vector<long long> dp(states,INF);dp[0]=0;
+    for(unsigned mask=0;mask+1<states;++mask) {
+        int position=std::popcount(mask);
+        for(int j=0;j<n;++j) if(!(mask>>j&1u)) {
+            int inversions=std::popcount(mask>>(j+1));
+            long long extra=edit_cost*std::llabs(a[j]-b[position])+swap_cost*inversions;
+            unsigned next=mask|(1u<<j);
+            dp[next]=std::min(dp[next],dp[mask]+extra);
+        }
+    }
+    return dp.back();
+}
+```
+
+## 関連する手法
+
+[bit DP](/flowchartcp/techniques/bitmask-dp/) ・ [順列の全巡回シフトの転倒数は、先頭が末尾へ移る差だけ更新する](/flowchartcp/techniques/cyclic-inversion-delta/)
+
+## 参考資料
+
+- [AtCoder：F - Simple Operations on Sequence（原典）](https://atcoder.jp/contests/abc232/tasks/abc232_f)。
+- [AtCoder：F - Simple Operations on Sequence（公式解説）](https://atcoder.jp/contests/abc232/editorial/3153)。
+
+<TechniqueReferences techniqueId="assignment-adjacent-swap-mask" />

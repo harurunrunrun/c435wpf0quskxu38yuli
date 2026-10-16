@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "problemId": "ioi2017_books",
+  "techniqueId": "permutation-cycle-interval-closure-two-sided-walk-greedy",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "/root/usaco_cowmistry_article",
+  "author": "/root/usaco_mincost_flow_tests",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2017-books-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2017-books-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2017-books-sidecar.json"
+  },
+  "artifactHashes": {
+    "article.mdx": "3d2d4989099faf6f190c3b63b06ea8411e99e12c80dbf7574c00702a1374060a",
+    "checker.py": "3af53fdfbaacdba1f289cc60dfa435b8a5d605701aebb6391e2fec54d63661dd",
+    "sidecar.json": "94cc3280036474434b42ae8c099d7ea52be706909fec6155535bb833b5a3c1f3"
+  },
+  "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+  "allFrozenHashesMatchRequestedVersion": true,
+  "reviewScope": {
+    "readFullEightSectionArticle": true,
+    "readEntireVisibleCpp": true,
+    "readEntireChecker": true,
+    "readSidecar": true,
+    "alwaysVisibleSingleCppFence": true,
+    "metadataTitleSummaryMatchFrontmatter": true,
+    "allMetadataSourceUrlsInReferences": true,
+    "allRelatedLinksUseFlowchartcpBase": true,
+    "sourceDifficulty": null,
+    "sourceDate": "2017-08-01",
+    "datePrecision": "day",
+    "originalMaximumApiContained": true,
+    "prerequisiteIdExists": true,
+    "authorFilesModified": false
+  },
+  "sourceVerification": {
+    "statement": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-books-ISC.pdf",
+      "pages": 3,
+      "allPagesRead": true,
+      "verifiedRules": [
+        "initial book at i has destination p[i]",
+        "permutation of positions",
+        "one held book",
+        "free pickup when empty-handed,swap held/current,put down into empty table",
+        "line distance |i−j|",
+        "start and finish at same s",
+        "returns minimal distance"
+      ],
+      "genericSignature": "int64 minimum_walk(int[] p,int s)"
+    },
+    "numeric": {
+      "urls": [
+        "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-KOR.pdf",
+        "https://ioi.te.lv/locations/ioi17/contest/day2/books/books-MNG.pdf"
+      ],
+      "successfulQuery": "site:ioi.te.lv/locations/ioi17/contest/day2/books \"Constraints\" \"000\"",
+      "method": "official archive indexed primary translation text;no unseen image inspection claim",
+      "N": [
+        1,
+        1000000
+      ],
+      "start": "0..N−1",
+      "permutation": "distinct values0..N−1",
+      "finalSubtaskCount": 5,
+      "finalSubtaskScores": [
+        12,
+        10,
+        28,
+        20,
+        30
+      ]
+    },
+    "notice": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "pages": 1,
+      "cppMapping": {
+        "int64": "long long",
+        "int[]": "std::vector<int>",
+        "int": "int"
+      },
+      "seconds": 2,
+      "memoryMB": 1024,
+      "derivedCppSignature": "long long minimum_walk(std::vector<int> p,int s)",
+      "officialHeaderBytesRetrieved": false,
+      "signatureDerivedFromFinalStatementAndNotice": true
+    },
+    "editorial": {
+      "url": "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/books.pdf",
+      "pages": 15,
+      "allPagesRead": true,
+      "distribution": "official IOI2017 archive Editorial link",
+      "signedAuthor": "Daniel Graf",
+      "title": "Library",
+      "oldApi": "booksort(N,S,order)",
+      "oldSubtaskCount": 6,
+      "oldBoundsAndApiNotUsedAsFinalContract": true,
+      "chosenLinearProcedureConfirmedAgainstPages13to15": true,
+      "wordingAboutHullOverlapNotTakenAsLiteralActivationRule": true
+    },
+    "date": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+      "verifiedCompetitionDay": 2,
+      "date": "2017-08-01",
+      "sourceIsContestDayRatherThanDocumentCrawlDate": true
+    },
+    "unconfirmedRequiredSourceFacts": []
+  },
+  "proofReview": {
+    "transportLowerBound": "One carried book per step gives sum_i |i−p[i]|;cycling through destinations attains each cycle's contribution.",
+    "cycleInsertion": "At an actual vertex of another untouched cycle,temporarily swap suspended book into its slot,tour the second cycle,then swap back at that same slot;all interleaved transport costs are exactly their individual lower bounds.",
+    "actualVertexClosure": "A contacted cycle tour visits every spatial position between its extrema. New cycles require an actual member in that visited interval;hull-only activation is invalid. p=[2,1,0],s=1 has6 rather than4.",
+    "paidCutLowerBound": "Before first exit from an optimistically closed interval,any held book originated at an actually visited point and has its destination in that point's cycle,inside closure. Outward crossing is extra to that book's required crossing count. Closed walk counts and permutation transport counts balance in both directions across each cut,so one extra outward crossing forces at least2 extra total. Distinct paid expansions cross distinct new cuts,allowing summation.",
+    "paidCutUpperBound": "An excursion across a new boundary and back,with newly contacted cycle tours inserted at visited positions,adds exactly2 beyond mandatory cycle transport.",
+    "firstBridgeCommonClosure": "Let vL/vR be closest actual vertices of any uncontacted cycle spanning both sides of closed I. Each first-side closure includes the other closest bridge vertex. Closure monotonicity/idempotence implies both trial closures coincide;not merely hull intersection.",
+    "greedyExchange": "Before any bridge,left-only cycles cannot help the right or conversely. Any schedule must pay at least one deterministic first-bridge side cost. Partial exploration before that first bridge is contained in the common closure,so replacing it by the cheaper completed side loses no useful state.",
+    "noBridge": "All unprocessed cycles lie entirely on one side,so both one-sided costs are independently necessary and sufficient.",
+    "trialUnion": "Closed intervals overlap in old I;every actual cycle member in their union belongs to one closed interval whose cycle hull is already contained. Their union is closed. All scanned new positions are committed and never rescanned as interior in later iterations.",
+    "endpointOnlyScan": "extend starts with only one/two newly unchecked endpoints;every while-step consumes one newly included position. Each trial grows monotonically;each global position is consumed at most once per trial before commitment. Paid-plus-free new positions <=2(N−1),constant endpoint probes<=4N−2.",
+    "stopCondition": "All moved positions plus start determine the required interval;already-correct tails need no visit;identity returns0 after full validation.",
+    "unconfirmedRequiredLemmas": []
+  },
+  "apiReview": {
+    "entireSourceRange": "N1..1000000,all valid starts and permutations",
+    "invalids": "size/start checked before allocation or int narrowing;all values and duplicate checks complete before following permutation;invalid_argument;source adapter copy may bad_alloc before entry",
+    "state": "no mutable static/global state;const input not modified;all arrays local;fresh calls after exception/big inputs succeed",
+    "allocationFailures": "all3 core allocation sites and extra adapter input copy fault-injected for nonidentity inputs;identity1 site plus adapter copy",
+    "stack": "public code has no recursion",
+    "integerBound": "base<=N(N−1),extra<=2(N−1),total<1000001000000 at N<=1000000;all cost operands promoted to int64;long long digits>=63 asserted",
+    "space": "seen N bytes plus2 int arrays=9000000 payload bytes on32-bit int;source adapter adds4000000-byte input copy;O(N),well inside1024MB",
+    "time": "O(N) validation/cycle passes plus boundary scans;instrument validates the proof's scan bound;not inferred from timing alone"
+  },
+  "nativeVerification": {
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-books-checker.py",
+      "python3 /tmp/flowchartcp-ioi2017-books-checker.py --sanitize"
+    ],
+    "normal": {
+      "checks": 5166352,
+      "apiCalls": 430576,
+      "originalAdapterCalls": 371400,
+      "allPermutationsAndStartsN1to8": 362879,
+      "physicalInputsN1to7": 40319,
+      "physicalShelfHeldPositionStates": 2177282,
+      "cycleSubsetOracleCalls": 368879,
+      "cycleSubsetTransitions": 210151,
+      "exhaustiveIntervalOracleCalls": 8500,
+      "randomSubsetCases": 6000,
+      "randomIntervalCases": 2500,
+      "reflectionInverseChecks": 33176,
+      "maximumN1millionCases": 14,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 16,
+      "checksum": "11819723664200185900",
+      "seconds": 0.695228,
+      "peakRSSKiB": 28468,
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": false
+    },
+    "asanUbsan": {
+      "checks": 5166352,
+      "apiCalls": 430576,
+      "originalAdapterCalls": 371400,
+      "allPermutationsAndStartsN1to8": 362879,
+      "physicalInputsN1to7": 40319,
+      "physicalShelfHeldPositionStates": 2177282,
+      "cycleSubsetOracleCalls": 368879,
+      "cycleSubsetTransitions": 210151,
+      "exhaustiveIntervalOracleCalls": 8500,
+      "randomSubsetCases": 6000,
+      "randomIntervalCases": 2500,
+      "reflectionInverseChecks": 33176,
+      "maximumN1millionCases": 14,
+      "reentrantBatchCalls": 20000,
+      "invalidCases": 16,
+      "checksum": "11819723664200185900",
+      "seconds": 4.2695,
+      "peakRSSKiB": 1014728,
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": true
+    },
+    "expectedChecks": 5166352,
+    "expectedCoreCalls": 430576,
+    "expectedAdapterCalls": 371400,
+    "expectedChecksum": "11819723664200185900",
+    "sameCppFenceBoth": true,
+    "asanSequentiallyCoordinatedWithParent": true
+  },
+  "additionalProbe": {
+    "path": "/tmp/flowchartcp-ioi2017-books-independent-probe.py",
+    "sha256": "cd7418b71b6690c93178341204273f24cabc439878d2b02775b20357fe6987d9",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-books-independent-probe.py",
+      "python3 /tmp/flowchartcp-ioi2017-books-independent-probe.py --sanitize"
+    ],
+    "normal": {
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": false,
+      "checks": 1761612,
+      "smallPermutationStarts": 40319,
+      "bruteIncomingTreeCases": 719,
+      "bruteIncomingAssignments": 65769,
+      "randomArborescenceCases": 1500,
+      "metamorphicChecks": 4500,
+      "millionScaleCases": 19,
+      "allocationFailuresInjected": 24,
+      "instrumentedCalls": 46338,
+      "maxScannedPlusPaid": 1999997,
+      "checksum": "10441972892649583544",
+      "seconds": 0.690494,
+      "peakRSSKiB": 28500
+    },
+    "asanUbsan": {
+      "cppSha256": "320921a0131689953b2ebd74a0bc81a6abe9073fd506576a4c18cb1909af7bd6",
+      "sanitized": true,
+      "checks": 1761612,
+      "smallPermutationStarts": 40319,
+      "bruteIncomingTreeCases": 719,
+      "bruteIncomingAssignments": 65769,
+      "randomArborescenceCases": 1500,
+      "metamorphicChecks": 4500,
+      "millionScaleCases": 19,
+      "allocationFailuresInjected": 24,
+      "instrumentedCalls": 46338,
+      "maxScannedPlusPaid": 1999997,
+      "checksum": "10441972892649583544",
+      "seconds": 3.85887,
+      "peakRSSKiB": 989448
+    },
+    "oracle": "Directed minimum rooted spanning arborescence via Chu-Liu/Edmonds contraction,not interval/subset DP or first-cross greedy.",
+    "reduction": {
+      "vertices": "Every line position in [min(start,moved positions),max(start,moved positions)] must be visited;identity tails omitted.",
+      "zeroArcs": "For each nontrivial cycle and each actual vertex v of it,add v→every position in its spatial hull at cost0. A fixed start inside a hull has no such outgoing shortcut unless it is an actual cycle member.",
+      "paidArcs": "Each adjacent line pair has both directed arcs of cost2.",
+      "objective": "Transport sum + minimum arborescence rooted at start.",
+      "whyLowerBound": "Any physical schedule gives optimistic reachable cycle closure. Every first boundary exit adds a directed neighbor arc and has cut excess>=2. These arcs plus free cycle arcs reach all required positions,so contain an arborescence costing no more than physical excess.",
+      "whyUpperBound": "Any arborescence permits reachable-expansion scheduling. Ignore arcs into already visited positions;each new paid adjacent arc is a one-step out-and-back excursion,and each newly contacted cycle is processed once with nested insertion. Zero arcs represent all positions passed during that cycle tour. This attains no more than arborescence cost beyond transport.",
+      "arborescenceAlgorithmVerification": "For all719 permutation/start inputs N<=5,enumerate65769 complete incoming-parent assignments and reject cycles/not-root-reaching;minimum equals Edmonds. Then compare actual public fence on40319 N<=7 inputs and1500 random N<=80.",
+      "notAuthorOracle": "No physical0-1 BFS,activated-cycle subset DP,interval DP,left/right bridge or boundary-only extend in this answer oracle."
+    },
+    "metamorphics": "4500 checks:stretch line by integer factor with fixed dummy books;pad both ends with fixed books and translate start;invert independently chosen cycles.",
+    "maximum": "19 additional near-million/full-million inputs:reversal at center plus18 stretched small instances whose exact answer comes from arborescence oracle,then multiplied by spacing factor.",
+    "instrumentation": "Separate renamed copy of exact fence with only counters inserted at paid steps,new endpoint scans,and endpoint rechecks;46338 calls equal untouched original result. Worst measured scanned+paid1999997,always <=2(N−1).",
+    "allocationFaults": "GNU noinline replaceable new/delete test harness uses matched malloc/free and fail countdown;24 individual allocation failures propagate bad_alloc,leave caller unchanged,and fresh normal calls succeed.",
+    "counterSemantics": "checks are actual require assertions;additional oracle takes40319 small permutation/start inputs;719 of those also enumerate incoming assignments;19 generated max constructions are not official test packets.",
+    "authorCppNotModified": true
+  },
+  "initialAuditPreservation": {
+    "initialRowCanonicalSha256": "bb5ff2a8e3b34469e68c17e604355529f50fc80aab07af444d95f60368a48292",
+    "initialSixRecordsCanonicalSha256": "42c4951bdb743dcd5a11862dfe096b53b32048b8da93dfce2487fc35aa68d323",
+    "initialResearchAlreadyPositive": true,
+    "noAdditionalPositiveResearchReviewProposed": true,
+    "resolutionOnly": true,
+    "authorArtifactsUnchanged": true,
+    "sharedDataUnchangedByReviewer": true
+  },
+  "findings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedRequiredSourceFacts": [],
+  "unconfirmedOptionalDetails": [
+    "Official C++ header bytes not retrieved;public adapter signature is derived from final generic statement and official Notice as already disclosed."
+  ],
+  "publicationNote": "Parent may naturally retitle to『一冊だけ持って並べ替える歩行距離を、サイクルの閉包で求める』;this review fixes original article/C++ hashes and requests no code change.",
+  "sharedFilesModified": false,
+  "authorFilesModified": false,
+  "readyForParentIntegration": true,
+  "originalReviewSha256": "ba18fa0bb989943aa90db518ba19f52e2d51ea5bfc207e191364be4539264a4e",
+  "publishedArticle": "src/content/docs/techniques/permutation-cycle-interval-closure-two-sided-walk-greedy.mdx",
+  "permanentProbe": {
+    "script": "research/probes/single-book-sort-walk-independent.py",
+    "normalizedSha256": "c76edca23edb38730770ff5ff363751e4df6fd2f2c35ccd768f5caa52a668bb8",
+    "normalization": "Only MDX path; arborescence oracle, fault tests, instrumentation, full numeric constructions and stdout unchanged."
+  }
+}

@@ -1,0 +1,524 @@
+[
+  {
+    "id": "coupon-collector-state-count",
+    "title": "等確率で種類を集めるなら、未収集の個数で待ち時間を分ける",
+    "summary": "収集済みの集合を持たず、新しい種類が出るまでの期待回数を足します。",
+    "family": "期待値",
+    "aliases": [
+      "coupon collector",
+      "クーポン収集",
+      "geometric waiting time"
+    ],
+    "prerequisites": [
+      "probability-expectation",
+      "symmetry"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc194/editorial/864"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "independent-avoidance-product",
+    "title": "誰も来ない確率は、各移動者が来ない確率の積にする",
+    "summary": "移動者ごとの位置分布だけを計算し、空いている場所の期待数を求めます。",
+    "family": "期待値",
+    "aliases": [
+      "independent avoidance product",
+      "empty cells expectation"
+    ],
+    "prerequisites": [
+      "expectation-indicators"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1726"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "random-gain-zero-elimination",
+    "title": "増分が 0 の試行を含む期待値は、自己ループを左辺へ移す",
+    "summary": "一回で得られる個数の分布を作り、残り個数の期待値を小さい順に計算します。",
+    "family": "期待値",
+    "aliases": [
+      "random gain expectation",
+      "Poisson binomial stopping time"
+    ],
+    "prerequisites": [
+      "expectation-self-loop"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc382/editorial/11487"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "probability-start-time-window",
+    "title": "区間内に続いている確率は、開始時刻の確率を足す",
+    "summary": "開始だけを状態にし、観測時刻を覆う開始時刻の範囲から確率を求めます。",
+    "family": "確率 DP",
+    "aliases": [
+      "renewal process DP",
+      "start time probability window"
+    ],
+    "prerequisites": [
+      "state-design",
+      "probability-expectation"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc323/editorial/7357"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "expectation-order-statistic-tail",
+    "title": "k 番目の値の期待値を、閾値以上の個数から求める",
+    "summary": "値そのものの分布を作らず、各閾値以上になる確率を二項分布で計算します。",
+    "family": "期待値",
+    "aliases": [
+      "order statistic tail sum",
+      "tail sum expectation",
+      "順序統計量"
+    ],
+    "prerequisites": [
+      "factorial-inverses",
+      "expectation-indicators"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc295/editorial/6056"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "tree-dp-degree-capacity",
+    "title": "木の接続数制限は、親の辺を選ぶかで残り枠を分ける",
+    "summary": "子の辺を選ばない値を基準にし、改善量の大きい辺から残り枠だけ採用します。",
+    "family": "木の DP",
+    "aliases": [
+      "tree degree constrained edge selection",
+      "tree b matching gains"
+    ],
+    "prerequisites": [
+      "tree-dp"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc259/editorial/4296"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "dp-open-groups-gap-cost",
+    "title": "最大値と最小値の差の合計は、開いている組数で積み上げる",
+    "summary": "値の順に処理し、組の両端の差を隣り合う値の間隔へ分けます。",
+    "family": "DP の状態",
+    "aliases": [
+      "open groups DP",
+      "sum of ranges partition DP"
+    ],
+    "prerequisites": [
+      "state-design",
+      "contribution"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/blog/entry/23522"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "permutation-cycle-minimum-swaps",
+    "title": "任意の二箇所を交換できる順列は、値の現在位置を持って直す",
+    "summary": "逆の位置配列で目的の値を定数時間で探し、サイクル数から交換回数を確認します。",
+    "family": "構築",
+    "aliases": [
+      "minimum permutation swaps",
+      "inverse permutation positions"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc350/editorial/9869"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "permutation-tree-leaf-fix",
+    "title": "交換できる位置対が限られるなら、木の葉から目的の値を固定する",
+    "summary": "連結成分を確認し、全域森の経路で値を運んで、完成した葉を処理対象から外します。",
+    "family": "構築",
+    "aliases": [
+      "permutation sorting on graph",
+      "spanning tree leaf fixing"
+    ],
+    "prerequisites": [
+      "union-find",
+      "invariant"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc233/editorial/3187"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "construct-star-distance-two",
+    "title": "距離 2 の頂点対を指定するなら、星から葉どうしの辺を足す",
+    "summary": "最大数を作ってから、一辺につき一組ずつ距離 2 の組を減らします。",
+    "family": "構築",
+    "aliases": [
+      "star graph distance two construction"
+    ],
+    "prerequisites": [
+      "invariant"
+    ],
+    "entryPoints": [
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc131/tasks/abc131_e"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "forest-trigger-minimum-continuation",
+    "title": "合流した経路の最大値を足すなら、最小の一経路を親へ渡す",
+    "summary": "子の値を全て足してから最小の一つを残し、親による増分をその経路へ載せます。",
+    "family": "木の DP",
+    "aliases": [
+      "Chain Reactions minimum continuation",
+      "forest path maximum greedy"
+    ],
+    "prerequisites": [
+      "tree-dp",
+      "exchange-argument"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://github.com/google/coding-competitions-archive/blob/main/codejam/2022/qualification_round/chain_reactions/problem_statement/analysis.html"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "append-digits-lexicographic",
+    "title": "末尾への桁追加だけで増加列にするなら、直前を超える最小値にする",
+    "summary": "桁数と共通の先頭を比べ、同じ先頭なら直前の末尾だけを一つ増やします。",
+    "family": "構築",
+    "aliases": [
+      "Append Sort",
+      "decimal suffix greedy"
+    ],
+    "prerequisites": [
+      "exchange-argument",
+      "invariant"
+    ],
+    "entryPoints": [
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://github.com/google/coding-competitions-archive/blob/main/codejam/2021/round_1a/append_sort/problem_statement/analysis.html"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "alternating-linear-weight-prefix",
+    "title": "符号が交互で重みが一次式の区間和は、二つの和へ分ける",
+    "summary": "左端によって変わる符号と重みを展開し、点更新に対応する区間和を二つ持ちます。",
+    "family": "区間の集計",
+    "aliases": [
+      "alternating weighted range sum",
+      "Candies prefix transformation"
+    ],
+    "prerequisites": [
+      "fenwick-tree",
+      "contribution"
+    ],
+    "entryPoints": [
+      "complexity",
+      "reasoning"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://github.com/google/coding-competitions-archive/blob/main/kickstart/2020/round_c/candies/problem_statement/analysis.html"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "xor-grid-predecessor-boundary-single-error",
+    "title": "一セルの誤りがあるXOR格子更新を逆算する",
+    "summary": "行と列の三周期の剰余で反転位置を特定し、二方向の逆算から最小の初期図形を求める。",
+    "aliases": [
+      "ICPC2017 Replicate Replicate Rfplicbte cellular inverse one error",
+      "GF2 separable 3x3 convolution boundary syndrome modulo 3",
+      "無限格子 一セル誤反転 境界症候 逆算 最小初期図形"
+    ],
+    "family": "線形な格子更新の逆算",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "reverse-thinking",
+      "invariant",
+      "xor-basis"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=13",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=6"
+    ]
+  },
+  {
+    "id": "stochastic-timetable-reverse-event-dp",
+    "title": "運休する便の時刻表から、期限内の最大到着確率を求める",
+    "summary": "便の到着後の値を逆時刻順に保存し、運行成功と失敗後の待機を比較する。同時刻の候補は共通の待機値で一括して選ぶ。",
+    "aliases": [
+      "ICPC 2018 Catch the Plane",
+      "stochastic timetable reverse event DP",
+      "strict transfer simultaneous departure batching",
+      "確率付き時刻表 逆時刻 到着値 待機"
+    ],
+    "family": "確率 DP",
+    "level": "中級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "probability-expectation",
+      "state-design",
+      "offline-queries"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "complexity"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=1",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=1",
+      "https://news.icpc.global/wf2018/"
+    ]
+  },
+  {
+    "id": "interactive-transition-count-species-decision-trees",
+    "title": "隣接する種類の変化回数から、二種類の個数を少ない質問で数える",
+    "summary": "少数を決定木で識別して既知の対象を増やし、その後は個々の種類を確定せず一括して数える。適応的な返答にも最悪226問を保証する。",
+    "aliases": [
+      "IOI2020 Counting Mushrooms",
+      "Adaptive transition-count species decision trees",
+      "Five-unknown decision trees and majority batches",
+      "隣接変化回数 同種既知 適応的grader 226問"
+    ],
+    "family": "対話と質問設計",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "brute-force-observation",
+      "invariant"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-mushrooms-ISC.pdf",
+      "https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/mushrooms-solutions-ISC.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/statement/mushrooms-en.pdf",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/solution/decision-tree-endagorion.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/grader/manager.cpp",
+      "https://github.com/austrian-olympiad-informatics/ioi-tasks/blob/main/ioi2020-mushrooms/task.yaml",
+      "https://www2.ioi-jp.org/ioi/2020/tasks/index.html"
+    ]
+  },
+  {
+    "id": "unique-first-symbol-prefix-oracle-multiplexing",
+    "title": "先頭の文字が再び現れない列を、候補を連結した質問で復元する",
+    "summary": "未知列の接頭辞が質問内に現れる最大の長さを使い、三つの候補を一回の質問で区別する。先頭の文字が一度だけ現れる条件を利用する。",
+    "aliases": [
+      "IOI2018 Combo first symbol prefix oracle multiplexing",
+      "unique initial symbol concatenated query ternary response",
+      "先頭文字 一意 接頭辞 部分文字列 対話 連結質問"
+    ],
+    "family": "対話の質問構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "invariant"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+      "https://ioi2018.jp/tasks/contest1/CHE-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/CUB-combo.pdf",
+      "https://ioi2018.jp/tasks/contest1/TUR-combo.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  {
+    "id": "alternating-switch-bit-reversal-pruned-router",
+    "title": "交互に出口が変わる回路で列を再生し、全ての状態を元に戻す",
+    "summary": "出口が交互に変わる二分木を使い、指定列を再生する。不要な葉の部分木を取り除き、最初に原点へ戻るときに全てのスイッチを初期状態へ戻す。",
+    "aliases": [
+      "IOI2018 Mechanical Doll shared alternating router",
+      "bit reversal pruned complete binary switch circuit",
+      "交互スイッチ ビット反転 不要葉 刈り込み 全状態復元"
+    ],
+    "family": "状態を持つ回路の構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "invariant",
+      "construct-last-operation"
+    ],
+    "entryPoints": [
+      "reasoning",
+      "advanced",
+      "complexity"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf",
+      "https://ioi2018.jp/tasks/contest2/day2-doll.pdf",
+      "https://ioi2018.jp/tasks/contest2/LVA-doll.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+    ]
+  },
+  {
+    "id": "binary-weight-distance-oracle-edge-split-endpoint-search",
+    "title": "辺の重みを変えた最短距離への質問から、未知の二頂点を見つける",
+    "summary": "距離が初めて増える辺を探し、その両側で候補を絞る。基準距離を保つ二つの木を使い、一般の無向グラフでも50回以内の質問で二頂点を特定する。",
+    "aliases": [
+      "IOI 2018 Highway Tolls",
+      "binary weight distance oracle edge split endpoint search",
+      "two BFS tree hidden endpoint search",
+      "二重み 最短距離 固定未知二点 50質問"
+    ],
+    "family": "対話的な探索と情報の取り方",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "binary-search",
+      "interactive"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf",
+      "https://ioi2018.jp/tasks/contest2/AUT-highway.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/#highway-tolls"
+    ]
+  },
+  {
+    "id": "tree-degree-preservation-budget-construction",
+    "title": "元の次数を保つ頂点をできるだけ多くして、木を作り直す",
+    "summary": "全頂点に次数1を与えた残りを予算とし、次数を保つ費用が小さい頂点から選ぶ。残りを一頂点へ置き、Prüfer列で任意の新しい木を構成する。",
+    "aliases": [
+      "ICPC2018 World Finals K Wireless is the New Fiber degree-preserving tree",
+      "次数を保つ頂点数を最大化する 木の次数列 保存費用 N−2 Prüfer列",
+      "minimum changed vertex degrees arbitrary tree reconstruction"
+    ],
+    "family": "次数の保存数を最適化する木の構築",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "exchange-argument",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/icpc2018.pdf#page=21",
+      "https://icpc.global/worldfinals/problems/2018-ICPC-World-Finals/finals2018solutions.pdf#page=12",
+      "https://news.icpc.global/wf2018/"
+    ]
+  }
+]

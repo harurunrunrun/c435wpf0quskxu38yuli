@@ -1,0 +1,499 @@
+{
+  "techniqueId": "binary-weight-distance-oracle-edge-split-endpoint-search",
+  "auditGapId": "binary-weight-distance-oracle-edge-split-endpoint-search",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-highway-article.mdx",
+    "checker": "/tmp/flowchartcp-highway-checker.py"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/binary-weight-distance-oracle-edge-split-endpoint-search.mdx",
+    "checker": "scripts/check_binary_weight_hidden_pair_cpp.py",
+    "metadataGroup": "specific-games",
+    "feature": "data/binary-weight-distance-problem-features.json"
+  },
+  "metadata": {
+    "id": "binary-weight-distance-oracle-edge-split-endpoint-search",
+    "title": "辺の重みを変えた最短距離への質問から、未知の二頂点を見つける",
+    "summary": "距離が初めて増える辺を探し、その両側で候補を絞る。基準距離を保つ二つの木を使い、一般の無向グラフでも50回以内の質問で二頂点を特定する。",
+    "aliases": [
+      "IOI 2018 Highway Tolls",
+      "binary weight distance oracle edge split endpoint search",
+      "two BFS tree hidden endpoint search",
+      "二重み 最短距離 固定未知二点 50質問"
+    ],
+    "family": "対話的な探索と情報の取り方",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "bfs",
+      "binary-search",
+      "interactive"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf",
+      "https://ioi2018.jp/tasks/contest2/AUT-highway.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/#highway-tolls"
+    ]
+  },
+  "reference": {
+    "techniqueId": "binary-weight-distance-oracle-edge-split-endpoint-search",
+    "source": "IOI",
+    "problemId": "ioi2018_highway",
+    "title": "高速道路の通行料金 (Highway Tolls)",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+    "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+    "evidence": "既知の単純連結無向グラフで全辺に既知A/Bの二重みを割り当て、固定した未知二点間の最短距離だけを質問する。全A基準を初めて壊す辺prefixを二分して最短路上の辺を得る。その両端への厳密近接集合をBFS木に制限すると、基準距離の道が一意になり、親が先の頂点順のsuffix親辺を重くする質問で二端点を二分できる。整数の丸上げ込みで原典全域50質問以下。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2018-09-05",
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に主催原典/公式Reviewと後年Tomasz Idziaszek本人の補足を再読。公式配布HKG/AUT検索本文でN2..90000,M1..130000,1<=A<B<=1e9,単純連結無向/相異なる固定非適応二点/硬制限100回/満点50回を再確認、画像閲覧とは主張しない。公式Reviewの数式欠落は独立証明として区別。pivotは元の少なくとも一本の最短路上で、全元最短路共通とはしない。厳密近接集合の最短路閉性、二BFS木+辺の基準距離保存と一意性、任意A<Bでの等号、祖先先行suffixの判定、ceil log二集合合計32以下を証明。実MDX単一可視完全C++20を抽出、全N2..6連結単純グラフ27475×全pair×5重み=2040405ケース、3000乱択、最大N90000/M130000の6例で毎actual weightingを独立Dijkstraと照合。通常/ASan+UBSanとも178526522 checks,checksum13151808493442697981。実測50質問達成、最大観測距離89998999955001。通常2.16348秒/26248KiB、san33.7653秒/845664KiB。日付2018-09-05はJP公式日別一覧、難度null。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2018_highway",
+    "title": "高速道路の通行料金 (Highway Tolls)",
+    "url": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+    "evidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+    "techniqueIds": [
+      "binary-weight-distance-oracle-edge-split-endpoint-search"
+    ],
+    "features": [
+      "既知の単純連結無向グラフに相異なる未知二頂点があり、全質問で固定される。各辺の重みを既知正整数A<Bのどちらかへ自由に設定できる。",
+      "質問はその割当での未知二点間の正確な最短距離を返す。二端点を順不同で特定し、複数最短路や任意A<Bを扱う。",
+      "N2..90000,M1..130000,1<=A<B<=1000000000、満点50質問以下。入力グラフは木に限定されない。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2018-09-05",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "discoveredBy": "ioi-2018",
+    "notes": "既知の単純連結無向グラフで全辺に既知A/Bの二重みを割り当て、固定した未知二点間の最短距離だけを質問する。全A基準を初めて壊す辺prefixを二分して最短路上の辺を得る。その両端への厳密近接集合をBFS木に制限すると、基準距離の道が一意になり、親が先の頂点順のsuffix親辺を重くする質問で二端点を二分できる。整数の丸上げ込みで原典全域50質問以下。",
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf"
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+    "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-highway.pdf",
+    "statementPages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "officialReviewUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+    "officialReviewPages": [
+      1,
+      2
+    ],
+    "officialReviewProvenance": "JP委員会公式Tasksの当該課題が解説(英語版)として直接リンクする当時の公式Review。",
+    "officialIndexUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "officialReviewRetrieved": true,
+    "officialReviewFullFormulaTranscriptionVerified": false,
+    "officialReviewLimitation": "通常web抽出で数式や定数が一部欠ける。一般解のSolutionBとして、最短路上の辺、その両端への厳密近接集合、二BFS木への制限と二分探索の方針は読める。欠けた式の完全転記や画像の目視は主張せず、各補題と50回上界を独立に証明した。",
+    "numericBoundsVerified": true,
+    "numericVerificationMethod": "actual search-result text from organizer-hosted HKG/AUT distributions; no local PDF/image inspection claimed",
+    "numericEvidenceUrls": [
+      "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf",
+      "https://ioi2018.jp/tasks/contest2/AUT-highway.pdf"
+    ],
+    "reproducibleSearchQueries": [
+      "site:ioi2018.jp/tasks/contest2/HKG-highway.pdf \"90000\" \"130000\"",
+      "site:ioi2018.jp/tasks/contest2/HKG-highway.pdf \"50\" \"52\"",
+      "site:ioi2018.jp/tasks/contest2/AUT-highway.pdf \"50\" \"52\""
+    ],
+    "sourceBounds": {
+      "N": "2..90000",
+      "M": "1..130000",
+      "A_B": "1<=A<B<=1000000000",
+      "edges": "0<=U_i,V_i<N; U_i!=V_i; no unordered pair repeated; undirected and connected",
+      "hidden": "0<=S,T<N, S!=T; fixed nonadaptive endpoints for entire run",
+      "query": "exactlyM values each0/1 assigning A/B to original-index edges; int64 shortest toll reply",
+      "hardQueryLimit": 100,
+      "fullScoreQueries": 50,
+      "partialGeneralScoreQueries": "51..52",
+      "answer": "report same unordered hidden pair exactly once"
+    },
+    "date": "2018-09-05",
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "laterAuthorSupplement": {
+      "url": "https://www.algonotes.com/en/solutions-ioi2018/#highway-tolls",
+      "author": "Tomasz Idziaszek",
+      "provenance": "本人の詳細解答HTML。International Committee of IOIの部分的資金援助を明記し、本人の実装repoをリンクする。",
+      "distinctFromOfficialReview": true,
+      "role": "後年の著者補足。一般グラフの複数最短路と二近接集合の説明を参照し、掲載手順・ceil log50回・API実装は独立に証明検証。"
+    },
+    "unconfirmedOriginalNumericBounds": [],
+    "visualInspectionClaimed": false
+  },
+  "subsequentSourceVerification": {
+    "reviewedAt": "2026-10-15",
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+    "numericBoundsVerified": true,
+    "numericEvidenceUrls": [
+      "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf",
+      "https://ioi2018.jp/tasks/contest2/AUT-highway.pdf"
+    ],
+    "notes": "初回固定auditの原典数値/履歴は変更せず、HKG/AUT検索本文で全範囲・非適応性・満点50回/硬制限100回を再確認した。"
+  },
+  "subsequentSolutionReview": {
+    "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+    "reviewedAt": "2026-10-15",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "collectionStatus": "statement-and-independent-analysis-verified",
+    "materialStatus": {
+      "statement": "retrieved-and-reviewed-with-organizer-distribution-numerics",
+      "officialEditorialRetrieved": true,
+      "officialEditorialVerified": true,
+      "officialEditorial": "official-review-readable-general-method-with-explicit-independent-proofs",
+      "publicAuthorSolution": "later-author-supplement-distinguished-from-official-review",
+      "solution": "independently-proved-and-validated"
+    },
+    "evidenceUrls": [
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+      "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+      "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf",
+      "https://ioi2018.jp/tasks/contest2/AUT-highway.pdf",
+      "https://www.algonotes.com/en/solutions-ioi2018/#highway-tolls"
+    ],
+    "notes": "pivotは直前prefixを避ける全A最短路に含まれ、元の少なくとも一本の最短路上にある。元の全最短路共通とはしない。二厳密近接集合の親閉性・二木で距離保存・A道一意性・祖先先行suffix端点探索・任意A<Bでの厳密等号・全N/Mの50回を独立証明した。可視完全C++20の全小グラフ/全pair/5重みと最大を毎質問Dijkstraで検証、通常/ASan+UBSanとも178526522checks/checksum13151808493442697981に一致。初回固定auditを書き換えず、後続resolutionとして登録可能。"
+  },
+  "api": {
+    "function": "template<SignedDistanceOracle Ask> BinaryWeightHiddenPair find_binary_weight_hidden_pair(int n,const std::vector<int>& from,const std::vector<int>& to,std::int64_t low,std::int64_t high,Ask&& ask)",
+    "input": "2<=N<=90000,1<=M<=130000,from/to same sizeM,0<=vertices<N,no loops or duplicate unordered pair,connected;1<=low<high<=1e9",
+    "callback": "Invoke named callback as lvalue without copying, with const vector<int>& of lengthM in ORIGINAL edge order, every element0/1; return exact fixed S/T shortest distance as a signed integral type<=64bits with sufficient range. int64 callback includes entire original range.",
+    "callbackLifetime": "Weight array is borrowed only for invocation; retaining its reference/pointer after return or modifying via const_cast is outside contract. Copy bits if persistence is required.",
+    "hiddenPairContract": "The SAME two distinct in-range endpoints are used for ALL responses; nonadaptive. Honesty/consistency are semantic preconditions, not fully decidable by the inexpensive partial checks.",
+    "result": "BinaryWeightHiddenPair{first,second,queries}, first/second is unordered hidden pair,queries counts actual successful-return invocation attempts and is<=50",
+    "originalAdapter": "Caller adapts official ask to callback, then invokes original answer(result.first,result.second) exactly once. Core function itself has no answer side effect.",
+    "initializationErrors": "std::invalid_argument for any invalid graph/limits/tolls before FIRST callback. Includes disconnected graph after independent BFS and duplicate reversal normalization.",
+    "responseErrors": "std::runtime_error for all-low response belowA/above(N−1)A/notdivisiblebyA; later response<baseline or>(baseline/A)B; final recovered candidate unweighted distance inconsistent with baseline. These checks are deliberately incomplete against arbitrary forged/adaptive transcripts.",
+    "internalBound": "std::logic_error before any attempted51st query; independent bound shows unreachable under graph limits, regardless of branch choices",
+    "callbackExceptions": "propagated unchanged, no retries; query attempts or callback side effects already performed are not rolled back",
+    "allocationErrors": "standard allocation exceptions propagate; local temporaries are destroyed, input untouched; failure after a query still consumes that external query",
+    "state": "all graph, BFS, weight, counters, answer state are local per call; noncopyable/stateful callbacks supported; reentrant calls tested; no persistent global state",
+    "inputUnchanged": true,
+    "integerSafety": [
+      "N<=90000,M<=130000 validated before conversion; INT_MIN/INT_MAX N short-circuit before n−1 expression is evaluated. M cast only after bounds.",
+      "CSR offset/cursor/arc indices<=2M<=260000, rank/dist<=N−1<=89999. int static_assert max>=1000000 covers indices and midpoints.",
+      "All edge endpoints validated before indexing. Duplicate sort uses copied integer endpoint pairs and never reorders original edge IDs.",
+      "Original hop distance d1..N−1. Max shortest toll<=(N−1)B<=89999000000000, and all products explicitly start in int64. No floating comparison or d*(B−A) difference inference.",
+      "Prefix binary mid<=M−2 while loop runs, so heavy range endpoint mid+1<=M−1 is valid. Endpoint suffix beginsmid+1>=1, never accesses root parent−1.",
+      "Each candidate set nonempty with its root and shortest-path-closed; groups disjoint, every selected nonroot has assigned parent_edge. Final distance BFS sees connected original graph.",
+      "Query cap50,countersint; ceil-log proof uses only positive candidate sizes. No recursion or dangerous shifts in published algorithm."
+    ],
+    "time": "O((N+M)log(N+M)) local work including validation sort and all bit-vector construction; O(logM+logN) oracle calls, at most50 at full source limits",
+    "space": "O(N+M), excludes callback-owned data/internal distance computation and caller input arrays",
+    "oracleComputationExcluded": true,
+    "recursion": "none"
+  },
+  "proof": {
+    "status": "independently-complete",
+    "exactBaselinePredicate": "With minimum hop distance d, every path has>=d edges of weight>=A. A reply equals dA iff an ALL-A path of exactlyd edges survives; any B-edge forces strict increase for EVERY A<B, independently of parity or ratio.",
+    "pivot": "Increasing prefix heavy edges removes surviving all-A d-hop paths monotonically. k0 false,kM true without querying extremes. At first truek, before adding edgee=k−1 there exists a surviving original shortest path; every such survivor contains e. Thus e belongs to AT LEAST ONE original shortest path, NOT necessarily all original shortest paths.",
+    "nearSets": "Orient a chosen shortest path S..u−v..T. Its subpaths shortest implydv(S)=du(S)+1 anddu(T)=dv(T)+1. Thus hidden endpoints lie in disjoint strict-nearer sets U/V; tie-distance vertices can be discarded.",
+    "parentClosure": "Forx inU,dv(x)=du(x)+1 since u/v adjacent. Any full-graph u-geodesic parentp hasdu(p)=du(x)−1 anddv(p)>=dv(x)−1=du(x)>du(p); hencep inU. Induced BFS retains global du. SameforV.",
+    "twoTreeRestriction": "Chosen BFS trees are disjoint and pivot connects roots. Their S−T path has lengthdu(S)+1+dv(T)=d. AssignB outside them andA inside, retaining baseline. The all-A graph contains one tree onU∪V plus isolated ties, so baseline-preserving S−T path is unique.",
+    "suffixPredicate": "In parent-before-child order, every root-tox ancestor has smallerindex thanx. Heavy parentedges of childrenindex>mid intersect root-tox path iffindex(x)>mid, because x's own parentedge witnesses the forward direction. Other tree and pivot remainA. Rootindex0 naturally has no parentedge and is handled without special queries.",
+    "queryBound": "Baseline1+ceil_log2(M)+ceil_log2(p)+ceil_log2(q). M<=130000 gives17. p+q<=90000,p/q>=1; ceil logs sum>=33 requires at least32769+65537=98306 vertices, so sum<=32. Hence<=50, exact achievable example tested.",
+    "complexity": "Three initial BFS traversals (connectivity plus both roots), two induced BFS trees, final candidate BFS, validation sort, and O(logM+logN) O(N+M) weighting builds give O((N+M)log(N+M)) local time,O(N+M) memory. Oracle internals excluded.",
+    "unconfirmedLemmas": []
+  },
+  "flowSuggestion": {
+    "entryGraphId": "interactive-oracles",
+    "firstMissingGraphId": "interactive-oracles",
+    "firstMissingNodeId": "response",
+    "proposedAnswerId": "binary-weight-distance",
+    "proposedAnswerLabel": "全辺にA/Bを割り当て、未知の固定二頂点間の最短距離を聞く",
+    "guardGraphId": "binary-weight-distance-oracle-conditions",
+    "guards": [
+      {
+        "id": "known-fixed-pair",
+        "feature": "既知の単純連結無向グラフで、相異なる未知二頂点が全質問を通して固定される。"
+      },
+      {
+        "id": "assign-two-weights",
+        "feature": "全辺の重みを同じ既知の正整数A<Bのどちらかへ自由に割り当て、その割当の正確な最短距離が返る。"
+      },
+      {
+        "id": "bounds",
+        "feature": "N2..90000,M1..130000,1<=A<B<=1e9。局所O((N+M)log(N+M))で50質問以下を使える。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "binary-weight-distance-oracle-edge-split-endpoint-search"
+    ],
+    "initialGapPlacement": "Initial audit reached genericinteractive result viaother; proposal adds answer atresponse question while preserving initial actual terminal."
+  },
+  "verification": {
+    "actualArticleFenceCompiled": true,
+    "visibleCompleteCppFences": 1,
+    "articleSectionCount": 8,
+    "result": "passed",
+    "normalFlags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "checks": 178526522,
+    "allConnectedSimpleGraphs": 27475,
+    "allSmallN": "2..6",
+    "allPairsTimesFiveTolls": 2040405,
+    "tollSettings": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        1,
+        1000000000
+      ],
+      [
+        999999999,
+        1000000000
+      ],
+      [
+        6,
+        12
+      ]
+    ],
+    "randomCases": 3000,
+    "oracleQueries": 12899409,
+    "dijkstraRelaxations": 150061746,
+    "maximumCases": 6,
+    "maximumOracleQueries": 264,
+    "maximumN": 90000,
+    "maximumM": 130000,
+    "largestQueryCount": 50,
+    "largestReply": 89998999955001,
+    "checksum": "13151808493442697981",
+    "normalCommand": "python3 /tmp/flowchartcp-highway-checker.py /tmp/flowchartcp-highway-article.mdx",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-highway-checker.py /tmp/flowchartcp-highway-article.mdx --sanitize",
+    "normalSeconds": 2.16348,
+    "normalPeakRSSKiB": 26248,
+    "normalMaximumCaseSeconds": 0.127637,
+    "asanUbsan": {
+      "passed": true,
+      "flags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer"
+      ],
+      "checks": 178526522,
+      "checksum": "13151808493442697981",
+      "seconds": 33.7653,
+      "peakRSSKiB": 845664,
+      "maximumCaseSeconds": 0.706113,
+      "leakSanitizer": false
+    },
+    "oracle": "For EVERY algorithm-generated actual weighting in each valid solve case, build no assumed tree: run ordinary priority-queue Dijkstra over the ORIGINAL undirected graph with each original edge cost chosen directly from actual0/1 bit and A/B. Hidden S/T are immutable const fields for the entire run. Verify returned unordered pair, observed/reported call count,<=50 before each distance call, exact M binary terminals, unchanged original edge arrays.",
+    "exhaustiveProcedure": "Enumerate every edge subset of complete graphsN2..6; keep EVERY connected simple graph; for EVERY unordered hidden pair and FIVE toll settings run published solver with real weighted Dijkstra callback. Total27475 graphs/2040405 cases. Does not use solver BFS trees or suffix tests as oracle.",
+    "randomOracle": "Seed20180905,3000 connected simple graphsN2..120 with spanning tree plus random extraedges, shuffled edgeIDs and independently reversed endpoint orientation, arbitrary hidden orderedpair and integerA/B withinfull range. Dijkstra every question.",
+    "maximumCaseList": [
+      {
+        "N": 90000,
+        "M": 130000,
+        "hidden": [
+          0,
+          45000
+        ],
+        "tolls": [
+          1,
+          2
+        ],
+        "queries": 50,
+        "construction": "Two45000-vertex stars joined bybridge edgeID0;40001 extra leafchain edges insidefirstside. Side sizes45000+45000. Both hidden endpoints are BFS roots, taking16 questions each; pivot takes17 plusbaseline1."
+      },
+      {
+        "N": 90000,
+        "M": 130000,
+        "hidden": [
+          0,
+          45000
+        ],
+        "tolls": [
+          999999999,
+          1000000000
+        ],
+        "queries": 50,
+        "construction": "same full graph, huge close tolls"
+      },
+      {
+        "N": 90000,
+        "M": 130000,
+        "hidden": [
+          0,
+          45000
+        ],
+        "tolls": [
+          1,
+          1000000000
+        ],
+        "queries": 50,
+        "construction": "same full graph, huge ratio"
+      },
+      {
+        "N": 90000,
+        "M": 89999,
+        "hidden": [
+          0,
+          89999
+        ],
+        "tolls": [
+          999999999,
+          1000000000
+        ],
+        "construction": "longpath, nonrecursive preprocessing, long64bitdistance"
+      },
+      {
+        "N": 90000,
+        "M": 89999,
+        "hidden": [
+          89999,
+          0
+        ],
+        "tolls": [
+          1,
+          1000000000
+        ],
+        "construction": "longpath reversed endpoints, huge ratio and64bitreplies"
+      },
+      {
+        "N": 90000,
+        "M": 130000,
+        "hidden": [
+          89999,
+          71234
+        ],
+        "tolls": [
+          999999999,
+          1000000000
+        ],
+        "construction": "seed130000 randomspanningtree plusrandomedgepairs, edgeIDs shuffled, general graph cycles"
+      }
+    ],
+    "extraCases": [
+      "Official4-query response table independently checked, followed by published algorithm on same graph/hiddenpair.",
+      "Diamond opposite vertices: each single edge can be heavy while baseline survives, so NO edge universal to all original shortest paths; published algorithm still succeeds. Includes sameparity6/12 and close1e9 tolls.",
+      "N2/M1 returns endpoint pair withbaselineonly; endpoint-root/no parent-edge case; both edge orientation orders and hidden orientation.",
+      "All malformed N/M/arraylengths/vertexranges/selfloops/parallelreversepairs/disconnectedgraph/tollranges rejected beforeANY callback.",
+      "Malformed base negative/zero/nondivisible/too large, later belowbaseline/above dB, and finalcandidatebaselinecontradiction trigger documented runtime errors.",
+      "Callback throws distinctMarker at EVERY question position of an example run, propagated unchanged withoutretry; independent fresh run afterward succeeds. Noncopyable/stateful callback used throughout.",
+      "Nested solver invocation duringoutercallback withindependenttwo-nodeoracle verifies no global/reentrant state leak.",
+      "Compile-time concepts reject floating/unsigned/bool/incorrect-argument callbacks. All accepted replies in valid graph cases are exact int64.",
+      "Enumerate everypositive p+q=90000 split independently toconfirm max ceil-logsum32; explicit98306 boundary for33."
+    ],
+    "counterScope": "oracleQueries counts invocations through the validating Oracle functor; direct boundary-table/reentrancy/exception-adapter checks perform additional tiny Dijkstra calls not included in that counter. Checks include each binary terminal validation, not only solved graph instances.",
+    "maximumTimingScope": "Observed end-to-end solver+independent Dijkstra callback times for listed maximum instances, not an exhaustive measurement of worst runtime over all graphs. Asymptotic local bound excludes callback computation; measured RSS includes checker/graphs/oracle.",
+    "sharedFilesModified": false,
+    "unconfirmedLemmas": []
+  },
+  "editorNotes": [
+    "Eight Japanese technique sections and one always-visible complete C++20 template callback API; no perproblem page.",
+    "Article contains mathematical model,proofs,API,complexity,implementation and references; retrieval history/counts/benchmark data remain sidecar-only.",
+    "OfficialReview and later Tomasz Idziaszek supplement remain distinct; ref/feature/subsequent review independent-analysis, difficulty null, date2018-09-05 verified by JP official competition-day index.",
+    "Initial fixed audit/ledger/shared flow were not edited. Parent can preserve initial other→generalinteractive steps while adding later concrete article/branch/reference/feature resolution.",
+    "The method requires no primal tree assumption, no unique original shortest path, no A/B parity condition and no large B/A ratio; uniqueness is deliberately created by twoBFS-tree restriction.",
+    "Partial malformed-response checks are NOT a semantic proof against arbitrary inconsistent/adaptive oracle. Exact fixed-pair response is an explicit contract, and exceptions cannot roll back external queries."
+  ],
+  "artifactSha256": {
+    "article": "a1467fa388ba844d12832595cda957919a0c2d2a3ab5acd4d0941f71bba8bc5f",
+    "checker": "c13147ab6a4d104881ec814fbe4ae427c032bd27d638d4fb9e5073243e557b30",
+    "publishedArticle": "7209d07782ac116496a224b32d3d6515b77eb0d2271279d6fcb44bb79bc441a0"
+  },
+  "cppSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/binary-weight-distance-oracle-edge-split-endpoint-search.mdx",
+    "checker": "scripts/check_binary_weight_hidden_pair_cpp.py",
+    "metadataGroup": "construction",
+    "entryGraphId": "interactive-oracles",
+    "choices": [
+      "binary-edge-distances",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "codeSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715",
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true
+  },
+  "independentReview": {
+    "status": "passed",
+    "reviewer": "root",
+    "normalAndAsanUbsanPassed": true,
+    "primaryScopeAndProofReviewed": true,
+    "normal": {
+      "checks": 178526522,
+      "allConnectedSimpleGraphs": 27475,
+      "allPairsTimesFiveTolls": 2040405,
+      "randomCases": 3000,
+      "oracleQueries": 12899409,
+      "dijkstraRelaxations": 150061746,
+      "maximumCases": 6,
+      "maximumOracleQueries": 264,
+      "maximumN": 90000,
+      "maximumM": 130000,
+      "largestQueryCount": 50,
+      "largestReply": 89998999955001,
+      "maximumCaseSeconds": 0.149197,
+      "checksum": "13151808493442697981",
+      "seconds": 2.24351,
+      "peakRSSKiB": 26112,
+      "article": "/tmp/flowchartcp-highway-article.mdx",
+      "sanitized": false,
+      "cppSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715"
+    },
+    "asanUbsan": {
+      "checks": 178526522,
+      "allConnectedSimpleGraphs": 27475,
+      "allPairsTimesFiveTolls": 2040405,
+      "randomCases": 3000,
+      "oracleQueries": 12899409,
+      "dijkstraRelaxations": 150061746,
+      "maximumCases": 6,
+      "maximumOracleQueries": 264,
+      "maximumN": 90000,
+      "maximumM": 130000,
+      "largestQueryCount": 50,
+      "largestReply": 89998999955001,
+      "maximumCaseSeconds": 0.699683,
+      "checksum": "13151808493442697981",
+      "seconds": 34.4574,
+      "peakRSSKiB": 891568,
+      "article": "/tmp/flowchartcp-highway-article.mdx",
+      "sanitized": true,
+      "cppSha256": "b7e618bcd9befb83f25499a950bde4c6feed4c0be5340bbbaa81f031731d9715"
+    },
+    "notes": "主催者配布の原典/Review/翻訳検索の数値を区別して全scopeを確認。全本文と掲載API/最悪予算を独立精読し、通常とASan/UBSanで全件数・checksum・コードSHAを再現。既に確認済みの初回研究へ重複reviewを付加せず、完成実装と証明は研究記録とresolutionへ保存。"
+  }
+}

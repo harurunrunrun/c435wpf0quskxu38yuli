@@ -1,0 +1,61 @@
+---
+title: "4 項の和を 2 項ずつに分け、添字の重複を避ける"
+description: "先に作ったペアだけを保存し、残りのペアとの和を照合します。"
+techniqueId: "meet-in-middle-four-sums"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+異なる四つの添字 $i<j<k<l$ を選び、$a_i+a_j+a_k+a_l=T$ としたいとき。4 項の全列挙は $O(N^4)$ になります。
+
+## 考え方
+
+現在の後半ペアの左端を $k$ とします。前半ペア $i<j<k$ の和だけを表に保存し、$l>k$ について $T-a_k-a_l$ を探します。
+
+$k$ を一つ進める直前に、右端が $k$ の前半ペアを追加します。順序を守れば、同じ添字を二回使うペアを検査する必要がありません。
+
+## 適用条件
+
+四つの異なる添字を使うこと。値が等しくても添字が違えば使えます。和や差が整数型の範囲に収まること。全ての解を列挙する場合、和ごとに一つのペアだけ保存する実装では不足します。
+
+## なぜ正しいか
+
+解の四つの添字を小さい順に並べると、後半の左端 $k$ を処理するときに前半 $i,j$ は必ず保存済みです。見つけた組も $i<j<k<l$ を満たすので重複した添字はありません。
+
+## 計算量
+
+改善前は $O(N^4)$。ハッシュ表では期待時間 $O(N^2)$、空間 $O(N^2)$。平衡木なら時間 $O(N^2\log N)$。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<array<int,4>> four_distinct_sum(const vector<long long>& a,
+                                        long long target){
+    unordered_map<long long,pair<int,int>> earlier;
+    int n=a.size();
+    for(int k=1;k<n;++k){
+        for(int l=k+1;l<n;++l){
+            auto it=earlier.find(target-a[k]-a[l]);
+            if(it!=earlier.end()){
+                auto [i,j]=it->second;
+                return array<int,4>{i,j,k,l};
+            }
+        }
+        for(int i=0;i<k;++i) earlier.try_emplace(a[i]+a[k],i,k);
+    }
+    return nullopt;
+}
+```
+
+## 関連する手法
+
+[半分全列挙](/flowchartcp/techniques/meet-in-the-middle/)
+
+## 参考資料
+
+- [CSES：Sum of Four Values の問題文](https://cses.fi/problemset/task/1642)
+
+<TechniqueReferences techniqueId="meet-in-middle-four-sums" />

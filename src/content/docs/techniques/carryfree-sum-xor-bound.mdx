@@ -1,0 +1,70 @@
+---
+title: "和とXORが等しい二数は、繰り上がりを禁止して和の上限だけを追う"
+description: "一桁の選択を00・01・10に絞り、和の上位桁が上限と同じかだけを持つ。"
+techniqueId: carryfree-sum-xor-bound
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+非負整数の二数について、和がXORに等しく、さらにその和が巨大な上限以下になる組を数える。上限は文字列で与えられるほど大きく、和や片方の数を直接列挙できない。
+
+## 考え方
+
+非負整数では $a+b=(a\mathbin{\mathrm{XOR}}b)+2(a\mathbin{\mathrm{AND}}b)$。したがって和とXORが等しいことは $a\mathbin{\mathrm{AND}}b=0$ と同値で、各桁の組は $(0,0),(0,1),(1,0)$ の三種類に限られる。繰り上がりは一切起こらない。
+
+上位から桁を見て、和の接頭辞が上限と一致する組数を $E$、既に小さい組数を $L$ とする。小さい状態は次の桁を三通りから選べる。
+
+- 上限の次の桁が0なら $E'=E$、$L'=3L$。
+- 上限の次の桁が1なら $E'=2E$、$L'=3L+E$。
+
+後者で和の桁を0にする一通りだけが新しく未満側へ移り、1にする二通りは一致を保つ。初期値は $E=1,L=0$ で、最後に両方を足す。
+
+## 適用条件
+
+順序付きの非負整数対 $(a,b)$ を数え、上限は**和に対して**指定される。二数それぞれに異なる上限がある場合や、ちょうど何個の1を含むか指定する場合は状態を追加する。順序なしの組数にもそのまま使えない。
+
+掲載実装は1〜100001桁の二進文字列と法 $10^9+7$。数値へ変換しないため64ビットを超える上限も扱う。上限0や先頭0も許し、$(0,0)$ を含める。負数は扱わない。
+
+## なぜ正しいか
+
+桁の組を三種類に制限すると必ずANDが0で、和とXORが一致する。逆に一致する組はどの桁でも両方1にならないため、この三種類だけで表現できる。
+
+繰り上がりがないので、和の大小は上位から最初に異なる桁で決まる。一致状態では上限を超える桁を選ばず、一度小さくなれば残りの桁は自由になる。同じ一致状態へ到達した組は下位の選択肢が等しいので個数だけでまとめられる。各二数組は桁の選び方を一意に定めるため、重複もない。
+
+## 計算量
+
+数値としての上限を $U$ とすると、二数組の直接列挙は $O(U^2)$ 時間、追加空間 $O(1)$。桁数 $B$ の処理なら時間 $O(B)$、入力文字列を除く追加空間 $O(1)$。DP全層の配列は不要。
+
+## 実装
+
+```cpp
+#include <stdexcept>
+#include <string>
+long long count_carryfree_pairs_at_most(const std::string& bound) {
+    constexpr long long mod=1000000007;
+    if(bound.empty() || bound.size()>100001) throw std::invalid_argument("length");
+    long long equal=1, less=0;
+    for(char bit:bound) {
+        if(bit=='0') less=3*less%mod;
+        else if(bit=='1') {
+            less=(3*less+equal)%mod;
+            equal=2*equal%mod;
+        } else throw std::invalid_argument("binary digit required");
+    }
+    return (equal+less)%mod;
+}
+```
+
+## 関連する手法
+
+- [上限付きの一数とのXOR和は、桁ごとの利益と上限未満の状態を組み合わせる](/flowchartcp/techniques/bounded-xor-sum-maximum/)
+- [区間和とXORが等しい区間は、同じ1ビットが二度現れない窓を保つ](/flowchartcp/techniques/carryfree-subarray-window/)
+
+## 参考資料
+
+- [AtCoder — Sum Equals Xor](https://atcoder.jp/contests/abc129/tasks/abc129_e)
+- [公式解説 E 節](https://img.atcoder.jp/abc129/editorial.pdf)
+
+<TechniqueReferences techniqueId="carryfree-sum-xor-bound" />

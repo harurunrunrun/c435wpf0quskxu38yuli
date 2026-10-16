@@ -1,0 +1,32 @@
+[
+  {
+    "source": "USACO",
+    "problemId": "1142",
+    "title": "Balanced Subsets",
+    "url": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "evidenceUrl": "https://usaco.org/current/data/sol_prob3_platinum_open21.html",
+    "techniqueIds": [
+      "orthogonally-convex-row-interval-phase-prefix-dp"
+    ],
+    "features": [
+      "使用可能マスから非空の4近傍連結部分集合を選び、各行・各列の選択が途切れないものを数える。",
+      "長方形以外も許し、斜めだけの接触や空集合は除く。左右端の最初の厳密な内向き変化だけでphaseを切り替える。",
+      "原典N1..150のG/.正方形、答mod1000000007。掲載APIは縦横各0..150の長方形と空盤を拡張許容。"
+    ],
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2021",
+    "publicationDatePrecision": "year",
+    "exactDateVerified": false,
+    "originalNumericBoundsVerified": true,
+    "sourceBoundsEvidenceUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1142",
+    "difficulty": null,
+    "division": "Platinum",
+    "cutoffEvidenceUrl": "https://usaco.org/index.php?page=open21results",
+    "discoveredBy": "usaco-2021-february-us-open-platinum",
+    "notes": "使用可能マスの非空4連結部分集合で、各行列の選択が一区間となるものを数える。行区間の隣接overlapとleft非増加→非減少/right非減少→非増加が必要十分。最初の厳密内向き変化だけを二flagへ記録し、前行の旧二端点に対する9個の長方形和で一意に遷移、全底行を足す。四枚の2Dprefixとrollingで原典N150をO(N^3)時間/O(N^2)空間で処理する。"
+  }
+]

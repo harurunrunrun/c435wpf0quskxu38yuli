@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "scope": "USACO固定全6題の不足解消、ICPC2017B追加、IOI2020固定全6題の初回監査",
+  "counts": {
+    "specificTechniques": 392,
+    "foundationArticles": 78,
+    "allArticles": 470,
+    "exampleMappings": 491,
+    "originalUrls": 453,
+    "graphs": 435,
+    "nodes": 3481,
+    "questions": 1576,
+    "answerEdges": 5132,
+    "verifiedWalks": 487,
+    "pendingWalks": 4
+  },
+  "verified": [
+    "Minimum Cost Pathsの実公開MDXからC++20を抽出し、全391902小格子・乱択1800・不正44を含む21926323比較とchecksumを確認。直接格子DP、独立な二列最小化と最大規模の閉形式、最大20万列/20万問い合わせ、128ビット評価を含む。",
+    "局所条件と補集合の照合は実公開MDXから抽出し、17150検査・13521480全配分比較。全560個数配分型で候補二群の積511225、秘密候補150、全試行76683750以下を別担当も再計算。可視性と否定/存在/必須条件、矛盾、最大50手、非公式sketchの誤記を確認。",
+    "各作者のASan/UBSanも同件数で成功。別担当が各公式原典、主要証明、API、境界、整数、計算量を独立レビュー。",
+    "新設Minimum Cost Pathsの入口を、過去の右下経路質問を変更する位置から、移動・収集の対象を選ぶ根へ移動。以前から安定していた489歩行は完全維持。未公開の新設1経路だけを修正し、その後の490記録をClueの凍結baselineへ保存し直した。旧834接頭辞・旧格子37接頭辞の検査は弱めず通過。",
+    "新2技巧の独立flowテスト各6件、全分岐/配置/履歴/共有/台帳/固定群の36テスト群PASS。IOI監査文言の後続修正後、IOI独立2テストも再実行してPASS。",
+    "IOI2020は公式全6題の一覧を先に固定。原典6/6と公式解説取得6/6、主要解法確認はTickets1/6、未確認5を区別。466記事・431図の元JSON bytesをgzipで保存しSHAと6経路を独立再生。",
+    "研究一覧の把握数と解法確認数を、掲載使用例と固定群の重複を除いた集合へ統一。25出典の生成HTML値を台帳と照合し、索引情報だけの把握を説明する。",
+    "npm run build:local は470記事・491対応・435図で成功。新2記事の日英/全角検索9件、数式、参照根拠、カタログを照合。",
+    "435 SVGと図専用ページ、5132回答ラベル、404旧共有URLを照合。新2図を画像化して目視確認。",
+    "npm run verify:local は1349 HTML/SVGの27709内部リンク・資産を確認。"
+  ],
+  "reviewCounterSemantics": {
+    "fixedCorpusStatementsReviewed": 36,
+    "fixedCorpusSolutionsReviewed": 27,
+    "publishedExamplesSolutionsReviewed": 451,
+    "allDistinctSolutionsReviewed": 458,
+    "usacoCovered": "6/6",
+    "icpcCovered": "7/12",
+    "joiCovered": "7/12",
+    "ioiResearch": "1/6",
+    "ioiCovered": "0/6",
+    "remainingKnownGaps": 17
+  },
+  "testHarnessNote": "一時的な検証runnerのspawnSyncでstdoutをpipe収集するとEPERMとなり、サンドボックス外でも同じ失敗。stdio継承と通常ファイルへのログ出力に戻して36群を完走した。製品・既存テストの承認条件や正当性検査を変更していない。",
+  "corrections": [
+    "IOI Stations初回監査の最大ラベルn−1を必須とする文言を、公式採点表を再確認した担当の指摘で訂正し、元の主張と根拠URLをsubsequentMaterialCorrectionsへ保持。主要ルーティング補題の確認状態はunconfirmedのまま。"
+  ],
+  "limitations": [
+    "全世界の問題母数は未確定で網羅未完了。固定USACO全6題の完成と全年度の完成を区別する。",
+    "production Astro/Starlight/Pagefind buildと実ブラウザは環境上の失敗後に再試行しておらず未検証。",
+    "外部リンクの全件生存確認は未実施。",
+    "push・アップロード・公開は実施していない。"
+  ],
+  "nextArtifactsReviewedButNotRegistered": [
+    "/tmp/flowchartcp-constellation-article.mdx",
+    "/tmp/flowchartcp-harvest-article.mdx"
+  ],
+  "inProgress": [
+    "simple-path-count-matrix-tree-cycle-construction",
+    "tree-local-routing-alternating-dfs-labels",
+    "median-ticket-extreme-selection-round-decomposition"
+  ]
+}

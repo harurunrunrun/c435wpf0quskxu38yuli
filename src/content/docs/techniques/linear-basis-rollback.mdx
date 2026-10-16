@@ -1,0 +1,68 @@
+---
+title: "追加した数のXOR基底を、行の記録で巻き戻す"
+description: "既存の基底行を変更せず、新しく埋めた一行だけを記録して探索前へ戻す。"
+techniqueId: linear-basis-rollback
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+数の追加と削除があり、現在使える数から作れるXOR、またはそれを任意の初期値へ加えた最小値を尋ねる。削除に通常の基底挿入を逆向きに適用しても、どの行を戻すべきか分からない。
+
+## 考え方
+
+各数を使える時間を区間として持ち、時間方向の区間木へ割り当てる。探索で入るときに値を基底へ追加し、出るときに直前の記録量へ戻す。
+
+挿入では既存の基底行で新しい値だけを消去する。消去後の値に1が残り、その最上位の1に対応する行が空なら、その行へ値を入れ、行番号を履歴へ一つ記録する。従属な値なら何も変えない。既存行を更新しないため、巻き戻しは記録した行を0にするだけで済む。
+
+任意の初期値xからの最小化は、最上位の1の位置が高い基底行から試し、XORで小さくなるときだけ採用する。
+
+## 適用条件
+
+復元は追加順の逆順に限る。任意の要素をオンラインで削除する構造ではない。昇順列挙用の完全消去のように既存行を変更すると、行番号だけの記録では戻せない。
+
+動的グラフの経路XORには、この基底単体では足りない。辺のXOR潜在値付きUnion-Findを同じ探索で復元し、同成分内の辺から得る閉路XORを基底へ入れる。原典は常に連結で、辺を再訪してよい歩道の最小XORを問う。単純パスだけを許す条件へはそのまま使えない。連結が保証されない質問では、別成分の閉路を混ぜず、成分ごとの基底が必要になる。
+
+## なぜ正しいか
+
+連結な無向グラフで根からの木経路XORを $p[v]$ とすると、辺 $(u,v,w)$ が作る閉路のXORは $p[u]\oplus w\oplus p[v]$。aからbへの全ての歩道のXORは、$p[a]\oplus p[b]$ にこれらの閉路の生成空間をXORした集合になる。木経路と各閉路を組み合わせればその各値を作れ、同じ辺の往復はXORで打ち消し合う。このため閉路XORの基底で最小化できる。
+
+新しい値の消去は既存基底が張る空間を変えない。独立な場合だけ空の基底行へ追加するので、挿入前の行を一つも変更しない。後の追加を逆順に取り消せば、当時の基底そのものへ戻る。最小化では、ある行が変えた最上位のビットを、それより低い基底行では変えられないため、各上位ビットを可能なら0にする選択が最小値を得る。
+
+## 計算量
+
+ビット数W、値の有効区間数I、時刻数T。基底挿入・最小化は $O(W)$、一回の追加を戻す処理は $O(1)$。時間区間木と組み合わせると挿入は $O(IW\log(T+1))$、Q質問で $O(QW)$。区間登録は $O(I\log(T+1)+T)$ 空間、基底と現在の履歴は $O(W)$。辺潜在値の管理時間は別に加える。
+
+## 実装
+
+`snapshot()` の記録量を保存し、探索後に `rollback(mark)` を呼ぶ。`minimum(x)` は `x XOR span` の最小値、`contains(x)` は生成可能性。以下は完全な基底部品であり、辺の寿命管理とUnion-Findは関連記事の部品を組み合わせる。
+
+```cpp
+#include <array>
+#include <vector>
+#include <cstdint>
+#include <cassert>
+struct RollbackXorBasis {
+    std::array<std::uint64_t,64> pivot{};std::vector<int> history;
+    std::size_t snapshot() const {return history.size();}
+    bool insert(std::uint64_t x) {
+        for(int b=63;b>=0;--b) if((x>>b)&1) {
+            if(pivot[b]) x^=pivot[b];else {pivot[b]=x;history.push_back(b);return true;}
+        }
+        return false;
+    }
+    void rollback(std::size_t mark) {assert(mark<=history.size());while(history.size()>mark) {pivot[history.back()]=0;history.pop_back();}}
+    std::uint64_t minimum(std::uint64_t x) const {for(int b=63;b>=0;--b) if((x^pivot[b])<x) x^=pivot[b];return x;}
+    bool contains(std::uint64_t x) const {return minimum(x)==0;}
+};
+```
+
+## 関連する手法
+
+[辺が存在する時間区間を分割して連結性を求める](/flowchartcp/techniques/connectivity-time-intervals/) ・ [部分集合XORの異なる値を、基底の係数順に並べる](/flowchartcp/techniques/xor-basis-kth/) ・ [変数間の差の制約を根からの差で管理する](/flowchartcp/techniques/dsu-potential-differences/)
+
+## 参考資料
+
+- [Codeforces：Shortest Path Queries（原典の条件）](https://codeforces.com/problemset/problem/938/G)。本文の変形は独立に証明し、小規模の直接処理と比較している。
+
+<TechniqueReferences techniqueId="linear-basis-rollback" />

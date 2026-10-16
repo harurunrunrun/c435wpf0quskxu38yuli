@@ -1,0 +1,466 @@
+[
+  {
+    "id": "bounded-take-grundy-period",
+    "title": "取れる個数が1からkまでなら、山の個数をk+1で割った余りをXORする",
+    "summary": "一つの山の遷移先の連続性から、Grundy数の周期を証明します。",
+    "family": "ゲーム",
+    "aliases": [
+      "bounded subtraction game",
+      "周期的なGrundy数"
+    ],
+    "prerequisites": [
+      "game-theory",
+      "brute-force-observation"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1098/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "stair-game-even-piles",
+    "title": "一つ下の段へ好きな個数を動かすなら、偶数段の個数だけをXORする",
+    "summary": "隣の段へ移す操作で変わる成分を一つに絞り、必敗状態を特徴づけます。",
+    "family": "ゲーム",
+    "aliases": [
+      "staircase Nim",
+      "階段のNim"
+    ],
+    "prerequisites": [
+      "game-theory",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/1099/"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "retrograde-winning-draw",
+    "title": "終了しない対戦は、負け状態から逆向きに勝敗を確定する",
+    "summary": "負けへ進める状態と、全ての行き先が勝ちになる状態を逆辺で伝えます。",
+    "family": "ゲーム",
+    "aliases": [
+      "retrograde analysis",
+      "勝ち負け引分",
+      "後退解析"
+    ],
+    "prerequisites": [
+      "game-theory",
+      "reverse-thinking"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc209/editorial/2237"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "tree-cut-grundy",
+    "title": "根を残して木の辺を切るゲームは、子の値に1を足してXORする",
+    "summary": "根につなぐ一辺の追加がGrundy数を1増やすことを使います。",
+    "family": "ゲーム",
+    "aliases": [
+      "Green Hackenbush on a tree",
+      "木の辺切断ゲーム"
+    ],
+    "prerequisites": [
+      "game-theory",
+      "tree-dp"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/img/agc017/editorial.pdf"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "divisor-game-prime-count",
+    "title": "真の約数へ変えるゲームは、重複込みの素因数の個数に置き換える",
+    "summary": "値そのものを状態にせず、取り除ける素因数の個数で山を表します。",
+    "family": "ゲーム",
+    "aliases": [
+      "prime-factor-count Nim",
+      "約数ゲーム",
+      "Omega function"
+    ],
+    "prerequisites": [
+      "game-theory",
+      "brute-force-observation"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc368/editorial/10829"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "weighted-board-terminal-minimax",
+    "title": "盤面の勝利条件と得点比較が混在するなら、終了判定を先に行う",
+    "summary": "同じ盤面をメモし、即時勝利が成立した状態から先を探索しません。",
+    "family": "ゲーム",
+    "aliases": [
+      "terminal-first minimax",
+      "重み付き三目並べ"
+    ],
+    "prerequisites": [
+      "state-design",
+      "brute-force-observation"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc349/editorial/9883"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "grundy-conserved-state-bound",
+    "title": "操作で一方の個数が増えるなら、保存される量から状態範囲を決める",
+    "summary": "増える青石を初期個数で打ち切らず、白石から増える最大量を含めます。",
+    "family": "ゲーム",
+    "aliases": [
+      "conserved potential for Grundy DP",
+      "白石青石ゲーム",
+      "到達状態の上界"
+    ],
+    "prerequisites": [
+      "game-theory",
+      "invariant",
+      "state-design"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/E869120/kyopro_educational_90/main/sol/031.cpp"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "pair-removal-mask-game",
+    "title": "相性のよい二個を消すゲームは、残った集合だけで勝敗を持つ",
+    "summary": "消した順番を捨て、残り集合の同じ局面をまとめます。",
+    "family": "ゲーム",
+    "aliases": [
+      "pair-removal subset game",
+      "残り集合の勝敗DP"
+    ],
+    "prerequisites": [
+      "bitmask-dp",
+      "state-design"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc354/editorial/10046"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "interactive-tree-diameter",
+    "title": "木の距離を質問できるなら、最遠点を二回探して直径を得る",
+    "summary": "任意の頂点から見た最遠点を直径の端点として使います。",
+    "family": "対話",
+    "aliases": [
+      "two-sweep distance oracle",
+      "距離オラクルの木直径"
+    ],
+    "prerequisites": [
+      "interactive",
+      "graph-reduction"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc019/tasks/abc019_4"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "interactive-fibonacci-maximum",
+    "title": "狭義単峰な列を質問するなら、評価点を使い回す間隔で区間を縮める",
+    "summary": "Fibonacci数の間隔で二点を取り、縮小後に一方の返答を再利用します。",
+    "family": "対話",
+    "aliases": [
+      "Fibonacci search",
+      "離散Fibonacci探索",
+      "評価点の再利用"
+    ],
+    "prerequisites": [
+      "interactive",
+      "binary-search"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/typical90/tasks/typical90_ba"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "interactive-missing-rook",
+    "title": "各行列に高々一個の駒があるなら、欠けた行と列を別々に探す",
+    "summary": "全列または全行を覆う質問にして、二次元の位置を二つの探索へ分けます。",
+    "family": "対話",
+    "aliases": [
+      "missing row and column binary search",
+      "二次元の欠損探索"
+    ],
+    "prerequisites": [
+      "interactive",
+      "binary-search"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc269/editorial/4897"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "interactive-bit-group-testing",
+    "title": "一個だけ隠れている番号は、各ビットが1の集合への質問で特定する",
+    "summary": "各候補に異なる返答列を割り当て、同時に行う二値質問を最小化します。",
+    "family": "対話",
+    "aliases": [
+      "nonadaptive binary group testing",
+      "二進符号による質問",
+      "情報量下界"
+    ],
+    "prerequisites": [
+      "interactive",
+      "bitwise-contribution"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "中級",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc337/editorial/9281"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "interactive-hidden-bipartite-edge-color-pair-recovery",
+    "title": "集合の色数から辺を探し、三頂点の質問で同色の組を残す",
+    "summary": "未知の二部グラフを独立集合への二分探索で復元し、辺の種類を少数の追加質問で判別します。",
+    "family": "対話",
+    "aliases": [
+      "hidden bipartite graph reconstruction",
+      "独立集合への集合質問",
+      "三頂点による辺種判別"
+    ],
+    "prerequisites": [
+      "interactive",
+      "binary-search",
+      "bipartite-parity-constraints"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning",
+      "complexity"
+    ],
+    "level": "上級",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day2/chameleon-review.pdf"
+    ],
+    "kind": "technique"
+  },
+  {
+    "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+    "title": "頂点の所有者が移動先を決めるゲームで、目標を繰り返し訪れられるか調べる",
+    "summary": "目標への到達を強制できない領域と、相手がそこへ誘導できる領域を繰り返し除く。残る側と除かれる側の固定辺戦略を作り、初回訪問で辺を永久に決める規則にも戻す。",
+    "aliases": [
+      "IOI2017 Toy Train 電車のおもちゃ",
+      "Büchi game owned directed graph repeated targets positional strategies",
+      "first-visit permanent switches attractor elimination 目標反復訪問 固定辺戦略"
+    ],
+    "family": "目標への反復訪問と到達集合の反復除去",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "retrograde-winning-draw",
+      "scc",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-train-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  {
+    "id": "spanning-tree-overlap-oracle-reference-labeling-leaf-peeling",
+    "title": "全域木との共通辺数への質問から、隠れた木を葉から復元する",
+    "summary": "基準木の辺を一つずつ交換して秘密の辺かを判別する。既知の基準辺で森を全域木へ補完し、残存する葉の接続先を部分集合への質問で絞る。",
+    "aliases": [
+      "IOI2017 Simurgh find_roads count_common_roads",
+      "spanning tree overlap oracle fundamental cycle reference labeling forest completion leaf peeling",
+      "全域木の共通辺数 基準辺の所属判定 森の補完 葉の星二分"
+    ],
+    "family": "全域木への共通辺数質問と基準辺分類",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "union-find",
+      "binary-search",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-simurgh-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/simurgh/simurgh-EST.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/simurgh.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  {
+    "id": "rank-count-oracle-equal-level-interval-pruning",
+    "title": "左右の上位個数から、唯一の最上位の位置を少ない質問で探す",
+    "summary": "個数が二乗より速く増える階層から、最下位を確実に見分ける。区間内の上位個数を保ちながら中央からの走査と二分を組み合わせ、適応的な返答にも最悪質問数を保証する。",
+    "aliases": [
+      "IOI2017 The Big Prize find_best ask",
+      "adaptive rank count oracle deterministic4779 squared multiplicity",
+      "左右順位個数 最下位確定472/26 個数付き区間走査"
+    ],
+    "family": "順位個数への質問と、疎な上位位置の区間探索",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "binary-search",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-prize-ISC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-SWE.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/prize/prize-MAC.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day2/editorial/prize.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  {
+    "id": "precompiled-permutation-partition-signature-membership",
+    "title": "一度だけ並べ替わるビットの対応を、集合への所属質問で復元する",
+    "summary": "区間の外を1、左半分の一点だけを1にした文字列を先に登録し、並べ替え後の所属判定で位置集合を二分する。",
+    "aliases": [
+      "Precompiled permutation partition signature membership",
+      "IOI2016 Messy restore_permutation",
+      "二値文字列集合 未知ビット置換 一括compile 所属質問 全対応復元"
+    ],
+    "family": "対話前の集合設計と置換の復元",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "interactive",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-messy-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi16/contest/IOI2016_analysis.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/day2-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2016/tasks/index.html"
+    ]
+  }
+]

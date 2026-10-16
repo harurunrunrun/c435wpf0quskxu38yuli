@@ -1,0 +1,260 @@
+---
+title: "辺をつなぎ替えながら、向きのあるパスを集計する"
+description: "森の辺の追加・削除と頂点の変更を、パスの集計と一緒に処理します。パスを反転するときは、順方向と逆方向の集計も入れ替えます。"
+techniqueId: dynamic-forest-path-aggregate
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+辺を削除して別の辺を追加する操作、頂点の値を変える操作、2頂点間のパスを集計する操作が混在します。どの時点でもグラフは森であり、操作を与えられた順に処理する必要があります。
+
+木の形を固定した配列への分解は、つなぎ替えのたびに作り直すと間に合いません。そこで Link-Cut Tree を使い、必要なパスをその都度一つの列として取り出します。和や最大値に加え、パスの始点から順に関数を適用する場合も扱えます。
+
+## 考え方
+
+元の森をいくつかのパスへ分け、それぞれを補助的なスプレー木で持ちます。補助木の中では、元の木の根に近い頂点から遠い頂点へという順序で頂点が並びます。スプレー木の親子関係そのものが、元の森の辺を表すわけではありません。
+
+`access(v)` は、元の木の根から `v` までを一つのパスに組み直します。パスの途中で補助木を回転させ、必要な続きを右の子へ接ぎ直します。最後に `v` を補助木の根へ移すと、その左側に根からの道が並び、右側は空になります。
+
+`make_root(u)` は、`access(u)` で取り出した列の向きを反転します。すると、元の木を `u` に根を置き直した状態として扱えます。続いて `access(v)` を行うと、`u` から `v` までのパスが、始点から終点の順で一つの補助木に入ります。
+
+各補助木に、次の二つの集計を持たせます。
+
+- 順方向：左の列、頂点自身、右の列をこの順に結合した値。
+- 逆方向：右の列を逆向きにたどり、頂点自身、左の列を逆向きにたどった値。
+
+列を反転するときは、左右の子だけでなく、この二つの集計も交換します。和では同じ値になりますが、関数合成では順序が変わるため交換が必要です。反転の伝播は遅延して行えます。
+
+## 適用条件
+
+追加する辺の両端は、異なる連結成分に属している必要があります。森には2頂点間の単純パスが高々一つしかないため、パスを一意に取り出せます。閉路を許すグラフの辺削除や、削除後の代わりの辺の探索は、この実装の対象に含みません。
+
+集計には、結合法則と単位元を持つ演算を使います。交換法則は不要です。以下の `combine(a, b)` は「列 `a` の後に列 `b` をたどる」ときの集計を返します。関数合成なら、先に `a` を適用し、その後に `b` を適用します。
+
+頂点自身の値は、パスをどちらへたどっても同じものを使います。辺ごとに進む向きで異なる値を持つ問題は、そのままでは扱えません。また、掲載実装が扱う更新は頂点一つの代入です。パス全体への更新や、元の森の部分木の集計には別の情報管理が必要です。
+
+## なぜ正しいか
+
+補助木は、分割されたパス上の順序を保ちます。回転は列の順序を変えず、`access` は根から指定頂点への道に沿ってパスの切れ目だけを接ぎ替えます。したがって、根から指定頂点までが一つの列になります。反転して根を置き直した後も、各辺が結ぶ2頂点は変わりません。
+
+`make_root(u)` の後に `access(v)` を行うと、列はちょうど `u` から `v` へのパスです。補助木の集計は左右の部分列と頂点自身の集計を順番に結合しているので、結合法則により列全体の集計と一致します。反転時に順方向と逆方向を交換することで、交換法則のない演算でも順序を保てます。
+
+辺の追加では、`u` を根にして異なる木の `v` へ親の接続を作ります。既に連結なら追加を拒否するため、閉路はできません。辺の削除では `u` から `v` の列を取り出し、列がこの2頂点だけであることを確認して切ります。途中に別の頂点がある場合は、存在しない直接辺を誤って削除しません。
+
+## 計算量
+
+集計値の大きさと結合時間が定数なら、初期化は $O(N)$ 時間・空間です。辺の追加・削除、根の変更、連結判定、頂点の代入、パスの集計は、1操作あたり**償却 $O(\log N)$** 時間です。単一の操作には $O(N)$ 時間かかることがあります。頂点の値の取得だけなら $O(1)$ 時間です。
+
+この償却計算量は、スプレー木の回転と、`access` によるパスの組み替えをまとめて解析した結果です。`access` のループ回数が常に対数回になるわけではありません。最初に $N-1$ 本の辺を `link` で追加する場合、その構築は $O(N\log N)$ の償却時間です。作業用のスタックも含めて空間は $O(N)$ です。動的木の解析は[原論文](https://www.cs.cmu.edu/~sleator/papers/dynamic-trees.pdf)、スプレー木による実現は[Self-Adjusting Binary Search Trees](https://www.cs.cmu.edu/~sleator/papers/Self-Adjusting.htm)を参照してください。
+
+## 実装
+
+頂点番号は `0` から `N-1` です。初期状態では全頂点が孤立しています。`link` は閉路や自己ループを作る場合に `false`、`cut` は指定した直接辺が存在しない場合に `false` を返します。辺の向きを入れ替えて `cut(v, u)` としても同じ辺を削除できます。
+
+`query_path(u, v)` は両端を含み、非連結なら `nullopt` を返します。`u == v` なら頂点自身の値です。問い合わせによって内部で使う根やパス分割は変わりますが、元の森の無向辺は変わりません。
+
+`parent` は、同じ補助木の親と、パスの外への接続を兼ねています。親の左右の子のどちらでもない頂点は、補助木の根です。`access` で右の子を外したときに、その頂点の `parent` を消すと、元の森の接続まで失うので注意してください。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template<class Monoid>
+class LinkCutPath {
+public:
+    using Value = typename Monoid::Value;
+
+private:
+    struct Node {
+        int child[2] = {-1, -1};
+        int parent = -1;
+        bool reversed = false;
+        Value value, forward, backward;
+        explicit Node(const Value& x) : value(x), forward(x), backward(x) {}
+    };
+    vector<Node> tree;
+    vector<int> ancestors;
+
+    void check(int v) const {
+        assert(0 <= v && size_t(v) < tree.size());
+    }
+    bool auxiliary_root(int v) const {
+        int p = tree[v].parent;
+        return p == -1 || (tree[p].child[0] != v && tree[p].child[1] != v);
+    }
+    Value aggregate(int v, bool reverse) const {
+        if (v == -1) return Monoid::identity();
+        return reverse ? tree[v].backward : tree[v].forward;
+    }
+    void pull(int v) {
+        int left = tree[v].child[0], right = tree[v].child[1];
+        tree[v].forward = Monoid::combine(
+            Monoid::combine(aggregate(left, false), tree[v].value),
+            aggregate(right, false));
+        tree[v].backward = Monoid::combine(
+            Monoid::combine(aggregate(right, true), tree[v].value),
+            aggregate(left, true));
+    }
+    void reverse_path(int v) {
+        if (v == -1) return;
+        swap(tree[v].child[0], tree[v].child[1]);
+        swap(tree[v].forward, tree[v].backward);
+        tree[v].reversed = !tree[v].reversed;
+    }
+    void push(int v) {
+        if (!tree[v].reversed) return;
+        reverse_path(tree[v].child[0]);
+        reverse_path(tree[v].child[1]);
+        tree[v].reversed = false;
+    }
+    void rotate(int v) {
+        int p = tree[v].parent, g = tree[p].parent;
+        int side = tree[p].child[1] == v;
+        int middle = tree[v].child[side ^ 1];
+        if (!auxiliary_root(p)) tree[g].child[tree[g].child[1] == p] = v;
+        tree[v].parent = g;
+        tree[v].child[side ^ 1] = p;
+        tree[p].parent = v;
+        tree[p].child[side] = middle;
+        if (middle != -1) tree[middle].parent = p;
+        pull(p);
+        pull(v);
+    }
+    void splay(int v) {
+        ancestors.clear();
+        for (int x = v;; x = tree[x].parent) {
+            ancestors.push_back(x);
+            if (auxiliary_root(x)) break;
+        }
+        for (auto it = ancestors.rbegin(); it != ancestors.rend(); ++it) push(*it);
+        while (!auxiliary_root(v)) {
+            int p = tree[v].parent, g = tree[p].parent;
+            if (!auxiliary_root(p)) {
+                bool same_side = (tree[p].child[1] == v) == (tree[g].child[1] == p);
+                rotate(same_side ? p : v);
+            }
+            rotate(v);
+        }
+    }
+    void access(int v) {
+        int last = -1;
+        for (int x = v; x != -1; x = tree[x].parent) {
+            splay(x);
+            tree[x].child[1] = last;
+            if (last != -1) tree[last].parent = x;
+            pull(x);
+            last = x;
+        }
+        splay(v);
+    }
+    int find_root(int v) {
+        access(v);
+        push(v);
+        while (tree[v].child[0] != -1) {
+            v = tree[v].child[0];
+            push(v);
+        }
+        splay(v);
+        return v;
+    }
+
+public:
+    explicit LinkCutPath(const vector<Value>& values) {
+        assert(values.size() <= size_t(numeric_limits<int>::max()));
+        tree.reserve(values.size());
+        ancestors.reserve(values.size());
+        for (const Value& value : values) tree.emplace_back(value);
+    }
+    Value get_value(int v) const {
+        check(v);
+        return tree[v].value;
+    }
+    void set_value(int v, const Value& value) {
+        check(v);
+        access(v);
+        tree[v].value = value;
+        pull(v);
+    }
+    void make_root(int v) {
+        check(v);
+        access(v);
+        reverse_path(v);
+    }
+    bool connected(int u, int v) {
+        check(u);
+        check(v);
+        return u == v || find_root(u) == find_root(v);
+    }
+    bool link(int u, int v) {
+        check(u);
+        check(v);
+        make_root(u);
+        if (find_root(v) == u) return false;
+        tree[u].parent = v;
+        return true;
+    }
+    bool cut(int u, int v) {
+        check(u);
+        check(v);
+        make_root(u);
+        access(v);
+        if (tree[v].child[0] != u) return false;
+        push(u);
+        if (tree[u].child[1] != -1) return false;
+        tree[v].child[0] = -1;
+        tree[u].parent = -1;
+        pull(v);
+        return true;
+    }
+    optional<Value> query_path(int u, int v) {
+        check(u);
+        check(v);
+        make_root(u);
+        if (find_root(v) != u) return nullopt;
+        access(v);
+        return tree[v].forward;
+    }
+};
+
+struct SumMonoid {
+    using Value = long long;
+    static Value identity() { return 0; }
+    static Value combine(Value a, Value b) { return a + b; }
+};
+
+struct Affine {
+    long long a, b;
+    bool operator==(const Affine&) const = default;
+};
+
+struct AffineMonoid {
+    using Value = Affine;
+    static constexpr long long mod = 998244353;
+    static Value identity() { return {1, 0}; }
+    static Value combine(const Value& first, const Value& second) {
+        // first の後に second を適用する。
+        return {second.a * first.a % mod,
+                (second.a * first.b + second.b) % mod};
+    }
+};
+```
+
+和なら `LinkCutPath<SumMonoid>` を作ります。頂点への加算は `set_value(v, get_value(v) + delta)` です。全ての頂点値と集計の途中結果が `long long` に収まることを確認してください。
+
+関数合成なら `LinkCutPath<AffineMonoid>` を作り、各係数を `0` 以上 `998244353` 未満に正規化して渡します。`query_path(u, v)` が返す係数を `(a, b)` とすると、入力 `x` に対する答えは `(a * x + b) % mod` です。`x` も同じ範囲に正規化します。定数関数を含め、各関数の逆関数は必要ありません。
+
+## 関連する手法
+
+- [HL分解](/flowchartcp/techniques/heavy-light-decomposition/)：木の形が固定されているときのパスの処理。
+- [セグメント木](/flowchartcp/techniques/segment-tree/)：結合法則を使った区間の集計。
+- [Rollback付きUnion-Find](/flowchartcp/techniques/rollback-dsu/)：操作の時刻で分割し、連結性をオフラインに処理する場合。
+
+## 参考資料
+
+- [Sleator・Tarjan: A Data Structure for Dynamic Trees](https://www.cs.cmu.edu/~sleator/papers/dynamic-trees.pdf)
+- [Sleator・Tarjan: Self-Adjusting Binary Search Trees](https://www.cs.cmu.edu/~sleator/papers/Self-Adjusting.htm)
+- [Sleator の講義補足：Link-Cut Tree の回転回数の償却解析](https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/15859-f09/www/handouts/link-cut-trees.txt)
+- [Library Checker の公開解答：向きを持つ集計と Link-Cut Tree](https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/tree/dynamic_tree_vertex_set_path_composite/sol/correct.cpp)
+
+<TechniqueReferences techniqueId="dynamic-forest-path-aggregate" />

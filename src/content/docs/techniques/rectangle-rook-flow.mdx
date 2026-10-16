@@ -1,0 +1,156 @@
+---
+title: "行と列を独立に選べる駒の配置を、駒の中央の容量一本で制限する"
+description: "長方形内の候補マスを全列挙せず、行から駒、駒から列へ割当をつなぐ。"
+techniqueId: rectangle-rook-flow
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各対象が資源Aと資源Bを一つずつ必要とし、両方の候補を独立に選べる。資源も対象も高々一度使う。候補三つ組の全列挙では候補数の積が大きくなる。
+
+## 考え方
+
+駒 $i$ に入口 $u_i$ と出口 $v_i$ を作り、$u_i\to v_i$ の容量を1にする。許される各行から入口、出口から許される各列へ容量1。始点から各行、各列から終点へも容量1。
+
+一本の流量が行→駒→列を表し、駒の中央の辺が使用回数を制限する。候補長方形の面積ではなく、高さと幅の和に比例する辺数で済む。
+
+## 適用条件
+
+一つの駒について候補の行と列の全組合せが合法。区間でない行集合・列集合でもよい。
+
+穴のある領域など、特定の行と列の組合せだけを禁止する場合は使えない。例えば $(0,0),(1,1)$ だけが合法なのに行と列を別に通すと $(0,1)$ も選べる。費用を加えるなら行側と列側へ分解できる費用が必要。
+
+## なぜ正しいか
+
+合法配置から選んだ行・駒・列へ一単位を流せる。逆に整数流では使う駒ごとに一つの入口行と出口列が決まり、直積条件でそのマスは合法。始点・終点側の容量1が行と列の重複を防ぎ、中央の容量1が駒の重複を防ぐ。
+
+## 計算量
+
+全マス候補は辺数 $O(NHW)$。直積を分けると $E=O(H+W+N(H+W))$、$V=H+W+2N+2$。中間頂点が単位の入口か出口を持つ単位ネットワークなので $O(E\sqrt V)$ 時間、$O(V+E)$ 空間。
+
+## 実装
+
+区間は0始まりの半開区間で渡す。返す配列は駒番号と置く行・列。問題の閉区間入力では、始端を一つ引き、終端はそのまま半開区間の終端へ使う。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+struct AllowedRectangle { int top,bottom,left,right; }; // 半開区間
+struct RookPlacement { int piece,row,column; };
+std::vector<RookPlacement> place_rectangle_rooks(
+    int h,int w,const std::vector<AllowedRectangle>& rectangles) {
+    int n=rectangles.size(),s=h+w+2*n,t=s+1; FlowNetwork g(t+1);
+    for(int r=0;r<h;++r) g.add(s,r,1);
+    for(int c=0;c<w;++c) g.add(h+c,t,1);
+    std::vector<int> middle(n);
+    std::vector<std::vector<std::pair<int,int>>> incoming(n),outgoing(n);
+    for(int i=0;i<n;++i) {
+        int in=h+w+2*i,out=in+1; auto rect=rectangles[i];
+        middle[i]=g.add(in,out,1);
+        for(int r=rect.top;r<rect.bottom;++r)
+            incoming[i].push_back({r,g.add(r,in,1)});
+        for(int c=rect.left;c<rect.right;++c)
+            outgoing[i].push_back({c,g.add(out,h+c,1)});
+    }
+    g.flow(s,t); std::vector<RookPlacement> result;
+    for(int i=0;i<n;++i) if(g.used(middle[i])) {
+        int row=-1,column=-1;
+        for(auto [r,id]:incoming[i]) if(g.used(id)) row=r;
+        for(auto [c,id]:outgoing[i]) if(g.used(id)) column=c;
+        result.push_back({i,row,column});
+    }
+    return result;
+}
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/)
+
+## 参考資料
+
+- [AtCoder：Grid and Tokens（原典）](https://atcoder.jp/contests/abc205/tasks/abc205_f)
+- [公式解説](https://atcoder.jp/contests/abc205/editorial/2081)
+
+<TechniqueReferences techniqueId="rectangle-rook-flow" />

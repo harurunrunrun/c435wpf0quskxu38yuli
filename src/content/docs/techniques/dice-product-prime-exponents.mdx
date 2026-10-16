@@ -1,0 +1,69 @@
+---
+title: "小さな出目の積で目標に一致させるなら、必要な素因数の指数だけを持つ"
+description: "出目1の自己遷移を除き、目標の2・3・5の残り指数を三次元の小さな表で管理する。"
+techniqueId: "dice-product-prime-exponents"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+小さな正整数を繰り返し掛け、巨大な目標にちょうど一致する確率を求めるとき。途中の積が目標の約数でなくなった時点で成功できません。出目の素因数が少ないなら、値ではなく必要な指数を持ちます。
+
+## 考え方
+
+目標を $2^A3^B5^C$ に分解します。他の素因数が残れば確率は0です。残りの指数が $(a,b,c)$ の成功確率を $F(a,b,c)$ とし、$F(0,0,0)=1$、負の指数を0とします。出目1を除くと、
+$$F(a,b,c)=\frac{F(a-1,b,c)+F(a,b-1,c)+F(a-2,b,c)+F(a,b,c-1)+F(a-1,b-1,c)}5.$$
+順に出目2・3・4・5・6に対応します。各指数を小さい順に計算します。
+
+## 適用条件
+
+出目は毎回独立な公平な1..6で、正の整数を掛け、目標以上で止まること。目標の通過後に値を下げる操作はありません。別の出目集合なら必要な素因数と各遷移の重みを作り直します。実装は $1\le N\le10^{18}$ を受け取り、$N=1$ は初めから成功として返します。
+
+## なぜ正しいか
+
+出目1では状態が変わらず、その確率 $1/6$ を移項すると他の五出目の係数は全て $1/5$ になります。残り指数が負になる出目は目標を割り切らない値を作るので失敗です。それ以外の出目は指数和を減らすため、基底からの帰納法で全ての確率が決まります。大きな積そのものを生成しないので乗算のあふれも避けられます。
+
+## 計算量
+
+時間 $O(\log N+(A+1)(B+1)(C+1))$、空間 $O((A+1)(B+1)(C+1))$。整数値 $1,\ldots,N$ の表は作りません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int dice_product_exact_probability(uint64_t target){
+    constexpr long long mod=998244353,inverse_five=598946612;
+    if(target<1||target>1000000000000000000ULL)throw invalid_argument("target range");
+    int amax=0,bmax=0,cmax=0;
+    for(auto [prime,count]:{pair{2,&amax},pair{3,&bmax},pair{5,&cmax}})
+        while(target%prime==0){target/=prime;++*count;}
+    if(target!=1)return 0;
+    vector<long long> dp((amax+1)*(bmax+1)*(cmax+1));
+    auto index=[&](int a,int b,int c){return (c*(bmax+1)+b)*(amax+1)+a;};
+    dp[0]=1;
+    for(int c=0;c<=cmax;++c)for(int b=0;b<=bmax;++b)for(int a=0;a<=amax;++a){
+        if(a+b+c==0)continue;
+        long long sum=0;
+        if(a)sum+=dp[index(a-1,b,c)];
+        if(b)sum+=dp[index(a,b-1,c)];
+        if(a>=2)sum+=dp[index(a-2,b,c)];
+        if(c)sum+=dp[index(a,b,c-1)];
+        if(a&&b)sum+=dp[index(a-1,b-1,c)];
+        dp[index(a,b,c)]=sum%mod*inverse_five%mod;
+    }
+    return int(dp[index(amax,bmax,cmax)]);
+}
+```
+
+## 関連する手法
+
+- [同じ状態に戻る確率を期待値の式から除く](/flowchartcp/techniques/expectation-self-loop/)
+- [確率・期待値](/flowchartcp/techniques/probability-expectation/)
+
+## 参考資料
+
+- [出典の問題条件](https://atcoder.jp/contests/abc300/tasks/abc300_e)
+- [出典の解説](https://atcoder.jp/contests/abc300/editorial/6291)
+
+<TechniqueReferences techniqueId="dice-product-prime-exponents" />

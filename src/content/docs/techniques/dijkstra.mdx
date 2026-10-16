@@ -1,0 +1,75 @@
+---
+title: "ダイクストラ法"
+description: "辺の重みが非負のグラフで、距離の最小候補から最短距離を確定する。"
+techniqueId: dijkstra
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+辺の重みが非負のグラフで、距離の最小候補から最短距離を確定する。
+
+## 使う場面
+
+辺ごとに費用が異なるグラフで、ある始点からの最短距離を求めるときに使う。特別な操作の使用回数や移動モードを状態に加え、拡張したグラフに適用することもできる。
+
+## 考え方
+
+現在分かっている距離の候補を、最小値から取り出せる優先度付きキューに入れる。候補を一つ取り出し、その頂点から出る辺を調べる。より短い距離が見つかったら、新しい候補を追加する。
+
+古い候補をキューから直接削除する必要はない。取り出した距離が保存済みの最新の値と違う場合は、その候補を飛ばせばよい。
+
+## 適用条件
+
+すべての辺の重みが非負である必要がある。負の辺があると、後から遠い頂点を経由して距離が短くなるため、最小候補を確定する理由が成り立たない。
+
+重み0の辺があっても距離は求められる。ただし最短経路の個数も同時に求める場合は、同じ距離の頂点間の依存や重み0の閉路を別に扱う必要がある。
+
+## なぜ正しいか
+
+最小候補の頂点へ、さらに短い経路があると仮定する。その経路上で最初の未確定頂点は、直前の確定頂点からすでに候補が更新されている。辺重みが非負なので、その候補は現在取り出した候補より小さくなり、最小候補であることに矛盾する。
+
+## 計算量
+
+改善のたびに候補を追加する実装では、時間は $O((V+E)\log(V+E))$、グラフを含む空間は $O(V+E)$。単純グラフでは通常、時間を $O((V+E)\log V)$ と表せる。
+
+## 実装
+
+`dijkstra(g, s)` は始点 `s` からの最短距離を返す。到達できない頂点には `INF` が入る。有限の最短距離は $2^{60}$ 未満とし、加算が上限を超える候補は計算前に除く。
+
+```cpp
+#include <vector>
+#include <queue>
+#include <functional>
+#include <utility>
+#include <cassert>
+using namespace std;
+vector<long long> dijkstra(const vector<vector<pair<int,long long>>>& g,int s) {
+    const long long INF=1LL<<60;
+    assert(0<=s && s<int(g.size()));
+    vector<long long> d(g.size(),INF);
+    priority_queue<pair<long long,int>,vector<pair<long long,int>>,
+                   greater<pair<long long,int>>> q;
+    d[s]=0; q.push({0,s});
+    while(!q.empty()) {
+        auto [dv,v]=q.top(); q.pop();
+        if(dv!=d[v]) continue;
+        for(auto [u,w]:g[v]) {
+            assert(w>=0);
+            if(w>=INF-dv) continue;
+            if(d[u]>dv+w) {
+                d[u]=dv+w; q.push({d[u],u});
+            }
+        }
+    }
+    return d;
+}
+```
+
+## 関連する手法
+
+[0-1 BFS](/flowchartcp/techniques/zero-one-bfs/) ・ [ベルマン–フォード法](/flowchartcp/techniques/bellman-ford/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [USACO Guide: Non-Negative Shortest Paths](https://usaco.guide/gold/shortest-paths)
+
+<TechniqueReferences techniqueId="dijkstra" />

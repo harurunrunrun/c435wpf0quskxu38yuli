@@ -1,0 +1,85 @@
+---
+title: "木の各成分へ印を一つ残す切断は、親へ渡す成分の印の数だけ持つ"
+description: "閉じた成分の条件を先に満たし、まだ親につながる成分だけを0個・1個へ分けます。"
+techniqueId: tree-one-mark-components
+---
+
+import TechniqueReferences from '../../../components/TechniqueReferences.astro';
+
+## 使う場面
+
+各連結成分に同じ条件を課す木の切断です。部分木の中で既に閉じた成分を状態へ並べず、親の辺を通って外とつながる一成分だけを未確定にします。
+
+## 考え方
+
+$D_v(0),D_v(1)$ は、部分木内の閉じた成分が全て印を一つ持ち、$v$ を含む未確定成分が印を0個・1個持つ切り方の個数です。
+
+親側の一時状態を $(a_0,a_1)$、子の状態を $(b_0,b_1)$ とします。子の辺を切れるのは $b_1$ の場合だけです。残すなら印の数を足して、2個になる組を除きます。
+
+$$a'_0=a_0(b_0+b_1),\qquad a'_1=a_1(b_0+b_1)+a_0b_1.$$
+
+根では未確定成分も閉じるので、答えは $D_{\mathrm{root}}(1)$ です。除算を使わない併合にすれば、法の下で個数が0となる子も扱えます。
+
+## 適用条件
+
+入力は無向の木で、各頂点の印は0か1です。必要個数が一つなので2状態へ落とせます。一般の $k$ 個や成分サイズの条件では、追加の軸が必要です。実装は深い鎖でも再帰せず、法 $10^9+7$ で数えます。
+
+## なぜ正しいか
+
+根を除く各部分木が外とつながる辺は一本だけです。したがって、まだ他の頂点と併合され得る成分は部分木の根を含むものだけです。子の辺を切る場合は子の未確定成分を合法に閉じ、残す場合は親と併合します。二つの選択は切る辺集合として異なり、併合式はその全てを重複なく数えます。印が二つ以上の成分は辺を追加しても減らせないため捨てて構いません。
+
+## 計算量
+
+全切断集合は $2^{n-1}$ 通り。改善後は時間 $O(n)$、空間 $O(n)$。各辺を一度併合し、隣接リスト・処理順・二状態を保存します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int count_one_mark_components(const vector<int>& mark, const vector<pair<int, int>>& edges) {
+    constexpr long long MOD = 1000000007;
+    int n = int(mark.size());
+    if (n == 0) { if (!edges.empty()) throw invalid_argument("edges"); return 0; }
+    if (int(edges.size()) != n - 1) throw invalid_argument("tree edge count");
+    vector<vector<int>> graph(n);
+    for (int x : mark) if (x != 0 && x != 1) throw invalid_argument("mark");
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v) throw invalid_argument("edge");
+        graph[u].push_back(v); graph[v].push_back(u);
+    }
+    vector<int> parent(n, -2), order{0}; parent[0] = -1;
+    for (size_t i = 0; i < order.size(); ++i) {
+        int v = order[i];
+        for (int u : graph[v]) if (u != parent[v]) {
+            if (parent[u] != -2) throw invalid_argument("cycle");
+            parent[u] = v; order.push_back(u);
+        }
+    }
+    if (int(order.size()) != n) throw invalid_argument("disconnected");
+    vector<array<long long, 2>> dp(n);
+    for (auto it = order.rbegin(); it != order.rend(); ++it) {
+        int v = *it;
+        long long a0 = mark[v] == 0, a1 = mark[v] == 1;
+        for (int u : graph[v]) if (parent[u] == v) {
+            auto [b0, b1] = dp[u];
+            long long next0 = a0 * ((b0 + b1) % MOD) % MOD;
+            long long next1 = (a1 * ((b0 + b1) % MOD) + a0 * b1) % MOD;
+            a0 = next0; a1 = next1;
+        }
+        dp[v] = {a0, a1};
+    }
+    return int(dp[0][1]);
+}
+```
+
+## 関連する手法
+
+- [木DP](/flowchartcp/techniques/tree-dp/)
+
+## 参考資料
+
+- [原典の問題条件](https://codeforces.com/problemset/problem/461/B)
+- [公式解説・根拠資料](https://codeforces.com/blog/entry/13568)
+
+<TechniqueReferences techniqueId="tree-one-mark-components" />

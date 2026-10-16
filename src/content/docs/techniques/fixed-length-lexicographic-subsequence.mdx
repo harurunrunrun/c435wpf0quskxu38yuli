@@ -1,0 +1,66 @@
+---
+title: "長さを指定した辞書順最小の部分列は、残りで埋められるときだけ末尾を捨てる"
+description: "小さい文字で末尾を置き換える前に、必要な文字数を後ろから補えるか確認する。"
+techniqueId: fixed-length-lexicographic-subsequence
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+小さい文字で末尾を置き換える前に、必要な文字数を後ろから補えるか確認する。
+
+## 使う場面
+
+文字の順序を保ち、ちょうど $K$ 文字を残したうちの辞書順最小を求めたい。各文字を何個使うかなど、長さ以外の制限はない。
+
+## 考え方
+
+左から文字を読み、現在選んだ列を持つ。新しい文字 $c$ が列の末尾より小さいなら、その末尾を捨てて $c$ を使いたい。ただし、末尾を捨てた後でも指定長を満たせなければ捨ててはいけない。
+
+まだ位置 $i$ の文字を処理する前に、選んだ長さが $a$ なら、末尾を一文字捨てた後に使える位置数は $(a-1)+(N-i)$。これが $K$ 以上の間だけ、大きい末尾を取り除く。その後、保持列の長さが $K$ 未満なら $c$ を追加する。
+
+同じ文字では削除しない。早い位置を残した方が、その後の選択肢を狭めない。
+
+## 適用条件
+
+順序を保つ部分列で、長さはちょうど $K$、文字数以外の制約がない。各文字を一度ずつ使う、特定文字を最低何個使う、隣の位置を選べないといった条件では、削除後の個数だけで残りの可否を決められない。
+
+実装は英小文字、$0\le K\le N\le500000$。$K=0$ は空文字列を返す。元問題の上限 $100000$ から範囲を広げている。
+
+## なぜ正しいか
+
+残り長さを満たせる範囲で、次に選ぶ位置の文字は最小のものを選べばよい。異なる文字を選んだ二候補の辞書順は、その最初の相違だけで決まるからである。同じ文字なら最も早い位置を選んでも、後ろで選べる位置は減らない。
+
+保持列の末尾を、後から来たより小さい文字に置き換える操作は、この選択を遅れて修正している。末尾を消せる限り消すことで、修正可能な最も早い相違を小さくする。長さの条件が削除を止めた場合、その末尾を消すと、以後の全位置を使っても長さが不足する。従ってその末尾は必ず残す必要がある。各操作は辞書順を改善しながら完成可能性を維持し、最終列が貪欲選択の列と一致する。
+
+## 計算量
+
+全ての長さ $K$ の部分列を列挙すると $O(K\binom{N}{K})$ 時間。各文字を選ぶ度に選択可能な範囲を走査すると $O(NK)$ 時間。末尾の追加・削除で処理すれば、一位置を高々一度追加・削除するので $O(N)$ 時間・$O(K)$ 補助空間。
+
+## 実装
+
+`smallest_fixed_length_subsequence` は辞書順最小の長さ $K$ の列を返す。
+
+```cpp
+#include <stdexcept>
+#include <string>
+std::string smallest_fixed_length_subsequence(const std::string& s,int k) {
+    if(s.size()>500000 || k<0 || k>int(s.size())) throw std::invalid_argument("length");
+    for(char c:s) if(c<'a' || c>'z') throw std::invalid_argument("lowercase letters");
+    int n=s.size();std::string answer;answer.reserve(k);
+    for(int i=0;i<n;++i) {
+        while(!answer.empty() && answer.back()>s[i] && int(answer.size())-1+n-i>=k)
+            answer.pop_back();
+        if(int(answer.size())<k) answer.push_back(s[i]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[次の出現位置で部分列の照合を進める](/flowchartcp/techniques/substring-subsequence-next/) ・ [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [AtCoder：Smallest Subsequence（★5）](https://atcoder.jp/contests/typical90/tasks/typical90_f)
+
+<TechniqueReferences techniqueId="fixed-length-lexicographic-subsequence" />

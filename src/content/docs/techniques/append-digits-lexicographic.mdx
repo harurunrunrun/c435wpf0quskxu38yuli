@@ -1,0 +1,62 @@
+---
+title: "末尾への桁追加だけで増加列にするなら、直前を超える最小値にする"
+description: "桁数と共通の先頭を比べ、同じ先頭なら直前の末尾だけを一つ増やします。"
+techniqueId: "append-digits-lexicographic"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+正の整数列の順番を保ったまま、各値の末尾へ十進の桁を追加して狭義増加にしたいとき。数値として追加後の値を保存すると、長い列で固定幅整数を超えます。
+
+## 考え方
+
+直前の完成値 $P$ と現在の文字列 $X$ を比べます。$X$ が長い、または同じ長さで大きいならそのまま。同じ長さで以下なら 0 を一桁足します。
+短い場合は $P$ の同じ長さの先頭と比較します。先頭が大きければ長さを揃えるだけの 0、小さければさらに一桁多い 0 を足します。先頭が同じなら、$P$ の残りが全て 9 の場合だけ一桁長くし、そうでなければ $P+1$ を使えます。
+
+## 適用条件
+
+元の数に先頭の 0 がなく、末尾へ任意の桁を追加できること。追加する桁の制限や、末尾以外を変更する操作がある場合は別の問題です。比較と加算を文字列で行います。
+
+## なぜ正しいか
+
+各段階で、直前を超える完成値のうち最小を選びます。より大きい値を選んでも必要な追加桁は減らず、後続の下限だけが厳しくなります。従って最小値への置き換えで全体の操作数は増えません。同じ長さでは辞書順と数値順が一致し、先頭が同じときだけ末尾の繰り上がりを調べれば全候補を分類できます。
+
+## 計算量
+
+元の最大桁数を $L$、要素数を $N$ とすると時間・結果の保存空間 $O(N(L+N))$。完成値の長さは各段階で直前より最大一桁しか増えません。末尾の全候補を列挙する指数的な探索を避けます。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+pair<long long,vector<string>> append_to_increasing(vector<string> values){
+    long long total=0;
+    for(auto& s:values){assert(!s.empty() && s[0]!='0');for(char c:s)assert('0'<=c && c<='9');}
+    for(size_t i=1;i<values.size();++i){string original=values[i],previous=values[i-1],result=original;
+        size_t a=original.size(),b=previous.size();
+        if(a>b || (a==b && original>previous))continue;
+        if(a==b)result+='0';
+        else {string prefix=previous.substr(0,a);
+            if(original>prefix)result.append(b-a,'0');
+            else if(original<prefix)result.append(b-a+1,'0');
+            else {bool all_nine=all_of(previous.begin()+a,previous.end(),[](char c){return c=='9';});
+                if(all_nine)result.append(b-a+1,'0');
+                else {result=previous;int j=result.size()-1;while(result[j]=='9'){result[j]='0';--j;}++result[j];}}
+        }
+        total+=result.size()-a;values[i]=move(result);
+    }
+    return {total,move(values)};
+}
+```
+
+## 関連する手法
+
+[交換法](/flowchartcp/techniques/exchange-argument/)、[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [出典の解説](https://github.com/google/coding-competitions-archive/blob/main/codejam/2021/round_1a/append_sort/problem_statement/analysis.html)
+
+<TechniqueReferences techniqueId="append-digits-lexicographic" />

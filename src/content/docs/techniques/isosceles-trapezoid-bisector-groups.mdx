@@ -1,0 +1,93 @@
+---
+title: "等脚台形の二つの底辺を、垂直二等分線が同じで中点が異なる点対から選ぶ"
+description: "四点の全探索を点対の群に変え、同じ中点を除いて重みの大きい二組を探す。"
+techniqueId: isosceles-trapezoid-bisector-groups
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+重み付きの点集合から、四点を選んで等脚台形を作り、重みの和を最大化したい。平行な線分だけで分類すると、左右にずれた一般の台形や、面積0の四点が混じる。
+
+## 考え方
+
+等脚台形の二つの底辺は、同じ対称軸を垂直二等分線に持つ。点対の差を正規化した向きを $n$、座標和を $m=p+q$ とすると、その垂直二等分線は
+
+$$2n\cdot x=n\cdot m$$
+
+で表せる。$n$ を GCD と符号で一意にすれば、整数の三つ組 $(n_x,n_y,n\cdot m)$ が軸の識別子になる。
+
+全点対をこの識別子で分類する。同じ軸でも、中点まで同じ二本を選ぶと四点が一直線上になる。そこで各分類の中で座標和 $m$ ごとに重み和の最大値だけを残し、異なる二つの $m$ から上位二つを選ぶ。長さの異なる底辺でもよく、長さが同じ長方形も含まれる。
+
+## 適用条件
+
+点は相異なる整数座標で、正の面積の等脚台形を作る。長方形を含む定義に対応する。直角の台形を除きたいなど、定義が違う場合は追加条件が必要。
+
+掲載実装は $N\le1000$、座標の絶対値と重みが $10^9$ 以下、重みは正。垂直二等分線の定数項とその比較には `__int128` を使う。作れない場合は `std::nullopt`。点の相異性は呼び出し側で保証し、重複点があればエラーにする。
+
+## なぜ正しいか
+
+二本の線分の垂直二等分線が同じなら、線分は互いに平行で、その中点は共通の軸上にある。中点が異なれば線分は異なる平行線上にあり、軸に対称な両端を順に結ぶと、正の面積の等脚台形になる。共通軸に関する反射で一つの端点の相手は一意なので、中点の異なる二本が端点を共有することもない。
+
+逆に等脚台形の対称軸は、両底辺の垂直二等分線である。従って正しい候補は必ず同じ分類の異なる中点から得られる。同じ中点の中では他方との適否が同じなので、重み和の最大値以外を捨てても最適解を失わない。その後の上位二つの選択が、その分類での最大和を与える。
+
+## 計算量
+
+四点と結び方を全列挙すると $O(N^4)$ 時間、追加空間 $O(1)$。点対数を $P=\binom N2$、座標の最大絶対値を $C$ とすると、正規化と整列に $O(P\log(C+1)+P\log P)$ 時間、分類内の走査は $O(P)$。追加空間は $O(P)$。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <cstdlib>
+#include <numeric>
+#include <optional>
+#include <stdexcept>
+#include <tuple>
+#include <vector>
+struct WeightedPlanarPoint {long long x,y,weight;};
+std::optional<long long> maximum_isosceles_trapezoid_weight(const std::vector<WeightedPlanarPoint>& p) {
+    if(p.size()>1000) throw std::invalid_argument("too many points");
+    using Axis=std::tuple<long long,long long,__int128>;
+    struct Record {Axis axis;long long mx,my,weight;};
+    std::vector<Record> a;
+    for(auto q:p) if(q.x < -1000000000LL || q.x > 1000000000LL || q.y < -1000000000LL || q.y > 1000000000LL || q.weight<1 || q.weight>1000000000LL)
+        throw std::invalid_argument("point range");
+    for(int i=0;i<(int)p.size();++i) for(int j=0;j<i;++j) {
+        long long dx=p[i].x-p[j].x,dy=p[i].y-p[j].y,g=std::gcd(std::abs(dx),std::abs(dy));
+        if(g==0) throw std::invalid_argument("duplicate point");
+        dx/=g;dy/=g;if(dx<0||(dx==0&&dy<0)){dx=-dx;dy=-dy;}
+        long long mx=p[i].x+p[j].x,my=p[i].y+p[j].y;
+        Axis axis={dx,dy,(__int128)dx*mx+(__int128)dy*my};
+        a.push_back({axis,mx,my,p[i].weight+p[j].weight});
+    }
+    std::sort(a.begin(),a.end(),[](const auto& u,const auto& v){return std::tie(u.axis,u.mx,u.my)<std::tie(v.axis,v.mx,v.my);});
+    std::optional<long long> answer;
+    for(std::size_t l=0;l<a.size();) {
+        std::size_t r=l+1;while(r<a.size()&&a[r].axis==a[l].axis) ++r;
+        long long first=-1,second=-1;
+        for(std::size_t i=l;i<r;) {
+            std::size_t j=i+1;long long best=a[i].weight;
+            while(j<r&&a[j].mx==a[i].mx&&a[j].my==a[i].my){best=std::max(best,a[j].weight);++j;}
+            if(best>first){second=first;first=best;}else second=std::max(second,best);
+            i=j;
+        }
+        if(second!=-1 && (!answer || first+second>*answer)) answer=first+second;
+        l=r;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [平行四辺形の対角線を中点で分類する](/flowchartcp/techniques/parallelogram-diagonal-midpoints/)
+- [同一直線の方向を GCD で正規化する](/flowchartcp/techniques/collinear-direction-gcd/)
+
+## 参考資料
+
+- [AtCoder — Isosceles Trapezium](https://atcoder.jp/contests/abc220/tasks/abc220_g)
+- [公式解説](https://atcoder.jp/contests/abc220/editorial/2684)
+
+<TechniqueReferences techniqueId="isosceles-trapezoid-bisector-groups" />

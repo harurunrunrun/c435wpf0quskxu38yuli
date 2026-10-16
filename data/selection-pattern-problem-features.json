@@ -1,0 +1,170 @@
+[
+  {
+    "source": "LeetCode",
+    "problemId": "630",
+    "title": "Course Schedule III",
+    "url": "https://leetcode.com/problems/course-schedule-iii/description/",
+    "techniqueIds": [
+      "deadline-duration-remove-longest"
+    ],
+    "features": [
+      "全仕事が時刻0から開始可能で、処理時間は仕事ごとに異なる",
+      "一台で中断せず処理し、各締切までに完了",
+      "仕事の利益は同じで、完了する件数を最大化"
+    ],
+    "evidenceUrl": "https://leetcode.com/problems/course-schedule-iii/description/",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "publication-date-unconfirmed",
+    "notes": "仕事の利益は同じで、完了する件数を最大化 開始可能時刻が共通なら、採用済みの合計時間と最長時間を持ち、採用数を減らす損失を最小にします。 掲載コードを小規模全探索と境界ケースに照合。 原典に公開日の表示がなく、基準日以前の掲載かは未確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc325_d",
+    "title": "Printing Machine",
+    "url": "https://atcoder.jp/contests/abc325/tasks/abc325_d",
+    "techniqueIds": [
+      "unit-release-expiry-earliest"
+    ],
+    "features": [
+      "整数端点の閉区間内に一瞬だけ印字し、次の印字まで一単位空ける",
+      "各商品は一度だけで、印字できる個数を最大化",
+      "開始時刻と滞在時間は各々最大10^18で、退出は最大2×10^18。空時間を一つずつ走査しない"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc325/editorial/7482",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "開始時刻と滞在時間は各々最大10^18で、退出は最大2×10^18。空時間を一つずつ走査しない 待機中の仕事を終了時刻順に管理し、何も処理できない時間は次の開始時刻まで飛ばします。 掲載コードを小規模全探索と境界ケースに照合。 公式大会の開催年を確認。"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1632",
+    "title": "Movie Festival II",
+    "url": "https://cses.fi/problemset/task/1632",
+    "techniqueIds": [
+      "interval-k-resources-predecessor"
+    ],
+    "features": [
+      "開始・終了時刻が固定された区間をk人へ割り当てる",
+      "一人の担当区間は重ならず、終了と次の開始が等しい場合はよい",
+      "全区間の利益は等しく、選ぶ区間数を最大化"
+    ],
+    "evidenceUrl": "https://cses.fi/problemset/task/1632",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "publication-date-unconfirmed",
+    "notes": "全区間の利益は等しく、選ぶ区間数を最大化 開始に間に合う担当のうち、直前の終了が最大の担当を選び、早く空く担当を残します。 掲載コードを小規模全探索と境界ケースに照合。 原典に公開日の表示がなく、基準日以前の掲載かは未確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc308_f",
+    "title": "Vouchers",
+    "url": "https://atcoder.jp/contests/abc308/tasks/abc308_f",
+    "techniqueIds": [
+      "threshold-coupon-max-discount"
+    ],
+    "features": [
+      "全商品を買い、クーポンは価格が下限以上なら使える",
+      "一商品一枚・一枚一度・割引額は商品に依存しない",
+      "利用可能な商品の集合が価格順の接尾辞になっている"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc308/editorial/6715",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "利用可能な商品の集合が価格順の接尾辞になっている 利用できる対象が入れ子なら、使える割引を増やしながら最大のものを割り当てられます。 掲載コードを小規模全探索と境界ケースに照合。 公式大会の開催年を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc252_f",
+    "title": "Bread",
+    "url": "https://atcoder.jp/contests/abc252/tasks/abc252_f",
+    "techniqueIds": [
+      "unordered-split-residual-huffman"
+    ],
+    "features": [
+      "切る位置によらず、切る前の一本の長さを費用として払う",
+      "欲しい断片の長さだけが決まり、配置順は自由",
+      "余りは何個でもよいが、最適解では一個にまとめられる"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc252/editorial/4009",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "余りは何個でもよいが、最適解では一個にまとめられる 必要な長さと余りを葉にし、切断を逆向きの二個併合へ変えて最小の二重量を選びます。 掲載コードを小規模全探索と境界ケースに照合。 公式大会の開催年を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc116_d",
+    "title": "Various Sushi",
+    "url": "https://atcoder.jp/contests/abc116/tasks/abc116_d",
+    "techniqueIds": [
+      "fixed-size-diversity-exchange"
+    ],
+    "features": [
+      "各要素には種類と価値があり、ちょうどK個選ぶ",
+      "得点は価値の和と、選んだ種類数だけに依存する非減少ボーナス",
+      "種類数を増やすために、既に選んだ種類の重複分を取り替える"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc116/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "種類数を増やすために、既に選んだ種類の重複分を取り替える 価値上位K個から始め、種類を一つ増やすたびに最小の交換損失だけ払い、各段階の得点を比べます。 掲載コードを小規模全探索と境界ケースに照合。 公式大会の開催年を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc190_f",
+    "title": "Shift and Inversions",
+    "url": "https://atcoder.jp/contests/abc190/tasks/abc190_f",
+    "techniqueIds": [
+      "cyclic-inversion-delta"
+    ],
+    "features": [
+      "0からN−1の順列で、全ての左巡回シフトを調べる",
+      "各シフトの転倒数を求める",
+      "位置関係が変わるのは、先頭から末尾へ動く一要素との組だけ"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc190/editorial/690",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "位置関係が変わるのは、先頭から末尾へ動く一要素との組だけ 最初の転倒数だけ数え、移す値より小さい組を引き、大きい組を足します。 掲載コードを小規模全探索と境界ケースに照合。 公式大会の開催年を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc173_e",
+    "title": "Multiplication 4",
+    "url": "https://atcoder.jp/contests/abc173/tasks/abc173_e",
+    "techniqueIds": [
+      "maximum-product-sign-exchange"
+    ],
+    "features": [
+      "負・零・正の整数からちょうどK個選び、整数としての積を最大化",
+      "出力は最大の積の剰余だが、選択は剰余の大小で決めない",
+      "絶対値上位K個の符号と、内外の異符号境界だけを調べる"
+    ],
+    "evidenceUrl": "https://img.atcoder.jp/abc173/editorial.pdf",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "絶対値上位K個の符号と、内外の異符号境界だけを調べる 積の符号を先に判定し、二種類の境界交換を交差積で比べ、最後にだけ剰余を取ります。 掲載コードを小規模全探索と境界ケースに照合。 公式大会の開催年を確認。"
+  }
+]

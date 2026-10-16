@@ -1,0 +1,66 @@
+---
+title: "尺取り法"
+description: "左右の端点を後戻りさせずに動かして、条件を満たす区間を調べる。"
+techniqueId: two-pointers
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+左右の端点を後戻りさせずに動かして、条件を満たす区間を調べる。
+
+## 使う場面
+
+連続区間の個数や最大長を求めるときに使う。左端を右に動かしたとき、条件を満たす右端の境界も後戻りしないなら、前の探索結果を引き継げる。
+
+ソート済み配列で、和が指定値になる2要素を両端から探す方法も、二つのポインタを使う代表的な例である。
+
+## 考え方
+
+非負の配列について、和が上限 $K$ 以下の区間を数える例を考える。右端を一つ進めて新しい要素を和に足す。和が $K$ を超えている間は、左端の要素を引いて左端を進める。
+
+右端を $r$、調整後の左端を $l$ とすると、$l$ から $r$ のどこを開始位置にしても条件を満たす。したがって、この右端で終わる区間を $r-l+1$ 個まとめて数えられる。最大長なら、個数を足す代わりに区間長の最大値を更新する。
+
+## 適用条件
+
+端点の境界が単調に動くことを、条件ごとに確かめる必要がある。和の上限を使う例では、すべての要素が非負でなければならない。負数を含む $[2,-2]$ では、途中で和が上限を超えても、後から区間を延ばすと条件を満たす場合がある。
+
+「区間に含まれる値の種類数が $K$ 以下」のような条件では、値の符号とは別の理由で単調性が成立する。
+
+## なぜ正しいか
+
+非負の値だけなら、右端を延ばしても和は減らない。現在の右端で条件を満たさない開始位置は、その後も条件を満たさないため、捨ててよい。左端の調整後は、それより左の開始位置は不成立で、それ以降は成立する。各右端で終わる区間を一度ずつ数えるので、重複も漏れもない。
+
+## 計算量
+
+左右の端点がそれぞれ高々 $N$ 回動くため、時間は $O(N)$。区間和だけを保存する例では、追加空間は $O(1)$。
+
+## 実装
+
+`count_sum_at_most` は、和が `limit` 以下の非空区間の個数を返す。入力の値は非負とし、配列の総和と答えが符号付き64ビット整数に収まる必要がある。
+
+```cpp
+#include <vector>
+#include <cassert>
+using namespace std;
+long long count_sum_at_most(const vector<long long>& a,long long limit) {
+    for(long long x:a) assert(x>=0);
+    if(limit<0) return 0;
+    long long sum=0, ans=0;
+    int l=0;
+    for(int r=0;r<int(a.size());++r) {
+        sum+=a[r];
+        while(l<=r && sum>limit) sum-=a[l++];
+        ans+=r-l+1;
+    }
+    return ans;
+}
+```
+
+## 関連する手法
+
+[スライディングウィンドウ](/flowchartcp/techniques/sliding-window/) ・ [二分探索](/flowchartcp/techniques/binary-search/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [USACO Guide: Two Pointers](https://usaco.guide/silver/two-pointers)
+
+<TechniqueReferences techniqueId="two-pointers" />

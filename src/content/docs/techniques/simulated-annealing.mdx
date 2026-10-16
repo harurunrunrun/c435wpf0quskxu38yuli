@@ -1,0 +1,76 @@
+---
+title: "焼きなまし法"
+description: "一時的に悪くなる変更も確率的に採用し、局所最適を抜け出す。"
+techniqueId: simulated-annealing
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+一時的に悪くなる変更も確率的に採用し、局所最適を抜け出す。
+
+## 使う場面
+
+山登り法では改善が止まり、一度悪化する変更を挟むと良い解へ進める場合に使う。少し変えた候補を速く生成・評価できることが重要になる。
+
+## 考え方
+
+評価を最大化する場合、候補との評価差を $\Delta$ とする。$\Delta\ge 0$ なら採用し、悪化する場合は $\exp(\Delta/T)$ の確率で採用する。$T$ は温度で、高いほど悪化を受け入れやすい。
+
+探索中に温度を下げることで、前半は大きく移動し、後半は改善を重視する。現在の解は悪化することがあるので、探索中の最良解を別に保存する。
+
+## 適用条件
+
+温度は正とし、評価値は有限にする。評価差の大きさに合わせて温度を決める。得点の尺度を変更したら、同じ温度での採用確率も変わる。
+
+有限の競技時間で、最適解への収束は保証できない。複数の乱数初期値や入力で評価して、温度や近傍を調整する。
+
+## なぜ正しいか
+
+確率的に悪化を許すことで、改善する手だけでは出られない状態から移動できる。これは最適性の保証ではない。一方、合法な候補だけを使い、最良解を別に保持すれば、返す解は初期解より悪化しない。
+
+## 計算量
+
+反復回数 $I$、一回のコピー・候補生成・評価の時間 $C$ に対して、時間は $O(IC)$。状態サイズ $N$ に対する空間は $O(N)$。実装の調整では、評価できた候補数と実際の得点を比較する。
+
+## 実装
+
+`anneal` は評価の最大化を行い、探索中に見つけた最良解を返す。温度は開始温度から終了温度へ幾何的に変える。採用判定は対数で比較するため、小さな指数値を直接計算しない。
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <random>
+#include <stdexcept>
+template<class State, class Score, class Neighbor>
+State anneal(State current, int iterations, double start_temp, double end_temp,
+             std::uint64_t seed, Score score, Neighbor neighbor) {
+    if (start_temp <= 0 || end_temp <= 0) throw std::invalid_argument("temperature");
+    std::mt19937_64 rng(seed);
+    State best = current;
+    double value = score(current), best_value = value;
+    for (int i = 0; i < iterations; ++i) {
+        double t = iterations <= 1 ? 1.0 : double(i) / (iterations - 1);
+        double temperature = std::exp(std::log(start_temp) * (1-t) + std::log(end_temp) * t);
+        State candidate = current;
+        neighbor(candidate, rng);
+        double next_value = score(candidate), delta = next_value - value;
+        double u = std::generate_canonical<double, 53>(rng);
+        if (delta >= 0 || u == 0 || std::log(u) < delta / temperature) {
+            current = candidate; value = next_value;
+            if (value > best_value) { best = current; best_value = value; }
+        }
+    }
+    return best;
+}
+```
+
+## 関連する手法
+
+[局所探索](../local-search/) ・ [出力のみの問題](../output-only/)
+
+## 参考資料
+
+- [AHC047：Moegi氏の解法](https://atcoder.jp/contests/ahc047/editorial/13096?lang=en)
+- [AHC043：rhoo氏の解法](https://atcoder.jp/contests/ahc043/editorial/12355)
+
+<TechniqueReferences techniqueId="simulated-annealing" />

@@ -1,0 +1,103 @@
+---
+title: "同じ値の一括置換は、操作を逆順に読み、最後の行き先だけを持つ"
+description: "末尾追加と全出現の置換を、各要素を何度も書き換えずに処理する。"
+techniqueId: global-replace-reverse-map
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+数列の末尾へ値を追加する操作と、現在ある値 $x$ をすべて $y$ へ置き換える操作がある。答えるのは、すべての操作を終えた数列だけ。文字列全体で同じ文字を一括置換する場合も同じ形になる。
+
+## 考え方
+
+操作を後ろから読む。既に読んだ後続の操作について、「今の値 $x$ は最終的に何になるか」を `image[x]` に持つ。最初は後続の操作がないので `image[x] = x`。
+
+置換 $x\to y$ に出会ったら、その直前に $x$ だった要素は、直後には $y$ になり、その後 `image[y]` へ着く。したがって
+
+$$\operatorname{image}[x]\gets\operatorname{image}[y]$$
+
+だけでよい。追加された値 $x$ に出会ったら `image[x]` を答えに積む。追加を逆順に読んでいるので、最後に答えを反転する。
+
+右辺はその時点の**値をコピーする**。あとで `image[y]` を変えても、コピー済みの `image[x]` は変えない。置換先への参照や DSU の親として持つと、時刻の異なる置換を誤ってつなぐ。
+
+## 適用条件
+
+- 操作をすべて先に読め、求めるのは最後の列だけ。
+- 一括置換は現在の値だけで対象が決まり、位置による条件がない。
+- 新しい要素の追加は末尾。初期の列がある場合は、その全要素の追加を操作列の先頭に置く。
+
+途中の列を毎回出力する場合や、指定区間だけの置換にはそのまま適用できない。値の種類が英小文字などの固定数なら配列で持てる。任意の64ビット整数なら、使われる値を座標圧縮すればよい。
+
+## なぜ正しいか
+
+後ろから読み終えた操作列を $S$ とする。不変条件は、`image[x]` が「$S$ の直前に存在した値 $x$ の、最終的な値」であること。
+
+その直前へ置換 $x\to y$ を付けると、$x$ 以外は変わらず、$x$ の行き先だけが $y$ の行き先になる。よって一か所の代入で不変条件を保つ。追加では、その時刻に作られた要素に後続の操作が作用する結果が `image[x]` そのものになる。
+
+例えば、`1 を追加 → 1 を 2 に置換 → 1 を追加` の結果は `[2,1]`。最後の追加を最初に処理した時点では、まだ置換を読んでいないので1を確定する。その後 `image[1]=2` としてから最初の追加を処理する。この違いを、要素ごとの履歴を残さずに扱える。
+
+## 計算量
+
+操作数を $Q$、出てくる異なる値の数を $D$ とする。座標圧縮付きの掲載実装は $O(Q\log(Q+1))$ 時間・$O(Q)$ 空間。値が $0..V-1$ なら直接配列で $O(V+Q)$ 時間・空間にできる。
+
+最初から長さ $N$ の列があり、追加がなく、一括置換だけなら、値の圧縮後は初期要素の変換に $O(N)$、逆順の置換に $O(Q)$。英小文字26種類なら全体で $O(N+Q+26)$ 時間になる。
+
+## 実装
+
+`Append` は `from` を末尾に追加し、`to` は使わない。`Replace` は `from` の全出現を `to` へ変える。負の値、同じ値への置換、存在しない値の置換にも対応する。座標圧縮は大小関係を使うためではなく、値から配列の添字を引くために使う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct GlobalReplaceOp {
+    enum Kind { Append, Replace };
+    Kind kind;
+    long long from, to;
+};
+
+vector<long long> final_sequence_after_replacements(
+        const vector<GlobalReplaceOp>& operations) {
+    vector<long long> values;
+    for (const auto& op : operations) {
+        if (op.kind != GlobalReplaceOp::Append && op.kind != GlobalReplaceOp::Replace)
+            throw invalid_argument("operation kind");
+        values.push_back(op.from);
+        if (op.kind == GlobalReplaceOp::Replace) values.push_back(op.to);
+    }
+    sort(values.begin(), values.end());
+    values.erase(unique(values.begin(), values.end()), values.end());
+    if (values.size() > static_cast<size_t>(INT_MAX))
+        throw length_error("too many values");
+    auto index = [&](long long x) {
+        return static_cast<int>(lower_bound(values.begin(), values.end(), x) - values.begin());
+    };
+    vector<int> image(values.size());
+    iota(image.begin(), image.end(), 0);
+    vector<long long> answer;
+    for (auto it = operations.rbegin(); it != operations.rend(); ++it) {
+        int x = index(it->from);
+        if (it->kind == GlobalReplaceOp::Append) {
+            answer.push_back(values[image[x]]);
+        } else {
+            int y = index(it->to);
+            image[x] = image[y];
+        }
+    }
+    reverse(answer.begin(), answer.end());
+    return answer;
+}
+```
+
+## 関連する手法
+
+[逆向きに考える](/flowchartcp/techniques/reverse-thinking/) ・ [座標圧縮](/flowchartcp/techniques/coordinate-compression/)
+
+## 参考資料
+
+- [Codeforces 1620E：Replace the Numbers](https://codeforces.com/problemset/problem/1620/E)
+- [AtCoder ABC342 C：Many Replacement](https://atcoder.jp/contests/abc342/tasks/abc342_c)
+- [ABC342 C 公式解説：元の文字ごとの行き先を持つ方法](https://atcoder.jp/contests/abc342/editorial/9450)。公式解説は順方向に26種類を更新する。この記事では同じ問題設定から、逆順に一つの行き先だけを更新する方法を導いている。
+
+<TechniqueReferences techniqueId="global-replace-reverse-map" />

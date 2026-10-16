@@ -1,0 +1,69 @@
+---
+title: "固定長区間のmexの最小値は、値が出ない出現間隔から求める"
+description: "各窓のmexを作らず、ある値を避けられる長さの空白があるかを調べる。"
+techniqueId: fixed-window-min-mex-gaps
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+各窓のmexを作らず、ある値を避けられる長さの空白があるかを調べる。
+
+## 使う場面
+
+固定長の連続区間を全て取り、そのmexの最小だけを求めたい。各区間のmexそのものを全て保存する必要はない。
+
+## 考え方
+
+ある値 $x$ の出現位置の間に、$x$ が出ない連続部分が長さ $M$ 以上あれば、$x$ を含まない長さ $M$ の窓が存在する。先頭と末尾の空白も数えるため、出現位置の両側へ $-1,N$ を置く。
+
+隣り合う出現位置が $p,q$ なら、値が出ない長さは $q-p-1$。各値についてその最大を記録し、$M$ 以上になる最小の値を選ぶ。mexは長さ $M$ の窓で高々 $M$ なので、値 $0,\ldots,M$ だけを調べればよい。
+
+## 適用条件
+
+求める量は全固定長窓のmexの最小値。各窓のmexやその最大値には、この「一つでも避けられる」の条件をそのまま使えない。配列は固定で、$1\le M\le N$、非負整数値とする。
+
+掲載実装は $N\le1500000$。$M$ より大きい値は答えの候補にならず、出現位置の管理から省く。
+
+## なぜ正しいか
+
+全ての窓でのmexの最小を $z$ とする。$z$ になる窓では $z$ が欠けるので、$z$ を避ける長さ $M$ の空白がある。一方で $x<z$ が一つでもどこかの窓に欠ければ、その窓のmexは $x$ 以下になって矛盾する。従って「どこかの窓で欠ける最小値」と一致する。
+
+値を含まない窓は二つの連続した出現位置の間、または端の空白に完全に入るので、最大空白長の条件で過不足なく判定できる。
+
+## 計算量
+
+各窓を読み直す方法は $O(NM)$ 時間・$O(M)$ 補助空間。頻度と欠けた値の集合で窓を動かす方法は $O(N\log(M+1))$ 時間・$O(M)$ 空間。出現間隔だけなら $O(N+M)$ 時間・$O(M)$ 補助空間で求まる。
+
+## 実装
+
+`minimum_window_mex` は全長 $M$ の窓のmexの最小を返す。先頭・末尾の空白と、まったく出ない値を同じ規則で扱う。
+
+```cpp
+#include <algorithm>
+#include <stdexcept>
+#include <vector>
+int minimum_window_mex(const std::vector<int>& a,int width) {
+    int n=a.size();
+    if(n>1500000 || width<1 || width>n) throw std::invalid_argument("window length");
+    std::vector<int> last(width+1,-1),longest_gap(width+1);
+    for(int i=0;i<n;++i) {
+        int x=a[i];if(x<0) throw std::invalid_argument("nonnegative values required");
+        if(x>width) continue;
+        longest_gap[x]=std::max(longest_gap[x],i-last[x]-1);last[x]=i;
+    }
+    for(int x=0;x<=width;++x) {
+        longest_gap[x]=std::max(longest_gap[x],n-last[x]-1);
+        if(longest_gap[x]>=width) return x;
+    }
+    throw std::logic_error("mex bound");
+}
+```
+
+## 関連する手法
+
+[区間をずらしながら値の種類数を更新する](/flowchartcp/techniques/sliding-distinct-count/) ・ [区間の種類数を各値の最新位置だけで数える](/flowchartcp/techniques/offline-rightmost-occurrence/)
+
+## 参考資料
+
+- [AtCoder：Mex Min](https://atcoder.jp/contests/abc194/tasks/abc194_e)
+
+<TechniqueReferences techniqueId="fixed-window-min-mex-gaps" />

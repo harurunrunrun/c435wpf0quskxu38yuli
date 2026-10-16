@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/home/admin2/flowchartcp/site/tests/ioi2016-molecules-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 5.339796354004648,
+  "testFile": "tests/ioi2016-molecules-flow.test.mjs",
+  "testSha256": "0d3a012a2581afc6ae25f861376b4a1e27a1bb6522f7ba49c7323df5031af660",
+  "preparedTmpFile": "/tmp/flowchartcp-ioi2016-molecules-flow.test.mjs",
+  "preparedAndPublishedBytesIdentical": true,
+  "tapFile": "/tmp/flowchartcp-ioi2016-molecules-flow-results.tap",
+  "tapSha256": "43b07213296d63188750b4115fb4540ddc9cdbf75b6969d7a598904a72c514ac",
+  "caseFile": "/tmp/flowchartcp-ioi2016-molecules-flow-case.json",
+  "caseSha256": "f418ddbfa421022495586511c2ca05975fcb9ee8091049d84d9228615a1c46dd",
+  "frozenBaseline": {
+    "articles": 509,
+    "graphs": 476,
+    "nodes": 3727,
+    "walks": 530,
+    "corpora": 10,
+    "datasetJsonMembers": 79,
+    "rawSha256": {
+      "flows": "0f7c38e5f6d36a7e48861c6aad57c7b43551be7bde8ef501fa0117b38c945dbf",
+      "walks": "79ca59b4a2b3282a87b515bbddd9a8e5c85ada866e85e84abd50a09d97f2c5a4",
+      "ioi2016-audit": "6acf36d22f9fad9afaa5fefd1561d64364bb441ce55c790d72d669d83560b029",
+      "dataset": "d4cf97d1f75d222b75c347ea033f1b46049dbf723ecdb9f2bd7156ef4ea031cb"
+    }
+  },
+  "cppSha256": "af88cbae982b487fc8b3055c91139f50b558f5f4a28a11076c993fa3b2fbf106",
+  "allowedSharedFiles": [
+    "tests/ioi2016-molecules-flow.test.mjs",
+    "research/probes/ioi2016-molecules-flow-results.json"
+  ],
+  "otherSharedFilesModified": false,
+  "coveragePolicy": "All ten prior fixed-corpus fields and prior Aliens resolution remain unchanged,as do all frozen metadata/references. Initial Molecules researched-positive6/6/covered0/6/API0 stays fixed. Only one resolution is appended. Current research6/6 and coverage>=2;deleting Molecules resolution or article/ref/walk/valid steps reduces coverage by1. An invalid real MDX fence fails product preflight and gates coverage to0. Future legitimate resolutions are allowed.",
+  "scope": [
+    "complete old530 records/hash and independent raw replay including every target/question/answer label/terminal",
+    "every old476 graph and3727 node field/order/target/result",
+    "all79 dataset raw hashes and all10 corpus initial fields+existing Aliens resolution",
+    "all old metadata/reference entries and relative order",
+    "593 local prefixes/404 completed share URLs with Back",
+    "all six new no/unknown guards,both displays,SVG answers/article href",
+    "primary2 API editions/fullnumeric/width conditions/64bit/original-index/empty semantics/native evidence",
+    "small actual both-adapter and generic64bit/width rejection compile/run",
+    "actual independent19763636 assertion supplemental evidence",
+    "metadata/ref/source/rootwalk/steps negative gating plus broken actual C++ fence preflight"
+  ],
+  "resultsFile": "research/probes/ioi2016-molecules-flow-results.json"
+}

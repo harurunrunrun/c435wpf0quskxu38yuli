@@ -1,0 +1,1506 @@
+{
+  "techniqueId": "buchi-owned-graph-repeated-target-attractor-elimination",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-ioi2017-train-article.mdx",
+    "checker": "/tmp/flowchartcp-ioi2017-train-checker.py",
+    "sidecar": "/tmp/flowchartcp-ioi2017-train-sidecar.json"
+  },
+  "suggestedTargets": {
+    "article": "src/content/docs/techniques/buchi-owned-graph-repeated-target-attractor-elimination.mdx",
+    "checker": "scripts/check_buchi_owned_graph_cpp.py",
+    "metadata": "data/techniques-specific-games.json",
+    "reference": "data/references-specific-games.json",
+    "feature": "data/owned-repeated-target-problem-features.json"
+  },
+  "metadata": {
+    "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+    "title": "頂点の所有者が移動先を決めるゲームで、目標を繰り返し訪れられるか調べる",
+    "summary": "目標への到達を強制できない領域と、相手がそこへ誘導できる領域を繰り返し除く。残る側と除かれる側の固定辺戦略を作り、初回訪問で辺を永久に決める規則にも戻す。",
+    "aliases": [
+      "IOI2017 Toy Train 電車のおもちゃ",
+      "Büchi game owned directed graph repeated targets positional strategies",
+      "first-visit permanent switches attractor elimination 目標反復訪問 固定辺戦略"
+    ],
+    "family": "目標への反復訪問と到達集合の反復除去",
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "prerequisites": [
+      "retrograde-winning-draw",
+      "scc",
+      "invariant"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "sources": [
+      "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-train-JPN.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf",
+      "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "https://www2.ioi-jp.org/ioi/2017/tasks/index.html"
+    ]
+  },
+  "reference": {
+    "techniqueId": "buchi-owned-graph-repeated-target-attractor-elimination",
+    "source": "IOI",
+    "problemId": "ioi2017_train",
+    "title": "Toy Train",
+    "url": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+    "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+    "evidence": "各頂点を所有する二人が初回訪問で出辺を永久固定し、周期に充電頂点を含むかで全開始点の勝敗を求める。目標へのA到達集合の外側と、そこへのB到達集合を反復除去する。残存側と各削除回の固定辺戦略を構成し、毎回選び直す反復目標ゲームと原典の永久固定規則を同じ勝敗へ帰着する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "sourceDate": "2017-07-30",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "cutoffVerification": "contest-before-cutoff",
+    "verificationNotes": "2026-10-15に公式原典3頁・公式Editorial1頁・公式archive実リンク・JP公式訳・公式UZB/TWN検索本文・Day1NoticeとJP日別一覧を再読。N1..5000/MN..20000/充電>=1/出次数>=1/自己loop可/順序付き重複辺不可/始点満充電/初回永久固定/二値全開始点返値を確認。原典generic int[]署名とNoticeのC++型対応からglobal vector<int> who_wins(vector<int> a,vector<int> r,vector<int> u,vector<int> v)を導出し、公式stub実bytes取得とは区別。両勝者の固定辺戦略が相手の可変行動にも有効と独立証明。実MDX可視C++20を通常/ASan+UBSanで12032358checks/454155API/checksum5543748192885197194一致。全小2145graphの449398全owner/nonemptytarget組をliteral firstvisit木/別の全固定policy量化で比較。500random小/1000random大/3008別戦略SCC証明/3000metamorphic/invalid30/最大8構成（N5000/M20000/2500除去回含む）を確認。通常0.750357秒/RSS21536KiB、ASan11.2221秒/RSS914208KiBは全oracleとallocator込み。最後に参考資料URLのみ修正、CPP/checker不変。初回positive全field保持、resolution-only、登録前coverage加算なし。"
+  },
+  "problemFeature": {
+    "source": "IOI",
+    "problemId": "ioi2017_train",
+    "title": "Toy Train",
+    "url": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+    "techniqueIds": [
+      "buchi-owned-graph-repeated-target-attractor-elimination"
+    ],
+    "features": [
+      "有向グラフの各頂点の所有者が、初めて訪れたときに出辺を永久固定する。手番が交互になるとは限らない。",
+      "充電頂点を無限回訪れる側と、以後充電できなくする側の勝敗を、全開始点で求める。",
+      "全頂点に一本以上の出辺があり、頂点数は1〜5000、辺数は頂点数以上2万以下。充電頂点が一つ以上あり、自己ループを許し、同じ向きの重複辺はない。"
+    ],
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+    "reviewStatus": "verified",
+    "verification": "independent-analysis",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "sourceDate": "2017-07-30",
+    "datePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "cutoffEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "notes": "各頂点を所有する二人が初回訪問で出辺を永久固定し、周期に充電頂点を含むかで全開始点の勝敗を求める。目標へのA到達集合の外側と、そこへのB到達集合を反復除去する。残存側と各削除回の固定辺戦略を構成し、毎回選び直す反復目標ゲームと原典の永久固定規則を同じ勝敗へ帰着する。",
+    "discoveredBy": "ioi-2017",
+    "publicationDate": "2017-07-30",
+    "publicationYear": 2017,
+    "publicationDatePrecision": "day",
+    "originalNumericBoundsVerified": true
+  },
+  "sourceVerification": {
+    "checkedAt": "2026-10-15",
+    "statementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+    "statementPages": [
+      1,
+      2,
+      3
+    ],
+    "statementReadMethod": "web full PDF text plus official translations indexed search text;visual inspection not claimed",
+    "officialEditorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+    "officialEditorialPages": [
+      1
+    ],
+    "officialEditorialRetrieved": true,
+    "officialEditorialVerified": true,
+    "officialEditorialProvenance": {
+      "taskIndexUrl": "https://ioi.te.lv/locations/ioi17/contest/index.shtml",
+      "taskIndexLinkId": 265,
+      "editorialHeader": "IOI2017 Editorials,train,English(ISC)",
+      "problemAuthorNotAssumedToBeEditorialAuthor": true
+    },
+    "solutionVerification": "independent-analysis",
+    "numericBoundsVerified": true,
+    "fullOriginalContractVerified": true,
+    "originalBounds": {
+      "N": [
+        1,
+        5000
+      ],
+      "M": [
+        "N",
+        20000
+      ],
+      "ownerAndChargingValues": [
+        0,
+        1
+      ],
+      "chargingVerticesMin": 1,
+      "outdegreeMin": 1,
+      "selfLoopsAllowed": true,
+      "parallelOrderedArcsAllowed": false,
+      "antiparallelArcsAllowed": true,
+      "endpointRange": "0..N-1",
+      "initialBattery": "fully charged",
+      "fullChargeAllowsEdges": "N",
+      "stopsOnUnchargedNextEdge": "N+1",
+      "switches": "first visit fixes one outgoing arc permanently",
+      "output": "N binary values;1 if A can force infinite running from each start"
+    },
+    "numericEvidence": {
+      "primaryUrls": [
+        "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf",
+        "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf"
+      ],
+      "successfulQueries": [
+        "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf \"20\" \"5000\"",
+        "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf \"1\" \"5000\" \"20000\""
+      ],
+      "retrievedPrimaryText": true,
+      "englishNumericGlyphsPartlyMissing": true,
+      "visualConfirmationClaimed": false,
+      "discardedSupplement": "Prior LUX URL refetch was cache miss;it is not retained as final evidence. Retrieved official TWN text verifies the full conditions."
+    },
+    "callback": {
+      "genericStatementSignature": "int[] who_wins(int[] a,int[] r,int[] u,int[] v)",
+      "cppSignature": "std::vector<int> who_wins(std::vector<int> a,std::vector<int> r,std::vector<int> u,std::vector<int> v)",
+      "cppMappingPrimaryUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "cppMapping": "Notice p2:int[] corresponds to std::vector<int>",
+      "signatureEvidenceKind": "statement signature plus official implementation notice type mapping",
+      "officialCppStubBytesRetrieved": false,
+      "callbackTypeVerifiedAtCompileTime": true,
+      "standardInputOutput": "none;return vector"
+    },
+    "sourceLimits": {
+      "url": "https://www2.ioi-jp.org/ioi/2017/tasks/day1-notice-ISC.pdf",
+      "page": 2,
+      "seconds": 2,
+      "memoryMB": 256
+    },
+    "contestDate": "2017-07-30",
+    "datePrecision": "day",
+    "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2017/tasks/index.html",
+    "difficulty": null,
+    "unconfirmedRequiredSourceFacts": [],
+    "unconfirmedRequiredLemmas": []
+  },
+  "api": {
+    "namespace": "repeated_target",
+    "type": "Solution {vector<int> winning;vector<int> move;int deletion_rounds;}",
+    "genericSignature": "Solution solve_repeated_target_game(span<const int> owner,span<const int> target,span<const Arc> arcs)",
+    "arcType": "pair<int,int>",
+    "sourceCallback": "vector<int> who_wins(vector<int> a,vector<int> r,vector<int> u,vector<int> v)",
+    "contract": {
+      "n": "1..5000",
+      "m": "N..20000 and <=N²",
+      "flags": "same-sized binary owner/target;A1/B0",
+      "edges": "valid endpoints,distinct ordered arcs,selfloops/opposite directions allowed,every outdegree>=1",
+      "targets": "generic allows empty target set as an explicit extension;source callback requires >=1",
+      "winning": "1 iff A wins;0 iff B wins",
+      "move": "always legal original outgoing neighbor;winning fixed policy at v only when owner[v]==winning[v],otherwise legal unused choice",
+      "deletion_rounds": "nonempty B-region deletions only;final successful cover pass not counted",
+      "invalid": "invalid_argument:empty/oversized/mismatched arrays,nonbinary flags,endpoints/count/duplicates,dead ends;source callback also no chargers",
+      "ownership": "const spans not modified/retained;return owns arrays,copy/move supported;global callback takes values",
+      "allocationFailure": "standard allocation exceptions propagate",
+      "state": "all state local;calls/result mutations isolated",
+      "stack": "no public recursive graph traversal"
+    },
+    "firstVisitCompatibility": "both fixed winning strategies remain valid against an opponent allowed to change decisions on revisits;then restrict to first-visit permanent rules"
+  },
+  "proofObligations": {
+    "attractorExact": "existential own edges/universal opponent edges;enqueue ranks witness finite reach;complement admits a fixed opponent strategy avoiding seeds",
+    "remainingTotal": "outside Battr,A has some remaining edge and B has all current outgoing edges remaining;inductively each remaining B vertex has all original edges still remaining",
+    "removedStrategy": "B uses X-internal edge or Battr rank witness;original A choices can only decrease deletion round or within-round rank until X is reached,then avoid target forever",
+    "remainingStrategy": "A uses Aattr witness outside R and any remaining edge at R;B cannot escape final W;every target-free segment has decreasing rank",
+    "firstVisitVsAdaptive": "construct both players' positional strategies against arbitrary adaptive opponent,then restrict them to permanent first-visit decisions;do not assume equality",
+    "battery": "functional motion has distinct prefix/simple cycle;cycle with target gives initial/successive recharge gaps<=N;target-free cycle gives only finitely many recharges",
+    "termination": "each destructive pass removes>=1 vertex;at most N total passes including final successful nonempty pass",
+    "unconfirmedRequiredLemmas": []
+  },
+  "complexity": {
+    "oneAttractorTime": "O(N+M):queue,reverse arcs,outdegree counters",
+    "passes": "<=N including final no-removal pass if W remains",
+    "totalTime": "O(Mlog(M+1)+N(N+M))=O(NM) for valid M>=N,M<=N²",
+    "space": "O(N+M);source callback owned argument/zip storage has the same order",
+    "notClaimed": "No linear total time;legal N5000/M20000 family requires2500 deletion rounds.",
+    "integerSafety": "N<=5000,M<=20000;IDs/degrees/queue indices/rounds fit int. size_t N² evaluated after N<=5000,product<=25000000. No recursion/large arithmetic.",
+    "nativeRssScope": "normal full checker21536KiB includes independent oracles;not API-only hardware performance",
+    "sanitizerMemoryScope": "ASan914208KiB includes allocator quarantine for454155 API calls and all oracles;not ordinary API storage"
+  },
+  "flowSuggestion": {
+    "entryGraphId": "game-probability",
+    "parentGraphId": "game-rules",
+    "parentNodeId": "ending",
+    "newAnswerId": "repeated-target",
+    "newAnswerLabel": "各頂点の所有者が行き先を決め、目標を繰り返し訪れる側が勝つ",
+    "guardGraphId": "owned-repeated-target-conditions",
+    "canonicalChoices": [
+      "win",
+      "repeated-target",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "guards": [
+      {
+        "id": "owned-total-directed",
+        "question": "有向グラフの各頂点に所有者が一人と出辺が一本以上あり、その所有者が行き先を選びますか？"
+      },
+      {
+        "id": "recurrent-target",
+        "question": "目標を無限回訪れる側と、やがて目標を訪れなくする側の勝敗ですか？",
+        "explanation": "辺を毎回選ぶ規則と、初訪問時に永久固定する規則の両方に対応する。"
+      },
+      {
+        "id": "bounds",
+        "question": "頂点1〜5000・辺数は頂点数以上20000以下で、同じ向きの重複辺がありませんか？",
+        "explanation": "自己ループと逆向きの二辺は許す。原典アダプターでは目標が一つ以上。"
+      }
+    ],
+    "noUnknownTarget": "condition-check",
+    "techniqueIds": [
+      "buchi-owned-graph-repeated-target-attractor-elimination"
+    ],
+    "oldGuardPreservation": "append feature at game-rules/ending;preserve all five old choices/labels/order/targets and their detailed guards"
+  },
+  "verification": {
+    "checkerReadsActualSingleVisibleMdxFence": true,
+    "sections": 8,
+    "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+    "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+    "checkerSha256": "450058a255309b88387ab37e2c106b82abb2e5689daba3d74f0becc624f24b13",
+    "commands": [
+      "python3 /tmp/flowchartcp-ioi2017-train-checker.py",
+      "python3 /tmp/flowchartcp-ioi2017-train-checker.py --sanitize"
+    ],
+    "normal": {
+      "articleSha256": "67a74d0fc0a2494042682066e1fb0421d8cbd6cb934ff785f6e33c1625969d28",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 12032358,
+      "apiCalls": 454155,
+      "exhaustiveGraphs": 2145,
+      "exhaustiveAssignments": 449398,
+      "firstVisitInitialPositions": 1781207,
+      "firstVisitSearchNodes": 7419964,
+      "fixedPolicyPairs": 954684,
+      "fixedPolicyInitialPositions": 3916282,
+      "randomSmallGraphs": 500,
+      "randomLargeGraphs": 1000,
+      "strategyCertificates": 3008,
+      "metamorphicChecks": 3000,
+      "invalidCases": 30,
+      "checksum": "5543748192885197194",
+      "seconds": 0.750357,
+      "peakRSSKiB": 21536,
+      "maximumCases": [
+        {
+          "name": "5000 vertices,20000 arcs,all targets",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-cycle,exact charging gap5000",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-chain to charging sink,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "all B,noncharging selfloops,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 1
+        },
+        {
+          "name": "long chain,transient charge then noncharging sink",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "5000 vertices,empty-target generic extension",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "disconnected selfloops,mixed winners",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 2500
+        },
+        {
+          "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 2500,
+          "AWinningVertices": 0
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "67a74d0fc0a2494042682066e1fb0421d8cbd6cb934ff785f6e33c1625969d28",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 12032358,
+      "apiCalls": 454155,
+      "exhaustiveGraphs": 2145,
+      "exhaustiveAssignments": 449398,
+      "firstVisitInitialPositions": 1781207,
+      "firstVisitSearchNodes": 7419964,
+      "fixedPolicyPairs": 954684,
+      "fixedPolicyInitialPositions": 3916282,
+      "randomSmallGraphs": 500,
+      "randomLargeGraphs": 1000,
+      "strategyCertificates": 3008,
+      "metamorphicChecks": 3000,
+      "invalidCases": 30,
+      "checksum": "5543748192885197194",
+      "seconds": 11.2221,
+      "peakRSSKiB": 914208,
+      "maximumCases": [
+        {
+          "name": "5000 vertices,20000 arcs,all targets",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-cycle,exact charging gap5000",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-chain to charging sink,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "all B,noncharging selfloops,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 1
+        },
+        {
+          "name": "long chain,transient charge then noncharging sink",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "5000 vertices,empty-target generic extension",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "disconnected selfloops,mixed winners",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 2500
+        },
+        {
+          "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 2500,
+          "AWinningVertices": 0
+        }
+      ]
+    },
+    "postTestBibliographyOnlyUpdate": {
+      "testedArticleSha256": "67a74d0fc0a2494042682066e1fb0421d8cbd6cb934ff785f6e33c1625969d28",
+      "finalArticleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "change": "Reference URLs only:LUX replaced by retrieved TWN;JP statement and official archive links added.",
+      "cppUnchanged": true,
+      "checkerUnchanged": true,
+      "sameCppShaVerified": true
+    },
+    "exhaustiveScope": {
+      "N1to3Graphs": 353,
+      "N1to3AllOwnerNonemptyTargetAssignments": 19318,
+      "N4GraphsWithAtMostOneBranchDegree2": 1792,
+      "N4AllOwnerNonemptyTargetAssignments": 430080,
+      "allExhaustiveAssignments": 449398,
+      "notClaimed": "N4 full digraph enumeration is not claimed;only functional/one-branch subfamily."
+    },
+    "oracleIndependence": {
+      "firstVisit": "literal extensive game tree;repeats close the permanent cycle;A existential/B universal over fresh-vertex moves",
+      "fixedPolicies": "every complete A policy×B policy;direct functional paths give ∃A∀B/∃B∀A;also returned fixed policies against every opposite policy",
+      "largeStrategyCertificates": "independent iterative SCC graphs fixing only winner-owned moves:A target-free graph must be acyclic;B no target-bearing cyclic SCC. No attractor computes answers here.",
+      "metamorphic": [
+        "edge permutation preserves winner/move/round after API sort",
+        "vertex label permutation preserves winners",
+        "adding targets cannot shrink A winning region"
+      ]
+    },
+    "maximumFamilyProof": {
+      "chargingCycle": "5000-cycle gives maximal5000 edge recharge gap",
+      "linearRounds": "z non-target selfloop;charging c_i→x_(i-1),noncharging A vertex x_i→itself,c_i,with x_0=z. Rounds remove z,c1 then x1,c2 ... finally x_k. Extra x_i→earlier x_j do not alter last reachable charger. k2499 plus one non-target selfloop yields N5000/M20000/2500 rounds.",
+      "maximumOrdinaryCases": 7,
+      "maximumEmptyTargetExtensionCases": 1
+    },
+    "independentExternalReviewStatus": "pending parent/peer review;author verification complete",
+    "semanticChecksumIsString": true
+  },
+  "initialAuditPreservation": {
+    "auditFile": "/tmp/flowchartcp-ioi2017-audit.json",
+    "auditSha256": "112606343ee4912aac10132d0a0e0aea1c062635aa6642acb14a03396379f78e",
+    "initialRowSha256": "16f73d4bf5d0bd49d164f0d9628c2eae82b9a046ba806d4daec6b10713037041",
+    "initialSixRecordsSha256": "42c4951bdb743dcd5a11862dfe096b53b32048b8da93dfce2487fc35aa68d323",
+    "initialStatusSha256": "8f9c70c294b861f2e102cda5732785872b4509590e8a2ceb339ade6ab6043ff7",
+    "initialSelectionSha256": "1375da7af6e2fde4f445cada6939785e83a4077a8ca803f725ed7babeeb56aa8",
+    "initialSnapshotSha256": "31a4b46903104b1a0e33ba82676a89a4daa68de8c8bbcc870e7a752714fbcd10",
+    "initialRow": {
+      "source": "ioi",
+      "problemId": "ioi2017_train",
+      "officialTaskId": "train",
+      "day": 1,
+      "date": "2017-07-30",
+      "datePrecision": "day",
+      "title": "電車のおもちゃ",
+      "englishTitle": "Toy Train",
+      "statementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "editorialUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+      "hostStatementUrl": "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+      "contest": {
+        "name": "IOI 2017",
+        "division": "Main competition",
+        "year": 2017,
+        "day": 1,
+        "date": "2017-07-30",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "日本委員会公式Tasksの競技日1/2に列挙された日付と全6題を確認。練習日/大会期間/クロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。",
+        "無限に充電駅を訪れる側と、やがて電池切れにする側の勝敗を全開始点で求める。"
+      ],
+      "constraints": {
+        "source": "official final contest statement and official archive translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..5000",
+          "M": "N..20000",
+          "outdegree": ">=1",
+          "chargingVertices": ">=1",
+          "selfLoopsAllowed": true,
+          "parallelOrderedArcsAllowed": false,
+          "switch": "chosen only on first visit, then permanent",
+          "battery": "full charge permits N edges; stops on the following edge without charge"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf"
+        ],
+        "numericEvidenceSearchQueries": [
+          "site:ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf \"20\" \"5000\""
+        ],
+        "numericEvidenceKind": "retrieved-primary-translation-indexed-search-text",
+        "notes": "英語PDFの抽出欠落は公式配布翻訳の検索本文で補完。未取得画像を目視したとは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "verification": "independent-analysis",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "game-probability",
+      "choices": [
+        "win",
+        "other",
+        "no"
+      ],
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "win",
+          "answerLabel": "二人が最善を選んだときの勝敗"
+        },
+        {
+          "graphId": "game-rules",
+          "nodeId": "ending",
+          "question": "どのように対戦が終わりますか？",
+          "answer": "other",
+          "answerLabel": "その他の終了ルール・合法手"
+        },
+        {
+          "graphId": "game-general",
+          "nodeId": "game",
+          "question": "二人が交互に操作し、勝敗を決めますか？",
+          "answer": "no",
+          "answerLabel": "いいえ"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "state-design"
+      ],
+      "initialReached": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "originalRootReached": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "originalRootReachedTechniqueIds": [
+        "state-design"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "researchSolutionConfirmed": true,
+      "completedApiCoverage": false,
+      "gap": {
+        "id": "buchi-owned-graph-repeated-target-attractor-elimination",
+        "features": [
+          "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。",
+          "無限に充電駅を訪れる側と、やがて電池切れにする側の勝敗を全開始点で求める。"
+        ],
+        "firstMissingGraphId": "game-general",
+        "firstMissingNodeId": "fallback",
+        "stopNodeType": "result",
+        "reason": "所有者が任意に続くので「二人が交互」の問いはnoとなり一般状態設計へ止まる。無限継続を引分にする後退解析やSCCだけでは、充電の反復と永久固定スイッチの勝敗を扱えない。",
+        "neededTechniqueIds": [
+          "buchi-owned-graph-repeated-target-attractor-elimination"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "game-theory",
+          "retrograde-winning-draw",
+          "scc"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "確率と手番の状態を定義する",
+        "proposedFeatureAnswer": "各頂点を所有するプレイヤーが、初訪問時にその頂点の出辺を一つ永久固定する。",
+        "proposedBranchAt": {
+          "graphId": "game-rules",
+          "nodeId": "ending",
+          "question": "どのように対戦が終わりますか？",
+          "currentOptions": [
+            {
+              "id": "no-move",
+              "label": "必ず有限回で終わり、二者交互で合法手のない側が負ける"
+            },
+            {
+              "id": "immediate-board",
+              "label": "盤面の並びが揃うと即時勝利、埋まったときだけ得点比較"
+            },
+            {
+              "id": "cycle-draw",
+              "label": "合法手がない側が負け、永続する対戦は引分"
+            },
+            {
+              "id": "other",
+              "label": "その他の終了ルール・合法手"
+            },
+            {
+              "id": "unknown",
+              "label": "わからない"
+            }
+          ],
+          "note": "これは将来の分岐案であり、初回の実際の停止位置とは別に保存する。"
+        }
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "chosenFullSolutionVerified": true,
+        "method": "充電集合へのA-attractorの外側Xと、XへのB-attractorを反復除去する。残存側/除去側それぞれ頂点ごとの固定辺戦略を構成してfirst-visit契約へ戻す。",
+        "complexity": "逆辺/counterで一attractor O(N+M)、高々N回の除去。M>=NよりO(NM)時間・O(N+M)領域。研究probeは集合反復であり、満点速度のqueue/counter APIは未作成。",
+        "independentProofSupplement": [
+          "固定スイッチの走行は有限prefixと単純周期となる。周期に充電駅があれば間隔<=Nで走り続け、なければ停止する。",
+          "A-attractorはA所有の存在条件/B所有の全称条件で充電集合へ到達を強制する。外側XではBがその回の充電を永久回避できる。",
+          "B-attractor(X)を除くと、残存A頂点は一辺以上残り、残存B頂点の全対象辺は残るためtotal graphの不変量を保つ。",
+          "終了時のA側はR外でattractor rankを下げる一辺を固定し、Rからも残存辺を選ぶことで充電を反復する。",
+          "除去側Bは除去回とattractor rankを下げ、最後はその回のX内で充電を避ける。頂点ごとの選択で済むので再訪時の切替は要らない。"
+        ],
+        "implementationRequirements": [
+          "所有者固定/出次数/充電/loop/重複arcを検査する再利用C++20をqueue/counterで実装する。",
+          "全小固定スイッチ/初訪問minimax、N5000/M20000、反復除去最大例、ASan/UBSanと独立reviewを行う。"
+        ],
+        "sourceUrls": [
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/editorial/train.pdf",
+          "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-UZB.pdf"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 1,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "所有者固定/出次数/充電/loop/重複arcを検査する再利用C++20をqueue/counterで実装する。",
+          "全小固定スイッチ/初訪問minimax、N5000/M20000、反復除去最大例、ASan/UBSanと独立reviewを行う。"
+        ],
+        "probeEvidence": {
+          "allTotalDirectedGraphsN1to3LoopsAllowed": 353,
+          "allOwnerAndNonemptyChargerAssignments": 19318,
+          "randomGraphsN4to8": 400,
+          "literalInitialPositions": 60233,
+          "maximumObservedDeletionRounds": 3,
+          "verified": "Alternating reachability-attractor deletion equals literal extensive first-visit minimax including permanent switches and repeated vertices. Queue/counter implementation would be O(NM), not implemented as a production API here."
+        },
+        "editorialProvenance": "IOI公式履歴アーカイブの当該課題Editorial実リンク。課題著者名から解説の署名を推測しない。選定した独立補題と公式の未確認部分を分離。"
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-official-archive-translations-search-text",
+        "visualDetails": "not-claimed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "game-theory",
+          "title": "Grundy数",
+          "file": "src/content/docs/techniques/game-theory.mdx",
+          "sha256": "a658499d44c87a1a8a1b426b40b329731ab89dbd3d6a7e4af986494307585c7c",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-reasoning.json",
+              "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "grundy_dag",
+          "cppFenceSha256": "91889d57f29651b81eaedb8f2511d7d5d16aa864973f2b5a42afdbcbffcda9b5",
+          "scopeMismatch": "公平な有限DAGのnormal play。頂点所有/充電反復/永久固定switchを扱わない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "retrograde-winning-draw",
+          "title": "終了しない対戦は、負け状態から逆向きに勝敗を確定する",
+          "file": "src/content/docs/techniques/retrograde-winning-draw.mdx",
+          "sha256": "c4a68ac2b606580f6e72a475b496a8b269203064118dbef7d0d5609d3ff881f3",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-specific-games.json",
+              "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "classify_normal_graph_game",
+          "cppFenceSha256": "9ddf018ea18594eba841f8d1094fc39d0d0f75c2b02c32a63e8a07110e41cd39",
+          "scopeMismatch": "出辺なしを負けとし無限継続をdrawにする。充電反復をA勝ちとする原典と異なる。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": true,
+          "fullImplementationRevalidatedForOriginal": false
+        },
+        {
+          "techniqueId": "scc",
+          "title": "強連結成分分解",
+          "file": "src/content/docs/techniques/scc.mdx",
+          "sha256": "6627365000924fe2b24af7d9e9ad4e86b7efb9b7d0f7a0baeebadf8dfa765ca9",
+          "metadataSourceFiles": [
+            {
+              "file": "data/techniques-core.json",
+              "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+            }
+          ],
+          "fullArticleAndAllCodeRead": true,
+          "publishedApi": "scc_ids",
+          "cppFenceSha256": "6dfcf6489a538a950556980535c48bba7f749b02691e8495dd2f491787e787c9",
+          "scopeMismatch": "通常の有向到達可能性で、敵対者の全称選択や所有者戦略を表さない。",
+          "originalFullRangeApiReusable": false,
+          "nativeScopeCounterexampleRun": false,
+          "fullImplementationRevalidatedForOriginal": false
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 3,
+        "stepsSha256": "ee01d2e45cc489bd88394f52f71c9b273c80ffe54b863fd9463de013e803f507",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [
+          {
+            "fromGraphId": "game-probability",
+            "fromNodeId": "game-rule-route",
+            "toGraphId": "game-rules"
+          },
+          {
+            "fromGraphId": "game-rules",
+            "fromNodeId": "general-route",
+            "toGraphId": "game-general"
+          }
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      },
+      "verificationNotes": [
+        "原典の特徴から開始分野を選び、具体的に該当しない回答をyesへねじ込まない。汎用結果到達と完成技巧のcoverageを分ける。",
+        "本記録は初回監査。後続resolutionや完成API/原典walkを混ぜず、共有ファイルを編集しない。"
+      ]
+    },
+    "initialStatus": {
+      "fixedProblemListComplete": true,
+      "firstPassAuditComplete": true,
+      "fixedCorpusResearchComplete": false,
+      "fixedCorpusCoverageComplete": false,
+      "globalCoverageComplete": false,
+      "recordCount": 6,
+      "statementVerifiedCount": 6,
+      "numericBoundsVerifiedCount": 6,
+      "numericBoundsUnconfirmedCount": 0,
+      "officialEditorialRetrievedCount": 6,
+      "officialEditorialVerifiedCount": 3,
+      "solutionReviewedCount": 4,
+      "coveredCount": 0,
+      "missingRouteCount": 0,
+      "missingTechniqueCount": 4,
+      "unconfirmedCount": 2,
+      "unavailableCount": 0,
+      "unconfirmedPrincipalDetailsCount": 2,
+      "fullImplementationValidatedCount": 0,
+      "articleResolutionComplete": false,
+      "firstPassAuditCompleteDefinition": "選定済み全6題の原典/数値/資料取得/主要補題の確認状況/初回停止位置を記録。未確認2題を残す。",
+      "fixedCorpusResearchCompleteDefinition": "固定6題の原典全域の選定手順と主要補題が全て確認できた時だけtrue。Nowruz満点出力とPrize満点質問数が未確認なのでfalse。",
+      "articleResolutionNotes": "研究確認4/6、完成記事/API/原典walk/coverage0/6。既存汎用記事をcoveredへ数えない。"
+    },
+    "initialRootTrace": {
+      "entryGraphId": "game-probability",
+      "choices": [
+        "win",
+        "other",
+        "no"
+      ],
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "win",
+          "answerLabel": "二人が最善を選んだときの勝敗"
+        },
+        {
+          "graphId": "game-rules",
+          "nodeId": "ending",
+          "question": "どのように対戦が終わりますか？",
+          "answer": "other",
+          "answerLabel": "その他の終了ルール・合法手"
+        },
+        {
+          "graphId": "game-general",
+          "nodeId": "game",
+          "question": "二人が交互に操作し、勝敗を決めますか？",
+          "answer": "no",
+          "answerLabel": "いいえ"
+        }
+      ],
+      "reached": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter cross-checked with frozen actual src/lib/flow.ts",
+        "choicesConsumed": 3,
+        "stepsSha256": "ee01d2e45cc489bd88394f52f71c9b273c80ffe54b863fd9463de013e803f507",
+        "graphDataSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+        "routeTransitions": [
+          {
+            "fromGraphId": "game-probability",
+            "fromNodeId": "game-rule-route",
+            "toGraphId": "game-rules"
+          },
+          {
+            "fromGraphId": "game-rules",
+            "fromNodeId": "general-route",
+            "toGraphId": "game-general"
+          }
+        ],
+        "all15EntryDomainsConsidered": [
+          "ranges",
+          "dp",
+          "graphs",
+          "flow-matching",
+          "strings",
+          "math",
+          "geometry",
+          "game-probability",
+          "thinking",
+          "heuristic",
+          "condition-check",
+          "set-operations",
+          "interactive-oracles",
+          "grid-arrangements",
+          "fixed-output"
+        ],
+        "originalReferenceAlreadyRegistered": false
+      }
+    },
+    "unchangedFields": "all initial6records,Train positive flags,status,selection,snapshot unchanged",
+    "initialProductionApiStillFalse": true,
+    "initialResearchAlreadyPositive": true,
+    "additionalPositiveResearchReviewsProposed": 0,
+    "resolutionOnly": true,
+    "sharedFilesEdited": false
+  },
+  "auditResolutionProposal": {
+    "problemId": "ioi2017_train",
+    "status": "covered",
+    "techniqueIds": [
+      "buchi-owned-graph-repeated-target-attractor-elimination"
+    ],
+    "verification": "independent-analysis",
+    "resolvedAt": "2026-10-15",
+    "article": "src/content/docs/techniques/buchi-owned-graph-repeated-target-attractor-elimination.mdx",
+    "checker": "scripts/check_buchi_owned_graph_cpp.py",
+    "expectedRootChoices": [
+      "win",
+      "repeated-target",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "evidence": "Only after article/ref/feature/flow/native registration and independent review. Preserve initial verified research row;no additional positive research review.",
+    "externalReviewPending": true
+  },
+  "relatedScopeReview": {
+    "initialRelatedArticleReviews": [
+      {
+        "techniqueId": "game-theory",
+        "title": "Grundy数",
+        "file": "src/content/docs/techniques/game-theory.mdx",
+        "sha256": "a658499d44c87a1a8a1b426b40b329731ab89dbd3d6a7e4af986494307585c7c",
+        "metadataSourceFiles": [
+          {
+            "file": "data/techniques-reasoning.json",
+            "sha256": "0f2fffab359148391b25a70e4e32c67dcc492a13b33a5a25771ba7f8b41c75b6"
+          }
+        ],
+        "fullArticleAndAllCodeRead": true,
+        "publishedApi": "grundy_dag",
+        "cppFenceSha256": "91889d57f29651b81eaedb8f2511d7d5d16aa864973f2b5a42afdbcbffcda9b5",
+        "scopeMismatch": "公平な有限DAGのnormal play。頂点所有/充電反復/永久固定switchを扱わない。",
+        "originalFullRangeApiReusable": false,
+        "nativeScopeCounterexampleRun": false,
+        "fullImplementationRevalidatedForOriginal": false
+      },
+      {
+        "techniqueId": "retrograde-winning-draw",
+        "title": "終了しない対戦は、負け状態から逆向きに勝敗を確定する",
+        "file": "src/content/docs/techniques/retrograde-winning-draw.mdx",
+        "sha256": "c4a68ac2b606580f6e72a475b496a8b269203064118dbef7d0d5609d3ff881f3",
+        "metadataSourceFiles": [
+          {
+            "file": "data/techniques-specific-games.json",
+            "sha256": "89dc0d8ca17070b587944b80b04f55bbce7b3c29616a8faa1b1485ddff8d9db9"
+          }
+        ],
+        "fullArticleAndAllCodeRead": true,
+        "publishedApi": "classify_normal_graph_game",
+        "cppFenceSha256": "9ddf018ea18594eba841f8d1094fc39d0d0f75c2b02c32a63e8a07110e41cd39",
+        "scopeMismatch": "出辺なしを負けとし無限継続をdrawにする。充電反復をA勝ちとする原典と異なる。",
+        "originalFullRangeApiReusable": false,
+        "nativeScopeCounterexampleRun": true,
+        "fullImplementationRevalidatedForOriginal": false
+      },
+      {
+        "techniqueId": "scc",
+        "title": "強連結成分分解",
+        "file": "src/content/docs/techniques/scc.mdx",
+        "sha256": "6627365000924fe2b24af7d9e9ad4e86b7efb9b7d0f7a0baeebadf8dfa765ca9",
+        "metadataSourceFiles": [
+          {
+            "file": "data/techniques-core.json",
+            "sha256": "d7dfdc2350e40d0171fcd673a5aa5d2c1f8c008564cd7085d69e16a9cc038e57"
+          }
+        ],
+        "fullArticleAndAllCodeRead": true,
+        "publishedApi": "scc_ids",
+        "cppFenceSha256": "6dfcf6489a538a950556980535c48bba7f749b02691e8495dd2f491787e787c9",
+        "scopeMismatch": "通常の有向到達可能性で、敵対者の全称選択や所有者戦略を表さない。",
+        "originalFullRangeApiReusable": false,
+        "nativeScopeCounterexampleRun": false,
+        "fullImplementationRevalidatedForOriginal": false
+      }
+    ],
+    "authorRereadAllThreeArticlesAndVisibleCode": true,
+    "concreteMismatch": {
+      "a": [
+        0,
+        1
+      ],
+      "r": [
+        1,
+        0
+      ],
+      "arcs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "correctAWinning": [
+        1,
+        1
+      ],
+      "existingRetrogradeResult": [
+        0,
+        0
+      ],
+      "reason": "deadend/draw retrograde has no seeds in this total graph and declares draw;repeated-target game has no draw",
+      "nativeExistingScopeCounterexampleAlreadyInInitialAudit": true
+    },
+    "duplicateRegistrationAvoidance": "DAG Grundy,normal-play draw retrograde,and ordinary SCC do not implement owned repeated-target winning regions"
+  },
+  "publication": {
+    "readyForIndependentReview": true,
+    "sharedEdits": false,
+    "externalPush": false,
+    "registeredCoverageClaimed": false,
+    "difficulty": null,
+    "sourceDate": "2017-07-30",
+    "datePrecision": "day",
+    "unconfirmedRequiredLemmas": [],
+    "unconfirmedRequiredSourceFacts": [],
+    "outsideScope": "general Muller/parity or multiple Büchi fairness objectives,probability,dead ends,hidden information"
+  },
+  "statusAtAuthorFreeze": "complete-author-artifacts-pending-independent-review-and-registration",
+  "status": "verified-and-integrated",
+  "integration": {
+    "date": "2026-10-15",
+    "publishedArticle": "src/content/docs/techniques/buchi-owned-graph-repeated-target-attractor-elimination.mdx",
+    "checker": "scripts/check_buchi_owned_graph_cpp.py",
+    "metadataGroup": "games",
+    "entryGraphId": "game-probability",
+    "choices": [
+      "win",
+      "repeated-target",
+      "yes",
+      "yes",
+      "yes"
+    ],
+    "reviewedCodeUnchanged": true,
+    "initialAuditPreserved": true,
+    "duplicateSolutionReviewNotAppended": true,
+    "normalization": [
+      "Standard entryPoints advanced/complexity/reasoning; add exact publication date/year/numeric feature fields.",
+      "Keep author publictitle/body/C++ unchanged. Use natural explicit ownership/totalgraph guard text from final flowcase.",
+      "Only permanent checker/probe paths and implicit tmp outputs normalized; oracle logic unchanged."
+    ],
+    "verificationRecord": "research/verification-2026-10-15-ioi2017-train.json"
+  },
+  "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+  "artifactSha256": {
+    "authorArticle": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+    "authorChecker": "450058a255309b88387ab37e2c106b82abb2e5689daba3d74f0becc624f24b13",
+    "authorSidecar": "b94785067308460aab7b538ac5aa8344a5a12ff25987dacb87bda1fe7544d5d3",
+    "publishedArticle": "2e3a83f5a8407145a6a7b4a1ca04d2b076484771c3dcdfa6c1f27ec4e82ac277",
+    "publishedChecker": "99b99d35a83fbfc4e199cf7cecbdc331deebb27ec22a2c4ad0d89f1496e056d3"
+  },
+  "independentReview": {
+    "status": "passed",
+    "rootReview": {
+      "status": "passed",
+      "reviewer": "/root",
+      "reviewedAt": "2026-10-15",
+      "techniqueId": "buchi-owned-graph-repeated-target-attractor-elimination",
+      "sourceVerification": {
+        "englishStatementPagesRead": [
+          1,
+          2,
+          3
+        ],
+        "officialEditorialFullOnePageRead": true,
+        "officialNoticePagesRead": [
+          1,
+          2
+        ],
+        "numericBounds": "N1..5000,MN..20000; binaryowner/charging,target>=1,outdegree>=1,loopsallowed,noorderedparallel,valid0basedendpoints.",
+        "numericPrimaryText": "https://ioi.te.lv/locations/ioi17/contest/day1/train/train-TWN.pdf",
+        "numericAcquisition": "Direct refetch cache miss; primary indexed search restored all constraints. No PDF image inspection claimed.",
+        "permanentRuleRead": true,
+        "batteryRuleRead": "Fully charged permitsNedges; stops onN+1 following uncharged edge.",
+        "apiSignature": "Statement generic int[] who_wins(int[] a,int[] r,int[]u,int[]v) plus Notice int[]→std::vector<int>. Official C++stub bytes not acquired; no directheader validation claim.",
+        "officialDate": "2017-07-30",
+        "difficulty": null
+      },
+      "proofReview": [
+        "AttrP(S) built from own existence/opponent allsuccessors gives strict descending enqueue rank before reachingS. Outside, own vertices have no edge in and opponent has at leastoneedgeout, yielding a fixed avoid strategy.",
+        "Outside B-attractor(Yseed), residualA has some outsideedge and residualB allcurrentedgesoutside. Induction also ensures residualB has no edge to any previously deletedvertex; currentresidualgraph remains total.",
+        "X=outsideAttrA(R) has no target. LostB inX choosesoneXinvariantedge; lostB inYminusX choosesAtrB rankdecreasingedge. Achoices either staywithinX/decreasecurrentrank or enterpreviousdeletedround. Deletionround strictly decreases only finitely often, so eventually one targetfreeX traps allplays.",
+        "FinalA non-target choosesAtrA predecessor; targetA choosesanyaliveedge. AllB successors stayfinalalive. Thus every excursionoutsideR strictly decreasesrank, and everyinfiniteplay visitsRinfinitelyoften. At target no one-time stop assumption is used.",
+        "Both sides give onefixededgeperwinnerownedvertex, valid even if opponent changes revisited decisions. Restricting opponent tofirstvisitpermanent preserves winning guarantees. Underfixededges, eventualsimplecyclehaslength<=N, so chargingcycle impliesallgaps/firstcharge<=N; otherwise finitelymanycharges implybatterydeath. This proves sourcegame equivalence, not an assumed Büchi import.",
+        "Nonempty lostset deleted eachround; if finalsuccess remains then priorrounds<=N-1, so totalpasses<=N. Queue/counters/reverseedge scans eachO(N+M). Validation sortO(MlogM) is included inO(NM) becausevalidN<=M<=N². SpaceO(N+M), iterative traversals."
+      ],
+      "apiAndResourcesReview": [
+        "CheckN before casts/size_tN², allN²<=25000000. Flags/endpoints before graphaccess, arcsN..20000 and<=N², sort detectsorderedduplicates whileallowingreversepairs/selfloops. Outdegree checked beforegame.",
+        "Attr decrementsopponentcounters only for alive predecessors notyetinside, withinitialdegree ofaliveoutneighbors. Eachqueuedheadonce ensuresno repeatededge decrement. Ownexistence uses shortcircuitcounterunused. Every chosenedge fornonseed winningownvertex exists; seedX BchoosesXinvariantedge, finaltargetA choosesaliveedge guaranteedbytotality.",
+        "Bstrategy assigned in a separatepass before markinglostverticesdead, preservingall same-roundX choices. Default movesremain legal but strategy promisedonlywhereowner==winning. Returnvectors own data/copy/move, inputsconstnotretained, no globalstate.",
+        "Generic acceptsnotarget andreturnsallB as documentedextension. Originalcallback rejectsnocharge andusesexactbyvaluevectors, delegatesallotherchecks, noI/Oorgraderglobals. Allocationexceptions propagate andinvalidadapterarguments emitnothing."
+      ],
+      "normal": {
+        "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+        "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+        "sanitize": false,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ],
+        "checks": 12032358,
+        "apiCalls": 454155,
+        "exhaustiveGraphs": 2145,
+        "exhaustiveAssignments": 449398,
+        "firstVisitInitialPositions": 1781207,
+        "firstVisitSearchNodes": 7419964,
+        "fixedPolicyPairs": 954684,
+        "fixedPolicyInitialPositions": 3916282,
+        "randomSmallGraphs": 500,
+        "randomLargeGraphs": 1000,
+        "strategyCertificates": 3008,
+        "metamorphicChecks": 3000,
+        "invalidCases": 30,
+        "checksum": "5543748192885197194",
+        "seconds": 0.760505,
+        "peakRSSKiB": 21480,
+        "maximumCases": [
+          {
+            "name": "5000 vertices,20000 arcs,all targets",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 0,
+            "AWinningVertices": 5000
+          },
+          {
+            "name": "5000-cycle,exact charging gap5000",
+            "n": 5000,
+            "m": 5000,
+            "deletionRounds": 0,
+            "AWinningVertices": 5000
+          },
+          {
+            "name": "5000-chain to charging sink,20000 arcs",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 0,
+            "AWinningVertices": 5000
+          },
+          {
+            "name": "all B,noncharging selfloops,20000 arcs",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 1,
+            "AWinningVertices": 1
+          },
+          {
+            "name": "long chain,transient charge then noncharging sink",
+            "n": 5000,
+            "m": 5000,
+            "deletionRounds": 1,
+            "AWinningVertices": 0
+          },
+          {
+            "name": "5000 vertices,empty-target generic extension",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 1,
+            "AWinningVertices": 0
+          },
+          {
+            "name": "disconnected selfloops,mixed winners",
+            "n": 5000,
+            "m": 5000,
+            "deletionRounds": 1,
+            "AWinningVertices": 2500
+          },
+          {
+            "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 2500,
+            "AWinningVertices": 0
+          }
+        ]
+      },
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "substantiveFindings": [],
+      "unconfirmedRequiredLemmas": [],
+      "normalizationAtIntegration": [
+        "Standard entryPoints advanced/complexity/reasoning; add exact publication date/year/numeric feature fields.",
+        "Keep author publictitle/body/C++ unchanged. Use natural explicit ownership/totalgraph guard text from final flowcase.",
+        "Only permanent checker/probe paths and implicit tmp outputs normalized; oracle logic unchanged."
+      ],
+      "sharedFilesModified": false,
+      "asanUbsan": {
+        "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+        "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+        "sanitize": true,
+        "compilerFlags": [
+          "-std=c++20",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie"
+        ],
+        "checks": 12032358,
+        "apiCalls": 454155,
+        "exhaustiveGraphs": 2145,
+        "exhaustiveAssignments": 449398,
+        "firstVisitInitialPositions": 1781207,
+        "firstVisitSearchNodes": 7419964,
+        "fixedPolicyPairs": 954684,
+        "fixedPolicyInitialPositions": 3916282,
+        "randomSmallGraphs": 500,
+        "randomLargeGraphs": 1000,
+        "strategyCertificates": 3008,
+        "metamorphicChecks": 3000,
+        "invalidCases": 30,
+        "checksum": "5543748192885197194",
+        "seconds": 11.2524,
+        "peakRSSKiB": 866768,
+        "maximumCases": [
+          {
+            "name": "5000 vertices,20000 arcs,all targets",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 0,
+            "AWinningVertices": 5000
+          },
+          {
+            "name": "5000-cycle,exact charging gap5000",
+            "n": 5000,
+            "m": 5000,
+            "deletionRounds": 0,
+            "AWinningVertices": 5000
+          },
+          {
+            "name": "5000-chain to charging sink,20000 arcs",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 0,
+            "AWinningVertices": 5000
+          },
+          {
+            "name": "all B,noncharging selfloops,20000 arcs",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 1,
+            "AWinningVertices": 1
+          },
+          {
+            "name": "long chain,transient charge then noncharging sink",
+            "n": 5000,
+            "m": 5000,
+            "deletionRounds": 1,
+            "AWinningVertices": 0
+          },
+          {
+            "name": "5000 vertices,empty-target generic extension",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 1,
+            "AWinningVertices": 0
+          },
+          {
+            "name": "disconnected selfloops,mixed winners",
+            "n": 5000,
+            "m": 5000,
+            "deletionRounds": 1,
+            "AWinningVertices": 2500
+          },
+          {
+            "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+            "n": 5000,
+            "m": 20000,
+            "deletionRounds": 2500,
+            "AWinningVertices": 0
+          }
+        ]
+      },
+      "artifactSha256": {
+        "article": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+        "checker": "450058a255309b88387ab37e2c106b82abb2e5689daba3d74f0becc624f24b13",
+        "sidecar": "b94785067308460aab7b538ac5aa8344a5a12ff25987dacb87bda1fe7544d5d3"
+      }
+    },
+    "normal": {
+      "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "sanitize": false,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "checks": 12032358,
+      "apiCalls": 454155,
+      "exhaustiveGraphs": 2145,
+      "exhaustiveAssignments": 449398,
+      "firstVisitInitialPositions": 1781207,
+      "firstVisitSearchNodes": 7419964,
+      "fixedPolicyPairs": 954684,
+      "fixedPolicyInitialPositions": 3916282,
+      "randomSmallGraphs": 500,
+      "randomLargeGraphs": 1000,
+      "strategyCertificates": 3008,
+      "metamorphicChecks": 3000,
+      "invalidCases": 30,
+      "checksum": "5543748192885197194",
+      "seconds": 0.760505,
+      "peakRSSKiB": 21480,
+      "maximumCases": [
+        {
+          "name": "5000 vertices,20000 arcs,all targets",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-cycle,exact charging gap5000",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-chain to charging sink,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "all B,noncharging selfloops,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 1
+        },
+        {
+          "name": "long chain,transient charge then noncharging sink",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "5000 vertices,empty-target generic extension",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "disconnected selfloops,mixed winners",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 2500
+        },
+        {
+          "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 2500,
+          "AWinningVertices": 0
+        }
+      ]
+    },
+    "asanUbsan": {
+      "articleSha256": "35fe632bb6ae501faa0a7cfbbf2674543167dcc2ef7b3995d0e2b5fdc59f6085",
+      "cppSha256": "e8f17727cc378089486222a8168e5fa42abb26e79e4b56faee4410a70f0627c1",
+      "sanitize": true,
+      "compilerFlags": [
+        "-std=c++20",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie"
+      ],
+      "checks": 12032358,
+      "apiCalls": 454155,
+      "exhaustiveGraphs": 2145,
+      "exhaustiveAssignments": 449398,
+      "firstVisitInitialPositions": 1781207,
+      "firstVisitSearchNodes": 7419964,
+      "fixedPolicyPairs": 954684,
+      "fixedPolicyInitialPositions": 3916282,
+      "randomSmallGraphs": 500,
+      "randomLargeGraphs": 1000,
+      "strategyCertificates": 3008,
+      "metamorphicChecks": 3000,
+      "invalidCases": 30,
+      "checksum": "5543748192885197194",
+      "seconds": 11.2524,
+      "peakRSSKiB": 866768,
+      "maximumCases": [
+        {
+          "name": "5000 vertices,20000 arcs,all targets",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-cycle,exact charging gap5000",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "5000-chain to charging sink,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 0,
+          "AWinningVertices": 5000
+        },
+        {
+          "name": "all B,noncharging selfloops,20000 arcs",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 1
+        },
+        {
+          "name": "long chain,transient charge then noncharging sink",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "5000 vertices,empty-target generic extension",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 1,
+          "AWinningVertices": 0
+        },
+        {
+          "name": "disconnected selfloops,mixed winners",
+          "n": 5000,
+          "m": 5000,
+          "deletionRounds": 1,
+          "AWinningVertices": 2500
+        },
+        {
+          "name": "5000 vertices,20000 arcs,2500 elimination rounds",
+          "n": 5000,
+          "m": 20000,
+          "deletionRounds": 2500,
+          "AWinningVertices": 0
+        }
+      ]
+    },
+    "additionalReviewFile": "research/probes/owned-repeated-target-independent-review.json",
+    "sourceProofApiAndFullOriginalScopeVerified": true
+  }
+}

@@ -1,0 +1,105 @@
+---
+title: "多数の経路の頂点通過回数は、LCAとその親で差分を止める"
+description: "端点を含む経路加算では、共通祖先を一度だけ残す差分式にする。"
+techniqueId: tree-path-vertex-difference
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+端点を含む経路加算では、共通祖先を一度だけ残す差分式にする。
+
+## 使う場面
+
+多数の木の経路について、各頂点を含む本数を求める。経路の両端も含め、同じ頂点を始点・終点にした経路はその一頂点だけを数える。
+
+## 考え方
+
+$c=\mathrm{LCA}(u,v)$ に対して
+
+$$d_u\mathrel{+}=w,\quad d_v\mathrel{+}=w,\quad d_c\mathrel{-}=w,\quad d_{\mathrm{parent}(c)}\mathrel{-}=w$$
+
+とする。$c$ が根なら最後の項を省く。その後、子の差分を親へ足す。各頂点に残った値が、そこを含む経路の重みの合計になる。
+
+辺用の $-2w$ をそのまま使うとLCAの頂点を数え損なう。端点が同じ経路でも、一頂点に重みを一度だけ加算する必要がある。
+
+## 適用条件
+
+木が固定され、全ての経路加算をまとめて処理できる。端点を含む頂点の集計を対象とする。重み付き・負の加算も使えるが、全ての途中値が64ビット整数に収まることを要する。
+
+## なぜ正しいか
+
+一経路だけを見る。LCAより下では端点から上がる差分 $w$ が残る。LCAでは二つの $w$ から一つ引いて $w$ が残る。その親でさらに一つ引くので、それより上には0が伝わる。片端がLCAでも、二つの端点加算と一つの減算がLCAをちょうど一度残す。加算の線形性から全経路でも成り立つ。
+
+## 計算量
+
+毎回の経路走査 $O(NQ)$ を、準備 $O(N\log N)$ と記録・累積 $O(Q\log N+N)$ に減らす。空間は祖先表を含め $O(N\log N)$。
+
+## 実装
+
+`vertex_path_totals` は頂点ごとの合計を返す。根の親は実装上根自身としているため、根がLCAのときの減算を明示的に省く。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct TreeIndex {
+    int n, lg=1;
+    vector<int> parent,depth,tin,tout,order;
+    vector<vector<int>> up;
+    explicit TreeIndex(const vector<vector<int>>& g,int root=0)
+        :n(g.size()),parent(n,-1),depth(n),tin(n),tout(n) {
+        assert(n>0 && 0<=root && root<n);
+        while((1LL<<lg)<=n) ++lg;
+        parent[root]=root;
+        vector<pair<int,int>> stack{{root,0}};
+        while(!stack.empty()) {
+            int v=stack.back().first;
+            int& i=stack.back().second;
+            if(i==0) { tin[v]=order.size();order.push_back(v); }
+            if(i==int(g[v].size())) { tout[v]=order.size();stack.pop_back();continue; }
+            int u=g[v][i++];
+            if(u==parent[v]) continue;
+            parent[u]=v;depth[u]=depth[v]+1;stack.push_back({u,0});
+        }
+        assert(int(order.size())==n);
+        up.assign(lg,vector<int>(n));up[0]=parent;
+        for(int k=1;k<lg;++k) for(int v=0;v<n;++v)
+            up[k][v]=up[k-1][up[k-1][v]];
+    }
+    bool ancestor(int a,int b) const {return tin[a]<=tin[b] && tin[b]<tout[a];}
+    int jump(int v,int steps) const {
+        assert(0<=steps && steps<=depth[v]);
+        for(int k=0;k<lg;++k) if((steps>>k)&1) v=up[k][v];
+        return v;
+    }
+    int lca(int a,int b) const {
+        if(ancestor(a,b)) return a;
+        if(ancestor(b,a)) return b;
+        for(int k=lg-1;k>=0;--k) if(!ancestor(up[k][a],b)) a=up[k][a];
+        return parent[a];
+    }
+};
+
+vector<long long> vertex_path_totals(const vector<vector<int>>& g,
+        const vector<tuple<int,int,long long>>& paths,int root=0) {
+    TreeIndex tree(g,root);
+    vector<long long> d(tree.n);
+    for(auto [u,v,w]:paths) {
+        int c=tree.lca(u,v);
+        d[u]+=w;d[v]+=w;d[c]-=w;
+        if(c!=root) d[tree.parent[c]]-=w;
+    }
+    for(int i=tree.n-1;i>0;--i) {
+        int v=tree.order[i];d[tree.parent[v]]+=d[v];
+    }
+    return d;
+}
+```
+
+## 関連する手法
+
+[多数の経路の辺通過回数は、端点とLCAに差分を置いて下から足す](/flowchartcp/techniques/tree-path-edge-difference/) ・ [木の経路和を根からの累積和とLCAで求める](/flowchartcp/techniques/tree-path-prefix-lca/) ・ [いもす法](/flowchartcp/techniques/difference-array/)
+
+## 参考資料
+
+- [CSES：Counting Paths](https://cses.fi/problemset/task/1136)
+
+<TechniqueReferences techniqueId="tree-path-vertex-difference" />

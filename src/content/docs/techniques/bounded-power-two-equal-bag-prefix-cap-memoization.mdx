@@ -1,0 +1,160 @@
+---
+title: "重さが2の累乗の品物を各袋に配り、等しくできる合計値を数える"
+description: "小さい重さからの供給量を条件にし、合計値の上限を2の累乗で分ける再帰で、実現できる値を重複なく数える。"
+techniqueId: bounded-power-two-equal-bag-prefix-cap-memoization
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+味や重さが $1,2,4,\ldots$ の品物があり、種類 $i$ の在庫は $a_i$ 個である。$x$ 袋それぞれの合計を同じ非負整数 $t$ にしたい。在庫を全て使う必要はなく、空袋も許す。求めるのは、実現できる**異なる合計値 $t$ の個数**であり、袋への配り方の個数ではない。
+
+$x$ や総供給が大きいと、袋を一つずつ作ったり、候補 $t$ を全て試したりできない。二冪より大きい品物は下位桁の不足を補えないことを使い、在庫の接頭和による条件へ直す。その条件から、合計値の上限を小さくする再帰でまとめて数えられる。
+
+## 考え方
+
+在庫の下位 $i+1$ 種類の重み付き総和と、一袋あたりの上限を
+
+$$
+S_i=\sum_{j=0}^{i}2^j a_j,\qquad c_i=\left\lfloor\frac{S_i}{x}\right\rfloor
+$$
+
+とする。配り切らない品物は残してよい。合計 $t$ が実現できるための必要十分条件は、全ての桁 $i$ について
+
+$$
+t\bmod 2^{i+1}\le c_i
+$$
+
+である。$t=0$ は常に実現できる。必要性だけでなく十分性も使うので、その構成は後の節で証明する。
+
+$F(U)$ を $0\le t<U$ にある実現可能な値の個数とする。$F(0)=0$、$F(1)=1$。$U\ge2$ では $H=2^i$ を **$U$ 未満で最大の二冪** とする。すると $H<U\le2H$ なので、候補は $[0,H)$ と $[H,U)$ に分かれる。
+
+後半の値を $t=H+z$ と書くと、$0\le z<H$。$H$ より下の桁の条件は $z$ と同じで、この桁以上では $H+z\le c_i$ だけを追加すればよい。従って
+
+$$
+F(U)=F(H)+F\!\left(\max\left(0,\min(U,c_i+1)-H\right)\right).
+$$
+
+二つの区間は重ならないため、同じ $t$ を二度数えない。この再帰の引数 $U$ と答えを記憶する。全在庫の総和を $T$ とすれば $xt\le T$ が必要なので、最初は $F(\lfloor T/x\rfloor+1)$ を求める。
+
+例えば $x=3$、在庫が $[5,2,1]$ なら $S_0=5,S_1=9,S_2=13$、上限は $1,3,4$。$t=0,1,2,3,4$ の五つが実現できる。$t=2$ は重さ2をそのまま渡す袋と重さ1を二枚渡す袋が混在してもよい。各袋で同じ種類構成にする条件は課していない。
+
+## 適用条件
+
+品物の重さは正確に $2^i$ で、各種類の在庫は非負整数、袋数 $x$ は正の整数である。使わない在庫を残せ、空袋の合計0も数える。任意の重さのナップサックや、全在庫を必ず使う条件へは、この十分条件をそのまま使えない。
+
+掲載API `count_equal_bag_tastiness(x, amounts)` は $1\le x\le\mathrm{INT64\_MAX}$、種類数0〜63、各在庫を非負の `int64_t` とする。要素 $i$ が重さ $2^i$ の個数であり、末尾の個数0も許す。重み付き総和は $T\le\mathrm{INT64\_MAX}=2^{63}-1$ を要求し、全ての入力を検査してから計算する。袋数0以下、負の在庫、64種類以上、総和超過は `std::invalid_argument`。
+
+返り値は `uint64_t` である。$t$ 自体は符号付き64ビット以下でも、$0$ を含む種類数は $T+1=2^{63}$ になり得るためである。空の在庫や全在庫0なら、正の袋数に対して1を返す。[公式配布のハンガリー語版](https://ioi.te.lv/locations/ioi20/contest/day2/Biscuits/HUN.pdf)では $1\le k\le60$、呼出し数 $1\le q\le1000$、$1\le x\le10^{18}$、$0\le a_i\le10^{18}$、各呼出しの重み付き総供給 $T\le10^{18}$ と確認できる。本APIの範囲はこの全体を含む。原典の範囲では答えは高々 $\lfloor T/x\rfloor+1\le10^{18}+1$ なので、`int64_t` へ明示的に変換しても安全である。
+
+## なぜ正しいか
+
+**下位供給の必要性。** 一袋の合計が $t$ なら、その袋に入る重さ $2^{i+1}$ 以上の品物の合計は $2^{i+1}$ の倍数である。従って重さ $2^i$ 以下の品物だけの合計は、$t\bmod2^{i+1}$ 以上必要である。$x$ 袋全てで必要な量を足すと、$x(t\bmod2^{i+1})\le S_i$ となる。
+
+**下位供給の十分性。** 下の桁から品物を処理する。同じ重さの未使用の二包を一包へまとめ、重さを二倍にできるものとして考える。これは実物を変更する操作ではなく、元の品物の重複しない集まりを仮の一包として管理するだけである。包を後で一袋へ渡すときは、その中の全品物を渡せばよい。
+
+桁 $i$ までに、各袋へ $t\bmod2^i$ を渡し終えたとする。前の桁から繰り上がった包と元の $a_i$ 個を合わせると、重さ $2^i$ の包は
+
+$$
+b_i=\left\lfloor\frac{S_i-x(t\bmod2^i)}{2^i}\right\rfloor
+$$
+
+個ある。下の各桁で併合できず残る包は高々一つずつで、その総重みは $1+2+⋯+2^{i-1}=2^i-1$ 以下である。それ以外の未使用の重みは重さ $2^i$ の包へまとまるため、この整数の切り捨ての式が成り立つ。$t$ の桁 $i$ が1なら、条件 $S_i\ge x(t\bmod2^{i+1})$ は $b_i\ge x$ と同値なので、各袋へ一包ずつ渡せる。桁が0なら渡さない。残りは再び二包ずつまとめて次の桁へ進める。従って全桁を終えると、重複使用なしに全袋を合計 $t$ にできる。多すぎる在庫は使わず残せる。
+
+**上限再帰。** $t=H+z$、$H=2^i$、$0\le z<H$ とする。桁 $j<i$ の余りは $z$ と同じである。桁 $i$ の条件は $H+z\le c_i$。さらに上では $t<2H$ かつ $S_j\ge S_i$ なので、その条件から全て従う。一方 $z<H$ の可否は桁 $j<i$ の条件だけで決まる。$i\ge1$ なら最後のその条件が $xz\le S_{i-1}$ を含み、上の桁でも供給が減らないからである。$i=0$ なら $z=0$ のみである。
+
+従って後半の候補は、実現可能な $z$ のうち $z<U-H$ かつ $z<c_i+1-H$ に正確に対応する。上限が負になる場合を0へ切り詰めれば再帰式になる。前半は $F(H)$ が全て数えるため、帰納的に求める種類数は正しい。
+
+**状態数の保証。** 総供給のビット長を $L$ とする。$T=0$ のときは $L=0$。初回引数は $2^L$ 以下で、各状態の二つの子は共に $H$ 以下なので、再帰の階層が一つ以上下がる。
+
+一方の子は必ず二冪、もう一方の子は高々一つである。初回状態から後者の子だけを追う列と、到達し得る各二冪 $2^j$ から後者だけを追う列に分けると、全状態を覆える。初回の列にある非基底状態は高々 $L$ 個。二冪の起点は $1\le j\le L-1$ だけで、各列は高々 $j$ 個である。同じ状態を複数の列で数えても上界として安全なので、記憶する非基底状態数 $M$ は
+
+$$
+M\le L+\sum_{j=1}^{L-1}j=\frac{L(L+1)}2.
+$$
+
+基底の0と1は記憶しない。掲載範囲では $L\le63$ なので $M\le2016$、再帰スタックは高々64段である。状態数が少ないことを、ハッシュの平均性能や実測だけに頼っていない。原典の $T\le10^{18}<2^{60}$ では $L\le60$、状態数は高々1830である。全1000呼出しでも各辞書は呼出し内で完結し、互いに引き継がない。
+
+## 計算量
+
+品物一つずつを未使用か $x$ 袋のいずれかへ割り当てる直接全探索は、品物総数を $A$ として最大 $(x+1)^A$ 通りとなる。全候補 $t$ を調べる方法も $T/x$ に依存する。
+
+掲載実装は種類数 $K\le63$ の入力を検査し、63桁の供給上限を前計算する。メモ化には `std::map` を用いるため、各検索・挿入は最悪 $O(\log(M+1))$。各状態からの再帰呼出しは二回なので、64ビット算術を定数時間として、時間は $O(K+63+L^2\log(L+1))$、補助空間は $O(63+L^2)$。答えの個数や $x$ に比例する処理はない。
+
+入力検査では、重みを掛ける前に `amount <= (INT64_MAX-prefix)>>i` を確かめるため、積を作ってから桁あふれを検出することはない。接頭供給は $2^{63}-1$ 以下、`c_i+1` と初回上限は $2^{63}$ 以下で、符号なし64ビットに収まる。再帰の二つの答えは互いに重ならない区間の個数なので、その和も現在の上限以下に収まる。
+
+## 実装
+
+各呼出しで供給上限と辞書を新しく作る。異なる在庫・袋数の計算に同じメモを使い回さない。`count` の引数は「その値未満」の排他的上限であり、`U-1` の最大ビットから二冪を求める。$U$ 自身が二冪の場合にも、必ず一つ小さい二冪へ進む。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <cstdint>
+#include <limits>
+#include <map>
+#include <stdexcept>
+#include <vector>
+
+namespace equal_bags_detail {
+using UInt = std::uint64_t;
+struct Counter {
+    std::array<UInt, 63> cap{}; // floor(S_i / x) + 1, an exclusive bound.
+    std::map<UInt, UInt> memo;
+
+    UInt count(UInt upper) {
+        if (upper <= 1) return upper;
+        if (const auto found = memo.find(upper); found != memo.end())
+            return found->second;
+        const int bit = static_cast<int>(std::bit_width(upper - 1)) - 1;
+        const UInt half = UInt{1} << bit;
+        const UInt clipped = std::min(upper, cap[bit]);
+        const UInt right = clipped > half ? clipped - half : 0;
+        const UInt answer = count(half) + count(right);
+        memo.emplace(upper, answer);
+        return answer;
+    }
+};
+} // namespace equal_bags_detail
+
+std::uint64_t count_equal_bag_tastiness(
+        std::int64_t bag_count, const std::vector<std::int64_t>& amounts) {
+    if (bag_count <= 0 || amounts.size() > 63)
+        throw std::invalid_argument("positive bag count and at most 63 types required");
+    using UInt = std::uint64_t;
+    const UInt limit = static_cast<UInt>(std::numeric_limits<std::int64_t>::max());
+    const UInt bags = static_cast<UInt>(bag_count);
+    UInt prefix = 0;
+    equal_bags_detail::Counter counter;
+    for (std::size_t bit = 0; bit < 63; ++bit) {
+        if (bit < amounts.size()) {
+            if (amounts[bit] < 0)
+                throw std::invalid_argument("negative supply");
+            const UInt amount = static_cast<UInt>(amounts[bit]);
+            if (amount > ((limit - prefix) >> bit))
+                throw std::invalid_argument("weighted supply exceeds INT64_MAX");
+            prefix += amount << bit;
+        }
+        counter.cap[bit] = prefix / bags + 1;
+    }
+    return counter.count(prefix / bags + 1);
+}
+```
+
+## 関連する手法
+
+[桁DP](/flowchartcp/techniques/digit-dp/)と同じく、上限と二進表現の構造を使う。ただし桁を上から全状態へ配る代わりに、二冪未満の全体と切り詰めた後半を数える一変数の再帰へ圧縮している。
+
+[個数制限のある部分和](/flowchartcp/techniques/subset-sum-repeated-binary/)は一袋で作れる合計を扱う。本技巧では、全 $x$ 袋の同時実現を下位供給の条件で保証する必要がある。一袋の到達集合を求めてから $x$ で割るだけでは足りない。
+
+## 参考資料
+
+- [Packing Biscuits — 主催者公式原典](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/day2-biscuits-ISC.pdf)。全袋の合計をそろえ、配分数ではなく可能な合計値の個数を数える。空袋と未使用在庫も許す。
+- [Solution for Packing Biscuits — 主催者公式解説](https://ioi2020.sg/wp-content/uploads/sites/4/2020/09/biscuits-solutions-ISC.pdf)。二包の繰り上げ、下位供給、上限未満の個数を記憶する方針を参照した。Web抽出で数式・計算量式が欠けるため、掲載した必要十分条件・再帰・状態数の保証は独立に証明した。
+- [情報オリンピック日本委員会の2020年課題一覧](https://www2.ioi-jp.org/ioi/2020/tasks/index.html)。Biscuitsは競技日2、実施日は2020年9月19日。英語PDFの通常抽出では数値制約が欠けたが、次の配布翻訳の検索本文で補って確認した。難度値は設定しない。
+
+- [IOI配布課題アーカイブ](https://ioi.te.lv/locations/ioi20/contest/)からリンクされた[Biscuitsハンガリー語版](https://ioi.te.lv/locations/ioi20/contest/day2/Biscuits/HUN.pdf)。検索本文の「Korlátok」で $k\le60$、$q\le1000$、$x,a_i\le10^{18}$、次ページ先頭で各呼出しの全ビスケットの味総和 $T\le10^{18}$ を確認した。重さ $2^i$ と0の在庫も同じ翻訳本文で確認した。
+
+<TechniqueReferences techniqueId="bounded-power-two-equal-bag-prefix-cap-memoization" />

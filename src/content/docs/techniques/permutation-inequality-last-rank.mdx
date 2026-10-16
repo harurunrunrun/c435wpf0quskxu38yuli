@@ -1,0 +1,91 @@
+---
+title: "隣接する不等号に合う順列は、末尾の相対順位で数える"
+description: "使用済み集合を保存せず、末尾の相対順位を状態にし、遷移を接頭辞和と接尾辞和にする。"
+techniqueId: permutation-inequality-last-rank
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+$1..N$ を一度ずつ使う順列で、隣り合う要素の大小関係だけが指定される。条件を満たす順列の個数を数えたい。$N$ が数千あるため、使用済みの値の集合をビットマスクで持つ方法は使えない。
+
+## 考え方
+
+絶対的な値ではなく、ここまでの要素を小さい順に $0..i-1$ へ付け直したときの並びを数える。$dp_i[j]$ を「長さ $i$ の並びのうち、末尾が相対順位 $j$ で、先頭 $i-1$ 個の不等号を満たすものの数」とする。初期値は $dp_1[0]=1$。
+
+新しい末尾を、$i+1$ 個の中で順位 $k$ とする。元の順位 $j$ は、$j<k$ なら $j$ のまま、$j\ge k$ なら一つ上がって $j+1$ になる。したがって、元の末尾との比較は次のように書ける。
+
+$$
+dp_{i+1}[k]=
+\begin{cases}
+\sum_{j<k}dp_i[j] & \text{次の不等号が }<,\\
+\sum_{j\ge k}dp_i[j] & \text{次の不等号が }>. 
+\end{cases}
+$$
+
+$k$ は $0..i$。各段で $dp_i$ の累積和を作れば、一つの $k$ の遷移を定数時間で求められる。最後は全ての末尾順位の個数を足す。
+
+## 適用条件
+
+要素は全て異なり、使う値の集合が固定され、制約は隣接要素の大小だけで決まる。値を増加順に付け直しても可否が変わらないことが必要になる。
+
+例えば「三番目の値が7」「隣接差が3以上」「離れた二位置の順序も指定」などは、末尾順位だけでは判定できない。重複を許す数列も、順位の挿入が一意でないため、そのまま数えられない。
+
+## なぜ正しいか
+
+条件を満たす長さ $i$ の順位列と、新しい順位 $k$ を選ぶ。既存の値のうち $k$ 以上を一つ上げ、末尾に $k$ を加えると、$0..i$ の順列が一つ決まる。既存要素間の大小は変わらず、新しい不等号だけを調べればよい。
+
+逆に、長さ $i+1$ の順列から末尾の値 $k$ を除き、$k$ より大きい値を一つ下げれば、元の長さ $i$ の順列へ一意に戻せる。従って遷移は重複も漏れもない。
+
+途中の状態は、最終的な $1..N$ のどの値を使ったかを数えているわけではない。相対順位で表した短い順列を数え、長さ $N$ になったとき、その順位を $1..N$ へ一意に対応させる。このため、使った値の選び方の二項係数などを途中で掛けない。
+
+## 計算量
+
+順列の全列挙は $O(N!N)$、使用済み集合を持つDPは指数的な状態数になる。末尾順位の状態は全段で $O(N^2)$ 個。各遷移元を直接足す $O(N^3)$ 時間を、累積和で $O(N^2)$ 時間に減らす。前後二段だけを持つので空間は $O(N)$。
+
+## 実装
+
+`comparisons` の長さを $N-1$ とする。`<` と `>` に加え、条件なしを表す `?` も受け付ける。`?` ではどの順位 $k$ にも元の総数を渡す。長さ0の入力は一要素の順列なので $1$ 通り。法は正の `int` で、1も受け付ける。
+
+掲載実装は $N\le5000$。使用例の二問では法を $1000000007$ にする。`I` と `D` で与えられる場合は、それぞれ `<` と `>` に変換して渡す。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_inequality_permutations(string comparisons, int mod = 998244353) {
+    if (mod <= 0) throw invalid_argument("positive modulus required");
+    if (comparisons.size() >= 5000) throw length_error("N must be at most 5000");
+    for (char c : comparisons)
+        if (c != '<' && c != '>' && c != '?')
+            throw invalid_argument("comparison character");
+    vector<int> dp(1, 1 % mod);
+    for (char c : comparisons) {
+        int size = static_cast<int>(dp.size());
+        vector<int> prefix(size + 1), next(size + 1);
+        for (int j = 0; j < size; ++j)
+            prefix[j + 1] = (static_cast<long long>(prefix[j]) + dp[j]) % mod;
+        for (int k = 0; k <= size; ++k) {
+            if (c == '<') next[k] = prefix[k];
+            else if (c == '>')
+                next[k] = (static_cast<long long>(prefix[size]) - prefix[k] + mod) % mod;
+            else next[k] = prefix[size];
+        }
+        dp.swap(next);
+    }
+    long long answer = 0;
+    for (int count : dp) answer = (answer + count) % mod;
+    return static_cast<int>(answer);
+}
+```
+
+## 関連する手法
+
+[遷移元の和を累積和で求める](/flowchartcp/techniques/dp-range-sum/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [AtCoder DP T：Permutation](https://atcoder.jp/contests/dp/tasks/dp_t)
+- [LeetCode 903：Valid Permutations for DI Sequence](https://leetcode.com/problems/valid-permutations-for-di-sequence/)
+
+<TechniqueReferences techniqueId="permutation-inequality-last-rank" />

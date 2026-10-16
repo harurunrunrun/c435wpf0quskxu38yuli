@@ -1,0 +1,164 @@
+---
+title: "厳密に重い次の全域木は、経路上の異なる重みを二つ持って求める"
+description: "同じ総重みの別解を除くため、追加辺と経路最大が等しいときは厳密な次点を外す。"
+techniqueId: strict-second-mst-two-maxima
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+最小全域木の総重み $W$ より**厳密に大きい**全域木のうち、最も軽いものを求めたい。同じ重みの辺があり、最小全域木とは辺集合が違うだけの別解は答えに含めない。
+
+## 考え方
+
+まず最小全域木 $T$ を一本作る。木に入っていない辺 $(u,v,w)$ を追加すると、$T$ 上の $u$–$v$ 経路と閉路ができる。この経路から重み $x$ の辺を一本外した候補の総重みは $W+w-x$。厳密に重くするには $x<w$ が必要なので、経路上の**$w$ 未満で最大の重み**を外したい。
+
+$T$ の最小性から経路の全辺重みは $w$ 以下である。そこで、経路上の異なる重みの最大値を $m_1$、その次を $m_2<m_1$ とすると、選択は次の二つだけになる。
+
+- $w>m_1$：$m_1$ の辺を外す。
+- $w=m_1$：存在すれば $m_2$ の辺を外す。存在しなければ、この追加辺から厳密に重い候補は作れない。
+
+ダブリングの各区間に「異なる上位二重み」を持たせる。二区間を結合するときは、合わせて高々四つの値から重複を除いて上位二つを残す。全ての非木辺を試し、正の増分の最小値を選ぶ。
+
+たとえば経路重みが $[5,5,3]$、追加辺が5なら、最大辺との交換では総重みが変わらない。「大きい順で二本目」も5なので役に立たず、**異なる重みの二番目である3**を外す必要がある。
+
+## 適用条件
+
+入力は固定された重み付き無向グラフ。負の重み、多重辺、自己ループがあってもよい。自己ループは全域木に入らないため、交換候補から除く。
+
+非連結なら全域木が存在しない。連結でも、木そのものしかない場合や全ての全域木が同じ総重みの場合、厳密に重い次の全域木は存在しない。「辺集合が異なる次の木」を求める問題では、増分0の交換も答えに含まれるので条件を変える。
+
+## なぜ正しいか
+
+非木辺を加えて経路上の辺を一本消すと、必ず全域木になる。最小全域木の経路最大が追加辺より重ければ、その交換で総重みを減らせて矛盾する。従って、ある追加辺から作れる正の増分の最小値は、上の二通りで求まる。
+
+さらに、固定した $T$ からの**一辺交換だけで十分**である。別の全域木 $S$ を考えると、$S\setminus T$ と $T\setminus S$ の辺を一対一に対応させ、各組 $(e,f)$ で $T-f+e$ が木になるようにできる。これは木の交換性である。共通辺を縮約した後、$S$ 側の任意の $k$ 辺の両端を $T$ の経路で結ぶには、少なくとも $k$ 本の $T$ 側の辺が必要になるため、この対応はHallの条件を満たす。
+
+各組の差 $w(e)-w(f)$ は、$T$ の最小性により非負で、その総和は $w(S)-W$ である。$S$ が $W$ より重ければ少なくとも一組は正で、その差は総和以下。従って、厳密次小の木より大きな増分を必要としない一辺交換が必ずあり、列挙した正の候補の最小値が答えとなる。
+
+## 計算量
+
+各非木辺について木の経路を直接たどる方法は $O(MN)$ 時間。整列と最小全域木の構築に $O(M\log M)$、ダブリングの前処理に $O(N\log N)$、全交換候補の評価に $O(M\log N)$ 時間を使う。空間は $O(M+N\log N)$。
+
+## 実装
+
+`strict_second_mst(n, edges)` に0始まりの頂点と `(u,v,w)` の列を渡す。`connected` が真のとき `minimum` が最小総重み、`second` が厳密次小の総重み。候補がなければ `second` は `nullopt`。非連結の場合は `connected` が偽で、総重みは利用しない。
+
+`n >= 1` と正しい頂点番号を仮定する。重みは64ビット整数の全範囲、総和と差は128ビットで計算する。値の有無を個数で管理するので、負の無限大の番兵と最小整数を混同しない。木の走査には明示的なスタックを用いる。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct StrictSecondMstResult {
+    bool connected;
+    __int128 minimum;
+    optional<__int128> second;
+};
+
+StrictSecondMstResult strict_second_mst(
+        int n, const vector<tuple<int,int,long long>>& edges) {
+    assert(n >= 1);
+    struct TopTwo {
+        int count = 0;
+        long long value[2] = {};
+        void add(long long x) {
+            if (count && x == value[0]) return;
+            if (!count || x > value[0]) {
+                if (count) value[1] = value[0];
+                value[0] = x; count = min(2, count + 1);
+            } else if (count == 1 || x > value[1]) {
+                value[1] = x; count = 2;
+            }
+        }
+        void absorb(const TopTwo& other) {
+            for (int i = 0; i < other.count; ++i) add(other.value[i]);
+        }
+    };
+    int m = int(edges.size());
+    vector<int> order(m), dsu(n, -1);
+    vector<bool> selected(m, false);
+    vector<vector<pair<int,long long>>> tree(n);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&](int a, int b) {
+        return get<2>(edges[a]) < get<2>(edges[b]);
+    });
+    auto find = [&](int v) {
+        int r = v;
+        while (dsu[r] >= 0) r = dsu[r];
+        while (v != r) {
+            int next = dsu[v]; dsu[v] = r; v = next;
+        }
+        return r;
+    };
+    __int128 total = 0;
+    int taken = 0;
+    for (int id : order) {
+        auto [u,v,w] = edges[id];
+        int a = find(u), b = find(v);
+        if (a == b) continue;
+        if (dsu[a] > dsu[b]) swap(a,b);
+        dsu[a] += dsu[b]; dsu[b] = a;
+        selected[id] = true; total += __int128(w); ++taken;
+        tree[u].push_back({v,w}); tree[v].push_back({u,w});
+    }
+    if (taken != n - 1) return {false, 0, nullopt};
+    int log = 1;
+    while ((1LL << log) <= n) ++log;
+    vector<vector<int>> up(log, vector<int>(n));
+    vector<vector<TopTwo>> best(log, vector<TopTwo>(n));
+    vector<int> depth(n, -1), stack{0};
+    depth[0] = 0; up[0][0] = 0;
+    while (!stack.empty()) {
+        int v = stack.back(); stack.pop_back();
+        for (auto [u,w] : tree[v]) if (depth[u] < 0) {
+            depth[u] = depth[v] + 1; up[0][u] = v;
+            best[0][u].add(w); stack.push_back(u);
+        }
+    }
+    for (int k = 1; k < log; ++k) for (int v = 0; v < n; ++v) {
+        int p = up[k-1][v]; up[k][v] = up[k-1][p];
+        best[k][v] = best[k-1][v]; best[k][v].absorb(best[k-1][p]);
+    }
+    auto path_top_two = [&](int a, int b) {
+        TopTwo result;
+        if (depth[a] < depth[b]) swap(a,b);
+        int difference = depth[a] - depth[b];
+        for (int k = 0; k < log; ++k) if ((difference >> k) & 1) {
+            result.absorb(best[k][a]); a = up[k][a];
+        }
+        if (a == b) return result;
+        for (int k = log - 1; k >= 0; --k) if (up[k][a] != up[k][b]) {
+            result.absorb(best[k][a]); result.absorb(best[k][b]);
+            a = up[k][a]; b = up[k][b];
+        }
+        result.absorb(best[0][a]); result.absorb(best[0][b]);
+        return result;
+    };
+    optional<__int128> answer;
+    for (int id = 0; id < m; ++id) if (!selected[id]) {
+        auto [u,v,w] = edges[id];
+        if (u == v) continue;
+        TopTwo path = path_top_two(u,v);
+        long long removed;
+        if (w > path.value[0]) removed = path.value[0];
+        else if (w == path.value[0] && path.count == 2)
+            removed = path.value[1];
+        else continue;
+        __int128 candidate = total + __int128(w) - __int128(removed);
+        if (!answer || candidate < *answer) answer = candidate;
+    }
+    return {true, total, answer};
+}
+```
+
+## 関連する手法
+
+[辺一本の追加とパス上の最大辺との交換](/flowchartcp/techniques/mst-replacement-edge/) ・ [ダブリング](/flowchartcp/techniques/doubling/) ・ [同重みの辺の必須判定](/flowchartcp/techniques/mst-equal-weight-edge-classification/)
+
+## 参考資料
+
+- [洛谷：P4180 [BJWC2010] 严格次小生成树](https://www.luogu.com.cn/problem/P4180)
+- [crashed氏の公開解答：経路の最大・次大重みをダブリングで持つ](https://www.luogu.com.cn/article/tdx97f1b)
+
+<TechniqueReferences techniqueId="strict-second-mst-two-maxima" />

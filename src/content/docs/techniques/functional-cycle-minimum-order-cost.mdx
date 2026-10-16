@@ -1,0 +1,108 @@
+---
+title: "各要素に一つの前後条件がある順序は、閉路ごとの最小罰則で作る"
+description: "自分より相手が先なら罰則となる条件を辺にし、閉路に入る前の頂点を先に処理する。"
+techniqueId: functional-cycle-minimum-order-cost
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+全要素を一列に並べる。要素 $v$ ごとに相手 $f(v)$ が一つ指定され、相手を自分より先に置くと非負の罰則 $c_v$ が付く。罰則の合計を最小にし、その順序も作りたい。
+
+全順列の列挙や一般の前後条件の最適化へ進む前に、**各要素から出る条件が一つだけ**であることを使う。
+
+## 考え方
+
+罰則を避けるための条件を、辺 $v\to f(v)$、すなわち「$v$ を $f(v)$ より前に置く」と表す。
+
+入次数0の頂点を順に取り出して並べ、その頂点から出る辺を消す。取り出した時点では、その頂点より先に置かなければならない未処理の頂点はない。相手もまだ後に置けるため、罰則なしで処理できる。
+
+最後に残るのは互いに交わらない有向閉路だけ。一つの閉路では、全ての頂点を相手より先に置けないので、少なくとも一つの条件を破る。罰則が最小の頂点 $b$ を選び、$f(b)$ を先頭として閉路に沿って並べ、$b$ を最後に置く。破るのは $b\to f(b)$ だけになる。
+
+従って最小値は、長さ2以上の各閉路に対する $\min c_v$ の合計である。閉路へ向かう木の部分では罰則を払わない。
+
+## 適用条件
+
+- 各要素に相手が一つだけあり、罰則はその相手との前後関係だけで決まる。
+- 罰則は非負。負の罰則を許すと、複数の条件を破る方が得になる場合がある。
+- 全要素を一度ずつ並べる。追加の締切や位置制限はない。
+
+掲載実装は $f(v)=v$ も受け付ける。その場合、自分自身が自分より先に現れることはないため、罰則は0で、その条件を除く。自己ループにも罰則を付ける別の定義なら、この扱いを変更する。原典の使用例では $f(v)\ne v$ が保証される。
+
+## なぜ正しいか
+
+入次数0の頂点を先に置くと、その頂点を相手より前に置く条件を満たせる。また、その頂点より先に置く必要のある未処理頂点はないため、他の未処理頂点の条件も妨げない。これを繰り返してよい。
+
+残った全頂点は入次数1以上。一方、出次数は高々1なので、残る辺数は頂点数以下である。従って入次数・出次数は全て1となり、残りは有向閉路の集まりになる。
+
+閉路の条件を全て満たすと、一周してある頂点が自分より前に必要となり矛盾する。最低でも一つ破る必要があり、非負の罰則なので、その閉路の最小罰則が下界になる。最小罰則の頂点を最後にする巡回順は、他の全条件を満たして下界を達成する。先に処理した頂点も含めて各要素が一度ずつ並ぶので、全体の最適な順序になる。
+
+## 計算量
+
+全順列を直接試すと $O(N!N)$ 時間。入次数の計算、入次数0の削除、残った閉路の走査は、それぞれ全頂点を定数回処理する。時間・追加空間ともに $O(N)$。
+
+## 実装
+
+`minimum_cost` が最小罰則、`order` がそれを達成する0始まりの頂点列。罰則の発生条件は `position[next[v]] < position[v]` という厳密な比較である。
+
+長さは $0..200000$。罰則は非負の符号付き64ビット整数で、合計はGNU C++の `__int128` を使う。空列の最小値は0。入次数0の処理も閉路の走査も非再帰で行う。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct FunctionalOrderResult {
+    __int128 minimum_cost;
+    vector<int> order;
+};
+
+FunctionalOrderResult minimize_functional_order_cost(
+        const vector<int>& next, const vector<long long>& penalty) {
+    if (next.size() != penalty.size() || next.size() > 200000)
+        throw invalid_argument("array sizes");
+    int n = static_cast<int>(next.size());
+    vector<int> indegree(n);
+    for (int v = 0; v < n; ++v) {
+        if (next[v] < 0 || next[v] >= n) throw out_of_range("successor");
+        if (penalty[v] < 0) throw invalid_argument("nonnegative penalty required");
+        if (next[v] != v) ++indegree[next[v]];
+    }
+    FunctionalOrderResult answer{0, {}};
+    answer.order.reserve(n);
+    for (int v = 0; v < n; ++v)
+        if (indegree[v] == 0) answer.order.push_back(v);
+    for (size_t read = 0; read < answer.order.size(); ++read) {
+        int v = answer.order[read];
+        if (next[v] == v) continue;
+        if (--indegree[next[v]] == 0) answer.order.push_back(next[v]);
+    }
+    for (int start = 0; start < n; ++start) {
+        if (indegree[start] == 0) continue;
+        int cheapest = start, v = start;
+        do {
+            if (penalty[v] < penalty[cheapest]) cheapest = v;
+            indegree[v] = 0;
+            v = next[v];
+        } while (v != start);
+        answer.minimum_cost += static_cast<__int128>(penalty[cheapest]);
+        int first = next[cheapest];
+        v = first;
+        do {
+            answer.order.push_back(v);
+            v = next[v];
+        } while (v != first);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[一つに決まる移動の巡回部分を分ける](/flowchartcp/techniques/functional-graph-cycle-tail/) ・ [トポロジカルソート](/flowchartcp/techniques/topological-sort/)
+
+## 参考資料
+
+- [AtCoder ABC256 E：Takahashi's Anguish](https://atcoder.jp/contests/abc256/tasks/abc256_e)
+- [ABC256 E 公式解説](https://atcoder.jp/contests/abc256/editorial/4145)。閉路ごとの最小罰則を足す方針を示す。掲載実装は入次数0の削除を使い、達成する順序も復元する。
+
+<TechniqueReferences techniqueId="functional-cycle-minimum-order-cost" />

@@ -1,0 +1,96 @@
+---
+title: "各値とANDが0になる相手は、補集合に含まれる入力値を一つずつ保存する"
+description: "入力値を部分集合の証拠として上位のマスクへ渡し、各値の補集合から適合する相手を取り出す。"
+techniqueId: disjoint-mask-subset-witness
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+非負整数の列があり、各値 $x$ に対して、$x\mathbin{\mathrm{AND}}y=0$ となる入力中の値 $y$ を一つ求めたい。要素数が多く全ての二数を試せなくても、値が22ビット程度に収まるなら、値の範囲を表にして一括処理できる。
+
+必要なのは相手の個数ではなく、実際に条件を満たす値一つである。存在判定の真偽値を保存する代わりに、条件を満たす入力値をそのまま保存すると、答えの復元まで同じ計算で済む。
+
+## 考え方
+
+ビット幅を $B$、全ビットが1のマスクを $U=2^B-1$ とする。$x$ と1の位置を共有しないことは、$y$ の1が全て $U\mathbin{\mathrm{XOR}}x$ に含まれることと同値である。整数を1の位置の集合として見ると、探す相手は $x$ の補集合の部分集合になる。
+
+`witness[S]` に「$S$ の部分集合であり、入力に現れる値」を一つ保存する。初めは入力値 $v$ に対して `witness[v] = v` とし、それ以外は `-1` にする。
+
+ビット $b$ を順に処理する。$S$ が $b$ を含み、まだ証拠がなければ、`witness[S ^ (1 << b)]` をコピーする。小さい集合の証拠は、そのビットを足した集合でも証拠になる。全ビットを処理すれば、各 $S$ に含まれる入力値の存在をまとめて調べられる。
+
+例えば入力値が2（`010`）と4（`100`）なら、2の補集合は5（`101`）である。4の証拠を5へ渡しておけば、2の相手として4を返せる。補集合のマスク自体が入力にある必要はない。
+
+## 適用条件
+
+- 値の範囲全体に長さ $2^B$ の表を作れる。掲載実装は $0\le B\le22$、要素数100万以下を扱う。
+- 入力は固定されている。追加・削除を挟む問い合わせでは、表を更新する別の方法が必要になる。
+- 相手の値を一つ返せばよく、要素を使い切る制約や異なる相手を割り当てる制約はない。
+- 掲載実装は同じ入力位置を相手に選ぶことを許す。0は自分自身とANDを取っても0になる。異なる位置が必要なら、0の出現回数や二つの証拠の添字も管理する。
+
+使用例の原典では全入力値が正なので、同じ位置が相手になることはない。掲載実装では0も扱えるように範囲を広げている。符号付き整数の無制限な `~x` は使わず、幅 $B$ の中で補集合を取る。
+
+## なぜ正しいか
+
+初期状態の証拠は入力に現れる値であり、保存先と等しい。コピー元のマスクは保存先の部分集合なので、コピーした証拠も保存先の部分集合である。この性質は全更新で保たれる。
+
+逆に、入力値 $v$ が $S$ の部分集合なら、$S$ にあって $v$ にないビットを一つずつ加える経路がある。ビットごとの更新は、そのビットを含む候補と含まない候補を合わせるため、全ビットの処理後にそのような $v$ が一つでもあれば証拠が残る。既にある証拠を上書きしなくても、どの証拠も以後の上位集合で使えるため、存在する答えを失わない。
+
+従って `witness[U ^ x]` が `-1` なら相手は存在せず、値があれば入力中に存在して $x$ と1の位置を共有しない。両方向が成立するので、存在判定と返す相手はいずれも正しい。
+
+## 計算量
+
+要素数を $N$、ビット幅を $B$ として、時間は $O((B+1)2^B+N)$。$B\ge1$ なら $O(B2^B+N)$ と書ける。表の空間は $O(2^B)$、返り値を含む空間は $O(2^B+N)$。32ビット整数の表なら、$B=22$ の表本体は約16 MiBである。
+
+## 実装
+
+各入力と同じ順序で相手の値を返し、相手がなければ `-1` とする。空配列には空配列を返す。ビット幅、要素数、値の範囲が適用条件に合わなければ `invalid_argument` を投げる。ビット幅0では値0だけを許す。
+
+```cpp
+#include <cstddef>
+#include <stdexcept>
+#include <vector>
+using namespace std;
+
+vector<int> disjoint_mask_witness(
+    const vector<int>& values, int bit_width) {
+    if (bit_width < 0 || bit_width > 22 || values.size() > 1000000) {
+        throw invalid_argument("unsupported bit width or input size");
+    }
+    const int size = 1 << bit_width;
+    for (int value : values) {
+        if (value < 0 || value >= size) {
+            throw invalid_argument("value outside the given bit width");
+        }
+    }
+    if (values.empty()) return {};
+
+    vector<int> witness(size, -1);
+    for (int value : values) witness[value] = value;
+    for (int bit = 0; bit < bit_width; ++bit) {
+        const int flag = 1 << bit;
+        for (int mask = 0; mask < size; ++mask) {
+            if ((mask & flag) != 0 && witness[mask] == -1) {
+                witness[mask] = witness[mask ^ flag];
+            }
+        }
+    }
+
+    vector<int> answer;
+    answer.reserve(values.size());
+    const int full = size - 1;
+    for (int value : values) answer.push_back(witness[full ^ value]);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[部分集合ゼータ変換](/flowchartcp/techniques/subset-transform/)では同じ走査で値を合計する。相手の個数が必要なら、入力値の頻度を合計する形に変えられる。[非空部分集合のANDを0にする数え上げ](/flowchartcp/techniques/subset-and-zero-superset-inclusion/)では、複数要素を選ぶため、上位集合に含まれる個数と包除を組み合わせる。
+
+## 参考資料
+
+- [Codeforces 165E — Compatible Numbers](https://codeforces.com/problemset/problem/165/E)
+- [Codeforces Round 112 公式解説：E](https://codeforces.com/blog/entry/4124)
+
+<TechniqueReferences techniqueId="disjoint-mask-subset-witness" />

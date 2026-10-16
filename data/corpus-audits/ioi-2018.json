@@ -1,0 +1,1518 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ioi-2018",
+  "title": "IOI 2018 の公式競技全6題を先に固定した監査",
+  "cutoff": "2026-10-14",
+  "auditedAt": "2026-10-15",
+  "selection": {
+    "fixedBeforeTechniqueSearch": true,
+    "fixedAt": "2026-10-15T06:55:35.241243+00:00",
+    "selectionRule": "主催公式のContest1/2各3題全件を先に固定。Practice4題とImplementation Noticeと翻訳重複は除外し、記事との相性で入替しない。",
+    "expectedProblems": 6,
+    "fixedProblems": [
+      {
+        "source": "ioi",
+        "problemId": "ioi2018_combo",
+        "officialTaskId": "combo",
+        "day": 1,
+        "date": "2018-09-03",
+        "title": "コンボ",
+        "englishTitle": "Combo",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+        "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+        "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-combo.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2018_seats",
+        "officialTaskId": "seats",
+        "day": 1,
+        "date": "2018-09-03",
+        "title": "座席",
+        "englishTitle": "Seats",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+        "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+        "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-seats.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2018_werewolf",
+        "officialTaskId": "werewolf",
+        "day": 1,
+        "date": "2018-09-03",
+        "title": "狼男",
+        "englishTitle": "Werewolf",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+        "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+        "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-werewolf.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2018_doll",
+        "officialTaskId": "doll",
+        "day": 2,
+        "date": "2018-09-05",
+        "title": "からくり人形",
+        "englishTitle": "Mechanical Doll",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+        "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+        "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-doll.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2018_highway",
+        "officialTaskId": "highway",
+        "day": 2,
+        "date": "2018-09-05",
+        "title": "高速道路の通行料金",
+        "englishTitle": "Highway Tolls",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+        "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+        "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-highway.pdf"
+      },
+      {
+        "source": "ioi",
+        "problemId": "ioi2018_meetings",
+        "officialTaskId": "meetings",
+        "day": 2,
+        "date": "2018-09-05",
+        "title": "会議",
+        "englishTitle": "Meetings",
+        "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+        "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+        "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-meetings.pdf"
+      }
+    ],
+    "contests": [
+      {
+        "name": "IOI 2018",
+        "dates": [
+          "2018-09-03",
+          "2018-09-05"
+        ],
+        "timezone": "Asia/Tokyo",
+        "exactDatesVerified": true,
+        "expectedProblemCount": 6,
+        "indexUrl": "https://ioi2018.jp/competition/tasks/",
+        "dateEvidenceUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+        "archiveIndexUrl": "https://ioi.te.lv/locations/ioi18/contest/"
+      }
+    ],
+    "countEvidence": {
+      "officialIndexUrl": "https://ioi2018.jp/competition/tasks/",
+      "dateEvidenceUrls": [
+        "https://www2.ioi-jp.org/ioi/2018/tasks/index.html"
+      ],
+      "practiceTasksExcluded": [
+        "bubblesort2",
+        "road_service",
+        "timecard",
+        "xylophone"
+      ],
+      "implementationNoticesExcluded": true,
+      "officialIndexStatement": "主催者公式TasksはContest1 Combo/Seats/Werewolf、Contest2 Mechanical Doll/Highway Tolls/Meetingsを列挙。各PDF先頭のtask idでもcombo,seats,werewolf,doll,highway,meetingsと確認。",
+      "dateEvidenceStatement": "日本委員会の公式Tasksは競技日1を2018-09-03、競技日2を2018-09-05、練習を2018-09-02と明記。"
+    }
+  },
+  "snapshot": {
+    "createdAtUTC": "2026-10-15T06:54:51.559241+00:00",
+    "manifestFile": "research/snapshots/ioi-2018-manifest.json",
+    "manifestEntriesSha256": "ccdb633a48e808042bd11343f074010512219d5406b5e3d47f872e55e6648111",
+    "manifestFileSha256": "5f4e3a6d77568ffdd1fbd25f6632c6520bc06b09ec5713b5fcf82385c8cca104",
+    "techniqueMetadataCount": 482,
+    "specificTechniqueCount": 404,
+    "articleCount": 482,
+    "registeredArticleCount": 482,
+    "metadataArticleCountAudited": 482,
+    "flowGraphCount": 449,
+    "walkCount": 503,
+    "entryGraphs": 15,
+    "rawFileCount": 607,
+    "flowSnapshotFile": "research/snapshots/ioi-2018-flow.json.gz",
+    "techniqueSnapshotFile": "research/snapshots/ioi-2018-technique.json.gz",
+    "flowSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e",
+    "techniqueSha256": "74d4857883b0cb6e5e3a8a4518d64143ddc334a534aee4b26797370ba02341be",
+    "initialWorkspaceDirectory": "research/snapshots",
+    "note": "482 metadata/482 MDX/404 specific/449 graphsの開始状態を607ファイルraw bytesのSHAとともにコピー。コピー中変更なし。後続共有変更を初回監査へ遡及しない。",
+    "originalManifestFileSha256": "bc97c90a87d59f384a931ca5e315799372169b8ac5a78fbb4b3bced5d9a600bf",
+    "permanentRawSnapshotCount": 2,
+    "allHistoricalRawFilesPermanentlyStored": false,
+    "allHistoricalMdxPermanentlyStored": false
+  },
+  "records": [
+    {
+      "source": "ioi",
+      "problemId": "ioi2018_combo",
+      "officialTaskId": "combo",
+      "day": 1,
+      "date": "2018-09-03",
+      "title": "コンボ",
+      "englishTitle": "Combo",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+      "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+      "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-combo.pdf",
+      "contest": {
+        "name": "IOI 2018",
+        "division": "Main competition",
+        "year": 2018,
+        "day": 1,
+        "date": "2018-09-03",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "主催IOI2018全課題一覧とJP委員会Tasksで2018-09-03/05の競技日を確認。開催期間やwebクロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "4文字からなる未知列の先頭文字は、その後には二度と現れない。質問文字列に含まれる未知列の最長接頭辞長が返る。",
+        "質問の長さ4N以内、満点N+2回以内で未知列全体を特定する。単なる等値質問ではない。"
+      ],
+      "constraints": {
+        "source": "official task + organizer-hosted translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..2000",
+          "queryLength": "0..4N",
+          "hardQueryLimit": 8000,
+          "fullScoreQueries": "<=N+2",
+          "alphabet": "A,B,X,Y; first symbol never repeats",
+          "adaptive": false
+        },
+        "numericEvidenceUrls": [
+          "https://ioi2018.jp/tasks/contest1/IND-combo.pdf"
+        ],
+        "notes": "英語/日本語PDF通常抽出の消失した数式・上限は、公式主催サイト配布の翻訳PDF検索本文で実際に確認した。画像の目視確認とは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "gap": {
+        "id": "unique-first-symbol-prefix-oracle-multiplexing",
+        "features": [
+          "4文字からなる未知列の先頭文字は、その後には二度と現れない。質問文字列に含まれる未知列の最長接頭辞長が返る。",
+          "質問の長さ4N以内、満点N+2回以内で未知列全体を特定する。単なる等値質問ではない。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "reason": "その他の対話から汎用interactiveへ到達するが、先頭一意を区切りにして複数の接頭辞候補を一質問へ詰め、返答の三値で次の文字を決める構築とN+2回の予算証明がない。",
+        "neededTechniqueIds": [
+          "unique-first-symbol-prefix-oracle-multiplexing"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "prefix-border-occurrences"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "proposedFeatureAnswer": "4文字からなる未知列の先頭文字は、その後には二度と現れない。質問文字列に含まれる未知列の最長接頭辞長が返る。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "主催公式TasksとJP委員会が当該課題にReviewとして直接配布するPDF。公式Reviewの式が通常抽出で欠ける箇所は、IOI本部掲載Tomasz Idziaszek解答冊子と本人の公開HTML/実装を参照し、独立補題とprobeで補完した。著者冊子を当日の公式Reviewそのものとは呼ばない。",
+        "method": "先頭を2質問で確定。残り3文字をa,b,c、既知接頭辞をPとして、中間位置では Paa+Pab+Pac+Pb を質問する。返答|P|+2以上/|P|+1/|P|でa/b/cを選び、最後だけ最大2質問にする。",
+        "complexity": "N>=2で高々N+2質問、各長さ<=4N−1。質問文字列の生成総時間O(N²)、補助O(N)。oracle内部の計算を含めない。",
+        "independentProofSupplement": [
+          "先頭文字が接頭辞Pの先頭にだけあるので、質問内で未知列の接頭辞が始まる位置は各Pの先頭だけ。区切りをまたぐ偽の開始はない。",
+          "次がaなら次々文字はa/b/cのいずれかで、三つのP+a+文字のどれかが|P|+2一致。次がbなら末尾Pbでちょうど|P|+1、それ以外ならちょうど|P|。途中Pの直後に現れる次のPの先頭は未知列の後半では使えず、誤った長い一致を作らない。",
+          "中間位置|P|<=N−2では質問長4|P|+7<=4N−1。先頭2回、中間N−2回、末尾2回でN+2。N=1は先頭だけで終了。"
+        ],
+        "implementationRequirements": [
+          "press callbackと実通信を分離し、oracleが返す最長接頭辞の定義・長さ・回数を検査する。",
+          "全小合法秘密列、N=1/2/2000、全3種類の次文字、先頭文字が再出現する契約違反、返答の不整合とAPIを検証。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day1-combo-review.pdf",
+          "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+          "https://www.algonotes.com/en/solutions-ioi2018/"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "press callbackと実通信を分離し、oracleが返す最長接頭辞の定義・長さ・回数を検査する。",
+          "全小合法秘密列、N=1/2/2000、全3種類の次文字、先頭文字が再出現する契約違反、返答の不整合とAPIを検証。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-organizer-hosted-translations-search-text",
+        "visualDetails": "not-claimed",
+        "publicAuthorSolution": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "scopeMismatch": "その他の対話から汎用interactiveへ到達するが、先頭一意を区切りにして複数の接頭辞候補を一質問へ詰め、返答の三値で次の文字を決める構築とN+2回の予算証明がない。"
+        },
+        {
+          "techniqueId": "prefix-border-occurrences",
+          "file": "src/content/docs/techniques/prefix-border-occurrences.mdx",
+          "sha256": "747fc04482c12337bfef1e0cd5c79deffe4ee7192e8174ef387ab6c057d9d071",
+          "scopeMismatch": "その他の対話から汎用interactiveへ到達するが、先頭一意を区切りにして複数の接頭辞候補を一質問へ詰め、返答の三値で次の文字を決める構築とN+2回の予算証明がない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; frozen src/lib/flow.ts also compiled and cross-checked",
+        "choicesConsumed": 1,
+        "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7",
+        "graphDataSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e"
+      },
+      "verificationNotes": [
+        "原典→公式Review/著者公開解答→主要補題と独立probe→凍結フロー根の順で確認。一般結果へ達しても満点手順がないものはcoveredにしない。",
+        "今回は監査とprobeのみで、再利用C++20/API/技巧記事/分岐/参照行/原典walkは未追加。数値原典確認と主要手順確認と完成実装検証を分ける。",
+        "{\"allLegalStringsLength1to8\": 13120, \"largestQueries\": 10, \"oracle\": \"literal longest secret prefix that occurs as substring\"}"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "unique-first-symbol-prefix-oracle-multiplexing"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回6題の調査・停止位置・分類を保持。原典全数値とAPIの包含、三値の返答と境界を越さない証明、全小列と全記号置換、最大長・最悪回数、独立oracle、通常とASan/UBSan、独立レビューを確認して解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2018_seats",
+      "officialTaskId": "seats",
+      "day": 1,
+      "date": "2018-09-03",
+      "title": "座席",
+      "englishTitle": "Seats",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+      "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+      "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-seats.pdf",
+      "contest": {
+        "name": "IOI 2018",
+        "division": "Main competition",
+        "year": 2018,
+        "day": 1,
+        "date": "2018-09-03",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "主催IOI2018全課題一覧とJP委員会Tasksで2018-09-03/05の競技日を確認。開催期間やwebクロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "長方形格子に0..HW−1の順列を置く。番号の接頭集合が埋まった長方形になるものの個数を求める。",
+        "二つの番号の位置を交換するたびに個数を返す。空の外周を含む局所2×2の角の条件へ直せる。"
+      ],
+      "constraints": {
+        "source": "official task + organizer-hosted translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "H": "positive",
+          "W": "positive",
+          "HW": "<=1000000",
+          "Q": "1..50000",
+          "coordinates": "0<=R_i<H,0<=C_i<W, all distinct",
+          "swap": "0<=a,b<HW and a!=b"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi2018.jp/tasks/contest1/TWN-seats.pdf"
+        ],
+        "notes": "英語/日本語PDF通常抽出の消失した数式・上限は、公式主催サイト配布の翻訳PDF検索本文で実際に確認した。画像の目視確認とは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "grid-arrangements",
+      "choices": [
+        "color-numbers"
+      ],
+      "steps": [
+        {
+          "graphId": "grid-arrangements",
+          "nodeId": "goal",
+          "question": "格子で何を求めますか？",
+          "answer": "color-numbers",
+          "answerLabel": "色や数を置く条件・選んだマスの外接長方形"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "grid-color-numbers",
+        "nodeId": "goal",
+        "type": "question",
+        "title": "格子で何を求めますか？",
+        "options": [
+          {
+            "id": "other",
+            "label": "その他の格子の配置・被覆"
+          },
+          {
+            "id": "color-separation",
+            "label": "二色のマスが同じ行・列を使わない配置の個数"
+          },
+          {
+            "id": "bounding-area",
+            "label": "一様に選んだ K マスの、外接長方形の期待面積"
+          },
+          {
+            "id": "neighbor-modulo",
+            "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+          },
+          {
+            "id": "height-silhouette",
+            "label": "各行・各列の最大高さと、各マスが空かを保って残す総量を最小にする"
+          },
+          {
+            "id": "rectangle-components",
+            "label": "固定された色の格子で、各部分長方形の中だけの同色成分数を求める"
+          },
+          {
+            "id": "xor-predecessor",
+            "label": "3×3のXOR更新と一セルの誤りから、最小の初期図形を逆算する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "dynamic-grid-prefix-rectangle-corner-minimum-count",
+        "features": [
+          "長方形格子に0..HW−1の順列を置く。番号の接頭集合が埋まった長方形になるものの個数を求める。",
+          "二つの番号の位置を交換するたびに個数を返す。空の外周を含む局所2×2の角の条件へ直せる。"
+        ],
+        "firstMissingGraphId": "grid-color-numbers",
+        "firstMissingNodeId": "goal",
+        "stopNodeType": "question",
+        "reason": "格子の色・数の分岐に、順列を交換しながら全番号prefixの矩形性を同時に数える選択肢がない。静的な矩形内成分数や一般lazy segtreeだけでは局所角の不変量と影響する番号区間を説明しない。",
+        "neededTechniqueIds": [
+          "dynamic-grid-prefix-rectangle-corner-minimum-count"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "lazy-segment-tree",
+          "grid-rectangle-components-euler-boundary"
+        ],
+        "currentOptions": [
+          {
+            "id": "other",
+            "label": "その他の格子の配置・被覆"
+          },
+          {
+            "id": "color-separation",
+            "label": "二色のマスが同じ行・列を使わない配置の個数"
+          },
+          {
+            "id": "bounding-area",
+            "label": "一様に選んだ K マスの、外接長方形の期待面積"
+          },
+          {
+            "id": "neighbor-modulo",
+            "label": "異なる正整数を置き、隣接する大きい値÷小さい値の余りをそろえる"
+          },
+          {
+            "id": "height-silhouette",
+            "label": "各行・各列の最大高さと、各マスが空かを保って残す総量を最小にする"
+          },
+          {
+            "id": "rectangle-components",
+            "label": "固定された色の格子で、各部分長方形の中だけの同色成分数を求める"
+          },
+          {
+            "id": "xor-predecessor",
+            "label": "3×3のXOR更新と一セルの誤りから、最小の初期図形を逆算する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "格子で何を求めますか？",
+        "proposedFeatureAnswer": "長方形格子に0..HW−1の順列を置く。番号の接頭集合が埋まった長方形になるものの個数を求める。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "主催公式TasksとJP委員会が当該課題にReviewとして直接配布するPDF。公式Reviewの式が通常抽出で欠ける箇所は、IOI本部掲載Tomasz Idziaszek解答冊子と本人の公開HTML/実装を参照し、独立補題とprobeで補完した。著者冊子を当日の公式Reviewそのものとは呼ばない。",
+        "method": "prefixを黒、外部を白にする。2×2で黒1個または3個の窓数Fを保つ。全prefixでF>=4、F=4 iff黒集合が長方形。各格子頂点の四隣接番号をa<=b<=c<=d（外部=HW）とすると、その寄与はprefix末尾tについて[a,b)と[c,d)への+1。交換前後の高々8頂点だけを消して加え、range add/min/count segtreeで4の個数を返す。",
+        "complexity": "P=HWとしてO(P+Q log(P+1))時間、O(P)空間。(H+1)(W+1)<=4Pで境界込み窓も線形。",
+        "independentProofSupplement": [
+          "最上行の最左/最右、最下行の最左/最右から相異なる黒1個窓が四つあるためC1>=4。F=C1+C3=4 iff C1=4かつC3=0。",
+          "C3=0なら、隣接二行の黒runが縦に接続する際は範囲が完全一致する（片端の差が黒3窓を作る）。従って各4近傍連結成分は長方形。",
+          "長方形成分がC個、対角の角接触がD個ならC1=4C−2D。成分の角接触グラフは単純平面で三角形なし。三つの軸平行矩形が対ごとに接すれば区間のHelly性で一点を共有し、三象限の黒3窓になってしまう。C>=3ならD<=2C−4、C=2ならD<=1なのでC1=4はC=1だけ。逆に一長方形はC1=4,C3=0。",
+          "四番号のうち黒が奇数個になるtは[a,b)または[c,d)。外部sentinelや重複sentinelでも空区間を飛ばせば成立。交換は二セルに触る高々8頂点だけに影響する。",
+          "prefixは非空で常にF>=4、全格子prefixは必ず4なので、全体minは4、minの個数が答え。"
+        ],
+        "implementationRequirements": [
+          "range add/min/countの空区間・全格子prefix・1行/列・外周sentinel・隣接交換窓の重複除去を具体実装。",
+          "原典P=10^6/Q=50000を実行し、全小順列×全交換と独立bbox面積条件で比較。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day1-seats-review.pdf",
+          "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+          "https://www.algonotes.com/en/solutions-ioi2018/"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "range add/min/countの空区間・全格子prefix・1行/列・外周sentinel・隣接交換窓の重複除去を具体実装。",
+          "原典P=10^6/Q=50000を実行し、全小順列×全交換と独立bbox面積条件で比較。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-organizer-hosted-translations-search-text",
+        "visualDetails": "not-claimed",
+        "publicAuthorSolution": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "lazy-segment-tree",
+          "file": "src/content/docs/techniques/lazy-segment-tree.mdx",
+          "sha256": "37fb93ce171c2a1deee8e07e0f5ebdcce02faf5f6f5c5371e47b2c370d0e38b8",
+          "scopeMismatch": "格子の色・数の分岐に、順列を交換しながら全番号prefixの矩形性を同時に数える選択肢がない。静的な矩形内成分数や一般lazy segtreeだけでは局所角の不変量と影響する番号区間を説明しない。"
+        },
+        {
+          "techniqueId": "grid-rectangle-components-euler-boundary",
+          "file": "src/content/docs/techniques/grid-rectangle-components-euler-boundary.mdx",
+          "sha256": "9df245577b10bfe299b45b07200d99334d4a78a7344e4dbf25d243e2525c4a8a",
+          "scopeMismatch": "格子の色・数の分岐に、順列を交換しながら全番号prefixの矩形性を同時に数える選択肢がない。静的な矩形内成分数や一般lazy segtreeだけでは局所角の不変量と影響する番号区間を説明しない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; frozen src/lib/flow.ts also compiled and cross-checked",
+        "choicesConsumed": 1,
+        "stepsSha256": "cbbff07ac5c528ae659d0590df796ea2b67ebcbe8b6442a25c987113bb8efe23",
+        "graphDataSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e"
+      },
+      "verificationNotes": [
+        "原典→公式Review/著者公開解答→主要補題と独立probe→凍結フロー根の順で確認。一般結果へ達しても満点手順がないものはcoveredにしない。",
+        "今回は監査とprobeのみで、再利用C++20/API/技巧記事/分岐/参照行/原典walkは未追加。数値原典確認と主要手順確認と完成実装検証を分ける。",
+        "{\"allNonemptyBitmapsUpTo4x4\": 74938, \"permutations\": 1481, \"everySwap\": 21784, \"oracle\": \"bbox area == cardinality for each label prefix; no corner criterion used by oracle\"}"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "dynamic-grid-prefix-rectangle-corner-minimum-count"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回6題の調査・分類・停止位置と、既存の解法確認を保持。原典全数値とAPI包含、主要補題の独立証明、完全C++20と独立の全小入力oracle、原典最大規模・通常/ASan/UBSan・独立レビュー・根からの特徴分岐で不足を解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2018_werewolf",
+      "officialTaskId": "werewolf",
+      "day": 1,
+      "date": "2018-09-03",
+      "title": "狼男",
+      "englishTitle": "Werewolf",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+      "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+      "hostStatementUrl": "https://ioi2018.jp/tasks/contest1/day1-werewolf.pdf",
+      "contest": {
+        "name": "IOI 2018",
+        "division": "Main competition",
+        "year": 2018,
+        "day": 1,
+        "date": "2018-09-03",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "主催IOI2018全課題一覧とJP委員会Tasksで2018-09-03/05の競技日を確認。開催期間やwebクロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "無向連結グラフで人間は頂点番号>=L、狼は頂点番号<=Rだけを通れる。始点から人間で始め、ある頂点で一度だけ狼へ変わって終点へ行く。",
+        "多数の(S,E,L,R)について可否を求める。変身頂点を列挙せず、二方向の制限付き到達成分の共通頂点を探す。"
+      ],
+      "constraints": {
+        "source": "official task + organizer-hosted translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..200000",
+          "M": "N−1..400000",
+          "Q": "1..200000",
+          "graph": "simple undirected connected",
+          "queries": "0<=L<=S<N,0<=E<=R<N,S!=E,L<=R"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi2018.jp/tasks/contest1/CUB-werewolf.pdf"
+        ],
+        "notes": "英語/日本語PDF通常抽出の消失した数式・上限は、公式主催サイト配布の翻訳PDF検索本文で実際に確認した。画像の目視確認とは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "graphs",
+      "choices": [
+        "network-connection",
+        "connectivity",
+        "static-or-add",
+        "static"
+      ],
+      "steps": [
+        {
+          "graphId": "graphs",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "network-connection",
+          "answerLabel": "全体の接続・接続の変化・道路の復元"
+        },
+        {
+          "graphId": "graphs-network-connection",
+          "nodeId": "shortest",
+          "question": "頂点・辺について何を求めますか？",
+          "answer": "connectivity",
+          "answerLabel": "到達する頂点・成分・全体をつなぐ操作"
+        },
+        {
+          "graphId": "connectivity",
+          "nodeId": "operations",
+          "question": "つながりはどのように変わりますか？",
+          "answer": "static-or-add",
+          "answerLabel": "無向の辺は変わらない、または追加するだけ"
+        },
+        {
+          "graphId": "connectivity-static-or-add",
+          "nodeId": "operations",
+          "question": "つながりはどのように変わりますか？",
+          "answer": "static",
+          "answerLabel": "無向の辺は変わらない"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "bfs",
+        "union-find"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "connectivity-static-or-add",
+        "nodeId": "components",
+        "type": "result",
+        "title": "連結成分を分類する",
+        "options": [],
+        "techniques": [
+          "bfs",
+          "union-find"
+        ]
+      },
+      "gap": {
+        "id": "two-threshold-component-merge-trees-rectangle-intersection",
+        "features": [
+          "無向連結グラフで人間は頂点番号>=L、狼は頂点番号<=Rだけを通れる。始点から人間で始め、ある頂点で一度だけ狼へ変わって終点へ行く。",
+          "多数の(S,E,L,R)について可否を求める。変身頂点を列挙せず、二方向の制限付き到達成分の共通頂点を探す。"
+        ],
+        "firstMissingGraphId": "connectivity-static-or-add",
+        "firstMissingNodeId": "components",
+        "stopNodeType": "result",
+        "reason": "静的な連結性としてbfs/union-findへ到達するが、頂点の下限と上限が異なる二成分の交差を全問い合わせで求める手順はない。二つのEuler順は異なり、数直線上で区間同士を重ねるだけでは誤る。",
+        "neededTechniqueIds": [
+          "two-threshold-component-merge-trees-rectangle-intersection"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "union-find",
+          "subtree-euler-interval",
+          "offline-queries"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "連結成分を分類する",
+        "proposedFeatureAnswer": "無向連結グラフで人間は頂点番号>=L、狼は頂点番号<=Rだけを通れる。始点から人間で始め、ある頂点で一度だけ狼へ変わって終点へ行く。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "主催公式TasksとJP委員会が当該課題にReviewとして直接配布するPDF。公式Reviewの式が通常抽出で欠ける箇所は、IOI本部掲載Tomasz Idziaszek解答冊子と本人の公開HTML/実装を参照し、独立補題とprobeで補完した。著者冊子を当日の公式Reviewそのものとは呼ばない。",
+        "method": "Lを降順に頂点を有効化した併合木と、Rを昇順にした併合木を作る。各queryでS/Eを含む当時のcomponent nodeを記録する。二つの木を葉だけのEuler順にし、各元頂点vを二座標(inLow[v],inHigh[v])へ写す。二成分の葉区間の積長方形がこの点を含むかをoffline sweep/Fenwickで数える。",
+        "complexity": "閾値でqueryを整列する方式はO((N+M)α(N)+(N+Q)log(N+Q))時間、O(N+M+Q)空間。各併合木は最大2N−1ノード。",
+        "independentProofSupplement": [
+          "人間状態でSから到達する成分と、狼状態でEから逆に到達する成分が交わる iff その共通頂点で変身して合法な道がある。無向性と閾値の包含端を使う。",
+          "同じ閾値までの有効頂点だけで辺を併合すれば、そのDSU成分は制限部分グラフの連結成分そのもの。併合のたび新しい親を作れば、過去の成分の葉集合は後で変化しない。",
+          "各木の成分葉集合はその木のDFS順で連続するが、両木の順序は異なる。元頂点を二順序の座標点へ写すことにより、共通頂点の存在は二区間の積長方形の点数>0に等しい。",
+          "半開区間[xl,xr)×[yl,yr)をx<xrとx<xlのprefix二回の差にし、y Fenwickの差で数える。"
+        ],
+        "implementationRequirements": [
+          "両方向のinclusive閾値、同閾値の全頂点/辺の有効化順、query leader保存、葉Euler順、半開長方形差分を実装。",
+          "長鎖2N−1の再帰を避け、最大N/M/Qで計時・メモリ、全小2状態BFS oracleを比較。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day1-werewolf-review.pdf",
+          "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+          "https://www.algonotes.com/en/solutions-ioi2018/"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "両方向のinclusive閾値、同閾値の全頂点/辺の有効化順、query leader保存、葉Euler順、半開長方形差分を実装。",
+          "長鎖2N−1の再帰を避け、最大N/M/Qで計時・メモリ、全小2状態BFS oracleを比較。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-organizer-hosted-translations-search-text",
+        "visualDetails": "not-claimed",
+        "publicAuthorSolution": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "union-find",
+          "file": "src/content/docs/techniques/union-find.mdx",
+          "sha256": "7d8e6f5b4fb933886df5af2be0e1f8eccd6e64dbfde0e8ce2f987ccb74fcf880",
+          "scopeMismatch": "静的な連結性としてbfs/union-findへ到達するが、頂点の下限と上限が異なる二成分の交差を全問い合わせで求める手順はない。二つのEuler順は異なり、数直線上で区間同士を重ねるだけでは誤る。"
+        },
+        {
+          "techniqueId": "subtree-euler-interval",
+          "file": "src/content/docs/techniques/subtree-euler-interval.mdx",
+          "sha256": "16525880b362cc72320dee2157c2581af21f41843b5324ff1d0f316519f06df6",
+          "scopeMismatch": "静的な連結性としてbfs/union-findへ到達するが、頂点の下限と上限が異なる二成分の交差を全問い合わせで求める手順はない。二つのEuler順は異なり、数直線上で区間同士を重ねるだけでは誤る。"
+        },
+        {
+          "techniqueId": "offline-queries",
+          "file": "src/content/docs/techniques/offline-queries.mdx",
+          "sha256": "761809ade2a1f5f0708bdba30693d3e4004eb046fccfe4050f1108a5b5d0b7fb",
+          "scopeMismatch": "静的な連結性としてbfs/union-findへ到達するが、頂点の下限と上限が異なる二成分の交差を全問い合わせで求める手順はない。二つのEuler順は異なり、数直線上で区間同士を重ねるだけでは誤る。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; frozen src/lib/flow.ts also compiled and cross-checked",
+        "choicesConsumed": 4,
+        "stepsSha256": "c59548624a7c616061d15e3aeaf2c806df98d6b84d554efe86b3a9d85f9f13bf",
+        "graphDataSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e"
+      },
+      "verificationNotes": [
+        "原典→公式Review/著者公開解答→主要補題と独立probe→凍結フロー根の順で確認。一般結果へ達しても満点手順がないものはcoveredにしない。",
+        "今回は監査とprobeのみで、再利用C++20/API/技巧記事/分岐/参照行/原典walkは未追加。数値原典確認と主要手順確認と完成実装検証を分ける。",
+        "{\"allConnectedSimpleGraphsN2to5\": 771, \"allValidQueries\": 115398, \"oracle\": \"direct two-form BFS versus two activation trees + Euler rectangles + independent Fenwick sweep\"}"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "two-threshold-component-merge-trees-rectangle-intersection"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回6題の調査・分類・停止位置と、既存の解法確認を保持。原典全数値とAPI包含、主要補題の独立証明、完全C++20と独立の全小入力oracle、原典最大規模・通常/ASan/UBSan・独立レビュー・根からの特徴分岐で不足を解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2018_doll",
+      "officialTaskId": "doll",
+      "day": 2,
+      "date": "2018-09-05",
+      "title": "からくり人形",
+      "englishTitle": "Mechanical Doll",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+      "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+      "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-doll.pdf",
+      "contest": {
+        "name": "IOI 2018",
+        "division": "Main competition",
+        "year": 2018,
+        "day": 2,
+        "date": "2018-09-05",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "主催IOI2018全課題一覧とJP委員会Tasksで2018-09-03/05の競技日を確認。開催期間やwebクロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "入口へ来るたびX/Yを交互に選ぶ二出口スイッチと、一出口のトリガーをつなぎ、指定トリガー列を繰り返す回路を構築する。",
+        "初回の基点復帰までに列を厳密に再生し、全スイッチを初期Xへ戻す。スイッチ個数と状態変化総数を両方制限する。"
+      ],
+      "constraints": {
+        "source": "official task + organizer-hosted translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "M": "1..100000",
+          "N": "1..200000",
+          "A": "1..M, repeats allowed",
+          "hardSwitchLimit": 400000,
+          "stateChangesLimit": 20000000,
+          "fullScoreSwitches": "S<=N+log2(N)"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi2018.jp/tasks/contest2/SYR-doll.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf"
+        ],
+        "notes": "英語/日本語PDF通常抽出の消失した数式・上限は、公式主催サイト配布の翻訳PDF検索本文で実際に確認した。画像の目視確認とは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "thinking",
+      "choices": [
+        "operation-goals"
+      ],
+      "steps": [
+        {
+          "graphId": "thinking",
+          "nodeId": "reason-task",
+          "question": "操作や解の特徴として、どれを調べたいですか？",
+          "answer": "operation-goals",
+          "answerLabel": "操作を戻す・条件に合う形を作る"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "thinking-operation-goals",
+        "nodeId": "reason-task",
+        "type": "question",
+        "title": "操作や解の特徴として、どれを調べたいですか？",
+        "options": [
+          {
+            "id": "construct",
+            "label": "完成形から、最後の操作を考える"
+          },
+          {
+            "id": "reverse",
+            "label": "削除・分割を逆向きの追加・併合にする"
+          },
+          {
+            "id": "graph-build",
+            "label": "距離や個数の条件を満たすグラフを出力する"
+          },
+          {
+            "id": "sequence-operations",
+            "label": "二列の一致・不一致、加算での整列、指定順位の出現、環の一括減算"
+          },
+          {
+            "id": "mex-or-square",
+            "label": "配列全体のmexで値を置き換える、または二度の並べ替えを指定する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "alternating-switch-bit-reversal-pruned-router",
+        "features": [
+          "入口へ来るたびX/Yを交互に選ぶ二出口スイッチと、一出口のトリガーをつなぎ、指定トリガー列を繰り返す回路を構築する。",
+          "初回の基点復帰までに列を厳密に再生し、全スイッチを初期Xへ戻す。スイッチ個数と状態変化総数を両方制限する。"
+        ],
+        "firstMissingGraphId": "thinking-operation-goals",
+        "firstMissingNodeId": "reason-task",
+        "stopNodeType": "question",
+        "reason": "状態が交互に変わる回路構築の入口がない。固定した一出口遷移のdoublingや挿入操作の逆算は、ビット反転順の出力・使わない出口のroot復帰・全状態リセットとスイッチ上限を説明しない。",
+        "neededTechniqueIds": [
+          "alternating-switch-bit-reversal-pruned-router"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "construct-last-operation",
+          "doubling",
+          "invariant"
+        ],
+        "currentOptions": [
+          {
+            "id": "construct",
+            "label": "完成形から、最後の操作を考える"
+          },
+          {
+            "id": "reverse",
+            "label": "削除・分割を逆向きの追加・併合にする"
+          },
+          {
+            "id": "graph-build",
+            "label": "距離や個数の条件を満たすグラフを出力する"
+          },
+          {
+            "id": "sequence-operations",
+            "label": "二列の一致・不一致、加算での整列、指定順位の出現、環の一括減算"
+          },
+          {
+            "id": "mex-or-square",
+            "label": "配列全体のmexで値を置き換える、または二度の並べ替えを指定する"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "操作や解の特徴として、どれを調べたいですか？",
+        "proposedFeatureAnswer": "入口へ来るたびX/Yを交互に選ぶ二出口スイッチと、一出口のトリガーをつなぎ、指定トリガー列を繰り返す回路を構築する。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "主催公式TasksとJP委員会が当該課題にReviewとして直接配布するPDF。公式Reviewの式が通常抽出で欠ける箇所は、IOI本部掲載Tomasz Idziaszek解答冊子と本人の公開HTML/実装を参照し、独立補題とprobeで補完した。著者冊子を当日の公式Reviewそのものとは呼ばない。",
+        "method": "K=N+1個の出力A+[0]を一つのrouterへ共有し、全triggerと基点の出口をrouter根へ向ける。P=nextpow2(K)葉の完全二分スイッチ木はbit-reversal順に葉を訪れる。空間的に先頭P−K葉をroot復帰へ潰し、全て潰れた部分木は一つのroot辺へ省略。残る葉へ、実際の訪問順でA+[0]を割り当てる。",
+        "complexity": "O(M+N log(N+1))時間・O(M+N)空間の構築/検査が可能。S=N−popcount(N)+ceil(log2(N+1))<=N+floor(log2 N)。P<=262144、木高<=18、状態変化<=P*18=4718592。",
+        "independentProofSupplement": [
+          "各スイッチがX/Yを交互に振るため、深さhの完全木の第i回の葉はiのh bitを逆順にした位置。2^h回の葉到達後は全スイッチが偶数回訪問されXへ戻る。",
+          "潰した葉/部分木を根へ戻しても、保持するスイッチの投影された訪問順は変わらず、不要なtriggerだけを飛ばす。最後の訪問葉P−1は必ず残すので、0をそこへ置けば初回基点復帰が全周期の最後となり全保持状態がXに戻る。",
+          "空間的な末尾K葉を含む内部ノード数はsum(j=1..h) ceil(K/2^j)=N−popcount(N)+h。h<=floor(log2 N)+1、popcount(N)>=1より満点上限以内。任意順に葉を潰すとこの個数保証を失う。",
+          "N=1でもK=2、スイッチ1個・2動作でリセットする。未出現triggerの出口は何でもよいが、全triggerを根へ共有しておけば配線は合法。"
+        ],
+        "implementationRequirements": [
+          "負のスイッチ番号、root循環、空間葉順と訪問順の違い、最後の0、全未使用triggerも含むC配列を実装。",
+          "最初の0まで回路を実際にsimulateして列/全X/状態変化とSの両予算を再検査し、最大N/M・不正APIも確認。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-doll-review.pdf",
+          "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+          "https://www.algonotes.com/en/solutions-ioi2018/"
+        ],
+        "statementPageCount": 5,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "負のスイッチ番号、root循環、空間葉順と訪問順の違い、最後の0、全未使用triggerも含むC配列を実装。",
+          "最初の0まで回路を実際にsimulateして列/全X/状態変化とSの両予算を再検査し、最大N/M・不正APIも確認。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-organizer-hosted-translations-search-text",
+        "visualDetails": "not-claimed",
+        "publicAuthorSolution": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "construct-last-operation",
+          "file": "src/content/docs/techniques/construct-last-operation.mdx",
+          "sha256": "2801dd8c511ccda1ac4197ae05b8f65780182c12d3190f7c6ae01ae79c6761f2",
+          "scopeMismatch": "状態が交互に変わる回路構築の入口がない。固定した一出口遷移のdoublingや挿入操作の逆算は、ビット反転順の出力・使わない出口のroot復帰・全状態リセットとスイッチ上限を説明しない。"
+        },
+        {
+          "techniqueId": "doubling",
+          "file": "src/content/docs/techniques/doubling.mdx",
+          "sha256": "bc34bbe6b2b2de32303186868e95fdf38f94d85bb6a1d6aa945023eb158e43ce",
+          "scopeMismatch": "状態が交互に変わる回路構築の入口がない。固定した一出口遷移のdoublingや挿入操作の逆算は、ビット反転順の出力・使わない出口のroot復帰・全状態リセットとスイッチ上限を説明しない。"
+        },
+        {
+          "techniqueId": "invariant",
+          "file": "src/content/docs/techniques/invariant.mdx",
+          "sha256": "59e6a00d6e6ba540b7980fe355355a874d0c409a5a9d3249a239f1daed8ff4b7",
+          "scopeMismatch": "状態が交互に変わる回路構築の入口がない。固定した一出口遷移のdoublingや挿入操作の逆算は、ビット反転順の出力・使わない出口のroot復帰・全状態リセットとスイッチ上限を説明しない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; frozen src/lib/flow.ts also compiled and cross-checked",
+        "choicesConsumed": 1,
+        "stepsSha256": "099ba07100eaf9c0eb4726f55b9297196a0fb5879d10813433389c1669160f24",
+        "graphDataSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e"
+      },
+      "verificationNotes": [
+        "原典→公式Review/著者公開解答→主要補題と独立probe→凍結フロー根の順で確認。一般結果へ達しても満点手順がないものはcoveredにしない。",
+        "今回は監査とprobeのみで、再利用C++20/API/技巧記事/分岐/参照行/原典walkは未追加。数値原典確認と主要手順確認と完成実装検証を分ける。",
+        "{\"allTwoTriggerSequencesLength1to8\": 510, \"maximumN\": 200000, \"maximumM\": 100000, \"switchesAtMaximum\": 200012, \"changesAtMaximum\": 3836286, \"oracle\": \"literal toggle state machine until first origin return; exact trigger sequence and every final switch checked\"}"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "alternating-switch-bit-reversal-pruned-router"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回6題の調査・分類・停止位置と既存の解法確認を保持。原典全域とAPI包含、主要補題と最悪予算の独立証明、完全C++20と全小入力の独立oracle、原典最大規模・通常/ASan/UBSan・独立レビュー・根の特徴分岐まで確認して不足を解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2018_highway",
+      "officialTaskId": "highway",
+      "day": 2,
+      "date": "2018-09-05",
+      "title": "高速道路の通行料金",
+      "englishTitle": "Highway Tolls",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+      "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+      "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-highway.pdf",
+      "contest": {
+        "name": "IOI 2018",
+        "division": "Main competition",
+        "year": 2018,
+        "day": 2,
+        "date": "2018-09-05",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "主催IOI2018全課題一覧とJP委員会Tasksで2018-09-03/05の競技日を確認。開催期間やwebクロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "既知の無向単純連結グラフで、二つの未知頂点は固定されている。各辺へ既知A/Bの二重みを自由に割り当てたとき、未知二点間の最短距離だけを質問できる。",
+        "A<Bの任意整数に対して未知二点を特定する。一般グラフの複数最短路も扱い、満点50回以内を保証する。"
+      ],
+      "constraints": {
+        "source": "official task + organizer-hosted translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "2..90000",
+          "M": "1..130000",
+          "A_B": "1<=A<B<=1000000000",
+          "graph": "simple undirected connected",
+          "hiddenEndpoints": "0<=S,T<N,S!=T, nonadaptive",
+          "hardQueryLimit": 100,
+          "fullScoreQueries": 50,
+          "partialScoreQueries": "51..52"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi2018.jp/tasks/contest2/HKG-highway.pdf"
+        ],
+        "notes": "英語/日本語PDF通常抽出の消失した数式・上限は、公式主催サイト配布の翻訳PDF検索本文で実際に確認した。画像の目視確認とは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [
+        "interactive"
+      ],
+      "canonicalRouteEnd": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "gap": {
+        "id": "binary-weight-distance-oracle-edge-split-endpoint-search",
+        "features": [
+          "既知の無向単純連結グラフで、二つの未知頂点は固定されている。各辺へ既知A/Bの二重みを自由に割り当てたとき、未知二点間の最短距離だけを質問できる。",
+          "A<Bの任意整数に対して未知二点を特定する。一般グラフの複数最短路も扱い、満点50回以内を保証する。"
+        ],
+        "firstMissingGraphId": "interactive-oracles",
+        "firstMissingNodeId": "general-result",
+        "stopNodeType": "result",
+        "reason": "未知の木への二点距離質問とはAPIが違い、一般interactiveへ行くだけではA/B割当の単調述語を作れない。短路上の辺の発見、両端への厳密近接集合、二BFS木へ制限する重み付け、質問50回の丸め込み上界が必要。",
+        "neededTechniqueIds": [
+          "binary-weight-distance-oracle-edge-split-endpoint-search"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "interactive",
+          "interactive-tree-diameter",
+          "binary-search"
+        ],
+        "currentOptions": [],
+        "currentQuestion": "返答から次の合法な質問・移動を決める",
+        "proposedFeatureAnswer": "既知の無向単純連結グラフで、二つの未知頂点は固定されている。各辺へ既知A/Bの二重みを自由に割り当てたとき、未知二点間の最短距離だけを質問できる。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "主催公式TasksとJP委員会が当該課題にReviewとして直接配布するPDF。公式Reviewの式が通常抽出で欠ける箇所は、IOI本部掲載Tomasz Idziaszek解答冊子と本人の公開HTML/実装を参照し、独立補題とprobeで補完した。著者冊子を当日の公式Reviewそのものとは呼ばない。",
+        "method": "全Aのbaseline Dを1回聞く。辺番号prefixをBにする単調判定で最初に距離>Dとなる辺e=(u,v)を二分し、元の最短路上の辺を得る。du<dvの集合Uとdv<duの集合Vに分け、それぞれu/v根BFS木を作る。この二木とeだけA、他をBとすれば最短A路を一意に固定できる。各木で祖先が先の頂点順のsuffix parent-edgeをBにする質問を二分し、各未知端点を求める。",
+        "complexity": "1+ceil(log2 M)+ceil(log2 |U|)+ceil(log2 |V|)<=1+17+32=50質問。質問ベクトル作成込みO((N+M)log(N+M))ローカル時間、O(N+M)空間。距離は最大(N−1)B<9e13でint64に収まる。",
+        "independentProofSupplement": [
+          "最初に重くしてbaselineを壊す辺eについて、直前にはprefixを避ける元の最短路があり、次のeがその路上にある。複数最短路があっても少なくとも一本で成立する。",
+          "その最短路をS..u−v..Tと向けるとd(S,u)<d(S,v)、d(T,v)<d(T,u)。逆ならeを通らず短くできる。各厳密近接集合は、対応根へのBFS親を取っても外へ出ない。",
+          "二木とeに沿って距離d(S,u)+1+d(v,T)=D/Aを保つ路がある。その他の辺をBにしてもbaselineは残る。Aだけのグラフは二木+eという木なので、そのS−T路は一意。",
+          "追加でその木の辺集合をBにした後に距離がbaselineのまま iff 一意A路がその集合を避ける。B辺を使う路はhop数が元最短以上かつB>Aなのでbaselineを超える。",
+          "祖先先行順ではroot→端点路の最大番号が端点自身。suffix質問で端点番号の大小を判定できる。二集合は素で合計<=90000、ceil logの和は32以下（33以上の最小和は65537+32769>90000）。"
+        ],
+        "implementationRequirements": [
+          "edge-prefix pivot、同距離頂点の除外、BFS parent順、root自身が端点の場合、全M端子の質問、baselineの厳密比較を実装。",
+          "全小グラフ全未知対で真のDijkstra応答と比較、A/B近接・巨大差、最大N/Mと50質問境界・不正callbackを確認。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf",
+          "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+          "https://www.algonotes.com/en/solutions-ioi2018/"
+        ],
+        "statementPageCount": 4,
+        "editorialPageCount": 2,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "edge-prefix pivot、同距離頂点の除外、BFS parent順、root自身が端点の場合、全M端子の質問、baselineの厳密比較を実装。",
+          "全小グラフ全未知対で真のDijkstra応答と比較、A/B近接・巨大差、最大N/Mと50質問境界・不正callbackを確認。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-organizer-hosted-translations-search-text",
+        "visualDetails": "not-claimed",
+        "publicAuthorSolution": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "interactive",
+          "file": "src/content/docs/techniques/interactive.mdx",
+          "sha256": "678dee906316c0e2cc110f3d8ae5e5ccaeaabec9966150ac41d36cdd155258c2",
+          "scopeMismatch": "未知の木への二点距離質問とはAPIが違い、一般interactiveへ行くだけではA/B割当の単調述語を作れない。短路上の辺の発見、両端への厳密近接集合、二BFS木へ制限する重み付け、質問50回の丸め込み上界が必要。"
+        },
+        {
+          "techniqueId": "interactive-tree-diameter",
+          "file": "src/content/docs/techniques/interactive-tree-diameter.mdx",
+          "sha256": "338a8ebe149aae5aaee352c02454364c80440e89469efd1031b3e418cbb66012",
+          "scopeMismatch": "未知の木への二点距離質問とはAPIが違い、一般interactiveへ行くだけではA/B割当の単調述語を作れない。短路上の辺の発見、両端への厳密近接集合、二BFS木へ制限する重み付け、質問50回の丸め込み上界が必要。"
+        },
+        {
+          "techniqueId": "binary-search",
+          "file": "src/content/docs/techniques/binary-search.mdx",
+          "sha256": "2974c005fe0a456940fae81d2091b4759dec7b867fc0da7bb79859cc740ee83d",
+          "scopeMismatch": "未知の木への二点距離質問とはAPIが違い、一般interactiveへ行くだけではA/B割当の単調述語を作れない。短路上の辺の発見、両端への厳密近接集合、二BFS木へ制限する重み付け、質問50回の丸め込み上界が必要。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; frozen src/lib/flow.ts also compiled and cross-checked",
+        "choicesConsumed": 1,
+        "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7",
+        "graphDataSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e"
+      },
+      "verificationNotes": [
+        "原典→公式Review/著者公開解答→主要補題と独立probe→凍結フロー根の順で確認。一般結果へ達しても満点手順がないものはcoveredにしない。",
+        "今回は監査とprobeのみで、再利用C++20/API/技巧記事/分岐/参照行/原典walkは未追加。数値原典確認と主要手順確認と完成実装検証を分ける。",
+        "{\"allConnectedSimpleGraphsN2to5\": 771, \"allPairsTimesThreeTollSettings\": 22563, \"maximumQueriesSmall\": 7, \"maximumSplitCeilLogsAtN90000\": 32, \"fullQueryBound\": 50, \"oracle\": \"Dijkstra on each actual queried A/B weighting; answer pair checked, no shortest-path-tree assumption in oracle\"}"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "binary-weight-distance-oracle-edge-split-endpoint-search"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回6題の調査・分類・停止位置と既存の解法確認を保持。原典全域とAPI包含、主要補題と最悪予算の独立証明、完全C++20と全小入力の独立oracle、原典最大規模・通常/ASan/UBSan・独立レビュー・根の特徴分岐まで確認して不足を解消。"
+      }
+    },
+    {
+      "source": "ioi",
+      "problemId": "ioi2018_meetings",
+      "officialTaskId": "meetings",
+      "day": 2,
+      "date": "2018-09-05",
+      "title": "会議",
+      "englishTitle": "Meetings",
+      "statementUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+      "editorialUrl": "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+      "hostStatementUrl": "https://ioi2018.jp/tasks/contest2/day2-meetings.pdf",
+      "contest": {
+        "name": "IOI 2018",
+        "division": "Main competition",
+        "year": 2018,
+        "day": 2,
+        "date": "2018-09-05",
+        "exactDateVerified": true
+      },
+      "publicationDateStatus": "contest-before-cutoff",
+      "cutoffVerification": "主催IOI2018全課題一覧とJP委員会Tasksで2018-09-03/05の競技日を確認。開催期間やwebクロール日を競技日へ転用しない。",
+      "difficulty": null,
+      "features": [
+        "固定の高さ列の各区間について、その中の会場xを選び、各参加者iからxまでの最大高さを全員分足した費用を最小にする。",
+        "多数の区間queryに対し最適な会場も区間ごとに変わる。高さが等しい場合もあり、単なる区間最大や全区間の最大値総和ではない。"
+      ],
+      "constraints": {
+        "source": "official task + organizer-hosted translations",
+        "numericBoundsVerified": true,
+        "values": {
+          "N": "1..750000",
+          "Q": "1..750000",
+          "heights": "1..1000000000",
+          "queries": "0<=L<=R<N; all query endpoint pairs distinct",
+          "costBound": "<=750000000000000"
+        },
+        "numericEvidenceUrls": [
+          "https://ioi2018.jp/tasks/contest2/TWN-meetings.pdf"
+        ],
+        "notes": "英語/日本語PDF通常抽出の消失した数式・上限は、公式主催サイト配布の翻訳PDF検索本文で実際に確認した。画像の目視確認とは主張しない。"
+      },
+      "reviewStatus": "verified",
+      "classification": "missing-technique",
+      "auditOutcome": "concrete-technique-and-implementation-missing",
+      "entryGraphId": "ranges",
+      "choices": [
+        "aggregate-goals",
+        "static",
+        "aggregate-forms"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "aggregate-goals",
+          "answerLabel": "連続する区間・利用期間・開催日の得点を集計する"
+        },
+        {
+          "graphId": "range-aggregate-goals",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "static",
+          "answerLabel": "変わらない配列の指定区間を集計する"
+        },
+        {
+          "graphId": "range-static",
+          "nodeId": "kind",
+          "question": "変わらない配列から何を求めますか？",
+          "answer": "aggregate-forms",
+          "answerLabel": "最小最大・並べ替えた一致・全加算後の値"
+        }
+      ],
+      "expectedTechniqueIds": [],
+      "actualReachedTechniqueIds": [],
+      "canonicalRouteEnd": {
+        "graphId": "range-static-aggregate-forms",
+        "nodeId": "kind",
+        "type": "question",
+        "title": "変わらない配列から何を求めますか？",
+        "options": [
+          {
+            "id": "minmax",
+            "label": "指定区間の最小値・最大値"
+          },
+          {
+            "id": "multiset",
+            "label": "二つの区間の値を並べ替えると一致するか"
+          },
+          {
+            "id": "apply",
+            "label": "区間加算を全部終えた後の値"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "gap": {
+        "id": "cartesian-prefix-meeting-cost-single-cross-envelope",
+        "features": [
+          "固定の高さ列の各区間について、その中の会場xを選び、各参加者iからxまでの最大高さを全員分足した費用を最小にする。",
+          "多数の区間queryに対し最適な会場も区間ごとに変わる。高さが等しい場合もあり、単なる区間最大や全区間の最大値総和ではない。"
+        ],
+        "firstMissingGraphId": "range-static-aggregate-forms",
+        "firstMissingNodeId": "kind",
+        "stopNodeType": "question",
+        "reason": "静的配列の集計から区間最小最大の選択肢までは来るが、会場の選択を含む最大値和の最小化がない。Cartesian tree一般論や全区間最大値の寄与は、prefix最適費用の一本交差と区分一次式の破壊的併合に代わらない。",
+        "neededTechniqueIds": [
+          "cartesian-prefix-meeting-cost-single-cross-envelope"
+        ],
+        "implementationNeeded": true,
+        "existingRelatedTechniqueIds": [
+          "skyline-cartesian-star-paths",
+          "subarray-extremum-contribution",
+          "small-to-large"
+        ],
+        "currentOptions": [
+          {
+            "id": "minmax",
+            "label": "指定区間の最小値・最大値"
+          },
+          {
+            "id": "multiset",
+            "label": "二つの区間の値を並べ替えると一致するか"
+          },
+          {
+            "id": "apply",
+            "label": "区間加算を全部終えた後の値"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "currentQuestion": "変わらない配列から何を求めますか？",
+        "proposedFeatureAnswer": "固定の高さ列の各区間について、その中の会場xを選び、各参加者iからxまでの最大高さを全員分足した費用を最小にする。"
+      },
+      "technicalFindings": {
+        "verification": "independent-analysis",
+        "editorialProvenance": "主催公式TasksとJP委員会が当該課題にReviewとして直接配布するPDF。公式Reviewの式が通常抽出で欠ける箇所は、IOI本部掲載Tomasz Idziaszek解答冊子と本人の公開HTML/実装を参照し、独立補題とprobeで補完した。著者冊子を当日の公式Reviewそのものとは呼ばない。",
+        "method": "元位置を固定tie優先順位にした最大Cartesian treeを作り、各部分木区間[l,r]の全prefix最適費用Sを後順に計算する。根v、左全体の費用Lcost、右prefix k個の費用R(k)なら、右側prefixの新費用はmin(Lcost+(k+1)H_v,(v−l+1)H_v+R(k))。差は非減少なので一本の交点で前半の直線と後半の右関数を結ぶ。全Sを区分一次のmapとoffsetで破壊的に併合し、必要queryはその時に読む。一般区間は最大位置の右側に会場を置く候補を作り、元tie優先順位を保って反転した候補とminを取る。",
+        "complexity": "線分fragmentの総生成O(N)、各削除一回、交点・queryのmap探索O(log N)。offset調整の大小は生存fragment数ではなく元部分木頂点数で決める安全な実装なら、各fragmentの出生頂点が小側で動くたび元集合が倍増し、調整合計O(N log N)。全体O((N+Q)log(N+1))時間、O(N+Q)空間を目標とする。監査probeは明示配列DPであり、この圧縮実装自体は未作成。",
+        "independentProofSupplement": [
+          "区間の最大位置vより左の会場なら、vから右端までの参加者の寄与は全てH_v。従って左側だけの最適費用とその定数を足せる。右側も同様で、v自身を選ぶ場合は全員H_vとなり両候補に含められる。",
+          "右prefixを一個延長しても、元の最適会場へ新参加者を追加すれば費用増分はH_v以下。よってF(k)−G(k)の差分はH_v−(R(k+1)−R(k))>=0。最小はFのprefix、Gのsuffixという一本交差になる。",
+          "左prefixの関数を保持し、中心の一点と右prefixの上書き直線を高々二fragment生成する。覆った右fragmentは一度しか削除されず、部分的に残る一本だけの始点を更新する。",
+          "同高さは元indexを第二キーにした固定全順序で扱う。反転後も元index優先順位を保たないと[2,1,2]全区間で両側が別の最大を選び6を返し、正解5を逃す。順序を保った二方向DPは同じ最大vの左右を尽くす。",
+          "遅延offsetの併合は出生元頂点へchargeし、元部分木サイズをmassとする。小側を調整した出生元を含むmassは倍以上になり、削除により生存fragment数が減ってもこのchargeは崩れない。"
+        ],
+        "implementationRequirements": [
+          "global position keyのmapで既存keyをconst_castして変更せず、erase/reinsertやnode handleを使う。原典author公開コードをそのままC++20安全コードと呼ばない。",
+          "元位置のtie優先順位を両向きで共有、空の左右、prefix始点・終点・query登録時期を具体化する。",
+          "750000長鎖の再帰を避け、64bit費用、破壊的fragmentの寿命とoffset/massの全償却を実コードで監査し、最大N/Q・同高さ・全区間直接oracleで検証。"
+        ],
+        "sourceUrls": [
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings.pdf",
+          "https://www2.ioi-jp.org/ioi/2018/tasks/day2-meetings-review.pdf",
+          "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+          "https://www.algonotes.com/en/solutions-ioi2018/"
+        ],
+        "statementPageCount": 3,
+        "editorialPageCount": 4,
+        "fullImplementationValidated": false,
+        "unconfirmedDetails": [],
+        "remainingImplementationValidation": [
+          "global position keyのmapで既存keyをconst_castして変更せず、erase/reinsertやnode handleを使う。原典author公開コードをそのままC++20安全コードと呼ばない。",
+          "元位置のtie優先順位を両向きで共有、空の左右、prefix始点・終点・query登録時期を具体化する。",
+          "750000長鎖の再帰を避け、64bit費用、破壊的fragmentの寿命とoffset/massの全償却を実コードで監査し、最大N/Q・同高さ・全区間直接oracleで検証。"
+        ]
+      },
+      "materialStatus": {
+        "statement": "retrieved-and-reviewed",
+        "statementVerified": true,
+        "officialEditorialRetrieved": true,
+        "officialEditorialVerified": true,
+        "officialEditorial": "retrieved-and-reviewed-with-explicit-independent-supplements",
+        "solution": "retrieved-and-reviewed",
+        "numericBounds": "verified-in-organizer-hosted-translations-search-text",
+        "visualDetails": "not-claimed",
+        "publicAuthorSolution": "retrieved-and-reviewed"
+      },
+      "collectionStatus": "statement-and-independent-analysis-verified",
+      "techniqueMappingStatus": "not-registered-until-article-flow-and-independent-validation",
+      "reviewedAt": "2026-10-15",
+      "relatedArticleReview": [
+        {
+          "techniqueId": "skyline-cartesian-star-paths",
+          "file": "src/content/docs/techniques/skyline-cartesian-star-paths.mdx",
+          "sha256": "8f7b4bc1beda2e90d167c71735049dcd6df832d23f9080c28b8ddfa29e60373d",
+          "scopeMismatch": "静的配列の集計から区間最小最大の選択肢までは来るが、会場の選択を含む最大値和の最小化がない。Cartesian tree一般論や全区間最大値の寄与は、prefix最適費用の一本交差と区分一次式の破壊的併合に代わらない。"
+        },
+        {
+          "techniqueId": "subarray-extremum-contribution",
+          "file": "src/content/docs/techniques/subarray-extremum-contribution.mdx",
+          "sha256": "02c2260416e06ab697b9eac3c5bba5c80a2eba8f1c769a6fe7f5e1df51c19833",
+          "scopeMismatch": "静的配列の集計から区間最小最大の選択肢までは来るが、会場の選択を含む最大値和の最小化がない。Cartesian tree一般論や全区間最大値の寄与は、prefix最適費用の一本交差と区分一次式の破壊的併合に代わらない。"
+        },
+        {
+          "techniqueId": "small-to-large",
+          "file": "src/content/docs/techniques/small-to-large.mdx",
+          "sha256": "141f6dc4da205230597247a6016825170b408038741ca7ae63499594f321b1fd",
+          "scopeMismatch": "静的配列の集計から区間最小最大の選択肢までは来るが、会場の選択を含む最大値和の最小化がない。Cartesian tree一般論や全区間最大値の寄与は、prefix最適費用の一本交差と区分一次式の破壊的併合に代わらない。"
+        }
+      ],
+      "navigationReplay": {
+        "runtime": "independent raw JSON interpreter; frozen src/lib/flow.ts also compiled and cross-checked",
+        "choicesConsumed": 3,
+        "stepsSha256": "49c5682b88a7c8aa430805283f5dc2fb6dc9e5619d310dbea39ddda8b06311aa",
+        "graphDataSha256": "51b48b37676eb0d9d19a5306bd736b83950c8573ff4790bddb6853b4e7b0ea2e"
+      },
+      "verificationNotes": [
+        "原典→公式Review/著者公開解答→主要補題と独立probe→凍結フロー根の順で確認。一般結果へ達しても満点手順がないものはcoveredにしない。",
+        "今回は監査とprobeのみで、再利用C++20/API/技巧記事/分岐/参照行/原典walkは未追加。数値原典確認と主要手順確認と完成実装検証を分ける。",
+        "{\"allHeightArraysN1to7Values1to3\": 3279, \"allIntervalQueries\": 81192, \"allCartesianPrefixEntries\": 63084, \"equalHeightsIncluded\": true, \"oracle\": \"enumerate every meeting site and every participant, take literal intervening maximum; vector DP and one-cross inequality checked\"}"
+      ],
+      "resolution": {
+        "status": "verified",
+        "reviewedAt": "2026-10-15",
+        "techniqueIds": [
+          "cartesian-prefix-meeting-cost-single-cross-envelope"
+        ],
+        "rootWalkFile": "data/problem-walks.json",
+        "notes": "初回調査全6行/状態/不足位置と既確認研究を保持。固定元添字tie、全接頭辞DPの一交差、破壊的map/offsetの寿命と元頂点mass倍増、64bitと反復処理を独立証明。完全C++20を全小列の全会場oracle/一方向候補/原典最大N/Q7構成/通常とASan/UBSan、別metamorphicと最大一般高さ長区間oracleで確認し、根の特徴分岐と使用例まで接続して不足を解消。"
+      }
+    }
+  ],
+  "status": {
+    "fixedProblemListComplete": true,
+    "firstPassAuditComplete": true,
+    "fixedCorpusResearchComplete": true,
+    "fixedCorpusCoverageComplete": false,
+    "globalCoverageComplete": false,
+    "recordCount": 6,
+    "statementVerifiedCount": 6,
+    "officialEditorialRetrievedCount": 6,
+    "officialEditorialVerifiedCount": 6,
+    "solutionReviewedCount": 6,
+    "coveredCount": 0,
+    "missingRouteCount": 0,
+    "missingTechniqueCount": 6,
+    "unconfirmedCount": 0,
+    "unavailableCount": 0,
+    "numericBoundsVerifiedCount": 6,
+    "numericBoundsUnconfirmedCount": 0,
+    "unconfirmedPrincipalDetailsCount": 0,
+    "fullImplementationValidatedCount": 0,
+    "firstPassAuditCompleteDefinition": "公式の全6題を先に固定し、原典/公式Review/著者解答、主要補題、開始時分野根からの停止位置を全件記録した。",
+    "fixedCorpusResearchCompleteDefinition": "今回の全6題の満点方針と主要補題を確認。未作成の圧縮実装/APIや全最大制約の検査まで完成したという意味ではない。",
+    "articleResolutionComplete": false,
+    "articleResolutionNotes": "既存原典refsにIOI2018一致0、新技巧IDは全て不存在。記事/公開C++20/ナビゲーション/参照行/問題walkは未追加。監査候補と独立probeのみ。"
+  },
+  "classificationDefinitions": {
+    "missing-technique": "満点に必要な具体手順と主要補題は確認したが、その内容を常時表示の再利用実装まで説明する記事が存在しない。一般アルゴリズムへの到達はcoveredではない。",
+    "missing-route": "十分な既存記事があるのに特徴から届かない場合。今回は0。",
+    "unconfirmed": "原典取得や満点手順の主要補題が未確認の場合。数値上限だけの未確認と別に数える。今回は6題とも主要補題を確認。",
+    "covered": "既存具体記事が証明とAPIを含めて手順を満たし、入力特徴から到達する場合。今回は0。"
+  },
+  "materials": {
+    "officialHostIndex": "https://ioi2018.jp/competition/tasks/",
+    "dateAndTranslationsIndex": "https://www2.ioi-jp.org/ioi/2018/tasks/index.html",
+    "officialHistoryArchive": "https://ioi.te.lv/locations/ioi18/contest/",
+    "publicSupplementBooklet": "https://ioinformatics.org/files/booklet-ioi2018.pdf",
+    "supplementAuthor": "Tomasz Idziaszek",
+    "supplementRevision": "2020-03",
+    "supplementProvenance": "IOI本部掲載・International Committee of IOIの一部支援を明記する著者解答冊子。本人HTMLとコードへリンク。大会当日の公式Reviewと区別する。",
+    "publicSupplementHtml": "https://www.algonotes.com/en/solutions-ioi2018/",
+    "publicSupplementCode": "https://github.com/idziaszek/algonotes-codes/tree/master/solutions-ioi2018",
+    "numericAcquisition": "主催host配布IND-combo/TWN-seats/CUB-werewolf/SYR-doll/HKG-highway/TWN-meetingsの検索本文で欠落式を取得。AOI repoは2018ディレクトリなし。native PDF取得承認待ちは行わない。"
+  },
+  "limits": {
+    "globalCoverageComplete": false,
+    "numericBoundsNotGuessed": true,
+    "primaryPdfVisualInspectionClaimed": false,
+    "articlesCreated": false,
+    "sharedDataModified": false,
+    "pushOrPublishPerformed": false,
+    "environmentFilesRead": false,
+    "fullReusableCppOrAllMaximumTestsClaimed": false
+  },
+  "validation": {
+    "independentRawRouteReplay": true,
+    "frozenProductRuntimeAlsoMatched": true,
+    "fixedPathCount": 6,
+    "allManifestFilesRehashed": true,
+    "sourceStableDuringCopy": true,
+    "duplicateProblemIds": 0,
+    "existingOriginalReferences": 0,
+    "neededTechniqueIdsAllAbsent": true,
+    "probeResults": {
+      "combo": {
+        "allLegalStringsLength1to8": 13120,
+        "largestQueries": 10,
+        "oracle": "literal longest secret prefix that occurs as substring"
+      },
+      "seats": {
+        "allNonemptyBitmapsUpTo4x4": 74938,
+        "permutations": 1481,
+        "everySwap": 21784,
+        "oracle": "bbox area == cardinality for each label prefix; no corner criterion used by oracle"
+      },
+      "werewolf": {
+        "allConnectedSimpleGraphsN2to5": 771,
+        "allValidQueries": 115398,
+        "oracle": "direct two-form BFS versus two activation trees + Euler rectangles + independent Fenwick sweep"
+      },
+      "doll": {
+        "allTwoTriggerSequencesLength1to8": 510,
+        "maximumN": 200000,
+        "maximumM": 100000,
+        "switchesAtMaximum": 200012,
+        "changesAtMaximum": 3836286,
+        "oracle": "literal toggle state machine until first origin return; exact trigger sequence and every final switch checked"
+      },
+      "highway": {
+        "allConnectedSimpleGraphsN2to5": 771,
+        "allPairsTimesThreeTollSettings": 22563,
+        "maximumQueriesSmall": 7,
+        "maximumSplitCeilLogsAtN90000": 32,
+        "fullQueryBound": 50,
+        "oracle": "Dijkstra on each actual queried A/B weighting; answer pair checked, no shortest-path-tree assumption in oracle"
+      },
+      "meetings": {
+        "allHeightArraysN1to7Values1to3": 3279,
+        "allIntervalQueries": 81192,
+        "allCartesianPrefixEntries": 63084,
+        "equalHeightsIncluded": true,
+        "oracle": "enumerate every meeting site and every participant, take literal intervening maximum; vector DP and one-cross inequality checked"
+      },
+      "seconds": 2.5393610389946843
+    },
+    "script": "tests/ioi-2018-fixed-corpus.test.mjs"
+  },
+  "preservation": {
+    "originalAuditRawSha256": "c497743e29f92ac8e8d9604b1e34dd85ee99a6c24cf610423aa05dabda1c3b5d",
+    "originalRecordsSha256": "ee06a9394e994d941e27a5b820bdd7f6eafbe0d54561f1b3216d2a7a950a0523",
+    "originalStatusSha256": "8004bbe3f1d6107d67f6b75a76ae60175a1c7b7ee6e86277bc8d864b027f7ff3",
+    "originalSelectionSha256": "1a1ad95f82fcff524f555c339050ba4c05c86b9d7309e80023486479570da71b",
+    "originalManifestFileSha256": "bc97c90a87d59f384a931ca5e315799372169b8ac5a78fbb4b3bced5d9a600bf",
+    "permanentManifestFileSha256": "5f4e3a6d77568ffdd1fbd25f6632c6520bc06b09ec5713b5fcf82385c8cca104",
+    "originalRecordFieldsUnchanged": true,
+    "originalStatusFieldsUnchanged": true,
+    "originalProvenanceUnchanged": true,
+    "normalizedPathReferencesOnly": true,
+    "researchCheckScript": "research/probes/ioi-2018-research-checks.py",
+    "researchCheckResults": "research/probes/ioi-2018-research-checks-results.json",
+    "independentReviewScript": "research/probes/ioi-2018-independent-review.py",
+    "independentReviewResults": "research/probes/ioi-2018-independent-review.json",
+    "snapshotScopeNote": "607件の初回SHA台帳と元manifestのbytesを保持する。実際に恒久保存したrawデータはflowとaggregate metadataの2種のみで、482 MDXや他の605ファイルの本文を永久保存したとの主張ではない。元manifestのsnapshotRootは履歴情報であり再実行時の参照先ではない。"
+  }
+}

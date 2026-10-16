@@ -1,0 +1,170 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "直線上の二色の全点を覆う配線を、隣接単色区間・一点共有の境界DPと二方向最小値で線形化する技巧を追加。",
+  "counts": {
+    "specificTechniques": 426,
+    "foundationArticles": 78,
+    "allArticles": 504,
+    "exampleMappings": 525,
+    "originalUrls": 487,
+    "graphs": 471,
+    "nodes": 3697,
+    "questions": 1684,
+    "answerEdges": 5492,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 521,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "line-bipartite-edge-cover-monochromatic-block-prefix-dp",
+    "articleSha256": "c8ef35ef2096e75db51a6fd2f1211bb5aa571ab81f4f6fb5c2a594386b0d7de2",
+    "cppSha256": "4ecea22560306bd2c60860ed143e3d374702d7fd255a03ba7972ac93f6f1ea76",
+    "record": "research/technique-verifications/line-bipartite-edge-cover-monochromatic-block-prefix-dp.json",
+    "originalSourceRangeAndApiContainmentVerified": true,
+    "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/ioi2017-wiring-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 3231.267693
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "record": "research/probes/ioi2017-wiring-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 10,
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 15146.45644,
+      "scope": "New flow, prior specific-expansion, layout, domain/viewer clients, legacy/continuation, USACOmincost, IOI2017 fixed corpus and ledger. All prior524walks/470graphs/everyoldfield/nineaudits preserved by the new suite.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json",
+      "previousFollowingChangeRecord": "research/verification-2026-10-15-space-river.json",
+      "full61GroupsReexecutedAfterThisChange": false
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 504,
+      "mappings": 525,
+      "diagrams": 471,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 504,
+      "recentArticlesChecked": 34,
+      "japaneseEnglishFullWidthQueries": 138,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 471,
+      "completeAnswerLabels": 5492,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized expanded assignment-quantity-goals and new condition diagram; no node/label/arrow overlap. Separate wheel-zoom viewer retained."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1455,
+      "linksAssets": 29483,
+      "diagrams": 471,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "Strict exchanges remove edges skipping3color boundaries and enforce left-prefix/right-suffix connections with at most1shared vertex in a block. Separated groups pay endpoint offsets plusmax(k,j) boundary gaps, attained by stars.",
+    "Exact prefix recurrence min(D[q-k],D[q-k+1])+C(k,j) follows from restricting an optimal solution and unioning independent covers. The shared vertex is the first point of left suffix. Indices<=q avoid current-block feedback. First boundary k=A usesD0; all later prefixes remain finite. Finalj>A preserves all prefix candidates. Directional minima and sorted merge give O(R+B)/O(R+B).",
+    "Originaleachcolor1..100000 and coordinates0..1e9/sorted/all distinct fully included. int64products/transformedfinite arithmetic<4e14; infinity2^60 excluded from calculations. Exact value-vector adapter signature derived from primarygeneric+officialNotice, without claiming retrieved ZIPheader. No I/O/globalstate/inputmutation/recursion.",
+    "Actual visibleC++ normal/ASan/UBSan author/root/peer579529checks/147985core+37985adapter/checksum14068181790685886015. All32664color/profile inputs N2..12,35358064literal edge subsets,59139covermaskoracle calls,106517092quadraticoracle cells,24672fullprefixes,1800+3500random,10source-max,20000reentrant,17invalid.",
+    "Distinct matching reduction: sum cheapestincident costs minusmaxgain partialmatching. Inclusion-minimal covers are vertex-disjoint stars; selectoneedgeperstar for lower bound, match plus cheapest unmatched edges for upper bound. Independent Hungarian5672inputs checkedagainstsubsetassignment4834times,21885assertions/checksum9075146730217315746. All14allocationfailures acrossbody/adapter recovered with unchangedinput/freshcalls. Maxrequestedvectorpayload5000036bytes/live0, caller/runtime overhead separate.",
+    "InitialIOI2017 sixrecords/status4research/API0/coverage0/source provenance/technicalFindings/oldgenericstop retained. Wiring gets onlyresolution, no duplicatepositive. Currentselectedcorpus research4/6,covered1/6; Nowruz/Prize unconfirmed. Newroot goes quantity-goals,line-point-cover,yes3 with sixno/unknownexits. Prior524walks/470graphs/nineaudits/allpreviousresolutions and593local/404legacysharesBack remain fixed. Missing actualarticle/ref/source/walk/steps/draftmetadata or failedrealpreflight invalidCPP removescoverage."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 525,
+    "reviewedProblems": 485,
+    "corpusStatementsReviewed": 71,
+    "corpusSolutionsReviewed": 63,
+    "allSolutionsReviewed": 494
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "1/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 18,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Actual originaldistribution C++ header ZIP not retrieved; exact signature derived from statement generic and officialNotice, without claiming actualheader execution.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures; no install/server/browser retried.",
+    "All external example-link liveness not checked. No push/upload/publication."
+  ],
+  "inProgress": [
+    "IOI2017 Toy Train native full API complete, finalauthorfreeze/independentreview underway.",
+    "IOI2017 Ancient Books full-range linear closure API/checker underway."
+  ]
+}

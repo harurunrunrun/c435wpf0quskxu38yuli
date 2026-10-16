@@ -1,0 +1,766 @@
+[
+  {
+    "id": "divide-conquer-dp",
+    "title": "分割統治によるDP高速化",
+    "aliases": [
+      "Divide and Conquer DP",
+      "Divide-and-Conquer Optimization",
+      "決定点の単調性"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "最適な遷移元の添字が単調に増える性質を使い、DPの各層を高速に計算します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "interval-dp",
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html"
+    ]
+  },
+  {
+    "id": "knuth-optimization",
+    "title": "Knuth最適化",
+    "aliases": [
+      "Knuth Optimization",
+      "Knuth–Yao Optimization"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "区間DPの最適な分割点を、隣接する区間の最適な分割点で挟み込みます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "interval-dp",
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/dynamic_programming/knuth-optimization.html"
+    ]
+  },
+  {
+    "id": "convex-hull-trick",
+    "title": "凸包トリック",
+    "aliases": [
+      "Convex Hull Trick",
+      "CHT"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "DPの遷移を直線の最小値に書き換え、候補となる直線だけを保持します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/geometry/convex_hull_trick.html"
+    ]
+  },
+  {
+    "id": "li-chao-tree",
+    "title": "Li Chao木",
+    "aliases": [
+      "Li Chao Tree",
+      "Li Chao Segment Tree"
+    ],
+    "family": "DP最適化・データ構造",
+    "level": "上級",
+    "summary": "追加順が任意の直線について、指定した座標での最小値を求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "segment-tree",
+      "convex-hull-trick"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/geometry/convex_hull_trick.html"
+    ]
+  },
+  {
+    "id": "aliens-trick",
+    "title": "Aliens trick",
+    "aliases": [
+      "Aliens Trick",
+      "Alien DP",
+      "WQS Binary Search",
+      "Lagrangian Relaxation"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "選ぶ個数に罰則を付け、個数の次元を除いた最適化から指定個数の答えを求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "binary-search",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/adv/lagrange"
+    ]
+  },
+  {
+    "id": "slope-trick",
+    "title": "Slope trick",
+    "aliases": [
+      "Slope Trick"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "凸な折れ線としてDPを表し、折れ点をヒープで管理して更新します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "state-design",
+      "monotone-queue"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://nyaannyaan.github.io/library/data-structure/slope-trick.hpp.html"
+    ]
+  },
+  {
+    "id": "monge-smawk",
+    "title": "Monge配列・SMAWK",
+    "aliases": [
+      "Monge Array",
+      "SMAWK",
+      "Totally Monotone Matrix"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "全単調な行列について、すべての行の最小値を線形回数の要素評価で求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "divide-conquer-dp"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://ei1333.github.io/library/dp/smawk.hpp",
+      "https://web.cs.unlv.edu/bein/pubs/knuthyaotalg.pdf"
+    ]
+  },
+  {
+    "id": "larsch",
+    "title": "LARSCH",
+    "aliases": [
+      "Online Monge DP",
+      "Larmore–Schieber"
+    ],
+    "family": "DP最適化",
+    "level": "上級",
+    "summary": "先行するDP値を順に確定しながら、Monge性を使って遷移を高速に計算します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "monge-smawk",
+      "dag-dp"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://maspypy.github.io/library/convex/larsch.hpp",
+      "https://maspypy.github.io/library/convex/monge/monge_shortest_path.hpp",
+      "https://web.cs.unlv.edu/bein/pubs/knuthyaotalg.pdf"
+    ]
+  },
+  {
+    "id": "lazy-segment-tree",
+    "title": "遅延セグメント木",
+    "aliases": [
+      "Lazy Segment Tree",
+      "Lazy Propagation"
+    ],
+    "family": "高度データ構造",
+    "level": "上級",
+    "summary": "区間への更新をまとめて保持し、区間和や最小値などを対数時間で求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "segment-tree",
+      "difference-array"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_ja/lazysegtree.html"
+    ]
+  },
+  {
+    "id": "segment-tree-beats",
+    "title": "Segment Tree Beats",
+    "aliases": [
+      "Segment Tree Beats",
+      "Range Chmin Chmax Add Range Sum"
+    ],
+    "family": "高度データ構造",
+    "level": "上級",
+    "summary": "区間の値を上限で切るなど、条件付きで一括処理できる更新を高速に扱います。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "lazy-segment-tree",
+      "segment-tree"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://nyaannyaan.github.io/library/segment-tree/segment-tree-beats.hpp.html"
+    ]
+  },
+  {
+    "id": "persistent-segment-tree",
+    "title": "永続セグメント木",
+    "aliases": [
+      "Persistent Segment Tree",
+      "Path Copying"
+    ],
+    "family": "高度データ構造",
+    "level": "上級",
+    "summary": "更新前の状態を残しながら、新しい状態のセグメント木を作ります。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "segment-tree",
+      "coordinate-compression"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/data_structures/segment_tree.html"
+    ]
+  },
+  {
+    "id": "rollback-dsu",
+    "title": "巻き戻し可能Union-Find",
+    "aliases": [
+      "Rollback Union-Find",
+      "Rollback DSU",
+      "Undo Union Find"
+    ],
+    "family": "高度データ構造",
+    "level": "上級",
+    "summary": "連結成分の統合を履歴に残し、指定した時点まで元に戻します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "union-find",
+      "offline-queries"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/data_structures/deleting_in_log_n.html"
+    ]
+  },
+  {
+    "id": "heavy-light-decomposition",
+    "title": "HL分解",
+    "aliases": [
+      "Heavy-Light Decomposition",
+      "HLD",
+      "Heavy-Light分解"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "木のパスを少数の配列区間に分け、区間用のデータ構造で処理します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "segment-tree",
+      "tree-dp"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/graph/hld.html"
+    ]
+  },
+  {
+    "id": "centroid-decomposition",
+    "title": "重心分解",
+    "aliases": [
+      "Centroid Decomposition"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "木を重心で分割し、パスの集計や距離の問い合わせを階層的に処理します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "tree-dp",
+      "contribution"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/plat/centroid"
+    ]
+  },
+  {
+    "id": "virtual-tree",
+    "title": "補助木",
+    "aliases": [
+      "Virtual Tree",
+      "Auxiliary Tree",
+      "虚木"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "少数の指定頂点と、そのLCAだけを残した小さな木を作ります。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "doubling",
+      "tree-dp"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/plat/VT"
+    ]
+  },
+  {
+    "id": "max-flow",
+    "title": "最大流・最小カット",
+    "aliases": [
+      "Max Flow",
+      "Minimum Cut",
+      "Dinic"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "容量を共有する割当を最大化したり、2つの集合を分断する最小費用を求めたりします。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bfs",
+      "graph-reduction"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_ja/maxflow.html"
+    ]
+  },
+  {
+    "id": "min-cost-flow",
+    "title": "最小費用流",
+    "aliases": [
+      "Min Cost Flow",
+      "Primal Dual",
+      "Successive Shortest Path"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "容量の制約を守りながら、指定した流量の総費用を最小にします。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "max-flow",
+      "dijkstra",
+      "bellman-ford"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/graph/min_cost_flow.html",
+      "https://atcoder.github.io/ac-library/production/document_ja/mincostflow.html"
+    ]
+  },
+  {
+    "id": "lower-bound-flow",
+    "title": "流量下限付きフロー",
+    "aliases": [
+      "Lower Bound Flow",
+      "Feasible Circulation",
+      "Flows with Demands"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "各辺の流量に下限と上限がある問題を、通常の最大流に帰着します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "max-flow",
+      "graph-reduction"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/graph/flow_with_demands.html"
+    ]
+  },
+  {
+    "id": "matching",
+    "title": "二部マッチング",
+    "aliases": [
+      "Bipartite Matching",
+      "Maximum Bipartite Matching",
+      "Kuhn Algorithm"
+    ],
+    "family": "木・グラフ",
+    "level": "上級",
+    "summary": "二部グラフから、端点を共有しない辺をできるだけ多く選びます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "max-flow",
+      "exchange-argument"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/graph/kuhn_maximum_bipartite_matching.html",
+      "https://atcoder.github.io/ac-library/production/document_ja/maxflow.html"
+    ]
+  },
+  {
+    "id": "suffix-array",
+    "title": "接尾辞配列・LCP配列",
+    "aliases": [
+      "Suffix Array",
+      "SA",
+      "LCP Array"
+    ],
+    "family": "文字列",
+    "level": "上級",
+    "summary": "文字列の接尾辞を辞書順に並べ、部分文字列の比較や個数の集計に使います。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "binary-search",
+      "segment-tree"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_ja/string.html"
+    ]
+  },
+  {
+    "id": "suffix-automaton",
+    "title": "接尾辞オートマトン",
+    "aliases": [
+      "Suffix Automaton",
+      "SAM"
+    ],
+    "family": "文字列",
+    "level": "上級",
+    "summary": "すべての部分文字列を線形サイズの状態と遷移にまとめます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "dag-dp",
+      "suffix-array"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/string/suffix-automaton.html",
+      "https://nyaannyaan.github.io/library/string/suffix-automaton.hpp.html"
+    ]
+  },
+  {
+    "id": "palindromic-tree",
+    "title": "回文木",
+    "aliases": [
+      "Palindromic Tree",
+      "Eertree"
+    ],
+    "family": "文字列",
+    "level": "上級",
+    "summary": "異なる回文を状態として持ち、文字の追加ごとに回文の情報を更新します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "suffix-automaton",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://arxiv.org/abs/1506.04862"
+    ]
+  },
+  {
+    "id": "z-algorithm",
+    "title": "Zアルゴリズム",
+    "aliases": [
+      "Z Algorithm",
+      "Z Function",
+      "Z配列"
+    ],
+    "family": "文字列",
+    "level": "中級",
+    "summary": "文字列の各位置について、全体の接頭辞と何文字一致するかを線形時間で求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "two-pointers"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_ja/string.html"
+    ]
+  },
+  {
+    "id": "rolling-hash",
+    "title": "ローリングハッシュ",
+    "aliases": [
+      "Rolling Hash",
+      "Polynomial Hash",
+      "文字列ハッシュ"
+    ],
+    "family": "文字列",
+    "level": "上級",
+    "summary": "部分文字列を整数のハッシュ値に変換し、等しいかどうかを高速に比較します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "randomized-algorithms"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/string/string-hashing.html",
+      "https://nyaannyaan.github.io/library/string/rolling-hash.hpp.html"
+    ]
+  },
+  {
+    "id": "ntt",
+    "title": "NTT・畳み込み",
+    "aliases": [
+      "Number Theoretic Transform",
+      "NTT",
+      "Convolution",
+      "数論変換"
+    ],
+    "family": "代数・多項式",
+    "level": "上級",
+    "summary": "添字の和ごとの積の総和を、多項式の積として高速に計算します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "contribution"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.github.io/ac-library/production/document_ja/convolution.html"
+    ]
+  },
+  {
+    "id": "formal-power-series",
+    "title": "形式的冪級数",
+    "aliases": [
+      "Formal Power Series",
+      "FPS",
+      "Newton Iteration",
+      "Newton法"
+    ],
+    "family": "代数・多項式",
+    "level": "上級",
+    "summary": "係数列を級数として扱い、逆数・対数・指数などを高速に計算します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "ntt"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/algebra/polynomial.html",
+      "https://atcoder.github.io/ac-library/production/document_ja/convolution.html"
+    ]
+  },
+  {
+    "id": "linear-recurrence",
+    "title": "線形漸化式の高速計算",
+    "aliases": [
+      "Linear Recurrence",
+      "Kitamasa",
+      "Bostan–Mori",
+      "Berlekamp–Massey"
+    ],
+    "family": "代数・多項式",
+    "level": "上級",
+    "summary": "固定長の線形漸化式から、非常に大きい添字の項を求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "matrix-exponentiation",
+      "formal-power-series"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://maspypy.github.io/library/poly/coef_of_rational_fps.hpp",
+      "https://cp-algorithms.com/algebra/polynomial.html"
+    ]
+  },
+  {
+    "id": "xor-basis",
+    "title": "XOR基底",
+    "aliases": [
+      "XOR Basis",
+      "Linear Basis",
+      "線形基底"
+    ],
+    "family": "代数・多項式",
+    "level": "上級",
+    "summary": "部分集合のXORで作れる値を、少数の独立な基底で表します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bitmask-dp",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://usaco.guide/adv/xor-basis"
+    ]
+  },
+  {
+    "id": "mobius-inversion",
+    "title": "メビウス反転",
+    "aliases": [
+      "Möbius Inversion",
+      "Mobius Inversion",
+      "Möbius Function",
+      "約数包除"
+    ],
+    "family": "整数・組合せ",
+    "level": "上級",
+    "summary": "約数ごとに数えた量の重複を打ち消し、正確な最大公約数などの条件を復元します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "contribution",
+      "subset-transform"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://emthrm.github.io/cp-library/include/emthrm/math/mobius_mu.hpp",
+      "https://cp-algorithms.com/algebra/prime-sieve-linear.html"
+    ]
+  },
+  {
+    "id": "matrix-exponentiation",
+    "title": "行列累乗",
+    "aliases": [
+      "Matrix Exponentiation",
+      "Matrix Power"
+    ],
+    "family": "代数・多項式",
+    "level": "上級",
+    "summary": "同じ線形遷移を繰り返す計算を、行列の二分累乗でまとめます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "doubling",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/algebra/binary-exp.html"
+    ]
+  },
+  {
+    "id": "convex-hull",
+    "title": "凸包",
+    "aliases": [
+      "Convex Hull",
+      "Monotone Chain",
+      "Andrew Algorithm"
+    ],
+    "family": "幾何",
+    "level": "上級",
+    "summary": "点集合の外周を求め、方向ごとの極値や最遠点の候補を絞ります。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [],
+    "status": "reviewed",
+    "sources": [
+      "https://cp-algorithms.com/geometry/convex-hull.html"
+    ]
+  },
+  {
+    "id": "rotating-calipers",
+    "title": "回転キャリパー",
+    "aliases": [
+      "Rotating Calipers",
+      "Antipodal Pairs",
+      "凸多角形の直径"
+    ],
+    "family": "幾何",
+    "level": "上級",
+    "summary": "凸多角形の向かい合う支持点を単調に動かし、直径などを線形時間で求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "convex-hull",
+      "two-pointers"
+    ],
+    "status": "reviewed",
+    "sources": [
+      "https://cgm.cs.mcgill.ca/~godfried/publications/calipers.pdf",
+      "https://raw.githubusercontent.com/maspypy/library/main/geo/furthest_pair.hpp"
+    ]
+  }
+]

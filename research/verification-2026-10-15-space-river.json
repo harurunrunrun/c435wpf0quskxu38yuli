@@ -1,0 +1,170 @@
+{
+  "date": "2026-10-15",
+  "cutoff": "2026-10-14",
+  "status": "passed",
+  "scope": "折返し幅と単語間空白の最長連なりを、疎な行間DP・次配置変化幅・行数上界で求める技巧を追加。",
+  "counts": {
+    "specificTechniques": 425,
+    "foundationArticles": 78,
+    "allArticles": 503,
+    "exampleMappings": 524,
+    "originalUrls": 486,
+    "graphs": 470,
+    "nodes": 3691,
+    "questions": 1681,
+    "answerEdges": 5482,
+    "multiChoiceQuestions": 183,
+    "verifiedWalks": 520,
+    "pendingWalks": 4
+  },
+  "article": {
+    "id": "word-wrap-sparse-space-river-dp",
+    "articleSha256": "35cda650eb0c7ba6cf341389d5c49935bb687dcff88d28e85752fe3dcb7bb390",
+    "cppSha256": "533fe3f5288d25bf6bb4676d6b2a7d90b01fa1cef7cdb70d08d08f57e2977e72",
+    "record": "research/technique-verifications/word-wrap-sparse-space-river-dp.json",
+    "originalSourceRangeAndApiContainmentVerified": true,
+    "authorRootSeparateReviewerNormalAndAsanUbsanPassed": true
+  },
+  "verification": {
+    "native": {
+      "command": "node tests/space-river-cpp.test.mjs",
+      "passed": 2,
+      "failed": 0,
+      "durationMs": 5525.811158
+    },
+    "newFlow": {
+      "passed": 10,
+      "failed": 0,
+      "record": "research/probes/space-river-flow-results.json"
+    },
+    "targetedRegression": {
+      "groups": 10,
+      "passed": 10,
+      "failed": 0,
+      "durationMs": 16401.918938,
+      "scope": "New flow, previous DP, layout, domain/viewer clients, legacy/continuation, ICPC2018/IOI2017 fixed corpora and ledger. Prior523walks/469graphs/alloldfields/nineaudits preserved. Previous61groups passed at502 and were not all reexecuted after this change.",
+      "previousBroadRecord": "research/verification-2026-10-15-degree-polya-ioi2017.json"
+    },
+    "localBuild": {
+      "command": "npm run build:local",
+      "articles": 503,
+      "mappings": 524,
+      "diagrams": 470,
+      "passed": true
+    },
+    "localSearch": {
+      "articlesIndexed": 503,
+      "recentArticlesChecked": 33,
+      "japaneseEnglishFullWidthQueries": 133,
+      "passed": true
+    },
+    "svg": {
+      "pairsAndDiagramOnlyPages": 470,
+      "completeAnswerLabels": 5482,
+      "oldCompletedSharedUrls": 404,
+      "passed": true,
+      "visualInspection": "Actually viewed rasterized expanded dp-sequence-removals and new detail; no node/label/arrow overlap. Separate wheel-zoom viewer retained."
+    },
+    "localLinks": {
+      "command": "npm run verify:local",
+      "htmlSvgFiles": 1452,
+      "linksAssets": 29432,
+      "diagrams": 470,
+      "passed": true,
+      "externalRequests": false
+    },
+    "sourceTable": {
+      "rowsMatched": 25,
+      "columns": [
+        "allProblemsObserved",
+        "allSolutionsReviewed",
+        "techniquesExtracted"
+      ],
+      "passed": true
+    }
+  },
+  "proofAndOracleEvidence": [
+    "Actual interword space c uses only previous-row spaces at c-1,c,c+1. Empty rows cut chains and global maximum retains earlier row endings. Sparse ordered lists take O(N) per width without width-proportional memory.",
+    "Minimum first-excluded-word fitting threshold is the exact next layout change. Induction over row boundaries proves same layout before it. Greedy prefix dominance gives minimum/nonincreasing row count, an upper bound for all future rivers. Strict improvements preserve minimum-width ties; T=sumlength+N-1 suffices.",
+    "Original2..2500 words, ASCII case letters, length1..80 included; singleton extension explicit. INT_MAX widths only compared. T<=202499,Q<=202420 and simple placements<=506050000. Conservative O(NQ) subset O(N²(L+1))/O(N); no unproved speedup from jump/stop.",
+    "Actual published C++:4382429checks/545801API/checksum14932699637744859611. All21844smalllength arrays/521155literalgrid widths/521106nextchange checks,44895literalpath calls,450random/1212metamorphic/23invalid, sevenmaximum families. Independent full-integer-width timestamporacle262088widths/641826740spaces includes two maxfamilies. Author/root/peer normal and ASan/UBSan pass; LeakSanitizer disabled.",
+    "Distinct3660inputs/all302345cut partitions choose lexicographically greatest feasible endpoints; boolean transitive closure on actual-space DAG gives longest row span.205199widths/minrow checks,7320extreme widths,93200emptyrow layouts/3632tied optimal inputs,13memory/writer checks. MaximumINT_MAX requested payload40000bytes/live0; checksum3236069206071420278.",
+    "InitialFpositive/officialEditorialVerifiedfalse/implementation-not-created/fulltrace unchanged; only resolution added. All four earlier ICPC resolutions and nine corpora preserved. Missing live article/source/ref/metadata/walk/steps removes coverage; realpreflight emptyCppfence makescoverage0.",
+    "Optional faster GemIsland PIE separately retained in nextWork. Exact-integer oracle formula is distinct from an unconfirmed quadratic-time stable production implementation."
+  ],
+  "reviewCounters": {
+    "verifiedMappings": 524,
+    "reviewedProblems": 484,
+    "corpusStatementsReviewed": 71,
+    "corpusSolutionsReviewed": 63,
+    "allSolutionsReviewed": 494
+  },
+  "corpora": [
+    {
+      "id": "usaco-2020-dec-2021-jan-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2017-world-finals",
+      "research": "11/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "joi-2020-spring",
+      "research": "9/12",
+      "covered": "9/12",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2020",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2019",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "icpc-2018-world-finals",
+      "research": "9/11",
+      "covered": "5/11",
+      "coverageComplete": false
+    },
+    {
+      "id": "ioi-2018",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "usaco-2021-february-us-open-platinum",
+      "research": "6/6",
+      "covered": "6/6",
+      "coverageComplete": true
+    },
+    {
+      "id": "ioi-2017",
+      "research": "4/6",
+      "covered": "0/6",
+      "coverageComplete": false
+    }
+  ],
+  "unresolvedKnownProblemGaps": 19,
+  "limitations": [
+    "World-wide denominator unknown; overall coverage incomplete.",
+    "Generated maximum tests do not enumerate all possible maximum inputs.",
+    "Production Astro/Starlight/Pagefind and real-browser remain unverified after earlier environment failures; no install/server/browser retried.",
+    "All external example-link liveness not checked. No push/upload/publication."
+  ],
+  "inProgress": [
+    "IOI2017 Wiring complete author artifacts and root normal; independent review/integration pending.",
+    "IOI2017 Toy Train full-range positional API/checker underway.",
+    "IOI2017 Ancient Books linear closure API/checker underway."
+  ]
+}

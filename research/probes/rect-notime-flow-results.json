@@ -1,0 +1,55 @@
+{
+  "testFile": "tests/rect-notime-flow.test.mjs",
+  "testSha256": "93efa68667badd2b31e6faeea743487a8211de61fecd48d86fda64737d4afc73",
+  "draftFile": "/tmp/flowchartcp-rect-notime-flow.test.mjs",
+  "baselineDirectory": "/tmp/flowchartcp-rect-notime-independent-baseline",
+  "baselineRawHashFile": "/tmp/flowchartcp-rect-notime-independent-baseline/derived-hashes.json",
+  "command": "node tests/rect-notime-flow.test.mjs",
+  "tests": 13,
+  "passed": 13,
+  "failed": 0,
+  "durationMs": 3868.904872,
+  "oldWalksPreserved": 512,
+  "oldGraphsPreserved": 458,
+  "oldNodesPreserved": 3619,
+  "legacyCompletedSharedUrls": 404,
+  "legacyLocalPrefixes": 593,
+  "newPremiseGraphs": 2,
+  "guardsPerGraph": 3,
+  "noUnknownPaths": 12,
+  "sourceCppSha256": {
+    "NoTime": "e04fe2fe44a59765e06690d592aab60cdcedeb817dca165bc62b1194d31b767c",
+    "Rect": "69a053a27c5d26d392eda313d2cfded6fbaa150c4f4ad959850e05cb914dd5d2"
+  },
+  "initialAuditProjectionPreserved": true,
+  "usacoRegistrationStage": {
+    "researched": 6,
+    "covered": 1,
+    "total": 6,
+    "withoutResolutionCovered": 0
+  },
+  "ioi2019RegistrationStage": {
+    "researched": 4,
+    "covered": 4,
+    "total": 6,
+    "withoutRectPositiveResearched": 3,
+    "withoutRectPositiveCovered": 3,
+    "withoutRectResolutionCovered": 3
+  },
+  "sharedFilesEdited": [
+    "tests/rect-notime-flow.test.mjs"
+  ],
+  "rootFinalReproduction": {
+    "command": "node tests/rect-notime-flow.test.mjs",
+    "passed": 13,
+    "failed": 0,
+    "notes": "Root shortened the new Rect second-premise explanation into positive Japanese. The test initially retained the old sentence; only that exact expectation was updated. All premise/old-node/provenance/negative coverage assertions remain intact.",
+    "durationMs": 3868.904872
+  },
+  "originalIndependentRun": {
+    "testSha256": "3d967a80ada714bd057badf05c1eb9ee65a13248b781d7eb6472a90623064a23",
+    "durationMs": 3980.931077,
+    "passed": 13,
+    "failed": 0
+  }
+}

@@ -1,0 +1,363 @@
+[
+  {
+    "id": "geometry-closest-pair",
+    "title": "最も近い二点を、左右の境界付近だけ比較して求める",
+    "summary": "横座標で分けた後に縦座標の順序を共有し、左右をまたぐ候補の比較を定数個に抑える。",
+    "aliases": [
+      "Closest Pair",
+      "最近点対",
+      "分割統治"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2194"
+    ]
+  },
+  {
+    "id": "convex-point-membership",
+    "title": "凸多角形の内外を、一頂点からの扇形の二分探索で判定する",
+    "summary": "一頂点から見た方向順を使い、点を含み得る三角形を一つに絞る。",
+    "aliases": [
+      "Convex Polygon Point Location",
+      "凸多角形の内外判定",
+      "扇形二分探索"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "segment-intersection-orientation"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc296/tasks/abc296_g"
+    ]
+  },
+  {
+    "id": "convex-minkowski-sum",
+    "title": "凸領域から一点ずつ選ぶ位置の和を、辺の方向順に併合する",
+    "summary": "各領域内の点の和が作る領域を、全頂点対を列挙せずに求める。",
+    "aliases": [
+      "Minkowski Sum",
+      "ミンコフスキー和",
+      "凸多角形の和"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "convex-point-membership"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://codeforces.com/problemset/problem/87/E"
+    ]
+  },
+  {
+    "id": "convex-diameter-calipers",
+    "title": "最も遠い二点を凸包に絞り、向かい合う頂点を一周させる",
+    "summary": "内側の点を除き、支持線が平行になる頂点対だけを単調に調べる。",
+    "aliases": [
+      "Rotating Calipers",
+      "Furthest Pair",
+      "凸包の直径",
+      "回転するキャリパー"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "convex-hull"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/geo/furthest_pair/task.md"
+    ]
+  },
+  {
+    "id": "convex-minimum-width",
+    "title": "図形を挟む平行線の最小幅を、凸包の辺ごとに求める",
+    "summary": "図形の凹みを無視できることを確認し、辺と向かい側の支持点の距離を一周で調べる。",
+    "aliases": [
+      "Minimum Width",
+      "Convex Width",
+      "最小幅",
+      "回転するキャリパー"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "convex-hull"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://onlinejudge.org/external/11/1111.pdf"
+    ]
+  },
+  {
+    "id": "polygon-winding-integer",
+    "title": "凹多角形の内外を、半開区間の交差と外積で判定する",
+    "summary": "横向きの線と辺の交差を上下別に数え、頂点の二重計上と浮動小数の誤差を避ける。",
+    "aliases": [
+      "Winding Number",
+      "Point in Polygon",
+      "巻き数",
+      "半開区間"
+    ],
+    "family": "幾何・座標",
+    "level": "中級",
+    "prerequisites": [
+      "segment-intersection-orientation"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2192"
+    ]
+  },
+  {
+    "id": "segment-intersection-orientation",
+    "title": "線分の交差を、四つの向きと座標区間で判定する",
+    "summary": "交点の割り算をせず、端点接触・共線重なり・一点の線分を同じ規則で扱う。",
+    "aliases": [
+      "Segment Intersection",
+      "Orientation Test",
+      "線分交差",
+      "外積の符号"
+    ],
+    "family": "幾何・座標",
+    "level": "中級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://cses.fi/problemset/task/2190"
+    ]
+  },
+  {
+    "id": "collinear-direction-gcd",
+    "title": "同一直線の点を、最大公約数と向きの統一でまとめる",
+    "summary": "傾きを分数で表さず、基準点からの整数方向を正規化して直線の重複を除く。",
+    "aliases": [
+      "Normalized Direction",
+      "GCD Slope",
+      "共線点",
+      "方向ベクトル正規化"
+    ],
+    "family": "幾何・座標",
+    "level": "中級",
+    "prerequisites": [],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc248/tasks/abc248_e"
+    ]
+  },
+  {
+    "id": "perpendicular-direction-pairs",
+    "title": "内積ゼロの禁止関係を、直線方向と直交方向の二群にまとめる",
+    "summary": "反対向きを同じ群にし、互いに選べない方向の組ごとに部分集合数を掛ける。",
+    "aliases": [
+      "Perpendicular Direction Grouping",
+      "直交方向の組",
+      "内積ゼロの禁止組"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "collinear-direction-gcd"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc168/tasks/abc168_e"
+    ]
+  },
+  {
+    "id": "angle-vector-two-pointers",
+    "title": "三角形の角を、中心からの方向順と二つの境界でまとめて数える",
+    "summary": "90度と180度の境界を単調に動かし、三点組の全列挙を省く。",
+    "aliases": [
+      "Angular Two Pointers",
+      "Angle Classification",
+      "偏角順",
+      "三角形の分類"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "two-pointers"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc033/tasks/abc033_d"
+    ]
+  },
+  {
+    "id": "manhattan-nearest-octants",
+    "title": "マンハッタン距離の全点対の辺を、八方向の最近点へ絞る",
+    "summary": "全点対を結ぶ最小全域木を、各点の方向別の候補辺だけから作る。",
+    "aliases": [
+      "Manhattan MST",
+      "Octant Nearest Neighbors",
+      "マンハッタン最小全域木",
+      "八方向最近点"
+    ],
+    "family": "幾何・座標",
+    "level": "最上級",
+    "prerequisites": [
+      "fenwick-tree",
+      "union-find"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://raw.githubusercontent.com/yosupo06/library-checker-problems/master/geo/manhattanmst/task.md"
+    ]
+  },
+  {
+    "id": "convex-polygon-half-area",
+    "title": "凸多角形を切る弦の面積を、端点の単調移動で目標へ近づける",
+    "summary": "連続した頂点の面積を外積の累積和で求め、目標を挟む二候補だけを調べる。",
+    "aliases": [
+      "Convex Polygon Area Two Pointers",
+      "面積の尺取り",
+      "凸多角形の切断"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "two-pointers",
+      "prefix-sum"
+    ],
+    "entryPoints": [
+      "advanced",
+      "complexity",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://atcoder.jp/contests/abc250/tasks/abc250_f"
+    ]
+  },
+  {
+    "id": "interval-stabbing-endpoint-contraction-dsu",
+    "title": "切断点を含む区間の片端を縮めるなら、区間木と端点ごとの併合集合で管理する",
+    "summary": "点の条件付き一括移動を区間の縮小へ写し、区間木の子へ降りる回数を償却して、追加と個体IDの照会も処理します。",
+    "aliases": [
+      "Interval stabbing endpoint contraction",
+      "Sweeping interval tree disjoint endpoint groups",
+      "条件付き一括移動と区間縮小"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "coordinate-compression",
+      "segment-tree",
+      "union-find",
+      "small-to-large"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping.pdf",
+      "https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day1/sweeping-review.pdf"
+    ]
+  },
+  {
+    "id": "nested-rectangle-corner-sweep-and-validation",
+    "title": "左右の角だけから長方形を対応させ、境界の交差を別に確かめる",
+    "summary": "右下の角を左から処理し、対応できる最も下の左上角を選びます。全て対応しても、辺の交差検査を省きません。",
+    "aliases": [
+      "Nested rectangle corner matching",
+      "Laminar rectangle corner pairing",
+      "Sweepline boundary intersection validation",
+      "左右の角の対応と境界検査",
+      "長方形の入れ子の復元"
+    ],
+    "family": "幾何・座標",
+    "level": "上級",
+    "prerequisites": [
+      "sweep-interval-endpoints",
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "entryPoints": [
+      "advanced",
+      "reasoning"
+    ],
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=23",
+      "https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=11"
+    ]
+  }
+]

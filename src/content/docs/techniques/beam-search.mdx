@@ -1,0 +1,74 @@
+---
+title: "ビームサーチ"
+description: "各段階で有望な候補を複数残し、解を順に組み立てる。"
+techniqueId: beam-search
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+各段階で有望な候補を複数残し、解を順に組み立てる。
+
+## 使う場面
+
+操作を順番に決める問題で、目先の最良手だけでは後で行き詰まる場合に使う。全候補を残す探索は大きすぎるが、部分的な解を評価して比較できる場合に向いている。
+
+## 考え方
+
+各段階で残した状態から、次の状態をすべて生成する。評価の高いものを上位 $B$ 件だけ残して、次の段階に進む。この $B$ をビーム幅と呼ぶ。
+
+部分解の評価では、現在の得点だけでなく、残りの可能性も見積もる。同じ後続操作を持つ重複状態をまとめると、同じ候補で幅を使い切ることを避けられる。完成した解を局所探索の初期解として使う方法もある。
+
+## 適用条件
+
+同じ段階の状態を比較するため、進み具合と評価の意味をそろえる。異なる段階の状態を、そのまま同じ評価で比較してよいとは限らない。
+
+途中で最適解につながる候補を捨てる可能性がある。幅を制限したビームサーチには、一般に最適性の保証はない。
+
+## なぜ正しいか
+
+合法な状態から合法な遷移だけで生成すれば、候補の合法性は保たれる。すべての候補を残せる幅があれば全探索と同じだが、有限幅では評価で候補を削るため、最良解を取り逃す場合がある。評価と幅の選び方が結果に影響する。
+
+## 計算量
+
+深さ $D$、幅 $B$、最大分岐数 $K$、候補一つの生成・評価時間 $C$ とすると、全候補をソートする実装は時間 $O(DBK(C+\log(BK)))$。状態サイズ $N$ に対し、候補を保持する空間は $O(BKN)$。
+
+## 実装
+
+`beam_search` は固定の深さまで探索し、その時点で残った候補を評価の高い順に返す。`expand` は合法な次状態を生成し、`evaluate` は大きいほどよい有限の評価値を返す。候補がなくなった場合は空の配列を返す。
+
+```cpp
+#include <algorithm>
+#include <utility>
+#include <vector>
+template<class State, class Expand, class Evaluate>
+std::vector<State> beam_search(State initial, int depth, int width,
+                               Expand expand, Evaluate evaluate) {
+    if (width <= 0) return {};
+    std::vector<State> beam{initial};
+    for (int d = 0; d < depth && !beam.empty(); ++d) {
+        std::vector<std::pair<double, State>> candidates;
+        for (const State& state : beam)
+            for (State child : expand(state)) {
+                double value = evaluate(child);
+                candidates.emplace_back(value, std::move(child));
+            }
+        std::stable_sort(candidates.begin(), candidates.end(), [](const auto& a, const auto& b) {
+            return a.first > b.first;
+        });
+        beam.clear();
+        for (int i = 0; i < std::min(width, int(candidates.size())); ++i)
+            beam.push_back(std::move(candidates[i].second));
+    }
+    return beam;
+}
+```
+
+## 関連する手法
+
+[状態の設計](../state-design/) ・ [局所探索](../local-search/) ・ [焼きなまし法](../simulated-annealing/)
+
+## 参考資料
+
+- [AHC043：rhoo氏の解法](https://atcoder.jp/contests/ahc043/editorial/12355)
+- [AHC032 公式解説](https://img.atcoder.jp/ahc032/editorial.pdf)
+
+<TechniqueReferences techniqueId="beam-search" />

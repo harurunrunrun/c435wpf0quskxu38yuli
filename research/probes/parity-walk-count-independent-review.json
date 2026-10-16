@@ -1,0 +1,213 @@
+{
+  "reviewStatus": "passed",
+  "reviewer": "/root/usaco_cowmistry_article",
+  "reviewedAt": "2026-10-15",
+  "problemId": "1118",
+  "techniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-countgraphs-article.mdx",
+    "checker": "/tmp/flowchartcp-countgraphs-checker.py",
+    "sidecar": "/tmp/flowchartcp-countgraphs-sidecar.json",
+    "independentProbe": "/tmp/flowchartcp-countgraphs-independent-probe.py",
+    "independentProbeResult": "/tmp/flowchartcp-countgraphs-independent-probe.json"
+  },
+  "artifactSha256": {
+    "article": "47f4e70fe47673344e2e82fbc2881e66558f4d854a05507890872c9e956ebfdf",
+    "checker": "f8194744d434c1203e39ef779bf5a61c2b0ec6eed252dc0a094c9e663d10dd49",
+    "sidecar": "ca7517ccc352870d65a9c7562a048160316efec3776026c9ef63738b8455a7f4",
+    "independentProbe": "7bfa24c17eb2a8936329e551c03e3ecfa21369efc4ba040e663bd64dc6198c48",
+    "independentProbeResult": "6ab39a919d55ba2ed59d7933ce5376f7a0369a8e76525d8d976c4fd5f437ad56"
+  },
+  "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedOriginalNumericBounds": [],
+  "resolvedNonblockingFindings": [
+    {
+      "issue": "Sidecar initially stated all validation preceded BFS, although connectivity is established using BFS.",
+      "resolution": "Author now distinguishes endpoint/range/duplicate checks before BFS and connectivity validation after BFS but before tables/DP.",
+      "codeChanged": false,
+      "previousSidecarSha256": "eb465c947427106009ff49fe03e2ffdd412bc5e6dc6d217a45f1812645d82138"
+    }
+  ],
+  "sourceVerification": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1118",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob3_platinum_feb21.html",
+    "resultsUrl": "https://usaco.org/index.php?page=feb21results",
+    "originalStatementAndSolutionIndependentlyRead": true,
+    "officialSolutionAuthors": [
+      "Danny Mittal",
+      "Benjamin Qi"
+    ],
+    "officialDivision": "Platinum",
+    "officialProblemNumber": 3,
+    "bounds": {
+      "N": "2..100",
+      "M": "N-1..N(N+1)/2",
+      "T": "1..25000",
+      "sumN2": "<=100000",
+      "modulus": 1000000007
+    },
+    "sourceDate": "2021-02",
+    "datePrecision": "month",
+    "exactDateVerified": false,
+    "difficulty": null,
+    "contract": "Preserve every labeled vertex's root1 reachability at every nonnegative exact walk length. Repeated vertices/edges allowed, loops allowed, parallel edges forbidden, arbitrary new edges allowed.",
+    "terminalFormulaProvenance": "Official prose leaves terminal C formula as an exercise; independently derived nonisolation inclusion-exclusion agrees with the actual official C++ at the end of its layer loop. The article does not pretend the prose explicitly printed this formula.",
+    "primaryPdfVisualInspectionClaimed": false
+  },
+  "proofReview": {
+    "language": "N>=2 and connected ensures an incident edge at root; any reachable walk extends by two using a backtrack. Per-parity minima thus determine the full infinite languages, including root's empty walk.",
+    "edgeClassification": "For profiles (a,b),(c,d), if a,c have opposite parity, the four endpoint inequalities force c=a±1 and d=b±1: A in either layer direction or B along a fixed sum. If a,c have the same parity, d<=a+1 and b<=c+1 together with b>=a+1,d>=c+1 force c=a,b=d=a+1: C only. Loops are the same C case. Bipartite INF is handled separately.",
+    "necessitySufficiency": "Every positive parity minimum needs a neighbor at one-less opposite-parity distance. Allowed-edge inequalities exclude shorter walks by induction along any walk; predecessor descent constructs all required minima. Root0 alone is exempt. Every vertex remains connected to root.",
+    "layering": "A contributes only to larger layer endpoint's predecessor constraints; B/C stay inside one fixed sum. Every allowed unordered edge is assigned to exactly one layer/stage.",
+    "B": "Choose exactly x empty labeled columns. Every remaining column has a nonempty subset of p rows; inclusion-exclusion excludes any of the y prescribed rows that would remain empty. DP already counts the actual required subsets, so no extra choose(p,y) is permitted.",
+    "A": "All z B-empty vertices must receive nonempty A neighborhoods. The x A-empty vertices are chosen only from m-z B-present ones; every other vertex independently selects a nonempty lower neighborhood. This classifies each A/B edge set once.",
+    "C": "Among y already-specified required vertices, isolate k to exclude every incident edge and loop. Remaining free edges number (m-k)(m-k+1)/2, giving the terminal alternating sum. No additional choice of required subset.",
+    "rootAndEmpty": "Root bucket starts with one unfulfilled positive distance; root odd1 forces its loop through C. Missing root buckets start empty identity. Empty intermediate buckets kill unfulfilled previous vertices via (1-1)^y and transmit fulfilled choices. 0^0 is the empty-choice identity, including modulus1.",
+    "complexity": "Expand sum (m+1)(p+1)^2 over adjacent buckets. Nonempty bucket masses sumN; cubic terms are bounded byN^3, quadratic terms byN^2, and empty coordinate visits byO(N^2). Precomputed powers/Pascal eliminate hidden exponentiation logs. OverallO(N^3+M) time/O(N^2+M) space; original batch sumN^3<=100sumN^2."
+  },
+  "apiReview": {
+    "signature": "int count_graphs_preserving_root_walk_lengths(int n,const std::vector<std::pair<int,int>>& edges,int root=0,int modulus=1000000007)",
+    "sourceRangeContained": true,
+    "statelessCallsContainOriginalBatch": true,
+    "arbitraryRootEndpointOrientationAndListOrder": true,
+    "compositeAndOneModuli": true,
+    "invalidRangeEndpointsDuplicatesLoopsDisconnectedRejected": true,
+    "callerInputConstAndUnchanged": true,
+    "noInputDepthRecursion": true,
+    "allocationFailuresPropagate": true,
+    "integerSafety": "N<=100 bounds parity BFS to200 states/distance199, frequency indexes0..199, exponent5050 and all indexes/products in int. Explicit int64 sums/subtractions and pairwise multiplication keep positive32bit modulus<=2147483647 safe; no division/inverse and no raw triple products.",
+    "helpers": "Internal Ring/Tables require validated positive32bit modulus and bounded nonnegative arguments; public API validates before use."
+  },
+  "presentationReview": {
+    "japaneseSections": 8,
+    "visibleCompleteCppFences": 1,
+    "allMetadataSourceUrlsInArticle": true,
+    "relatedLinksUseConfiguredBase": true,
+    "metadataSummaryMatchesArticle": true,
+    "referenceEvidenceContainsApplicabilityOnly": true,
+    "sourceMonthPrecisionAndNullDifficultyConsistent": true,
+    "bodyDoesNotClaimResearchProbeIsProduction": true
+  },
+  "reproduction": {
+    "normalCommand": "python3 /tmp/flowchartcp-countgraphs-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-countgraphs-checker.py --sanitize",
+    "normal": {
+      "checks": 457134,
+      "apiCalls": 151370,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "languageGroupsN2to5": 932,
+      "allConnectedLoopGraphsN6": 1709056,
+      "languageGroupsN6": 10263,
+      "nonzeroRootRelabelCases": 23940,
+      "literalBipartiteMatrices": 74963,
+      "literalTerminalLoopGraphs": 2131019,
+      "primitiveChecks": 2996,
+      "maximumN100Calls": 119,
+      "maximumBatchCalls": 25000,
+      "invalidCalls": 20,
+      "checksum": "14785516314595030999",
+      "seconds": 0.745005,
+      "peakRSSKiB": 5328,
+      "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "sanitized": false
+    },
+    "sanitized": {
+      "checks": 457134,
+      "apiCalls": 151370,
+      "allConnectedLoopGraphsN2to5": 23940,
+      "languageGroupsN2to5": 932,
+      "allConnectedLoopGraphsN6": 1709056,
+      "languageGroupsN6": 10263,
+      "nonzeroRootRelabelCases": 23940,
+      "literalBipartiteMatrices": 74963,
+      "literalTerminalLoopGraphs": 2131019,
+      "primitiveChecks": 2996,
+      "maximumN100Calls": 119,
+      "maximumBatchCalls": 25000,
+      "invalidCalls": 20,
+      "checksum": "14785516314595030999",
+      "seconds": 6.58433,
+      "peakRSSKiB": 901568,
+      "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "sanitized": true
+    },
+    "semanticResultsEqual": true,
+    "asanUbsanPassed": true,
+    "leakSanitizerEnabled": false,
+    "counterInterpretation": "N2..5: API is tested on all23940 connected loop graphs. N6: all1709056 graphs establish10263 exact language group sizes, then API is tested on each group representative for every modulus; it is not an API invocation for every N6 graph. checks counts assertions and apiCalls separately counts native calls."
+  },
+  "additionalIndependentProbe": {
+    "command": "python3 /tmp/flowchartcp-countgraphs-independent-probe.py",
+    "result": {
+      "checks": 527754,
+      "instances": 35182,
+      "apiCalls": 492548,
+      "completeWordStates": 179796,
+      "candidateEdges": 426173,
+      "rawPositiveClauses": 768917,
+      "shannonCalls": 1244348,
+      "memoHits": 497142,
+      "oracleCrosschecks": 12,
+      "oracleGraphAssignments": 266240,
+      "maximumExactRealizations": "35184372088832",
+      "checksum": "14715201252465104520",
+      "seconds": 1.62932,
+      "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d",
+      "oracle": "Complete reachable-set word -> per-time positive edge clauses -> exact Shannon variable recursion; no parity profiles/layers/PIE."
+    },
+    "scope": {
+      "allLabeledTreesOnSevenVertices": 16807,
+      "treeInputsWithoutAndWithRotatingLoop": 33614,
+      "longOddReturnPathRootPairs": 68,
+      "randomN7to10Inputs": 1500,
+      "moduli": [
+        1,
+        4,
+        6,
+        8,
+        9,
+        16,
+        25,
+        49,
+        97,
+        999999937,
+        1000000007,
+        2147483647
+      ],
+      "additionalCompositeModuli": [
+        36,
+        1225
+      ],
+      "oracleSelfCrosscheckInputs": 12,
+      "literalSelfCrosscheckAllGraphAssignments": 266240
+    },
+    "oracle": "Evolve exact reachable vertex subsets until the first repeated subset, yielding the entire infinite output word. Candidate edge uv is allowed only if every occurrence of u at time t permits v at time t+1, and conversely. For each required v at t+1, create a positive clause over incident candidate edges from reached vertices at t. Count ALL candidate edge assignments satisfying every clause by exact Shannon absent/present recursion with unit propagation, redundant-superset removal, memoization and free-variable factors.",
+    "oracleProof": "Allowed-edge implications prevent any new reachable vertex by induction in time. Positive clauses ensure every required next vertex is reached, so equality holds at every observed time and cyclic continuation. Thus edge assignments satisfying the clauses are exactly all realizing graphs, not merely a tree/loop subclass. The fixed complete word makes all constraints finite without a guessed time cutoff.",
+    "independence": "Uses neither parity distances, A/B/C classification, layer decomposition, production DP nor inclusion-exclusion. Tree/loop families are input sources only; the exact oracle counts all simple undirected loop-allowed output graphs.",
+    "arithmetic": "At N<=10 there are<=55 edge variables, so exact counts and all intermediate sums/products<=2^55 fit uint64. Every residue is compared against the exact integer, with independent composite CRT projections.",
+    "selfValidation": "Before larger cases, twelve N4/N5 target words were compared against all266240 literal labeled edge assignments; this validates the new clause/Shannon oracle independently of the production implementation."
+  },
+  "initialAuditPolicy": {
+    "file": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+    "initialSixRecordProjectionSha256": "bc2de4b45dc7d449a1f4726c15c6887140484526f3941b731d0ed8c02b16941e",
+    "initial1118ReviewStatus": "verified",
+    "initial1118Classification": "missing-technique",
+    "initial1118ExpectedTechniqueIds": [],
+    "newPositiveResearchReviewRequested": false,
+    "navigationAndCoverageNotEstablishedByThisReview": true
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "initialAuditModified": false,
+  "conclusion": "No substantive mathematical, implementation, API, source-coverage or integer/complexity defects found. Frozen C++ and checker pass normal/sanitizer reproduction and independent direct edge-clause exact counting.",
+  "originalReviewSha256": "0629150831a2211059656081b17ad01262c0dab4d5b0055e426ec9e4e1c13a24",
+  "publishedArticle": "src/content/docs/techniques/parity-walk-profile-layer-inclusion-exclusion-count.mdx",
+  "permanentProbe": {
+    "script": "research/probes/parity-walk-count-independent.py",
+    "originalScriptSha256": "7bfa24c17eb2a8936329e551c03e3ecfa21369efc4ba040e663bd64dc6198c48",
+    "normalizedScriptSha256": "e9c5f2b8c1ccba0131cfc8c22fac0d5f01b8de77468ccb4dc85c363d8c0e5f37",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Algorithm and assertions unchanged."
+  }
+}

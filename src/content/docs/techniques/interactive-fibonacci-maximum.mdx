@@ -1,0 +1,83 @@
+---
+title: "狭義単峰な列を質問するなら、評価点を使い回す間隔で区間を縮める"
+description: "Fibonacci数の間隔で二点を取り、縮小後に一方の返答を再利用します。"
+techniqueId: "interactive-fibonacci-maximum"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+整数列がある位置までは狭義増加、その後は狭義減少し、一位置の値を質問できるとき。二点の値を毎回新しく聞く探索では、時間が対数でも質問上限に届かないことがあります。
+
+## 考え方
+
+$F_0=0,F_1=1,F_{i+2}=F_{i+1}+F_i$ とします。候補を開区間 $(l,r)$ に置き、幅を $r-l=F_k$ に揃えます。二点 $x=l+F_{k-2}$、$y=l+F_{k-1}$ を比較します。$A_x<A_y$ なら $l=x$、それ以外なら $r=y$ とすると、新しい幅は $F_{k-1}$ です。
+
+次の二点の片方は前に質問した位置と一致します。返答を保存すれば、初回は二問、その後は一問だけ増えます。原典の非負性を使い、実際の列の右側に $-i-1$ を置く仮想の列を考えると、長さが Fibonacci 数でなくても同じ手順を使えます。仮想位置には質問しません。
+
+## 適用条件
+
+隠れた列は非負で、頂点の前後が狭義単調であること。任意の横ばいを許す弱い単峰性では、離れた二点の値が同じだけで片側を捨てられません。途中の返答に矛盾しない範囲で値が変わる場合も、キャッシュした全返答に整合する狭義単峰列が必要です。
+
+## なぜ正しいか
+
+$x<y$ で $A_x<A_y$ なら、頂点は $x$ より右にあります。$A_x\ge A_y$ なら頂点は $y$ より左にあります。同値の場合も、頂点が $y$ 以降なら狭義増加から $A_x<A_y$ になるため除外できます。更新後の開区間に頂点を残し、幅2になると候補は一つです。Fibonacci の加法式により、残す評価点の位置が次の内部点になります。
+
+## 計算量
+
+$F_k-1\ge n$ となる最小の $k\ge3$ を選びます。質問は最大 $k-2$ 回、探索は $O(\log n)$ 時間。下の実装ではキャッシュの初期化に $O(n)$ 時間を使うため、全体は $O(n+\log n)$ 時間、空間は $O(n)$。$n\le1500$ なら $F_{17}=1597$ を使い最大15回。二点を聞き直す方法に比べ、二回目以降の比較の新規質問を一回に減らします。
+
+## 実装
+
+`fibonacci_peak_value` の位置は0始まりです。返答はキャッシュし、予算を超える前に止めます。プロトコルの関数は原典の複数テストケース、1始まりの質問、-1による終了に対応します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+template<class Query>
+long long fibonacci_peak_value(int n,Query ask,int budget=15){
+    assert(1<=n && n<=1500);
+    vector<int> f{0,1};
+    while(f.size()<4 || f.back()-1<n)f.push_back(f[f.size()-1]+f[f.size()-2]);
+    int k=f.size()-1;
+    if(k-2>budget)throw invalid_argument("query budget is too small");
+    vector<optional<long long>> cached(n);int queries=0;
+    auto value=[&](int i)->long long{
+        assert(i>=0);
+        if(i>=n)return -1LL-i;
+        if(!cached[i]){
+            if(queries==budget)throw runtime_error("query budget exceeded");
+            ++queries;long long answer=ask(i);assert(answer>=0);cached[i]=answer;
+        }
+        return *cached[i];
+    };
+    int l=-1,r=f[k]-1;
+    while(k>3){
+        int x=l+f[k-2],y=l+f[k-1];
+        if(value(x)<value(y))l=x;else r=y;
+        --k;assert(r-l==f[k]);
+    }
+    return value(l+1);
+}
+void solve_fibonacci_peak_protocol(){
+    int tests;if(!(cin>>tests))return;
+    while(tests--){int n;if(!(cin>>n))return;
+        auto ask=[](int i){
+            cout<<"? "<<i+1<<endl;
+            long long x;if(!(cin>>x) || x<0)exit(0);return x;
+        };
+        long long answer=fibonacci_peak_value(n,ask);
+        cout<<"! "<<answer<<endl;
+    }
+}
+```
+
+## 関連する手法
+
+[対話問題の質問設計](/flowchartcp/techniques/interactive/)、[二分探索](/flowchartcp/techniques/binary-search/)
+
+## 参考資料
+
+- [原典の条件](https://atcoder.jp/contests/typical90/tasks/typical90_ba)
+
+<TechniqueReferences techniqueId="interactive-fibonacci-maximum" />

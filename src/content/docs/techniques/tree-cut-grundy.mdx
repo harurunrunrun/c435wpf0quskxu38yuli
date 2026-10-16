@@ -1,0 +1,60 @@
+---
+title: "根を残して木の辺を切るゲームは、子の値に1を足してXORする"
+description: "根につなぐ一辺の追加がGrundy数を1増やすことを使います。"
+techniqueId: "tree-cut-grundy"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+根が固定された木から一辺を切り、根を含まない側を丸ごと取り除くゲーム。根から伸びる枝どうしは独立ですが、枝の根元を切るとその枝の内部全体を消せる点が特徴です。
+
+## 考え方
+
+葉の値を0として、$g(v)=\bigoplus_{u:\text{子}}(g(u)+1)$ を計算します。一つの子部分木を根へ接続する辺が、子部分木のゲームの値を1増やします。根の値が0なら後手、非0なら先手が勝ちます。単に子の値を XOR するだけでは接続する一辺を数え落とします。
+
+## 適用条件
+
+一辺を切るたび根を含まない成分を全て捨て、切れなくなった側が負けること。一般グラフでは枝の独立性がなくなります。両側の成分を残すゲームや、頂点を一個だけ消すゲームとは遷移が異なります。
+
+## なぜ正しいか
+
+子部分木そのものの Grundy 数を $g$、その遷移先の値を $h$ とします。mex の定義から、元の遷移先には $0,\ldots,g-1$ が全てあり、$g$ はありません。接続辺を付けたゲームでは、根元を切る手が0へ、内部を切る手が帰納法により $h+1$ へ移ります。従って新しい遷移先には $0,\ldots,g$ が全てあり、$g+1$ はないので、mex は $g+1$ です。根の各枝には一手で一つだけ作用するため、その和は XOR になります。
+
+## 計算量
+
+切断後の木を全列挙すると最大 $2^{n-1}$ 種類。子から親へ一度ずつ計算すれば時間 $O(n)$、空間 $O(n)$。下の実装は長い一本道でも再帰スタックを使いません。
+
+## 実装
+
+隣接リストは無向木、`root` は0始まりです。辺の重みや距離はこのゲームには使いません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int rooted_cut_grundy(const vector<vector<int>>& tree,int root=0){
+    int n=tree.size();assert(n>0 && 0<=root && root<n);
+    vector<int> parent(n,-2),order{root},value(n);
+    parent[root]=-1;
+    for(size_t i=0;i<order.size();++i){
+        int v=order[i];
+        for(int u:tree[v])if(u!=parent[v]){
+            assert(0<=u && u<n && parent[u]==-2);
+            parent[u]=v;order.push_back(u);
+        }
+    }
+    assert((int)order.size()==n);
+    for(int i=n-1;i>0;--i){int v=order[i];value[parent[v]]^=value[v]+1;}
+    return value[root];
+}
+```
+
+## 関連する手法
+
+[Grundy数](/flowchartcp/techniques/game-theory/)、[木DP](/flowchartcp/techniques/tree-dp/)
+
+## 参考資料
+
+- [出典の解説](https://atcoder.jp/img/agc017/editorial.pdf)
+
+<TechniqueReferences techniqueId="tree-cut-grundy" />

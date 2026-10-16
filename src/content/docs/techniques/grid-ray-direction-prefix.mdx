@@ -1,0 +1,120 @@
+---
+title: "壁まで何マスでも進める格子の経路数は、方向別の累積和を壁で切る"
+description: "右・下・右下への移動を一マスずつ列挙せず、各方向から届く経路数の和を保つ。"
+techniqueId: grid-ray-direction-prefix
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+壁のある格子で、右・下・右下のいずれかへ正の距離だけ進める。一回の移動で何マス進んでもよいが、壁を越えることはできない。左上から右下へ移動する方法の数を求めたい。
+
+各マスから行けるマスを全て試すと、一マスにつき縦横の長さに比例する遷移がある。盤面が $2000\times2000$ 程度なら、マス数よりもこの遷移数が問題になる。
+
+## 考え方
+
+$dp[i][j]$ を、マス $(i,j)$ に止まるまでの経路数とする。最後の一手で来られるのは、左・上・左上の直線上で、間に壁がないマスだけである。
+
+これらの和を毎回取り直す代わりに、同じ方向の和を次のマスへ引き継ぐ。左から来る和を $L$、上から来る和を $U$、左上から来る和を $D$ とすると、道のマスでは
+
+$$
+dp[i][j]=L+U+D.
+$$
+
+始点だけは空の移動列に対応する $1$ とする。現在のマスの計算が終わってから、その値を三方向の累積に加える。先に加えると、同じマスから動かずに到着する遷移を数えてしまう。
+
+壁では $dp$ だけでなく、壁を通る三方向の累積も $0$ にする。例えば一行が `..#..` なら、壁の右側へ左側の経路数を持ち越してはいけない。
+
+行を上から、各行を左から処理すると、累積は一行分に圧縮できる。
+
+- 横方向は、現在の行の直前までの和一つでよい。
+- 縦方向の配列 `vertical[j]` は、更新前には一行上までの和、更新後には現在のマスまでの和になる。
+- 斜め方向の配列 `diagonal[j]` も同様に更新する。ただし現在の計算には、更新前の `diagonal[j - 1]` が必要になる。上書きする前の値を一つ保存し、次の列へ渡す。
+
+最後の項を更新済みの `diagonal[j - 1]` から読んでしまうと、同じ行の値を斜め方向へ流してしまう。壁でも、上書き前の値を保存する手順は省かない。ある壁の左上から右下へ伸びる直線と、その壁の一マス右を通る直線は別だからである。
+
+## 適用条件
+
+移動方向が右・下・右下で、移動先だけでなく通過する全マスが道でなければならない。移動方向に沿った全ての過去の道マスが遷移元となり、距離による重みが付かない。壁の配置は固定されている。
+
+左や上へ戻れる場合は、この走査順では依存関係を解消できない。「最大で $K$ マスまで」なら古い遷移元を窓から除く処理が必要になり、「ちょうど $K$ マス」なら累積和の全体を使ってはいけない。壁を飛び越えてよい規則でも、壁で累積を切る処理は合わない。
+
+求めるのは、各手の終了位置で区別した経路数である。途中で止まるか、そのまま長く進むかが異なる移動列は別に数える。最小手数や、通過マスの集合の種類を求める場合は、同じ和のDPにはならない。
+
+## なぜ正しいか
+
+始点以外の道マスに到着する経路を、最後の一手の方向で三つに分ける。移動距離は正なので、直前の停止マスは左・上・左上のうち一方向だけに属する。そのマスまでの経路に最後の一手を付ける対応は一対一であり、三方向の和に重複はない。
+
+各方向の累積は、「同じ直線上で、直近の壁より後にある処理済みの道マスの $dp$ の和」を保つ。道なら現在の $dp$ を足すことで次のマスに向けた和になり、壁なら $0$ にすることで通行不能な遷移元を全て捨てる。この不変条件は走査の最初から最後まで成り立つ。
+
+圧縮実装は縦方向では同じ列の前行、斜め方向では保存した前行の左隣を参照する。従って二次元の累積表と同じ値を計算し、右下の $dp$ が求める答えになる。始点が壁ならどこにも到達せず、終点が壁ならその $dp$ が $0$ になる。
+
+## 計算量
+
+遷移先を直に列挙する方法は $O(HW(H+W))$ 時間。方向別の累積を使うと、一マスにつき定数回の加算で済むため $O(HW)$ 時間になる。掲載実装の補助空間は $O(W)$。引数として渡す盤面そのものの $O(HW)$ 空間は含めない。
+
+幅0の入力を受け付ける拡張では、全行の長さを検査するため $O(H)$ 時間が必要になる。
+
+## 実装
+
+答えは法 $1000000007$ で返す。高さと幅はそれぞれ $2000$ 以下とする。高さ0、または全ての行が空で幅0なら経路がないものとして $0$ を返す。一マスだけの盤面は `.` なら $1$、`#` なら $0$。始点や終点の壁も受け付け、答えは $0$ になる。
+
+長さの異なる行や `.`・`#` 以外の文字は `invalid_argument`、高さまたは幅が上限を超える入力は `length_error` とする。空の幅を扱う場合も、全行の長さを検査する。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_grid_ray_paths(const vector<string>& grid) {
+    constexpr int MOD = 1000000007;
+    if (grid.size() > 2000) throw length_error("height exceeds 2000");
+    if (grid.empty()) return 0;
+    const size_t width = grid.front().size();
+    if (width > 2000) throw length_error("width exceeds 2000");
+    for (const string& row : grid) {
+        if (row.size() != width) throw invalid_argument("nonrectangular grid");
+        for (char cell : row)
+            if (cell != '.' && cell != '#')
+                throw invalid_argument("invalid grid character");
+    }
+    if (width == 0) return 0;
+    const int h = static_cast<int>(grid.size());
+    const int w = static_cast<int>(width);
+    vector<int> vertical(w, 0), diagonal(w, 0);
+    int answer = 0;
+    for (int i = 0; i < h; ++i) {
+        int horizontal = 0;
+        int upper_left_diagonal = 0;
+        for (int j = 0; j < w; ++j) {
+            // This old value is needed as upper-left input in the next column.
+            const int old_diagonal = diagonal[j];
+            if (grid[i][j] == '#') {
+                answer = 0;
+                horizontal = 0;
+                vertical[j] = 0;
+                diagonal[j] = 0;
+            } else {
+                const long long incoming = static_cast<long long>(horizontal)
+                    + vertical[j] + upper_left_diagonal;
+                answer = (i == 0 && j == 0) ? 1 : incoming % MOD;
+                horizontal = (static_cast<long long>(horizontal) + answer) % MOD;
+                vertical[j] = (static_cast<long long>(vertical[j]) + answer) % MOD;
+                diagonal[j] = (static_cast<long long>(upper_left_diagonal) + answer) % MOD;
+            }
+            upper_left_diagonal = old_diagonal;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[遷移元が連続範囲の和なら累積和を使う](/flowchartcp/techniques/dp-range-sum/) ・ [DPの前後の層だけを持つ](/flowchartcp/techniques/dp-dimension-rolling/) ・ [累積和](/flowchartcp/techniques/prefix-sum/)
+
+## 参考資料
+
+- [AtCoder ABC183 E：Queen on Grid](https://atcoder.jp/contests/abc183/tasks/abc183_e)
+- [ABC183 E 公式解説：三方向の累積と行の圧縮](https://atcoder.jp/contests/abc183/editorial/344)
+
+<TechniqueReferences techniqueId="grid-ray-direction-prefix" />

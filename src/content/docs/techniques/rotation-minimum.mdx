@@ -1,0 +1,68 @@
+---
+title: "巡回シフトの最小候補を不一致位置までまとめて捨てる"
+description: "二つの開始位置を比較し、初めて異なる文字より前の候補を一度に除きます。"
+techniqueId: "rotation-minimum"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+環状の文字列の表現をそろえるため、全ての回転の中で辞書順最小のものを求めたい場合。全回転を実際に作る必要はありません。
+
+## 考え方
+
+二つの開始位置 $i,j$ から、文字を $k$ 個まで比較します。そこまでは等しく、初めて $s[i+k]>s[j+k]$ となったなら、$i$ だけでなく $i+1,\ldots,i+k$ も最小候補ではありません。$i$ を $k+1$ 個先へ動かし、比較長を 0 に戻します。
+
+逆の大小なら $j$ を同じように動かします。添字は $N$ で割った余りを使います。$N$ 文字全てが一致する場合は、その二つの回転は同じです。
+
+## 適用条件
+
+文字を回転させた全 $N$ 通りが候補で、比較する長さが $N$ である場合です。長さを変えた接尾辞の最小値や、回転のたびに値が変化する重み付き比較には、そのまま使えません。
+
+反転も同じとみなす環状列なら、元の列と反転列の最小回転をそれぞれ求めて、さらに比較します。入力の順序と求める文字の辞書順を合わせます。
+
+## なぜ正しいか
+
+不一致位置が $k$ のとき、$0\le h\le k$ について $i+h$ と $j+h$ から始めた回転は、最初の $k-h$ 文字が同じで、その次で後者が小さくなります。したがって $i+h$ はより小さい回転を持ち、最小候補ではありません。
+
+負けた範囲を除くだけなので、最小候補は残ります。比較した一致長の分だけ負けた開始位置を進めるため、同じ長い一致を何度も調べません。
+
+## 計算量
+
+全ての回転を独立に比較する改善前は $O(N^2)$。改善後は $O(N)$ 時間、開始位置を求める補助空間 $O(1)$。回転した結果を作る場合だけ $O(N)$ 空間を使います。
+
+## 実装
+
+空列の開始位置は 0 とします。同じ最小回転が複数ある場合、そのうち一つを返します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int minimum_rotation_start(const string& s) {
+    int n=s.size();
+    if(n==0) return 0;
+    int i=0,j=1,k=0;
+    while(i<n && j<n && k<n) {
+        auto a=static_cast<unsigned char>(s[(i+k)%n]);
+        auto b=static_cast<unsigned char>(s[(j+k)%n]);
+        if(a==b) {++k;continue;}
+        if(a>b) {i+=k+1;if(i==j)++i;}
+        else {j+=k+1;if(i==j)++j;}
+        k=0;
+    }
+    return min(i,j);
+}
+string minimum_rotation(const string& s) {
+    int at=minimum_rotation_start(s);
+    return s.substr(at)+s.substr(0,at);
+}
+```
+
+## 関連する手法
+
+[周期の長さを接頭辞と接尾辞の一致から求める](/flowchartcp/techniques/period-from-border/)、[交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [CSES：Minimal Rotation の問題文](https://cses.fi/problemset/task/1110/)
+
+<TechniqueReferences techniqueId="rotation-minimum" />

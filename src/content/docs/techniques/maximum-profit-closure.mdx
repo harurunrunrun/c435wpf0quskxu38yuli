@@ -1,0 +1,146 @@
+---
+title: "選ぶと別の対象も必要になる利益最大化を、含意を切れないカットへ直す"
+description: "正負の利益を失う費用に変え、選択の依存関係に十分大きい容量を置く。"
+techniqueId: maximum-profit-closure
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+各対象を選ぶか決め、利益は対象ごとの和。選択には必要な別対象があり、その対象が負利益でも全体を上げるために選ぶ場合がある。
+
+## 考え方
+
+選ぶ対象を始点側へ置く。正利益 $w_v$ は始点→$v$ の容量 $w_v$、負利益は $v$→終点の容量 $-w_v$。「$u$ を選ぶなら $v$ も必要」は $u\to v$ の大容量辺にする。
+
+正利益総和を $W$ とすると大容量は $W+1$ でよい。空集合のカット費用は $W$ なので、最小カットは含意を切れない。最適利益は $W-\text{最小カット容量}$。残余グラフで始点から届く対象が選択集合。
+
+## 適用条件
+
+制約は一対象の選択が別の一対象を要求する含意の組合せで、利益は個別の和。含意に巡回があってもよい。
+
+どちらか一つを選ぶ、必ずk個選ぶ、両方を選ぶと追加費用、などはこの構成だけでは表せない。実装は対象数 $10^5$ 以下、利益の絶対値 $10^{12}$ 以下。
+
+## なぜ正しいか
+
+含意を守る集合のカット費用は、選ばない正利益と選ぶ負利益の絶対値の和。これは $W$ から選択利益を引いた値。最小カットは含意を破れないので利益最大と一致する。
+
+倍数をまとめて除く操作では、倍数が残るなら全約数も残る。逆にこの条件を満たす残存集合は、残さない数で操作すれば残す数を壊さず実現できる。含意を残す倍数→残す約数の向きにする。
+
+## 計算量
+
+全選択集合の $O(2^N)$ から、含意数 $M$ として $V=N+2$、$E=O(N+M)$ のカットに変換。掲載実装は $O(V^2E)$ 時間、$O(N+M)$ 空間。復元は $O(N+M)$。
+
+## 実装
+
+含意 (u,v) は u を選ぶと v も選ぶ意味。空集合を許し、返す利益は0以上。同点の集合は一つ返す。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <queue>
+#include <utility>
+#include <vector>
+class FlowNetwork {
+    struct Arc { int to, rev; long long cap; };
+    std::vector<std::vector<Arc>> g;
+    std::vector<std::pair<int,int>> location;
+    std::vector<long long> original;
+    std::vector<int> level, next;
+    bool layers(int s,int t) {
+        std::fill(level.begin(),level.end(),-1);
+        std::queue<int> q; q.push(s); level[s]=0;
+        while(!q.empty()) {
+            int v=q.front(); q.pop();
+            for(const auto& e:g[v]) if(e.cap>0 && level[e.to]<0) {
+                level[e.to]=level[v]+1; q.push(e.to);
+            }
+        }
+        return level[t]>=0;
+    }
+    long long augment(int s,int t,long long limit) {
+        std::vector<int> vertex{s}, edge;
+        std::vector<long long> bound{limit};
+        while(!vertex.empty()) {
+            int v=vertex.back();
+            if(v==t) {
+                long long f=bound.back();
+                for(int k=0;k<int(edge.size());++k) {
+                    auto& e=g[vertex[k]][edge[k]];
+                    e.cap-=f; g[e.to][e.rev].cap+=f;
+                }
+                return f;
+            }
+            int& at=next[v];
+            while(at<int(g[v].size()) &&
+                (g[v][at].cap==0 || level[g[v][at].to]!=level[v]+1)) ++at;
+            if(at==int(g[v].size())) {
+                level[v]=-1; vertex.pop_back(); bound.pop_back();
+                if(!edge.empty()) { edge.pop_back(); ++next[vertex.back()]; }
+            } else {
+                edge.push_back(at); vertex.push_back(g[v][at].to);
+                bound.push_back(std::min(bound.back(),g[v][at].cap));
+            }
+        }
+        return 0;
+    }
+public:
+    explicit FlowNetwork(int n):g(n),level(n),next(n) {}
+    int add(int u,int v,long long capacity) {
+        int a=g[u].size(),b=g[v].size();
+        if(u==v) ++b;
+        g[u].push_back({v,b,capacity}); g[v].push_back({u,a,0});
+        location.push_back({u,a}); original.push_back(capacity);
+        return int(location.size())-1;
+    }
+    long long used(int id) const {
+        auto [u,k]=location[id]; return original[id]-g[u][k].cap;
+    }
+    long long flow(int s,int t,long long limit=std::numeric_limits<long long>::max()/4) {
+        long long result=0;
+        while(result<limit && layers(s,t)) {
+            std::fill(next.begin(),next.end(),0);
+            while(result<limit) {
+                long long add=augment(s,t,limit-result);
+                if(add==0) break;
+                result+=add;
+            }
+        }
+        return result;
+    }
+    std::vector<bool> reachable(int s) const {
+        std::vector<bool> seen(g.size()); std::vector<int> q{s}; seen[s]=true;
+        for(int at=0;at<int(q.size());++at)
+            for(const auto& e:g[q[at]]) if(e.cap>0 && !seen[e.to]) {
+                seen[e.to]=true; q.push_back(e.to);
+            }
+        return seen;
+    }
+};
+
+struct ClosedSelection { long long profit; std::vector<int> selected; };
+ClosedSelection maximum_closed_profit(const std::vector<long long>& weight,
+    const std::vector<std::pair<int,int>>& implications) {
+    int n=weight.size(),s=n,t=n+1; FlowNetwork g(t+1); long long positive=0;
+    for(int v=0;v<n;++v) {
+        if(weight[v]>0) { positive+=weight[v]; g.add(s,v,weight[v]); }
+        if(weight[v]<0) g.add(v,t,-weight[v]);
+    }
+    for(auto [u,v]:implications) g.add(u,v,positive+1);
+    long long loss=g.flow(s,t); auto side=g.reachable(s);
+    ClosedSelection answer{positive-loss,{}};
+    for(int v=0;v<n;++v) if(side[v]) answer.selected.push_back(v);
+    return answer;
+}
+```
+
+## 関連する手法
+
+[最大流・最小カット](/flowchartcp/techniques/max-flow/)
+
+## 参考資料
+
+- [AtCoder：MUL（原典）](https://atcoder.jp/contests/arc085/tasks/arc085_c)
+- [公式解説](https://img.atcoder.jp/arc085/editorial.pdf)
+
+<TechniqueReferences techniqueId="maximum-profit-closure" />

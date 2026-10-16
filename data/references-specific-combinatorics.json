@@ -1,0 +1,122 @@
+[
+  {
+    "techniqueId": "burnside-necklace-divisors",
+    "source": "CSES",
+    "problemId": "2209",
+    "title": "Counting Necklaces",
+    "url": "https://cses.fi/problemset/task/2209",
+    "editorialUrl": "https://cses.fi/problemset/task/2209",
+    "evidence": "原典は各位置を自由に m 色で塗り、回転だけを同一視する環状列の個数を要求する。回転 r が固定する列を m^gcd(n,r) と数え、約数とオイラー関数でまとめる式がその同値類を数える。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は各位置を自由に m 色で塗り、回転だけを同一視する環状列の個数を要求する。回転 r が固定する列を m^gcd(n,r) と数え、約数とオイラー関数でまとめる式がその同値類を数える。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "burnside-bracelet-reflections",
+    "source": "UVa",
+    "problemId": "10294",
+    "title": "Arif in Dhaka (First Love Part 2)",
+    "url": "https://onlinejudge.org/external/102/10294.pdf",
+    "editorialUrl": "https://onlinejudge.org/external/102/10294.pdf",
+    "evidence": "原典は同じ部品集合について、回転だけのネックレス数と、裏返しも同一視するブレスレット数の両方を要求する。二面体の全操作を平均し、反転軸の巡回数を n の奇偶で分ける。最終結果の桁数制限によらず中間値は多倍長整数で扱う。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は同じ部品集合について、回転だけのネックレス数と、裏返しも同一視するブレスレット数の両方を要求する。二面体の全操作を平均し、反転軸の巡回数を n の奇偶で分ける。最終結果の桁数制限によらず中間値は多倍長整数で扱う。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "ballot-prefix-reflection",
+    "source": "CSES",
+    "problemId": "2187",
+    "title": "Bracket Sequences II",
+    "url": "https://cses.fi/problemset/task/2187",
+    "editorialUrl": "https://cses.fi/problemset/task/2187",
+    "evidence": "原典は正しい括弧列の全長と固定接頭辞を与える。接頭辞の高さから0へ戻り、途中で負にならない上下歩列が残りの括弧列に一対一に対応するため、反射法の二項係数の差を適用できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は正しい括弧列の全長と固定接頭辞を与える。接頭辞の高さから0へ戻り、途中で負にならない上下歩列が残りの括弧列に一対一に対応するため、反射法の二項係数の差を適用できる。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "derangement-fixed-count",
+    "source": "CSES",
+    "problemId": "1717",
+    "title": "Christmas Party",
+    "url": "https://cses.fi/problemset/task/1717",
+    "editorialUrl": "https://cses.fi/problemset/task/1717",
+    "evidence": "原典は区別する子供と贈り物の一対一配分で、自分の贈り物を受け取ることを禁止する。固定点数0の完全順列に一致し、掲載の固定点数指定の実装では fixed=0 として求める。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は区別する子供と贈り物の一対一配分で、自分の贈り物を受け取ることを禁止する。固定点数0の完全順列に一致し、掲載の固定点数指定の実装では fixed=0 として求める。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "subset-extrema-rank",
+    "source": "AtCoder",
+    "problemId": "abc151_e",
+    "title": "E - Max-Min Sums",
+    "url": "https://atcoder.jp/contests/abc151/tasks/abc151_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc151/tasks/abc151_e",
+    "evidence": "原典は等値でも添字を区別して K 個を選び、各選択の最大値と最小値の差を合計する。整列後の最後と最初の順位へそれぞれ二項係数を掛ける寄与式に一致する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は等値でも添字を区別して K 個を選び、各選択の最大値と最小値の差を合計する。整列後の最後と最初の順位へそれぞれ二項係数を掛ける寄与式に一致する。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "redistribution-zero-count",
+    "source": "AtCoder",
+    "problemId": "abc156_e",
+    "title": "E - Roaming",
+    "url": "https://atcoder.jp/contests/abc156/tasks/abc156_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc156/tasks/abc156_e",
+    "evidence": "原典は n≥3 の各部屋に最初一人ずつ置き、別の任意の部屋への移動がちょうど k≥2 回起きた後の人数配置を数える。最小回数は空室数で、第三の部屋への寄り道と二・三回の巡回で余剰回数を吸収できる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は n≥3 の各部屋に最初一人ずつ置き、別の任意の部屋への移動がちょうど k≥2 回起きた後の人数配置を数える。最小回数は空室数で、第三の部屋への寄り道と二・三回の巡回で余剰回数を吸収できる。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "injective-coordinate-avoidance",
+    "source": "AtCoder",
+    "problemId": "abc172_e",
+    "title": "E - NEQ",
+    "url": "https://atcoder.jp/contests/abc172/tasks/abc172_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc172/tasks/abc172_e",
+    "evidence": "原典の二列はそれぞれ値を重複させず、全ての同位置の二値が異なる。一本を固定し、一致を強制する位置数ごとの残りの単射数を包除してから一本目の単射数を掛ける。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典の二列はそれぞれ値を重複させず、全ての同位置の二値が異なる。一本を固定し、一致を強制する位置数ごとの残りの単射数を包除してから一本目の単射数を掛ける。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "grid-active-rows-cols",
+    "source": "AtCoder",
+    "problemId": "abc242_f",
+    "title": "F - Black and White Rooks",
+    "url": "https://atcoder.jp/contests/abc242/tasks/abc242_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc242/tasks/abc242_f",
+    "evidence": "原典の異色飛車が互いに攻撃しない条件は、行または列に二色が混在しない条件と同値である。同色の駒は区別しないため、色ごとの使用行列集合を分け、全使用条件を空行・空列の包除で数える。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典の異色飛車が互いに攻撃しない条件は、行または列に二色が混在しない条件と同値である。同色の駒は区別しないため、色ごとの使用行列集合を分け、全使用条件を空行・空列の包除で数える。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "subset-bounding-box-expectation",
+    "source": "AtCoder",
+    "problemId": "abc297_f",
+    "title": "F - Minimum Bounding Box 2",
+    "url": "https://atcoder.jp/contests/abc297/tasks/abc297_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc297/tasks/abc297_f",
+    "evidence": "原典は異なる K マスを一様に選び、その最小の軸平行長方形の面積の期待値を求める。各マスが長方形外にある四方向の事象を包除し、包含マス数の指示変数を足すモデルと一致する。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は異なる K マスを一様に選び、その最小の軸平行長方形の面積の期待値を求める。各マスが長方形外にある四方向の事象を包除し、包含マス数の指示変数を足すモデルと一致する。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  },
+  {
+    "techniqueId": "coloring-equal-adjacencies",
+    "source": "AtCoder",
+    "problemId": "abc167_e",
+    "title": "E - Colorful Blocks",
+    "url": "https://atcoder.jp/contests/abc167/tasks/abc167_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc167/tasks/abc167_e",
+    "evidence": "原典は線形に並ぶ n 箇所の塗り方で、同色隣接の組数を K 以下に制限する。各境界の同色・異色を先に選ぶ式を、同色境界数0から K まで足す。端同士の隣接や色使用数の制限はない。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "verificationNotes": "原典は線形に並ぶ n 箇所の塗り方で、同色隣接の組数を K 以下に制限する。各境界の同色・異色を先に選ぶ式を、同色境界数0から K まで足す。端同士の隣接や色使用数の制限はない。 原典の条件から独立に導出し、掲載 C++20 実装を全列挙・素朴解法・境界ケースと比較して確認した。"
+  }
+]

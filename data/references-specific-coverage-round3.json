@@ -1,0 +1,77 @@
+[
+  {
+    "techniqueId": "dp-sliding-min",
+    "source": "CSES",
+    "problemId": "1644",
+    "title": "Maximum Subarray Sum II",
+    "url": "https://cses.fi/problemset/task/1644",
+    "editorialUrl": "https://cses.fi/problemset/task/1644",
+    "evidence": "長さ制約の左端候補が右へ動く。累積和の最小値を単調キューで持つP_r−min P_lの式を独立に導出し、掲載した追加関数を全区間列挙と比較した。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "techniqueId": "dsu-threshold-queries",
+    "source": "USACO",
+    "problemId": "2018-jan-gold-mootube",
+    "title": "MooTube (Gold)",
+    "url": "https://usaco.org/index.php?cpid=789&page=viewproblem2",
+    "editorialUrl": "https://usaco.org/current/data/sol_mootube_gold_jan18.html",
+    "evidence": "公式解説は辺と質問を降順に並べ、重みがK以上の辺を追加して成分サイズから1を引く。掲載した降順集計関数を同じしきい値の探索と比較した。",
+    "verification": "editorial",
+    "difficulty": "Gold",
+    "cutoffVerification": "source-before-cutoff"
+  },
+  {
+    "techniqueId": "persistent-prefix-kth",
+    "source": "SPOJ",
+    "problemId": "MKTHNUM",
+    "title": "K-th Number",
+    "url": "https://www.spoj.com/problems/MKTHNUM/",
+    "editorialUrl": "https://new3.spoj.com/problems/MKTHNUM/",
+    "evidence": "原典の異なる値からなる静的区間順位を確認。静的配列の区間順位なので、二つの接頭辞版の頻度差で区間内の個数を持ち、左側の個数を引きながらk番目へ降りられる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "source-before-cutoff",
+    "verificationNotes": "原典の異なる値からなる静的区間順位を確認。静的配列の区間順位なので、二つの接頭辞版の頻度差で区間内の個数を持ち、左側の個数を引きながらk番目へ降りられる。 掲載実装は小規模の全順位をソートと比較して確認した。"
+  },
+  {
+    "techniqueId": "wavelet-range-kth",
+    "source": "SPOJ",
+    "problemId": "MKTHNUM",
+    "title": "K-th Number",
+    "url": "https://www.spoj.com/problems/MKTHNUM/",
+    "editorialUrl": "https://new3.spoj.com/problems/MKTHNUM/",
+    "evidence": "原典の異なる値からなる静的区間順位を確認。静的な値列をビット順に安定分割し、各区間の0側の個数から順位と区間位置を写し替えられる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "source-before-cutoff",
+    "verificationNotes": "原典の異なる値からなる静的区間順位を確認。静的な値列をビット順に安定分割し、各区間の0側の個数から順位と区間位置を写し替えられる。 掲載実装は小規模の全順位をソートと比較して確認した。"
+  },
+  {
+    "techniqueId": "offline-kth-divide-values",
+    "source": "SPOJ",
+    "problemId": "MKTHNUM",
+    "title": "K-th Number",
+    "url": "https://www.spoj.com/problems/MKTHNUM/",
+    "editorialUrl": "https://new3.spoj.com/problems/MKTHNUM/",
+    "evidence": "原典の異なる値からなる静的区間順位を確認。全順位質問が最初に分かるため、答えの候補値で一括分割し、位置ごとの個数を数えて左右へ送れる。掲載する更新対応関数の、代入がない特殊場合に当たる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "source-before-cutoff",
+    "verificationNotes": "原典の異なる値からなる静的区間順位を確認。全順位質問が最初に分かるため、答えの候補値で一括分割し、位置ごとの個数を数えて左右へ送れる。掲載する更新対応関数の、代入がない特殊場合に当たる。 掲載実装は小規模の全順位をソートと比較して確認した。"
+  },
+  {
+    "techniqueId": "fenwick-prefix-lower-bound",
+    "source": "SPOJ",
+    "problemId": "ORDERSET",
+    "title": "Order statistic set",
+    "url": "https://www.spoj.com/problems/ORDERSET/",
+    "editorialUrl": "https://www.spoj.com/SPOJ/problems/ORDERSET/en/",
+    "evidence": "全操作の値を圧縮し、集合の各値の個数を0か1に保つ。非負の累積個数を内部で逆引きすればk番目を求められ、総個数を超える順位は不在として返せる。",
+    "verification": "independent-analysis",
+    "difficulty": null,
+    "cutoffVerification": "source-before-cutoff"
+  }
+]

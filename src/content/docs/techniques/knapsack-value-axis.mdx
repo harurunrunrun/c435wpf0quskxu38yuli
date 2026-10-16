@@ -1,0 +1,66 @@
+---
+title: "重さが大きく価値の合計が小さいときはDPの軸を入れ替える"
+description: "最大価値を重量ごとに持つ代わりに、価値ごとの最小重量を持ちます。"
+techniqueId: knapsack-value-axis
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+最大価値を重量ごとに持つ代わりに、価値ごとの最小重量を持ちます。
+
+## 使う場面
+
+0-1ナップサックで容量 $W$ が $10^9$ など大きく、$O(NW)$ が不可能でも、価値の合計 $V=\sum_i v_i$ が小さい場合です。品物の重さ $w_i$ と価値 $v_i$ のうち、配列で持てる小さい方をDPの添字にします。
+
+## 考え方
+
+$D[s]$ を価値の合計がちょうど $s$ になる最小重量と定義します。初期値は $D[0]=0$、他は無限大です。品物 $(w,v)$ では、選ばない場合と選ぶ場合を比較して $D'[s]=\min(D[s],D[s-v]+w)$ とします。最後に $D[s]\le W$ を満たす最大の $s$ を答えにします。
+
+## 適用条件
+
+価値は非負の整数で、合計の配列を確保できることが必要です。重さも非負とします。1本の配列を使う場合は価値の大きい方から更新し、同じ品物を複数回使わないようにします。負の価値や、ちょうどの重量を要求する問題では別の状態設計が必要です。
+
+## なぜ正しいか
+
+同じ価値を得る選び方なら、より軽い方は今後どの品物を追加するときにも不利になりません。したがって、最小重量だけを保存してよいことが分かります。各品物を選ぶ・選ばないの2通りを比較すれば、すべての部分集合を重複使用なしで扱えます。
+
+## 計算量
+
+時間は $O(NW)$ から $O(NV)$ になります。空間も重量軸の $O(W)$ から価値軸の $O(V)$ になります。ただし $V$ の方が大きいなら、軸を入れ替える利点はありません。
+
+## 実装
+
+`value_axis_knapsack(weight, value, capacity)` は最大価値を返します。価値合計を `int` と配列の範囲に収め、最小重量は `long long` で管理し、容量と各重量は $2^{62}$ 未満にします。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int value_axis_knapsack(const vector<long long>& weight,
+    const vector<int>& value,long long capacity) {
+    assert(weight.size()==value.size() && capacity>=0);
+    const long long INF=1LL<<62; long long sum=0;
+    assert(capacity<INF);
+    for(int v:value) { assert(v>=0); sum+=v; }
+    assert(sum<=INT_MAX-1); int V=sum;
+    vector<long long> dp(V+1,INF); dp[0]=0;
+    for(int i=0;i<int(value.size());++i) {
+        assert(0<=weight[i] && weight[i]<INF);
+        for(int s=V;s>=value[i];--s) {
+            long long old=dp[s-value[i]];
+            if(old!=INF && old<INF-weight[i])
+                dp[s]=min(dp[s],old+weight[i]);
+        }
+    }
+    for(int s=V;s>=0;--s) if(dp[s]<=capacity) return s;
+    return 0;
+}
+```
+
+## 関連する手法
+
+[ナップサックDP](/flowchartcp/techniques/knapsack/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [AtCoder：E - Knapsack 2の解説・実装](https://atcoder.jp/contests/dp/editorial/17284)
+
+<TechniqueReferences techniqueId="knapsack-value-axis" />

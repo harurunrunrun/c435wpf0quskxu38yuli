@@ -1,0 +1,85 @@
+---
+title: "同色を後でまとめて消す区間DPは、端へつながる同色の個数を持つ"
+description: "区間の外に残した同色の要素を状態へ加え、今消す場合と、間を消して合流させる場合を比べる。"
+techniqueId: interval-removal-carried-group
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+同じ色が連続する区間を削除でき、削除した個数 $k$ の二乗が得点になる。間の要素を先に消すと、離れていた同じ色をつなげられる。全削除の最大得点を求めたい。
+
+区間だけの `dp[l][r]` では、区間の外に残してある同色の個数によって、区間内の最善の消し方が変わってしまう。「外側と後でつなげる」情報を状態へ足す。
+
+## 考え方
+
+$F(l,r,k)$ を「元の区間 $[l,r]$ の直後に、色 $a_r$ の要素がさらに $k$ 個つながっているとき、この全体を消す最大得点」とする。実際に列をコピーせず、外側の個数だけを渡す。
+
+右端の色をどう消すかで、二つに分ける。
+
+1. $a_r$ と外側の $k$ 個をまとめて消す。得点は $F(l,r-1,0)+(k+1)^2$。
+2. $a_m=a_r$ となる $m<r$ を残し、その間 $[m+1,r-1]$ を先に消す。右端の一個と外側の $k$ 個を $m$ 側へ渡し、$F(l,m,k+1)+F(m+1,r-1,0)$ とする。
+
+これらの最大値を取る。空区間の値は0、答えは $F(0,N-1,0)$。例えば `[1,2,1]` は、真ん中の2を先に消すと、両端の1を二個で消せる。区間外へ持ち越す個数が、後の二乗得点に効く。
+
+## 適用条件
+
+削除の可否が色の等しさと現在の隣接だけで決まり、得点が削除した個数の二乗である場合を扱う。元の位置どうしの距離には依存しない。色は大小を使わないので、任意の整数でよい。
+
+得点を任意の関数 $g(k)$ へ置き換える場合は、端の同色を一塊として保持してよいか、分割して消した方が得にならないかを確認する。例えば $g(1)=10,g(2)=1$ なら、同色二個を必ず一度に消す扱いは誤る。掲載実装は二乗得点に限定する。
+
+## なぜ正しいか
+
+右端に追加した同色の要素を先に分割して消しても、左側の処理で使える隣接関係は増えない。これらを $a_r$ と同じ削除まで残すことができ、正の個数 $u,v$ に対して $(u+v)^2\ge u^2+v^2$ なので、まとめた方が得点は下がらない。
+
+右端の一塊を消す瞬間を考える。同じ削除で使う元の位置が $r$ だけなら、一番目の候補で表せる。$r$ より前にも同じ色を使うなら、そのうち最も右の位置を $m$ とする。$m$ と $r$ が残っている間、その中間は外側とつながれないため、中間を独立に全削除する必要がある。中間を消してから $r$ 側の塊を $m$ へ渡す二番目の候補で、その操作を表せる。
+
+逆に、どちらの候補も実行できる。全ての $m$ を試すので最適な削除順を含み、区間長が短くなる再帰と合わせて正しい値を得る。
+
+## 計算量
+
+削除順をそのまま列挙すると指数時間になる。持ち越す個数は $0..N-1$ なので、状態は $O(N^3)$ 個。一状態で同色の合流先を $O(N)$ 個試し、$O(N^4)$ 時間・$O(N^3)$ 空間。再帰の深さは $O(N)$。
+
+掲載コードは $N\le100$ に制限する。得点は最大でも $N^2$ だが、実装の戻り値には `long long` を使う。区間だけの二次元DPへ無理に落とすより、外側の影響を一変数として持つことが要点になる。
+
+## 実装
+
+`max_equal_run_square_score(colors)` は最大得点を返す。空列は0。メモ化の番兵は、得点にならない $-1$ を用いる。右端の連続同色を圧縮する最適化は加えず、状態と遷移をそのまま実装している。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long max_equal_run_square_score(const vector<int>& colors) {
+    if (colors.size() > 100) throw length_error("N must be at most 100");
+    int n = static_cast<int>(colors.size());
+    if (n == 0) return 0;
+    vector<long long> memo(static_cast<size_t>(n) * n * n, -1);
+    auto index = [n](int l, int r, int k) {
+        return (static_cast<size_t>(l) * n + r) * n + k;
+    };
+    auto solve = [&](auto&& self, int l, int r, int k) -> long long {
+        if (l > r) return 0;
+        long long& answer = memo[index(l, r, k)];
+        if (answer != -1) return answer;
+        answer = self(self, l, r - 1, 0) + 1LL * (k + 1) * (k + 1);
+        for (int m = l; m < r; ++m) {
+            if (colors[m] != colors[r]) continue;
+            answer = max(answer, self(self, l, m, k + 1)
+                                + self(self, m + 1, r - 1, 0));
+        }
+        return answer;
+    };
+    return solve(solve, 0, n - 1, 0);
+}
+```
+
+## 関連する手法
+
+[区間DP](/flowchartcp/techniques/interval-dp/) ・ [連続回文の削除を両端から考える](/flowchartcp/techniques/palindrome-erasure-boundary/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [LeetCode 546：Remove Boxes](https://leetcode.com/problems/remove-boxes/)
+
+<TechniqueReferences techniqueId="interval-removal-carried-group" />

@@ -1,0 +1,37 @@
+[
+  {
+    "problemId": "ioi2019_line",
+    "source": "IOI",
+    "officialTaskId": "line",
+    "contest": "IOI2019",
+    "contestDay": 2,
+    "sourceDate": "2019-08-08",
+    "sourceDatePrecision": "day",
+    "exactDateVerified": true,
+    "difficulty": null,
+    "originalNumericBoundsVerified": true,
+    "statementUrl": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "techniqueId": "orthogonal-point-cover-spiral-two-chains",
+    "features": [
+      "全x座標・全y座標がそれぞれ相異なる正整数点集合",
+      "原点始点の縦横折れ線、点は辺の途中に置ける",
+      "自己交差と重なりを許し、N+3本以内の構成で足りる",
+      "N<=100000,座標1..1e9,出力座標±2e9"
+    ],
+    "verification": "independent-analysis",
+    "fullOriginalRangeIncluded": true,
+    "url": "https://ioinformatics.org/files/ioi2019problem4.pdf",
+    "evidenceUrl": "https://ioi.te.lv/locations/ioi19/contest/day2/Line/review.pdf",
+    "techniqueIds": [
+      "orthogonal-point-cover-spiral-two-chains"
+    ],
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "publicationDate": "2019-08-08",
+    "publicationYear": 2019,
+    "publicationDatePrecision": "day",
+    "discoveredBy": "ioi-2019"
+  }
+]

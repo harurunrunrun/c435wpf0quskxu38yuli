@@ -1,0 +1,198 @@
+{
+  "reviewStatus": "passed",
+  "reviewer": "/root/usaco_cowmistry_article",
+  "reviewedAt": "2026-10-15",
+  "problemId": "1141",
+  "techniqueId": "almost-dag-edge-routing-pairing-frontier-cycle-count",
+  "artifacts": {
+    "article": "/tmp/flowchartcp-routing-article.mdx",
+    "checker": "/tmp/flowchartcp-routing-checker.py",
+    "sidecar": "/tmp/flowchartcp-routing-sidecar.json",
+    "independentProbe": "/tmp/flowchartcp-routing-independent-probe.py",
+    "independentProbeResult": "/tmp/flowchartcp-routing-independent-probe.json"
+  },
+  "artifactSha256": {
+    "article": "a4a07f1ffc4911b4ff20279776afcadeb6b2c0fc968fec69135a3ab11ffe9f37",
+    "checker": "e85c65e143bc2ca978cd227e18d60e3f9df6ecc55c420e5dc56309dd67feb12a",
+    "sidecar": "66164f9990628a195a276af8a8360e932f02cc6bee8eb8421644005cf5bdc658",
+    "independentProbe": "69cee670728ecc29431f8959fad3f15bc6b287cf120a469a3a943657fdab98a3",
+    "independentProbeResult": "e48004becfbd48cbc2179ec52684f46a6b971ec24738d0f7deaa45d9f57df101"
+  },
+  "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+  "substantiveFindings": [],
+  "unconfirmedRequiredLemmas": [],
+  "unconfirmedOriginalNumericBounds": [],
+  "resolvedNonblockingFindings": [
+    {
+      "issue": "An applicability sentence initially referred to reordering edges, although input is an adjacency matrix and the relevant order is vertex numbering.",
+      "resolution": "Author corrected it to reordering vertex numbers and removing the backward-edge count condition.",
+      "codeChanged": false,
+      "previousArticleSha256": "4cf392a036c0cde95bccd97b92154f15548abfc09ba0dc270db6f2533a68f973"
+    }
+  ],
+  "sourceVerification": {
+    "statementUrl": "https://usaco.org/index.php?page=viewproblem2&cpid=1141",
+    "editorialUrl": "https://usaco.org/current/data/sol_prob2_platinum_open21.html",
+    "resultsUrl": "https://usaco.org/index.php?page=open21results",
+    "originalStatementAndChosenOfficialSolutionIndependentlyRead": true,
+    "officialAuthor": "Benjamin Qi",
+    "officialDivision": "Platinum",
+    "officialProblemNumber": 2,
+    "bounds": {
+      "N": "2..100",
+      "K": "0..2 lower-triangular directed edges",
+      "T": "1..20",
+      "sumN2": "<=20000",
+      "modulus": 1000000007
+    },
+    "graph": "Binary directed adjacency matrix, no loops, no same-direction parallel arcs; antiparallel pairs allowed.",
+    "roles": "Every vertex is exactlyS/R/neutral, equal positive sender/receiver counts.",
+    "routes": "One sender-labeled trail to each distinct receiver; all original directed edges used exactly once globally. Vertices and intermediateS/R may be revisited. Empty sender-receiver paths are impossible because the roles are disjoint.",
+    "originalGuarantee": "At least one valid routing scheme.",
+    "sourceDate": "2021",
+    "datePrecision": "year",
+    "exactMonthVerified": false,
+    "exactDayVerified": false,
+    "difficulty": null,
+    "visualInspectionClaimed": false,
+    "chosenMethod": "O(N^3) fixed-two-identifier frontier DP only."
+  },
+  "proofReview": {
+    "localBijection": "Add one distinguishable virtual incoming port per sender and outgoing port per receiver. Local input-output bijections give a successor graph of edges: source-to-receiver trails and isolated cyclic components. A source trail cannot enter a closed component because its first cycle edge would have two predecessors. Valid schemes recover exactly the same local bijections, including sender-receiver assignments; no S! multiplier/division.",
+    "twoSlots": "Before processingi, contracted segments with both ends unprocessed necessarily begin with a backward edge. They are edge-disjoint, so there are at most two. Preserve the upstream original backward-edge identity after concatenation; its fixed tail plus current terminal vertex determines every future cycle/merge decision.",
+    "untrackedPorts": "An untracked incoming port at the current vertex is source-anchored; otherwise its contracted path would still have two unprocessed ends and would be tracked. An untracked backward-edge start whose tail is still unprocessed can only have become receiver-anchored; if an identity disappeared through merger, that identity's tail was processed at the merger. Thus choosing an already-absent other slot correctly absorbs the path and cannot hide a future self-closure.",
+    "expiry": "When an identity's fixed tail is processed without another tracked prefix entering it, its incoming prefix is source-anchored, so the path is safe to forget. If another tracked prefix enters, the explicit transition first retains the upstream identity. Receiver dummy output safely ends a tracked segment.",
+    "multiplicity": "If c tracked incoming ports arrive, choose c distinct outgoing ports in ordered identity order, then pair the d-c remaining actual ports in(d-c)! ways. Histories with equal endpoints have equal continuation counts; their actual port labels are already counted in the accumulated multiplicity.",
+    "closures": "Choosing one's own starting backward edge closes a component; two cross choices close the union of both segments. Other cross choices concatenate and follow the other selected output. Every directed closed component contains a backward edge and is caught when its last local pairing is fixed.",
+    "edgeCases": "Same backward heads produce two incoming tracked ports at one vertex; same tails produce two available backward outputs and are handled by distinct destination choices. A graph cycle may be traversed inside a valid repeated-vertex trail and is not itself rejected. Isolated neutral vertices contribute0!=1; unbalanced conservation returns0 only after full structural checks.",
+    "time": "Per vertex:O(N^2) no-hit states with constant work;O(N) one-hit states each testingO(N) outputs; one both-hit state testingO(N^2) ordered output pairs. TotalO(N^3) time/O(N^2) space with two rolled layers. Original aggregate bound gives sumN^3<=100sumN^2<=2000000."
+  },
+  "apiReview": {
+    "signature": "int count_almost_dag_edge_routings(const std::vector<std::string>& matrix,const std::string& roles,int modulus=1000000007)",
+    "sourceRangeContained": true,
+    "originalKDerivedRedundantlyFromMatrix": true,
+    "originalBatchContainedByIndependentCalls": true,
+    "extensions": "Structurally valid graphs without any decomposition return0; arbitrary positive32bit prime/composite/1 modulus supported.",
+    "invalidContract": "N2..100, square binary zero-diagonal matrix, at mosttwo backward edges, exactS/R/neutral roles with equal positive counts and positive modulus. All structure checked before conservation-based0.",
+    "integerSafety": "Augmented degree<=100; factorial0..100; state/vertex indexes<=10200; n^2<=10000. Products of two residues<(2^31-2)^2<2^62 and explicitint64 sums are safe. No huge exact factorial, inverse, floating point or raw triple product.",
+    "stateAndStack": "All state local, const inputs unchanged, no recursion, standard allocation exceptions propagate."
+  },
+  "presentationReview": {
+    "japaneseSections": 8,
+    "visibleCompleteCppFences": 1,
+    "allMetadataSourceUrlsInArticle": true,
+    "relatedLinksUseConfiguredBase": true,
+    "metadataSummaryMatchesArticle": true,
+    "referenceEvidenceContainsApplicabilityOnly": true,
+    "sourceYearPrecisionAndNullDifficultyConsistent": true,
+    "researchProbeNotClaimedAsProduction": true
+  },
+  "reproduction": {
+    "normalCommand": "python3 /tmp/flowchartcp-routing-checker.py",
+    "sanitizeCommand": "python3 /tmp/flowchartcp-routing-checker.py --sanitize",
+    "normal": {
+      "checks": 8888553,
+      "apiCalls": 2955941,
+      "allSmallGraphs": 58812,
+      "balancedSmallCases": 9288,
+      "positiveOracleCases": 10004,
+      "zeroOracleCases": 297,
+      "literalLocalPairings": 86720,
+      "validLiteralPairings": 46563,
+      "literalTrailRecursions": 296988,
+      "literalTrailSchemes": 46563,
+      "randomCases": 1000,
+      "maximumCalls": 84,
+      "unbalancedRoleCalls": 2883600,
+      "originalBatchCalls": 22,
+      "invalidCalls": 18,
+      "checksum": "12131375425186710056",
+      "seconds": 0.615222,
+      "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "maxRssKiB": 4916,
+      "sanitizers": null
+    },
+    "sanitized": {
+      "checks": 8888553,
+      "apiCalls": 2955941,
+      "allSmallGraphs": 58812,
+      "balancedSmallCases": 9288,
+      "positiveOracleCases": 10004,
+      "zeroOracleCases": 297,
+      "literalLocalPairings": 86720,
+      "validLiteralPairings": 46563,
+      "literalTrailRecursions": 296988,
+      "literalTrailSchemes": 46563,
+      "randomCases": 1000,
+      "maximumCalls": 84,
+      "unbalancedRoleCalls": 2883600,
+      "originalBatchCalls": 22,
+      "invalidCalls": 18,
+      "checksum": "12131375425186710056",
+      "seconds": 10.1466,
+      "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "maxRssKiB": 612376,
+      "sanitizers": "address,undefined"
+    },
+    "semanticResultsEqual": true,
+    "asanUbsanPassed": true,
+    "leakSanitizerEnabled": false,
+    "updatedAuthorCounters": "Final checker expanded every structurally legal small role assignment. The earlier386325-check/checksum10783612246083542076 version is superseded by8888553-check/checksum12131375425186710056; C++ unchanged.",
+    "counterInterpretation": "58812 small directed graphs with<=2 backward arcs;9288 degree-balanced graph/role cases checked by both full local permutations and literal trails.2883600 other legal small role assignments are checked as conservation-zero cases.1000 additional accepted N6..9 random cases, allnine source samples and84 maximum calls are separate. Assertions/API invocations/literal recursion work are distinct counters."
+  },
+  "additionalIndependentProbe": {
+    "command": "python3 /tmp/flowchartcp-routing-independent-probe.py",
+    "result": {
+      "checks": 5880,
+      "baseInstances": 120,
+      "apiCalls": 2784,
+      "subdivisionChecks": 864,
+      "trailReversalChecks": 480,
+      "withinLayerRelabelChecks": 480,
+      "maximumN100PaddingChecks": 480,
+      "independentDagClosedFormChecks": 96,
+      "checksum": "10593336235733119677",
+      "seconds": 0.315702,
+      "cppSha256": "e7413df680357afece2e8915990aca0c38862693e84a290906460dc69a8ee561",
+      "scope": "Layered networks with4..25senders/receivers,0/1/2feedback, shared backward heads/tails, up toN100; independent exact DAG formula plus scheme-preserving bijections."
+    },
+    "scope": "120 layered networks: width2..5, layers3..8,4..25 sender/receiver pairs,0/1/2 added feedback cycles, including common backward heads, common tails and disjoint endpoints. BaseN<=90; neutral padding reachesN100. Four moduli97/1000000006/1000000007/2147483647.",
+    "dagClosedForm": "With no feedback, every internal layer vertex has degreewidth, so the exact modular count is(width!)^(layers*width). This is calculated independently of the frontier code.",
+    "subdivisionProof": "Replace a directed edge by two edges through a fresh neutral degree-one-in/degree-one-out vertex. Suppressing or inserting that forced transition bijects every complete trail decomposition. Insert between original endpoints for forward arcs, or just before the head for backward arcs; backward count is preserved.",
+    "otherBijections": "Permute labels inside source/intermediate/receiver layers while preserving all forward/backward orientations; reverse every trail and the global vertex order while swappingS/R; insert isolated neutral vertices at arbitrary positions. Each transformation bijects complete routing schemes and preservesK<=2.",
+    "independence": "These checks use graph/trail bijections and a direct DAG factorial formula, not the production frontier or either author's literal enumeration oracle. They supplement rather than replace the exhaustive small oracles."
+  },
+  "optionalApproachesNotVerified": [
+    {
+      "approach": "O(N^2) PIE/small determinant",
+      "verified": false,
+      "keptSeparate": true
+    },
+    {
+      "approach": "General-K BEST/Euler-tour normalization",
+      "verified": false,
+      "keptSeparate": true
+    }
+  ],
+  "initialAuditPolicy": {
+    "file": "data/corpus-audits/usaco-2021-february-us-open-platinum.json",
+    "initialSixRecordProjectionSha256": "bc2de4b45dc7d449a1f4726c15c6887140484526f3941b731d0ed8c02b16941e",
+    "existingResolutionCount": 5,
+    "initialSixResearchPositivePreserved": true,
+    "newPositiveResearchReviewRequested": false,
+    "futureImplementationResolutionOnly": true,
+    "coverageStillRequiresParentFlowIntegration": true
+  },
+  "sharedFilesModified": false,
+  "authorArtifactsModified": false,
+  "initialAuditModified": false,
+  "conclusion": "No substantive defect or unconfirmed required lemma remains in the chosenO(N^3) implementation. All original inputs are covered, final native and independent bijective checks pass. Optional faster/general-K approaches remain explicitly unverified.",
+  "originalReviewSha256": "0131009e9d64c8b500a40532373c09bcb5cc310b8ed3eab7255f7049e99c672b",
+  "publishedArticle": "src/content/docs/techniques/almost-dag-edge-routing-pairing-frontier-cycle-count.mdx",
+  "permanentProbe": {
+    "script": "research/probes/almost-dag-routing-independent.py",
+    "originalScriptSha256": "69cee670728ecc29431f8959fad3f15bc6b287cf120a469a3a943657fdab98a3",
+    "normalizedScriptSha256": "0c7673d5ec3836e4c78d1eb5df86b1b9d2aa9ffd0655dd84f43612993ec918b0",
+    "normalization": "Only article destination and removal of implicit /tmp result writes. Algorithm and assertions unchanged."
+  }
+}

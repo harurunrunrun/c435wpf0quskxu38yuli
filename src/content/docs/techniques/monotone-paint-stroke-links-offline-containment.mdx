@@ -1,0 +1,151 @@
+---
+title: "薄い色へ戻せない区間塗装の最小回数を、同色を結ぶ対で数える"
+description: "間が全て濃い色である同色の隣接出現を結ぶと、区間内の最小筆数は区間長から内部リンク数を引いた値になる。単調スタックでリンクを作り、右端順のFenwick走査で多数の区間に答える。"
+techniqueId: monotone-paint-stroke-links-offline-containment
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+数直線上の各区画に、完成させたい色 $A_i$ が指定されている。色には薄い順の全順序があり、一筆で連続する区間を一色に塗れる。ただし、濃い色を薄い色で上書きすることはできない。
+
+多数の指定区間について、その中だけを指定どおりに塗り、外側を未塗装のまま残す最小筆数を求めたい。各質問は、全区画が未塗装の状態から独立に考える。
+
+同色の区画が離れていても、間が全て濃い色なら、薄い色を先に一筆で塗ってから上書きできる。最終的な同色の連続成分数だけを数える方法では、この節約を捉えられない。
+
+## 考え方
+
+位置 $x<y$ が次の条件を満たすとき、二位置をリンクで結ぶ。
+
+$$
+A_x=A_y,\qquad A_x<A_k\quad(x<k<y).
+$$
+
+内部が空の隣接同色も結ぶ。途中に同じ色があればその対は直接結ばず、同色の出現順に隣り合う対を使う。
+
+一つの指定区間に含まれる位置数を $L$、両端がその区間に入るリンク数を $E$ とすると、最小筆数は
+
+$$
+\boxed{L-E}
+$$
+
+である。同色リンクの各連結成分は一筆に対応し、リンクは同色出現の鎖なので、成分数が頂点数から辺数を引いた値になる。
+
+リンクは単調スタックで生成する。左から色 $c$ を読むと、スタック上の $c$ より濃い色を取り除く。残る末尾が同色なら、その位置とのリンクを作り、末尾を今回の位置へ置き換える。そうでなければ今回の位置を追加する。リンクは各右位置について高々一本である。
+
+あとは、リンクを二次元の点 `(左位置,右位置)` と見て、両端が質問区間内に入るものを数える。質問を右端ごとにまとめ、右位置が区間内に入ったリンクの左位置へ、Fenwick Treeで1を足す。左位置の下限だけを区間和で絞ればよい。
+
+## 適用条件
+
+色の大小は濃さを表し、薄い色の上へ濃い色を塗れる。筆で塗れるのは穴のない一つの連続区間である。質問は固定した完成色列に対して独立で、質問の外を塗ってはいけない。途中で完成色列を変更する場合には、この固定リンク列を使い続けられない。
+
+掲載関数 `range_monotone_paint_strokes(colors,queries)` は、任意の符号付き64bit整数を色の順序として受け取る。大小比較だけを使い、色の差や絶対値は計算しない。未塗装は色の数値と別の状態なので、色0や負数も使える。
+
+質問は0始まりの半開区間 `[l,r)`、答えは入力順の `std::vector<int>`。原典の1始まり両端込み `[a,b]` は `[a-1,b)` に変換する。色列の長さと質問数はそれぞれ20万以下とし、原典の $1\le N,Q\le200000$、色 $1\ldots N$ を全て含む。空列・質問なし・空区間も扱い、空区間の答えは0とする。
+
+サイズ上限違反、負・逆転・列外の質問は `std::invalid_argument`。全質問を検査してから計算する。標準の割当例外はそのまま伝わる。入力を変更せず、複数の呼出しの間で共有する状態はない。
+
+## なぜ正しいか
+
+**一筆で同色を結べない障害は、より薄い最終色である。** 同色 $c$ の二位置の間に、完成色が $c$ より薄い位置があるとする。その二位置を一筆の色 $c$ で結ぶと、間の位置も $c$ になる。後から薄い色へ戻せないので、この一筆は不可能である。
+
+逆に、同色の連続する出現の間が全て $c$ より濃ければ、先にそこを色 $c$ でつなげてから、内部を濃く塗り直せる。従って、同じ色の出現列を「間により薄い色があるところ」で切った各成分について、少なくとも一筆が必要になる。一筆が別の二成分を同時に担当することはできない。
+
+**各リンク成分は実際に一筆で塗れる。** 全成分を薄い色から順に処理し、各成分の最左位置から最右位置までを一筆で塗る。その間には、その成分の色より薄い完成色の位置がない。処理済みの色も現在色以下なので、濃い色を薄く戻す操作は起きない。後でより濃い成分を塗れば、最終的に全位置が指定色になる。
+
+質問区間内の成分だけでこの構成を行えば、筆の両端も全て質問区間内にある。外側を塗る必要はない。以上の下界と構成が一致するので、最小筆数は成分数である。
+
+**成分数は区間長から内部リンク数を引けばよい。** 各色のリンクは、出現順に隣り合う位置だけを結んだ鎖である。異なる色の間にリンクはないので、全体は森になる。質問区間に両端を含むリンクだけを残した誘導部分グラフも森で、その成分数は $L-E$。
+
+ある成分が質問区間外へ続いていても、外側のリンクは数えない。出現順の鎖は添字が増える向きに進むため、区間外を経由して区間内の別成分を結ぶこともない。従って、全体で前計算したリンクを使っても、質問区間の中だけで定義した成分と一致する。
+
+**単調スタックが必要なリンクを全て生成する。** スタックの色は下から厳密に増加し、各色について、間に薄い色をまだ見ていない最新位置を残す。新色 $c$ より濃い候補は、今回の位置を越えて同色へ結ぼうとしても、間に薄い $c$ が入るので捨てられる。
+
+濃い候補を除いた後で末尾が $c$ なら、それが直前の結べる同色位置であり、内部は全て厳密に濃い。リンクを生成して最新位置へ置き換える。同色でなければ、結べる直前同色位置は存在しない。この不変条件により、有効リンクを漏れなく一度ずつ生成する。
+
+**右端走査が両端の条件を分ける。** 半開区間の右端 $r$ に答える時点で、右位置が $r$ 未満のリンクを全て登録しておく。登録した総数を $T$ とし、左位置が $l$ 未満の個数を `prefix(l)` とすると、内部リンク数は $T-\texttt{prefix}(l)$ となる。各リンクの左位置は右位置より小さいため、左位置の上限 $r$ は既に満たされている。
+
+従って、答えは `(r-l) - (T-prefix(l))`。右端0にも質問を置けるので、空区間も同じ式で0となる。
+
+## 計算量
+
+各位置はスタックへ一度入り、高々一度外れる。リンク生成は $O(N)$ 時間で、リンクは $N-1$ 本以下である。
+
+質問の右端は整数 $0\ldots N$ なので、連結リスト形式のバケットへ $O(N+Q)$ 時間でまとめられる。質問の比較ソートは不要である。リンクの登録と質問の累積和は各 $O(\log(N+1))$ なので、全体は **$O(N+Q+(N+Q)\log(N+1))$ 時間、$O(N+Q)$ 空間**。$N\ge1$ なら通常の $O((N+Q)\log(N+1))$ とまとめられる。
+
+Fenwickの値・登録総数・答えは全て $N$ 以下であり、20万上限では `int` で足りる。色は64bitの比較だけを使う。実装に再帰はない。
+
+## 実装
+
+`end` は既に読んだ位置数である。`end` に属する質問へ答える前に、位置 `end-1` で閉じるリンクを登録する。Fenwickの公開上の位置は0始まりで、内部配列だけを1始まりにする。
+
+```cpp
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+std::vector<int> range_monotone_paint_strokes(
+    const std::vector<std::int64_t>& colors,
+    const std::vector<std::pair<int, int>>& queries) {
+    static_assert(std::numeric_limits<int>::max() >= 1000000);
+    if (colors.size() > 200000 || queries.size() > 200000)
+        throw std::invalid_argument("too many colors or queries");
+    const int n = int(colors.size()), q = int(queries.size());
+    for (auto [left, right] : queries)
+        if (left < 0 || left > right || right > n)
+            throw std::invalid_argument("invalid half-open query");
+
+    std::vector<int> head(n + 1, -1), next(q, -1), answer(q);
+    for (int id = 0; id < q; ++id) {
+        const int right = queries[id].second;
+        next[id] = head[right]; head[right] = id;
+    }
+    std::vector<int> bit(n + 1, 0), stack;
+    stack.reserve(n);
+    auto add = [&](int position) {
+        for (int i = position + 1; i <= n; i += i & -i) ++bit[i];
+    };
+    auto prefix = [&](int end) {
+        int sum = 0;
+        for (int i = end; i > 0; i -= i & -i) sum += bit[i];
+        return sum;
+    };
+    int total_links = 0;
+    for (int end = 0; end <= n; ++end) {
+        if (end > 0) {
+            const int current = end - 1;
+            while (!stack.empty() && colors[stack.back()] > colors[current])
+                stack.pop_back();
+            if (!stack.empty() && colors[stack.back()] == colors[current]) {
+                add(stack.back()); ++total_links;
+                stack.back() = current;
+            } else {
+                stack.push_back(current);
+            }
+        }
+        for (int id = head[end]; id != -1; id = next[id]) {
+            const int left = queries[id].first;
+            const int internal_links = total_links - prefix(left);
+            answer[id] = end - left - internal_links;
+        }
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[同値二位置の最短間隔を右端順に調べる方法](/flowchartcp/techniques/offline-range-equal-gap/)も、位置対を左端へ登録する。ただし、ここで必要なのは「間に薄い色がない」という条件を満たすリンクの**本数**であり、全ての同値対の距離の最小値ではない。
+
+[全区間の極値を各要素の寄与へ分ける方法](/flowchartcp/techniques/subarray-extremum-contribution/)では、単調スタックで左右の障害を求める。ここでは、濃い候補を薄い色が遮った時点で捨て、等色候補を最新位置へ置き換える。等号の扱いが目的に応じて異なる。
+
+[右端順のオフライン処理](/flowchartcp/techniques/offline-queries/)と[Fenwick Tree](/flowchartcp/techniques/fenwick-tree/)は、生成したリンクの内包数を数える部分を担う。最小筆数とリンク成分の同値を確かめてから、この集計へ帰着する。
+
+## 参考資料
+
+[USACO 2021 February Platinum の原典](https://usaco.org/index.php?page=viewproblem2&cpid=1116)と[Benjamin Qi による公式解説](https://usaco.org/current/data/sol_prob1_platinum_feb21.html)。公式解説の第一手順が、同色二位置の間の大小条件、リンク数による節約、右端順のFenwick集計を述べている。[公式競技結果](https://usaco.org/index.php?page=feb21results)には、2021年2月のPlatinum第1問として掲載されている。
+
+<TechniqueReferences techniqueId="monotone-paint-stroke-links-offline-containment" />

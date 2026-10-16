@@ -1,0 +1,73 @@
+---
+title: "同じ部分文字列が K 回現れる条件を LCP の区間最小値にする"
+description: "辞書順で隣り合う K 本の接尾辞の共通部分を、K-1 個の LCP の最小値で求めます。"
+techniqueId: "lcp-repeated-substring"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+同じ連続部分列が少なくとも $K$ 箇所に現れるとき、その最大長を求めたい場合。出現位置が重なっていてもよいという条件で使います。
+
+## 考え方
+
+ある文字列を接頭辞に持つ接尾辞は、接尾辞配列で連続します。$K$ 本の連続した接尾辞 $\mathrm{SA}[i],\ldots,\mathrm{SA}[i+K-1]$ の共通接頭辞の長さは
+
+$$\min_{i\le j<i+K-1}\mathrm{LCP}[j]$$
+
+です。長さ $K-1$ の窓の最小値を単調キューで求め、その最大を取ります。$K=2$ なら単に LCP 配列の最大値です。
+
+## 適用条件
+
+出現位置の**重複を許す**場合です。`aaaa` では `aaa` が位置 0 と 1 に現れます。重ならない 2 回出現を要求するなら最大長は 2 になり、LCP 最大値だけでは条件を満たしません。
+
+文字列が固定であることも必要です。複数の元の文字列に共通する部分を探すなら、窓に含まれる文字列の種類と区切り位置も管理します。
+
+## なぜ正しいか
+
+長さ $L$ の文字列が $K$ 箇所に現れるなら、その接頭辞を持つ接尾辞の連続区間に $K$ 本の窓があり、窓内の全ての隣接 LCP が $L$ 以上です。
+
+逆に窓内の LCP が全て $L$ 以上なら、窓の全接尾辞の先頭 $L$ 文字は等しいため、$K$ 個の始点で同じ部分文字列が現れます。窓の最小値を最大化すると、必要な最長の長さが得られます。
+
+## 計算量
+
+全ての候補をコピーして数える改善前は最悪 $\Theta(N^3)$ の文字を扱います。改善後は接尾辞配列・LCP の構築時間に $O(N)$ の窓処理を加えた時間です。以下の ACL では $O(N)$ 時間、$O(N)$ 空間。
+
+## 実装
+
+ASCII の文字列を対象とし、最長の文字列を一つ返します。存在しなければ空文字列です。$K=1$ なら全体、$K>N$ なら空文字列を返します。
+
+```cpp
+#include <bits/stdc++.h>
+#include <atcoder/string>
+using namespace std;
+string longest_k_repeated_substring(const string& s,int k) {
+    assert(k>=1);
+    int n=int(s.size());
+    if(k==1) return s;
+    if(k>n) return "";
+    auto sa=atcoder::suffix_array(s);
+    auto lcp=atcoder::lcp_array(s,sa);
+    deque<int> q;
+    int best=0,start=0;
+    for(int j=0;j<int(lcp.size());++j) {
+        while(!q.empty() && q.front()<=j-(k-1)) q.pop_front();
+        while(!q.empty() && lcp[q.back()]>=lcp[j]) q.pop_back();
+        q.push_back(j);
+        if(j>=k-2 && lcp[q.front()]>best) {
+            best=lcp[q.front()];start=sa[j-k+2];
+        }
+    }
+    return s.substr(start,best);
+}
+```
+
+## 関連する手法
+
+[異なる部分文字列を、直前の接尾辞との差だけ数える](/flowchartcp/techniques/lcp-distinct-substrings/)、[単調キュー](/flowchartcp/techniques/monotone-queue/)
+
+## 参考資料
+
+- [CSES：Repeating Substring の問題文](https://cses.fi/problemset/task/2106/)
+- [AtCoder Library：String の仕様](https://atcoder.github.io/ac-library/production/document_ja/string.html)
+
+<TechniqueReferences techniqueId="lcp-repeated-substring" />

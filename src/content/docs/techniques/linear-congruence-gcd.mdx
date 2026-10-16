@@ -1,0 +1,59 @@
+---
+title: "一次合同式は GCD で解の有無を判定してから割る"
+description: "ax≡b を、逆元が存在する小さい法の合同式へ変えます。"
+techniqueId: "linear-congruence-gcd"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+周期 $M$ の場所を毎回 $a$ だけ進み、目標との差が $b$ のとき。最小非負の回数 $x$ は $ax\equiv b\pmod M$ の解です。$a$ に逆元があるとは限りません。
+
+## 考え方
+
+$g=\gcd(a,M)$ とします。$g\nmid b$ なら解なし。割り切れるなら $a'=a/g,b'=b/g,M'=M/g$ とし、$a'x\equiv b'\pmod {M'}$ へ変えます。
+
+$\gcd(a',M')=1$ なので拡張 Euclid 法で逆元を求め、$x\equiv (a')^{-1}b'\pmod {M'}$。この剰余の最小非負代表が答えです。
+
+## 適用条件
+
+法 $M$ は正整数。合成数の法で $a^{M-2}$ を逆元として使うことはできません。解がある場合の周期は元の $M$ でなく $M/g$ です。$M'=1$ なら全ての整数が解で、最小非負値は 0。
+
+## なぜ正しいか
+
+$ax-b$ が $M$ の倍数なら、$g$ は $b$ を割ります。逆に割れる場合は式を $g$ で割る操作が同値で、互いに素な係数の逆元によりただ一つの剰余類が得られます。
+
+## 計算量
+
+回数を試す改善前は最大 $O(M/g)$。GCD と逆元による改善後は時間 $O(\log M)$、追加空間 $O(1)$。整数の積は 128 bit を経由します。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+optional<long long> least_congruence_solution(long long a,long long b,long long m){
+    assert(m>0);
+    a%=m;if(a<0)a+=m;b%=m;if(b<0)b+=m;
+    long long g=gcd(a,m);if(b%g)return nullopt;
+    a/=g;b/=g;m/=g;if(m==1)return 0;
+    __int128 oldr=a,r=m,oldx=1,x=0;
+    while(r){
+        __int128 q=oldr/r;
+        auto nr=oldr-q*r;oldr=r;r=nr;
+        auto nx=oldx-q*x;oldx=x;x=nx;
+    }
+    long long inverse=(oldx%m+m)%m;
+    return (__int128)inverse*b%m;
+}
+```
+
+## 関連する手法
+
+[法が互いに素でない合同式も共通因子を確認して併合する](/flowchartcp/techniques/crt-noncoprime/)
+
+## 参考資料
+
+- [AtCoder：Throne の解説](https://atcoder.jp/contests/abc186/editorial/422)
+
+<TechniqueReferences techniqueId="linear-congruence-gcd" />

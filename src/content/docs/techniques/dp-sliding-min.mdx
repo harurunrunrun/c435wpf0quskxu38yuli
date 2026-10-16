@@ -1,0 +1,91 @@
+---
+title: "遷移元の範囲が右へ動くDPを単調キューで計算する"
+description: "前の層の連続範囲から最小値を取るDPで、両端が単調に動くなら候補をdequeに保持します。"
+techniqueId: dp-sliding-min
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+前の層の連続範囲から最小値を取るDPで、両端が単調に動くなら候補をdequeに保持します。
+
+## 使う場面
+
+位置 $x$ の費用が $dp_i[x]=c_i[x]+\min_{|y-x|\le R}dp_{i-1}[y]$ で決まる場合です。前の位置から1段で高々 $R$ 移動できるなど、遷移元の範囲が現在位置に合わせて右へ動くDPに現れます。
+
+## 考え方
+
+$x$ を左から右へ走査します。範囲の右端まで新しい候補を追加し、左端より古い候補を捨てます。dequeにはDP値が小さい順に候補を持ち、新しい候補より値が大きい末尾の候補を削除します。最小値は常に先頭です。最大化なら大小を反転します。
+
+長さが $a$ 以上 $b$ 以下の区間和を最大にする場合も、累積和 $P$ を候補値として使えます。右端 $r$ を固定した答えは $P_r-\min_{r-b\le l\le r-a}P_l$。左端候補の両端が右へ進むので、同じキューで最小の累積和を持ちます。元の配列に負数があっても、この候補範囲の単調性は変わりません。
+
+## 適用条件
+
+この段階で参照する前の層の値が固定され、遷移範囲の左端と右端が非減少であることが条件です。候補の順位が問い合わせ位置によって変わる費用項を含む場合は、DP値だけを比較して削除できません。空の範囲や到達不能の状態も別に扱います。
+
+候補値が累積和の場合は、その累積和が事前に確定し、区間長の制約で左右の候補位置が単調に動くことを確認します。
+
+## なぜ正しいか
+
+古い候補 $j$ より新しい候補 $k$ の値が小さければ、$j$ が今後範囲内に残る間は $k$ も残ります。したがって、$j$ が最小値になる必要はありません。期限切れの候補も除くので、先頭が現在の範囲の真の最小値になります。
+
+## 計算量
+
+$T$ 層、位置が $N$ 個なら、素朴な $O(TN\min(N,2R+1))$ 時間を $O(TN)$ にします。各候補は1回ずつ追加・削除されます。全層を持つ $O(TN)$ 空間から、2層とdequeだけの $O(N)$ にできます。
+
+## 実装
+
+`movement_cost(cost, radius)` は、初期位置を自由に選び、各段で指定の移動範囲内へ移動したときの最小費用です。`cost` の各行が1段分の位置ごとの費用です。費用の和は `long long` に収めます。
+
+`maximum_sum_with_length_bounds(a, minimum, maximum)` は、長さの上下限を守る非空区間の最大和を返します。累積和とその差は `long long` に収め、全て負の値の場合にも対応します。こちらは時間・空間とも $O(N)$ です。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+long long movement_cost(const vector<vector<long long>>& cost,int radius) {
+    assert(radius>=0); if(cost.empty()) return 0;
+    int n=cost[0].size(); assert(n>0);
+    vector<long long> dp(n,0),next(n);
+    for(const auto& row:cost) {
+        assert(int(row.size())==n); deque<int> q; int right=-1;
+        for(int x=0;x<n;++x) {
+            int hi=int(min<long long>(n-1,1LL*x+radius));
+            int lo=int(max<long long>(0,1LL*x-radius));
+            while(right<hi) {
+                ++right;
+                while(!q.empty() && dp[q.back()]>=dp[right]) q.pop_back();
+                q.push_back(right);
+            }
+            while(!q.empty() && q.front()<lo) q.pop_front();
+            next[x]=row[x]+dp[q.front()];
+        }
+        dp.swap(next);
+    }
+    return *min_element(dp.begin(),dp.end());
+}
+long long maximum_sum_with_length_bounds(const vector<long long>& a,int minimum,int maximum) {
+    int n=int(a.size());
+    assert(1<=minimum && minimum<=maximum && maximum<=n);
+    vector<long long> prefix(n+1);
+    for(int i=0;i<n;++i) prefix[i+1]=prefix[i]+a[i];
+    deque<int> candidates;
+    long long answer=numeric_limits<long long>::lowest();
+    for(int r=minimum;r<=n;++r) {
+        int entering=r-minimum;
+        while(!candidates.empty() && prefix[candidates.back()]>=prefix[entering]) candidates.pop_back();
+        candidates.push_back(entering);
+        while(!candidates.empty() && candidates.front()<r-maximum) candidates.pop_front();
+        answer=max(answer,prefix[r]-prefix[candidates.front()]);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[単調キュー](/flowchartcp/techniques/monotone-queue/) ・ [スライディングウィンドウ](/flowchartcp/techniques/sliding-window/)
+
+## 参考資料
+
+- [Codeforces：Watching Fireworks is Funの解説・実装](https://codeforces.com/blog/entry/9944)
+- [CSES：Maximum Subarray Sum II の問題条件](https://cses.fi/problemset/task/1644)
+
+<TechniqueReferences techniqueId="dp-sliding-min" />

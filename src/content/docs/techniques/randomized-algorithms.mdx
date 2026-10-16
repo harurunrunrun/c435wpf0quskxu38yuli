@@ -1,0 +1,78 @@
+---
+title: "乱択アルゴリズム"
+description: "乱数を利用して、比較や探索を速くする。"
+techniqueId: randomized-algorithms
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+乱数を利用して、比較や探索を速くする。
+
+## 使う場面
+
+多重集合や大きい状態の一致を大量に調べたいとき、候補を速く探した後で正しさを検証できるときなどに使う。速度を得る代わりに、誤判定の確率や実行時間のばらつきを評価する。
+
+## 考え方
+
+誤りの小さい確率を許すMonte Carlo法と、答えは必ず正しく実行時間が変動するLas Vegas法がある。
+
+多重集合の比較では、各値に乱数を割り当て、含まれる値の乱数を足したハッシュを使える。同じ値が複数あれば、その回数だけ足す。配列ではハッシュの累積和を作れば、区間の多重集合を一定時間で比較できる。XORだけでは同じ値が2回あると打ち消されるので、この目的には不十分である。
+
+## 適用条件
+
+ハッシュの一致は、厳密な一致を保証しない。誤判定を許せない場合は、候補の一致を直接確認する。
+
+素数 $p$ を法とする加算ハッシュでは、出現回数の差がすべて $p$ の倍数だと必ず衝突する。比較する列の長さは $p$ 未満にする。衝突確率の評価では、入力と独立に乱数が選ばれることも必要になる。
+
+## なぜ正しいか
+
+固定された異なる多重集合では、出現回数に差がある値を一つ選べる。その値以外の乱数を固定すると、ハッシュが等しくなる乱数の値は法 $p$ 上で一つだけなので、独立一様な乱数なら衝突確率は $1/p$ になる。
+
+独立な二つのハッシュを使えば、モデル上の衝突確率は $1/(p_1p_2)$。比較回数が多い場合は、各比較の失敗確率を足して全体の上界を評価する。擬似乱数生成器の利用は、この独立一様のモデルと完全には同じではない。
+
+## 計算量
+
+値の種類数 $U$、配列長 $N$ に対して、乱数表と累積和の構築は時間・空間ともに $O(U+N)$。区間のハッシュ比較は $O(1)$。
+
+## 実装
+
+`random_value_hashes` で各値のハッシュを作り、`hash_prefix` で累積和を作る。`hash_range` は区間 $[l,r)$ のハッシュを返す。比較するときは、ハッシュだけでなく区間長も比較する。値は乱数表の有効な添字とし、乱数の初期値は再現できるよう保存する。
+
+```cpp
+#include <array>
+#include <cstdint>
+#include <random>
+#include <vector>
+using HashPair = std::array<long long, 2>;
+constexpr HashPair HASH_MOD = {1000000007, 1000000009};
+std::vector<HashPair> random_value_hashes(int universe, std::uint64_t seed) {
+    std::mt19937_64 rng(seed);
+    std::vector<HashPair> h(universe);
+    for (auto& value : h) for (int j = 0; j < 2; ++j)
+        value[j] = std::uniform_int_distribution<long long>(0, HASH_MOD[j]-1)(rng);
+    return h;
+}
+std::vector<HashPair> hash_prefix(const std::vector<int>& a,
+                                 const std::vector<HashPair>& h) {
+    std::vector<HashPair> prefix(a.size() + 1, {0, 0});
+    for (std::size_t i = 0; i < a.size(); ++i) for (int j = 0; j < 2; ++j)
+        prefix[i+1][j] = (prefix[i][j] + h[a[i]][j]) % HASH_MOD[j];
+    return prefix;
+}
+HashPair hash_range(const std::vector<HashPair>& p, int l, int r) {
+    HashPair answer;
+    for (int j = 0; j < 2; ++j)
+        answer[j] = (p[r][j] - p[l][j] + HASH_MOD[j]) % HASH_MOD[j];
+    return answer;
+}
+```
+
+## 関連する手法
+
+[累積和](../prefix-sum/) ・ [反例探し](../counterexample/)
+
+## 参考資料
+
+- [AtCoder公式解説：ABC367 F](https://atcoder.jp/contests/abc367/editorial/10745)
+- [noshi91：ハッシュに関する資料](https://github.com/noshi91/blog/blob/master/pages/hash.pdf)
+
+<TechniqueReferences techniqueId="randomized-algorithms" />

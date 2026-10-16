@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "/home/admin2/flowchartcp/site/tests/ioi2016-shortcut-flow.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationSeconds": 6.459445204993244,
+  "testFile": "tests/ioi2016-shortcut-flow.test.mjs",
+  "testSha256": "585dae80b26582fa5f7e13dda2d640918b7a3bf6e5ee8eeb81a9bc499982045d",
+  "preparedTmpFile": "/tmp/flowchartcp-ioi2016-shortcut-flow.test.mjs",
+  "preparedAndPublishedBytesIdentical": true,
+  "tapFile": "/tmp/flowchartcp-ioi2016-shortcut-flow-results.tap",
+  "tapSha256": "6e318d9e38c4b5c8782de65087b05222509f473fc5ca5e8421865204f0e23602",
+  "caseFile": "/tmp/flowchartcp-ioi2016-shortcut-flow-case.json",
+  "caseSha256": "bd3feb1dc8ca8690b0c4c268546a2838cc6ffcd1ed47b677113b3071042cf423",
+  "frozenBaseline": {
+    "articles": 513,
+    "graphs": 480,
+    "nodes": 3751,
+    "walks": 534,
+    "corpora": 10,
+    "datasetJsonMembers": 79,
+    "rawSha256": {
+      "flows": "5f285a3949f355430fb08386f0693ed44228b0a2c1c5d4fb73aed0f9a8fcd3f6",
+      "walks": "56f40ad68737c93b3a1d4091a4c435d67c64143d8e71c544853cdcff8719f48b",
+      "ioi2016-audit": "d52448caa9504a10b7cfc132e22516f42be9a14222b679243c5d0a885d398833",
+      "dataset": "74b70c2718f9ac2ee10a348b2759be78f0d4d3d57e665defc27c62047a590469"
+    }
+  },
+  "cppSha256": "3a6f404db20af159ce47c67688ee05f93586a6833da3d6fce24a38bb3f41cad4",
+  "allowedSharedFiles": [
+    "tests/ioi2016-shortcut-flow.test.mjs",
+    "research/probes/ioi2016-shortcut-flow-results.json"
+  ],
+  "otherSharedFilesModified": false,
+  "coveragePolicy": "All ten prior fixed-corpus fields,Aliens/Molecules/Paint/Railroad/Messy prior resolutions,and all frozen metadata/references remain unchanged. Initial Shortcut researched-positive6/6/coverage0/6/API0 stays fixed. Only resolution is appended. Current research6/6 and coverage>=6;deleting Shortcut resolution or production article/ref/walk/valid steps reduces coverage by1. An invalid actual MDX fence fails real product preflight and gates all corpus coverage to0. Future legitimate resolutions are allowed.",
+  "scope": [
+    "complete old534 records/hash and independent raw replay including every target/question/answer label/terminal",
+    "every old480 graph and3751 node field/order/target/result",
+    "all79 frozen dataset raw hashes and all10 corpus initial fields+existing Aliens/Molecules/Paint/Railroad/Messy resolutions",
+    "every old metadata/reference field and relative order",
+    "593 local prefixes/404 completed share URLs with Back",
+    "new three guards/all six no-unknown branches/both displays/SVG answers and article href",
+    "primary full N/gaps/branches/c/station-only diameter/distinct main endpoints/Notice/date/null/source-header provenance",
+    "representative pairs/branch lower bound/self-index exclusion/four c-inclusive bounds/strict sweep/discrete valley pointer and exact native counters",
+    "new independent8644858 assertions using unit-edge BFS/branch translation/extreme discrete boxes/million-station translation",
+    "actual standalone prepared class/core+sourceadapter sample/extreme64bit/self exclusion/copy/move/invalid smoke",
+    "missing article/ref/source/walk/validsteps coverage -1 and actual broken C++ fence preflight0"
+  ],
+  "resultsFile": "research/probes/ioi2016-shortcut-flow-results.json",
+  "baselineEpochs": {
+    "active": "v2",
+    "manifestPath": "/tmp/flowchartcp-ioi2016-shortcut-baseline-epochs.json",
+    "manifestSha256": "c339d1f66cfb023e4f7a2a9e32e9ea2b970d9bb280dea5f4e6efc68449b7399e",
+    "formerV1RawRetained": true,
+    "formerV1DraftRetained": "/tmp/flowchartcp-ioi2016-shortcut-flow-v1-draft.test.mjs",
+    "reason": "Root shortened only the newly added Messy guard explanation before Shortcut registration to remove rendered truncation;v2 independently freezes its finalfull wording. All534walks/counts/audits remained unchanged."
+  },
+  "preExecutionDraftAdjustment": {
+    "preparedV2DraftSha256": "e9ab3051c911da4dd738df84fefb4eb7e7dd7f9aad570b3397404d1d5e37c853",
+    "executedPublishedSha256": "585dae80b26582fa5f7e13dda2d640918b7a3bf6e5ee8eeb81a9bc499982045d",
+    "when": "Before first execution and before shared placement",
+    "change": "One proof.sortOnce assertion changed from requiring the literal English word once to requiring both O(N) and O(NlogN),matching frozen author proof wording. No fixture,case,source,oldfield,oracle,or native assertion changed.",
+    "firstFormalExecutionPassed": true
+  }
+}

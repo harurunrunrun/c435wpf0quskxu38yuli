@@ -1,0 +1,73 @@
+---
+title: "同時にk本まで選べる時間区間は、終了順に見て最も遅く空く担当へ割り当てる"
+description: "開始に間に合う担当のうち、直前の終了が最大の担当を選び、早く空く担当を残します。"
+techniqueId: interval-k-resources-predecessor
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+各仕事の開始と終了が既に決まっており、同時に使える担当や機械が $k$ 個ある。仕事の開始を自由にずらす問題とは違い、区間を丸ごと採用するかを決める。
+
+## 考え方
+
+区間を終了時刻の昇順に調べる。各担当が最後に終えた時刻を多重集合に持ち、区間の開始時刻以下の値で最大のものを取り出して、今回の終了時刻へ更新する。該当する担当がなければ区間を採用しない。
+
+最も早く空いている担当を無条件に使うのではなく、開始までに空く中で最も遅い担当を使う。そうすると、より早い時刻に開始する別区間のための余裕が残る。
+
+## 適用条件
+
+担当は交換可能で、区間ごとの報酬は同じ。各区間の開始は終了より厳密に小さい。半開区間として終了と次の開始の一致を認める。担当ごとの能力制限、移動時間、区間の利益が異なる場合は別のモデルが必要。実装は空集合や $k=0$ にも対応する。
+
+## なぜ正しいか
+
+既に採用した区間とその担当を固定したまま、最適解を今回の選択へ合わせられることを示す。未処理の区間の終了は、今回の終了以上である。
+
+今回を置ける担当を一人選ぶ。最適解でその担当が次に見る区間を $J$ とする。今回が最適解に入っていなければ、$J$ を今回へ置き換えてよい。直前の固定区間には間に合い、今回の終了は $J$ 以下なので、その後の予定も妨げない。$J$ がなければ一件追加できる。よって今回を採る最適解が存在する。
+
+今回が別の担当に入っていたら、担当の付け方を揃える。開始までに空く二担当の直前終了を $a\le b$ とする。今回を $a$ から $b$ へ移し、今回以降の両担当の予定を交換する。$b$ の次の予定は元から $b$ 以降に始まるので、より早く空く $a$ でも間に合う。今回も $b$ 以降に始まる。したがって、開始に間に合う中で最も遅く空く担当を使ってよい。
+
+一人も開始までに空かないときは、全担当の直前の固定区間と今回が重なる。直前の区間の終了は今回以下で、開始は今回の終了より前だからである。固定済みの区間を保つ解では今回を入れられないので、飛ばしてよい。以上を終了順に繰り返すと、件数を保つ最適解を最後まで揃えられる。
+
+## 計算量
+
+採用・不採用と担当を全列挙すると最大 $O((k+1)^N N\log N)$ 時間、検証用空間 $O(N+k)$。終了順の整列と多重集合で時間 $O(N\log N+N\log(k+1))$、追加空間 $O(N+k)$。$k>N$ は $N$ としてよい。
+
+## 実装
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <set>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+int maximum_intervals_k_resources(std::vector<std::pair<long long,long long>> intervals,int k) {
+    if (k<0 || intervals.size()>200000) throw std::invalid_argument("size bounds");
+    for (auto [a,b]:intervals) if (a>=b) throw std::invalid_argument("empty interval");
+    k=std::min(k,static_cast<int>(intervals.size()));
+    std::sort(intervals.begin(),intervals.end(),[](auto a,auto b){
+        return a.second!=b.second ? a.second<b.second : a.first<b.first;
+    });
+    std::multiset<long long> free_at;
+    for (int i=0;i<k;++i) free_at.insert(std::numeric_limits<long long>::lowest());
+    int answer=0;
+    for (auto [a,b]:intervals) {
+        auto it=free_at.upper_bound(a);
+        if (it==free_at.begin()) continue;
+        --it; free_at.erase(it); free_at.insert(b); ++answer;
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+- [交換法](/flowchartcp/techniques/exchange-argument/)
+
+## 参考資料
+
+- [CSES — Movie Festival II](https://cses.fi/problemset/task/1632)
+
+<TechniqueReferences techniqueId="interval-k-resources-predecessor" />

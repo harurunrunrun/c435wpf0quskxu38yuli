@@ -1,0 +1,80 @@
+---
+title: "周期の長さを接頭辞と接尾辞の一致から求める"
+description: "末尾が途中で切れてよい周期と、整数回の反復であることが必要な周期を区別します。"
+techniqueId: "period-from-border"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+## 使う場面
+
+文字列が短い列の繰り返しになっているか、繰り返しの長さの候補を全て求めたい場合。末尾の反復を途中で切ってよいかを、最初に確認します。
+
+## 考え方
+
+長さ $p$ が周期である条件は、全ての $p\le i<N$ について $s[i]=s[i-p]$ となること。これは
+
+$$s[0,N-p)=s[p,N)$$
+
+と同じなので、長さ $N-p$ の接頭辞が接尾辞でもあればよいと分かります。接頭辞関数 $\pi$ の連鎖で一致長 $b$ を列挙し、$p=N-b$ に変えます。$p=N$ は常に周期です。
+
+最短候補は $p=N-\pi[N-1]$。**整数回の反復**が必要なら、さらに $N\bmod p=0$ を確認します。例えば `abcab` の周期は 3 ですが、長さ 3 の列の整数回反復にはなっていません。
+
+## 適用条件
+
+各位置の文字が厳密に等しいことを要求する場合です。回転して同じ、誤りを許す、文字を置換して同じ、といった条件には別の判定が必要です。
+
+有限文字列の周期を列挙する場合に $N\bmod p=0$ を付けると、正しい候補を落とします。一方、同じブロックをちょうど何回か連結する条件では割り切れることが必要です。
+
+## なぜ正しいか
+
+比較すべき全ての位置 $i$ は、接頭辞 $s[0,N-p)$ と接尾辞 $s[p,N)$ の対応する位置です。よって二つの列の一致が周期条件と同値です。全ての真の一致長は $\pi$ の連鎖に現れるため、候補を漏らしません。
+
+最短候補が長さを割り切るなら、そのブロックで全体を分割できます。割り切れない場合、最短の整数回反復は存在せず、全体自身の長さになります。
+
+## 計算量
+
+全ての $p$ を文字比較で調べる改善前は $O(N^2)$。改善後は $O(N)$ 時間、$O(N)$ 空間です。周期が全て成立する列では答え自体が $N$ 個になります。
+
+## 実装
+
+`period_lengths` は末尾の部分反復を許す全周期、`exact_repeat_period` は整数回反復の最短ブロック長を返します。空列の後者は 0 とします。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> period_prefix_function(const string& s) {
+    vector<int> pi(s.size());
+    for(int i=1;i<int(s.size());++i) {
+        int j=pi[i-1];
+        while(j>0 && s[i]!=s[j]) j=pi[j-1];
+        if(s[i]==s[j]) ++j;
+        pi[i]=j;
+    }
+    return pi;
+}
+vector<int> period_lengths(const string& s) {
+    int n=int(s.size());
+    if(n==0) return {};
+    auto pi=period_prefix_function(s);
+    vector<int> answer;
+    for(int b=pi[n-1];b>0;b=pi[b-1]) answer.push_back(n-b);
+    answer.push_back(n);
+    return answer;
+}
+int exact_repeat_period(const string& s) {
+    int n=int(s.size());
+    if(n==0) return 0;
+    auto pi=period_prefix_function(s);
+    int p=n-pi.back();
+    return n%p==0 ? p : n;
+}
+```
+
+## 関連する手法
+
+[接頭辞の出現回数を、短い一致先へ集約する](/flowchartcp/techniques/prefix-border-occurrences/)、[巡回シフトの最小候補を不一致位置までまとめて捨てる](/flowchartcp/techniques/rotation-minimum/)
+
+## 参考資料
+
+- [CSES：Finding Periods の問題文](https://cses.fi/problemset/task/1733/)
+
+<TechniqueReferences techniqueId="period-from-border" />

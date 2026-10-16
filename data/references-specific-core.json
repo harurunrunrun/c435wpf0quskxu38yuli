@@ -1,0 +1,200 @@
+[
+  {
+    "techniqueId": "two-fenwick-range-add",
+    "source": "AtCoder",
+    "problemId": "awc0014_e",
+    "title": "花壇の水やり管理",
+    "url": "https://atcoder.jp/contests/awc0014/tasks/awc0014_e",
+    "editorialUrl": "https://atcoder.jp/contests/awc0014/editorial/16419",
+    "evidence": "差分と添字を掛けた差分を二つのBITで管理し、区間加算と区間和を処理している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "difference-2d-corners",
+    "source": "AtCoder",
+    "problemId": "typical90_ab",
+    "title": "Cluttered Paper",
+    "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ab",
+    "editorialUrl": "https://github.com/E869120/kyopro_educational_90/blob/main/sol/028.cpp",
+    "evidence": "作者の想定解が四隅に符号付きの更新を行い、縦横に累積して重なりを求めている。",
+    "verification": "reference-solution",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "affine-lazy-composition",
+    "source": "AtCoder",
+    "problemId": "practice2_k",
+    "title": "Range Affine Range Sum",
+    "url": "https://atcoder.jp/contests/practice2/tasks/practice2_k",
+    "editorialUrl": "https://atcoder.github.io/ac-library/production/document_en/lazysegtree.html",
+    "evidence": "ACL公式の実装例が区間和と長さを保存し、一次変換を順序どおりに合成している。",
+    "verification": "reference-solution",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "range-chmin-second-maximum",
+    "source": "Library Checker",
+    "problemId": "range_chmin_chmax_add_range_sum",
+    "title": "Range Chmin Chmax Add Range Sum",
+    "url": "https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum",
+    "editorialUrl": "https://github.com/yosupo06/library-checker-problems/blob/master/data_structure/range_chmin_chmax_add_range_sum/sol/correct.cpp",
+    "evidence": "公式参照実装が最大値、第二最大値、最大値の個数を持ち、最大値だけの上限更新をまとめて行っている。",
+    "verification": "reference-solution",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "subarray-extremum-contribution",
+    "source": "AtCoder",
+    "problemId": "abc407_f",
+    "title": "Sums of Sliding Window Maximum",
+    "url": "https://atcoder.jp/contests/abc407/tasks/abc407_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc407/editorial/13108",
+    "evidence": "各要素が最大値になる左右の範囲から、区間長ごとの最大値の寄与を数えている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "subarray-prefix-frequency",
+    "source": "AtCoder",
+    "problemId": "abc233_d",
+    "title": "Count Interval",
+    "url": "https://atcoder.jp/contests/abc233/tasks/abc233_d",
+    "editorialUrl": "https://atcoder.jp/contests/abc233/editorial/3163",
+    "evidence": "右端の累積和からKを引いた値の出現回数を辞書で取得し、区間を数えている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "subarray-prefix-order",
+    "source": "AtCoder",
+    "problemId": "arc075_c",
+    "title": "Meaningful Mean",
+    "url": "https://atcoder.jp/contests/arc075/tasks/arc075_c",
+    "editorialUrl": "https://img.atcoder.jp/arc075/editorial.pdf",
+    "evidence": "平均の条件を累積和の大小関係に直し、過去の値以下の個数をBITで数えている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "sliding-distinct-count",
+    "source": "AtCoder",
+    "problemId": "abc210_c",
+    "title": "Colorful Candies",
+    "url": "https://atcoder.jp/contests/abc210/tasks/abc210_c",
+    "editorialUrl": "https://atcoder.jp/contests/abc210/editorial/2297",
+    "evidence": "隣り合う固定長区間の出入りだけを更新し、色ごとの出現回数から種類数を管理している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "offline-rightmost-occurrence",
+    "source": "AtCoder",
+    "problemId": "abc174_f",
+    "title": "Range Set Query",
+    "url": "https://atcoder.jp/contests/abc174/tasks/abc174_f",
+    "editorialUrl": "https://img.atcoder.jp/abc174/editorial.pdf",
+    "evidence": "公式解説のFで、各色の最新位置だけをBITに記録し、右端の昇順で区間の種類数を求めている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "reverse-edge-deletion",
+    "source": "AtCoder",
+    "problemId": "abc120_d",
+    "title": "Decayed Bridges",
+    "url": "https://atcoder.jp/contests/abc120/tasks/abc120_d",
+    "editorialUrl": "https://img.atcoder.jp/abc120/editorial.pdf",
+    "evidence": "辺を逆順に追加し、併合する成分のサイズの積で非連結な頂点対を更新している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "connectivity-time-intervals",
+    "source": "Codeforces",
+    "problemId": "gym100551A",
+    "title": "Connect and Disconnect",
+    "url": "https://codeforces.com/gym/100551/problem/A",
+    "editorialUrl": "https://cp-algorithms.com/data_structures/deleting_in_log_n.html",
+    "evidence": "著者の解説がこの問題を挙げ、辺の生存期間を時間のセグメント木に保存してUnion-Findを巻き戻す実装を示している。",
+    "verification": "reference-solution",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "reroot-prefix-suffix",
+    "source": "AtCoder",
+    "problemId": "abc222_f",
+    "title": "Expensive Expense",
+    "url": "https://atcoder.jp/contests/abc222/tasks/abc222_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc222/editorial/2763",
+    "evidence": "全方位木DPで子方向の寄与を除く必要があり、左右からの集計で二乗時間を線形時間へ改善している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "reroot-directed-edge-state",
+    "source": "AtCoder",
+    "problemId": "abc222_f",
+    "title": "Expensive Expense",
+    "url": "https://atcoder.jp/contests/abc222/tasks/abc222_f",
+    "editorialUrl": "https://atcoder.jp/contests/abc222/editorial/2763",
+    "evidence": "子側と親側の最大費用を、送る相手の部分木を除いて計算する全方位木DPを示している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "tree-path-prefix-lca",
+    "source": "AtCoder",
+    "problemId": "abc014_4",
+    "title": "閉路",
+    "url": "https://atcoder.jp/contests/abc014/tasks/abc014_4",
+    "editorialUrl": "https://img.atcoder.jp/abc014/editorial.pdf",
+    "evidence": "木の二頂点間の距離を、根からの深さとダブリングで求めるLCAから計算している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "subtree-euler-interval",
+    "source": "AtCoder",
+    "problemId": "abc202_e",
+    "title": "Count Descendants",
+    "url": "https://atcoder.jp/contests/abc202/tasks/abc202_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc202/editorial/1864",
+    "evidence": "DFSで入る時刻と出る時刻を記録し、子孫を連続区間の条件へ変換している。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "virtual-tree-adjacent-lca",
+    "source": "AtCoder",
+    "problemId": "abc340_g",
+    "title": "Leaf Color",
+    "url": "https://atcoder.jp/contests/abc340/tasks/abc340_g",
+    "editorialUrl": "https://atcoder.jp/contests/abc340/editorial/9249",
+    "evidence": "指定頂点をDFS順に並べ、隣接する頂点対のLCAだけを追加して補助木を作っている。",
+    "verification": "editorial",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "centroid-count-cross-subtrees",
+    "source": "CSES",
+    "problemId": "2080",
+    "title": "Fixed-Length Paths I",
+    "url": "https://cses.fi/problemset/task/2080",
+    "editorialUrl": "https://usaco.guide/problems/cses-2080-fixed-length-paths-i/solution",
+    "evidence": "参照解法は各子部分木の寄与を先に数えてから頻度へ加え、同じ部分木の対を除いて重心分解している。",
+    "verification": "reference-solution",
+    "difficulty": null
+  },
+  {
+    "techniqueId": "dsu-threshold-queries",
+    "source": "AtCoder",
+    "problemId": "abc235_e",
+    "title": "MST + 1",
+    "url": "https://atcoder.jp/contests/abc235/tasks/abc235_e",
+    "editorialUrl": "https://atcoder.jp/contests/abc235/editorial/3263",
+    "evidence": "既存辺と候補辺を重み順に処理し、候補辺より軽い辺での連結性をUnion-Findで共有している。",
+    "verification": "editorial",
+    "difficulty": null
+  }
+]

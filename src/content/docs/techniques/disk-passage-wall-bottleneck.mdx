@@ -1,0 +1,138 @@
+---
+title: "障害点のある通路を通れる円の半径は、上下の壁がつながる距離から求める"
+description: "近すぎて通れない隙間を辺にし、通路を横切る障害物の連鎖ができるしきい値を探す。"
+techniqueId: disk-passage-wall-bottleneck
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+上下を二本の平行な直線で囲まれた通路があり、その中に大きさを持たない障害点が有限個置かれている。円を左の十分遠い場所から右の十分遠い場所へ動かせる、最大の半径を求めたい。
+
+円の内部には障害点も壁も入れず、接することは許す。平面上の移動経路を直接探索する代わりに、**上下の壁を結ぶ障害物の連鎖ができるか**を調べる。
+
+## 考え方
+
+半径を $r$ に固定する。距離が $2r$ より小さい二点の間を円は通れない。点と壁の間も、円の中心が両方から $r$ 以上離れる必要があるため、距離が $2r$ より小さければ通れない。
+
+そこで各点と上下の壁を頂点にし、対応する距離 $d$ が $2r$ より小さい組を辺で結ぶ。上下の壁がつながると通路を横切る障害物の連鎖ができ、左右を行き来できなくなる。
+
+壁を $y=-H,y=H$ とすると、使う辺の距離は次の三種類である。
+
+- 二点 $i,j$ の間は $\sqrt{(x_i-x_j)^2+(y_i-y_j)^2}$。
+- 点 $i$ と下の壁の間は $y_i+H$、上の壁との間は $H-y_i$。
+- 壁同士は $2H$。障害点がなくても半径は $H$ 以下になる。
+
+全ての辺を距離順に加え、上下の壁が初めてつながった距離を $D$ とする。求める半径は $D/2$。
+
+同じ距離の辺が複数あっても、初連結になる距離そのものは同じである。整数座標なら距離の二乗を整数で比較し、最後に一回だけ平方根を取ればよい。
+
+## 適用条件
+
+- 通路は左右に無限に続く平行な二本の壁の間で、左右の十分遠い場所を結ぶ。
+- 障害物は点であり、円の向きや回転は移動に影響しない。
+- 壁や障害点との接触を許す。接触を禁止する場合、同じ値が通れる半径の上限でも、最大値としては達成できないことがある。
+- 全点対を列挙できる点数である。
+
+有限の長方形の中の指定した二点を結ぶ場合や、複雑な壁がある場合には、上下の壁の連結性だけでは足りない。障害物が線分や多角形なら、距離と通路を遮る条件も改めて確認する。
+
+## なぜ正しいか
+
+円の中心が通れない領域を考える。各障害点の周囲では半径 $r$ の円の内部が禁止され、上下の壁の近くでは幅 $r$ の帯が禁止される。
+
+二つの障害点の禁止領域が重なる条件は点間距離が $2r$ 未満であり、障害点の禁止領域と壁の禁止帯が重なる条件も点から壁までの距離が $2r$ 未満である。グラフの辺は、この禁止領域のつながりを表している。
+
+上から下まで禁止領域がつながると、どの左右の移動もその連鎖を横切る必要があるため不可能になる。逆にそのような連鎖がなければ、障害物の境界をたどりながら、上下をつなぐ障壁に遮られず右側へ抜けられる。障害物が有限個の円形領域で、始点・終点を十分遠く取ることがこの対応に必要である。
+
+上下の壁を結ぶグラフ上の各経路について、最大の辺の距離を取る。その最小値が $D$ であり、距離の小さい辺から加えたときの初連結の値に一致する。
+
+$r>D/2$ なら、その経路の全ての辺で $d<2r$ となり遮断される。$r=D/2$ なら、距離が厳密に $D$ 未満の辺だけでは壁同士はつながらない。等距離の隙間では接触して通れるので、$D/2$ 自体も達成できる。
+
+## 計算量
+
+点数を $N$ とすると、辺は $O(N^2)$ 本。整列に $O(N^2\log(N+1))$ 時間、併合に $O(N^2\alpha(N+2))$ 時間で、全体は $O(N^2\log(N+2))$ 時間・$O(N^2)$ 追加空間。
+
+半径を二分探索して毎回連結判定する代わりに、点同士・点と壁・壁同士の距離を一度だけ整列する。点数がさらに大きい場合には、全点対の保存と整列を避ける別の方法が必要になる。
+
+## 実装
+
+`maximum_disk_passage_radius(points, half_width)` は壁 $y=\pm half\_width$ の間を通れる最大半径を返す。点数は2000以下、$1\le H\le10^9$、座標は $[-10^9,10^9]$、全ての点は $-H<y<H$ を満たすものとする。点の重複は許し、空なら $H$ を返す。
+
+点数超過は `length_error`、それ以外の条件違反は `invalid_argument`。二点の座標差は各軸で絶対値 $2\times10^9$ 以下なので、平方距離は最大 $2(2\times10^9)^2=8\times10^{18}$。壁に関する距離も $2H\le2\times10^9$ であり、その二乗はこの範囲に収まる。差を二乗するときから符号なし64ビットで計算し、整列に浮動小数点数を使わない。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long double maximum_disk_passage_radius(
+        const vector<pair<long long,long long>>& points,
+        long long half_width = 100) {
+    if (points.size() > 2000) throw length_error("too many points");
+    constexpr long long bound = 1000000000LL;
+    if (half_width < 1 || half_width > bound)
+        throw invalid_argument("invalid corridor width");
+    for (auto [x, y] : points) {
+        if (x < -bound || x > bound || y < -bound || y > bound ||
+            y <= -half_width || y >= half_width)
+            throw invalid_argument("point outside supported corridor");
+    }
+    const int n = int(points.size()), bottom = n, top = n + 1;
+    using U64 = unsigned long long;
+    auto square = [](long long value) -> U64 {
+        U64 magnitude = value < 0 ? U64(-value) : U64(value);
+        return magnitude * magnitude;
+    };
+    struct Edge {
+        U64 squared_distance;
+        int first, second;
+    };
+    vector<Edge> edges;
+    edges.reserve(size_t(n) * (n - 1) / 2 + 2 * n + 1);
+    edges.push_back({square(2 * half_width), bottom, top});
+    for (int i = 0; i < n; ++i) {
+        auto [x, y] = points[i];
+        edges.push_back({square(y + half_width), i, bottom});
+        edges.push_back({square(half_width - y), i, top});
+        for (int j = 0; j < i; ++j) {
+            edges.push_back({square(x - points[j].first) +
+                             square(y - points[j].second), i, j});
+        }
+    }
+    sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) {
+        return a.squared_distance < b.squared_distance;
+    });
+    vector<int> parent(n + 2), size(n + 2, 1);
+    iota(parent.begin(), parent.end(), 0);
+    auto root = [&](int v) {
+        while (v != parent[v]) {
+            parent[v] = parent[parent[v]];
+            v = parent[v];
+        }
+        return v;
+    };
+    for (const auto& edge : edges) {
+        int a = root(edge.first), b = root(edge.second);
+        if (a != b) {
+            if (size[a] < size[b]) swap(a, b);
+            parent[b] = a;
+            size[a] += size[b];
+        }
+        if (root(bottom) == root(top))
+            return sqrtl(static_cast<long double>(edge.squared_distance)) / 2;
+    }
+    throw logic_error("wall edge must connect the corridor");
+}
+```
+
+## 関連する手法
+
+- [しきい値順に辺を追加して連結性を共有する](/flowchartcp/techniques/dsu-threshold-queries/)：許される距離が増えるにつれて辺が増えることを使う。
+- [円周の交差を距離の二乗で判定する](/flowchartcp/techniques/circle-square-distance/)：平方根を取らずに距離を比較する。
+- [壁の間の領域を圧縮して探索する](/flowchartcp/techniques/plane-wall-compressed-cells/)：軸に平行な線分の壁で囲まれた面積を求める場合。
+
+## 参考資料
+
+- [AtCoder ABC181 F：Silver Woods](https://atcoder.jp/contests/abc181/tasks/abc181_f) — 障害点がある通路を通り抜ける円の最大半径を求める原典。
+- [AtCoder ABC181 F公式解説](https://atcoder.jp/contests/abc181/editorial/299) — 通れない隙間を辺にし、上下の壁の初連結から半径を求める方法。
+
+<TechniqueReferences techniqueId="disk-passage-wall-bottleneck" />

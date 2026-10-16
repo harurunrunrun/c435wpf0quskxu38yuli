@@ -1,0 +1,256 @@
+---
+title: "木の同色頂点をつなぐとき、途中で必要になる色もまとめて選ぶ"
+description: "同色頂点を結ぶパス上の色へ依存を張り、外への依存がない強連結成分の色数を最小化する。"
+techniqueId: tree-color-closure-sink-scc
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+木の頂点に色があり、一つの色の頂点をすべて別の色へ移す操作を繰り返す。どれか一色の全頂点を連結にするために、何回の併合が必要かを求めたい。色の一部の頂点だけを選ぶことはできない。
+
+選んだ色の個数が $s$ なら、それらを一色へまとめる費用は $s-1$。したがって、全出現を集めると連結になる空でない色集合のうち、色数が最小のものを探す。
+
+## 考え方
+
+色 $c$ の全頂点を結ぶ最小部分木を $H_c$ とする。木では二頂点間のパスが一意なので、色 $c$ を残すなら $H_c$ 上の頂点もすべて必要になる。そこに色 $d$ が現れたら、有向辺 $c\to d$ を張る。意味は「$c$ を選ぶなら、$d$ も丸ごと選ぶ」。
+
+この依存グラフを強連結成分へまとめる。外へ出る辺がない成分を終端の成分と呼ぶ。その色数の最小値から1を引くと答えになる。色集合が依存に閉じているだけでは連結とは限らないため、一つの強連結成分を選ぶことが大切になる。
+
+依存辺を直接列挙すると二乗になる。各色の出現をある順序で並べ、隣り合う出現を結ぶパスだけを使う。このパスの和集合が $H_c$ に一致する。パス総数は $N-K$ 本である。
+
+各パスをHL分解で配列の区間へ分け、区間を覆う区間木の頂点へ色 $c$ から辺を張る。区間木の辺は親から子へ向け、葉はその位置の色頂点へつなぐ。掲載実装では葉を色頂点そのものとして共有する。補助頂点は区間木の内部の $N-1$ 個だけでよい。
+
+## 適用条件
+
+元のグラフは固定された無向木で、全色が少なくとも一度出現する。併合する二色は自由に選べ、費用は一回につき1である。必要なのは、いずれか一つの色の全出現を連結にすること。
+
+頂点を部分的に移せる場合、色ごとの重みが異なる場合、併合先に制約がある場合には、この色数だけの最小化はそのまま使えない。一般のグラフではパスが一意でないため、最小部分木への強制も成立しない。
+
+## なぜ正しいか
+
+**連結な解は依存に閉じる。** 色集合 $S$ の全出現が連結なら、$c\in S$ の同色頂点を結ぶパスはすべてその集合内にある。従って $H_c$ 上にある色も $S$ に入り、$S$ から外へ依存辺は出ない。縮約した有限DAGで $S$ に含まれる成分から辺をたどると、どこかの終端の成分へ着く。閉じているため、その成分も $S$ に含まれる。よってどの解も、少なくとも一つの終端の成分の色数以上の色を使う。
+
+**一つの終端の成分は連結な解になる。** 依存辺 $c\to d$ があると、$H_c$ 上に色 $d$ の頂点があり、その頂点は $H_d$ にも属する。つまり両部分木は交わる。強連結成分内の色は有向パスで結ばれるので、それらの $H_c$ の和集合は連結になる。一方、終端の成分からは外の色への依存がないため、この和集合には成分内の色しか現れない。各色の全出現も含むので、和集合は選んだ色の全頂点集合と一致する。
+
+したがって、最小の終端の成分を選ぶと色数の下限を達成する。$s$ 色を一つへまとめるには、どの手順でも少なくとも $s-1$ 回が必要で、任意の一色へ残りを順に併合すればちょうど $s-1$ 回で済む。
+
+**パスと圧縮も依存を保つ。** 同色の出現を順につないだパスの和集合は、全出現を含む連結な部分木であり、各パスは $H_c$ 内にある。従ってちょうど $H_c$ になる。出現が一つの色は自分自身への依存だけなので、辺を省略してよい。
+
+区間頂点から下向きの辺で届く色は、その区間に現れる色に一致する。色頂点から次の色頂点までの経路を一つの依存辺へ置き換えられ、元の依存辺もこの経路で再現できる。そのため色どうしの到達関係と強連結成分は変わらない。
+
+補助頂点は必ずどれかの葉の色へ到達するので、圧縮グラフの終端の成分には色頂点が含まれる。元の色グラフで終端となる成分から届く補助頂点は、すべてその成分の色へ戻れるため、同じ圧縮後の成分に入る。従って圧縮後の全辺で終端を判定してよい。ただし、成分の大きさとして数えるのは元の $K$ 色だけであり、補助頂点を併合回数へ加えてはいけない。
+
+## 計算量
+
+各 $H_c$ をそのままたどって依存辺を張ると、合計 $O(N^2)$ 時間・辺数になり得る。
+
+HL分解の前処理は $O(N)$。$N-K$ 本のパスをそれぞれ $O(\log N)$ 区間へ分け、一区間を $O(\log N)$ 本の辺で表す。圧縮グラフは $K+N-1$ 頂点、$E=O(N+(N-K)\log^2 N)$ 辺となる。構築と強連結成分分解を含め、時間・空間ともに $O(N\log^2 N)$。
+
+掲載実装は辺を二回列挙し、最初に本数を数えてからCSR形式の行き先配列へ書く。逆向きグラフと辺集合の二重保持は不要である。木と強連結成分の探索は反復で行い、再帰するのは深さ $O(\log N)$ の区間木だけ。上限 $N=200000$ の長いパスも扱える。
+
+## 実装
+
+`minimum_connected_color_merges(k, color, edges)` は最小併合回数 `operations` と、まとめる元の色番号 `colors` を返す。頂点は `0..n-1`、色は `0..k-1`。返した色の先頭へ残りを併合すればよい。
+
+このAPIでは $1\le N\le200000$ と全色の出現を検査する。辺数、端点、自己ループ、平行辺、閉路、連結性も検査し、不正なら `std::invalid_argument` を送出する。入力配列は変更しない。候補が複数あるときは一つを返す。
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <numeric>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+struct ColorMergeResult {
+    int operations;
+    std::vector<int> colors;
+};
+
+ColorMergeResult minimum_connected_color_merges(
+    int color_count, const std::vector<int>& color,
+    const std::vector<std::pair<int, int>>& edges) {
+    if (color.empty() || color.size() > 200000)
+        throw std::invalid_argument("vertex count must be in [1,200000]");
+    const int n = static_cast<int>(color.size());
+    const int k = color_count;
+    if (k < 1 || k > n || edges.size() != color.size() - 1)
+        throw std::invalid_argument("invalid color count or edge count");
+    std::vector<int> frequency(k);
+    for (int c : color) {
+        if (c < 0 || c >= k) throw std::invalid_argument("invalid color");
+        ++frequency[c];
+    }
+    if (std::find(frequency.begin(), frequency.end(), 0) != frequency.end())
+        throw std::invalid_argument("every color must occur");
+    std::vector<std::vector<int>> tree(n);
+    for (auto [u, v] : edges) {
+        if (u < 0 || u >= n || v < 0 || v >= n || u == v)
+            throw std::invalid_argument("invalid edge");
+        tree[u].push_back(v);
+        tree[v].push_back(u);
+    }
+
+    // Validate the tree and obtain parent-before-child order without recursion.
+    std::vector<int> parent(n, -1), depth(n), order{0};
+    parent[0] = 0;
+    for (std::size_t i = 0; i < order.size(); ++i) {
+        int v = order[i];
+        for (int u : tree[v]) if (u != parent[v]) {
+            if (parent[u] != -1) throw std::invalid_argument("cycle or parallel edge");
+            parent[u] = v;
+            depth[u] = depth[v] + 1;
+            order.push_back(u);
+        }
+    }
+    if (static_cast<int>(order.size()) != n)
+        throw std::invalid_argument("disconnected tree");
+    std::vector<int> size(n, 1), heavy(n, -1);
+    for (int i = n - 1; i > 0; --i) {
+        int v = order[i], p = parent[v];
+        size[p] += size[v];
+        if (heavy[p] == -1 || size[v] > size[heavy[p]]) heavy[p] = v;
+    }
+    std::vector<int> head(n), position(n), vertex_at(n);
+    std::vector<std::pair<int, int>> chains{{0, 0}};
+    int timer = 0;
+    while (!chains.empty()) {
+        auto [v, h] = chains.back();
+        chains.pop_back();
+        for (; v != -1; v = heavy[v]) {
+            head[v] = h;
+            position[v] = timer;
+            vertex_at[timer++] = v;
+            for (int u : tree[v])
+                if (parent[u] == v && u != heavy[v]) chains.emplace_back(u, u);
+        }
+    }
+
+    // Colors are vertices [0,k). A segment leaf is its color vertex.
+    // Only the n-1 internal segment nodes need auxiliary vertices.
+    std::vector<int> segment(4 * n, -1);
+    int graph_size = k;
+    auto build = [&](auto&& self, int node, int left, int right) -> void {
+        if (right - left == 1) {
+            segment[node] = color[vertex_at[left]];
+            return;
+        }
+        segment[node] = graph_size++;
+        int middle = left + (right - left) / 2;
+        self(self, 2 * node, left, middle);
+        self(self, 2 * node + 1, middle, right);
+    };
+    build(build, 1, 0, n);
+
+    // Repeat this generator: first count outgoing edges, then fill CSR.
+    auto generate = [&](auto add) {
+        for (int node = 1; node < 4 * n; ++node) if (segment[node] >= k) {
+            add(segment[node], segment[2 * node]);
+            add(segment[node], segment[2 * node + 1]);
+        }
+        auto range = [&](auto&& self, int node, int left, int right,
+                         int ql, int qr, int source) -> void {
+            if (qr <= left || right <= ql) return;
+            if (ql <= left && right <= qr) {
+                if (source != segment[node]) add(source, segment[node]);
+                return;
+            }
+            int middle = left + (right - left) / 2;
+            self(self, 2 * node, left, middle, ql, qr, source);
+            self(self, 2 * node + 1, middle, right, ql, qr, source);
+        };
+        auto path = [&](int u, int v, int source) {
+            while (head[u] != head[v]) {
+                if (depth[head[u]] < depth[head[v]]) std::swap(u, v);
+                range(range, 1, 0, n, position[head[u]], position[u] + 1, source);
+                u = parent[head[u]];
+            }
+            if (depth[u] > depth[v]) std::swap(u, v);
+            range(range, 1, 0, n, position[u], position[v] + 1, source);
+        };
+        std::vector<int> previous(k, -1);
+        for (int v : vertex_at) {
+            int c = color[v];
+            if (previous[c] != -1) path(previous[c], v, c);
+            previous[c] = v;
+        }
+    };
+    std::vector<std::size_t> offset(graph_size + 1);
+    generate([&](int from, int) { ++offset[from + 1]; });
+    std::partial_sum(offset.begin(), offset.end(), offset.begin());
+    std::vector<int> destination(offset.back());
+    {
+        std::vector<std::size_t> next(offset.begin(), offset.end() - 1);
+        generate([&](int from, int to) { destination[next[from]++] = to; });
+    }
+
+    // Iterative Tarjan: no recursion along a tree path or a dependency path.
+    std::vector<int> discovery(graph_size, -1), low(graph_size);
+    std::vector<int> component(graph_size, -1), active;
+    std::vector<char> on_stack(graph_size);
+    struct Frame { int vertex; std::size_t next; };
+    std::vector<Frame> dfs;
+    int clock = 0, component_count = 0;
+    auto enter = [&](int v) {
+        discovery[v] = low[v] = clock++;
+        on_stack[v] = true;
+        active.push_back(v);
+        dfs.push_back({v, offset[v]});
+    };
+    for (int start = 0; start < graph_size; ++start) if (discovery[start] == -1) {
+        enter(start);
+        while (!dfs.empty()) {
+            int v = dfs.back().vertex;
+            if (dfs.back().next < offset[v + 1]) {
+                int u = destination[dfs.back().next++];
+                if (discovery[u] == -1) enter(u);
+                else if (on_stack[u]) low[v] = std::min(low[v], discovery[u]);
+                continue;
+            }
+            dfs.pop_back();
+            if (!dfs.empty()) {
+                int p = dfs.back().vertex;
+                low[p] = std::min(low[p], low[v]);
+            }
+            if (low[v] == discovery[v]) {
+                while (true) {
+                    int u = active.back();
+                    active.pop_back();
+                    on_stack[u] = false;
+                    component[u] = component_count;
+                    if (u == v) break;
+                }
+                ++component_count;
+            }
+        }
+    }
+    std::vector<int> count(component_count);
+    std::vector<char> outgoing(component_count);
+    for (int c = 0; c < k; ++c) ++count[component[c]];
+    for (int v = 0; v < graph_size; ++v)
+        for (std::size_t e = offset[v]; e < offset[v + 1]; ++e)
+            if (component[v] != component[destination[e]]) outgoing[component[v]] = true;
+    int chosen = -1;
+    for (int s = 0; s < component_count; ++s)
+        if (count[s] > 0 && !outgoing[s] && (chosen == -1 || count[s] < count[chosen]))
+            chosen = s;
+    if (chosen == -1) throw std::logic_error("no color sink");
+    ColorMergeResult result{count[chosen] - 1, {}};
+    for (int c = 0; c < k; ++c) if (component[c] == chosen) result.colors.push_back(c);
+    return result;
+}
+```
+
+## 関連する手法
+
+[強連結成分分解](/flowchartcp/techniques/scc/) ・ [HL分解](/flowchartcp/techniques/heavy-light-decomposition/) ・ [区間への辺の圧縮](/flowchartcp/techniques/dijkstra-range-edges/)
+
+[重心分解](/flowchartcp/techniques/centroid-decomposition/)でも、ある重心を含める場合に必要な色の閉包を求め、含めない場合を分割して処理できる。こちらは別の $O(N\log N)$ 方針であり、掲載実装は依存グラフを明示的に圧縮する方針を用いる。
+
+## 参考資料
+
+- [JOI 2019/2020 春季トレーニング合宿「首都」原典](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/capital_city.pdf)
+- [同・公式解説](https://www2.ioi-jp.org/camp/2020/2020-sp-tasks/day4/capital_city-review.pdf)。終端の強連結成分と区間辺の圧縮は11〜12ページ、木のパスへの拡張は16ページ。掲載コードはこの帰着から独立に実装し、小木の全色集合を直接連結判定する全探索と比較した。
+
+<TechniqueReferences techniqueId="tree-color-closure-sink-scc" />

@@ -1,0 +1,83 @@
+---
+title: "接尾辞オートマトン"
+description: "すべての部分文字列を線形サイズの状態と遷移にまとめます。"
+techniqueId: suffix-automaton
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+すべての部分文字列を線形サイズの状態と遷移にまとめます。
+
+別名：Suffix Automaton / SAM
+
+## 使う場面
+
+異なる部分文字列の数、辞書順で $K$ 番目の部分文字列、複数文字列の共通部分文字列などを求める場合に使います。部分文字列を一つずつ保存せず、同じ出現位置の情報を持つものを一つの状態にまとめます。
+
+## 考え方
+
+各状態は、同じ出現終端位置の集合を持つ部分文字列を表します。最大の長さ `len`、より短い接尾辞の状態への `link`、文字を追加したときの遷移を持ちます。
+
+文字を末尾に追加し、必要なら既存の状態を複製して、長さの短い部分と長い部分を分けます。状態 $v$ は、$\operatorname{len}[\operatorname{link}[v]]+1$ から $\operatorname{len}[v]$ までの各長さを一つずつ表すため、その個数の総和で異なる非空部分文字列数を求められます。
+
+## 適用条件
+
+対象は連続する部分文字列です。飛び飛びの文字を選ぶ部分列は扱いません。
+
+出現回数を求める場合は、通常の追加で作った状態に1を与え、複製した状態には新しい出現を与えません。その後、長さの降順に `link` へ回数を足します。以下の実装は構築と異なる部分文字列の個数を扱い、出現回数の累積は含みません。
+
+## なぜ正しいか
+
+出現終端位置が等しい文字列は、次の文字を追加したときの出現関係も共通です。そのため同じ状態にまとめられます。状態の複製によって必要な長さの範囲を分け、遷移と `link` を付け替えると、この分類を保てます。
+
+初期状態から文字をたどる経路が、元の文字列の部分文字列に対応します。状態ごとの長さの範囲を数えることで、各部分文字列を重複なく数えられます。
+
+## 計算量
+
+固定アルファベットなら構築時間と空間は $O(N)$ です。以下の実装は遷移を `map` に持つため、時間は $O(N\log\sigma)$、空間は $O(N)$ です。状態と遷移の数自体は $O(N)$ に収まります。
+
+## 実装
+
+`add` で文字を末尾に加え、`distinct` で異なる非空部分文字列の数を取得します。状態を `vector` に追加すると再確保されることがあるため、状態の参照を保持せず、添字を使って操作しています。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct SuffixAutomaton {
+    struct State { int len=0,link=-1; map<char,int> next; };
+    vector<State> st{State{}}; int last=0;
+    void add(char c) {
+        int cur=st.size(); st.push_back(State{}); st[cur].len=st[last].len+1;
+        int p=last;
+        while(p!=-1 && !st[p].next.contains(c)) { st[p].next[c]=cur; p=st[p].link; }
+        if(p==-1) st[cur].link=0;
+        else {
+            int q=st[p].next[c];
+            if(st[p].len+1==st[q].len) st[cur].link=q;
+            else {
+                int clone=st.size(); State copy=st[q]; copy.len=st[p].len+1; st.push_back(copy);
+                while(p!=-1 && st[p].next.contains(c) && st[p].next[c]==q) {
+                    st[p].next[c]=clone; p=st[p].link;
+                }
+                st[q].link=st[cur].link=clone;
+            }
+        }
+        last=cur;
+    }
+    long long distinct() const {
+        long long ans=0;
+        for(int v=1;v<int(st.size());++v) ans+=st[v].len-st[st[v].link].len;
+        return ans;
+    }
+};
+```
+
+## 関連する手法
+
+[DAG上のDP](/flowchartcp/techniques/dag-dp/) ・ [接尾辞配列・LCP配列](/flowchartcp/techniques/suffix-array/)
+
+## 参考資料
+
+- [cp-algorithms: Suffix Automaton](https://cp-algorithms.com/string/suffix-automaton.html)
+- [Nyaan: Suffix Automaton（作者実装・検証先）](https://nyaannyaan.github.io/library/string/suffix-automaton.hpp.html)
+
+<TechniqueReferences techniqueId="suffix-automaton" />

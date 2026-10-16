@@ -1,0 +1,67 @@
+---
+title: "木の距離を質問できるなら、最遠点を二回探して直径を得る"
+description: "任意の頂点から見た最遠点を直径の端点として使います。"
+techniqueId: "interactive-tree-diameter"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+正の辺重みを持つ木が隠れており、二頂点の距離を質問できるとき。全ての頂点対を聞く必要はなく、一つの頂点から最も遠い頂点が直径の端点になる性質を使えます。
+
+## 考え方
+
+任意の頂点 $r$ から全頂点への距離を聞き、最遠点 $u$ を取ります。次に $u$ から全頂点への距離を聞き、その最大値を答えます。自分自身への距離は0と分かるので質問しません。返答が同じ最遠点が複数あっても、そのうち一つを使えば足ります。
+
+## 適用条件
+
+距離が固定された木の経路長で、辺重みが非負であること。原典の重みは正です。一般グラフや負の辺重みではこの二回の最遠点探索を保証できません。質問上限は $2(n-1)$ 以上あれば足り、原典は $n\le50$、100回です。
+
+## なぜ正しいか
+
+木の距離には、四点 $a,b,r,u$ の三つの和 $d(a,b)+d(r,u)$、$d(a,r)+d(b,u)$、$d(a,u)+d(b,r)$ の最大二つが等しい性質があります。四点をつなぐ部分木の共通経路を数えると確かめられます。
+
+直径の端点を $a,b$、その長さを $D$ とします。もし $d(a,u)<D$ かつ $d(b,u)<D$ なら、$u$ が $r$ の最遠点なので、後二つの和はどちらも $D+d(r,u)$ より小さくなり、四点の性質に反します。従って $u$ からの距離が $D$ になる頂点があり、二回目の最大距離は直径です。
+
+## 計算量
+
+全頂点対なら $\binom n2$ 回の質問。二回の最遠点探索なら最大 $2(n-1)$ 回、質問以外の時間 $O(n)$、追加空間 $O(1)$。原典では最大98回です。
+
+## 実装
+
+API の頂点は0始まりです。`ask(a,b)` は二頂点の距離を返す関数で、同じ頂点自身への質問はしません。同じ二頂点の組へ再質問することはあります。入出力の関数では1始まりへ直し、各質問と最終回答で flush します。読み取り失敗や負の返答を受けたら終了します。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+template<class Query>
+long long diameter_from_distance_queries(int n,Query ask,int budget=100){
+    assert(n>=1);
+    if(2LL*(n-1)>budget)throw invalid_argument("query budget is too small");
+    int end=0;long long farthest=0;
+    for(int v=1;v<n;++v){long long d=ask(0,v);assert(d>=0);
+        if(d>farthest){farthest=d;end=v;}}
+    long long diameter=0;
+    for(int v=0;v<n;++v)if(v!=end){long long d=ask(end,v);assert(d>=0);diameter=max(diameter,d);}
+    return diameter;
+}
+void solve_distance_diameter_protocol(){
+    int n;if(!(cin>>n))return;
+    auto ask=[](int a,int b){
+        cout<<"? "<<a+1<<' '<<b+1<<endl;
+        long long d;if(!(cin>>d) || d<0)exit(0);return d;
+    };
+    long long answer=diameter_from_distance_queries(n,ask);
+    cout<<"! "<<answer<<endl;
+}
+```
+
+## 関連する手法
+
+[対話問題の質問設計](/flowchartcp/techniques/interactive/)、[グラフへの帰着](/flowchartcp/techniques/graph-reduction/)
+
+## 参考資料
+
+- [原典の条件](https://atcoder.jp/contests/abc019/tasks/abc019_4)
+
+<TechniqueReferences techniqueId="interactive-tree-diameter" />

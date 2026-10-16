@@ -1,0 +1,249 @@
+---
+title: "辺の重みを変えた最短距離への質問から、未知の二頂点を見つける"
+description: "距離が初めて増える辺を探し、その両側で候補を絞る。基準距離を保つ二つの木を使い、一般の無向グラフでも50回以内の質問で二頂点を特定する。"
+techniqueId: binary-weight-distance-oracle-edge-split-endpoint-search
+---
+
+import TechniqueReferences from "../../../components/TechniqueReferences.astro";
+
+## 使う場面
+
+単純・連結な無向グラフは全て分かっているが、互いに異なる二頂点 $S,T$ が隠されている。各辺の重みを既知の整数 $A,B$、$1\le A<B$ のどちらかへ設定すると、その重み付けでの $S$–$T$ 最短距離だけが返る。この質問を少数回使って、二端点を順不同で特定したい。
+
+質問ごとに同じ未知二点を使うことが前提である。返答に応じて二点が変わる相手には、この手順を適用しない。グラフは木である必要がなく、最短路が複数あってもよい。
+
+## 考え方
+
+全辺を $A$ にした距離を一度聞き、$D$ とする。元のグラフでの最小辺数は $d=D/A$ である。
+
+辺に任意の順番を付け、先頭 $k$ 本だけを $B$ にした距離が $D$ より大きいかを調べる。この判定は $k$ に関して単調で、$k=0$ では偽、$k=M$ では真になる。初めて真にする辺 $e=(u,v)$ を二分探索で見つける。この辺は元の最短路の少なくとも一本に含まれる。
+
+全辺を長さ1として $u,v$ からBFSし、距離を $d_u,d_v$ とする。候補を
+
+$$
+U=\{x:d_u(x)<d_v(x)\},\qquad
+V=\{x:d_v(x)<d_u(x)\}
+$$
+
+に分ける。同距離の頂点はどちらにも入れない。隠れた二点は一つずつ $U,V$ にある。それぞれの集合内で、$u,v$ を根とするBFS木を作る。
+
+**二つの木の辺と $e$ だけを $A$、残りを全て $B$** にすると、距離 $D$ の道が残り、$A$ だけを通る道は一意になる。以後は、この木の道を避けたままかどうかを距離 $D$ との等号で判定できる。
+
+各木の頂点を、親が子より先になる順に並べる。根を番号0とし、順番が $m$ より後の頂点へ入る親辺だけを追加で $B$ にする。その木にある未知端点の順番が $m$ より後なら距離が増え、前なら $D$ のままである。この判定で両側の端点を一つずつ二分探索する。
+
+## 適用条件
+
+掲載関数 `find_binary_weight_hidden_pair` は、$2\le N\le90000$、$1\le M\le130000$ の単純・連結な無向グラフと、$1\le A<B\le10^9$ を受け取る。辺配列 `from,to` の順番を質問配列の順番とする。自己ループ・多重辺・非連結も初回質問の前に検査する。
+
+callback `ask` は、長さ $M$ の読み取り専用配列を受け取る。各要素0なら重み $A$、1なら $B$ を表し、**固定した同じ相異なる二点間の正確な最短距離を符号付き整数で返す**。返り値型は64bit以内の符号付き整数とし、使用する距離を欠けなく表せなければならない。原典の `int64` callback はこの条件を満たす。配列を保存したい場合は callback 内でコピーし、参照を呼出し後へ持ち出さない。
+
+戻り値は `BinaryWeightHiddenPair` の `first,second,queries`。二点の順序は問わず、`queries` は成功時の実際の質問数で、原典全範囲で50以下となる。入力を変更せず、関数間で共有する探索状態もない。callback はコピーしないので、状態付き・コピー不可の関数オブジェクトも使える。原典へ接続するときは、返った二点を `answer` へ一度渡せばよい。
+
+不正なグラフ・寸法・重みは `std::invalid_argument`。負の距離、基準距離の非整数倍、可能範囲外の距離、最後に復元した対と基準の辺数が違う場合は `std::runtime_error`。これらは検出できる矛盾の検査であり、任意の虚偽・適応的な返答を完全に検出する保証ではない。正しさには callback の契約が必要である。
+
+callback が投げた例外と標準の割当例外はそのまま伝える。途中で失敗した場合、既に行った外部質問や callback の副作用を取り消さない。再実行するなら、新しい呼出しとして質問予算を扱う。
+
+## なぜ正しいか
+
+**距離の等号は、最短辺数の軽い道の存在と同値である。** 元の $S$–$T$ 最短辺数を $d$ とすると、任意の道は辺数が $d$ 以上で、各辺の重みは $A$ 以上である。よって重み付け後の距離は $dA=D$ 以上。等号になるのは、辺数 $d$ の道が全て $A$ の辺だけで残る場合に限る。$B$ を一本でも通れば、$B>A$ により必ず $D$ を超す。$B$ が $A$ に近くても、この厳密な比較は変わらない。
+
+**最初に基準距離を壊す辺が、元の最短路上にある。** 先頭を重くするにつれ、全て軽い最短路の集合は減る。初めて距離が増える辺を $e$ とすると、その直前には、より前の辺を避ける元の最短路が存在する。それらの道は全て $e$ を含む。含まなければ $e$ を重くしても残ってしまうからである。従って $e$ を通る元の最短路が少なくとも一本ある。$e$ が、全ての元の最短路に共通するとは限らない。
+
+その一本を $S\leadsto u\to v\leadsto T$ の向きに取る。最短路の部分路も最短なので、$d_v(S)=d_u(S)+1$、$d_u(T)=d_v(T)+1$ であり、$S\in U,T\in V$ となる。逆向きなら二点の呼び名を交換すればよい。
+
+**厳密近接集合のBFSは、元の距離を保つ。** $u,v$ は隣接するので、$x\in U$ では $d_v(x)=d_u(x)+1$ である。$x\ne u$ から $u$ への最短路の親 $p$ を取ると、
+
+$$
+d_u(p)=d_u(x)-1,\qquad
+ d_v(p)\ge d_v(x)-1=d_u(x)>d_u(p).
+$$
+
+従って $p\in U$。最短路を根までたどっても集合を出ないので、$U$ 内のBFS距離は元の $d_u$ と一致する。$V$ も同様である。二つのBFS木を結ぶ $e$ の道は、長さ $d_u(S)+1+d_v(T)=d$ を保つ。
+
+**二木に制限すると、等号を保つ道が一意になる。** 二集合は素であり、それぞれの木を $e$ で結ぶと一つの木になる。それ以外の辺を $B$ にしても、上で作った辺数 $d$ の軽い道が残る。一方、距離 $D$ を保つ道は全辺が $A$ でなければならないので、その道は木の中の一意な $S$–$T$ 路である。同距離の頂点や別の最短路を通る迂回は、追加の $B$ 辺を使うため等号を作らない。
+
+**祖先先行順の後半を重くすると、端点の順番を判定できる。** 一方の木の未知端点を $x$ とする。根から $x$ への道では、全ての祖先の順番が $x$ より小さい。順番 $m$ より後の頂点へ入る辺を重くすると、$x$ の順番が $m$ 以下なら道の辺は一つも重くならない。$x$ の順番が $m$ より後なら、$x$ 自身へ入る親辺が必ず重くなる。根の順番0もこの判定に含まれる。
+
+他方の木と $e$ は軽いままなので、質問はこの一端点だけを判定する。木の一意な道を重くしたときに限って距離が増えるため、二分探索は正しい端点を返す。
+
+## 計算量
+
+質問数は、$p=|U|,q=|V|$ とすると
+
+$$
+1+\lceil\log_2 M\rceil+
+\lceil\log_2 p\rceil+\lceil\log_2 q\rceil
+$$
+
+以下。最初の1回が全辺 $A$、次が辺の二分、残りが二端点の探索である。$M\le130000$ から辺探索は17回以下。
+
+$p,q\ge1$ かつ $p+q\le90000$ なので、後二項の和は32以下である。和が33以上となる最小の整数サイズは $p=32769,q=65537$ またはその逆で、合計98306が必要となり矛盾する。これは、指数の和が一定のとき $2^{a-1}+2^{b-1}$ が均等な指数で最小になることと、$\lceil\log_2 x\rceil=a\ge1$ なら $x\ge2^{a-1}+1$ から従う。一方の指数が0なら他方だけで17以下である。従って原典全域で **$1+17+32=50$ 回以下**となる。対数の実数値を足してから丸めるだけでは、この上限は示せない。
+
+局所処理は、重複辺検査のソート、BFS、各質問配列の作成を含めて **$O((N+M)\log(N+M))$ 時間、$O(N+M)$ 空間**。oracle 内部の計算時間は含まない。入力の深い鎖でも再帰しない。
+
+正の重みでは最短路を単純路にできるので、全返答は高々 $(N-1)B<9\times10^{13}$。基準辺数 $d$ が分かれば上限を $dB$ へ絞れる。距離と重みの積には64bit整数を使い、浮動小数の比較を使わない。
+
+## 実装
+
+辺配列の番号は一切変更しない。重複検査用にだけ端点対のコピーをソートする。`base` が二つのBFS木と発見辺だけを軽くした割当で、各端点質問の前にこれを `weight` へ戻す。
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <concepts>
+#include <cstdint>
+#include <functional>
+#include <limits>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+template<class Ask>
+concept SignedDistanceOracle =
+    std::invocable<Ask&, const std::vector<int>&> &&
+    std::signed_integral<std::remove_cvref_t<
+        std::invoke_result_t<Ask&, const std::vector<int>&>>> &&
+    (std::numeric_limits<std::remove_cvref_t<
+        std::invoke_result_t<Ask&, const std::vector<int>&>>>::digits <= 63);
+
+struct BinaryWeightHiddenPair {
+    int first, second, queries;
+};
+
+template<SignedDistanceOracle Ask>
+BinaryWeightHiddenPair find_binary_weight_hidden_pair(
+    int n, const std::vector<int>& from, const std::vector<int>& to,
+    std::int64_t low, std::int64_t high, Ask&& ask) {
+    static_assert(std::numeric_limits<int>::max() >= 1000000);
+    if (n < 2 || n > 90000 || from.empty() || from.size() > 130000 ||
+        from.size() != to.size() || from.size() < std::size_t(n - 1) ||
+        low < 1 || low >= high || high > 1000000000)
+        throw std::invalid_argument("invalid graph size or tolls");
+    const int m = int(from.size());
+    std::vector<int> offset(n + 1, 0);
+    {
+        std::vector<std::pair<int, int>> normalized;
+        normalized.reserve(m);
+        for (int i = 0; i < m; ++i) {
+            const int x = from[i], y = to[i];
+            if (x < 0 || x >= n || y < 0 || y >= n || x == y)
+                throw std::invalid_argument("invalid edge endpoint");
+            normalized.emplace_back(std::min(x, y), std::max(x, y));
+            ++offset[x + 1]; ++offset[y + 1];
+        }
+        std::sort(normalized.begin(), normalized.end());
+        if (std::adjacent_find(normalized.begin(), normalized.end()) != normalized.end())
+            throw std::invalid_argument("parallel edges");
+    }
+    for (int i = 1; i <= n; ++i) offset[i] += offset[i - 1];
+    std::vector<int> cursor = offset;
+    std::vector<std::pair<int, int>> arc(2 * m);
+    for (int i = 0; i < m; ++i) {
+        arc[cursor[from[i]]++] = {to[i], i};
+        arc[cursor[to[i]]++] = {from[i], i};
+    }
+    auto distances = [&](int root) {
+        std::vector<int> distance(n, -1), queue;
+        queue.reserve(n); queue.push_back(root); distance[root] = 0;
+        for (std::size_t head = 0; head < queue.size(); ++head) {
+            const int x = queue[head];
+            for (int j = offset[x]; j < offset[x + 1]; ++j) {
+                const int y = arc[j].first;
+                if (distance[y] == -1) {
+                    distance[y] = distance[x] + 1;
+                    queue.push_back(y);
+                }
+            }
+        }
+        return distance;
+    };
+    {
+        const auto connected = distances(0);
+        if (std::find(connected.begin(), connected.end(), -1) != connected.end())
+            throw std::invalid_argument("disconnected graph");
+    }
+    std::vector<int> weight(m, 0);
+    std::int64_t baseline = -1;
+    int calls = 0;
+    auto query = [&]() -> std::int64_t {
+        if (calls >= 50) throw std::logic_error("internal query bound exceeded");
+        ++calls;
+        const std::int64_t reply = std::invoke(ask, std::as_const(weight));
+        if (baseline < 0) {
+            if (reply < low || reply > std::int64_t(n - 1) * low || reply % low != 0)
+                throw std::runtime_error("invalid all-low distance");
+        } else if (reply < baseline || reply > (baseline / low) * high) {
+            throw std::runtime_error("distance contradicts baseline bounds");
+        }
+        return reply;
+    };
+    baseline = query();
+    int left = 0, right = m - 1;
+    while (left < right) {
+        const int middle = left + (right - left) / 2;
+        std::fill(weight.begin(), weight.end(), 0);
+        std::fill(weight.begin(), weight.begin() + middle + 1, 1);
+        if (query() > baseline) right = middle;
+        else left = middle + 1;
+    }
+    const int pivot = left;
+    const std::array<int, 2> root{from[pivot], to[pivot]};
+    const std::array<std::vector<int>, 2> distance{distances(root[0]), distances(root[1])};
+    std::vector<int> side(n, -1), rank(n, -1), parent_edge(n, -1), base(m, 1);
+    for (int x = 0; x < n; ++x) {
+        if (distance[0][x] < distance[1][x]) side[x] = 0;
+        else if (distance[1][x] < distance[0][x]) side[x] = 1;
+    }
+    std::array<std::vector<int>, 2> order;
+    base[pivot] = 0;
+    for (int group = 0; group < 2; ++group) {
+        order[group].push_back(root[group]); rank[root[group]] = 0;
+        for (std::size_t head = 0; head < order[group].size(); ++head) {
+            const int x = order[group][head];
+            for (int j = offset[x]; j < offset[x + 1]; ++j) {
+                const auto [y, edge] = arc[j];
+                if (side[y] == group && rank[y] == -1) {
+                    rank[y] = int(order[group].size());
+                    order[group].push_back(y); parent_edge[y] = edge;
+                    base[edge] = 0;
+                }
+            }
+        }
+    }
+    std::array<int, 2> answer;
+    for (int group = 0; group < 2; ++group) {
+        left = 0; right = int(order[group].size()) - 1;
+        while (left < right) {
+            const int middle = left + (right - left) / 2;
+            std::copy(base.begin(), base.end(), weight.begin());
+            for (int i = middle + 1; i < int(order[group].size()); ++i)
+                weight[parent_edge[order[group][i]]] = 1;
+            if (query() > baseline) left = middle + 1;
+            else right = middle;
+        }
+        answer[group] = order[group][left];
+    }
+    if (std::int64_t(distances(answer[0])[answer[1]]) * low != baseline)
+        throw std::runtime_error("recovered pair contradicts baseline hop count");
+    return {answer[0], answer[1], calls};
+}
+```
+
+## 関連する手法
+
+辺を重くしたときの距離の増加は、「その辺集合が全て軽い最短路を全て壊したか」を表す。一般グラフでは、辺一つを重くしても別の最短路へ逃げられるため、最初から木の経路判定と同じようには扱えない。まず単調な辺集合で最短路上の辺を一つ得て、基準距離を保つ二つのBFS木へ制限する順番が必要である。
+
+全辺を任意の全域木だけへ制限すると、未知二点の最短辺数が増えることがある。ここでは厳密近接集合の閉性を証明したうえで、その集合ごとの最短路木を使う。
+
+$A,B$ について使う条件は $A<B$ と距離の厳密な等号だけである。両重みが同じ偶奇でも、差が1でも、大きく離れていても使える。
+
+## 参考資料
+
+[IOI 2018 Highway Tolls 原典](https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway.pdf)と[公式 Review](https://www2.ioi-jp.org/ioi/2018/tasks/day2-highway-review.pdf)が、最短路上の辺から二つの厳密近接集合とBFS木を作る方針の出典である。[主催者配布HKG版](https://ioi2018.jp/tasks/contest2/HKG-highway.pdf)にも、全数値・固定された二点という条件・満点50質問の基準が記載されている。
+
+[Tomasz Idziaszek による後年の詳しい補足](https://www.algonotes.com/en/solutions-ioi2018/#highway-tolls)は、当時の公式 Review と区別する。ここでは、複数最短路に対する辺探索、二集合の距離保存、任意の $A<B$ での等号判定、整数への丸上げを含む50質問の上限を上のように証明した。
+
+[主催者配布AUT版](https://ioi2018.jp/tasks/contest2/AUT-highway.pdf)：満点50回・部分点51〜52回と、最大100回の質問制限。
+
+<TechniqueReferences techniqueId="binary-weight-distance-oracle-edge-split-endpoint-search" />

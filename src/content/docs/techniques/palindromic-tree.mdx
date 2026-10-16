@@ -1,0 +1,78 @@
+---
+title: "回文木"
+description: "異なる回文を状態として持ち、文字の追加ごとに回文の情報を更新します。"
+techniqueId: palindromic-tree
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+異なる回文を状態として持ち、文字の追加ごとに回文の情報を更新します。
+
+別名：Palindromic Tree / Eertree
+
+## 使う場面
+
+各接頭辞に含まれる異なる回文の数や、回文ごとの出現回数を求める場合に使います。中心ごとの最長回文だけを求めるならManacher法が候補ですが、回文の種類そのものを区別して集計するなら回文木が便利です。
+
+## 考え方
+
+各ノードを一つの回文とし、回文 $P$ の両側に文字 $c$ を付けた $cPc$ への辺を持ちます。根には長さ0と長さ $-1$ の2つの状態を用意します。
+
+文字を末尾へ追加するときは、現在の最長の回文接尾辞から、より短い回文接尾辞へのリンクをたどります。追加した文字で両側を拡張できるものを見つけ、新しい最長の回文接尾辞を求めます。
+
+## 適用条件
+
+以下の実装は小文字英字を扱います。文字列の先頭の番兵は、入力と一致しない値を使います。
+
+出現回数を求める場合は、各追加時点の最長回文接尾辞に回数を記録し、最後に長さの降順でリンクへ足します。回文分割のDPまで高速化する場合は、series linkなどの追加情報が必要になることがあります。回文木を構築するだけで、すべての回文DPが線形になるわけではありません。
+
+## なぜ正しいか
+
+文字を追加して新しく現れる回文は、必ず新しい文字を末尾に含む接尾辞です。そのうち最長のもの以外は、その最長回文の接頭辞としても現れるため、すでに存在します。したがって、1文字の追加で生まれる新しい種類は高々一つです。
+
+リンクは厳密に短い回文へ向かいます。長さ $-1$ の根までたどれば拡張できるので、追加処理は必ず終わります。
+
+## 計算量
+
+固定アルファベットなら構築時間は $O(N)$、状態数は高々 $N+2$ です。各状態に $\sigma$ 個の遷移を持つ実装の空間は $O(N\sigma)$ で、固定の $\sigma$ なら $O(N)$ です。回文を実際の文字列として全部保存すると、総文字数が $O(N^2)$ になる場合があります。
+
+## 実装
+
+`add` は追加後の最長回文接尾辞の状態番号を返します。`distinct` は異なる非空回文の数を返します。必要な集計は状態の長さとリンクを使い、回文の文字列を毎回作らずに行います。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct Eertree {
+    struct Node {
+        int len,link=0; array<int,26> next;
+        explicit Node(int len):len(len) { next.fill(-1); }
+    };
+    vector<Node> t{Node(-1),Node(0)}; vector<int> s{-1}; int last=1;
+    int extendable(int v,int i,int c) const {
+        while(s[i-1-t[v].len]!=c) v=t[v].link;
+        return v;
+    }
+    int add(char ch) {
+        int c=ch-'a'; assert(0<=c && c<26); int i=s.size(); s.push_back(c);
+        int p=extendable(last,i,c);
+        if(t[p].next[c]==-1) {
+            int v=t.size(),len=t[p].len+2; t.push_back(Node(len));
+            t[p].next[c]=v;
+            if(len==1) t[v].link=1;
+            else { int q=extendable(t[p].link,i,c); t[v].link=t[q].next[c]; }
+        }
+        return last=t[p].next[c];
+    }
+    int distinct() const { return int(t.size())-2; }
+};
+```
+
+## 関連する手法
+
+[接尾辞オートマトン](/flowchartcp/techniques/suffix-automaton/) ・ [状態の設計](/flowchartcp/techniques/state-design/)
+
+## 参考資料
+
+- [Rubinchik・Shur: EERTREE（原論文）](https://arxiv.org/abs/1506.04862)
+
+<TechniqueReferences techniqueId="palindromic-tree" />

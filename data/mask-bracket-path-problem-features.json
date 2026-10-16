@@ -1,0 +1,140 @@
+[
+  {
+    "source": "Codeforces",
+    "problemId": "165E",
+    "title": "Compatible Numbers",
+    "url": "https://codeforces.com/problemset/problem/165/E",
+    "techniqueIds": [
+      "disjoint-mask-subset-witness"
+    ],
+    "features": [
+      "固定の入力列の各値ごとに、ANDが0になる入力中の相手の値を一つ求める",
+      "要素数は最大1000000、値は1以上4000000以下で22ビットに収まる",
+      "同じ値が複数あってよく、各要素を独立に調べる",
+      "相手がなければ−1を返し、全要素へ異なる相手を割り当てる必要はない"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/4124",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典でN最大1000000、値1以上4000000以下、重複可、一つの相手の値を返す条件と難易度2200を確認。公式解説4124のE節で22ビットの補集合、入力値から上位への伝播、証拠値の保存を確認。原典は正数だけなので同じ位置が適合することはない。記事APIは0を許す拡張として、値0が自分自身を相手にできることを明記する。正確な開催日は今回未確認。掲載C++を実MDXから抽出し、小規模な全配列について各入力と全入力値のANDを直接調べる方法と比較。0の同位置参照・空配列・ビット幅0・重複・最大ビット幅22と1000000要素、およびビット幅・値・要素数の不正入力拒否を確認。"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "449D",
+    "title": "Jzzhu and Numbers",
+    "url": "https://codeforces.com/problemset/problem/449/D",
+    "techniqueIds": [
+      "subset-and-zero-superset-inclusion"
+    ],
+    "features": [
+      "一つ以上の添字を選び、選んだ全要素のANDが0になる個数を求める",
+      "要素数は最大1000000、値は0以上1000000以下で20ビットに収まる",
+      "重複した値も添字が違えば別の選び方で、選ぶ個数は固定されない",
+      "答えの法は1000000007で、全要素のANDだけを問う問題ではない"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/13112",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "cutoffVerification": "undated-archive",
+    "notes": "原典でN最大1000000、各値0以上1000000以下、非空の添字部分集合、重複位置は別の選択、法1000000007と難易度2400を確認。公式解説13112のD節は上位集合に含まれる入力数と包除、および20ビットの頻度変換を記述する。数式は画像のため、記事では各非空集合の寄与が(1−1)^popcount(AND)となる証明を明記し、2^c−1を使用する。正確な開催日は今回未確認。掲載C++を実MDXから抽出し、小規模な全配列について全非空の添字部分集合のANDを直接計算する方法と比較。空配列・ビット幅0・0と重複値・最大ビット幅20と1000000要素、ANDが0になる大きな重複群の独立計数、およびビット幅・値・要素数の不正入力拒否を確認。"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc345_e",
+    "title": "Colorful Subsequence",
+    "url": "https://atcoder.jp/contests/abc345/tasks/abc345_e",
+    "verification": "editorial",
+    "techniqueIds": [
+      "color-exclusion-two-best-dp"
+    ],
+    "features": [
+      "色と価値の付いた列から、元の順を保った部分列を残す",
+      "削除する要素数はちょうどK個で、Kは最大500である",
+      "残った列の隣り合う要素は異なる色でなければならない",
+      "条件を満たす価値和の最大値を求め、不可能の場合も判定する"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc345/editorial/9590",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "原典でN最大200000、K最大500かつK<N、正の価値最大10^9を確認。開催日は2024-03-16。公式解説9590で、削除数・末尾色のDPから異なる末尾色の上位二候補へ圧縮するO(NK)解法を確認。掲載APIは負の価値、色0、空列、全削除へ拡張し、不可と負値はoptionalで区別する。掲載C++20フェンスを抽出コンパイルし、小配列の全削除部分集合と比較。負値、正確な削除数、色ごとの同点、不可、N200000/K500、空列、例外契約を独立checkerで確認。",
+    "publicationDate": "2024-03-16"
+  },
+  {
+    "source": "Codeforces",
+    "problemId": "149D",
+    "title": "Coloring Brackets",
+    "url": "https://codeforces.com/problemset/problem/149/D",
+    "verification": "editorial",
+    "techniqueIds": [
+      "bracket-pair-color-boundaries"
+    ],
+    "features": [
+      "入力は対応する括弧が一意に定まる正しい括弧列である",
+      "各括弧を未着色・赤・青の三状態にする",
+      "対応する対はちょうど片方だけを着色する",
+      "隣り合う二文字がどちらも着色されている場合は異色にし、塗り方を数える"
+    ],
+    "evidenceUrl": "https://codeforces.com/blog/entry/3864",
+    "reviewStatus": "verified",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "原典で長さ2..700、3色、各対応対はちょうど一方が着色、隣接する着色文字の同色禁止、mod1000000007、表示難易度1900を確認。問題ページからリンクされた公式Tutorial3864の149D節で、両端の3色と直接の子の順次結合によるDPを確認。Tutorial本文の複雑度表記はO(N²)。当記事の線形時間は対応する各括弧対を一度ずつ処理する構造から独立に証明し、明示スタックで長さ200000と空列に拡張する。3874は参加記のため解法の根拠には使わない。開催日は未確認。掲載C++20フェンスを抽出コンパイルし、全小Dyck列の3^N着色列挙および対ごとの4択列挙と比較。長さ200000の深い入れ子と横並び、空列、不正文字、不均衡、長さ上限の拒否も独立checkerで確認。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "CSES",
+    "problemId": "1724",
+    "title": "Graph Paths II",
+    "url": "https://cses.fi/problemset/task/1724/",
+    "techniqueIds": [
+      "exact-k-edge-minplus"
+    ],
+    "features": [
+      "有向の重み付きグラフで、頂点数は100以下である",
+      "始点から終点まで、ちょうどK本の辺を使う最小費用を求める",
+      "頂点や辺の再訪を禁止する条件はなく、同じ遷移を繰り返し使える",
+      "Kは最大10^9で、移動回数を一つずつ処理できない"
+    ],
+    "evidenceUrl": "https://cses.fi/book/book.pdf",
+    "reviewStatus": "verified",
+    "verification": "reference-solution",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "undated-archive",
+    "notes": "一次原典でN最大100、K最大10^9、辺重み1以上10^9以下、移動回数がちょうどK、到達不能の出力を確認。公式サイトのCompetitive Programmer's Handbook 23.3節、印刷ページ222〜223で、ちょうど指定辺数の最短費用をmin-plus行列積で計算する参考解法を確認。原典の公開日は未確認。掲載APIは0回・多重辺・実自己ループ・負の辺と全signed64重み・K最大10^18へ拡張し、到達不能をoptionalで区別。掲載C++を抽出し、全小有向グラフのK層DP、余分な待機が存在しない例、負閉路、多重辺、N100・辺100000、K10^18とsigned64両端・128bit費用・例外を独立checkerで比較。",
+    "cutoffVerification": "undated-archive"
+  },
+  {
+    "source": "AtCoder",
+    "problemId": "abc181_f",
+    "title": "Silver Woods",
+    "url": "https://atcoder.jp/contests/abc181/tasks/abc181_f",
+    "techniqueIds": [
+      "disk-passage-wall-bottleneck"
+    ],
+    "features": [
+      "通路はy=-100とy=100の二本の平行な壁の間である",
+      "通路内に大きさを持たない障害点が有限個置かれる",
+      "左の十分遠い位置から右の十分遠い位置まで円を連続的に動かす",
+      "円の内部に壁や障害点を入れず、接触は許して最大半径を求める"
+    ],
+    "evidenceUrl": "https://atcoder.jp/contests/abc181/editorial/299",
+    "reviewStatus": "verified",
+    "verification": "editorial",
+    "reviewedAt": "2026-10-15",
+    "cutoff": "2026-10-14",
+    "publicationDateStatus": "contest-before-cutoff",
+    "notes": "一次原典で点数1〜100、整数座標の絶対値100未満、壁y=±100、接触許可、開催日2020年11月1日を確認。公式解説299で距離2r未満の隙間を辺とする遮断条件と初連結の距離を確認。掲載APIは点2000・座標絶対値10^9・半幅10^9、空入力と重複点へ拡張し、二乗距離の整数比較後に一回だけ平方根を使う。掲載C++を抽出し、小格子点列の独立min-max Floydと比較。空・一点・重複・同距離・接触境界、座標両端と点2000、壁外や不正幅・例外を独立checkerで確認。",
+    "publicationDate": "2020-11-01"
+  }
+]

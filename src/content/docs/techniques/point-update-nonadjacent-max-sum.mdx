@@ -1,0 +1,104 @@
+---
+title: "点更新後の非隣接最大和は、直前を選ぶかの二状態を区間ごとに合成する"
+description: "二状態DPの一要素の遷移を、最大値と加算でつなぐ小さな行列として保存する。"
+techniqueId: point-update-nonadjacent-max-sum
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+二状態DPの一要素の遷移を、最大値と加算でつなぐ小さな行列として保存する。
+
+## 使う場面
+
+隣り合う位置を同時に選ばない部分列の最大和を、値の変更後に何度も求めたい。静的なら二状態DPで済むが、変更のたびに全体を走査したくない。
+
+## 考え方
+
+処理済みの最後の位置を選ばない最大和を $d_0$、選ぶ最大和を $d_1$ とする。値 $a$ を読むと
+
+$$d'_0=\max(d_0,d_1),\qquad d'_1=d_0+a.$$
+
+この遷移を行列
+
+$$M_a=\begin{pmatrix}0&0\\a&-\infty\end{pmatrix}$$
+
+で表す。行列と状態の演算は、普通の掛け算の代わりに加算、和の代わりに最大値を取る。左区間 $A$ の後に右区間 $B$ を読む行列は $M_B\circ M_A$。
+
+区間の行列をセグメント木に持てば、一点の変更でその葉から根だけを合成し直せる。初期状態 $(0,-\infty)$ に区間の行列を適用した二成分の最大が答えになる。
+
+## 適用条件
+
+隣り合う位置を同時に選べず、値の和を最大化する。空の部分列も選べるため全て負でも答え0。離れた位置間の相性や、選択個数の指定はこの二状態には含めない。
+
+掲載実装は $N\le200000$、各値の絶対値 $10^9$ 以下。到達不能を $-2^{60}$ で表し、その値との加算は行わない。範囲の最大和も途中の行列値もこの範囲内に収まる。
+
+## なぜ正しいか
+
+一要素の遷移は、その要素を選ばない場合と、直前を選ばず今回を選ぶ場合を全て表す。区間の入口・出口の採用状態を固定して最大和を保存すると、二区間をつなぐ際は中間状態の二通りについて加算し、その最大を取ればよい。
+
+この合成は全区間の二状態DPそのもので、境界の隣接禁止も中間状態により保たれる。合成の結合則からセグメント木でまとめてよいが、左から右の順序は交換しない。
+
+## 計算量
+
+毎回DPを走査すると $O(NQ)$ 時間・$O(N)$ 空間。一要素の行列を準備して合成すると、準備 $O(N)$、点更新・区間最大和の質問は $O(\log(N+1))$ 時間、空間 $O(N)$。全体の最大和だけなら根の評価は $O(1)$。
+
+## 実装
+
+`NonadjacentSum` は `set(pos,value)` と `maximum(l,r)` を持つ。半開区間の空区間は0。原典の更新ごとの答えの和は、各更新後に `maximum(0,n)` を取り、最後の集計だけ指定の法で行えばよい。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+constexpr long long IMPOSSIBLE=-(1LL<<60);
+struct TwoStateMatrix {
+    array<array<long long,2>,2> value{{{0,IMPOSSIBLE},{IMPOSSIBLE,0}}};
+};
+TwoStateMatrix join_transitions(TwoStateMatrix first,TwoStateMatrix second) {
+    TwoStateMatrix result;
+    for(int i=0;i<2;++i) for(int j=0;j<2;++j) {
+        result.value[i][j]=IMPOSSIBLE;
+        for(int k=0;k<2;++k) if(second.value[i][k]!=IMPOSSIBLE && first.value[k][j]!=IMPOSSIBLE)
+            result.value[i][j]=max(result.value[i][j],second.value[i][k]+first.value[k][j]);
+    }
+    return result;
+}
+TwoStateMatrix one_value(long long a) {
+    if(a<-1000000000LL || a>1000000000LL) throw invalid_argument("value bounds");
+    TwoStateMatrix result;result.value={{{0,0},{a,IMPOSSIBLE}}};return result;
+}
+struct NonadjacentSum {
+    int n,base=1;vector<TwoStateMatrix> tree;
+    explicit NonadjacentSum(const vector<long long>& a):n(a.size()) {
+        if(n>200000) throw invalid_argument("too many values");
+        while(base<n) base*=2;
+        tree.resize(2*base);
+        for(int i=0;i<n;++i) tree[base+i]=one_value(a[i]);
+        for(int p=base-1;p>0;--p) tree[p]=join_transitions(tree[2*p],tree[2*p+1]);
+    }
+    void set(int pos,long long value) {
+        if(pos<0 || pos>=n) throw out_of_range("position");
+        int p=base+pos;tree[p]=one_value(value);
+        for(p/=2;p>0;p/=2) tree[p]=join_transitions(tree[2*p],tree[2*p+1]);
+    }
+    long long maximum(int l,int r) const {
+        if(l<0 || l>r || r>n) throw out_of_range("query range");
+        TwoStateMatrix left,right;
+        for(l+=base,r+=base;l<r;l/=2,r/=2) {
+            if(l&1) left=join_transitions(left,tree[l++]);
+            if(r&1) right=join_transitions(tree[--r],right);
+        }
+        auto result=join_transitions(left,right);
+        return max(result.value[0][0],result.value[1][0]);
+    }
+    long long maximum_all() const {return max(tree[1].value[0][0],tree[1].value[1][0]);}
+};
+```
+
+## 関連する手法
+
+[セグメント木](/flowchartcp/techniques/segment-tree/) ・ [隣り合う位置を選べない部分列の重複を、二つ前までの総数で除く](/flowchartcp/techniques/subsequence-nonadjacent-last-range/) ・ [行列累乗](/flowchartcp/techniques/matrix-exponentiation/)
+
+## 参考資料
+
+- [LeetCode：Maximum Sum of Subsequence With Non-adjacent Elements](https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/)
+
+<TechniqueReferences techniqueId="point-update-nonadjacent-max-sum" />

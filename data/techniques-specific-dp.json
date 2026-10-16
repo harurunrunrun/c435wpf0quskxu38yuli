@@ -1,0 +1,456 @@
+[
+  {
+    "id": "dp-range-sum",
+    "title": "遷移元が連続範囲の和なら累積和を使う",
+    "aliases": [
+      "Prefix Sum DP"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "同じDPの層から何度も範囲の和を取るなら、層ごとに累積和を作ります。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc222/editorial/2761"
+    ]
+  },
+  {
+    "id": "dp-prefix-min",
+    "title": "遷移元が値の小さい側なら接頭辞最小値を持つ",
+    "aliases": [
+      "Prefix Minimum DP"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "遷移元の条件が値の大小だけで決まるとき、過去のDP値を接頭辞の最小値として管理します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "fenwick-tree",
+      "coordinate-compression"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc201/editorial/1838"
+    ]
+  },
+  {
+    "id": "dp-sliding-min",
+    "title": "遷移元の範囲が右へ動くDPを単調キューで計算する",
+    "aliases": [
+      "Monotonic Queue Optimization"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "前の層の連続範囲から最小値を取るDPで、両端が単調に動くなら候補をdequeに保持します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "monotone-queue",
+      "sliding-window"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://codeforces.com/blog/entry/9944",
+      "https://cses.fi/problemset/task/1644"
+    ]
+  },
+  {
+    "id": "bounded-knapsack-deque",
+    "title": "個数制限付きナップサックを重さの剰余ごとに処理する",
+    "aliases": [
+      "Bounded Knapsack",
+      "Monotone Queue Knapsack"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "同じ品物を選ぶ個数の走査を、剰余ごとの移動窓最大値に変えます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "knapsack",
+      "monotone-queue"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://github.com/ei1333/library/blob/master/test/verify/aoj-dpl-1-i.test.cpp"
+    ]
+  },
+  {
+    "id": "knapsack-value-axis",
+    "title": "重さが大きく価値の合計が小さいときはDPの軸を入れ替える",
+    "aliases": [
+      "Value-based Knapsack"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "最大価値を重量ごとに持つ代わりに、価値ごとの最小重量を持ちます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "knapsack",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/dp/editorial/17284"
+    ]
+  },
+  {
+    "id": "dp-dimension-rolling",
+    "title": "直前の層しか使わないDPは配列を使い回す",
+    "aliases": [
+      "Rolling Array DP"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "遷移の依存範囲を確認し、後で読まない層を保存しないようにします。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "state-design",
+      "knapsack"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/dp/editorial/17284"
+    ]
+  },
+  {
+    "id": "dp-state-dominance",
+    "title": "同じ長さの増加部分列は末尾が小さい状態だけ残す",
+    "aliases": [
+      "LIS",
+      "Dominance Pruning"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "今後選べる要素を狭めない状態があれば、それより不利な状態を捨てます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "state-design",
+      "binary-search"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://usaco.guide/gold/lis"
+    ]
+  },
+  {
+    "id": "dp-last-occurrence",
+    "title": "同じ部分列を重複して数えるときは直前の出現を使う",
+    "aliases": [
+      "Distinct Subsequences",
+      "Subsequence DP"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "同じ文字で終わる部分列を二度作らないよう、前の出現で追加した数を引きます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "prefix-sum",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://cses.fi/problemset/task/1149",
+      "https://atcoder.jp/contests/abc214/editorial/2447"
+    ]
+  },
+  {
+    "id": "dp-polynomial-convolution",
+    "title": "個数の和でDPを併合するときは多項式にする",
+    "aliases": [
+      "Generating Function",
+      "Polynomial Product"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "独立な選択の個数別DPを多項式としてまとめ、積を分割統治とNTTで求めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "ntt",
+      "contribution"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc352/editorial/10214"
+    ]
+  },
+  {
+    "id": "dp-affine-transition",
+    "title": "現在の値に対する一次式へ遷移を分離する",
+    "aliases": [
+      "Affine DP Optimization",
+      "Convex Hull Trick"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "遷移元ごとの費用を直線にできれば、全候補の比較を凸包トリックに置き換えます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "convex-hull-trick",
+      "li-chao-tree"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://codeforces.com/blog/entry/8166"
+    ]
+  },
+  {
+    "id": "dp-quadratic-transition",
+    "title": "差の二乗が遷移費用なら展開して凸包トリックを使う",
+    "aliases": [
+      "Quadratic DP Optimization"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "二乗費用を現在の項と直線の項へ分け、全遷移元の比較を省きます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "convex-hull-trick",
+      "li-chao-tree"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/dp/editorial/9418"
+    ]
+  },
+  {
+    "id": "dp-monotone-split",
+    "title": "区間分割DPの最適な切れ目が単調なら分割統治する",
+    "aliases": [
+      "Monotone Divide-and-Conquer DP"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "切れ目の単調性を証明し、層ごとに探索する遷移元の範囲を狭めます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "divide-conquer-dp",
+      "prefix-sum"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://github.com/ei1333/library/blob/master/test/verify/aoj-2603.test.cpp"
+    ]
+  },
+  {
+    "id": "dp-exact-count-penalty",
+    "title": "ちょうどK個のDPを選択1回の罰則で解く",
+    "aliases": [
+      "Aliens Trick",
+      "Cardinality-constrained DP"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "個数ごとの最小費用が凸なら、選択回数へ罰則を付けて個数の次元を除きます。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "aliens-trick",
+      "binary-search"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/arc168/editorial/7739"
+    ]
+  },
+  {
+    "id": "dp-piecewise-linear-cost",
+    "title": "絶対値と接頭辞最小のDPは折れ点だけを持つ",
+    "aliases": [
+      "Slope Trick",
+      "Isotonic Regression"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "座標全体のDP値を配列で持たず、凸な折れ線の最小値と折れ点を更新します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "slope-trick",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://nyaannyaan.github.io/library/verify/verify-yuki/yuki-1467.test.cpp"
+    ]
+  },
+  {
+    "id": "dp-batch-equal-keys",
+    "title": "厳密な大小条件のDPは同じ値をまとめて更新する",
+    "aliases": [
+      "Batch Updates",
+      "Strict Inequality DP"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "同じキーからの遷移を禁止するため、そのグループの問い合わせをすべて済ませてから登録します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "offline-queries",
+      "dag-dp"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc224/editorial/2821"
+    ]
+  },
+  {
+    "id": "tree-knapsack-cardinality",
+    "title": "木の個数DPは部分木サイズまでに範囲を絞って併合する",
+    "aliases": [
+      "Tree Knapsack",
+      "Subtree Size Bounding"
+    ],
+    "family": "DPの高速化",
+    "level": "上級",
+    "summary": "子のDPを合わせる二重ループは、実際に存在する個数の範囲だけを回します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "tree-dp",
+      "contribution"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/ABC207/editorial/2155?lang=ja"
+    ]
+  },
+  {
+    "id": "digit-dp-leading-zero",
+    "title": "桁DPでは先頭の0と数字としての0を分ける",
+    "aliases": [
+      "Digit DP",
+      "Leading Zeros"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "短い数を0埋めして扱うとき、まだ数字が始まっていない状態を用意します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "digit-dp",
+      "state-design"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://usaco.guide/problems/cses-2220-counting-numbers/solution"
+    ]
+  },
+  {
+    "id": "bitmask-dp-submask",
+    "title": "集合を分割するDPはその集合の部分集合だけを列挙する",
+    "aliases": [
+      "Submask Enumeration",
+      "Subset Partition DP"
+    ],
+    "family": "DPの高速化",
+    "level": "中級",
+    "summary": "全マスク同士を組み合わせず、有効な部分集合だけをビット演算で列挙します。",
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "prerequisites": [
+      "bitmask-dp",
+      "subset-transform"
+    ],
+    "status": "reviewed",
+    "kind": "technique",
+    "sources": [
+      "https://atcoder.jp/contests/abc187/editorial/502"
+    ]
+  },
+  {
+    "id": "lcs-hirschberg-reconstruction",
+    "title": "最長共通部分列を省メモリで復元するなら、前後の長さから分割位置を探す",
+    "summary": "DP表を保存せず、片方を半分に分け、前向き・後ろ向きのDPが最も長くつながる位置から列を復元します。",
+    "aliases": [
+      "Hirschberg algorithm",
+      "linear space LCS reconstruction",
+      "ハーシュバーグ法",
+      "最長共通部分列の省メモリ復元"
+    ],
+    "family": "DPの復元",
+    "prerequisites": [
+      "dp-dimension-rolling"
+    ],
+    "entryPoints": [
+      "complexity",
+      "advanced"
+    ],
+    "level": "上級",
+    "kind": "technique",
+    "status": "reviewed",
+    "sources": [
+      "https://ics.uci.edu/~dhirschb/pubs/p341-hirschberg.pdf",
+      "https://atcoder.jp/contests/dp/tasks/dp_f",
+      "https://cses.fi/problemset/task/3403/"
+    ]
+  }
+]

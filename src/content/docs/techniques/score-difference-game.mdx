@@ -1,0 +1,59 @@
+---
+title: "二人の取り分の合計が一定なら、得点差だけを持つ"
+description: "手番が入れ替わるたびに得点差の符号を反転し、手番の軸を省きます。"
+techniqueId: "score-difference-game"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+二人が交互に石を取り、取った個数を自分の得点にするとき。毎回取れる数は集合 $A$ から選び、$1\in A$ なので必ず全ての石を取り尽くすとします。手番ごとの得点を別々に持つと、同じ状態の情報を重複して計算します。
+
+## 考え方
+
+残り $s$ 個から最適に進めたときの「手番側の得点 − 相手の得点」を $D[s]$ とします。$a$ 個取った後は相手の手番なので、残りの差は符号が逆になります。
+
+$$D[0]=0,\qquad D[s]=\max_{a\in A,\,a\le s}\bigl(a-D[s-a]\bigr).$$
+
+両者の取り分の合計は $s$ なので、手番側の得点は $(s+D[s])/2$ へ戻せます。勝敗を表す 0/1 や Grundy 数では、取れる得点の大小は残りません。
+
+## 適用条件
+
+両者の目的が自分の得点の最大化で、両者の最終得点の合計が選択によらず一定であること。合法手は手番の名前によらず同じで、残り状態だけで決まること。石を取り残す場合、合計が変わるため自分の得点最大化と得点差最大化が同じとは限りません。
+
+## なぜ正しいか
+
+一手で得る $a$ を加え、残りの状態の手番側、つまり相手が得る最適な差を引きます。合計が一定なので、相手の得点差を最大にする応手は元の手番側の得点を最小にする応手でもあります。残りの石が少ない順に帰納すれば、最適な得点差が計算できます。
+
+## 計算量
+
+全ての手順を列挙すると手順数は指数的になります。残りの石の個数だけを状態にすると、時間 $O(N|A|)$、空間 $O(N)$。得点差への変換は定数倍の状態を省くものであり、全てのゲーム DP を高速化する規則ではありません。
+
+## 実装
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> stone_score_difference(int n, const vector<int>& allowed) {
+    assert(find(allowed.begin(), allowed.end(), 1) != allowed.end());
+    vector<int> difference(n+1);
+    for(int s=1;s<=n;++s){
+        difference[s]=numeric_limits<int>::min();
+        for(int a:allowed){
+            assert(a>0);
+            if(a<=s)difference[s]=max(difference[s],a-difference[s-a]);
+        }
+    }
+    return difference;
+}
+```
+
+## 関連する手法
+
+[状態の設計](/flowchartcp/techniques/state-design/)、[反例探し](/flowchartcp/techniques/counterexample/)
+
+## 参考資料
+
+- [AtCoder 公式解説：Stones](https://atcoder.jp/contests/abc270/editorial/4850)
+
+<TechniqueReferences techniqueId="score-difference-game" />

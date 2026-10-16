@@ -1,0 +1,138 @@
+---
+title: "重み付きの二乗誤差をK個の整数代表値へまとめるなら、平均の前後を区間DPで選ぶ"
+description: "小さな値域の頻度を、最寄りの整数代表値へ置き換える。連続区間の最小費用を重み付き平均と三つの累積和で求め、最大K群へ分割する。"
+techniqueId: weighted-squared-quantization-interval-dp
+---
+import TechniqueReferences from "@components/TechniqueReferences.astro";
+
+## 使う場面
+
+値 $x$ ごとの非負の頻度 $w_x$ が与えられ、最大 $K$ 個の整数代表値を選びたい。各値は最も近い代表値へ置き換え、重み付き二乗誤差
+
+$$\sum_x w_x\min_{a\in A}(x-a)^2,\qquad |A|\le K$$
+
+を最小にする。例えば値域が $0\ldots255$ なら、元の要素数が多くても頻度表だけを使える。代表値は入力に出現した値に限らず、その間の整数も候補になる。
+
+## 考え方
+
+代表値を昇順にすると、それぞれが最寄りになる値は連続した区間を作る。同距離なら小さい代表値へ寄せるなど、一定の規則で境界を決める。したがって、正の頻度を持つ値を昇順に並べ、一つの代表値を使う区間へ分ければよい。
+
+一つの区間について、重み・一次モーメント・二次モーメントを
+
+$$W=\sum w_x,\quad X=\sum w_xx,\quad Q=\sum w_xx^2$$
+
+とする。代表値 $a$ の費用は $Q-2aX+a^2W$。$W>0$ なら実数としての最小点は $X/W$ なので、最適な整数はその床か天井である。正の重みによる平均は区間の最小値と最大値の間にあるため、二候補も許容範囲 $0\ldots255$ を外れない。浮動小数点へ変換せず、整数の商と余りから二候補を作り、それぞれの費用を比べる。同率ならどちらも最適である。
+
+三つの累積和で区間の $W,X,Q$ を引き算で得る。区間 $[l,r)$ を一つの代表値へまとめた最小費用を $C(l,r)$ とし、先頭 $r$ 個の値をちょうど $g$ 個の非空区間へ分けた最小費用を $dp[g][r]$ とする。
+
+$$dp[g][r]=\min_{g-1\le l<r}\left(dp[g-1][l]+C(l,r)\right).$$
+
+初期値は $dp[0][0]=0$、それ以外は到達不能。正の頻度を持つ値の数を $D$ とすると、最大 $K$ 個を使う答えは $1\le g\le\min(K,D)$ の $dp[g][D]$ の最小値になる。$K\ge D$ なら各値をそのまま代表にして誤差0である。
+
+## 適用条件
+
+一次元で、最も近い代表値への二乗距離を使い、頻度は非負である。絶対距離なら一群の最適値は中央値になるため、ここでの平均をそのまま使えない。多次元の代表値では、一次元と同じ連続区間への分割は保証されない。
+
+掲載APIは添字を値とする長さ $0\ldots256$ の頻度配列を受け、各頻度は $0\ldots2^{26}$、$0\le K\le256$ とする。代表値の許容範囲は $0\ldots255$。正の頻度だけを抽出するので、欠けた値、途中の0頻度、末尾の0頻度を含めてよい。空配列や全頻度0は誤差0、正の頻度があるのに $K=0$ なら `invalid_argument`。その他の範囲外も例外にする。
+
+総頻度は $W\le256\cdot2^{26}=2^{34}$、$X\le255W$、$Q\le255^2W<2^{50}$。最大の総誤差も $255^2W<2^{50}$ に収まる。累積和と答えは符号付き64ビットで十分であり、費用展開の積は型の取り違えを避けるため `__int128` で行う。これはGCC/Clangの拡張型を使うC++20実装である。頻度の契約を広げるときは、累積和と返値を含めて上限を再計算する。
+
+## なぜ正しいか
+
+$a<b$ の二つの代表値について、$(x-a)^2-(x-b)^2=2(b-a)x+a^2-b^2$ は $x$ の増加に対して増える。小さい値では $a$、大きい値では $b$ が有利になり、順序が何度も入れ替わることはない。従って、固定した代表集合の最寄り割当ては連続区間へ分かれる。
+
+最適な代表集合の割当てを使えば、その各区間を最良の整数へ置き換える費用は元の費用以下なので、分割DPの最小値は元の最適値以下である。逆に、任意の区間分割とその代表値を選び、各値を改めて最寄りの代表へ割り当てると、費用は指定した区間への割当て以下になる。選んだ代表の種類数は区間数以下なので、これは許される解であり、元の最適値はDP以下である。両者は一致する。
+
+区間費用は $W(a-X/W)^2+Q-X^2/W$ と書けるため、実数平均に最も近い整数、すなわち床か天井で最小となる。DPでは最後の区間の左端 $l$ を全て試し、その前の最適な分割を使うので、全ての区間分割を過不足なく比較できる。頻度0の値を除いても費用と最寄り割当てに影響はない。
+
+## 計算量
+
+値域の大きさを $V\le256$、正の頻度を持つ値の数を $D$ とする。入力整理と累積和は $O(V)$、全区間費用の前計算は $O(D^2)$。DPは $O(K'D^2)$ 時間で、$K'=\min(K,D)$。空間は費用表と二行のDPで $O(D^2+V)$。$K\ge D$ の場合は入力検査と整理だけで0を返す。
+
+## 実装
+
+`minimum_weighted_squared_error` は最大 `max_representatives` 個を使った最小誤差を `long long` で返す。代表値自体の復元は行わない。区間費用の計算に0で割る場合がないよう、正の頻度だけを保持する。
+
+```cpp
+#include <algorithm>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+
+long long minimum_weighted_squared_error(
+        const std::vector<long long>& frequency, int max_representatives) {
+    if (frequency.size() > 256 || max_representatives < 0 ||
+        max_representatives > 256) {
+        throw std::invalid_argument("unsupported value range or representative count");
+    }
+    std::vector<int> value;
+    std::vector<long long> weight;
+    for (int x = 0; x < static_cast<int>(frequency.size()); ++x) {
+        if (frequency[x] < 0 || frequency[x] > (1LL << 26)) {
+            throw std::invalid_argument("unsupported frequency");
+        }
+        if (frequency[x] > 0) {
+            value.push_back(x);
+            weight.push_back(frequency[x]);
+        }
+    }
+    const int distinct = static_cast<int>(value.size());
+    if (distinct == 0) return 0;
+    if (max_representatives == 0) {
+        throw std::invalid_argument("positive frequency needs a representative");
+    }
+    if (max_representatives >= distinct) return 0;
+    std::vector<long long> pw(distinct + 1), px(distinct + 1), pq(distinct + 1);
+    for (int i = 0; i < distinct; ++i) {
+        pw[i + 1] = pw[i] + weight[i];
+        px[i + 1] = px[i] + weight[i] * value[i];
+        pq[i + 1] = pq[i] + weight[i] * value[i] * value[i];
+    }
+    std::vector<std::vector<long long>> cost(
+        distinct, std::vector<long long>(distinct + 1));
+    for (int left = 0; left < distinct; ++left) {
+        for (int right = left + 1; right <= distinct; ++right) {
+            const long long w = pw[right] - pw[left];
+            const long long x = px[right] - px[left];
+            const long long q = pq[right] - pq[left];
+            const long long floor_mean = x / w;
+            const long long ceil_mean = floor_mean + (x % w != 0);
+            auto error = [&](long long representative) -> __int128 {
+                return static_cast<__int128>(q) -
+                    2 * static_cast<__int128>(representative) * x +
+                    static_cast<__int128>(representative) * representative * w;
+            };
+            cost[left][right] = static_cast<long long>(
+                std::min(error(floor_mean), error(ceil_mean)));
+        }
+    }
+    constexpr long long infinity = std::numeric_limits<long long>::max() / 4;
+    std::vector<long long> previous(distinct + 1, infinity);
+    previous[0] = 0;
+    long long answer = infinity;
+    for (int groups = 1; groups <= max_representatives; ++groups) {
+        std::vector<long long> current(distinct + 1, infinity);
+        for (int right = groups; right <= distinct; ++right) {
+            for (int left = groups - 1; left < right; ++left) {
+                if (previous[left] == infinity) continue;
+                current[right] = std::min(
+                    current[right], previous[left] + cost[left][right]);
+            }
+        }
+        answer = std::min(answer, current[distinct]);
+        previous.swap(current);
+    }
+    return answer;
+}
+```
+
+## 関連する手法
+
+[累積和](/flowchartcp/techniques/prefix-sum/)を重み・重み付き値・重み付き二乗値の三種類に使う。[区間DP](/flowchartcp/techniques/interval-dp/)に関連するが、ここでは先頭からの分割数と右端を状態に持つ。[差の二乗が遷移費用なら展開して凸包トリックを使う](/flowchartcp/techniques/dp-quadratic-transition/)とは状態と費用の作り方が異なり、まず一群の最良代表値を求める段階が必要になる。
+
+## 参考資料
+
+- [ACM-ICPC World Finals 2017 問題冊子・F（原典、11頁）](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/icpc2017.pdf#page=11)。整数の代表値、二乗誤差、値域と頻度上限を確認した。
+- [Per Austrin・Jakub Onufry Wojtaszczyk：Solution sketches・F（公開解説、5〜6頁）](https://icpc.global/worldfinals/problems/2017-ICPC-World-Finals/finals2017solutions.pdf#page=5)。ICPC公式サイト掲載だが、文書自身は非公式の分析と明記している。区間費用の二次式と分割DPを参照し、平均の整数化・累積和・最寄り割当てとの同値性をここで説明した。
+
+<TechniqueReferences techniqueId="weighted-squared-quantization-interval-dp" />

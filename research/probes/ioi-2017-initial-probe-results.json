@@ -1,0 +1,384 @@
+{
+  "scope": "fixed IOI2017 six competition tasks; limited independent research checks, not completed article/API tests",
+  "productionImplementationValidated": false,
+  "baseline": {
+    "rawFilesVerified": 1492,
+    "allMdx": 498,
+    "graphs": 465,
+    "walks": 519,
+    "entryDomains": [
+      "ranges",
+      "dp",
+      "graphs",
+      "flow-matching",
+      "strings",
+      "math",
+      "geometry",
+      "game-probability",
+      "thinking",
+      "heuristic",
+      "condition-check",
+      "set-operations",
+      "interactive-oracles",
+      "grid-arrangements",
+      "fixed-output"
+    ]
+  },
+  "routes": {
+    "nowruz": {
+      "entryGraphId": "fixed-output",
+      "choices": [],
+      "steps": [],
+      "initialReached": {
+        "graphId": "fixed-output",
+        "nodeId": "output-result",
+        "type": "result",
+        "title": "固定入力の出力を改善する",
+        "options": [],
+        "techniques": [
+          "output-only"
+        ]
+      },
+      "routeTransitions": [],
+      "stepsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "wiring": {
+      "entryGraphId": "flow-matching",
+      "choices": [
+        "quantity-goals",
+        "costs",
+        "yes"
+      ],
+      "steps": [
+        {
+          "graphId": "flow-matching",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "quantity-goals",
+          "answerLabel": "割当数量・行列の合計・費用・受取個数を制限する"
+        },
+        {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "purpose",
+          "question": "対応や割当について、どの条件の答えを求めますか？",
+          "answer": "costs",
+          "answerLabel": "数量を満たし、割当の費用合計を最小にする"
+        },
+        {
+          "graphId": "assignment-quantity-goals",
+          "nodeId": "cost",
+          "question": "流す量を満たした上で、辺の費用の合計を最小にしますか？",
+          "answer": "yes",
+          "answerLabel": "はい"
+        }
+      ],
+      "initialReached": {
+        "graphId": "assignment-quantity-goals",
+        "nodeId": "mincost",
+        "type": "result",
+        "title": "最小費用流",
+        "options": [],
+        "techniques": [
+          "min-cost-flow"
+        ]
+      },
+      "routeTransitions": [
+        {
+          "fromGraphId": "flow-matching",
+          "fromNodeId": "quantity-goals-route",
+          "toGraphId": "assignment-quantity-goals"
+        }
+      ],
+      "stepsSha256": "3d70b9ee90f5fbb624aa3a311184c50a28ecd069ad8de97a5aeee7c287b7bcf7"
+    },
+    "train": {
+      "entryGraphId": "game-probability",
+      "choices": [
+        "win",
+        "other",
+        "no"
+      ],
+      "steps": [
+        {
+          "graphId": "game-probability",
+          "nodeId": "game-objective",
+          "question": "手番や確率について何を求めますか？",
+          "answer": "win",
+          "answerLabel": "二人が最善を選んだときの勝敗"
+        },
+        {
+          "graphId": "game-rules",
+          "nodeId": "ending",
+          "question": "どのように対戦が終わりますか？",
+          "answer": "other",
+          "answerLabel": "その他の終了ルール・合法手"
+        },
+        {
+          "graphId": "game-general",
+          "nodeId": "game",
+          "question": "二人が交互に操作し、勝敗を決めますか？",
+          "answer": "no",
+          "answerLabel": "いいえ"
+        }
+      ],
+      "initialReached": {
+        "graphId": "game-general",
+        "nodeId": "fallback",
+        "type": "result",
+        "title": "確率と手番の状態を定義する",
+        "options": [],
+        "techniques": [
+          "state-design"
+        ]
+      },
+      "routeTransitions": [
+        {
+          "fromGraphId": "game-probability",
+          "fromNodeId": "game-rule-route",
+          "toGraphId": "game-rules"
+        },
+        {
+          "fromGraphId": "game-rules",
+          "fromNodeId": "general-route",
+          "toGraphId": "game-general"
+        }
+      ],
+      "stepsSha256": "ee01d2e45cc489bd88394f52f71c9b273c80ffe54b863fd9463de013e803f507"
+    },
+    "prize": {
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "routeTransitions": [],
+      "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7"
+    },
+    "simurgh": {
+      "entryGraphId": "interactive-oracles",
+      "choices": [
+        "other"
+      ],
+      "steps": [
+        {
+          "graphId": "interactive-oracles",
+          "nodeId": "response",
+          "question": "質問すると何が返ってきますか？",
+          "answer": "other",
+          "answerLabel": "その他の返答形式・通信条件"
+        }
+      ],
+      "initialReached": {
+        "graphId": "interactive-oracles",
+        "nodeId": "general-result",
+        "type": "result",
+        "title": "返答から次の合法な質問・移動を決める",
+        "options": [],
+        "techniques": [
+          "interactive"
+        ]
+      },
+      "routeTransitions": [],
+      "stepsSha256": "d0b694c7bc53c868b3035345c82e99445b195327467b232b7057675c1ad001e7"
+    },
+    "books": {
+      "entryGraphId": "ranges",
+      "choices": [
+        "sequence-changes",
+        "reorder-cost"
+      ],
+      "steps": [
+        {
+          "graphId": "ranges",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "sequence-changes",
+          "answerLabel": "列の並び・各値・巡回位置を変えて目標の形にする"
+        },
+        {
+          "graphId": "range-sequence-changes",
+          "nodeId": "updates",
+          "question": "数列について、何を求めますか？",
+          "answer": "reorder-cost",
+          "answerLabel": "列の要素を移動して並べ替える費用の最小値"
+        }
+      ],
+      "initialReached": {
+        "graphId": "range-sequence-changes",
+        "nodeId": "reorder-operation",
+        "type": "question",
+        "title": "列を変えるとき、どの操作を使えますか？",
+        "options": [
+          {
+            "id": "move-position",
+            "label": "要素を好きな位置や端へ移動し、目標順へ並べる"
+          },
+          {
+            "id": "swap-and-adjust",
+            "label": "値を ±1 に変える操作と、隣り合う二要素の交換"
+          },
+          {
+            "id": "unknown",
+            "label": "わからない"
+          }
+        ],
+        "techniques": []
+      },
+      "routeTransitions": [
+        {
+          "fromGraphId": "ranges",
+          "fromNodeId": "sequence-changes-route",
+          "toGraphId": "range-sequence-changes"
+        }
+      ],
+      "stepsSha256": "5921b1b3868a8b4667a6293b4f419c38ab6395660f7c19f8e643d90788b32f74"
+    }
+  },
+  "productRuntimeCrosscheck": {
+    "allSixRoutesMatchIndependentRawWalker": true,
+    "compiler": "frozen vendor/typescript.cjs through frozen scripts/local-modules.mjs",
+    "includesExactQuestionsAnswerLabelsAndTerminal": true
+  },
+  "existingApiScopeChecks": {
+    "compiledActualFrozenCppFences": {
+      "matching": "0bc93da9f5cb4211bf52d03d7f405f3373f9d4e9319940521fe60a8a0d83b6ad",
+      "retrograde-winning-draw": "9ddf018ea18594eba841f8d1094fc39d0d0f75c2b02c32a63e8a07110e41cd39",
+      "permutation-cycle-minimum-swaps": "7b44bb1108173e6b6f4e04b406b52b5061b04b4a61f68092ad804b1e7c7092c8"
+    },
+    "observed": {
+      "matchingMaximumDisjointPairs": 1,
+      "normalCyclicGame": [
+        0,
+        0
+      ],
+      "unrestrictedPermutationSwaps": 1
+    },
+    "originalTargets": {
+      "wiring": "red0,1 andblue2 need TWO incident-cover wires, total3; disjoint matching returns only one pair",
+      "train": "a0,1/r1,0 with both selfloops+crossarcs is Arezou-win at both starts; normal-endpoint-game classifier returns draws",
+      "books": "p2,1,0 S1 takes6 walk distance even though arbitrary-position swap count1"
+    },
+    "meaning": "These are explicit scope counterexamples, not bugs in the existing APIs or full-range IOI2017 production validations."
+  },
+  "nowruz": {
+    "allNonemptyFreeBoardsH_W1to3": 673,
+    "growthRuns": 673,
+    "exactlyOneNeighborInsertionsChecked": 1254,
+    "nonOptimalFixedOrderRuns": 160,
+    "counterexample": {
+      "h": 2,
+      "w": 3,
+      "freeMask": 28,
+      "greedyMask": 4,
+      "greedyLeaves": 0,
+      "optimalLeaves": 2
+    },
+    "connectedFullGridCounterexample": {
+      "h": 2,
+      "w": 3,
+      "freeMask": 63,
+      "greedyMask": 47,
+      "greedyLeaves": 2,
+      "optimalLeaves": 3
+    },
+    "verified": "Adding a free cell with exactly one existing marked neighbor preserves induced connected acyclicity; leaf delta checked literally including singleton->2vertices. Exact all-subset tree oracle bounds quality.",
+    "unconfirmed": "Official ten output files were not retrieved/solved. This growth method has no full-score guarantee; no invented optimum or 100-point claim."
+  },
+  "wiring": {
+    "allTwoColorSequencesLength2to7TwoCoordinateProfiles": 480,
+    "allBipartiteEdgeSubsets": 701112,
+    "randomLinearVsQuadraticN2to49": 1000,
+    "maximumCombinedN200000Cases": 3,
+    "verified": "Independent literal all-edge-set minimum equals quadratic prefix DP AND new fully-derived linear monochromatic-block prefix/suffix minima DP. Adjacent-block exclusion and one-overlap split prove recurrence; separated-group edge-cover closed form is attained by stars. Three maximum-size exact closed-form families checked.",
+    "unconfirmed": "Production reusable C++20/API/overflow/exception/sanitizer validation has not been performed. The official editorial supplies only the high-level linear DP; explicit recurrence/proof here is an independent supplement."
+  },
+  "train": {
+    "allTotalDirectedGraphsN1to3LoopsAllowed": 353,
+    "allOwnerAndNonemptyChargerAssignments": 19318,
+    "randomGraphsN4to8": 400,
+    "literalInitialPositions": 60233,
+    "maximumObservedDeletionRounds": 3,
+    "verified": "Alternating reachability-attractor deletion equals literal extensive first-visit minimax including permanent switches and repeated vertices. Queue/counter implementation would be O(NM), not implemented as a production API here."
+  },
+  "prize": {
+    "allLegalPrizeSequencesLength3to10": 832,
+    "allPositionPairsCompared": 31294,
+    "allFeasibleMoreExpensiveCountChains": 13098,
+    "maximumNonCheapestPrizesForN200000": 472,
+    "countWitness": [
+      1,
+      4,
+      21,
+      446,
+      198917
+    ],
+    "verified": "Response sum identifies prize level. Equal-level boundary left-count difference is exact number of strictly better prizes in between; zero remaining count safely prunes for every transcript-consistent fixed completion. Count growth is checked with exact integer recursion.",
+    "unconfirmed": "No implementation or independent worst-case proof of the official efficient 4759/required5000-query strategy. Fixed-sequence gap tests do not establish adaptive-grader full-score correctness/budget."
+  },
+  "simurgh": {
+    "allConnectedSimpleGraphsN2to5": 771,
+    "everyHiddenSpanningTreeForEveryGraph": 8135,
+    "literalValidSpanningTreeQueries": 108860,
+    "maximumObservedSmallQueries": 17,
+    "N500Cases": [
+      {
+        "kind": "path",
+        "N": 500,
+        "M": 499,
+        "queries": 501,
+        "referenceQueries": 1
+      },
+      {
+        "kind": "complete-star",
+        "N": 500,
+        "M": 124750,
+        "queries": 4987,
+        "referenceQueries": 997
+      },
+      {
+        "kind": "complete-path",
+        "N": 500,
+        "M": 124750,
+        "queries": 5228,
+        "referenceQueries": 997
+      },
+      {
+        "kind": "complete-random",
+        "N": 500,
+        "M": 124750,
+        "queries": 5284,
+        "referenceQueries": 997
+      }
+    ],
+    "allN500UpperBound": 5990,
+    "verified": "Independent reference-tree fundamental-cycle differences classify every reference edge in <=1+2(N-1) queries. A forest can be completed with known reference edges; subtract known contribution to get exact forest count. Star counts give hidden degrees; leaf-star subset bisection recovers the hidden tree. EVERY oracle question explicitly DSU-validated as a spanning tree.",
+    "productionApiValidated": false,
+    "officialEarDecompositionProofClaimed": false
+  },
+  "books": {
+    "allPermutationsN1to6AllStarts": 5039,
+    "literalPickupSwapPutdownAdjacentMoveStates": 201602,
+    "verified": "Full reversible 0-1 state shortest paths equal interval-cycle closure DP and author greedy comparing first cross-boundary cycle reach costs. Probe uses explicit small closures, not a linear-time production implementation.",
+    "productionApiValidated": false,
+    "numericBoundsSource": "Final contest KOR statement n<=1000000, NOT old Library editorial draft subtask table/API."
+  },
+  "elapsedSeconds": 15.913243
+}

@@ -1,0 +1,50 @@
+---
+title: "一つ下の段へ好きな個数を動かすなら、偶数段の個数だけをXORする"
+description: "隣の段へ移す操作で変わる成分を一つに絞り、必敗状態を特徴づけます。"
+techniqueId: "stair-game-even-piles"
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+## 使う場面
+
+番号 $1,\ldots,n$ の段があり、段 $i\ge2$ から段 $i-1$ へ好きな正の個数の球を移すゲーム。球の総数は減りませんが、全ての球が下へしか動かないので必ず終わります。
+
+## 考え方
+
+1始まりの偶数段 $2,4,6,\ldots$ の球の個数だけを XOR します。段1の球は動かせません。奇数段の球を無視できるのは、奇数段から動かす場合も直下の偶数段の個数だけが変わるためです。
+
+## 適用条件
+
+移動先は一つ下の段に限り、正の個数を任意に選べること。一つ飛ばしの移動や、一度に二つの段を選ぶ操作は含みません。操作不能なら負ける通常ルールです。
+
+## なぜ正しいか
+
+偶数段から動かすと、その段の個数だけが減ります。奇数段から動かすと、直下の偶数段の個数だけが増えます。よって XOR が0の状態からは、どの手でも0以外へ移ります。XOR が0以外なら、Nim と同じ最上位ビットの議論で、ある偶数段の個数を減らして0にできます。その減少は直下への合法な移動です。球の重み付き総和 $\sum_i(i-1)p_i$ は毎手減るため、0と非0の分類から勝敗が決まります。
+
+## 計算量
+
+全ての配置を探索すると、球の総数を $S$ として最大 $\binom{S+n-1}{n-1}$ 状態があります。偶数段の XOR なら時間 $O(n)$、追加空間 $O(1)$。
+
+## 実装
+
+配列は0始まりなので、添字1,3,5,…が偶数段に対応します。段1にだけ球がある場合も後手勝ちです。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+bool stair_first_wins(const vector<unsigned long long>& balls){
+    unsigned long long value=0;
+    for(size_t i=1;i<balls.size();i+=2)value^=balls[i];
+    return value!=0;
+}
+```
+
+## 関連する手法
+
+[Grundy数](/flowchartcp/techniques/game-theory/)、[不変量](/flowchartcp/techniques/invariant/)
+
+## 参考資料
+
+- [原典の条件](https://cses.fi/problemset/task/1099/)
+
+<TechniqueReferences techniqueId="stair-game-even-piles" />

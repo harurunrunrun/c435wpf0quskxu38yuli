@@ -1,0 +1,70 @@
+---
+title: "厳密な大小条件のDPは同じ値をまとめて更新する"
+description: "同じキーからの遷移を禁止するため、そのグループの問い合わせをすべて済ませてから登録します。"
+techniqueId: dp-batch-equal-keys
+---
+import TechniqueReferences from '@components/TechniqueReferences.astro';
+
+同じキーからの遷移を禁止するため、そのグループの問い合わせをすべて済ませてから登録します。
+
+## 使う場面
+
+同じ行か列にあり、値が厳密に大きい状態へ移動するDPを考えます。状態 $i$ の最大移動回数は、$dp_i=\max(0,\max_{a_j>a_i,\ r_j=r_i\ \mathrm{or}\ c_j=c_i}(dp_j+1))$ です。値の大きい順に処理しても、等しい値を逐次更新すると誤った遷移が入ります。
+
+## 考え方
+
+同じ値の状態を一つのグループにします。まず全状態について、登録済みの行・列の最大値だけを使って答えを計算します。グループ全体の答えが確定した後で、それらの $dp_i+1$ を行・列の最大値へ登録します。
+
+## 適用条件
+
+遷移条件が厳密な $>$ または $<$ の場合に使います。等しいキー間でも遷移できる問題では、その依存関係を別に処理する必要があります。グループの途中でデータ構造を更新してはいけません。同じ処理は、厳密な高さ比較を含む2次元のDPなどにも使えます。
+
+## なぜ正しいか
+
+グループの計算中に登録されているのは、厳密に大きい値の状態だけです。したがって、行・列の最大値は有効な遷移元の最大値と一致します。計算後の一括登録によって、次の小さい値のグループからは、今のグループを正しく使えます。
+
+## 計算量
+
+全状態を遷移先として調べる $O(N^2)$ 時間から、ソート込みの $O(N\log N+H+W)$ 時間へ改善します。空間は状態配列と行・列の最大値を合わせて $O(N+H+W)$ です。等値の一括処理は、この高速化で正当性を保つために必要です。
+
+## 実装
+
+`grid_increasing_moves(H, W, cells)` は入力順の各状態の最大移動回数を返します。座標は0始まりで、各状態の位置は異なるものとします。値が同じで行を共有する2状態でも、互いを遷移先にしません。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+struct GridCell { int row,col; long long value; };
+vector<int> grid_increasing_moves(int H,int W,const vector<GridCell>& cells) {
+    assert(H>=0 && W>=0); int n=cells.size();
+    vector<int> order(n),dp(n),rowbest(H),colbest(W);
+    iota(order.begin(),order.end(),0);
+    sort(order.begin(),order.end(),[&](int a,int b){return cells[a].value>cells[b].value;});
+    for(int l=0;l<n;) {
+        int r=l;
+        while(r<n && cells[order[r]].value==cells[order[l]].value) ++r;
+        for(int p=l;p<r;++p) {
+            int i=order[p]; auto c=cells[i];
+            assert(0<=c.row && c.row<H && 0<=c.col && c.col<W);
+            dp[i]=max(rowbest[c.row],colbest[c.col]);
+        }
+        for(int p=l;p<r;++p) {
+            int i=order[p]; auto c=cells[i];
+            rowbest[c.row]=max(rowbest[c.row],dp[i]+1);
+            colbest[c.col]=max(colbest[c.col],dp[i]+1);
+        }
+        l=r;
+    }
+    return dp;
+}
+```
+
+## 関連する手法
+
+[オフラインクエリ](/flowchartcp/techniques/offline-queries/) ・ [DAG上のDP](/flowchartcp/techniques/dag-dp/)
+
+## 参考資料
+
+- [AtCoder：E - Integers on Gridの解説・実装](https://atcoder.jp/contests/abc224/editorial/2821)
+
+<TechniqueReferences techniqueId="dp-batch-equal-keys" />

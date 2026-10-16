@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "command": "node tests/countgraphs-balanced-flow.test.mjs",
+  "executedAtUTC": "2026-10-15 09:52:51 UTC",
+  "testFile": "tests/countgraphs-balanced-flow.test.mjs",
+  "testSha256": "2de383fc344a243e1cd7265c205a3534df77a1e2695183b1fdb36174496b22e1",
+  "exitCode": 0,
+  "tests": 13,
+  "passed": 13,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 4486.629893,
+  "subtests": [
+    "1118: all premises gate the sole concrete result and no/unknown stays unresolved",
+    "1118: both displays, complete SVG labels, shared URLs and Back retain all premise histories",
+    "1118: dated original, complete article, grouped metadata and one canonical example agree",
+    "1142: all premises gate the sole concrete result and no/unknown stays unresolved",
+    "1142: both displays, complete SVG labels, shared URLs and Back retain all premise histories",
+    "1142: dated original, complete article, grouped metadata and one canonical example agree",
+    "all 517 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged",
+    "every field of all 463 old graphs and 3649 nodes survives, including every old option order and result",
+    "all historical local and completed shared URLs retain their candidates, domains and Back histories",
+    "Back preserves the full history of all404 completed historical share URLs",
+    "the initial six USACO records and all three prior resolution records survive without duplicate positive research reviews",
+    "both new resolutions contain full original bounds and complete checked C++ without duplicate research reviews",
+    "actual target mutation proves research6/6, coverage5/6, and prior3/6 without the two new resolutions"
+  ],
+  "baseline": {
+    "articles": 496,
+    "graphs": 463,
+    "nodes": 3649,
+    "walks": 517,
+    "verifiedWalks": 513,
+    "rawSha256": {
+      "flows": "2ce2676bf826099b4acbd526e9cefa79f3d99f578e49f827ba303eab71ad1834",
+      "walks": "89b483f2c65ea6af9a17330917d0f59477952d91d6b0b95fa365ba03ba8b28a6",
+      "audit": "a6262c635c2fd1af54b6e0e26cad13d47cf58db426a7b3a829e0e47aad8cdf4c"
+    },
+    "preservedRecordProjectionSha256": "f08b83d740bab06c5ee3703204cd0c394040ca92840ff864f7aaa95bf0d74e74",
+    "preservedWalkStepsSha256": "3ef3b6b7803749348ef3ecc4341628e1f4243ebd4851eedaef1b2b39eb0780b0",
+    "preservedWalkTextAndLabelsSha256": "33ab8282637c8681b84fb3c46a561b55a14ae981b3c3bd58be5b36cdd4634da8",
+    "preservedOldGraphAllFieldsSha256": "1ab9c87e62e9f9c885d0faa39d5f1532c5384e39dac0a0b65b551a9d7b6e2e81",
+    "historicalAuditProjectionSha256": "33aca6871d173be97608272d2f3ba38bc2059f8335480418418e0961ade0010d",
+    "allThreePriorResolutionsSha256": {
+      "1116": "7595821c7179cec272e518d521961a9cfd988f6faddb8563ee2da94cf6073c24",
+      "1117": "fbe3dce76c65df8c325a5863c1ad38d1e43afa81ed705089435ece0e154d7156",
+      "1140": "00a8dded1dd31df7f1867214c61a33156a0b192e1848b5d8c65991371af44eb1"
+    },
+    "historicalNoTimeFullRecordSha256": "3a0e6c7a616e5fb7f25cc7397ee081fbe20d5046d007fa5224deefd8fabe0a1f"
+  },
+  "registered": {
+    "articles": 498,
+    "graphs": 465,
+    "nodes": 3661,
+    "questions": 1666,
+    "edges": 5432,
+    "walks": 519,
+    "verifiedWalks": 515,
+    "flowRawSha256": "5e86b750545b089d2e1427c4a956287e6925f8d69cabae4a89cfa1e5a1bb0c38",
+    "walkRawSha256": "4d0fd03bc210fd47f941af4ba336289d354a9012d9e3238f5b34b3a56b680adb",
+    "auditRawSha256": "9ddc7902e5ff96342923c08f5ca5c6f6acd890725ac58032019237f14fb4b913"
+  },
+  "newRoutes": [
+    {
+      "problemId": "1118",
+      "techniqueId": "parity-walk-profile-layer-inclusion-exclusion-count",
+      "domain": "graphs",
+      "choices": [
+        "network-connection",
+        "walk-profile-count",
+        "yes",
+        "yes",
+        "yes"
+      ],
+      "guardGraph": "parity-walk-graph-count-conditions",
+      "guardIds": [
+        "undirected-loops",
+        "all-walk-realizations",
+        "bounds-modulus"
+      ],
+      "parentLabel": "固定始点から各頂点への全歩数を保つ、別のグラフの個数を数える",
+      "guardText": [
+        [
+          "辺は無向で一歩に数え、自己ループを許す連結グラフですか？",
+          "同じ頂点対を結ぶ辺は一本までです。頂点と辺を繰り返し通れ、頂点にはラベルがあります。"
+        ],
+        [
+          "始点を固定し、各頂点へ到達できる全歩数を保つグラフを数えますか？",
+          "元にない辺も使えます。同じラベルの頂点に対して、辺集合が違えば別のグラフとして数えます。"
+        ],
+        [
+          "頂点数は2〜100で、正の32ビット整数を法として個数を求めますか？",
+          "O(N³+M)時間・O(N²+M)空間を使います。原典の法1000000007を含み、素数でない法や法1にも対応します。"
+        ]
+      ],
+      "sourceDate": "2021-02",
+      "datePrecision": "month",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "cppSha256": "d454db3070931a3ffad8c7f78373c4f1a000d3ab5a77e1c3b368f48fb5b77b9d"
+    },
+    {
+      "problemId": "1142",
+      "techniqueId": "orthogonally-convex-row-interval-phase-prefix-dp",
+      "domain": "grid-arrangements",
+      "choices": [
+        "color-numbers",
+        "convex-subsets",
+        "yes",
+        "yes",
+        "yes"
+      ],
+      "guardGraph": "row-column-convex-subset-conditions",
+      "guardIds": [
+        "row-column-intervals",
+        "connected-allowed-cells",
+        "bounds"
+      ],
+      "parentLabel": "行と列が途切れない、連結なマスの選び方を数える",
+      "guardText": [
+        [
+          "選ぶマスは、どの行・列でも空か一つの区間になりますか？",
+          "途中で途切れる行や列を許しません。選ぶ形は長方形に限りません。"
+        ],
+        [
+          "使用可能マスから、上下左右で連結な非空部分集合を数えますか？",
+          "斜めだけの接触は連結とみなしません。使えないマスは選べず、同じマス集合は一度だけ数えます。"
+        ],
+        [
+          "行数・列数は各150以下で、答えを1000000007で割った余りを求めますか？",
+          "格子は固定で、各マスを使えるかどうかが最初から分かっています。"
+        ]
+      ],
+      "sourceDate": "2021",
+      "datePrecision": "year",
+      "exactDateVerified": false,
+      "difficulty": null,
+      "cppSha256": "21132d1dd677f87110e24ea1563245b380b3ec18de594b636067b9d888e660c6"
+    }
+  ],
+  "coverageProof": {
+    "fixedProblems": 6,
+    "researchReviewed": 6,
+    "initialCovered": 0,
+    "preRegistrationCovered": 3,
+    "registrationStageCovered": 5,
+    "withoutBothNewResolutionsCovered": 3,
+    "withoutEachNewValidatedRootWalkTargetCovered": 4,
+    "withoutBothNewValidatedRootWalkTargetsCovered": 3,
+    "withoutEachNewReferenceCovered": 4,
+    "withoutEachNewArticleCovered": 4,
+    "laterValidCoverageAdditionsAllowed": true,
+    "initialSixRecordsAllFieldsStatusSelectionSnapshotPreserved": true,
+    "allThreePriorResolutionFieldsPreserved": true,
+    "newResolutionCount": 2,
+    "newPositiveSolutionReviewCount": 0,
+    "initialProductionFalseFlagsPreserved": true
+  },
+  "uiChecks": {
+    "guardQuestions": 6,
+    "noUnknownFallbackPaths": 12,
+    "positiveCanonicalPaths": 2,
+    "questionsAndDiagramDisplays": true,
+    "svgCompleteLabelsAndArticleHref": true,
+    "allNewPositiveAndNegativeSharedHistoryAndBack": true,
+    "legacyLocalPrefixes": 593,
+    "legacyCompletedSharedUrls": 404,
+    "allLegacyLocalBackHistories": true,
+    "allCompletedLegacyBackHistories": true
+  },
+  "schemaNote": "Counting author verification.normal lacks a repeated cppSha256 field; the exact same checksum is checked from the integrated root independentReview native output. Actual MDX fence hash and top-level code hash are also checked. No historical-field protections are relaxed.",
+  "sharedEdits": [
+    "tests/countgraphs-balanced-flow.test.mjs",
+    "research/probes/countgraphs-balanced-flow-results.json"
+  ],
+  "tap": "TAP version 13\n# Subtest: 1118: all premises gate the sole concrete result and no/unknown stays unresolved\nok 1 - 1118: all premises gate the sole concrete result and no/unknown stays unresolved\n  ---\n  duration_ms: 457.598859\n  type: 'test'\n  ...\n# Subtest: 1118: both displays, complete SVG labels, shared URLs and Back retain all premise histories\nok 2 - 1118: both displays, complete SVG labels, shared URLs and Back retain all premise histories\n  ---\n  duration_ms: 3612.640992\n  type: 'test'\n  ...\n# Subtest: 1118: dated original, complete article, grouped metadata and one canonical example agree\nok 3 - 1118: dated original, complete article, grouped metadata and one canonical example agree\n  ---\n  duration_ms: 23.742751\n  type: 'test'\n  ...\n# Subtest: 1142: all premises gate the sole concrete result and no/unknown stays unresolved\nok 4 - 1142: all premises gate the sole concrete result and no/unknown stays unresolved\n  ---\n  duration_ms: 8.058666\n  type: 'test'\n  ...\n# Subtest: 1142: both displays, complete SVG labels, shared URLs and Back retain all premise histories\nok 5 - 1142: both displays, complete SVG labels, shared URLs and Back retain all premise histories\n  ---\n  duration_ms: 178.568372\n  type: 'test'\n  ...\n# Subtest: 1142: dated original, complete article, grouped metadata and one canonical example agree\nok 6 - 1142: dated original, complete article, grouped metadata and one canonical example agree\n  ---\n  duration_ms: 12.907804\n  type: 'test'\n  ...\n# Subtest: all 517 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged\nok 7 - all 517 pre-batch walkthrough records, every target/result and full text/answer labels stay unchanged\n  ---\n  duration_ms: 16.363385\n  type: 'test'\n  ...\n# Subtest: every field of all 463 old graphs and 3649 nodes survives, including every old option order and result\nok 8 - every field of all 463 old graphs and 3649 nodes survives, including every old option order and result\n  ---\n  duration_ms: 25.456754\n  type: 'test'\n  ...\n# Subtest: all historical local and completed shared URLs retain their candidates, domains and Back histories\nok 9 - all historical local and completed shared URLs retain their candidates, domains and Back histories\n  ---\n  duration_ms: 76.338202\n  type: 'test'\n  ...\n# Subtest: Back preserves the full history of all404 completed historical share URLs\nok 10 - Back preserves the full history of all404 completed historical share URLs\n  ---\n  duration_ms: 39.689563\n  type: 'test'\n  ...\n# Subtest: the initial six USACO records and all three prior resolution records survive without duplicate positive research reviews\nok 11 - the initial six USACO records and all three prior resolution records survive without duplicate positive research reviews\n  ---\n  duration_ms: 3.604045\n  type: 'test'\n  ...\n# Subtest: both new resolutions contain full original bounds and complete checked C++ without duplicate research reviews\nok 12 - both new resolutions contain full original bounds and complete checked C++ without duplicate research reviews\n  ---\n  duration_ms: 3.072973\n  type: 'test'\n  ...\n# Subtest: actual target mutation proves research6/6, coverage5/6, and prior3/6 without the two new resolutions\nok 13 - actual target mutation proves research6/6, coverage5/6, and prior3/6 without the two new resolutions\n  ---\n  duration_ms: 18.600618\n  type: 'test'\n  ...\n1..13\n# tests 13\n# suites 0\n# pass 13\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 4486.629893\n"
+}
